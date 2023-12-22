@@ -74,4 +74,5 @@ namespace Exiled.API.Features
             get => Base._playingAnimation;
             set => Base._playingAnimation = value;
         }
+    }
 }
