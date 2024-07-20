@@ -111,7 +111,7 @@ namespace Exiled.API.Structs
         public Vector3 Scale { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the primitive should be spawned.
+        /// Gets a value indicating whether or not the primitive should dynamically update.
         /// </summary>
         public bool IsStatic { get; }
 
