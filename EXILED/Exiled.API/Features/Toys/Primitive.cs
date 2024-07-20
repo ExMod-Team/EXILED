@@ -111,7 +111,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Primitive"/>.</returns>
         public static Primitive Create(Vector3 position, Vector3 rotation, Vector3 scale, Color color, bool spawn = true)
-            => Create(PrimitiveType.Sphere, ~PrimitiveFlags.None, position, rotation, scale, color, spawn);
+            => Create(PrimitiveType.Sphere, position, rotation, scale, color, spawn);
 
         /// <summary>
         /// Creates a new <see cref="Primitive"/>.
