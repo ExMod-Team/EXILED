@@ -84,13 +84,34 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="Primitive"/>.
         /// </summary>
+        /// <param name="primitiveType">The type of primitive to spawn.</param>
+        /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
+        /// <returns>The new <see cref="Primitive"/>.</returns>
+        public static Primitive Create(PrimitiveType primitiveType, bool spawn = true)
+            => Create(primitiveType, Vector3.zero, Vector3.zero, Vector3.one, spawn);
+
+        /// <summary>
+        /// Creates a new <see cref="Primitive"/>.
+        /// </summary>
         /// <param name="position">The position of the <see cref="Primitive"/>.</param>
         /// <param name="rotation">The rotation of the <see cref="Primitive"/>.</param>
         /// <param name="scale">The scale of the <see cref="Primitive"/>.</param>
         /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Primitive"/>.</returns>
-        public static Primitive Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool spawn = true)
-            => Create(PrimitiveType.Sphere, ~PrimitiveFlags.None, position ?? Vector3.zero, rotation ?? Vector3.zero, scale ?? Vector3.one, Color.gray, false, spawn);
+        public static Primitive Create(Vector3 position, Vector3 rotation, Vector3 scale, bool spawn = true)
+            => Create(position, rotation, scale, Color.gray, spawn);
+
+        /// <summary>
+        /// Creates a new <see cref="Primitive"/>.
+        /// </summary>
+        /// <param name="position">The position of the <see cref="Primitive"/>.</param>
+        /// <param name="rotation">The rotation of the <see cref="Primitive"/>.</param>
+        /// <param name="scale">The scale of the <see cref="Primitive"/>.</param>
+        /// <param name="color">The color of the <see cref="Primitive"/>.</param>
+        /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
+        /// <returns>The new <see cref="Primitive"/>.</returns>
+        public static Primitive Create(Vector3 position, Vector3 rotation, Vector3 scale, Color color, bool spawn = true)
+            => Create(PrimitiveType.Sphere, ~PrimitiveFlags.None, position, rotation, scale, color, spawn);
 
         /// <summary>
         /// Creates a new <see cref="Primitive"/>.
@@ -101,20 +122,8 @@ namespace Exiled.API.Features.Toys
         /// <param name="scale">The scale of the <see cref="Primitive"/>.</param>
         /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Primitive"/>.</returns>
-        public static Primitive Create(PrimitiveType primitiveType = PrimitiveType.Sphere, Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool spawn = true)
-            => Create(primitiveType, ~PrimitiveFlags.None, position ?? Vector3.zero, rotation ?? Vector3.zero, scale ?? Vector3.one, Color.gray, false, spawn);
-
-        /// <summary>
-        /// Creates a new <see cref="Primitive"/>.
-        /// </summary>
-        /// <param name="position">The position of the <see cref="Primitive"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Primitive"/>.</param>
-        /// <param name="scale">The scale of the <see cref="Primitive"/>.</param>
-        /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
-        /// <param name="color">The color of the <see cref="Primitive"/>.</param>
-        /// <returns>The new <see cref="Primitive"/>.</returns>
-        public static Primitive Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn, Color? color)
-            => Create(PrimitiveType.Sphere, ~PrimitiveFlags.None, position ?? Vector3.zero, rotation ?? Vector3.zero, scale ?? Vector3.one, color ?? Color.gray, false, spawn);
+        public static Primitive Create(PrimitiveType primitiveType, Vector3 position, Vector3 rotation, Vector3 scale, bool spawn = true)
+            => Create(primitiveType, position, rotation, scale, Color.gray, spawn);
 
         /// <summary>
         /// Creates a new <see cref="Primitive"/>.
@@ -123,11 +132,11 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the <see cref="Primitive"/>.</param>
         /// <param name="rotation">The rotation of the <see cref="Primitive"/>.</param>
         /// <param name="scale">The scale of the <see cref="Primitive"/>.</param>
-        /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
         /// <param name="color">The color of the <see cref="Primitive"/>.</param>
+        /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Primitive"/>.</returns>
-        public static Primitive Create(PrimitiveType primitiveType, Vector3? position, Vector3? rotation, Vector3? scale, bool spawn, Color? color)
-            => Create(primitiveType, ~PrimitiveFlags.None, position ?? Vector3.zero, rotation ?? Vector3.zero, scale ?? Vector3.one, color ?? Color.gray, false, spawn);
+        public static Primitive Create(PrimitiveType primitiveType, Vector3 position, Vector3 rotation, Vector3 scale, Color color, bool spawn = true)
+            => Create(primitiveType, ~PrimitiveFlags.None, position, rotation, scale, color, spawn);
 
         /// <summary>
         /// Creates a new <see cref="Primitive"/>.
@@ -137,11 +146,11 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the <see cref="Primitive"/>.</param>
         /// <param name="rotation">The rotation of the <see cref="Primitive"/>.</param>
         /// <param name="scale">The scale of the <see cref="Primitive"/>.</param>
-        /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
         /// <param name="color">The color of the <see cref="Primitive"/>.</param>
+        /// <param name="spawn">Whether or not the <see cref="Primitive"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Primitive"/>.</returns>
-        public static Primitive Create(PrimitiveType primitiveType, PrimitiveFlags flags, Vector3? position, Vector3? rotation, Vector3? scale, bool spawn, Color? color)
-            => Create(primitiveType, flags, position ?? Vector3.zero, rotation ?? Vector3.zero, scale ?? Vector3.one, color ?? Color.gray, false, spawn);
+        public static Primitive Create(PrimitiveType primitiveType, PrimitiveFlags flags, Vector3 position, Vector3 rotation, Vector3 scale, Color color, bool spawn)
+            => Create(primitiveType, flags, position, rotation, scale, color, false, spawn);
 
         /// <summary>
         /// Creates a new <see cref="Primitive"/>.
