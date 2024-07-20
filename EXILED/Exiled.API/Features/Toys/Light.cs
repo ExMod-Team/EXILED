@@ -76,13 +76,10 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="Light"/>.
         /// </summary>
-        /// <param name="position">The position of the <see cref="Light"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Light"/>.</param>
-        /// <param name="scale">The scale of the <see cref="Light"/>.</param>
         /// <param name="spawn">Whether the <see cref="Light"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Light"/>.</returns>
-        public static Light Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool spawn = true)
-            => Create(position, rotation, scale, spawn, null);
+        public static Light Create(bool spawn = true)
+            => Create(Vector3.zero, Vector3.zero, Vector3.one, spawn);
 
         /// <summary>
         /// Creates a new <see cref="Light"/>.
@@ -91,20 +88,31 @@ namespace Exiled.API.Features.Toys
         /// <param name="rotation">The rotation of the <see cref="Light"/>.</param>
         /// <param name="scale">The scale of the <see cref="Light"/>.</param>
         /// <param name="spawn">Whether the <see cref="Light"/> should be initially spawned.</param>
-        /// <param name="color">The color of the <see cref="Light"/>.</param>
         /// <returns>The new <see cref="Light"/>.</returns>
-        public static Light Create(Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
+        public static Light Create(Vector3 position, Vector3 rotation, Vector3 scale, bool spawn = true)
+            => Create(position, rotation, scale, Color.gray, spawn);
+
+        /// <summary>
+        /// Creates a new <see cref="Light"/>.
+        /// </summary>
+        /// <param name="position">The position of the <see cref="Light"/>.</param>
+        /// <param name="rotation">The rotation of the <see cref="Light"/>.</param>
+        /// <param name="scale">The scale of the <see cref="Light"/>.</param>
+        /// <param name="color">The color of the <see cref="Light"/>.</param>
+        /// <param name="spawn">Whether the <see cref="Light"/> should be initially spawned.</param>
+        /// <returns>The new <see cref="Light"/>.</returns>
+        public static Light Create(Vector3 position, Vector3 rotation, Vector3 scale, Color color, bool spawn)
         {
             Light light = new(UnityEngine.Object.Instantiate(ToysHelper.LightBaseObject));
 
-            light.Position = position ?? Vector3.zero;
-            light.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            light.Scale = scale ?? Vector3.one;
+            light.Position = position;
+            light.Rotation = Quaternion.Euler(rotation);
+            light.Scale = scale;
+
+            light.Color = color;
 
             if (spawn)
                 light.Spawn();
-
-            light.Color = color ?? Color.gray;
 
             return light;
         }
