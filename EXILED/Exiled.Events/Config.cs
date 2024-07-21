@@ -96,7 +96,7 @@ namespace Exiled.Events
         /// Gets or sets a value indicating whether translations has to be reloaded every time a round restarts.
         /// </summary>
         [Description("Indicates whether translations has to be reloaded every round restart")]
-        public bool ShouldReloadTranslationsAtRoundRestart { get; set; }
+        public bool ShouldReloadTranslationsAtRoundRestart { get; set; } = false;
 
         /// <summary>
         /// Gets a value indicating whether bans should be logged or not.
