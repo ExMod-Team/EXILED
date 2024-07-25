@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="OfflineModePlayerIds.cs" company="Exiled Team">
+// <copyright file="OfflineModeIds.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -18,6 +18,35 @@ namespace Exiled.Events.Patches.Generic
     using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
+
+    /// <summary>
+    ///     Patches <see cref="PlayerAuthenticationManager.Start"/> to add an @offline suffix to UserIds in Offline Mode.
+    /// </summary>
+    [HarmonyPatch(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.Start))]
+    internal static class OfflineModeIds
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            const int offset = -1;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Call && instruction.OperandIs(PropertySetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId)))) + offset;
+
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    new CodeInstruction(OpCodes.Call, Method(typeof(OfflineModeIds), nameof(BuildUserId))),
+                });
+
+            for (int i = 0; i < newInstructions.Count; i++)
+                yield return newInstructions[i];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static string BuildUserId(string userId) => $"{userId}@offline";
+    }
 
     /// <summary>
     ///     Patches <see cref="PlayerAuthenticationManager.Start"/> to add the player's UserId to the <see cref="PluginAPI.Core.Player.PlayersUserIds"/> dictionary.
@@ -55,9 +84,7 @@ namespace Exiled.Events.Patches.Generic
                 });
 
             for (int i = 0; i < newInstructions.Count; i++)
-            {
                 yield return newInstructions[i];
-            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
@@ -88,9 +115,7 @@ namespace Exiled.Events.Patches.Generic
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int i = 0; i < newInstructions.Count; i++)
-            {
                 yield return newInstructions[i];
-            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }

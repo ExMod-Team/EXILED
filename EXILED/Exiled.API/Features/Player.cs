@@ -282,6 +282,7 @@ namespace Exiled.API.Features
                     "northwood" => AuthenticationType.Northwood,
                     "localhost" => AuthenticationType.LocalHost,
                     "ID_Dedicated" => AuthenticationType.DedicatedServer,
+                    "offline" => AuthenticationType.Offline,
                     _ => AuthenticationType.Unknown,
                 };
             }
