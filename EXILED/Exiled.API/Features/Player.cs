@@ -2728,8 +2728,8 @@ namespace Exiled.API.Features
         /// <seealso cref="DropItems()"/>
         public void ClearInventory(bool destroy = true)
         {
-            ClearItems(destroy);
             ClearAmmo();
+            ClearItems(destroy);
         }
 
         /// <summary>
