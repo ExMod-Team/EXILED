@@ -2320,6 +2320,16 @@ namespace Exiled.API.Features
             Inventory.ServerAddAmmo(ammoType.GetItemType(), amount);
 
         /// <summary>
+        /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to player's inventory.
+        /// </summary>
+        /// <param name="ammoBag">A dictionary of <see cref="AmmoType">ammo types</see> that will be added.</param>
+        public void AddAmmo(Dictionary<AmmoType, ushort> ammoBag)
+        {
+            foreach (KeyValuePair<AmmoType, ushort> kvp in ammoBag)
+                AddAmmo(kvp.Key, kvp.Value);
+        }
+
+        /// <summary>
         /// Adds the amount of a weapon's <see cref="AmmoType">ammo type</see> to the player's inventory.
         /// </summary>
         /// <param name="weaponType">The <see cref="ItemType"/> of the weapon.</param>
@@ -2336,6 +2346,16 @@ namespace Exiled.API.Features
             ItemType itemType = ammoType.GetItemType();
             if (itemType is not ItemType.None)
                 Inventory.ServerSetAmmo(itemType, amount);
+        }
+
+        /// <summary>
+        /// Sets the amount of a specified <see cref="AmmoType">ammo type</see> to player's inventory.
+        /// </summary>
+        /// <param name="ammoBag">A dictionary of <see cref="AmmoType">ammo types</see> that will be added.</param>
+        public void SetAmmo(Dictionary<AmmoType, ushort> ammoBag)
+        {
+            foreach (KeyValuePair<AmmoType, ushort> kvp in ammoBag)
+                SetAmmo(kvp.Key, kvp.Value);
         }
 
         /// <summary>
