@@ -179,7 +179,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the List of player currently whitelisted.
+        /// Gets the list of user IDs of players currently whitelisted.
         /// </summary>
         public static HashSet<string> WhitelistedPlayers => WhiteList.Users;
 
