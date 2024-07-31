@@ -3,6 +3,7 @@
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to change)
+- [ ] Documentations
 <br />
 
 * **What is the current behavior?** (You can also link to an open issue here)
