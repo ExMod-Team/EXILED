@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="IUsableEvent.cs" company="Exiled Team">
+// <copyright file="IScp330Event.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -10,13 +10,13 @@ namespace Exiled.Events.EventArgs.Interfaces
     using Exiled.API.Features.Items;
 
     /// <summary>
-    /// Event args used for all <see cref="API.Features.Items.Usable" /> related events.
+    /// Event args used for all <see cref="API.Features.Items.Scp330" /> related events.
     /// </summary>
-    public interface IUsableEvent : IItemEvent
+    public interface IScp330Event : IItemEvent
     {
         /// <summary>
-        /// Gets the <see cref="API.Features.Items.Usable" /> triggering the event.
+        /// Gets the <see cref="API.Features.Items.Scp330" /> triggering the event.
         /// </summary>
-        public Usable Usable { get; }
+        public Scp330 Scp330 { get; }
     }
 }
