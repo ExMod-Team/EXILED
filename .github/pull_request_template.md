@@ -22,6 +22,7 @@
 <br />
 
 ## Submission checklist
+<!--- Put an `x` in all the boxes that apply: -->
 - [ ] I have checked the project can be compiled
 - [ ] I have tested my changes and it worked as expected
 ### Patches (if there are any changes related to Harmony patches)
