@@ -104,6 +104,16 @@ namespace Exiled.Events.Handlers
         public static Event ReloadedPermissions { get; set; } = new();
 
         /// <summary>
+        /// Invoked before command being executed.
+        /// </summary>
+        public static Event<ExecutingCommandEventArgs> ExecutingCommand { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after command being executed.
+        /// </summary>
+        public static Event<ExecutedCommandEventArgs> ExecutedCommand { get; set; } = new();
+
+        /// <summary>
         /// Called before waiting for players.
         /// </summary>
         public static void OnWaitingForPlayers() => WaitingForPlayers.InvokeSafely();
@@ -195,5 +205,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="SelectingRespawnTeamEventArgs"/> instance.</param>
         public static void OnSelectingRespawnTeam(SelectingRespawnTeamEventArgs ev) => SelectingRespawnTeam.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before command being executed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExecutingCommandEventArgs"/> instance.</param>
+        public static void OnExecutingCommand(ExecutingCommandEventArgs ev) => ExecutingCommand.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after command being executed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExecutedCommandEventArgs"/> instance.</param>
+        public static void OnExecutedCommand(ExecutedCommandEventArgs ev) => ExecutedCommand.InvokeSafely(ev);
     }
 }

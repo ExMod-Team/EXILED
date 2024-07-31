@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="CommandProcessor.ProcessQuery"/> for command logging.
     /// </summary>
-    [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
+    // [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
     internal class CommandLogging
     {
         /// <summary>
