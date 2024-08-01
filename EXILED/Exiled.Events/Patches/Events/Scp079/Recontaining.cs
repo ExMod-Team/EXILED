@@ -10,6 +10,7 @@ namespace Exiled.Events.Patches.Events.Scp079
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp079;
     using Exiled.Events.Handlers;
@@ -31,11 +32,11 @@ namespace Exiled.Events.Patches.Events.Scp079
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             int index = 0;
-            List<CodeInstruction> newInstructions = new(instructions);
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             LocalBuilder ev = generator.DeclareLocal(typeof(RecontainingEventArgs));
 
-            Label proceed = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -52,14 +53,17 @@ namespace Exiled.Events.Patches.Events.Scp079
                 // if (!ev.IsAllowed) return;
                 new(OpCodes.Ldarg_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, Method(typeof(RecontainingEventArgs), nameof(RecontainingEventArgs.IsAllowed))),
-                new(OpCodes.Brtrue_S, proceed),
+                new(OpCodes.Brtrue_S, returnLabel),
 
                 new(OpCodes.Ret),
-
-                new CodeInstruction(OpCodes.Nop).WithLabels(proceed),
             });
 
-            return newInstructions;
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }
