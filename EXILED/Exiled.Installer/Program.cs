@@ -42,7 +42,7 @@ namespace Exiled.Installer
 
     internal static class Program
     {
-        private const long RepoID = 828620622;
+        private const long RepoID = 833723500;
         private const string ExiledAssetName = "exiled.tar.gz";
 
         // This is the lowest version the installer will check to install

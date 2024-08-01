@@ -13,7 +13,7 @@ defaults:
     working-directory: ./EXILED
 
 env:
-  EXILED_REFERENCES_URL: https://Exiled-Official.github.io/SL-References/Master.zip
+  EXILED_REFERENCES_URL: https://exmod-team.github.io/SL-References/Master.zip
   EXILED_REFERENCES_PATH: ${{ github.workspace }}/EXILED/References
 
 jobs:
