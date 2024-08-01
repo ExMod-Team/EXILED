@@ -29,8 +29,8 @@ namespace Exiled.Events.EventArgs.Player
         public ThrownProjectileEventArgs(ThrownProjectile projectile, Player player, ThrowableItem item)
         {
             Player = player;
-            Throwable = (Throwable)Item.Get(item);
-            Projectile = (Projectile)Pickup.Get(projectile);
+            Throwable = Item.Get<Throwable>(item);
+            Projectile = Pickup.Get<Projectile>(projectile);
         }
 
         /// <summary>

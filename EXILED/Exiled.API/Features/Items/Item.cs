@@ -25,7 +25,6 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Radio;
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
-    using InventorySystem.Items.ToggleableLights.Flashlight;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
@@ -33,7 +32,6 @@ namespace Exiled.API.Features.Items
     using UnityEngine;
 
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="ItemBase"/>.
@@ -218,6 +216,15 @@ namespace Exiled.API.Features.Items
                 _ => new Item(itemBase),
             };
         }
+
+        /// <summary>
+        /// Gets an existing <see cref="Item"/> or creates a new instance of one.
+        /// </summary>
+        /// <param name="itemBase">The <see cref="ItemBase"/> to convert into an item.</param>
+        /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
+        /// <returns>The item wrapper for the given <see cref="ItemBase"/>.</returns>
+        public static T Get<T>(ItemBase itemBase)
+            where T : Item => Get(itemBase) as T;
 
         /// <summary>
         /// Gets the Item belonging to the specified serial.
