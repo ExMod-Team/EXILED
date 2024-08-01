@@ -144,16 +144,7 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <param name="wearState">The desired wear state to calculate the charge for.</param>
         /// <returns>The charge value required to achieve the specified wear state.</returns>
-        public int GetCharge(JailbirdWearState wearState)
-        {
-            foreach (Keyframe keyframe in Base._deterioration._chargesToWearState.keys)
-            {
-                if (Base._deterioration.FloatToState(keyframe.value) == wearState)
-                    return Mathf.RoundToInt(keyframe.time);
-            }
-
-            throw new Exception("Wear state not found in charges to wear state mapping.");
-        }
+        public int GetCharge(JailbirdWearState wearState) => (int)wearState;
 
         /// <summary>
         /// Breaks the Jailbird.
