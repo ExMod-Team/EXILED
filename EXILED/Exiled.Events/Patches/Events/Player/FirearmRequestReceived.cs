@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Stloc_S, player.LocalIndex),
                 new(OpCodes.Brfalse_S, returnLabel),
 
-                // Firearm firearm = Item.Get<Firearm>(hub);
+                // Firearm firearm = (Firearm)Item.Get(hub);
                 // if (Firearm == null)
                 //     return;
                 new CodeInstruction(OpCodes.Ldloc_1),
