@@ -40,13 +40,13 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // RecontainingEventArgs ev = new(ReferenceHub "attacker")
+                // RecontainingEventArgs ev = new(this._activatorGlass)
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, PropertyGetter(typeof(Scp079Recontainer), nameof(Scp079Recontainer._activatorGlass))),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainingEventArgs))[0]),
                 new(OpCodes.Starg_S, ev.LocalIndex),
 
-                // Call event
+                // Scp079.OnRecontaining(ev)
                 new(OpCodes.Ldarg_S, ev.LocalIndex),
                 new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnRecontaining))),
 
