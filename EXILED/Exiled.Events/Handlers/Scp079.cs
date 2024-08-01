@@ -58,6 +58,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingSpeakerStatusEventArgs> ChangingSpeakerStatus { get; set; } = new();
 
         /// <summary>
+        /// Invoked before SCP-079 recontainment.
+        /// </summary>
+        public static Event<RecontainingEventArgs> Recontaining { get; set; } = new();
+
+        /// <summary>
         /// Invoked after SCP-079 recontainment.
         /// </summary>
         public static Event<RecontainedEventArgs> Recontained { get; set; } = new();
@@ -124,6 +129,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingSpeakerStatusEventArgs" /> instance.</param>
         public static void OnChangingSpeakerStatus(ChangingSpeakerStatusEventArgs ev) => ChangingSpeakerStatus.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before SCP-079 is recontained.
+        /// </summary>
+        /// <param name="ev">The <see cref="RecontainingEventArgs" /> instance.</param>
+        public static void OnRecontaining(RecontainingEventArgs ev) => Recontaining.InvokeSafely(ev);
 
         /// <summary>
         /// Called after SCP-079 is recontained.
