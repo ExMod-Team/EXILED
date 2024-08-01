@@ -53,9 +53,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                 // if (!ev.IsAllowed) return;
                 new(OpCodes.Ldarg_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, Method(typeof(RecontainingEventArgs), nameof(RecontainingEventArgs.IsAllowed))),
-                new(OpCodes.Brtrue_S, returnLabel),
-
-                new(OpCodes.Ret),
+                new(OpCodes.Brfalse_S, returnLabel),
             });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
