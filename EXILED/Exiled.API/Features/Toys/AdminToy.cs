@@ -46,7 +46,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets a list of all <see cref="AdminToy"/>'s on the server.
         /// </summary>
-        public static IEnumerable<AdminToy> List => BaseToAdminToy.Values;
+        public static IReadOnlyCollection<AdminToy> List => BaseToAdminToy.Values;
 
         /// <summary>
         /// Gets the original <see cref="AdminToys.AdminToyBase"/>.
