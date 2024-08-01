@@ -125,7 +125,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets all <see cref="AdminToy"/> objects.
         /// </summary>
-        public static ReadOnlyCollection<AdminToy> Toys => AdminToy.BaseToAdminToy.Values.ToList().AsReadOnly();
+        public static ReadOnlyCollection<AdminToy> Toys => AdminToy.BaseToAdminToy.Values.ToList().AsReadOnly(); // TODO: Obsolete it and make people use AdminToy.List
 
         /// <summary>
         /// Gets or sets the current seed of the map.
