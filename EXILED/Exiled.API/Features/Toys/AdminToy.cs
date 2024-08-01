@@ -142,7 +142,22 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> instance.</param>
         /// <returns>The corresponding <see cref="AdminToy"/> instance.</returns>
-        public static AdminToy Get(AdminToyBase adminToyBase) => Map.Toys.FirstOrDefault(x => x.AdminToyBase == adminToyBase);
+        public static AdminToy Get(AdminToyBase adminToyBase)
+        {
+            if (adminToyBase == null)
+                return null;
+
+            if (BaseToAdminToy.TryGetValue(adminToyBase, out AdminToy adminToy))
+                return adminToy;
+
+            return adminToyBase switch
+            {
+                LightSourceToy lightSourceToy => new Light(lightSourceToy),
+                PrimitiveObjectToy primitiveObjectToy => new Primitive(primitiveObjectToy),
+                ShootingTarget shootingTarget => new ShootingTargetToy(shootingTarget),
+                _ => throw new System.NotImplementedException()
+            };
+        }
 
         /// <summary>
         /// Spawns the toy into the game. Use <see cref="UnSpawn"/> to remove it.
