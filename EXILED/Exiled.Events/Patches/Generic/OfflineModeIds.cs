@@ -69,17 +69,22 @@ namespace Exiled.Events.Patches.Generic
                 index,
                 new[]
                 {
+                    // if (Player.PlayersUserIds.ContainsKey(this.UserId)) goto skip;
                     new(OpCodes.Ldsfld, Field(typeof(PluginAPI.Core.Player), nameof(PluginAPI.Core.Player.PlayersUserIds))),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId))),
                     new(OpCodes.Callvirt, Method(typeof(Dictionary<string, IGameComponent>), nameof(Dictionary<string, IGameComponent>.ContainsKey))),
                     new(OpCodes.Brtrue_S, skipLabel),
+
+                    // Player.PlayersUserIds.Add(this.UserId, this._hub);
                     new(OpCodes.Ldsfld, Field(typeof(PluginAPI.Core.Player), nameof(PluginAPI.Core.Player.PlayersUserIds))),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId))),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager._hub))),
                     new(OpCodes.Callvirt, Method(typeof(Dictionary<string, IGameComponent>), nameof(Dictionary<string, IGameComponent>.Add))),
+
+                    // skip:
                     new CodeInstruction(OpCodes.Nop).WithLabels(skipLabel),
                 });
 
@@ -139,6 +144,7 @@ namespace Exiled.Events.Patches.Generic
                 index,
                 new[]
                 {
+                    // EventManager.ExecuteEvent(new PlayerJoinedEvent(this._hub));
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldfld, Field(typeof(NicknameSync), nameof(NicknameSync._hub))),
                     new CodeInstruction(OpCodes.Call, Method(typeof(OfflineModeJoin), nameof(ExecuteNwEvent))),

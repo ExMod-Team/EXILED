@@ -68,11 +68,11 @@ namespace Exiled.Events.Patches.Events.Player
             const int offset = 1;
             int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt && x.OperandIs(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.SyncServerCmdBinding)))) + offset;
 
-            // Verified.PlayerVerified(this._hub);
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // Verified.PlayerVerified(this._hub);
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Ldfld, Field(typeof(NicknameSync), nameof(NicknameSync._hub))),
                     new CodeInstruction(OpCodes.Call, Method(typeof(Verified), nameof(Verified.PlayerVerified))),
