@@ -18,7 +18,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <summary>
         /// Initializes a new instance of the <see cref="RecontainingEventArgs" /> class.
         /// </summary>
-        /// <param name="recontainer">The <see cref="BreakableWindow"/> istance.</param>
+        /// <param name="recontainer">The <see cref="BreakableWindow"/> instance.</param>
         public RecontainingEventArgs(BreakableWindow recontainer)
         {
             Recontainer = Player.Get(recontainer?.LastAttacker.Hub);
