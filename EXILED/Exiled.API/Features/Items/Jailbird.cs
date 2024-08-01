@@ -136,7 +136,7 @@ namespace Exiled.API.Features.Items
                     return keyframe.time;
             }
 
-            throw new Exception("Wear state not found in charges to wear state mapping.");
+            throw new Exception("Wear state not found in damage to wear state mapping.");
         }
 
         /// <summary>
