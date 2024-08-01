@@ -341,11 +341,11 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets an existing <see cref="Pickup"/> or creates a new instance of one.
         /// </summary>
-        /// <param name="itemBase">The <see cref="ItemPickupBase"/> to convert into an pickup.</param>
+        /// <param name="pickupBase">The <see cref="ItemPickupBase"/> to convert into an pickup.</param>
         /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
         /// <returns>The pickup wrapper for the given <see cref="ItemPickupBase"/>.</returns>
-        public static T Get<T>(ItemPickupBase itemBase)
-            where T : Pickup => Get(itemBase) as T;
+        public static T Get<T>(ItemPickupBase pickupBase)
+            where T : Pickup => Get(pickupBase) as T;
 
         /// <summary>
         /// Gets the <see cref="Pickup"/> given a <see cref="Serial"/>.
