@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                 // RecontainingEventArgs ev = new(ReferenceHub "attacker")
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, PropertyGetter(typeof(Scp079Recontainer), nameof(Scp079Recontainer._activatorGlass))),
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainingEventArgs))[1]),
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainingEventArgs))[0]),
                 new(OpCodes.Starg_S, ev.LocalIndex),
 
                 // Call event

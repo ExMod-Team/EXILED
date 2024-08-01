@@ -18,19 +18,10 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <summary>
         /// Initializes a new instance of the <see cref="RecontainingEventArgs" /> class.
         /// </summary>
-        /// <param name="recontainer">The player that triggered the SCP-079 recontaining event.</param>
-        public RecontainingEventArgs(ReferenceHub recontainer)
-        {
-            Recontainer = Player.Get(recontainer);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RecontainingEventArgs" /> class.
-        /// </summary>
         /// <param name="recontainer">The <see cref="BreakableWindow"/> istance.</param>
         public RecontainingEventArgs(BreakableWindow recontainer)
-            : this(recontainer.LastAttacker.Hub)
         {
+            Recontainer = Player.Get(recontainer?.LastAttacker.Hub);
         }
 
         /// <summary>
