@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using Exiled.API.Features.Pickups;
@@ -61,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Callvirt, PropertyGetter(typeof(List<RoomIdentifier>), "Item")),
 
                 new(OpCodes.Ldloc_S, pickup.LocalIndex),
-                new(OpCodes.Call, Method(typeof(Pickup), nameof(Pickup.Get), new[] { typeof(ItemPickupBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Pickup)).First(x => !x.IsGenericMethod && x.Name is nameof(Pickup.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemPickupBase))),
 
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp244SpawningEventArgs))[0]),
                 new(OpCodes.Dup),

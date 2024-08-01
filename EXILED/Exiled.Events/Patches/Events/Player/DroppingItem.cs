@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
@@ -119,7 +120,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                 // Pickup::Get(ItemPickupBase)
                 new(OpCodes.Ldloc_1),
-                new(OpCodes.Call, Method(typeof(Pickup), nameof(Pickup.Get), new[] { typeof(ItemPickupBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).First(x => !x.IsGenericMethod && x.Name is nameof(Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(InventorySystem.Items.ItemBase))),
 
                 // ev.IsThrown
                 new(OpCodes.Ldloc_S, ev.LocalIndex),

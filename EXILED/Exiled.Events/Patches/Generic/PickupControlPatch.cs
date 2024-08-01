@@ -9,6 +9,7 @@ namespace Exiled.Events.Patches.Generic
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using API.Features.Pickups;
@@ -48,11 +49,11 @@ namespace Exiled.Events.Patches.Generic
             {
                 // pickup = Pickup.Get(pickupBase);
                 new(OpCodes.Ldloc_0),
-                new(OpCodes.Call, Method(typeof(Pickup), nameof(Pickup.Get), new[] { typeof(ItemPickupBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Pickup)).First(x => !x.IsGenericMethod && x.Name is nameof(Pickup.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemPickupBase))),
 
                 // Item.Get(itemBase);
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Call, Method(typeof(Item), nameof(Item.Get), new[] { typeof(ItemBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).First(x => !x.IsGenericMethod && x.Name is nameof(Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemBase))),
 
                 // pickup.ReadItemInfo(item);
                 new(OpCodes.Callvirt, Method(typeof(Pickup), nameof(Pickup.ReadItemInfo))),
@@ -79,7 +80,7 @@ namespace Exiled.Events.Patches.Generic
             {
                 // Pickup.Get(pickupBase)
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Call, Method(typeof(Pickup), nameof(Pickup.Get), new[] { typeof(ItemPickupBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Pickup)).First(x => !x.IsGenericMethod && x.Name is nameof(Pickup.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemPickupBase))),
                 new(OpCodes.Pop),
             });
 
