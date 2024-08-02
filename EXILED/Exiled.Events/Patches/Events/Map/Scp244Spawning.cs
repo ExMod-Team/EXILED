@@ -36,49 +36,48 @@ namespace Exiled.Events.Patches.Events.Map
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
-
             LocalBuilder pickup = generator.DeclareLocal(typeof(ItemPickupBase));
 
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Dup);
+            Label continueLabel = generator.DefineLabel();
 
-            newInstructions.RemoveRange(index, 1);
-
-            int offset = 1;
-            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Dup) + offset;
-            newInstructions.InsertRange(index, new CodeInstruction[]
-            {
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, pickup.LocalIndex),
-            });
-
-            offset = -2;
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
+            int offset = -2;
+            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
-                new CodeInstruction(OpCodes.Ldsfld, Field(typeof(Scp244Spawner), nameof(Scp244Spawner.CompatibleRooms))).MoveLabelsFrom(newInstructions[index]),
+                // save Pickup from the stack
+                new CodeInstruction(OpCodes.Stloc_S, pickup.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+
+                // Scp244Spawner.CompatibleRooms[num]
+                new(OpCodes.Ldsfld, Field(typeof(Scp244Spawner), nameof(Scp244Spawner.CompatibleRooms))),
                 new(OpCodes.Ldloc_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(List<RoomIdentifier>), "Item")),
 
-                new(OpCodes.Ldloc_S, pickup.LocalIndex),
-                new(OpCodes.Call, GetDeclaredMethods(typeof(Pickup)).First(x => !x.IsGenericMethod && x.Name is nameof(Pickup.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemPickupBase))),
+                // scp244DeployablePickup
+                new(OpCodes.Ldloc_2),
 
+                // Scp244SpawningEventArgs ev = new(Room, Scp244DeployablePickup)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp244SpawningEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnScp244Spawning))),
 
+                // if (ev.IsAllowed) goto continueLabel;
                 new(OpCodes.Call, PropertyGetter(typeof(Scp244SpawningEventArgs), nameof(Scp244SpawningEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, continueLabel),
 
-                new(OpCodes.Ldloc_S, pickup.LocalIndex),
+                // scp244DeployablePickup.gameObject.Destroy()
+                // return;
+                new(OpCodes.Ldloc_2),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ItemPickupBase), nameof(ItemPickupBase.gameObject))),
                 new(OpCodes.Call, Method(typeof(NetworkServer), nameof(NetworkServer.Destroy))),
                 new(OpCodes.Ret),
 
-                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
-                new(OpCodes.Ldloc_S, pickup.LocalIndex),
+                // load pickup back into the stack
+                new CodeInstruction(OpCodes.Ldloc_S, pickup.LocalIndex).WithLabels(continueLabel),
             });
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                API.Features.Log.Info($"[{z}] {newInstructions[z].opcode} {newInstructions[z].operand} : {newInstructions[z].labels.Count}");
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
