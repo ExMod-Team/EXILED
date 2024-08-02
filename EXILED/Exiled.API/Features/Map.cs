@@ -28,9 +28,6 @@ namespace Exiled.API.Features
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using MapGeneration.Distributors;
-    using Mirror;
-    using PlayerRoles;
-    using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.Ragdolls;
     using RelativePositioning;
@@ -39,8 +36,6 @@ namespace Exiled.API.Features
     using Utils.Networking;
 
     using Object = UnityEngine.Object;
-    using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
-    using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
 
     /// <summary>
     /// A set of tools to easily handle the in-game map.
