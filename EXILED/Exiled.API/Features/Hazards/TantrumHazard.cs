@@ -50,7 +50,7 @@ namespace Exiled.API.Features.Hazards
         public new TantrumEnvironmentalHazard Base { get; }
 
         /// <inheritdoc />
-        public override HazardType Type { get; } = HazardType.Tantrum;
+        public override HazardType Type => HazardType.Tantrum;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not sizzle should be played.

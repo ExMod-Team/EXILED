@@ -31,6 +31,6 @@ namespace Exiled.API.Features.Hazards
         public new SinkholeEnvironmentalHazard Base { get; }
 
         /// <inheritdoc />
-        public override HazardType Type { get; } = HazardType.Sinkhole;
+        public override HazardType Type => HazardType.Sinkhole;
     }
 }

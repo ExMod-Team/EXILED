@@ -47,7 +47,7 @@ namespace Exiled.API.Features.Hazards
         public new Scp939AmnesticCloudInstance Base { get; }
 
         /// <inheritdoc />
-        public override HazardType Type { get; } = HazardType.AmnesticCloud;
+        public override HazardType Type => HazardType.AmnesticCloud;
 
         /// <summary>
         /// Gets the <see cref="Scp939AmnesticCloudAbility"/> for this instance.
