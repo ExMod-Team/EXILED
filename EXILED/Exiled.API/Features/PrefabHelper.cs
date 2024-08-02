@@ -46,7 +46,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="type">The <see cref="PrefabType"/> to get prefab of.</param>
         /// <typeparam name="T">The <see cref="Component"/> to get.</typeparam>
-        /// <returns>Returns the prefab component as <see cref="T"/>.</returns>
+        /// <returns>Returns the prefab component as {T}.</returns>
         public static T GetPrefab<T>(PrefabType type)
             where T : Component
         {
