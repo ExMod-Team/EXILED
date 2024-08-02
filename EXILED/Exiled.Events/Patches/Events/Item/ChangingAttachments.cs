@@ -68,10 +68,8 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Callvirt, PropertyGetter(typeof(NetworkIdentity), nameof(NetworkIdentity.netId))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(uint) })),
 
-                    // Item::Get(firearm)
+                    // firearm
                     new(OpCodes.Ldloc_1),
-                    new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).First(x => !x.IsGenericMethod && x.Name is nameof(Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(InventorySystem.Items.ItemBase))),
-                    new(OpCodes.Castclass, typeof(Firearm)),
 
                     // AttachmentsChangeRequest::AttachmentsCode
                     new(OpCodes.Ldarg_1),
@@ -80,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Item
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // ChangingAttachmentsEventArgs ev = new ChangingAttachmentsEventArgs(__ARGS__)
+                    // ChangingAttachmentsEventArgs ev = new ChangingAttachmentsEventArgs(Player, Firearm, uint, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingAttachmentsEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
