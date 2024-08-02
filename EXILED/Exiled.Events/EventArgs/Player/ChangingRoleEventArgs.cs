@@ -15,7 +15,6 @@ namespace Exiled.Events.EventArgs.Player
     using Exiled.API.Features.Pools;
     using Interfaces;
     using InventorySystem;
-    using InventorySystem.Configs;
     using PlayerRoles;
 
     /// <summary>
