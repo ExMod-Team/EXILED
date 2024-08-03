@@ -546,7 +546,7 @@ namespace Exiled.CustomRoles.API.Features
                     () =>
                     {
                         Log.Debug($"{Name}: Adding Ammo to {player.Nickname} inventory.");
-                        foreach (AmmoType type in Enum.GetValues(typeof(AmmoType)))
+                        foreach (AmmoType type in EnumUtils<AmmoType>.Values)
                         {
                             if (type != AmmoType.None)
                                 player.SetAmmo(type, Ammo.ContainsKey(type) ? Ammo[type] == ushort.MaxValue ? InventoryLimits.GetAmmoLimit(type.GetItemType(), player.ReferenceHub) : Ammo[type] : (ushort)0);
