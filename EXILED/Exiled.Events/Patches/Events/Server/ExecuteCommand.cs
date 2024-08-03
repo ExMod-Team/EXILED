@@ -165,6 +165,7 @@ namespace Exiled.Events.Patches.Events.Server
             newInstructions.InsertRange(index, new[]
             {
                 new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+                new(OpCodes.Dup),
 
                 new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnExecutingCommand))),
 
@@ -179,6 +180,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Ldstr, "#Command execution was aborted by a plugin."),
                 new(OpCodes.Call, Method(typeof(string), nameof(string.Concat), new[] { typeof(string), typeof(string) })),
                 new(OpCodes.Ldc_I4_0),
+                new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Ldstr, string.Empty),
                 new(OpCodes.Call, Method(typeof(CommandSender), nameof(CommandSender.RaReply))),
 
