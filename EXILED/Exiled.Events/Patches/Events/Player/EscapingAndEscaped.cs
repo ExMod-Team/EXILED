@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Escaping.cs" company="Exiled Team">
+// <copyright file="EscapingAndEscaped.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -29,11 +29,12 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Escape.ServerHandlePlayer(ReferenceHub)"/> for <see cref="Handlers.Player.Escaping" />.
+    /// Patches <see cref="Escape.ServerHandlePlayer(ReferenceHub)"/> for <see cref="Handlers.Player.Escaping" /> and <see cref="Handlers.Player.Escaped"/>.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaping))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaped))]
     [HarmonyPatch(typeof(Escape), nameof(Escape.ServerHandlePlayer))]
-    internal static class Escaping
+    internal static class EscapingAndEscaped
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -98,8 +99,27 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // GrantAllTickets(ev)
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(labels),
-                    new(OpCodes.Call, Method(typeof(Escaping), nameof(GrantAllTickets))),
+                    new(OpCodes.Call, Method(typeof(EscapingAndEscaped), nameof(GrantAllTickets))),
                 });
+
+            newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
+            {
+                // loading EscapingEventArgs instance 2 times
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+
+                // ev.Player
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Player))),
+
+                // ev.EscapeScenario
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.EscapeScenario))),
+
+                // EscapedEventArgs ev2 = new(ev.Player, ev.EscapeScenario);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapedEventArgs))[0]),
+
+                // Handlers.Player.OnEscaped(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnEscaped))),
+            });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
