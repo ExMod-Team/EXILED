@@ -21,7 +21,8 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="recontainer">The <see cref="BreakableWindow"/> instance.</param>
         public RecontainingEventArgs(BreakableWindow recontainer)
         {
-            Recontainer = Player.Get(recontainer?.LastAttacker.Hub);
+            Recontainer = Player.Get(recontainer.LastAttacker.Hub);
+            IsAutomatic = recontainer.LastAttacker.IsSet;
         }
 
         /// <summary>
@@ -36,6 +37,6 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <summary>
         /// Gets a value indicating whether or not the recontained has been made automatically or by triggering the proccess.
         /// </summary>
-        public bool IsAutomatic => Recontainer is null;
+        public bool IsAutomatic { get; }
     }
 }
