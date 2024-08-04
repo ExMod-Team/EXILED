@@ -1269,7 +1269,10 @@ namespace Exiled.API.Features
             if (UnverifiedPlayers.TryGetValue(gameObject, out player))
                 return player;
 
-            return new(gameObject);
+            if (ReferenceHub.TryGetHub(gameObject, out ReferenceHub hub))
+                return new(hub);
+
+            return null;
         }
 
         /// <summary>
