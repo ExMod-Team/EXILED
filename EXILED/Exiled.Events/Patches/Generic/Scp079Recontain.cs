@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Generic.Scp079API
 
     /// <summary>
     /// Patches <see cref="Scp079Recontainer.OnServerRoleChanged(ReferenceHub, PlayerRoles.RoleTypeId, PlayerRoles.RoleChangeReason)"/>.
-    /// Adds the <see cref="Exiled.Events.Config.ShouldScp079RecontainedWhenNoScps" /> support.
+    /// Adds the <see cref="Exiled.Events.Config.ShouldRecontainScp079IfNoScpsLeft" /> support.
     /// </summary>
     [HarmonyPatch(typeof(Scp079Recontainer), nameof(Scp079Recontainer.OnServerRoleChanged))]
     internal class Scp079Recontain
