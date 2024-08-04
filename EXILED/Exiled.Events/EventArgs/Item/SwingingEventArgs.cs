@@ -25,7 +25,7 @@ namespace Exiled.Events.EventArgs.Item
         public SwingingEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase swingItem, bool isAllowed = true)
         {
             Player = Player.Get(player);
-            Item = Item.Get(swingItem);
+            Jailbird = (Jailbird)Item.Get(swingItem);
             IsAllowed = isAllowed;
         }
 
@@ -35,9 +35,14 @@ namespace Exiled.Events.EventArgs.Item
         public Player Player { get; }
 
         /// <summary>
+        /// Gets the <see cref="API.Features.Items.Jailbird"/> that is being swung.
+        /// </summary>
+        public Jailbird Jailbird { get; }
+
+        /// <summary>
         /// Gets the <see cref="API.Features.Items.Item"/> that is being swung.
         /// </summary>
-        public Item Item { get; }
+        public Item Item => Jailbird;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the item can be swung.
