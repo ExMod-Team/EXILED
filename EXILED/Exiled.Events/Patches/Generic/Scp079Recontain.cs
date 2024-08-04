@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Generic.Scp079API
                     //     return;
                     new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Exiled.Events.Events), nameof(Exiled.Events.Events.Instance))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Exiled.Events.Events), nameof(Exiled.Events.Events.Config))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Exiled.Events.Config), nameof(Exiled.Events.Config.ShouldScp079RecontainedWhenNoScps))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Exiled.Events.Config), nameof(Exiled.Events.Config.ShouldRecontainScp079IfNoScpsLeft))),
                     new(OpCodes.Brfalse_S, ret),
                 });
 
