@@ -506,12 +506,7 @@ namespace Exiled.API.Features
         public Vector3 Position
         {
             get => Transform.position;
-            set
-            {
-                ReferenceHub.TryOverridePosition(value, Vector3.zero);
-                if (Role is FpcRole fpcRole)
-                    fpcRole.RelativePosition = new(value);
-            }
+            set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
         }
 
         /// <summary>

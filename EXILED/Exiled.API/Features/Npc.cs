@@ -17,7 +17,6 @@ namespace Exiled.API.Features
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Components;
-
     using Footprinting;
 
     using MEC;
@@ -51,6 +50,17 @@ namespace Exiled.API.Features
         /// Gets a list of Npcs.
         /// </summary>
         public static new List<Npc> List => Player.List.OfType<Npc>().ToList();
+
+        public new Vector3 Position
+        {
+            get => base.Position;
+            set
+            {
+                base.Position = value;
+                if (Role is Roles.FpcRole fpcRole)
+                    fpcRole.RelativePosition = new(value);
+            }
+        }
 
         /// <summary>
         /// Retrieves the NPC associated with the specified ReferenceHub.
