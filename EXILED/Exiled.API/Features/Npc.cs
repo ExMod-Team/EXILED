@@ -51,6 +51,9 @@ namespace Exiled.API.Features
         /// </summary>
         public static new List<Npc> List => Player.List.OfType<Npc>().ToList();
 
+        /// <summary>
+        /// Gets or sets the player's position.
+        /// </summary>
         public new Vector3 Position
         {
             get => base.Position;
