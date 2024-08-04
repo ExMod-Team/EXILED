@@ -1,0 +1,60 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "**/*.csproj"
+          ],
+          "exclude": [
+            "**/bin/**",
+            "**/obj/**"
+          ],
+          "src": "../"
+        }
+      ],
+      "dest": "api",
+      "filter": "filterConfig.yml",
+      "namespaceLayout": "nested",
+    }
+  ],
+  "build": {
+     "globalMetadata": {
+      "_appTitle": "EXILED",
+      "_appLogoPath": "assets/exiled.png",
+      "_appFaviconPath": "assets/favicon.ico",
+      "_enableSearch": true,
+      "_lang": "en",
+      "_gitContribute": {
+        "repo": "https://github.com/Exiled-Official/EXILED",
+        "branch": "dev"
+      }
+    },
+    "template": ["default", "modern"],
+    "content": [
+      {
+        "files": [
+          "api/**.yml",
+          "api/index.md",
+          "toc.yml",
+          "*.md"
+        ]
+      },
+      {
+        "files": [
+          "articles/toc.yml",
+          "articles/**.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "assets/**"
+        ]
+      }
+    ],
+    "dest": "_site",
+    "docfx": "SGVsbG8sIHRoaXMgd2FzIG1hZGUgYnkgamVzdXNxYywgaG9wZSB5b3UgYXJlIG5vdCBjb3B5aW5nIHRoaXMgYmVjYXVzZSBpdCB3b3VsZCBiZSBoaWxhcmlvdXMg8J+YrfCfmK3wn5it8J+YrQ=="
+  }
+}

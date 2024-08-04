@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Item
 {
+    using System;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
@@ -26,7 +28,9 @@ namespace Exiled.Events.EventArgs.Item
         {
             Player = Player.Get(player);
             Item = Item.Get(swingItem);
+#pragma warning disable CS0618
             IsAllowed = isAllowed;
+#pragma warning restore CS0618
         }
 
         /// <summary>
@@ -42,6 +46,11 @@ namespace Exiled.Events.EventArgs.Item
         /// <summary>
         /// Gets or sets a value indicating whether or not the Jailbird can be charged.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed
+        {
+            get;
+            [Obsolete("This event cannot be denied as it will cause desync.")]
+            set;
+        }
     }
 }

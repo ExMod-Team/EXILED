@@ -1,0 +1,21 @@
+- name: Introduction
+  href: index.md
+- name: Installation
+  href: installation/index.md
+  items:
+    - name: Automatic (Linux)
+      href: installation/automatic/linux.md
+    - name: Automatic (Windows)
+      href: installation/automatic/windows.md
+    - name: Manual
+      href: installation/manual.md
+- name: Plugin Development
+  items:
+    - name: Plugin Structure
+      href: plugins/structure.md
+    - name: More Effective Coroutines
+      href: plugins/mec.md
+    - name: Events
+      href: plugins/events.md
+- name: Contributing
+  href: contributing/index.md
