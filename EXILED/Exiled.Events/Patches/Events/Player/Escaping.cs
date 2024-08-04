@@ -13,7 +13,6 @@ namespace Exiled.Events.Patches.Events.Player
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Enums;
@@ -23,7 +22,7 @@ namespace Exiled.Events.Patches.Events.Player
     using EventArgs.Player;
     using Exiled.Events.Attributes;
     using HarmonyLib;
-
+    using PlayerRoles.FirstPersonControl;
     using Respawning;
 
     using static HarmonyLib.AccessTools;
@@ -94,7 +93,7 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions.RemoveRange(index, 3);
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // GrantAllTickets(ev)
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(labels),
@@ -128,18 +127,22 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int e = 0;
+            LocalBuilder fpcRole = generator.DeclareLocal(typeof(FpcStandardRoleBase));
+
+            // replace HumanRole to FpcStandardRoleBase
+            newInstructions.Find(x => x.opcode == OpCodes.Isinst).operand = typeof(FpcStandardRoleBase);
+
+            // after this index all invalid exit are considered Custom
+            int customExit = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
             for (int i = 0; i < newInstructions.Count; i++)
             {
-                CodeInstruction codeInstruction = newInstructions[i];
-                if (codeInstruction.opcode == OpCodes.Ldc_I4_0)
-                {
-                    e++;
-                    if (e > 3)
-                    {
-                        newInstructions[i].opcode = OpCodes.Ldc_I4_5;
-                    }
-                }
+                OpCode opcode = newInstructions[i].opcode;
+                if (opcode == OpCodes.Stloc_0)
+                    newInstructions[i] = new CodeInstruction(OpCodes.Stloc_S, fpcRole.LocalIndex).WithLabels(newInstructions[i].labels);
+                else if (opcode == OpCodes.Ldloc_0)
+                    newInstructions[i] = new CodeInstruction(OpCodes.Ldloc_S, fpcRole.LocalIndex).WithLabels(newInstructions[i].labels);
+                else if (opcode == OpCodes.Ldc_I4_0 && i > customExit)
+                    newInstructions[i].opcode = OpCodes.Ldc_I4_5;
             }
 
             for (int z = 0; z < newInstructions.Count; z++)
