@@ -28,7 +28,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="Scp079Camera"/>s and their corresponding <see cref="Camera"/>.
         /// </summary>
-        internal static readonly Dictionary<Scp079Camera, Camera> Camera079ToCamera = new(250);
+        internal static readonly Dictionary<Scp079Camera, Camera> Camera079ToCamera = new(250, new ComponentsEqualityComparer());
 
         private static readonly Dictionary<string, CameraType> NameToCameraType = new()
         {

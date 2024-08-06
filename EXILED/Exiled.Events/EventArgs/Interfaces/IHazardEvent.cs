@@ -10,7 +10,7 @@ namespace Exiled.Events.EventArgs.Interfaces
     using Exiled.API.Features.Hazards;
 
     /// <summary>
-    /// Event args for all <see cref="Hazard"/> related events.
+    /// Event args for all <see cref="API.Features.Hazards.Hazard"/> related events.
     /// </summary>
     public interface IHazardEvent : IExiledEvent
     {
