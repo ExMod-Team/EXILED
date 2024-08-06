@@ -1,40 +1,36 @@
 Documentation:
 - changed-files:
-  - any-glob-to-any-file: docs/**
+  - any-glob-to-any-file: docs/** # Any modifications to Documentation
+  - any-glob-to-any-file: EXILED/Localization/** # Any modifications to Localization
 
-NuGet:
+GitHub:
 - changed-files:
-  - any-glob-to-any-file: '**/*.nuspec'
-
-Scripts: # Add the 'Scripts' label
-- changed-files:
+  - any-glob-to-any-file: '**/*.nuspec' #NuGet
   - any-glob-to-any-file: '**/*.ps1' # Windows
   - any-glob-to-any-file: '**/*.sh' # Linux
+  - any-glob-to-any-file: .github/** # Any modifications to github related files
 
-regarding-events: # Add the 'Events' label
+Events: # Add the 'Events' label
 - changed-files:
   - any-glob-to-any-file: EXILED/Exiled.Events/** # Any Modifications to events
+  - all-globs-to-all-files: '!EXILED/Exiled.Events/Patches/**/*' # Exept modifications to transpiler files
 
-regarding-api: # Add the 'API' label
+API: # Add the 'API' label
 - changed-files:
   - any-glob-to-any-file: EXILED/Exiled.API/** # Any modifications to the API
 
-regarding-transpiler: # Add the 'transpiler' label
+Transpiler: # Add the 'transpiler' label
 - changed-files:
   - any-glob-to-any-file: EXILED/Exiled.Events/Patches/**/* # Any modifications to transpiler files
 
+Base-Game-Bug:
+- changed-files:
+  - any-glob-to-any-file: EXILED/Exiled.Events/Patches/Fixes/**/* # Any modifications to transpiler fixes files
+
 CustomModules: # Add the 'CustomModules' label
 - changed-files:
-  - any-glob-to-any-file: EXILED/Exiled.CustomModules/** # Any modifications to CustomModules
+  - any-glob-to-any-file: EXILED/Exiled.Custom*/** # Any modifications to Exiled.Custom* file
 
 Installer: # Add the 'Installer' label
 - changed-files:
   - any-glob-to-any-file: EXILED/Exiled.Installer/** # Any modifications to the Installer
-
-Localization: # Add the 'Localization' label
-- changed-files:
-  - any-glob-to-any-file: EXILED/Localization/** # Any modifications to Localization
-
-GitHub: # Add the 'GitHub' label
-- changed-files:
-  - any-glob-to-any-file: .github/** # Any modifications to github related files
