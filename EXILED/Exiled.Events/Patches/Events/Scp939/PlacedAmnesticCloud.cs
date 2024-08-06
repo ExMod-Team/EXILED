@@ -45,7 +45,7 @@ namespace Exiled.Events.Patches.Events.Scp939
                     new CodeInstruction(OpCodes.Stloc_S, cloud),
                 });
 
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret);
+            index = newInstructions.Count - 1;
 
             // Scp939.OnPlacedAmnesticCloud(new PlacedAmnesticCloudEventArgs(this.Owner, cloud));
             newInstructions.InsertRange(
