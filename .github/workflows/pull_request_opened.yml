@@ -20,3 +20,10 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         configuration-path: .github/labeler.yml
         sync-labels: true
+  assign-author:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      
+    steps:
+      - uses: toshimaru/auto-author-assign@v2.1.1
