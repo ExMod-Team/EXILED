@@ -57,11 +57,6 @@ namespace Exiled.API.Features
         /// </summary>
         internal static readonly List<PocketDimensionTeleport> TeleportsValue = new(8);
 
-        /// <summary>
-        /// A list of <see cref="AdminToy"/>s on the map.
-        /// </summary>
-        internal static readonly List<AdminToy> ToysValue = new();
-
         private static TantrumEnvironmentalHazard tantrumPrefab;
         private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
 
@@ -130,7 +125,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets all <see cref="AdminToy"/> objects.
         /// </summary>
-        public static ReadOnlyCollection<AdminToy> Toys { get; } = ToysValue.AsReadOnly();
+        public static ReadOnlyCollection<AdminToy> Toys => AdminToy.BaseToAdminToy.Values.ToList().AsReadOnly(); // TODO: Obsolete it and make people use AdminToy.List
 
         /// <summary>
         /// Gets or sets the current seed of the map.
