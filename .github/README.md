@@ -30,85 +30,85 @@ Localized READMEs
   <div>
     <img src="https://flagsapi.com/US/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/README.md">English</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/README.md">English</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/RU/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-Русский.md">Русский</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-Русский.md">Русский</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/CN/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-中文.md">中文</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-中文.md">中文</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/ES/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-ES.md">Español</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-ES.md">Español</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/PL/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-PL.md">Polski</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-PL.md">Polski</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/BR/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-BR.md">Português-BR</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-BR.md">Português-BR</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/IT/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-IT.md">Italiano</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-IT.md">Italiano</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/CZ/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-CS.md">Čeština</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-CS.md">Čeština</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/DK/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-DK.md">Dansk</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-DK.md">Dansk</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/TR/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-TR.md">Türkçe</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-TR.md">Türkçe</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/DE/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-DE.md">German</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-DE.md">German</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/FR/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-FR.md">Français</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-FR.md">Français</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/KR/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-KR.md">한국어</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-KR.md">한국어</a>
   </div>
   <br>
   <div>
     <img src="https://flagsapi.com/TH/flat/64.png" height=30>
     <br>
-    <a href="https://github.com/Exiled-Official/EXILED/blob/master/.github/documentation/localization/README-ไทย.md">ไทย</a>
+    <a href="https://github.com/ExMod-Team/EXILED/blob/master/.github/documentation/localization/README-ไทย.md">ไทย</a>
   </div>
 </div>
 
