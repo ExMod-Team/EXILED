@@ -4,55 +4,65 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches:
-      - master
 
-defaults:
-  run:
-    working-directory: ./EXILED
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  actions: read
+  pages: write
+  id-token: write
 
 env:
-  EXILED_REFERENCES_URL: https://misaka-zerotwo.github.io/SL-References/Master.zip
+  EXILED_REFERENCES_URL: https://exmod-team.github.io/SL-References/Master.zip
   EXILED_REFERENCES_PATH: ${{ github.workspace }}/EXILED/References
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Important due to https://t.ly/5DZAy
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
   
 jobs:
-  build_and_publish_docs:
-    runs-on: windows-latest
-    
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
-        
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v1.7.2
+  publish-docs:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
-      - name: Setup Nuget
-        uses: iRebbok/setup-nuget@master
-        
-      - name: Get references
-        shell: pwsh
-        run: |
-          Invoke-WebRequest -Uri ${{ EXILED_REFERENCES_URL }} -OutFile ${{ github.workspace }}/EXILED/References.zip
-          Expand-Archive -Path References.zip -DestinationPath ${{ env.EXILED_REFERENCES_PATH }}
-        
-      - name: Download DocFX
-        uses: crazy-max/ghaction-chocolatey@v1
-        with:
-          args: install docfx --pre
-          
-      - name: Run DocFX
-        env:
-          EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
-        run: docfx docfx.json; docfx docfx.json
-        
-      - name: Deploy to GitHub Pages
-        if: github.event_name == 'push' && success() #Only publishes on push to master to avoid docs mishaps
-        uses: crazy-max/ghaction-github-pages@v2
-        with:
-          target_branch: gh-pages
-          build_dir: _site
-          keep_history: true
-          jekyll: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Dotnet Setup
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - run: dotnet tool update -g docfx
+
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1.7.2
+
+    - name: Setup Nuget
+      uses: iRebbok/setup-nuget@master
+
+    - name: Get references
+      shell: pwsh
+      run: |
+        Invoke-WebRequest -Uri $env:EXILED_REFERENCES_URL -OutFile $env:GITHUB_WORKSPACE/EXILED/References.zip
+        Expand-Archive -Path $env:GITHUB_WORKSPACE/EXILED/References.zip -DestinationPath $env:EXILED_REFERENCES_PATH
+
+    - run: docfx EXILED/docs/docfx.json
+      env:
+        EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        # Upload entire repository
+        path: 'EXILED/docs/_site'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

@@ -1,0 +1,6 @@
+- name: Articles
+  href: articles/
+- name: API Documentation
+  href: api/Exiled.html
+- name: Repository
+  href: https://github.com/Exiled-Official/EXILED

@@ -1,3 +1,4 @@
+<div align="center"><img src="https://github.com/user-attachments/assets/5ea95992-2aeb-47c3-bd29-c966285276e0" height=75 alt="Exiled SCPSL, SCP Secret Laboratory Exiled, Exiled SCP: Secret Laboratory, Modding Framework, Mods, Exiled Mod SCPSL"/></div>
 <h1 align="center">Exiled</h1>
 <h6 align="center">EXtended In-runtime Library for External Development</h6>
 <div align="center">
@@ -111,5 +112,5 @@ Localized READMEs
   </div>
 </div>
 
-<h5 align="center">This repo is a fork of <a href="https://github.com/Exiled-Team/EXILED">Exiled-Team/EXILED</a> after the old repository was taken hostage by the old lead developer.</h5>
+<h5 align="center">This repo is a fork of <a href="https://github.com/Exiled-Team/EXILED">Exiled-Team/EXILED</a> after changes in project leadership.</h5>
 <h6 align="center">You can access the commit this update was forked from <a href="https://github.com/Exiled-Team/EXILED/tree/8b03fe7d9d2fe7ebffd5e6d1d038fc3881cdeb70">here</a>.</h6>

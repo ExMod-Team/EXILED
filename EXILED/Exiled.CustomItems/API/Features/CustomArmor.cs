@@ -30,7 +30,7 @@ namespace Exiled.CustomItems.API.Features
             get => base.Type;
             set
             {
-                if (!value.IsArmor() && (value != ItemType.None))
+                if (value != ItemType.None && !value.IsArmor())
                     throw new ArgumentOutOfRangeException("Type", value, "Invalid armor type.");
 
                 base.Type = value;

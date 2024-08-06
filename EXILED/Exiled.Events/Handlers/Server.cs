@@ -7,6 +7,9 @@
 
 namespace Exiled.Events.Handlers
 {
+    using System.Collections.Generic;
+
+    using Respawning;
 #pragma warning disable SA1623 // Property summary documentation should match accessors
 
     using Exiled.Events.EventArgs.Player;
@@ -52,6 +55,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before respawning a wave of Chaos Insurgency or NTF.
         /// </summary>
         public static Event<RespawningTeamEventArgs> RespawningTeam { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after team spawns.
+        /// </summary>
+        public static Event<RespawnedTeamEventArgs> RespawnedTeam { get; set; } = new();
 
         /// <summary>
         /// Invoked before adding an unit name.
@@ -141,6 +149,13 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="RespawningTeamEventArgs"/> instance.</param>
         public static void OnRespawningTeam(RespawningTeamEventArgs ev) => RespawningTeam.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after team spawns.
+        /// </summary>
+        /// <param name="teamType"><inheritdoc cref="RespawnedTeamEventArgs.Team"/></param>
+        /// <param name="hubs"><inheritdoc cref="RespawnedTeamEventArgs.Players"/></param>
+        public static void OnRespawnedTeam(SpawnableTeamType teamType, List<ReferenceHub> hubs) => RespawnedTeam.InvokeSafely(new RespawnedTeamEventArgs(teamType, hubs));
 
         /// <summary>
         /// Called before adding an unit name.

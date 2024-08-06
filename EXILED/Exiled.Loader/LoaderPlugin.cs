@@ -38,6 +38,12 @@ namespace Exiled.Loader
         [PluginPriority(byte.MinValue)]
         public void Enable()
         {
+            if (Config == null)
+            {
+                Log.Error("Detected null config, EXILED will not be loaded.");
+                return;
+            }
+
             if (!Config.IsEnabled)
             {
                 Log.Info("EXILED is disabled on this server via config.");
