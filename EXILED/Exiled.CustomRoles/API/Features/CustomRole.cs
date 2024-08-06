@@ -537,13 +537,8 @@ namespace Exiled.CustomRoles.API.Features
                         Log.Debug($"{Name}: Adding {itemName} to inventory.");
                         TryAddItem(player, itemName);
                     }
-                });
 
-            if (Ammo.Count > 0)
-            {
-                Timing.CallDelayed(
-                    0.5f,
-                    () =>
+                    if (Ammo.Count > 0)
                     {
                         Log.Debug($"{Name}: Adding Ammo to {player.Nickname} inventory.");
                         foreach (AmmoType type in EnumUtils<AmmoType>.Values)
@@ -551,8 +546,8 @@ namespace Exiled.CustomRoles.API.Features
                             if (type != AmmoType.None)
                                 player.SetAmmo(type, Ammo.ContainsKey(type) ? Ammo[type] == ushort.MaxValue ? InventoryLimits.GetAmmoLimit(type.GetItemType(), player.ReferenceHub) : Ammo[type] : (ushort)0);
                         }
-                    });
-            }
+                    }
+                });
 
             Log.Debug($"{Name}: Setting health values.");
             player.Health = MaxHealth;
