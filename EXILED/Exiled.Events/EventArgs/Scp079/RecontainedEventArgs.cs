@@ -53,7 +53,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public Player Attacker { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the recontained has been made automatically or by triggering the proccess.
+        /// Gets a value indicating whether the recontainment has been made automatically or by triggering the process.
         /// </summary>
         public bool IsAutomatic { get; }
     }
