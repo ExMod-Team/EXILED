@@ -48,7 +48,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public PlayerRoles.PlayableScps.Scp079.Scp079Recontainer Recontainer { get; }
 
         /// <summary>
-        /// Gets the player that recontained SCP-079.
+        /// Gets the player who recontained SCP-079.
         /// </summary>
         public Player Attacker { get; }
 
