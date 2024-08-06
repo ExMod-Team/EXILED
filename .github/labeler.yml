@@ -35,6 +35,6 @@ Localization: # Add the 'Localization' label
 - changed-files:
   - any-glob-to-any-file: EXILED/Localization/** # Any modifications to Localization
 
-GitHub_Actions: # Add the 'GitHub' label
+GitHub: # Add the 'GitHub' label
 - changed-files:
   - any-glob-to-any-file: .github/** # Any modifications to github related files
