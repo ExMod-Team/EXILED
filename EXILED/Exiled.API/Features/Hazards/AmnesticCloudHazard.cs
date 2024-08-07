@@ -3,10 +3,11 @@
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
-// -----------------------------------------------------------------------
+// ------------------------------------------------------------------------
 
 namespace Exiled.API.Features.Hazards
 {
+    using Exiled.API.Enums;
     using PlayerRoles.PlayableScps.Scp939;
 
     /// <summary>
@@ -14,6 +15,8 @@ namespace Exiled.API.Features.Hazards
     /// </summary>
     public class AmnesticCloudHazard : TemporaryHazard
     {
+        private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AmnesticCloudHazard"/> class.
         /// </summary>
@@ -26,8 +29,25 @@ namespace Exiled.API.Features.Hazards
             Owner = Player.Get(Ability.Owner);
         }
 
+        /// <summary>
+        /// Gets the amnestic cloud prefab.
+        /// </summary>
+        public static Scp939AmnesticCloudInstance AmnesticCloudPrefab
+        {
+            get
+            {
+                if (amnesticCloudPrefab == null)
+                    amnesticCloudPrefab = PrefabHelper.GetPrefab<Scp939AmnesticCloudInstance>(PrefabType.AmnesticCloudHazard);
+
+                return amnesticCloudPrefab;
+            }
+        }
+
         /// <inheritdoc cref="Hazard.Base"/>
         public new Scp939AmnesticCloudInstance Base { get; }
+
+        /// <inheritdoc />
+        public override HazardType Type => HazardType.AmnesticCloud;
 
         /// <summary>
         /// Gets the <see cref="Scp939AmnesticCloudAbility"/> for this instance.
