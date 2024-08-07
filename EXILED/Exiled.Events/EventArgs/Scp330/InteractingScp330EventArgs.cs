@@ -8,15 +8,16 @@
 namespace Exiled.Events.EventArgs.Scp330
 {
     using API.Features;
-
+    using Exiled.API.Features.Items;
     using Interfaces;
 
     using InventorySystem.Items.Usables.Scp330;
+    using YamlDotNet.Core.Tokens;
 
     /// <summary>
     /// Contains all information before a player interacts with SCP-330.
     /// </summary>
-    public class InteractingScp330EventArgs : IPlayerEvent, IDeniableEvent
+    public class InteractingScp330EventArgs : IPlayerEvent, IScp330Event, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InteractingScp330EventArgs" /> class.
@@ -30,6 +31,7 @@ namespace Exiled.Events.EventArgs.Scp330
         public InteractingScp330EventArgs(Player player, int usage)
         {
             Player = player;
+            Scp330 = Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag) ? (Scp330)Item.Get(scp330Bag) : null;
             Candy = Scp330Candies.GetRandom();
             UsageCount = usage;
             ShouldSever = usage >= 2;
@@ -60,5 +62,13 @@ namespace Exiled.Events.EventArgs.Scp330
         /// Gets the <see cref="API.Features.Player" /> triggering the event.
         /// </summary>
         public Player Player { get; }
+
+        /// <inheritdoc/>
+        /// <remarks>This value can be null.</remarks>
+        public Scp330 Scp330 { get; }
+
+        /// <inheritdoc/>
+        /// <remarks>This value can be null.</remarks>
+        public Item Item => Scp330;
     }
 }
