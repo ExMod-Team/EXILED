@@ -503,7 +503,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <seealso cref="Teleport(Vector3)"/>
         /// <seealso cref="Teleport(object)"/>
-        public Vector3 Position
+        public virtual Vector3 Position
         {
             get => Transform.position;
             set => ReferenceHub.TryOverridePosition(value, Vector3.zero);

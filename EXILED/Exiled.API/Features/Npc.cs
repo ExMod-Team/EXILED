@@ -54,7 +54,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets the player's position.
         /// </summary>
-        public new Vector3 Position
+        public override Vector3 Position
         {
             get => base.Position;
             set
