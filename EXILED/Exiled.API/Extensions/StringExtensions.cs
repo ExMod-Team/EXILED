@@ -161,7 +161,11 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="userId">The user id.</param>
         /// <returns>Returns the raw user id.</returns>
-        public static string GetRawUserId(this string userId) => userId.Substring(0, userId.LastIndexOf('@'));
+        public static string GetRawUserId(this string userId)
+        {
+            int index = userId.IndexOf('@');
+            return index == -1 ? userId : userId.Substring(0, index);
+        }
 
         /// <summary>
         /// Gets a SHA256 hash of a player's user id without the authentication.
