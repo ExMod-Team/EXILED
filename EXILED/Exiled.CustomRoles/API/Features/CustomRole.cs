@@ -537,6 +537,16 @@ namespace Exiled.CustomRoles.API.Features
                         Log.Debug($"{Name}: Adding {itemName} to inventory.");
                         TryAddItem(player, itemName);
                     }
+
+                    if (Ammo.Count > 0)
+                    {
+                        Log.Debug($"{Name}: Adding Ammo to {player.Nickname} inventory.");
+                        foreach (AmmoType type in EnumUtils<AmmoType>.Values)
+                        {
+                            if (type != AmmoType.None)
+                                player.SetAmmo(type, Ammo.ContainsKey(type) ? Ammo[type] == ushort.MaxValue ? InventoryLimits.GetAmmoLimit(type.GetItemType(), player.ReferenceHub) : Ammo[type] : (ushort)0);
+                        }
+                    }
                 });
 
             Log.Debug($"{Name}: Setting health values.");
@@ -909,25 +919,6 @@ namespace Exiled.CustomRoles.API.Features
             if (Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && ev.NewRole != Role && !KeepRoleOnChangingRole)))
             {
                 RemoveRole(ev.Player);
-            }
-            else if (Check(ev.Player))
-            {
-                Log.Debug($"{Name}: Checking ammo stuff {Ammo.Count}");
-                if (Ammo.Count > 0)
-                {
-                    Log.Debug($"{Name}: Clearing ammo");
-                    ev.Ammo.Clear();
-                    Timing.CallDelayed(
-                        0.5f,
-                        () =>
-                        {
-                            foreach (AmmoType type in Enum.GetValues(typeof(AmmoType)))
-                            {
-                                if (type != AmmoType.None)
-                                    ev.Player.SetAmmo(type, Ammo.ContainsKey(type) ? Ammo[type] == ushort.MaxValue ? InventoryLimits.GetAmmoLimit(type.GetItemType(), ev.Player.ReferenceHub) : Ammo[type] : (ushort)0);
-                            }
-                        });
-                }
             }
         }
 

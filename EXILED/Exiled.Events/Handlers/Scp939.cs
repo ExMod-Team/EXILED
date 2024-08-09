@@ -33,9 +33,19 @@ namespace Exiled.Events.Handlers
         public static Event<PlacingAmnesticCloudEventArgs> PlacingAmnesticCloud { get; set; } = new();
 
         /// <summary>
+        /// Invoked after SCP-939 used its amnestic cloud ability.
+        /// </summary>
+        public static Event<PlacedAmnesticCloudEventArgs> PlacedAmnesticCloud { get; set; } = new();
+
+        /// <summary>
         /// Invoked before SCP-939 plays a stolen voice.
         /// </summary>
         public static Event<PlayingVoiceEventArgs> PlayingVoice { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before footstep displayed to SCP-939.
+        /// </summary>
+        public static Event<PlayingFootstepEventArgs> PlayingFootstep { get; set; } = new();
 
         /// <summary>
         /// Invoked before SCP-939 will save Human voice.
@@ -77,6 +87,12 @@ namespace Exiled.Events.Handlers
         public static void OnPlacingAmnesticCloud(PlacingAmnesticCloudEventArgs ev) => PlacingAmnesticCloud.InvokeSafely(ev);
 
         /// <summary>
+        /// Called after SCP-939 used its amnestic cloud ability.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlacedAmnesticCloudEventArgs" /> instance.</param>
+        public static void OnPlacedAmnesticCloud(PlacedAmnesticCloudEventArgs ev) => PlacedAmnesticCloud.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before SCP-939 plays a stolen voice.
         /// </summary>
         /// <param name="ev">The <see cref="PlacingAmnesticCloudEventArgs" /> instance.</param>
@@ -93,6 +109,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlayingSoundEventArgs"/> instance.</param>
         public static void OnPlayingSound(PlayingSoundEventArgs ev) => PlayingSound.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before footstep displayed to SCP-939.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlayingFootstepEventArgs" /> instance.</param>
+        public static void OnPlayingFootstep(PlayingFootstepEventArgs ev) => PlayingFootstep.InvokeSafely(ev);
 
         /// <summary>
         /// Called after SCP-939 attacks.

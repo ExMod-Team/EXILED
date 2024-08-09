@@ -43,7 +43,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Item"/>.
         /// </summary>
-        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new();
+        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.
@@ -99,7 +99,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the scale for the item.
         /// </summary>
-        public Vector3 Scale { get; set; } = Vector3.one;
+        public virtual Vector3 Scale { get; set; } = Vector3.one;
 
         /// <summary>
         /// Gets the <see cref="ItemBase"/> of the item.
@@ -259,7 +259,7 @@ namespace Exiled.API.Features.Items
         public static Item Create(ItemType type, Player owner = null) => type switch
         {
             ItemType.SCP268 => new Usable(type),
-            ItemType.Adrenaline or ItemType.Medkit or ItemType.Painkillers or ItemType.SCP500 or ItemType.SCP207 or ItemType.SCP1853 => new Consumable(type),
+            ItemType.Adrenaline or ItemType.Medkit or ItemType.Painkillers or ItemType.SCP500 or ItemType.SCP207 or ItemType.SCP1853 or ItemType.AntiSCP207 => new Consumable(type),
             ItemType.SCP244a or ItemType.SCP244b => new Scp244(type),
             ItemType.Ammo9x19 or ItemType.Ammo12gauge or ItemType.Ammo44cal or ItemType.Ammo556x45 or ItemType.Ammo762x39 => new Ammo(type),
             ItemType.Flashlight or ItemType.Lantern => new Flashlight(type),

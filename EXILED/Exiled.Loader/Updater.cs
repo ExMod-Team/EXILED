@@ -31,7 +31,7 @@ namespace Exiled.Loader
     /// </summary>
     internal sealed class Updater
     {
-        private const long REPOID = 828620622;
+        private const long REPOID = 833723500;
         private const string INSTALLER_ASSET_NAME_LINUX = "Exiled.Installer-Linux";
         private const string INSTALLER_ASSET_NAME_WIN = "Exiled.Installer-Win.exe";
 

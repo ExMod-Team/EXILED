@@ -8,9 +8,11 @@
 namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
+    using System.Reflection;
 
     using Exiled.API.Features.Pools;
 
+    using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
 
@@ -24,6 +26,7 @@ namespace Exiled.API.Features.Roles
     /// </summary>
     public abstract class FpcRole : Role
     {
+        private static FieldInfo enableFallDamageField;
         private bool isUsingStamina = true;
 
         /// <summary>
@@ -53,6 +56,19 @@ namespace Exiled.API.Features.Roles
         {
             get => FirstPersonController.FpcModule.Motor.ReceivedPosition;
             set => FirstPersonController.FpcModule.Motor.ReceivedPosition = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether if the player should get <see cref="Enums.DamageType.Falldown"/> damage.
+        /// </summary>
+        public bool IsFallDamageEnable
+        {
+            get => FirstPersonController.FpcModule.Motor._enableFallDamage;
+            set
+            {
+                enableFallDamageField ??= AccessTools.Field(typeof(FpcMotor), nameof(FpcMotor._enableFallDamage));
+                enableFallDamageField.SetValue(FirstPersonController.FpcModule.Motor, value);
+            }
         }
 
         /// <summary>

@@ -9,8 +9,8 @@ namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
     using API.Features.DamageHandlers;
-
     using Interfaces;
+    using PlayerStatsSystem;
 
     using CustomAttackerHandler = API.Features.DamageHandlers.AttackerDamageHandler;
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
@@ -54,6 +54,11 @@ namespace Exiled.Events.EventArgs.Player
 
         /// <inheritdoc/>
         public CustomDamageHandler DamageHandler { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the incoming damage is an instant kill.
+        /// </summary>
+        public bool IsInstantKill => Amount == StandardDamageHandler.KillValue;
 
         /// <inheritdoc/>
         public bool IsAllowed { get; set; } = true;

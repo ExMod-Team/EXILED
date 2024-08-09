@@ -45,6 +45,13 @@ namespace Exiled.API.Features.Items
         {
         }
 
+        /// <inheritdoc/>
+        public override Vector3 Scale
+        {
+            get => base.Scale;
+            set => Projectile.Scale = base.Scale = value;
+        }
+
         /// <summary>
         /// Gets the <see cref="ThrowableItem"/> base for this item.
         /// </summary>

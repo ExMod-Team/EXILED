@@ -33,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Item
     /// Patches <see cref="KeycardPickup.ProcessCollision(Collision)"/>.
     /// Adds the <see cref="Handlers.Player.InteractingDoor"/> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.InteractingDoor))]
+    [EventPatch(typeof(Handlers.Item), nameof(Handlers.Item.KeycardInteracting))]
     [HarmonyPatch(typeof(KeycardPickup), nameof(KeycardPickup.ProcessCollision))]
     internal static class KeycardInteracting
     {

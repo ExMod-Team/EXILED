@@ -54,7 +54,6 @@ namespace Exiled.Events.Patches.Fixes
             // baseProjectile.transform.position = this.Owner.PlayerCameraReference.position;
             // baseProjectile.transform.rotation = this.Owner.PlayerCameraReference.rotation;
             // baseProjectile.gameObject.SetActive(true);
-            // projectile.Spawned = true;
             newInstructions.InsertRange(index, new[]
             {
                 // if (Item.Get(this) is Throwable throwable) goto cnt;
