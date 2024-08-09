@@ -48,7 +48,7 @@ namespace Exiled.Events.Handlers.Internal
             Map.ClearCache();
             PrefabHelper.LoadPrefabs();
 
-            // TODO: Fix For (https://trello.com/c/cUwpZDLs/5003-config-teamrespawnqueue-in-configgameplay-is-not-working-as-expected)
+            // TODO: Fix For (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/377)
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.ChaosInsurgency] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.ChaosConscript);
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.OtherAlive] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Tutorial);
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.Dead] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Spectator);
