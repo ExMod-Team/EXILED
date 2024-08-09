@@ -35,6 +35,14 @@ namespace Exiled.API.Features.Toys
             { "binaryTargetPrefab", ShootingTargetType.Binary },
         };
 
+        private static readonly Dictionary<ShootingTargetType, ShootingTarget> TypeToPrefabs = new()
+        {
+            { ShootingTargetType.ClassD, ToysHelper.DboyShootingTargetObject },
+            { ShootingTargetType.Binary, ToysHelper.BinaryShootingTargetObject },
+            { ShootingTargetType.Sport, ToysHelper.SportShootingTargetObject },
+            { ShootingTargetType.Unknown, ToysHelper.SportShootingTargetObject },
+        };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ShootingTargetToy"/> class.
         /// </summary>
@@ -152,39 +160,32 @@ namespace Exiled.API.Features.Toys
         /// Creates a new <see cref="ShootingTargetToy"/>.
         /// </summary>
         /// <param name="type">The <see cref="ShootingTargetType"/> of the <see cref="ShootingTargetToy"/>.</param>
+        /// <param name="spawn">Whether the <see cref="ShootingTargetToy"/> should be initially spawned.</param>
+        /// <returns>The new <see cref="ShootingTargetToy"/>.</returns>
+        public static ShootingTargetToy Create(ShootingTargetType type, bool spawn = true) =>
+            Create(type, Vector3.zero, Vector3.zero, Vector3.one, spawn);
+
+        /// <summary>
+        /// Creates a new <see cref="ShootingTargetToy"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="ShootingTargetType"/> of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="position">The position of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="rotation">The rotation of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="scale">The scale of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="spawn">Whether the <see cref="ShootingTargetToy"/> should be initially spawned.</param>
         /// <returns>The new <see cref="ShootingTargetToy"/>.</returns>
-        public static ShootingTargetToy Create(ShootingTargetType type, Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool spawn = true)
+        public static ShootingTargetToy Create(ShootingTargetType type, Vector3 position, Vector3 rotation, Vector3 scale, bool spawn = true)
         {
-            ShootingTargetToy shootingTargetToy;
-
-            switch (type)
+            if (!TypeToPrefabs.TryGetValue(type, out ShootingTarget shootingTargetBase))
             {
-                case ShootingTargetType.ClassD:
-                    {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.DboyShootingTargetObject));
-                        break;
-                    }
-
-                case ShootingTargetType.Binary:
-                    {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.BinaryShootingTargetObject));
-                        break;
-                    }
-
-                default:
-                    {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.SportShootingTargetObject));
-                        break;
-                    }
+                shootingTargetBase = TypeToPrefabs[ShootingTargetType.Unknown];
             }
 
-            shootingTargetToy.Position = position ?? Vector3.zero;
-            shootingTargetToy.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            shootingTargetToy.Scale = scale ?? Vector3.one;
+            ShootingTargetToy shootingTargetToy = new ShootingTargetToy(shootingTargetBase);
+
+            shootingTargetToy.Position = position;
+            shootingTargetToy.Rotation = Quaternion.Euler(rotation);
+            shootingTargetToy.Scale = scale;
 
             if (spawn)
                 shootingTargetToy.Spawn();
