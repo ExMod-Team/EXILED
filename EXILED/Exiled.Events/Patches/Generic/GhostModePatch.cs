@@ -61,7 +61,7 @@ namespace Exiled.Events.Patches.Generic
         private static void HandleGhostMode(ReferenceHub hubReceiver, ReferenceHub hubTarget, ref bool isInvisible)
         {
             // If the player is already invisible, return
-            if (isInvisible)
+            if (isInvisible || hubReceiver.IsHost)
                 return;
 
             if (Player.Get(hubReceiver) is not Player receiver || Player.Get(hubTarget) is not Player target)
