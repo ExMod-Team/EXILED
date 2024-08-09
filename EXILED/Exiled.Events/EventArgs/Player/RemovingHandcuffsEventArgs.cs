@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using API.Enums;
     using API.Features;
     using Exiled.Events.EventArgs.Interfaces;
 
@@ -20,11 +21,13 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="cuffer">The cuffer player.</param>
         /// <param name="target">The target player to be uncuffed.</param>
+        /// <param name="uncuffReason">The reason of removing handcuffs.</param>
         /// <param name="isAllowed">Indicates whether the event can be executed or not.</param>
-        public RemovingHandcuffsEventArgs(Player cuffer, Player target, bool isAllowed = true)
+        public RemovingHandcuffsEventArgs(Player cuffer, Player target, UncuffReason uncuffReason, bool isAllowed = true)
         {
             Player = cuffer;
             Target = target;
+            UncuffReason = uncuffReason;
             IsAllowed = isAllowed;
         }
 
@@ -34,13 +37,19 @@ namespace Exiled.Events.EventArgs.Player
         public Player Target { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can be handcuffed.
+        /// Gets or sets a value indicating whether or not the player can be handcuffed. Denying the event will only have an effect when <see cref="UncuffReason" /> is <see cref="UncuffReason.Player" />  until next major update.
         /// </summary>
+        /// TODO: Update docs and patches
         public bool IsAllowed { get; set; }
 
         /// <summary>
         /// Gets the cuffer player.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        /// Gets the reason of removing handcuffs.
+        /// </summary>
+        public UncuffReason UncuffReason { get; }
     }
 }

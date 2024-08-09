@@ -224,6 +224,11 @@ namespace Exiled.Events.Handlers
         public static Event<RemovingHandcuffsEventArgs> RemovingHandcuffs { get; set; } = new();
 
         /// <summary>
+        /// Invoked after freeing a handcuffed <see cref="API.Features.Player"/>.
+        /// </summary>
+        public static Event<RemovedHandcuffsEventArgs> RemovedHandcuffs { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> escapes.
         /// </summary>
         public static Event<EscapingEventArgs> Escaping { get; set; } = new();
@@ -703,6 +708,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="RemovingHandcuffsEventArgs"/> instance.</param>
         public static void OnRemovingHandcuffs(RemovingHandcuffsEventArgs ev) => RemovingHandcuffs.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after freeing a handcuffed <see cref="API.Features.Player"/>.
+        /// </summary>
+        /// <param name="ev">The <see cref="RemovedHandcuffsEventArgs"/> instance.</param>
+        public static void OnRemovedHandcuffs(RemovedHandcuffsEventArgs ev) => RemovedHandcuffs.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> escapes.
