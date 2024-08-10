@@ -119,7 +119,7 @@ namespace Exiled.API.Features.Items
 
             ipb.Info = new PickupSyncInfo(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-            ExplosionGrenadeProjectile grenade = (ExplosionGrenadeProjectile)Pickup.Get(ipb);
+            ExplosionGrenadeProjectile grenade = Pickup.Get<ExplosionGrenadeProjectile>(ipb);
 
             grenade.Base.gameObject.SetActive(true);
 

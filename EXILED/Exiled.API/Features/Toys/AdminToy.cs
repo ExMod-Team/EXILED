@@ -160,6 +160,15 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets the <see cref="AdminToy"/> by <see cref="AdminToys.AdminToyBase"/>.
+        /// </summary>
+        /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> to convert into an admintoy.</param>
+        /// <typeparam name="T">The specified <see cref="AdminToy"/> type.</typeparam>
+        /// <returns>The admintoy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
+        public static T Get<T>(AdminToyBase adminToyBase)
+            where T : AdminToy => Get(adminToyBase) as T;
+
+        /// <summary>
         /// Spawns the toy into the game. Use <see cref="UnSpawn"/> to remove it.
         /// </summary>
         public void Spawn() => NetworkServer.Spawn(AdminToyBase.gameObject);

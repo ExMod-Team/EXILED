@@ -40,7 +40,7 @@ namespace Exiled.Events.EventArgs.Player
         public ChangingMicroHIDStateEventArgs(Player player, MicroHIDItem microHID, HidState oldState, HidState newState, bool isAllowed = true)
         {
             Player = player;
-            MicroHID = (MicroHid)Item.Get(microHID);
+            MicroHID = Item.Get<MicroHid>(microHID);
             OldState = oldState;
             NewState = newState;
             IsAllowed = isAllowed;

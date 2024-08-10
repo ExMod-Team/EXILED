@@ -25,7 +25,6 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Radio;
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
-    using InventorySystem.Items.ToggleableLights.Flashlight;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
@@ -33,7 +32,6 @@ namespace Exiled.API.Features.Items
     using UnityEngine;
 
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="ItemBase"/>.
@@ -43,7 +41,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Item"/>.
         /// </summary>
-        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new();
+        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.
@@ -220,6 +218,15 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Gets an existing <see cref="Item"/> or creates a new instance of one.
+        /// </summary>
+        /// <param name="itemBase">The <see cref="ItemBase"/> to convert into an item.</param>
+        /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
+        /// <returns>The item wrapper for the given <see cref="ItemBase"/>.</returns>
+        public static T Get<T>(ItemBase itemBase)
+            where T : Item => Get(itemBase) as T;
+
+        /// <summary>
         /// Gets the Item belonging to the specified serial.
         /// </summary>
         /// <param name="serial">The Item serial.</param>
@@ -278,6 +285,40 @@ namespace Exiled.API.Features.Items
             ItemType.Jailbird => new Jailbird(),
             _ => new Item(type),
         };
+
+        /// <summary>
+        /// Creates a new <see cref="Item"/> with the proper inherited subclass.
+        /// <para>
+        /// Based on the <paramref name="type"/>, the returned <see cref="Item"/> can be casted into a subclass to gain more control over the object.
+        /// <br />- Usable items (Adrenaline, Medkit, Painkillers, SCP-207, SCP-268, and SCP-500) should be casted to the <see cref="Usable"/> class.
+        /// <br />- All valid ammo should be casted to the <see cref="Ammo"/> class.
+        /// <br />- All valid firearms (not including the Micro HID) should be casted to the <see cref="Firearm"/> class.
+        /// <br />- All valid keycards should be casted to the <see cref="Keycard"/> class.
+        /// <br />- All valid armor should be casted to the <see cref="Armor"/> class.
+        /// <br />- Explosive grenades and SCP-018 should be casted to the <see cref="ExplosiveGrenade"/> class.
+        /// <br />- Flash grenades should be casted to the <see cref="FlashGrenade"/> class.
+        /// </para>
+        /// <para>
+        /// <br />The following have their own respective classes:
+        /// <br />- Flashlights can be casted to <see cref="Flashlight"/>.
+        /// <br />- Radios can be casted to <see cref="Radio"/>.
+        /// <br />- The Micro HID can be casted to <see cref="MicroHid"/>.
+        /// <br />- SCP-244 A and B variants can be casted to <see cref="Scp244"/>.
+        /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
+        /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
+        /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
+        /// </para>
+        /// <para>
+        /// Items that are not listed above do not have a subclass, and can only use the base <see cref="Item"/> class.
+        /// </para>
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
+        /// <param name="owner">The <see cref="Player"/> who owns the item by default.</param>
+        /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
+        /// <returns>The <see cref="Item"/> created. This can be cast as a subclass.</returns>
+        public static Item Create<T>(ItemType type, Player owner = null)
+            where T : Item => Create(type, owner) as T;
 
         /// <summary>
         /// Gives this item to a <see cref="Player"/>.
