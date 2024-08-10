@@ -44,7 +44,7 @@ namespace Exiled.Events.EventArgs.Player
         public ChangingRadioPresetEventArgs(Player player, RadioItem item, RadioRangeLevel oldValue, RadioRangeLevel newValue, bool isAllowed = true)
         {
             Player = player;
-            Radio = (Radio)Item.Get(item);
+            Radio = Item.Get<Radio>(item);
             OldValue = (RadioRange)oldValue;
             NewValue = (RadioRange)newValue;
             IsAllowed = isAllowed;

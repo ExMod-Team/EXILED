@@ -38,17 +38,13 @@ namespace Exiled.Events.EventArgs.Item
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ChangingAttachmentsEventArgs(
-            Player player,
-            Firearm firearm,
-            uint code,
-            bool isAllowed = true)
+        public ChangingAttachmentsEventArgs(Player player, InventorySystem.Items.Firearms.Firearm firearm, uint code, bool isAllowed = true)
         {
             Player = player;
-            Firearm = firearm;
-            CurrentAttachmentIdentifiers = firearm.AttachmentIdentifiers;
-            NewAttachmentIdentifiers = firearm.FirearmType.GetAttachmentIdentifiers(code).ToList();
-            CurrentCode = firearm.Base.GetCurrentAttachmentsCode();
+            Firearm = Item.Get<Firearm>(firearm);
+            CurrentAttachmentIdentifiers = Firearm.AttachmentIdentifiers;
+            NewAttachmentIdentifiers = Firearm.FirearmType.GetAttachmentIdentifiers(code).ToList();
+            CurrentCode = firearm.GetCurrentAttachmentsCode();
             NewCode = code;
             IsAllowed = isAllowed;
         }

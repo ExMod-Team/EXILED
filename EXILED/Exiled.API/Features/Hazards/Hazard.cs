@@ -124,6 +124,15 @@ namespace Exiled.API.Features.Hazards
         };
 
         /// <summary>
+        /// Gets the <see cref="Hazard"/> by <see cref="EnvironmentalHazard"/>.
+        /// </summary>
+        /// <param name="environmentalHazard">The <see cref="EnvironmentalHazard"/> to convert into an hazard.</param>
+        /// <typeparam name="T">The specified <see cref="Hazard"/> type.</typeparam>
+        /// <returns>The hazard wrapper for the given <see cref="EnvironmentalHazard"/>.</returns>
+        public static T Get<T>(EnvironmentalHazard environmentalHazard)
+            where T : Hazard => Get(environmentalHazard) as T;
+
+        /// <summary>
         /// Gets the hazard by the room where it's located.
         /// </summary>
         /// <param name="room">Room.</param>

@@ -100,7 +100,7 @@ namespace Exiled.API.Features.Items
 
             ipb.Info = new PickupSyncInfo(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-            FlashbangProjectile grenade = (FlashbangProjectile)Pickup.Get(ipb);
+            FlashbangProjectile grenade = Pickup.Get<FlashbangProjectile>(ipb);
 
             grenade.Base.gameObject.SetActive(true);
 

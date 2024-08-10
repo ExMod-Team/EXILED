@@ -27,7 +27,7 @@ namespace Exiled.Events.EventArgs.Player
         public CancellingItemUseEventArgs(Player player, UsableItem item)
         {
             Player = player;
-            Usable = Item.Get(item) is Usable usable ? usable : null;
+            Usable = Item.Get<Usable>(item);
         }
 
         /// <summary>

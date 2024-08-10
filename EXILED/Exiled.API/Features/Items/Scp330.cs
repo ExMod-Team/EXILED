@@ -197,7 +197,7 @@ namespace Exiled.API.Features.Items
 
                 ipb.Info = new(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-                Scp330Pickup pickup = (Scp330Pickup)Pickup.Get(ipb);
+                Scp330Pickup pickup = Pickup.Get<Scp330Pickup>(ipb);
 
                 if (exposedType is not CandyKindID.None)
                     pickup.ExposedCandy = exposedType;
@@ -218,7 +218,7 @@ namespace Exiled.API.Features.Items
 
                 ipb.Info = new(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-                Scp330Pickup pickup = (Scp330Pickup)Pickup.Get(ipb);
+                Scp330Pickup pickup = Pickup.Get<Scp330Pickup>(ipb);
 
                 if (exposedType is not CandyKindID.None)
                     pickup.ExposedCandy = exposedType;
