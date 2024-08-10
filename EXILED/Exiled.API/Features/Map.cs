@@ -294,7 +294,7 @@ namespace Exiled.API.Features
 
             NetworkServer.Spawn(tantrum.gameObject);
 
-            return Hazard.Get(tantrum).Cast<TantrumHazard>();
+            return Hazard.Get<TantrumHazard>(tantrum);
         }
 
         /// <summary>

@@ -36,6 +36,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             Label shouldNotSever = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
+            Label enableEffectLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(InteractingScp330EventArgs));
 
@@ -74,14 +75,14 @@ namespace Exiled.Events.Patches.Events.Scp330
                 });
 
             // This is to find the location of RpcMakeSound to remove the original code and add a new sever logic structure (Start point)
-            int addShouldSeverOffset = 1;
+            int addShouldSeverOffset = -1;
             int addShouldSeverIndex = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(Scp330Interobject), nameof(Scp330Interobject.RpcMakeSound)))) + addShouldSeverOffset;
 
             int serverEffectLocationStart = -1;
             int enableEffect = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(PlayerEffectsController), nameof(ReferenceHub.playerEffectsController)))) + serverEffectLocationStart;
-
+                instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.playerEffectsController)))) + serverEffectLocationStart;
+            newInstructions[enableEffect].WithLabels(enableEffectLabel);
             newInstructions.InsertRange(
                 addShouldSeverIndex,
                 new[]
@@ -91,7 +92,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.ShouldSever))),
                     new(OpCodes.Brfalse, shouldNotSever),
-                    new(OpCodes.Br, enableEffect),
+                    new(OpCodes.Br, enableEffectLabel),
                 });
 
             // This will let us jump to the taken candies code and lock until ldarg_0, meaning we allow base game logic handle candy adding.
