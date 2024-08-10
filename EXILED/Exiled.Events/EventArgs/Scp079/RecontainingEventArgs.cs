@@ -13,7 +13,7 @@ namespace Exiled.Events.EventArgs.Scp079
     /// <summary>
     /// Contains information before SCP-079 gets recontained.
     /// </summary>
-    public class RecontainingEventArgs : IDeniableEvent
+    public class RecontainingEventArgs : IDeniableEvent, IPlayerEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RecontainingEventArgs" /> class.
@@ -21,7 +21,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="recontainer">The <see cref="BreakableWindow"/> instance.</param>
         public RecontainingEventArgs(BreakableWindow recontainer)
         {
-            Recontainer = Player.Get(recontainer.LastAttacker.Hub);
+            Player = Player.Get(recontainer.LastAttacker.Hub);
             IsAutomatic = recontainer.LastAttacker.IsSet;
         }
 
@@ -29,7 +29,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// Gets the Player that started the recontainment process.<br></br>
         /// Can be null if <see cref="IsAutomatic"/> is true.
         /// </summary>
-        public Player Recontainer { get; }
+        public Player Player { get; }
 
         /// <inheritdoc/>
         public bool IsAllowed { get; set; } = true;
