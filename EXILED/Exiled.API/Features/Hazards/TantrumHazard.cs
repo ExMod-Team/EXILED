@@ -99,7 +99,7 @@ namespace Exiled.API.Features.Hazards
 
             NetworkServer.Spawn(tantrum.gameObject);
 
-            return Get(tantrum) as TantrumHazard;
+            return Get<TantrumHazard>(tantrum);
         }
     }
 }
