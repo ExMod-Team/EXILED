@@ -30,6 +30,11 @@ namespace Exiled.Events.Patches.Generic
     [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.RegisterRooms))]
     internal class DoorList
     {
+        private static bool Prefix(DoorVariant __instance)
+        {
+            return __instance.Rooms == null;
+        }
+
         private static void Postfix(DoorVariant __instance)
         {
             if (Door.DoorVariantToDoor.ContainsKey(__instance))
