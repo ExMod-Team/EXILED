@@ -44,14 +44,14 @@ namespace Exiled.Events.Patches.Events.Scp079
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, PropertyGetter(typeof(Scp079Recontainer), nameof(Scp079Recontainer._activatorGlass))),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainingEventArgs))[0]),
-                new(OpCodes.Starg_S, ev.LocalIndex),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
 
                 // Scp079.OnRecontaining(ev)
-                new(OpCodes.Ldarg_S, ev.LocalIndex),
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnRecontaining))),
 
                 // if (!ev.IsAllowed) return;
-                new(OpCodes.Ldarg_S, ev.LocalIndex),
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, Method(typeof(RecontainingEventArgs), nameof(RecontainingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, returnLabel),
             });
