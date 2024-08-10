@@ -40,6 +40,7 @@ namespace Exiled.Events.Patches.Events.Map
             LocalBuilder ev = generator.DeclareLocal(typeof(SpawningItemEventArgs));
 
             Label skip = generator.DefineLabel();
+            Label skipdoorSpawn = generator.DefineLabel();
             Label doorSpawn = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
 
@@ -99,11 +100,13 @@ namespace Exiled.Events.Patches.Events.Map
                     //     goto doorSpawn
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningItemEventArgs), nameof(SpawningItemEventArgs.ShouldInitiallySpawn))),
-                    new(OpCodes.Brfalse_S, doorSpawn),
+                    new(OpCodes.Brtrue_S, skipdoorSpawn),
 
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningItemEventArgs), nameof(SpawningItemEventArgs.TriggerDoor))),
-                    new(OpCodes.Brfalse_S, doorSpawn),
+                    new(OpCodes.Brtrue_S, doorSpawn),
+
+                    new CodeInstruction(OpCodes.Nop).WithLabels(skipdoorSpawn),
                 });
 
             lastIndex = newInstructions.FindLastIndex(instruction => instruction.IsLdarg(0));
