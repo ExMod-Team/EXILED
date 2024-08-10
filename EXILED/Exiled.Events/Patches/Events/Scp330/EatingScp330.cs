@@ -51,13 +51,16 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp330Bag), nameof(Scp330Bag.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
+                    // this
+                    new(OpCodes.Ldarg_0),
+
                     // ICandy
                     new(OpCodes.Ldloc_0),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // EatingScp330EventArgs ev = new(player, candy, true)
+                    // EatingScp330EventArgs ev = new(Player, Scp330Bag, ICandy, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EatingScp330EventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -84,10 +87,13 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp330Bag), nameof(Scp330Bag.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
+                    // this
+                    new(OpCodes.Ldarg_0),
+
                     // ICandy
                     new(OpCodes.Ldloc_0),
 
-                    // EatenScp330EventArgs ev = new(player, candy)
+                    // EatenScp330EventArgs ev = new(Player, Scp330Bag, ICandy)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EatenScp330EventArgs))[0]),
 
                     // Handlers.Scp330.OnEatenScp330(ev)

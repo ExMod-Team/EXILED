@@ -339,6 +339,15 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
+        /// Gets an existing <see cref="Pickup"/> or creates a new instance of one.
+        /// </summary>
+        /// <param name="pickupBase">The <see cref="ItemPickupBase"/> to convert into an pickup.</param>
+        /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
+        /// <returns>The pickup wrapper for the given <see cref="ItemPickupBase"/>.</returns>
+        public static T Get<T>(ItemPickupBase pickupBase)
+            where T : Pickup => Get(pickupBase) as T;
+
+        /// <summary>
         /// Gets the <see cref="Pickup"/> given a <see cref="Serial"/>.
         /// </summary>
         /// <param name="serial">The serial to look for.</param>
@@ -488,6 +497,36 @@ namespace Exiled.API.Features.Pickups
         };
 
         /// <summary>
+        /// Creates and returns a new <see cref="Pickup"/> with the proper inherited subclass.
+        /// <para>
+        /// Based on the <paramref name="type"/>, the returned <see cref="Pickup"/> can be cast into a subclass to gain more control over the object.
+        /// <br />- All valid ammo should be cast to the <see cref="AmmoPickup"/> class.
+        /// <br />- All valid firearms (not including the Micro HID) should be cast to the <see cref="FirearmPickup"/> class.
+        /// <br />- All valid keycards should be cast to the <see cref="KeycardPickup"/> class.
+        /// <br />- All valid armor should be cast to the <see cref="BodyArmorPickup"/> class.
+        /// <br />- All grenades and throwables (not including SCP-018 and SCP-2176) should be cast to the <see cref="GrenadePickup"/> class.
+        /// </para>
+        /// <para>
+        /// <br />The following have their own respective classes:
+        /// <br />- Radios can be cast to <see cref="RadioPickup"/>.
+        /// <br />- The Micro HID can be cast to <see cref="MicroHIDPickup"/>.
+        /// <br />- SCP-244 A and B variants can be cast to <see cref="Scp244Pickup"/>.
+        /// <br />- SCP-330 can be cast to <see cref="Scp330Pickup"/>.
+        /// <br />- SCP-018 can be cast to <see cref="Projectiles.Scp018Projectile"/>.
+        /// <br />- SCP-2176 can be cast to <see cref="Projectiles.Scp2176Projectile"/>.
+        /// </para>
+        /// <para>
+        /// Items that are not listed above do not have a subclass, and can only use the base <see cref="Pickup"/> class.
+        /// </para>
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
+        /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
+        /// <returns>The created <see cref="Pickup"/>.</returns>
+        /// <seealso cref="Projectile.Create(Enums.ProjectileType)"/>
+        public static Pickup Create<T>(ItemType type)
+            where T : Pickup => Create(type) as T;
+
+        /// <summary>
         /// Creates and spawns a <see cref="Pickup"/>.
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
@@ -497,6 +536,19 @@ namespace Exiled.API.Features.Pickups
         /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
         /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion, bool, Player)"/>
         public static Pickup CreateAndSpawn(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null) => Create(type).Spawn(position, rotation, previousOwner);
+
+        /// <summary>
+        /// Creates and spawns a <see cref="Pickup"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
+        /// <param name="position">The position to spawn the <see cref="Pickup"/> at.</param>
+        /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
+        /// <param name="previousOwner">An optional previous owner of the item.</param>
+        /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
+        /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
+        /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion, bool, Player)"/>
+        public static Pickup CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null)
+            where T : Pickup => CreateAndSpawn(type, position, rotation, previousOwner) as T;
 
         /// <summary>
         /// Spawns a <see cref="Pickup"/>.

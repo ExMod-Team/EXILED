@@ -33,7 +33,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="ElevatorChamber"/>s and their corresponding <see cref="Lift"/>.
         /// </summary>
-        internal static readonly Dictionary<ElevatorChamber, Lift> ElevatorChamberToLift = new(8);
+        internal static readonly Dictionary<ElevatorChamber, Lift> ElevatorChamberToLift = new(8, new ComponentsEqualityComparer());
 
         /// <summary>
         /// Internal list that contains all ElevatorDoor for current group.
@@ -76,7 +76,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value of the internal doors list.
         /// </summary>
-        public IReadOnlyCollection<Doors.ElevatorDoor> Doors => internalDoorsList.Select(x => Door.Get(x).As<Doors.ElevatorDoor>()).ToList();
+        public IReadOnlyCollection<Doors.ElevatorDoor> Doors => internalDoorsList.Select(x => Door.Get<Doors.ElevatorDoor>(x)).ToList();
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> in the <see cref="Room"/>.
@@ -201,7 +201,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="CurrentDestination"/>.
         /// </summary>
-        public Doors.ElevatorDoor CurrentDestination => Door.Get(Base.CurrentDestination).As<Doors.ElevatorDoor>();
+        public Doors.ElevatorDoor CurrentDestination => Door.Get<Doors.ElevatorDoor>(Base.CurrentDestination);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> which contains all the <see cref="Lift"/> instances from the specified <see cref="Status"/>.

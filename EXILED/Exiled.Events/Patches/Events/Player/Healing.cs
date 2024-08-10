@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Healing.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -34,6 +34,8 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label continueLabel = generator.DefineLabel();
+            Label skipHealing = generator.DefineLabel();
+            Label skipHealed = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(HealingEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(Player));
@@ -48,10 +50,14 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Stloc_S, lastHealth.LocalIndex),
 
                 // player = Player.Get(this.Hub);
+                // if (player == null)
+                //     skip;
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(HealthStat), nameof(HealthStat.Hub))),
                 new(OpCodes.Call, AccessTools.Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub) })),
+                new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, player.LocalIndex),
+                new(OpCodes.Brfalse_S, skipHealing),
 
                 // HealingEventArgs ev = new(Player, amount)
                 new(OpCodes.Ldloc_S, player.LocalIndex),
@@ -76,10 +82,19 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
                 new(OpCodes.Callvirt, AccessTools.PropertyGetter(typeof(HealingEventArgs), nameof(HealingEventArgs.Amount))),
                 new(OpCodes.Starg_S, 1),
+
+                new CodeInstruction(OpCodes.Nop).WithLabels(skipHealing),
             });
+
+            newInstructions[newInstructions.Count - 1].labels.Add(skipHealed);
 
             newInstructions.InsertRange(newInstructions.Count - 1, new[]
             {
+                // if (player == null)
+                //     skip;
+                new(OpCodes.Ldloc_S, player.LocalIndex),
+                new(OpCodes.Brfalse_S, skipHealed),
+
                 // HealedEventArgs ev = new(Player, lastAmount)
                 new(OpCodes.Ldloc_S, player.LocalIndex),
                 new(OpCodes.Ldloc_S, lastHealth.LocalIndex),

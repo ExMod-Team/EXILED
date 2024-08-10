@@ -25,6 +25,7 @@ namespace Exiled.API.Extensions
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
+    using PlayerRoles.Voice;
     using RelativePositioning;
 
     using Respawning;
@@ -180,6 +181,18 @@ namespace Exiled.API.Extensions
 
             player.Connection.Send(message);
         }
+
+        /// <summary>
+        /// Sets <see cref="Features.Intercom.DisplayText"/> that only the <paramref name="target"/> player can see.
+        /// </summary>
+        /// <param name="target">Only this player can see Display Text.</param>
+        /// <param name="text">Text displayed to the player.</param>
+        public static void SetIntercomDisplayTextForTargetOnly(this Player target, string text) => target.SendFakeSyncVar(IntercomDisplay._singleton.netIdentity, typeof(IntercomDisplay), nameof(IntercomDisplay.Network_overrideText), text);
+
+        /// <summary>
+        /// Resync <see cref="Features.Intercom.DisplayText"/>.
+        /// </summary>
+        public static void ResetIntercomDisplayText() => ResyncSyncVar(IntercomDisplay._singleton.netIdentity, typeof(IntercomDisplay), nameof(IntercomDisplay.Network_overrideText));
 
         /// <summary>
         /// Sets <see cref="Room.Color"/> of a <paramref name="room"/> that only the <paramref name="target"/> player can see.
@@ -422,12 +435,11 @@ namespace Exiled.API.Extensions
         /// <example>
         /// EffectOnlySCP207.
         /// <code>
-        ///  MirrorExtensions.SendCustomSync(player, player.ReferenceHub.networkIdentity, typeof(PlayerEffectsController), (writer) => {
-        ///   writer.WriteUInt64(1ul);                                           // DirtyObjectsBit
-        ///   writer.WriteUInt32(1);                                             // DirtyIndexCount
+        ///  MirrorExtensions.SendFakeSyncObject(player, player.NetworkIdentity, typeof(PlayerEffectsController), (writer) => {
+        ///   writer.WriteULong(1ul);                                            // DirtyObjectsBit
+        ///   writer.WriteUInt(1);                                               // DirtyIndexCount
         ///   writer.WriteByte((byte)SyncList&lt;byte&gt;.Operation.OP_SET);     // Operations
-        ///   writer.WriteUInt32(17);                                            // EditIndex
-        ///   writer.WriteByte(1);                                               // Value
+        ///   writer.WriteUInt(17);                                              // EditIndex
         ///  });
         /// </code>
         /// </example>

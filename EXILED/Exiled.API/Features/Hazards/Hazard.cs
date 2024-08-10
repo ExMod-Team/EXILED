@@ -25,7 +25,7 @@ namespace Exiled.API.Features.Hazards
         /// <summary>
         /// <see cref="Dictionary{TKey,TValue}"/> with <see cref="EnvironmentalHazard"/> to it's <see cref="Hazard"/>.
         /// </summary>
-        internal static readonly Dictionary<EnvironmentalHazard, Hazard> EnvironmentalHazardToHazard = new();
+        internal static readonly Dictionary<EnvironmentalHazard, Hazard> EnvironmentalHazardToHazard = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Hazard"/> class.
@@ -122,6 +122,15 @@ namespace Exiled.API.Features.Hazards
             global::Hazards.TemporaryHazard temporaryHazard => new TemporaryHazard(temporaryHazard),
             _ => new Hazard(environmentalHazard)
         };
+
+        /// <summary>
+        /// Gets the <see cref="Hazard"/> by <see cref="EnvironmentalHazard"/>.
+        /// </summary>
+        /// <param name="environmentalHazard">The <see cref="EnvironmentalHazard"/> to convert into an hazard.</param>
+        /// <typeparam name="T">The specified <see cref="Hazard"/> type.</typeparam>
+        /// <returns>The hazard wrapper for the given <see cref="EnvironmentalHazard"/>.</returns>
+        public static T Get<T>(EnvironmentalHazard environmentalHazard)
+            where T : Hazard => Get(environmentalHazard) as T;
 
         /// <summary>
         /// Gets the hazard by the room where it's located.
