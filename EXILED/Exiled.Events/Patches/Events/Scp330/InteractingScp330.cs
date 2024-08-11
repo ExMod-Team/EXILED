@@ -82,6 +82,7 @@ namespace Exiled.Events.Patches.Events.Scp330
             int serverEffectLocationStart = -1;
             int enableEffect = newInstructions.FindLastIndex(
                 instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.playerEffectsController)))) + serverEffectLocationStart;
+
             newInstructions[enableEffect].WithLabels(enableEffectLabel);
             newInstructions.InsertRange(
                 addShouldSeverIndex,

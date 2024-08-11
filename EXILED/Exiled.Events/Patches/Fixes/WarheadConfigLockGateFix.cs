@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp3114AttackAhpFix.cs" company="Exiled Team">
+// <copyright file="WarheadConfigLockGateFix.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -11,30 +11,31 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+    using Footprinting;
     using HarmonyLib;
-    using PlayerRoles.PlayableScps.Scp3114;
-    using PlayerRoles.PlayableScps.Subroutines;
+    using Interactables.Interobjects.DoorUtils;
+    using InventorySystem;
+    using InventorySystem.Items.Firearms.Ammo;
+    using InventorySystem.Items.Pickups;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches the <see cref="Scp3114Slap.DamagePlayers()"/> delegate.
-    /// Fix than Scp3114Slap was giving humeshield even if player was not hit by Scp3114.
-    /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/119).
+    /// Patches <see cref="DoorEventOpenerExtension.Trigger"/> delegate.
+    /// Fix than NW config "lock_gates_on_countdown"
+    /// reported https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/316.
     /// </summary>
-    [HarmonyPatch(typeof(Scp3114Slap), nameof(Scp3114Slap.DamagePlayers))]
-    internal class Scp3114AttackAhpFix
+    [HarmonyPatch(typeof(DoorEventOpenerExtension), nameof(DoorEventOpenerExtension.Trigger))]
+    internal class WarheadConfigLockGateFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ret = generator.DefineLabel();
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(x => x.operand == (object)Method(typeof(ScpAttackAbilityBase<Scp3114Role>), nameof(ScpAttackAbilityBase<Scp3114Role>.HasAttackResultFlag))) + offset;
-            newInstructions[index].operand = ret;
+            // replace Contains with StartWith
+            int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(string), nameof(string.Contains), new[] { typeof(string) }));
+            newInstructions[index].operand = Method(typeof(string), nameof(string.StartsWith), new System.Type[] { typeof(string) });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
