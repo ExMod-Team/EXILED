@@ -104,15 +104,12 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
             {
-                // loading EscapingEventArgs instance 2 times
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-
                 // ev.Player
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Player))),
 
                 // ev.EscapeScenario
-                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.EscapeScenario))),
+                new(OpCodes.Ldloc_1),
 
                 // EscapedEventArgs ev2 = new(ev.Player, ev.EscapeScenario);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapedEventArgs))[0]),
