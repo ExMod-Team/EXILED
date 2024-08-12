@@ -109,10 +109,7 @@ namespace Exiled.Events.Patches.Events.Scp330
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
-            {
-                Log.Warn(newInstructions[z]);
                 yield return newInstructions[z];
-            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
