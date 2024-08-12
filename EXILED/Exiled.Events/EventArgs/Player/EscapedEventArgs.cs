@@ -8,9 +8,11 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using System;
+    using System.Collections.Generic;
 
     using Exiled.API.Enums;
     using Exiled.API.Features;
+    using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles;
     using Respawning;
@@ -25,14 +27,16 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="escapeScenario"><inheritdoc cref="EscapeScenario"/></param>
-        public EscapedEventArgs(Player player, EscapeScenario escapeScenario)
+        /// <param name="role"><inheritdoc cref="Role"/></param>
+        /// <param name="kvp"><inheritdoc cref="Tickets"/>, <inheritdoc cref="Team"/>.</param>
+        public EscapedEventArgs(Player player, EscapeScenario escapeScenario, Role role, KeyValuePair<SpawnableTeamType, float> kvp)
         {
             Player = player;
             EscapeScenario = escapeScenario;
-            Team = EscapeScenario is EscapeScenario.Scientist or EscapeScenario.CuffedClassD ? SpawnableTeamType.NineTailedFox : SpawnableTeamType.ChaosInsurgency;
-            Tickets = Team == SpawnableTeamType.ChaosInsurgency ? 4 : 3;
-            OldRole = EscapeScenario is EscapeScenario.Scientist or EscapeScenario.CuffedScientist ? RoleTypeId.Scientist : RoleTypeId.ClassD;
-            EscapeTime = (int)Math.Ceiling(player.Role.ActiveTime.TotalSeconds);
+            Team = kvp.Key;
+            Tickets = kvp.Value;
+            OldRole = role.Type;
+            EscapeTime = (int)Math.Ceiling(role.ActiveTime.TotalSeconds);
         }
 
         /// <inheritdoc/>
@@ -51,7 +55,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the amount of tickets gained for this escape.
         /// </summary>
-        public int Tickets { get; }
+        public float Tickets { get; }
 
         /// <summary>
         /// Gets the previous role for this player.
