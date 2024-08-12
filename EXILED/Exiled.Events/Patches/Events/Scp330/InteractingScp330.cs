@@ -10,6 +10,7 @@ namespace Exiled.Events.Patches.Events.Scp330
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp330;
@@ -17,6 +18,7 @@ namespace Exiled.Events.Patches.Events.Scp330
     using HarmonyLib;
     using Interactables.Interobjects;
     using InventorySystem.Items.Usables.Scp330;
+    using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
@@ -34,9 +36,7 @@ namespace Exiled.Events.Patches.Events.Scp330
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label shouldNotSever = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
-            Label enableEffectLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(InteractingScp330EventArgs));
 
@@ -74,38 +74,45 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Brfalse, returnLabel),
                 });
 
-            // This is to find the location of RpcMakeSound to remove the original code and add a new sever logic structure (Start point)
-            int addShouldSeverOffset = -1;
-            int addShouldSeverIndex = newInstructions.FindLastIndex(
-                instruction => instruction.Calls(Method(typeof(Scp330Interobject), nameof(Scp330Interobject.RpcMakeSound)))) + addShouldSeverOffset;
+            /* next code will used to override Sever check by EXILED
+             * old:
+             *   if (args.AllowPunishment && uses >= 2)
+             * new:
+             *   if (args.AllowPunishment && ev.ShouldSever)
+             */
 
-            int serverEffectLocationStart = -1;
-            int enableEffect = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.playerEffectsController)))) + serverEffectLocationStart;
+            // set `notSeverLabel`
+            int addTakenCandiesOffset = -1;
+            int addTakenCandiesIndex = newInstructions.FindLastIndex(
+                instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + addTakenCandiesOffset;
 
-            newInstructions[enableEffect].WithLabels(enableEffectLabel);
+            Label notSeverLabel = newInstructions[addTakenCandiesIndex].labels[0];
+
+            int allowPunishmentOffset = 2;
+            int allowPunishmentIndex = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.AllowPunishment)))) + allowPunishmentOffset;
+
+            // remove `uses >= 2` check, to override that by ev.ShouldSever
+            newInstructions.RemoveRange(allowPunishmentIndex, 3);
+
             newInstructions.InsertRange(
-                addShouldSeverIndex,
+                allowPunishmentIndex,
                 new[]
                 {
                     // if (!ev.ShouldSever)
                     //    goto shouldNotSever;
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.ShouldSever))),
-                    new(OpCodes.Brfalse, shouldNotSever),
-                    new(OpCodes.Br, enableEffectLabel),
+                    new(OpCodes.Brfalse_S, notSeverLabel),
                 });
 
-            // This will let us jump to the taken candies code and lock until ldarg_0, meaning we allow base game logic handle candy adding.
-            int addTakenCandiesOffset = -1;
-            int addTakenCandiesIndex = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + addTakenCandiesOffset;
-
-            newInstructions[addTakenCandiesIndex].WithLabels(shouldNotSever);
-            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
+            {
+                Log.Warn(newInstructions[z]);
                 yield return newInstructions[z];
+            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
