@@ -78,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Scp330
              * old:
              *   if (args.PlaySound)
              * new:
-             *   if (args.PlaySound || ev.PlaySound)
+             *   if (args.PlaySound && ev.PlaySound)
              */
 
             offset = 1;
@@ -92,7 +92,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // load ev.ShouldPlaySound and or operation with nw property.
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.ShouldPlaySound))),
-                    new(OpCodes.Or),
+                    new(OpCodes.Add),
                 });
 
             /* next code will used to override Sever check by EXILED
