@@ -36,7 +36,8 @@ namespace Exiled.Events.Patches.Generic
 
             Label ret = generator.DefineLabel();
 
-            // new Generator(this)
+            // if (Rooms == null)
+            //     return;
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
@@ -46,6 +47,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Brfalse_S, ret),
                 });
 
+            // DoorList.InitDoor(this);
             newInstructions.InsertRange(
                 newInstructions.Count - 1,
                 new CodeInstruction[]
