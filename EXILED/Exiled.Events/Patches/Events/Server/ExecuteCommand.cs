@@ -5,13 +5,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.IO;
-using Exiled.Events.Patches.Generic;
-
 namespace Exiled.Events.Patches.Events.Server
 {
+#pragma warning disable SA1402
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -19,6 +18,7 @@ namespace Exiled.Events.Patches.Events.Server
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
+    using Exiled.Events.Patches.Generic;
     using HarmonyLib;
     using RemoteAdmin;
 
@@ -28,9 +28,9 @@ namespace Exiled.Events.Patches.Events.Server
     /// Patches <see cref="CommandProcessor.ProcessQuery"/> and <see cref="QueryProcessor.ProcessGameConsoleQuery"/>
     /// to add <see cref="Handlers.Server.ExecutingCommand"/> and <see cref="Handlers.Server.ExecutedCommand"/> events.
     /// </summary>
-    [HarmonyPatch]
-    [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.OnExecutingCommand))]
-    [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.OnExecutedCommand))]
+    [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
+    // [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.ExecutingCommand))]
+    // [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.ExecutedCommand))]
     internal class ExecuteCommand
     {
         /// <summary>
@@ -83,12 +83,9 @@ namespace Exiled.Events.Patches.Events.Server
             }
         }
 
-        [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-            int index = newInstructions.FindIndex(x => x.operand is FieldInfo fieldInfo && fieldInfo == Field(typeof(CommandProcessor), nameof(CommandProcessor.RemoteAdminCommandHandler)));
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ExecutingCommandEventArgs));
 
@@ -119,48 +116,44 @@ namespace Exiled.Events.Patches.Events.Server
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
-            newInstructions.InsertRange(index, new[]
+            int index = newInstructions.FindIndex(x => x.Is(OpCodes.Ldsfld, Field(typeof(CommandProcessor), nameof(CommandProcessor.RemoteAdminCommandHandler))));
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // Player.Get(sender);
-                new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
+                new(OpCodes.Ldarg_1),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(CommandSender) })),
 
-                // null
                 new(OpCodes.Ldnull),
 
-                // strArray.Segment(1);
                 new(OpCodes.Ldloc_0),
                 new(OpCodes.Call, Method(typeof(ExecuteCommand), nameof(Convert))),
 
-                // true
                 new(OpCodes.Ldc_I4_1),
 
-                // ExecutingCommandEventArgs ev = new(Player, null, ArraySegment<string>, true);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ExecutingCommandEventArgs))[0]),
                 new(OpCodes.Stloc_S, ev.LocalIndex),
             });
 
-            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldloc_1);
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                new(OpCodes.Ldloc_1),
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Ldloc_1),
                 new(OpCodes.Callvirt, PropertySetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.Command))),
 
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-
-                // Handlers.Server.OnExecutingCommand(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnExecutingCommand))),
 
-                // if (ev.IsAllowed)
-                //   goto retLabel
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, returnLabel),
             });
 
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_0);
+            int offset = -3;
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldelem_Ref) + offset;
+
+            newInstructions[index].labels.Add(continueLabel);
 
             newInstructions.InsertRange(index, new[]
             {
@@ -176,28 +169,26 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Ldloc_0),
                 new(OpCodes.Ldc_I4_0),
                 new(OpCodes.Ldelem_Ref),
-                new(OpCodes.Call, Method(typeof(string), nameof(string.ToUpperInvariant))),
+                new(OpCodes.Callvirt, Method(typeof(string), nameof(string.ToUpperInvariant))),
                 new(OpCodes.Ldstr, "#Command execution was aborted by a plugin."),
                 new(OpCodes.Call, Method(typeof(string), nameof(string.Concat), new[] { typeof(string), typeof(string) })),
                 new(OpCodes.Ldc_I4_0),
                 new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Ldstr, string.Empty),
-                new(OpCodes.Call, Method(typeof(CommandSender), nameof(CommandSender.RaReply))),
+                new(OpCodes.Callvirt, Method(typeof(CommandSender), nameof(CommandSender.RaReply))),
 
                 new(OpCodes.Ldstr, "Command execution was aborted by a plugin."),
                 new(OpCodes.Ret),
-
-                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             });
 
-            int offset = 1;
-            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Stloc_S && x.operand is 6) + offset;
+            offset = 2;
+            index = newInstructions.FindIndex(x => x.Calls(Method(typeof(Misc), nameof(Misc.CloseAllRichTextTags)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
 
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.Player))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.Command))),
@@ -218,18 +209,110 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static ArraySegment<string> Convert(string[] strArray) => strArray.Segment(1);
     }
-}
 
-/*IL_00f4: ldarg.1      // sender
-      IL_00f5: ldloc.0      // strArray
-      IL_00f6: ldc.i4.0
-      IL_00f7: ldelem.ref
-      IL_00f8: callvirt     instance string [mscorlib]System.String::ToUpperInvariant()
-      IL_00fd: ldstr        "#"
-      IL_0102: ldloc.s      response
-      IL_0104: call         string [mscorlib]System.String::Concat(string, string, string)
-      IL_0109: ldloc.s      flag
-      IL_010b: ldc.i4.1
-      IL_010c: ldstr        ""
-      IL_0111: callvirt     instance void CommandSender::RaReply(string, bool, bool, string)
-*/
+    [HarmonyPatch(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery))]
+    internal class ExecuteCommandClientConsole
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            LocalBuilder ev = generator.DeclareLocal(typeof(ExecutingCommandEventArgs));
+
+            Label continueLabel = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
+
+            int index = newInstructions.FindIndex(x => x.Is(OpCodes.Ldsfld, Field(typeof(QueryProcessor), nameof(QueryProcessor.DotCommandHandler))));
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                new(OpCodes.Ldnull),
+
+                new(OpCodes.Ldloc_0),
+                new(OpCodes.Call, Method(typeof(ExecuteCommand), "Convert")),
+
+                new(OpCodes.Ldc_I4_1),
+
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ExecutingCommandEventArgs))[0]),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
+            });
+
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Ldloc_1),
+                new(OpCodes.Callvirt, PropertySetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.Command))),
+
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnExecutingCommand))),
+
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse_S, returnLabel),
+            });
+
+            int offset = -4;
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldelem_Ref) + offset;
+
+            newInstructions[index].labels.Add(continueLabel);
+
+            newInstructions.InsertRange(index, new[]
+            {
+                new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+                new(OpCodes.Dup),
+
+                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnExecutingCommand))),
+
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.IsAllowed))),
+                new(OpCodes.Brtrue_S, continueLabel),
+
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(returnLabel),
+                new(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
+                new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.gameConsoleTransmission))),
+                new(OpCodes.Ldstr, "Command execution was aborted by a plugin."),
+                new(OpCodes.Ldstr, "red"),
+                new(OpCodes.Callvirt, Method(typeof(GameConsoleTransmission), nameof(GameConsoleTransmission.SendToClient))),
+                new(OpCodes.Ret),
+            });
+
+            offset = 2;
+            index = newInstructions.FindIndex(x => x.Calls(Method(typeof(Misc), nameof(Misc.CloseAllRichTextTags)))) + offset;
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.Player))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.Command))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ExecutingCommandEventArgs), nameof(ExecutingCommandEventArgs.Arguments))),
+
+                new(OpCodes.Ldloc_3),
+
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ExecutedCommandEventArgs))[0]),
+
+                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnExecutedCommand))),
+            });
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+
+    /*internal class ExecuteCommandGameConsole
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+
+        }
+    }*/
+}
