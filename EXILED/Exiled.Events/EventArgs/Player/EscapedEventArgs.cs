@@ -35,7 +35,7 @@ namespace Exiled.Events.EventArgs.Player
             EscapeScenario = escapeScenario;
             Team = kvp.Key;
             Tickets = kvp.Value;
-            OldRole = role.Type;
+            OldRole = role;
             EscapeTime = (int)Math.Ceiling(role.ActiveTime.TotalSeconds);
         }
 
@@ -60,7 +60,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the previous role for this player.
         /// </summary>
-        public RoleTypeId OldRole { get; }
+        public Role OldRole { get; }
 
         /// <summary>
         /// Gets the time in seconds since round started.
