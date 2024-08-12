@@ -74,6 +74,27 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Brfalse, returnLabel),
                 });
 
+            /* next code will used to override sound rpc check by EXILED
+             * old:
+             *   if (args.PlaySound)
+             * new:
+             *   if (args.PlaySound || ev.PlaySound)
+             */
+
+            offset = 1;
+            index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.PlaySound)))) + offset;
+
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    // load ev.ShouldPlaySound and or operation with nw property.
+                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.ShouldPlaySound))),
+                    new(OpCodes.Or),
+                });
+
             /* next code will used to override Sever check by EXILED
              * old:
              *   if (args.AllowPunishment && uses >= 2)
@@ -82,26 +103,26 @@ namespace Exiled.Events.Patches.Events.Scp330
              */
 
             // set `notSeverLabel`
-            int addTakenCandiesOffset = -1;
-            int addTakenCandiesIndex = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + addTakenCandiesOffset;
+            offset = -1;
+            index = newInstructions.FindLastIndex(
+                instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + offset;
 
-            Label notSeverLabel = newInstructions[addTakenCandiesIndex].labels[0];
+            Label notSeverLabel = newInstructions[index].labels[0];
 
-            int allowPunishmentOffset = 2;
-            int allowPunishmentIndex = newInstructions.FindLastIndex(
-                instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.AllowPunishment)))) + allowPunishmentOffset;
+            offset = 2;
+            index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.AllowPunishment)))) + offset;
 
             // remove `uses >= 2` check, to override that by ev.ShouldSever
-            newInstructions.RemoveRange(allowPunishmentIndex, 3);
+            newInstructions.RemoveRange(index, 3);
 
             newInstructions.InsertRange(
-                allowPunishmentIndex,
+                index,
                 new[]
                 {
                     // if (!ev.ShouldSever)
                     //    goto shouldNotSever;
-                    new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
+                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.ShouldSever))),
                     new(OpCodes.Brfalse_S, notSeverLabel),
                 });
@@ -109,7 +130,10 @@ namespace Exiled.Events.Patches.Events.Scp330
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
+            {
+                Log.Warn(newInstructions[z]);
                 yield return newInstructions[z];
+            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
