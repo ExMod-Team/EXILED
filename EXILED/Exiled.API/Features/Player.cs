@@ -2413,6 +2413,17 @@ namespace Exiled.API.Features
 
         /// <summary>
         /// Gets the maximum amount of ammo the player can hold, given the ammo <see cref="AmmoType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="AmmoType"/> of the ammo to check.</param>
+        /// <returns>The maximum amount of ammo this player can carry.</returns>
+        [Obsolete("Use Player::GetAmmoLimit(AmmoType, bool) instead.")]
+        public int GetAmmoLimit(AmmoType type)
+        {
+            return (int)InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), referenceHub);
+        }
+
+        /// <summary>
+        /// Gets the maximum amount of ammo the player can hold, given the ammo <see cref="AmmoType"/>.
         /// This limit will scale with the armor the player is wearing.
         /// For armor ammo limits, see <see cref="Armor.AmmoLimits"/>.
         /// </summary>
