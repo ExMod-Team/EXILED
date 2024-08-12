@@ -28,7 +28,7 @@ namespace Exiled.Events.EventArgs.Player
         public ThrowingRequestEventArgs(Player player, ThrowableItem item, ThrowableNetworkHandler.RequestType request)
         {
             Player = player;
-            Throwable = (Throwable)Item.Get(item);
+            Throwable = Item.Get<Throwable>(item);
             RequestType = (ThrowRequest)request;
         }
 

@@ -71,7 +71,7 @@ namespace Exiled.API.Features.Items
 
             ipb.Info = new PickupSyncInfo(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-            Scp2176Projectile grenade = (Scp2176Projectile)Pickup.Get(ipb);
+            Scp2176Projectile grenade = Pickup.Get<Scp2176Projectile>(ipb);
 
             grenade.Base.gameObject.SetActive(true);
 

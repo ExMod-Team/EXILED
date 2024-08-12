@@ -42,5 +42,10 @@ namespace Exiled.API.Enums
         /// Indicates that the player has been authenticated as DedicatedServer.
         /// </summary>
         DedicatedServer,
+
+        /// <summary>
+        /// Indicates that the player has been authenticated during Offline mode.
+        /// </summary>
+        Offline,
     }
 }

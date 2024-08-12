@@ -33,6 +33,11 @@ namespace Exiled.Events.Handlers
         public static Event<PlacingAmnesticCloudEventArgs> PlacingAmnesticCloud { get; set; } = new();
 
         /// <summary>
+        /// Invoked after SCP-939 used its amnestic cloud ability.
+        /// </summary>
+        public static Event<PlacedAmnesticCloudEventArgs> PlacedAmnesticCloud { get; set; } = new();
+
+        /// <summary>
         /// Invoked before SCP-939 plays a stolen voice.
         /// </summary>
         public static Event<PlayingVoiceEventArgs> PlayingVoice { get; set; } = new();
@@ -80,6 +85,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlacingAmnesticCloudEventArgs" /> instance.</param>
         public static void OnPlacingAmnesticCloud(PlacingAmnesticCloudEventArgs ev) => PlacingAmnesticCloud.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after SCP-939 used its amnestic cloud ability.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlacedAmnesticCloudEventArgs" /> instance.</param>
+        public static void OnPlacedAmnesticCloud(PlacedAmnesticCloudEventArgs ev) => PlacedAmnesticCloud.InvokeSafely(ev);
 
         /// <summary>
         /// Called before SCP-939 plays a stolen voice.

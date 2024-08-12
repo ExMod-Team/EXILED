@@ -50,7 +50,7 @@ namespace Exiled.Events.Patches.Generic
                 foreach (DoorVariant subDoor in checkpoint.Base.SubDoors)
                 {
                     subDoor.RegisterRooms();
-                    BreakableDoor targetDoor = Door.Get(subDoor).Cast<BreakableDoor>();
+                    BreakableDoor targetDoor = Door.Get<BreakableDoor>(subDoor);
 
                     targetDoor.ParentCheckpointDoor = checkpoint;
                     checkpoint.SubDoorsValue.Add(targetDoor);
