@@ -2482,6 +2482,15 @@ namespace Exiled.API.Features
         /// Gets the maximum amount of an <see cref="ItemCategory"/> the player can hold, based on the armor the player is wearing, as well as server configuration.
         /// </summary>
         /// <param name="category">The <see cref="ItemCategory"/> to check.</param>
+        /// <returns>The maximum amount of items in the category that the player can hold.</returns>
+        [Obsolete("Use Player::GetCategoryLimit(ItemCategory, bool) instead.")]
+        public int GetCategoryLimit(ItemCategory category) =>
+            InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, referenceHub);
+
+        /// <summary>
+        /// Gets the maximum amount of an <see cref="ItemCategory"/> the player can hold, based on the armor the player is wearing, as well as server configuration.
+        /// </summary>
+        /// <param name="category">The <see cref="ItemCategory"/> to check.</param>
         /// <param name="ignoreArmor">If the method should ignore the armor the player is wearing.</param>
         /// <returns>The maximum amount of items in the category that the player can hold.</returns>
         public sbyte GetCategoryLimit(ItemCategory category, bool ignoreArmor = false)
