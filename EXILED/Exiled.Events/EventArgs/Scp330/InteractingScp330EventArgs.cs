@@ -35,6 +35,7 @@ namespace Exiled.Events.EventArgs.Scp330
             Candy = Scp330Candies.GetRandom();
             UsageCount = usage;
             ShouldSever = usage >= 2;
+            ShouldPlaySound = true;
             IsAllowed = Player.IsHuman;
         }
 
@@ -54,9 +55,15 @@ namespace Exiled.Events.EventArgs.Scp330
         public bool ShouldSever { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the sound should be played.
+        /// </summary>
+        /// <remarks>It won't work if <see cref="IsAllowed"/> = <see langword="false"/>.</remarks>
+        public bool ShouldPlaySound { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the player is allowed to interact with SCP-330.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
+        public bool IsAllowed { get; set; }
 
         /// <summary>
         /// Gets the <see cref="API.Features.Player" /> triggering the event.

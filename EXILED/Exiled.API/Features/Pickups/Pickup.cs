@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Pickups
     using System.Collections.Generic;
     using System.Linq;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups.Projectiles;
     using Exiled.API.Interfaces;
@@ -207,6 +208,11 @@ namespace Exiled.API.Features.Pickups
         /// Gets the <see cref="ItemType"/> of the item.
         /// </summary>
         public ItemType Type => Base.NetworkInfo.ItemId;
+
+        /// <summary>
+        /// Gets the <see cref="ItemCategory"/> of the item.
+        /// </summary>
+        public ItemCategory Category => Type.GetCategory();
 
         /// <summary>
         /// Gets or sets a value indicating whether the pickup is locked (can't be picked up).

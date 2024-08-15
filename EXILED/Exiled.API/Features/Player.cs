@@ -2413,6 +2413,17 @@ namespace Exiled.API.Features
 
         /// <summary>
         /// Gets the maximum amount of ammo the player can hold, given the ammo <see cref="AmmoType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="AmmoType"/> of the ammo to check.</param>
+        /// <returns>The maximum amount of ammo this player can carry.</returns>
+        [Obsolete("Use Player::GetAmmoLimit(AmmoType, bool) instead.")]
+        public int GetAmmoLimit(AmmoType type)
+        {
+            return (int)InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), referenceHub);
+        }
+
+        /// <summary>
+        /// Gets the maximum amount of ammo the player can hold, given the ammo <see cref="AmmoType"/>.
         /// This limit will scale with the armor the player is wearing.
         /// For armor ammo limits, see <see cref="Armor.AmmoLimits"/>.
         /// </summary>
@@ -2466,6 +2477,15 @@ namespace Exiled.API.Features
         /// <param name="ammoType">The <see cref="AmmoType"/> to check.</param>
         /// <returns>If the player has a custom limit for the specific <see cref="AmmoType"/>.</returns>
         public bool HasCustomAmmoLimit(AmmoType ammoType) => CustomAmmoLimits.ContainsKey(ammoType);
+
+        /// <summary>
+        /// Gets the maximum amount of an <see cref="ItemCategory"/> the player can hold, based on the armor the player is wearing, as well as server configuration.
+        /// </summary>
+        /// <param name="category">The <see cref="ItemCategory"/> to check.</param>
+        /// <returns>The maximum amount of items in the category that the player can hold.</returns>
+        [Obsolete("Use Player::GetCategoryLimit(ItemCategory, bool) instead.")]
+        public int GetCategoryLimit(ItemCategory category) =>
+            InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, referenceHub);
 
         /// <summary>
         /// Gets the maximum amount of an <see cref="ItemCategory"/> the player can hold, based on the armor the player is wearing, as well as server configuration.
@@ -3406,7 +3426,7 @@ namespace Exiled.API.Features
         /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
         /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
         /// <returns>The <see cref="TantrumHazard"/> instance..</returns>
-        public TantrumHazard PlaceTantrum(bool isActive = true) => Map.PlaceTantrum(Position, isActive);
+        public TantrumHazard PlaceTantrum(bool isActive = true) => TantrumHazard.PlaceTantrum(Position, isActive);
 
         /// <summary>
         /// Gives a new <see cref="AhpStat">to the player</see>.
