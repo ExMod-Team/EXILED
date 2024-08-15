@@ -160,7 +160,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets or sets the SCP-3114's Ragdoll used for it's FakeIdentity.
         /// </summary>
-        public Ragdoll Ragdoll
+        public new Ragdoll Ragdoll
         {
             get => Ragdoll.Get(Identity.CurIdentity.Ragdoll);
             set

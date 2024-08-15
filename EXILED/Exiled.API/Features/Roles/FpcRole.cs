@@ -11,14 +11,14 @@ namespace Exiled.API.Features.Roles
     using System.Reflection;
 
     using Exiled.API.Features.Pools;
-
     using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
-
+    using PlayerRoles.Spectating;
+    using PlayerRoles.Visibility;
+    using PlayerRoles.Voice;
     using PlayerStatsSystem;
     using RelativePositioning;
-
     using UnityEngine;
 
     /// <summary>
@@ -241,6 +241,42 @@ namespace Exiled.API.Features.Roles
         {
             get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
             set => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="API.Features.Ragdoll"/> for this role.
+        /// </summary>
+        public Ragdoll Ragdoll
+        {
+            get => Ragdoll.Get(FirstPersonController.Ragdoll);
+            set => FirstPersonController.Ragdoll = value.Base;
+        }
+
+        /// <summary>
+        /// Gets or sets voice module for this role.
+        /// </summary>
+        public VoiceModuleBase VoiceModule
+        {
+            get => FirstPersonController.VoiceModule;
+            set => FirstPersonController.VoiceModule = value;
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="VisibilityController"/> for this role.
+        /// </summary>
+        public VisibilityController VisibilityController
+        {
+            get => FirstPersonController.VisibilityController;
+            set => FirstPersonController.VisibilityController = value;
+        }
+
+        /// <summary>
+        /// Gets or sets <see cref="SpectatableModuleBase"/> for this role.
+        /// </summary>
+        public SpectatableModuleBase SpectatableModuleBase
+        {
+            get => FirstPersonController.SpectatorModule;
+            set => FirstPersonController.SpectatorModule = value;
         }
 
         /// <summary>
