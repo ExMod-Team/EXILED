@@ -54,6 +54,8 @@ namespace Exiled.API.Features
 
         private static AmbientSoundPlayer ambientSoundPlayer;
 
+        private static SqueakSpawner squeakSpawner;
+
         /// <summary>
         /// Gets the tantrum prefab.
         /// </summary>
@@ -108,6 +110,11 @@ namespace Exiled.API.Features
         /// Gets the <see cref="global::AmbientSoundPlayer"/>.
         /// </summary>
         public static AmbientSoundPlayer AmbientSoundPlayer => ambientSoundPlayer ??= ReferenceHub.HostHub.GetComponent<AmbientSoundPlayer>();
+
+        /// <summary>
+        /// Gets the <see cref="global::SqueakSpawner"/>.
+        /// </summary>
+        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.
@@ -360,6 +367,19 @@ namespace Exiled.API.Features
                 ShooterPosition = new RelativePosition(position),
             };
             msg.SendToAuthenticated();
+        }
+
+        /// <summary>
+        /// Spawns mice inside the <see cref="RoomType.EzShelter"/>.
+        /// </summary>
+        /// <param name="mice">The type of mice you want to spawn..</param>
+        public static void SpawnMice(byte mice = 1)
+        {
+            if (mice > SqueakSpawner.mice.Length)
+                throw new ArgumentOutOfRangeException($"Mouse type must be between 1 and {SqueakSpawner.mice.Length}.");
+
+            SqueakSpawner.NetworksyncSpawn = mice;
+            SqueakSpawner.SyncMouseSpawn(0, SqueakSpawner.NetworksyncSpawn);
         }
 
         /// <summary>
