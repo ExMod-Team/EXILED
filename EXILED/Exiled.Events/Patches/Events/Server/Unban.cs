@@ -80,7 +80,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnbannedEventArgs))[0]),
 
                 // Handlers.Server.OnUnbanned(ev2);
-                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnUnbanned)))
+                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnUnbanned))),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
