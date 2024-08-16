@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Item
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -67,10 +68,8 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Callvirt, PropertyGetter(typeof(NetworkIdentity), nameof(NetworkIdentity.netId))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(uint) })),
 
-                    // Item::Get(firearm)
+                    // firearm
                     new(OpCodes.Ldloc_1),
-                    new(OpCodes.Call, Method(typeof(Item), nameof(Item.Get), new[] { typeof(InventorySystem.Items.ItemBase) })),
-                    new(OpCodes.Castclass, typeof(Firearm)),
 
                     // AttachmentsChangeRequest::AttachmentsCode
                     new(OpCodes.Ldarg_1),
@@ -79,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Item
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // ChangingAttachmentsEventArgs ev = new ChangingAttachmentsEventArgs(__ARGS__)
+                    // ChangingAttachmentsEventArgs ev = new ChangingAttachmentsEventArgs(Player, Firearm, uint, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingAttachmentsEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

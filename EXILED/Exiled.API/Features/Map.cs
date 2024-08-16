@@ -28,9 +28,6 @@ namespace Exiled.API.Features
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using MapGeneration.Distributors;
-    using Mirror;
-    using PlayerRoles;
-    using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.Ragdolls;
     using RelativePositioning;
@@ -39,8 +36,6 @@ namespace Exiled.API.Features
     using Utils.Networking;
 
     using Object = UnityEngine.Object;
-    using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
-    using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
 
     /// <summary>
     /// A set of tools to easily handle the in-game map.
@@ -57,53 +52,17 @@ namespace Exiled.API.Features
         /// </summary>
         internal static readonly List<PocketDimensionTeleport> TeleportsValue = new(8);
 
-        /// <summary>
-        /// A list of <see cref="AdminToy"/>s on the map.
-        /// </summary>
-        internal static readonly List<AdminToy> ToysValue = new();
-
-        private static TantrumEnvironmentalHazard tantrumPrefab;
-        private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
-
         private static AmbientSoundPlayer ambientSoundPlayer;
 
         /// <summary>
         /// Gets the tantrum prefab.
         /// </summary>
-        public static TantrumEnvironmentalHazard TantrumPrefab
-        {
-            get
-            {
-                if (tantrumPrefab == null)
-                {
-                    Scp173GameRole scp173Role = (Scp173GameRole)RoleTypeId.Scp173.GetRoleBase();
-
-                    if (scp173Role.SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility scp173TantrumAbility))
-                        tantrumPrefab = scp173TantrumAbility._tantrumPrefab;
-                }
-
-                return tantrumPrefab;
-            }
-        }
+        public static TantrumEnvironmentalHazard TantrumPrefab => TantrumHazard.TantrumPrefab; // TODO: Remove this.
 
         /// <summary>
         /// Gets the amnestic cloud prefab.
         /// </summary>
-        public static Scp939AmnesticCloudInstance AmnesticCloudPrefab
-        {
-            get
-            {
-                if (amnesticCloudPrefab == null)
-                {
-                    Scp939GameRole scp939Role = (Scp939GameRole)RoleTypeId.Scp939.GetRoleBase();
-
-                    if (scp939Role.SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
-                        amnesticCloudPrefab = ability._instancePrefab;
-                }
-
-                return amnesticCloudPrefab;
-            }
-        }
+        public static Scp939AmnesticCloudInstance AmnesticCloudPrefab => AmnesticCloudHazard.AmnesticCloudPrefab; // TODO: Remove this.
 
         /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
@@ -130,7 +89,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets all <see cref="AdminToy"/> objects.
         /// </summary>
-        public static ReadOnlyCollection<AdminToy> Toys { get; } = ToysValue.AsReadOnly();
+        public static ReadOnlyCollection<AdminToy> Toys => AdminToy.BaseToAdminToy.Values.ToList().AsReadOnly(); // TODO: Obsolete it and make people use AdminToy.List
 
         /// <summary>
         /// Gets or sets the current seed of the map.
@@ -286,21 +245,7 @@ namespace Exiled.API.Features
         /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
         /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
         /// <returns>The <see cref="TantrumHazard"/> instance.</returns>
-        public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true)
-        {
-            TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
-
-            if (!isActive)
-                tantrum.SynchronizedPosition = new RelativePosition(position);
-            else
-                tantrum.SynchronizedPosition = new RelativePosition(position + (Vector3.up * 0.25f));
-
-            tantrum._destroyed = !isActive;
-
-            NetworkServer.Spawn(tantrum.gameObject);
-
-            return Hazard.Get(tantrum).Cast<TantrumHazard>();
-        }
+        public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true) => TantrumHazard.PlaceTantrum(position, isActive); // TODO: Remove this.
 
         /// <summary>
         /// Destroy all <see cref="ItemPickupBase"/> objects.

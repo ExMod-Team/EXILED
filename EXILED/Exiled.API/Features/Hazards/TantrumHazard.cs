@@ -7,7 +7,9 @@
 
 namespace Exiled.API.Features.Hazards
 {
+    using Exiled.API.Enums;
     using global::Hazards;
+    using Mirror;
     using RelativePositioning;
     using UnityEngine;
 
@@ -16,6 +18,8 @@ namespace Exiled.API.Features.Hazards
     /// </summary>
     public class TantrumHazard : TemporaryHazard
     {
+        private static TantrumEnvironmentalHazard tantrumPrefab;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TantrumHazard"/> class.
         /// </summary>
@@ -27,9 +31,26 @@ namespace Exiled.API.Features.Hazards
         }
 
         /// <summary>
+        /// Gets the tantrum prefab.
+        /// </summary>
+        public static TantrumEnvironmentalHazard TantrumPrefab
+        {
+            get
+            {
+                if (tantrumPrefab == null)
+                    tantrumPrefab = PrefabHelper.GetPrefab<TantrumEnvironmentalHazard>(PrefabType.TantrumObj);
+
+                return tantrumPrefab;
+            }
+        }
+
+        /// <summary>
         /// Gets the <see cref="TantrumEnvironmentalHazard"/>.
         /// </summary>
         public new TantrumEnvironmentalHazard Base { get; }
+
+        /// <inheritdoc />
+        public override HazardType Type => HazardType.Tantrum;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not sizzle should be played.
@@ -56,6 +77,29 @@ namespace Exiled.API.Features.Hazards
         {
             get => Base._correctPosition;
             set => Base._correctPosition = value;
+        }
+
+        /// <summary>
+        /// Places a Tantrum (SCP-173's ability) in the indicated position.
+        /// </summary>
+        /// <param name="position">The position where you want to spawn the Tantrum.</param>
+        /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
+        /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
+        /// <returns>The <see cref="TantrumHazard"/> instance.</returns>
+        public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true)
+        {
+            TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
+
+            if (!isActive)
+                tantrum.SynchronizedPosition = new(position);
+            else
+                tantrum.SynchronizedPosition = new(position + (Vector3.up * 0.25f));
+
+            tantrum._destroyed = !isActive;
+
+            NetworkServer.Spawn(tantrum.gameObject);
+
+            return Get<TantrumHazard>(tantrum);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BaseTeslaGate"/>s and their corresponding <see cref="TeslaGate"/>.
         /// </summary>
-        internal static readonly Dictionary<BaseTeslaGate, TeslaGate> BaseTeslaGateToTeslaGate = new(10);
+        internal static readonly Dictionary<BaseTeslaGate, TeslaGate> BaseTeslaGateToTeslaGate = new(10, new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TeslaGate"/> class.
@@ -178,7 +178,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="List{T}"/> of <see cref="TantrumHazard"/> which contains all the tantrums to destroy.
         /// </summary>
-        public IEnumerable<TantrumHazard> TantrumsToDestroy => Base.TantrumsToBeDestroyed.Select(x => Hazard.Get(x) as TantrumHazard);
+        public IEnumerable<TantrumHazard> TantrumsToDestroy => Base.TantrumsToBeDestroyed.Select(x => Hazard.Get<TantrumHazard>(x));
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> which contains all the players inside the hurt range.

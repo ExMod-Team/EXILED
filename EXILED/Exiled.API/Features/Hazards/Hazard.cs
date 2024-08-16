@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Hazards
     using System.Collections.Generic;
     using System.Linq;
 
+    using Exiled.API.Enums;
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
     using global::Hazards;
@@ -25,7 +26,7 @@ namespace Exiled.API.Features.Hazards
         /// <summary>
         /// <see cref="Dictionary{TKey,TValue}"/> with <see cref="EnvironmentalHazard"/> to it's <see cref="Hazard"/>.
         /// </summary>
-        internal static readonly Dictionary<EnvironmentalHazard, Hazard> EnvironmentalHazardToHazard = new();
+        internal static readonly Dictionary<EnvironmentalHazard, Hazard> EnvironmentalHazardToHazard = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Hazard"/> class.
@@ -47,6 +48,11 @@ namespace Exiled.API.Features.Hazards
         /// Gets the <see cref="EnvironmentalHazard"/>.
         /// </summary>
         public EnvironmentalHazard Base { get; }
+
+        /// <summary>
+        /// Gets the <see cref="HazardType"/> associated with the current Hazard.
+        /// </summary>
+        public virtual HazardType Type { get; } = HazardType.Unknown;
 
         /// <summary>
         /// Gets or sets the list with all affected by this hazard players.
@@ -124,6 +130,15 @@ namespace Exiled.API.Features.Hazards
         };
 
         /// <summary>
+        /// Gets the <see cref="Hazard"/> by <see cref="EnvironmentalHazard"/>.
+        /// </summary>
+        /// <param name="environmentalHazard">The <see cref="EnvironmentalHazard"/> to convert into an hazard.</param>
+        /// <typeparam name="T">The specified <see cref="Hazard"/> type.</typeparam>
+        /// <returns>The hazard wrapper for the given <see cref="EnvironmentalHazard"/>.</returns>
+        public static T Get<T>(EnvironmentalHazard environmentalHazard)
+            where T : Hazard => Get(environmentalHazard) as T;
+
+        /// <summary>
         /// Gets the hazard by the room where it's located.
         /// </summary>
         /// <param name="room">Room.</param>
@@ -143,6 +158,13 @@ namespace Exiled.API.Features.Hazards
         /// <param name="predicate">Condition to satisfy.</param>
         /// <returns><see cref="IEnumerable{T}"/> of <see cref="Hazard"/> based on predicate.</returns>
         public static IEnumerable<Hazard> Get(Func<Hazard, bool> predicate) => List.Where(predicate);
+
+        /// <summary>
+        /// Gets an <see cref="IEnumerable{T}"/> of <see cref="Hazard"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="HazardType"/> to get.</param>
+        /// <returns><see cref="IEnumerable{T}"/> of <see cref="Hazard"/> based on type.</returns>
+        public static IEnumerable<Hazard> Get(HazardType type) => Get(h => h.Type == type);
 
         /// <summary>
         /// Checks if player is in hazard zone.

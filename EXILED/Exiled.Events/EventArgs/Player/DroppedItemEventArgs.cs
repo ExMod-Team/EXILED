@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Player
     using API.Features;
     using Exiled.API.Features.Pickups;
     using Interfaces;
+    using InventorySystem.Items.Pickups;
 
     /// <summary>
     /// Contains all information after a player drops an item.
@@ -28,10 +29,10 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="wasThrown">
         /// <inheritdoc cref="WasThrown" />
         /// </param>
-        public DroppedItemEventArgs(Player player, Pickup pickup, bool wasThrown)
+        public DroppedItemEventArgs(Player player, ItemPickupBase pickup, bool wasThrown)
         {
             Player = player;
-            Pickup = pickup;
+            Pickup = Pickup.Get(pickup);
             WasThrown = wasThrown;
         }
 

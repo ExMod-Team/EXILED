@@ -8,6 +8,7 @@
 namespace Exiled.CustomItems.Patches
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -52,7 +53,7 @@ namespace Exiled.CustomItems.Patches
                 index,
                 new[]
                 {
-                    new(OpCodes.Call,  Method(typeof(Item), nameof(Item.Get), new[] { typeof(ItemBase), })),
+                    new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).First(x => !x.IsGenericMethod && x.Name is nameof(Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemBase))),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, item.LocalIndex),
                     new(OpCodes.Brfalse_S, continueLabel),

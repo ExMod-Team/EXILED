@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Toys
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     using AdminToys;
@@ -14,6 +15,7 @@ namespace Exiled.API.Features.Toys
     using Enums;
     using Exiled.API.Interfaces;
     using Footprinting;
+    using InventorySystem.Items;
     using Mirror;
 
     using UnityEngine;
@@ -24,6 +26,11 @@ namespace Exiled.API.Features.Toys
     public abstract class AdminToy : IWorldSpace
     {
         /// <summary>
+        /// A dictionary of all <see cref="AdminToys.AdminToyBase"/>'s that have been converted into <see cref="AdminToy"/>.
+        /// </summary>
+        internal static readonly Dictionary<AdminToyBase, AdminToy> BaseToAdminToy = new(new ComponentsEqualityComparer());
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AdminToy"/> class.
         /// </summary>
         /// <param name="toyAdminToyBase">The <see cref="AdminToys.AdminToyBase"/> to be wrapped.</param>
@@ -33,8 +40,13 @@ namespace Exiled.API.Features.Toys
             AdminToyBase = toyAdminToyBase;
             ToyType = type;
 
-            Map.ToysValue.Add(this);
+            BaseToAdminToy.Add(toyAdminToyBase, this);
         }
+
+        /// <summary>
+        /// Gets a list of all <see cref="AdminToy"/>'s on the server.
+        /// </summary>
+        public static IReadOnlyCollection<AdminToy> List => BaseToAdminToy.Values;
 
         /// <summary>
         /// Gets the original <see cref="AdminToys.AdminToyBase"/>.
@@ -130,7 +142,31 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> instance.</param>
         /// <returns>The corresponding <see cref="AdminToy"/> instance.</returns>
-        public static AdminToy Get(AdminToyBase adminToyBase) => Map.Toys.FirstOrDefault(x => x.AdminToyBase == adminToyBase);
+        public static AdminToy Get(AdminToyBase adminToyBase)
+        {
+            if (adminToyBase == null)
+                return null;
+
+            if (BaseToAdminToy.TryGetValue(adminToyBase, out AdminToy adminToy))
+                return adminToy;
+
+            return adminToyBase switch
+            {
+                LightSourceToy lightSourceToy => new Light(lightSourceToy),
+                PrimitiveObjectToy primitiveObjectToy => new Primitive(primitiveObjectToy),
+                ShootingTarget shootingTarget => new ShootingTargetToy(shootingTarget),
+                _ => throw new System.NotImplementedException()
+            };
+        }
+
+        /// <summary>
+        /// Gets the <see cref="AdminToy"/> by <see cref="AdminToys.AdminToyBase"/>.
+        /// </summary>
+        /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> to convert into an admintoy.</param>
+        /// <typeparam name="T">The specified <see cref="AdminToy"/> type.</typeparam>
+        /// <returns>The admintoy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
+        public static T Get<T>(AdminToyBase adminToyBase)
+            where T : AdminToy => Get(adminToyBase) as T;
 
         /// <summary>
         /// Spawns the toy into the game. Use <see cref="UnSpawn"/> to remove it.
@@ -147,7 +183,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public void Destroy()
         {
-            Map.ToysValue.Remove(this);
+            BaseToAdminToy.Remove(AdminToyBase);
             NetworkServer.Destroy(AdminToyBase.gameObject);
         }
     }

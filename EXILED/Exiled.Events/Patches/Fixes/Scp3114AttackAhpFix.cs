@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Fixes
     /// <summary>
     /// Patches the <see cref="Scp3114Slap.DamagePlayers()"/> delegate.
     /// Fix than Scp3114Slap was giving humeshield even if player was not hit by Scp3114.
-    /// Bug reported to NW (https://trello.com/c/1AwpM8XE/5814-scp3114-is-able-to-get-humeshield-with-godmod-player).
+    /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/119).
     /// </summary>
     [HarmonyPatch(typeof(Scp3114Slap), nameof(Scp3114Slap.DamagePlayers))]
     internal class Scp3114AttackAhpFix

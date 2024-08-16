@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -69,7 +70,7 @@ namespace Exiled.Events.Patches.Events.Player
                 // if (Firearm == null)
                 //     return;
                 new CodeInstruction(OpCodes.Ldloc_1),
-                new(OpCodes.Call, Method(typeof(API.Features.Items.Item), nameof(API.Features.Items.Item.Get), new[] { typeof(ItemBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(API.Features.Items.Item)).First(x => !x.IsGenericMethod && x.Name is nameof(API.Features.Items.Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemBase))),
                 new(OpCodes.Isinst, typeof(Firearm)),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, firearm.LocalIndex),

@@ -14,7 +14,9 @@ namespace Exiled.API.Features.Doors
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
+    using Exiled.API.Features.Hazards;
     using Exiled.API.Interfaces;
+    using global::Hazards;
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
     using MEC;
@@ -38,7 +40,7 @@ namespace Exiled.API.Features.Doors
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="DoorVariant"/>'s and their corresponding <see cref="Door"/>.
         /// </summary>
-        internal static readonly Dictionary<DoorVariant, Door> DoorVariantToDoor = new();
+        internal static readonly Dictionary<DoorVariant, Door> DoorVariantToDoor = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Door"/> class.
@@ -310,6 +312,31 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
+        /// Gets the <see cref="Door"/> by <see cref="DoorVariant"/>.
+        /// </summary>
+        /// <param name="doorVariant">The <see cref="DoorVariant"/> to convert into an door.</param>
+        /// <typeparam name="T">The specified <see cref="Door"/> type.</typeparam>
+        /// <returns>The door wrapper for the given <see cref="DoorVariant"/>.</returns>
+        public static T Get<T>(DoorVariant doorVariant)
+            where T : Door => Get(doorVariant) as T;
+
+        /// <summary>
+        /// Gets a <see cref="Door"/> given the specified <see cref="DoorType"/>.
+        /// </summary>
+        /// <param name="doorType">The <see cref="DoorType"/> to search for.</param>
+        /// <returns>The <see cref="Door"/> with the given <see cref="DoorType"/> or <see langword="null"/> if not found.</returns>
+        public static Door Get(DoorType doorType) => List.FirstOrDefault(x => x.Type == doorType);
+
+        /// <summary>
+        /// Gets the <see cref="Door"/> by <see cref="DoorVariant"/>.
+        /// </summary>
+        /// <param name="doorType">The <see cref="DoorVariant"/> to convert into an door.</param>
+        /// <typeparam name="T">The specified <see cref="Door"/> type.</typeparam>
+        /// <returns>The door wrapper for the given <see cref="DoorVariant"/>.</returns>
+        public static T Get<T>(DoorType doorType)
+            where T : Door => Get(doorType) as T;
+
+        /// <summary>
         /// Gets a <see cref="Door"/> given the specified name.
         /// </summary>
         /// <param name="name">The name to search for.</param>
@@ -321,25 +348,20 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
+        /// Gets the <see cref="Door"/> by <see cref="DoorVariant"/>.
+        /// </summary>
+        /// <param name="name">The name to search for.</param>
+        /// <typeparam name="T">The specified <see cref="Door"/> type.</typeparam>
+        /// <returns>The door wrapper for the given <see cref="DoorVariant"/>.</returns>
+        public static T Get<T>(string name)
+            where T : Door => Get(name) as T;
+
+        /// <summary>
         /// Gets the door object associated with a specific <see cref="UnityEngine.GameObject"/>, or creates a new one if there isn't one.
         /// </summary>
         /// <param name="gameObject">The base-game <see cref="UnityEngine.GameObject"/>.</param>
         /// <returns>The <see cref="Door"/> with the given name or <see langword="null"/> if not found.</returns>
         public static Door Get(GameObject gameObject) => gameObject is null ? null : Get(gameObject.GetComponentInChildren<DoorVariant>());
-
-        /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> filtered based on a predicate.
-        /// </summary>
-        /// <param name="predicate">The condition to satify.</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains elements that satify the condition.</returns>
-        public static IEnumerable<Door> Get(Func<Door, bool> predicate) => List.Where(predicate);
-
-        /// <summary>
-        /// Gets a <see cref="Door"/> given the specified <see cref="DoorType"/>.
-        /// </summary>
-        /// <param name="doorType">The <see cref="DoorType"/> to search for.</param>
-        /// <returns>The <see cref="Door"/> with the given <see cref="DoorType"/> or <see langword="null"/> if not found.</returns>
-        public static Door Get(DoorType doorType) => List.FirstOrDefault(x => x.Type == doorType);
 
         /// <summary>
         /// Returns the closest <see cref="Door"/> to the given <paramref name="position"/>.
@@ -366,6 +388,13 @@ namespace Exiled.API.Features.Doors
             List<Door> doors = onlyUnbroken || type is not ZoneType.Unspecified ? Get(x => (x.Room is null || x.Room.Zone.HasFlag(type) || type == ZoneType.Unspecified) && (x is Breakable { IsDestroyed: true } || !onlyUnbroken)).ToList() : DoorVariantToDoor.Values.ToList();
             return doors[UnityEngine.Random.Range(0, doors.Count)];
         }
+
+        /// <summary>
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> filtered based on a predicate.
+        /// </summary>
+        /// <param name="predicate">The condition to satify.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains elements that satify the condition.</returns>
+        public static IEnumerable<Door> Get(Func<Door, bool> predicate) => List.Where(predicate);
 
         /// <summary>
         /// Locks all <see cref="Door">doors</see> given the specified <see cref="ZoneType"/>.

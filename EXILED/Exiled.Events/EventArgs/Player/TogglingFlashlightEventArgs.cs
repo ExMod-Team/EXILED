@@ -35,7 +35,7 @@ namespace Exiled.Events.EventArgs.Player
         public TogglingFlashlightEventArgs(ReferenceHub hub, ToggleableLightItemBase flashlight, bool newState)
         {
             Player = Player.Get(hub);
-            Flashlight = (Flashlight)Item.Get(flashlight);
+            Flashlight = Item.Get<Flashlight>(flashlight);
             initialState = newState;
             NewState = newState;
         }
