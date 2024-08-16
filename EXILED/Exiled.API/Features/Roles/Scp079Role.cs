@@ -22,6 +22,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp079.Pinging;
     using PlayerRoles.PlayableScps.Scp079.Rewards;
     using PlayerRoles.Subroutines;
+    using PlayerRoles.Voice;
     using RelativePositioning;
     using Utils.NonAllocLINQ;
 
@@ -32,7 +33,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-079.
     /// </summary>
-    public class Scp079Role : Role, ISubroutinedScpRole, ISpawnableScp
+    public class Scp079Role : Role, ISubroutinedScpRole, ISpawnableScp, IVoiceRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp079Role"/> class.
@@ -373,6 +374,9 @@ namespace Exiled.API.Features.Roles
         /// Gets SCP-079's energy regeneration speed.
         /// </summary>
         public float EnergyRegenerationSpeed => AuxManager.RegenSpeed;
+
+        /// <inheritdoc/>
+        public VoiceModuleBase VoiceModule => Base.VoiceModule;
 
         /// <summary>
         /// Gets the game <see cref="Scp079GameRole"/>.

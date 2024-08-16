@@ -14,6 +14,7 @@ namespace Exiled.API.Features.Roles
     using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.Ragdolls;
     using PlayerRoles.Spectating;
     using PlayerRoles.Visibility;
     using PlayerRoles.Voice;
@@ -24,7 +25,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents an fpc class.
     /// </summary>
-    public abstract class FpcRole : Role
+    public abstract class FpcRole : Role, IVoiceRole
     {
         private static FieldInfo enableFallDamageField;
         private bool isUsingStamina = true;
@@ -244,40 +245,28 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets or sets <see cref="API.Features.Ragdoll"/> for this role.
+        /// Gets or sets a prefab ragdoll for this role.
         /// </summary>
-        public Ragdoll Ragdoll
+        public BasicRagdoll Ragdoll
         {
-            get => Ragdoll.Get(FirstPersonController.Ragdoll);
-            set => FirstPersonController.Ragdoll = value.Base;
+            get => FirstPersonController.Ragdoll;
+            set => FirstPersonController.Ragdoll = value;
         }
 
         /// <summary>
-        /// Gets or sets voice module for this role.
+        /// Gets a voice module for this role.
         /// </summary>
-        public VoiceModuleBase VoiceModule
-        {
-            get => FirstPersonController.VoiceModule;
-            set => FirstPersonController.VoiceModule = value;
-        }
+        public VoiceModuleBase VoiceModule => FirstPersonController.VoiceModule;
 
         /// <summary>
-        /// Gets or sets <see cref="VisibilityController"/> for this role.
+        /// Gets a <see cref="VisibilityController"/> for this role.
         /// </summary>
-        public VisibilityController VisibilityController
-        {
-            get => FirstPersonController.VisibilityController;
-            set => FirstPersonController.VisibilityController = value;
-        }
+        public VisibilityController VisibilityController => FirstPersonController.VisibilityController;
 
         /// <summary>
-        /// Gets or sets <see cref="SpectatableModuleBase"/> for this role.
+        /// Gets a <see cref="SpectatableModuleBase"/> for this role.
         /// </summary>
-        public SpectatableModuleBase SpectatableModuleBase
-        {
-            get => FirstPersonController.SpectatorModule;
-            set => FirstPersonController.SpectatorModule = value;
-        }
+        public SpectatableModuleBase SpectatableModuleBase => FirstPersonController.SpectatorModule;
 
         /// <summary>
         /// Resets the <see cref="Player"/>'s stamina.

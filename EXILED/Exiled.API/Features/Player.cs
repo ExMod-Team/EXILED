@@ -212,14 +212,9 @@ namespace Exiled.API.Features
         public bool HasHint => CurrentHint != null;
 
         /// <summary>
-        /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
-        /// </summary>
-        public VoiceModuleBase VoiceModule => RoleManager.CurrentRole is IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
-
-        /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="PersonalRadioPlayback"/>, can be null.
         /// </summary>
-        public PersonalRadioPlayback RadioPlayback => VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null;
+        public PersonalRadioPlayback RadioPlayback => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null : null;
 
         /// <summary>
         /// Gets the <see cref="Hints.HintDisplay"/> of the player.
@@ -793,7 +788,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is speaking.
         /// </summary>
-        public bool IsSpeaking => VoiceModule != null && VoiceModule.IsSpeaking;
+        public bool IsSpeaking => Role is Roles.IVoiceRole voiceRole && voiceRole.VoiceModule.IsSpeaking;
 
         /// <summary>
         /// Gets the player's voice color.
@@ -805,13 +800,13 @@ namespace Exiled.API.Features
         /// </summary>
         public VoiceChatChannel VoiceChannel
         {
-            get => VoiceModule == null ? VoiceChatChannel.None : VoiceModule.CurrentChannel;
+            get => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule.CurrentChannel : VoiceChatChannel.None;
             set
             {
-                if (VoiceModule == null)
+                if (Role is not Roles.IVoiceRole voiceRole)
                     return;
 
-                VoiceModule.CurrentChannel = value;
+                voiceRole.VoiceModule.CurrentChannel = value;
             }
         }
 
