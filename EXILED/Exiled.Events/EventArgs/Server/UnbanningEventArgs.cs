@@ -10,7 +10,7 @@ namespace Exiled.Events.EventArgs.Server
     using Exiled.Events.EventArgs.Interfaces;
 
     /// <summary>
-    /// Contains all information
+    /// Contains all information before player is unbanned.
     /// </summary>
     public class UnbanningEventArgs : IDeniableEvent
     {
