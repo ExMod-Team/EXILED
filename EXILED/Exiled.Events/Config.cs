@@ -84,7 +84,7 @@ namespace Exiled.Events
         /// Gets or sets a value indicating whether the SCP079 will recontained if there are no SCPs left.
         /// </summary>
         [Description("Indicates whether the SCP079 will recontained if there are no SCPs left.")]
-        public bool ShouldRecontainScp079IfNoScpsLeft { get; set; } = true;
+        public bool RecontainScp079IfNoScpsLeft { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether configs has to be reloaded every time a round restarts.

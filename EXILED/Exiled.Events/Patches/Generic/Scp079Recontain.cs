@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Generic.Scp079API
 
     /// <summary>
     /// Patches <see cref="Scp079Recontainer.OnServerRoleChanged(ReferenceHub, PlayerRoles.RoleTypeId, PlayerRoles.RoleChangeReason)"/>.
-    /// Adds the <see cref="Exiled.Events.Config.ShouldRecontainScp079IfNoScpsLeft" /> support.
+    /// Adds the <see cref="Exiled.Events.Config.RecontainScp079IfNoScpsLeft" /> support.
     /// </summary>
     [HarmonyPatch(typeof(Scp079Recontainer), nameof(Scp079Recontainer.OnServerRoleChanged))]
     internal class Scp079Recontain
@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Generic.Scp079API
                     //     return;
                     new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Exiled.Events.Events), nameof(Exiled.Events.Events.Instance))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Exiled.Events.Events), nameof(Exiled.Events.Events.Config))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Exiled.Events.Config), nameof(Exiled.Events.Config.ShouldRecontainScp079IfNoScpsLeft))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Exiled.Events.Config), nameof(Exiled.Events.Config.RecontainScp079IfNoScpsLeft))),
                     new(OpCodes.Brfalse_S, ret),
                 });
 
