@@ -62,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Ret),
 
                 // id = ev.BanDetails.ToString();
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(UnbanningEventArgs), nameof(UnbanningEventArgs.BanDetails))),
                 new(OpCodes.Call, Method(typeof(BanDetails), nameof(BanDetails.ToString))),
                 new(OpCodes.Starg_S, 1),
