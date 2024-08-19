@@ -57,14 +57,19 @@ namespace Exiled.Events.Patches.Events.Scp173
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp173BeingObservedEventArgs))[0]),
                 new(OpCodes.Dup),
 
+                // Handlers.Scp173.OnScp173BeingObserved(ev)
                 new(OpCodes.Call, Method(typeof(Handlers.Scp173), nameof(Handlers.Scp173.OnScp173BeingObserved))),
 
+                // if (ev.IsAllowed)
+                //   goto continueLabel
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp173BeingObservedEventArgs), nameof(Scp173BeingObservedEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue, continueLabel),
 
+                // return false
                 new(OpCodes.Ldc_I4_0),
                 new(OpCodes.Ret),
 
+                // continueLabel:
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             });
 
