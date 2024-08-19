@@ -25,7 +25,6 @@ namespace Exiled.Example
         private ItemHandler itemHandler;
         private Scp914Handler scp914Handler;
         private Scp096Handler scp096Handler;
-        private Scp173Handler scp173Handler;
 
         private Example()
         {
@@ -70,7 +69,6 @@ namespace Exiled.Example
             itemHandler = new ItemHandler();
             scp914Handler = new Scp914Handler();
             scp096Handler = new Scp096Handler();
-            scp173Handler = new Scp173Handler();
 
             Exiled.Events.Handlers.Server.WaitingForPlayers += serverHandler.OnWaitingForPlayers;
             Exiled.Events.Handlers.Server.RoundStarted += serverHandler.OnRoundStarted;
@@ -114,8 +112,6 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Scp914.UpgradingPickup += scp914Handler.OnUpgradingItem;
 
             Exiled.Events.Handlers.Scp096.AddingTarget += scp096Handler.OnAddingTarget;
-
-            Exiled.Events.Handlers.Scp173.Scp173BeingObserved += scp173Handler.Scp173BeingObserved;
         }
 
         /// <summary>
@@ -157,8 +153,6 @@ namespace Exiled.Example
 
             Exiled.Events.Handlers.Scp096.AddingTarget -= scp096Handler.OnAddingTarget;
 
-            Exiled.Events.Handlers.Scp173.Scp173BeingObserved -= scp173Handler.Scp173BeingObserved;
-
             serverHandler = null;
             playerHandler = null;
             warheadHandler = null;
@@ -166,7 +160,6 @@ namespace Exiled.Example
             itemHandler = null;
             scp914Handler = null;
             scp096Handler = null;
-            scp173Handler = null;
         }
     }
 }
