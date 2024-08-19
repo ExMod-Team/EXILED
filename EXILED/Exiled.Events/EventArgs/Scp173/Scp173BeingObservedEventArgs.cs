@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Scp173
         public Scp173Role Scp173 { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can be counted as staring.
+        /// Gets or sets a value indicating whether or not the player can be counted as observing.
         /// </summary>
         public bool IsAllowed { get; set; }
     }
