@@ -43,12 +43,12 @@ namespace Exiled.Events.Patches.Events.Scp173
             {
                 // Player.Get(target)
                 new(OpCodes.Ldarg_1),
-                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get))),
+                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // Player.Get(base.Owner)
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<Scp173Role>), nameof(StandardSubroutine<Scp173Role>.Owner))),
-                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get))),
+                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
