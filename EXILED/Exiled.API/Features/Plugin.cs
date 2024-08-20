@@ -99,7 +99,7 @@ namespace Exiled.API.Features
         /// <inheritdoc/>
         public virtual void OnRegisteringCommands()
         {
-            Dictionary<Type, List<Type>> toRegister = new();
+            Dictionary<Type, List<ICommand>> toRegister = new();
 
             foreach (Type type in Assembly.GetTypes())
             {
@@ -126,10 +126,10 @@ namespace Exiled.API.Features
 
                             if (parentCommand == null)
                             {
-                                if (!toRegister.TryGetValue(commandHandlerType, out List<Type> list))
-                                    toRegister.Add(commandHandlerType, new() { type });
+                                if (!toRegister.TryGetValue(commandHandlerType, out List<ICommand> list))
+                                    toRegister.Add(commandHandlerType, new() { command });
                                 else
-                                    list.Add(type);
+                                    list.Add(command);
 
                                 continue;
                             }
@@ -168,12 +168,12 @@ namespace Exiled.API.Features
                 }
             }
 
-            foreach (KeyValuePair<Type, List<Type>> kvp in toRegister)
+            foreach (KeyValuePair<Type, List<ICommand>> kvp in toRegister)
             {
                 ParentCommand parentCommand = GetCommand(kvp.Key) as ParentCommand;
 
-                foreach (Type type in kvp.Value)
-                    parentCommand.RegisterCommand((ICommand)Activator.CreateInstance(type));
+                foreach (ICommand command in kvp.Value)
+                    parentCommand.RegisterCommand(command);
             }
         }
 
