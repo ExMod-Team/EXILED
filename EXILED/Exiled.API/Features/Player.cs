@@ -212,6 +212,12 @@ namespace Exiled.API.Features
         public bool HasHint => CurrentHint != null;
 
         /// <summary>
+        /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
+        /// </summary>
+        [Obsolete("Use IVoiceRole::VoiceModule instead.")]
+        public VoiceModuleBase VoiceModule => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
+
+        /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="PersonalRadioPlayback"/>, can be null.
         /// </summary>
         public PersonalRadioPlayback RadioPlayback => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null : null;
