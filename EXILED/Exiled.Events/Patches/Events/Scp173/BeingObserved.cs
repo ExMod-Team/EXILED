@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp173BeingObserved.cs" company="Exiled Team">
+// <copyright file="BeingObserved.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
