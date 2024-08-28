@@ -22,11 +22,11 @@ namespace Exiled.Events.Patches.Events.Scp173
 
     /// <summary>
     /// Patches <see cref="Scp173ObserversTracker.IsObservedBy" />.
-    /// Adds the <see cref="Handlers.Scp173.Scp173BeingObserved" /> event.
+    /// Adds the <see cref="Handlers.Scp173.BeingObserved" /> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Scp173), nameof(Handlers.Scp173.Scp173BeingObserved))]
+    [EventPatch(typeof(Handlers.Scp173), nameof(Handlers.Scp173.BeingObserved))]
     [HarmonyPatch(typeof(Scp173ObserversTracker), nameof(Scp173ObserversTracker.IsObservedBy))]
-    internal static class Scp173BeingObserved
+    internal static class BeingObserved
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -53,16 +53,16 @@ namespace Exiled.Events.Patches.Events.Scp173
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // Scp173BeingObservedEventArgs ev = new(Player, Player, bool)
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp173BeingObservedEventArgs))[0]),
+                // BeingObservedEventArgs ev = new(Player, Player, bool)
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(BeingObservedEventArgs))[0]),
                 new(OpCodes.Dup),
 
-                // Handlers.Scp173.OnScp173BeingObserved(ev)
-                new(OpCodes.Call, Method(typeof(Handlers.Scp173), nameof(Handlers.Scp173.OnScp173BeingObserved))),
+                // Handlers.Scp173.OnBeingObserved(ev)
+                new(OpCodes.Call, Method(typeof(Handlers.Scp173), nameof(Handlers.Scp173.OnBeingObserved))),
 
                 // if (ev.IsAllowed)
                 //   goto continueLabel
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Scp173BeingObservedEventArgs), nameof(Scp173BeingObservedEventArgs.IsAllowed))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(BeingObservedEventArgs), nameof(BeingObservedEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue, continueLabel),
 
                 // return false
