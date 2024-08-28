@@ -40,7 +40,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before Scp 173 is observed.
         /// </summary>
-        public static Event<Scp173BeingObservedEventArgs> Scp173BeingObserved { get; set; } = new();
+        public static Event<BeingObservedEventArgs> BeingObserved { get; set; } = new();
 
         /// <summary>
         /// Called before players near SCP-173 blink.
@@ -69,7 +69,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before Scp 173 is observed.
         /// </summary>
-        /// <param name="ev">The <see cref="Scp173BeingObservedEventArgs" /> instance.</param>
-        public static void OnScp173BeingObserved(Scp173BeingObservedEventArgs ev) => Scp173BeingObserved.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="BeingObservedEventArgs" /> instance.</param>
+        public static void OnBeingObserved(BeingObservedEventArgs ev) => BeingObserved.InvokeSafely(ev);
     }
 }
