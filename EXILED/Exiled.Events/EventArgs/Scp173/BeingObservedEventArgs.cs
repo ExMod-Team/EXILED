@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp173BeingObservedEventArgs.cs" company="Exiled Team">
+// <copyright file="BeingObservedEventArgs.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -13,10 +13,10 @@ namespace Exiled.Events.EventArgs.Scp173
     /// <summary>
     /// Contains all the information before being observed.
     /// </summary>
-    public class Scp173BeingObservedEventArgs : IScp173Event, IDeniableEvent
+    public class BeingObservedEventArgs : IScp173Event, IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scp173BeingObservedEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="BeingObservedEventArgs" /> class.
         /// </summary>
         /// <param name="target">
         /// <inheritdoc cref="Target" />
@@ -27,7 +27,7 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed"/>
         /// </param>
-        public Scp173BeingObservedEventArgs(API.Features.Player target, API.Features.Player scp173, bool isAllowed = true)
+        public BeingObservedEventArgs(API.Features.Player target, API.Features.Player scp173, bool isAllowed = true)
         {
             Target = target;
             Player = scp173;
