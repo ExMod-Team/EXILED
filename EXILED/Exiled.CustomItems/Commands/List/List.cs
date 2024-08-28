@@ -48,7 +48,7 @@ namespace Exiled.CustomItems.Commands.List
             if (arguments.IsEmpty() && TryGetCommand(Registered.Instance.Command, out ICommand command))
             {
                 command.Execute(arguments, sender, out response);
-                response += $"\nTo view custom items in players' inventories, use the command: {arguments.Array[0]} {arguments.Array[1]} insideinventories";
+                response = string.Join(response, $"\nTo view custom items in players' inventories, use the command: {arguments.Array[0]} {arguments.Array[1]} insideinventories");
                 return true;
             }
 

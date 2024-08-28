@@ -48,7 +48,7 @@ namespace Exiled.CustomRoles.Commands.List
             if (arguments.IsEmpty() && TryGetCommand(Registered.Instance.Command, out ICommand command))
             {
                 command.Execute(arguments, sender, out response);
-                response += $"\nTo view all abilities registered use command: {arguments.Array[0]} {arguments.Array[1]} abilities";
+                response = string.Join(response, $"\nTo view all abilities registered use command: {arguments.Array[0]} {arguments.Array[1]} abilities");
                 return true;
             }
 
