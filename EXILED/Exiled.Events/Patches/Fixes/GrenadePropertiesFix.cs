@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Fixes
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using API.Features.Items;
@@ -58,7 +59,7 @@ namespace Exiled.Events.Patches.Fixes
             {
                 // if (Item.Get(this) is Throwable throwable) goto cnt;
                 new CodeInstruction(OpCodes.Ldarg_0),
-                new(OpCodes.Call, Method(typeof(Item), nameof(Item.Get), new[] { typeof(ItemBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).First(x => !x.IsGenericMethod && x.Name is nameof(Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemBase))),
                 new(OpCodes.Isinst, typeof(Throwable)),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, throwable.LocalIndex),

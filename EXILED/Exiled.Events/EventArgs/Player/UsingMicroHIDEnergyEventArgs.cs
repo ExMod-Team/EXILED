@@ -40,7 +40,7 @@ namespace Exiled.Events.EventArgs.Player
         public UsingMicroHIDEnergyEventArgs(Player player, MicroHIDItem microHIDitem, HidState currentState, float drain, bool isAllowed = true)
         {
             Player = player;
-            MicroHID = (MicroHid)Item.Get(microHIDitem);
+            MicroHID = Item.Get<MicroHid>(microHIDitem);
             CurrentState = currentState;
             Drain = drain;
             IsAllowed = isAllowed;

@@ -209,6 +209,11 @@ namespace Exiled.Events.Handlers
         public static Event<DroppingNothingEventArgs> DroppingNothing { get; set; } = new();
 
         /// <summary>
+        /// Invoked before playing an AudioLog.
+        /// </summary>
+        public static Event<PlayingAudioLogEventArgs> PlayingAudioLog { get; set; } = new();
+
+        /// <summary>
         /// Invoked before picking up an <see cref="API.Features.Items.Item"/>.
         /// </summary>
         public static Event<PickingUpItemEventArgs> PickingUpItem { get; set; } = new();
@@ -222,6 +227,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before freeing a handcuffed <see cref="API.Features.Player"/>.
         /// </summary>
         public static Event<RemovingHandcuffsEventArgs> RemovingHandcuffs { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after freeing a handcuffed <see cref="API.Features.Player"/>.
+        /// </summary>
+        public static Event<RemovedHandcuffsEventArgs> RemovedHandcuffs { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> escapes.
@@ -687,6 +697,12 @@ namespace Exiled.Events.Handlers
         public static void OnDroppingNothing(DroppingNothingEventArgs ev) => DroppingNothing.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> plays an AudioLog.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlayingAudioLogEventArgs"/> instance.</param>
+        public static void OnPlayingAudioLog(PlayingAudioLogEventArgs ev) => PlayingAudioLog.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before a <see cref="API.Features.Player"/> picks up an item.
         /// </summary>
         /// <param name="ev">The <see cref="PickingUpItemEventArgs"/> instance.</param>
@@ -703,6 +719,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="RemovingHandcuffsEventArgs"/> instance.</param>
         public static void OnRemovingHandcuffs(RemovingHandcuffsEventArgs ev) => RemovingHandcuffs.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after freeing a handcuffed <see cref="API.Features.Player"/>.
+        /// </summary>
+        /// <param name="ev">The <see cref="RemovedHandcuffsEventArgs"/> instance.</param>
+        public static void OnRemovedHandcuffs(RemovedHandcuffsEventArgs ev) => RemovedHandcuffs.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> escapes.
