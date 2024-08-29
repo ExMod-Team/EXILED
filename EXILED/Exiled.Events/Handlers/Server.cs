@@ -122,6 +122,16 @@ namespace Exiled.Events.Handlers
         public static Event<ExecutedCommandEventArgs> ExecutedCommand { get; set; } = new();
 
         /// <summary>
+        /// Invoked before player is being unbanned.
+        /// </summary>
+        public static Event<UnbanningEventArgs> Unbanning { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after player is being unbanned.
+        /// </summary>
+        public static Event<UnbannedEventArgs> Unbanned { get; set; } = new();
+
+        /// <summary>
         /// Called before waiting for players.
         /// </summary>
         public static void OnWaitingForPlayers() => WaitingForPlayers.InvokeSafely();
@@ -232,5 +242,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ExecutedCommandEventArgs"/> instance.</param>
         public static void OnExecutedCommand(ExecutedCommandEventArgs ev) => ExecutedCommand.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before player is being unbanned.
+        /// </summary>
+        /// <param name="ev">The <see cref="UnbanningEventArgs"/> instance.</param>
+        public static void OnUnbanning(UnbanningEventArgs ev) => Unbanning.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after player is being unbanned.
+        /// </summary>
+        /// <param name="ev">The <see cref="UnbannedEventArgs"/> instance.</param>
+        public static void OnUnbanned(UnbannedEventArgs ev) => Unbanned.InvokeSafely(ev);
     }
 }

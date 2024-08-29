@@ -5,26 +5,22 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-#nullable enable
 namespace Exiled.API.Features
 {
+#nullable enable
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using CommandSystem;
-
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Components;
+    using Exiled.API.Features.Roles;
     using Footprinting;
-
     using MEC;
-
     using Mirror;
-
     using PlayerRoles;
-
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -60,8 +56,8 @@ namespace Exiled.API.Features
             set
             {
                 base.Position = value;
-                if (Role is Roles.FpcRole fpcRole)
-                    fpcRole.RelativePosition = new(value);
+                if (Role is FpcRole fpcRole)
+                    fpcRole.ClientRelativePosition = new(value);
             }
         }
 
