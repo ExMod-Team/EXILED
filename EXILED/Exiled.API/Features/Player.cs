@@ -2336,6 +2336,16 @@ namespace Exiled.API.Features
             Inventory.ServerAddAmmo(ammoType.GetItemType(), amount);
 
         /// <summary>
+        /// Adds the amount of a specified ammo to player's inventory.
+        /// </summary>
+        /// <param name="ammo">A dictionary of ItemType and ushort of ammo and amount.</param>
+        public void AddAmmo(Dictionary<ItemType, ushort> ammo)
+        {
+            foreach (KeyValuePair<ItemType, ushort> kvp in ammo)
+                AddAmmo(kvp.Key.GetAmmoType(), kvp.Value);
+        }
+
+        /// <summary>
         /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to player's inventory.
         /// </summary>
         /// <param name="ammoBag">A dictionary of <see cref="AmmoType">ammo types</see> that will be added.</param>
@@ -2577,6 +2587,23 @@ namespace Exiled.API.Features
         /// <param name="category">The <see cref="ItemCategory"/> to check.</param>
         /// <returns>If the player has a custom limit for the specific <see cref="ItemCategory"/>.</returns>
         public bool HasCustomCategoryLimit(ItemCategory category) => CustomCategoryLimits.ContainsKey(category);
+
+        /// <summary>
+        /// Grants the player their current role's loadout.
+        /// </summary>
+        public void GrantLoadout() => GrantLoadout(Role.Type);
+
+        /// <summary>
+        /// Grants a player a role's loadout.
+        /// </summary>
+        /// <param name="roleType">The role loadout to give.</param>
+        public void GrantLoadout(RoleTypeId roleType)
+        {
+            InventoryRoleInfo info = roleType.GetInventory();
+
+            AddItem(info.Items);
+            AddAmmo(info.Ammo);
+        }
 
         /// <summary>
         /// Adds an item of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
@@ -3304,6 +3331,14 @@ namespace Exiled.API.Features
             foreach (Effect effect in effects)
                 SyncEffect(effect);
         }
+
+        /// <summary>
+        /// Gets an effect of a player.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="StatusEffectBase"/> to get.</typeparam>
+        /// <returns>The <see cref="StatusEffectBase"/> found.</returns>
+        public T GetEffect<T>()
+            where T : StatusEffectBase => ReferenceHub.playerEffectsController.GetEffect<T>();
 
         /// <summary>
         /// Gets an instance of <see cref="StatusEffectBase"/> by <see cref="EffectType"/>.

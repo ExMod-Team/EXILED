@@ -7,7 +7,8 @@
 
 namespace Exiled.Events.Handlers
 {
-    using Exiled.API.Features.Pickups;
+    using System;
+
 #pragma warning disable IDE0079
 #pragma warning disable IDE0060
 #pragma warning disable SA1623 // Property summary documentation should match accessors
@@ -516,6 +517,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before KillPlayer is called.
         /// </summary>
+        [Obsolete("Use DyingEventArgs")]
         public static Event<KillingPlayerEventArgs> KillingPlayer { get; set; } = new();
 
         /// <summary>
@@ -976,6 +978,7 @@ namespace Exiled.Events.Handlers
         ///  Called before KillPlayer is called.
         /// </summary>
         /// <param name="ev">The <see cref="KillingPlayerEventArgs"/> event handler. </param>
+        [Obsolete("Use DyingEventArgs")]
         public static void OnKillPlayer(KillingPlayerEventArgs ev) => KillingPlayer.InvokeSafely(ev);
 
         /// <summary>
