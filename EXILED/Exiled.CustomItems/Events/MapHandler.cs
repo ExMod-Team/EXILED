@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="RoundHandler.cs" company="Exiled Team">
+// <copyright file="MapHandler.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -12,10 +12,12 @@ namespace Exiled.CustomItems.Events
     /// <summary>
     /// Event Handlers for the CustomItem API.
     /// </summary>
-    internal sealed class RoundHandler
+    internal sealed class MapHandler
     {
-        /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundStarted"/>
-        public void OnRoundStarted()
+        /// <summary>
+        /// Handle spawning Custom Items.
+        /// </summary>
+        public void OnMapGenerated()
         {
             foreach (CustomItem customItem in CustomItem.Registered)
                 customItem?.SpawnAll();
