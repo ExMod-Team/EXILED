@@ -7,7 +7,11 @@
 
 namespace Exiled.API.Features.Pickups.Projectiles
 {
+    using System;
+    using System.Reflection;
+
     using Exiled.API.Interfaces;
+    using HarmonyLib;
 
     using InventorySystem.Items.ThrowableProjectiles;
 
@@ -18,6 +22,9 @@ namespace Exiled.API.Features.Pickups.Projectiles
     /// </summary>
     public class Scp018Projectile : TimeGrenadeProjectile, IWrapper<BaseScp018Projectile>
     {
+        private static FieldInfo maxVelocityField;
+        private static FieldInfo velocityPerBounceField;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp018Projectile"/> class.
         /// </summary>
@@ -48,6 +55,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new Scp018Physics PhysicsModule
         {
             get => Base.PhysicsModule as Scp018Physics;
+            [Obsolete("Unsafe.", true)]
             set
             {
                 Base.PhysicsModule.DestroyModule();
@@ -61,7 +69,11 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public float MaxVelocity
         {
             get => PhysicsModule._maxVel;
-            set => PhysicsModule = new Scp018Physics(Base, PhysicsModule._trail, PhysicsModule._radius, value, PhysicsModule._velPerBounce);
+            set
+            {
+                maxVelocityField ??= AccessTools.Field(typeof(Scp018Physics), nameof(Scp018Physics._maxVel));
+                maxVelocityField.SetValue(PhysicsModule, value);
+            }
         }
 
         /// <summary>
@@ -70,7 +82,11 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public float VelocityPerBounce
         {
             get => PhysicsModule._maxVel;
-            set => PhysicsModule = new Scp018Physics(Base, PhysicsModule._trail, PhysicsModule._radius, MaxVelocity, value);
+            set
+            {
+                velocityPerBounceField ??= AccessTools.Field(typeof(Scp018Physics), nameof(Scp018Physics._velPerBounce));
+                velocityPerBounceField.SetValue(PhysicsModule, value);
+            }
         }
 
         /// <summary>

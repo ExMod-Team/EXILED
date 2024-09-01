@@ -30,14 +30,48 @@ namespace Exiled.Events.Patches.Generic
     [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.RegisterRooms))]
     internal class DoorList
     {
-        private static void Postfix(DoorVariant __instance)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            if (Door.DoorVariantToDoor.ContainsKey(__instance))
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            Label ret = generator.DefineLabel();
+
+            // if (Rooms == null)
+            //     return;
+            newInstructions.InsertRange(
+                0,
+                new CodeInstruction[]
+                {
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(DoorVariant), nameof(DoorVariant.Rooms))),
+                    new(OpCodes.Brfalse_S, ret),
+                });
+
+            // DoorList.InitDoor(this);
+            newInstructions.InsertRange(
+                newInstructions.Count - 1,
+                new CodeInstruction[]
+                {
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, Method(typeof(DoorList), nameof(DoorList.InitDoor))),
+                });
+
+            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static void InitDoor(DoorVariant doorVariant)
+        {
+            if (Door.DoorVariantToDoor.ContainsKey(doorVariant))
                 return;
 
-            List<Room> rooms = __instance.Rooms.Select(identifier => Room.RoomIdentifierToRoom[identifier]).ToList();
+            List<Room> rooms = doorVariant.Rooms.Select(identifier => Room.RoomIdentifierToRoom[identifier]).ToList();
 
-            Door door = Door.Create(__instance, rooms);
+            Door door = Door.Create(doorVariant, rooms);
 
             foreach (Room room in rooms)
             {

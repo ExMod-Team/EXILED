@@ -7,7 +7,8 @@
 
 namespace Exiled.Events.Handlers
 {
-    using Exiled.API.Features.Pickups;
+    using System;
+
 #pragma warning disable IDE0079
 #pragma warning disable IDE0060
 #pragma warning disable SA1623 // Property summary documentation should match accessors
@@ -207,6 +208,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before dropping a null <see cref="API.Features.Items.Item"/>.
         /// </summary>
         public static Event<DroppingNothingEventArgs> DroppingNothing { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before playing an AudioLog.
+        /// </summary>
+        public static Event<PlayingAudioLogEventArgs> PlayingAudioLog { get; set; } = new();
 
         /// <summary>
         /// Invoked before picking up an <see cref="API.Features.Items.Item"/>.
@@ -511,6 +517,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before KillPlayer is called.
         /// </summary>
+        [Obsolete("Use DyingEventArgs")]
         public static Event<KillingPlayerEventArgs> KillingPlayer { get; set; } = new();
 
         /// <summary>
@@ -690,6 +697,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="DroppingNothingEventArgs"/> instance.</param>
         public static void OnDroppingNothing(DroppingNothingEventArgs ev) => DroppingNothing.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> plays an AudioLog.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlayingAudioLogEventArgs"/> instance.</param>
+        public static void OnPlayingAudioLog(PlayingAudioLogEventArgs ev) => PlayingAudioLog.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> picks up an item.
@@ -965,6 +978,7 @@ namespace Exiled.Events.Handlers
         ///  Called before KillPlayer is called.
         /// </summary>
         /// <param name="ev">The <see cref="KillingPlayerEventArgs"/> event handler. </param>
+        [Obsolete("Use DyingEventArgs")]
         public static void OnKillPlayer(KillingPlayerEventArgs ev) => KillingPlayer.InvokeSafely(ev);
 
         /// <summary>
