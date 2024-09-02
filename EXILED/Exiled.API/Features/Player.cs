@@ -2294,7 +2294,7 @@ namespace Exiled.API.Features
         /// <returns><see langword="true"/> if message was send; otherwise, <see langword="false"/>.</returns>
         public bool SendStaffMessage(string message, EncryptedChannelManager.EncryptedChannel channel = EncryptedChannelManager.EncryptedChannel.AdminChat)
         {
-            return ReferenceHub.encryptedChannelManager.TrySendMessageToClient("!" + NetId + message, channel);
+            return ReferenceHub.encryptedChannelManager.TrySendMessageToClient(NetId + "!" + message, channel);
         }
 
         /// <summary>
@@ -2305,7 +2305,7 @@ namespace Exiled.API.Features
         /// <returns><see langword="true"/> if message was send; otherwise, <see langword="false"/>.</returns>
         public bool SendStaffPing(string message, EncryptedChannelManager.EncryptedChannel channel = EncryptedChannelManager.EncryptedChannel.AdminChat)
         {
-            return ReferenceHub.encryptedChannelManager.TrySendMessageToClient("!0" + message, channel);
+            return ReferenceHub.encryptedChannelManager.TrySendMessageToClient("0!" + message, channel);
         }
 
         /// <summary>
@@ -2335,6 +2335,16 @@ namespace Exiled.API.Features
         /// <param name="amount">The amount of ammo to be added.</param>
         public void AddAmmo(AmmoType ammoType, ushort amount) =>
             Inventory.ServerAddAmmo(ammoType.GetItemType(), amount);
+
+        /// <summary>
+        /// Adds the amount of a specified ammo to player's inventory.
+        /// </summary>
+        /// <param name="ammo">A dictionary of ItemType and ushort of ammo and amount.</param>
+        public void AddAmmo(Dictionary<ItemType, ushort> ammo)
+        {
+            foreach (KeyValuePair<ItemType, ushort> kvp in ammo)
+                AddAmmo(kvp.Key.GetAmmoType(), kvp.Value);
+        }
 
         /// <summary>
         /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to player's inventory.
@@ -2578,6 +2588,23 @@ namespace Exiled.API.Features
         /// <param name="category">The <see cref="ItemCategory"/> to check.</param>
         /// <returns>If the player has a custom limit for the specific <see cref="ItemCategory"/>.</returns>
         public bool HasCustomCategoryLimit(ItemCategory category) => CustomCategoryLimits.ContainsKey(category);
+
+        /// <summary>
+        /// Grants the player their current role's loadout.
+        /// </summary>
+        public void GrantLoadout() => GrantLoadout(Role.Type);
+
+        /// <summary>
+        /// Grants a player a role's loadout.
+        /// </summary>
+        /// <param name="roleType">The role loadout to give.</param>
+        public void GrantLoadout(RoleTypeId roleType)
+        {
+            InventoryRoleInfo info = roleType.GetInventory();
+
+            AddItem(info.Items);
+            AddAmmo(info.Ammo);
+        }
 
         /// <summary>
         /// Adds an item of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
@@ -3307,6 +3334,14 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets an effect of a player.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="StatusEffectBase"/> to get.</typeparam>
+        /// <returns>The <see cref="StatusEffectBase"/> found.</returns>
+        public T GetEffect<T>()
+            where T : StatusEffectBase => ReferenceHub.playerEffectsController.GetEffect<T>();
+
+        /// <summary>
         /// Gets an instance of <see cref="StatusEffectBase"/> by <see cref="EffectType"/>.
         /// </summary>
         /// <param name="effectType">The <see cref="EffectType"/>.</param>
@@ -3573,11 +3608,11 @@ namespace Exiled.API.Features
                 nameof(Player) => Dictionary.Values.GetRandomValue(),
                 nameof(Pickup) => Pickup.BaseToPickup.GetRandomValue().Value,
                 nameof(Ragdoll) => Ragdoll.List.GetRandomValue(),
-                nameof(Locker) => Map.GetRandomLocker(),
+                nameof(Locker) => Lockers.Locker.Random().Base,
                 nameof(Generator) => Generator.List.GetRandomValue(),
                 nameof(Window) => Window.List.GetRandomValue(),
                 nameof(Scp914) => Scp914.Scp914Controller,
-                nameof(LockerChamber) => Map.GetRandomLocker().Chambers.GetRandomValue(),
+                nameof(LockerChamber) => Lockers.Locker.Random().Chambers.GetRandomValue().Base,
                 _ => null,
             };
 

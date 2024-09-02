@@ -57,11 +57,14 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // scp330Bag
                     new(OpCodes.Ldloc_1),
 
-                    // scp330Bag.TryRemove(msg.CandyId)
+                    // Load candy bag array to get CandyKindID
                     new(OpCodes.Dup),
+                    new(OpCodes.Ldfld, Field(typeof(Scp330Bag), nameof(Scp330Bag.Candies))),
                     new(OpCodes.Ldarg_1),
+
+                    // Grab candy ID from network message, and pass it to event args.
                     new(OpCodes.Ldfld, Field(typeof(SelectScp330Message), nameof(SelectScp330Message.CandyID))),
-                    new(OpCodes.Callvirt, Method(typeof(Scp330Bag), nameof(Scp330Bag.TryRemove))),
+                    new(OpCodes.Ldelem_U1),
 
                     // DroppingScp330EventArgs ev = new(Player, Scp330Bag, CandyKindID)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingScp330EventArgs))[0]),
@@ -83,22 +86,16 @@ namespace Exiled.Events.Patches.Events.Scp330
             int jumpOverIndex = newInstructions.FindLastIndex(
                 instruction => instruction.StoresField(Field(typeof(ItemPickupBase), nameof(ItemPickupBase.PreviousOwner)))) + jumpOverOffset;
 
-            // Remove TryRemove candy logic since we did it earlier from current location
-            newInstructions.RemoveRange(jumpOverIndex, 6);
-
             int candyKindIdIndex = 4;
 
             newInstructions.InsertRange(
                 jumpOverIndex,
                 new[]
                 {
-                    // candyKindID = ev.Candy
+                    // candyKindID = ev.Candy, save locally.
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingScp330EventArgs), nameof(DroppingScp330EventArgs.Candy))),
                     new(OpCodes.Stloc, candyKindIdIndex),
-
-                    // candyKindID
-                    new(OpCodes.Ldloc, candyKindIdIndex),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

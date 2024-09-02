@@ -99,6 +99,11 @@ namespace Exiled.API.Features.Pickups
         public float StaminaUseMultiplier { get; set; }
 
         /// <summary>
+        /// Gets or sets the stamina regen multiplier.
+        /// </summary>
+        public float StaminaRegenMultiplier { get; set; }
+
+        /// <summary>
         /// Gets how much the users movement speed should be affected when wearing this armor. (higher values = slower movement).
         /// </summary>
         public float MovementSpeedMultiplier { get; private set; }
@@ -129,6 +134,7 @@ namespace Exiled.API.Features.Pickups
                 vestEfficacy = armoritem.VestEfficacy;
                 RemoveExcessOnDrop = armoritem.RemoveExcessOnDrop;
                 StaminaUseMultiplier = armoritem.StaminaUseMultiplier;
+                StaminaRegenMultiplier = armoritem.StaminaRegenMultiplier;
                 AmmoLimits = armoritem.AmmoLimits;
                 CategoryLimits = armoritem.CategoryLimits;
             }
@@ -144,6 +150,7 @@ namespace Exiled.API.Features.Pickups
                 vestEfficacy = armoritem.VestEfficacy;
                 RemoveExcessOnDrop = !armoritem.DontRemoveExcessOnDrop;
                 StaminaUseMultiplier = armoritem._staminaUseMultiplier;
+                StaminaRegenMultiplier = armoritem.StaminaRegenMultiplier;
                 AmmoLimits = armoritem.AmmoLimits.Select(limit => (ArmorAmmoLimit)limit);
                 CategoryLimits = armoritem.CategoryLimits;
             }

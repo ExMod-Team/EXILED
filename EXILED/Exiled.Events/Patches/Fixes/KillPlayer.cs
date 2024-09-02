@@ -8,6 +8,8 @@
 namespace Exiled.Events.Patches.Fixes
 {
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
+#pragma warning disable CS0612 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
 
     using API.Features;
     using API.Features.DamageHandlers;

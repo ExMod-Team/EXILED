@@ -133,6 +133,7 @@ namespace Exiled.API.Features.Pickups
         public PickupStandardPhysics PhysicsModule
         {
             get => Base.PhysicsModule as PickupStandardPhysics;
+            [Obsolete("Unsafe.")]
             set
             {
                 Base.PhysicsModule.DestroyModule();
