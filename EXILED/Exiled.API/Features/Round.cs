@@ -127,7 +127,7 @@ namespace Exiled.API.Features
         public static int SurvivingSCPs
         {
             get => RoundSummary.SurvivingSCPs;
-            [Obsolete("This value is rewrited by NW every time it's used", true)]
+            [Obsolete("This value is rewritten by NW every time it's used", true)]
             set => RoundSummary.SurvivingSCPs = value;
         }
 

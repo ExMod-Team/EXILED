@@ -51,7 +51,7 @@ namespace Exiled.Events.EventArgs.Server
         public int TimeToRestart { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether than Round Summary will be sent to all player.
+        /// Gets or sets a value indicating whether Round Summary will be sent to all players.
         /// </summary>
         public bool ShowRoundSummary { get; set; } = true;
     }
