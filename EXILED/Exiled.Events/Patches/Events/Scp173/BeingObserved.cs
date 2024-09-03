@@ -5,10 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-
 namespace Exiled.Events.Patches.Events.Scp173
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
