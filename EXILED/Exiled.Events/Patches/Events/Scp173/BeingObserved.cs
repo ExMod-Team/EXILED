@@ -35,8 +35,8 @@ namespace Exiled.Events.Patches.Events.Scp173
 
             Label continueLabel = generator.DefineLabel();
 
-            const int offset = -5;
-            int index = newInstructions.FindIndex(i => i.Is(OpCodes.Call, Method(typeof(EventManager), nameof(EventManager.ExecuteEvent), new Type[] { typeof(ReferenceHub), typeof(ReferenceHub) }))) + offset;
+            const int offset = -4;
+            int index = newInstructions.FindIndex(i => i.Is(OpCodes.Call, Method(typeof(EventManager), nameof(EventManager.ExecuteEvent), new Type[] { typeof(IEventArguments) }))) + offset;
 
             newInstructions.InsertRange(
                 index,
