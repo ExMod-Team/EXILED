@@ -38,7 +38,7 @@ namespace Exiled.Events.Handlers
         public static Event<UsingBreakneckSpeedsEventArgs> UsingBreakneckSpeeds { get; set; } = new();
 
         /// <summary>
-        /// Invoked before Scp 173 is observed.
+        /// Invoked before SCP-173 is observed.
         /// </summary>
         public static Event<BeingObservedEventArgs> BeingObserved { get; set; } = new();
 

@@ -7,11 +7,12 @@
 
 namespace Exiled.Events.EventArgs.Scp173
 {
+    using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
 
     /// <summary>
-    /// Contains all the information before being observed.
+    /// Contains all the information before SCP-173 is observed.
     /// </summary>
     public class BeingObservedEventArgs : IScp173Event, IDeniableEvent
     {
@@ -19,13 +20,13 @@ namespace Exiled.Events.EventArgs.Scp173
         /// Initializes a new instance of the <see cref="BeingObservedEventArgs" /> class.
         /// </summary>
         /// <param name="target">
-        /// <inheritdoc cref="Target" />
+        /// The <see cref="Exiled.API.Features.Player"/> instance of the target.
         /// </param>
         /// <param name="scp173">
-        /// <inheritdoc cref="Player"/>
+        /// The <see cref="Exiled.API.Features.Player"/> instance of the SCP-173.
         /// </param>
         /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed"/>
+        /// Whether or not the target will be counted as observing the SCP-173
         /// </param>
         public BeingObservedEventArgs(API.Features.Player target, API.Features.Player scp173, bool isAllowed = true)
         {
@@ -36,14 +37,14 @@ namespace Exiled.Events.EventArgs.Scp173
         }
 
         /// <summary>
-        /// Gets the player who's observing the Scp 173.
+        /// Gets the player who's observing the SCP-173.
         /// </summary>
-        public API.Features.Player Target { get; }
+        public Player Target { get; }
 
         /// <summary>
         /// Gets the player who's being observed.
         /// </summary>
-        public API.Features.Player Player { get; }
+        public Player Player { get; }
 
         /// <inheritdoc/>
         public Scp173Role Scp173 { get; }
