@@ -19,7 +19,7 @@ namespace Exiled.CustomItems
     /// </summary>
     public class CustomItems : Plugin<Config>
     {
-        private MapHandler? mapHandler;
+        private MapHandler? roundHandler;
         private PlayerHandler? playerHandler;
         private Harmony? harmony;
 
@@ -32,10 +32,10 @@ namespace Exiled.CustomItems
         public override void OnEnabled()
         {
             Instance = this;
-            mapHandler = new MapHandler();
+            roundHandler = new MapHandler();
             playerHandler = new PlayerHandler();
 
-            Exiled.Events.Handlers.Map.Generated += mapHandler.OnMapGenerated;
+            Exiled.Events.Handlers.Map.Generated += roundHandler.OnMapGenerated;
 
             Exiled.Events.Handlers.Player.ChangingItem += playerHandler.OnChangingItem;
 
@@ -50,7 +50,7 @@ namespace Exiled.CustomItems
         /// <inheritdoc />
         public override void OnDisabled()
         {
-            Exiled.Events.Handlers.Map.Generated -= mapHandler!.OnMapGenerated;
+            Exiled.Events.Handlers.Map.Generated -= roundHandler!.OnMapGenerated;
 
             Exiled.Events.Handlers.Player.ChangingItem -= playerHandler!.OnChangingItem;
 

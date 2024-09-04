@@ -214,12 +214,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
         /// </summary>
-        public VoiceModuleBase VoiceModule => RoleManager.CurrentRole is IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
+        [Obsolete("Use IVoiceRole::VoiceModule instead.")]
+        public VoiceModuleBase VoiceModule => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
 
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="PersonalRadioPlayback"/>, can be null.
         /// </summary>
-        public PersonalRadioPlayback RadioPlayback => VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null;
+        public PersonalRadioPlayback RadioPlayback => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null : null;
 
         /// <summary>
         /// Gets the <see cref="Hints.HintDisplay"/> of the player.
@@ -793,7 +794,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is speaking.
         /// </summary>
-        public bool IsSpeaking => VoiceModule != null && VoiceModule.IsSpeaking;
+        public bool IsSpeaking => Role is Roles.IVoiceRole voiceRole && voiceRole.VoiceModule.IsSpeaking;
 
         /// <summary>
         /// Gets the player's voice color.
@@ -805,13 +806,13 @@ namespace Exiled.API.Features
         /// </summary>
         public VoiceChatChannel VoiceChannel
         {
-            get => VoiceModule == null ? VoiceChatChannel.None : VoiceModule.CurrentChannel;
+            get => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule.CurrentChannel : VoiceChatChannel.None;
             set
             {
-                if (VoiceModule == null)
+                if (Role is not Roles.IVoiceRole voiceRole)
                     return;
 
-                VoiceModule.CurrentChannel = value;
+                voiceRole.VoiceModule.CurrentChannel = value;
             }
         }
 
@@ -3607,11 +3608,11 @@ namespace Exiled.API.Features
                 nameof(Player) => Dictionary.Values.GetRandomValue(),
                 nameof(Pickup) => Pickup.BaseToPickup.GetRandomValue().Value,
                 nameof(Ragdoll) => Ragdoll.List.GetRandomValue(),
-                nameof(Locker) => Map.GetRandomLocker(),
+                nameof(Locker) => Lockers.Locker.Random().Base,
                 nameof(Generator) => Generator.List.GetRandomValue(),
                 nameof(Window) => Window.List.GetRandomValue(),
                 nameof(Scp914) => Scp914.Scp914Controller,
-                nameof(LockerChamber) => Map.GetRandomLocker().Chambers.GetRandomValue(),
+                nameof(LockerChamber) => Lockers.Locker.Random().Chambers.GetRandomValue().Base,
                 _ => null,
             };
 
