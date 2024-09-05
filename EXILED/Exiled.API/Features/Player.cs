@@ -214,12 +214,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
         /// </summary>
-        public VoiceModuleBase VoiceModule => RoleManager.CurrentRole is IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
+        [Obsolete("Use IVoiceRole::VoiceModule instead.")]
+        public VoiceModuleBase VoiceModule => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
 
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="PersonalRadioPlayback"/>, can be null.
         /// </summary>
-        public PersonalRadioPlayback RadioPlayback => VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null;
+        public PersonalRadioPlayback RadioPlayback => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null : null;
 
         /// <summary>
         /// Gets the <see cref="Hints.HintDisplay"/> of the player.
@@ -777,7 +778,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player is speaking.
         /// </summary>
-        public bool IsSpeaking => VoiceModule != null && VoiceModule.IsSpeaking;
+        public bool IsSpeaking => Role is Roles.IVoiceRole voiceRole && voiceRole.VoiceModule.IsSpeaking;
 
         /// <summary>
         /// Gets the player's voice color.
@@ -789,13 +790,13 @@ namespace Exiled.API.Features
         /// </summary>
         public VoiceChatChannel VoiceChannel
         {
-            get => VoiceModule == null ? VoiceChatChannel.None : VoiceModule.CurrentChannel;
+            get => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule.CurrentChannel : VoiceChatChannel.None;
             set
             {
-                if (VoiceModule == null)
+                if (Role is not Roles.IVoiceRole voiceRole)
                     return;
 
-                VoiceModule.CurrentChannel = value;
+                voiceRole.VoiceModule.CurrentChannel = value;
             }
         }
 
@@ -2370,6 +2371,16 @@ namespace Exiled.API.Features
             Inventory.ServerAddAmmo(ammoType.GetItemType(), amount);
 
         /// <summary>
+        /// Adds the amount of a specified ammo to player's inventory.
+        /// </summary>
+        /// <param name="ammo">A dictionary of ItemType and ushort of ammo and amount.</param>
+        public void AddAmmo(Dictionary<ItemType, ushort> ammo)
+        {
+            foreach (KeyValuePair<ItemType, ushort> kvp in ammo)
+                AddAmmo(kvp.Key.GetAmmoType(), kvp.Value);
+        }
+
+        /// <summary>
         /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to player's inventory.
         /// </summary>
         /// <param name="ammoBag">A dictionary of <see cref="AmmoType">ammo types</see> that will be added.</param>
@@ -2611,6 +2622,23 @@ namespace Exiled.API.Features
         /// <param name="category">The <see cref="ItemCategory"/> to check.</param>
         /// <returns>If the player has a custom limit for the specific <see cref="ItemCategory"/>.</returns>
         public bool HasCustomCategoryLimit(ItemCategory category) => CustomCategoryLimits.ContainsKey(category);
+
+        /// <summary>
+        /// Grants the player their current role's loadout.
+        /// </summary>
+        public void GrantLoadout() => GrantLoadout(Role.Type);
+
+        /// <summary>
+        /// Grants a player a role's loadout.
+        /// </summary>
+        /// <param name="roleType">The role loadout to give.</param>
+        public void GrantLoadout(RoleTypeId roleType)
+        {
+            InventoryRoleInfo info = roleType.GetInventory();
+
+            AddItem(info.Items);
+            AddAmmo(info.Ammo);
+        }
 
         /// <summary>
         /// Adds an item of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
@@ -3340,6 +3368,14 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets an effect of a player.
+        /// </summary>
+        /// <typeparam name="T">The <see cref="StatusEffectBase"/> to get.</typeparam>
+        /// <returns>The <see cref="StatusEffectBase"/> found.</returns>
+        public T GetEffect<T>()
+            where T : StatusEffectBase => ReferenceHub.playerEffectsController.GetEffect<T>();
+
+        /// <summary>
         /// Gets an instance of <see cref="StatusEffectBase"/> by <see cref="EffectType"/>.
         /// </summary>
         /// <param name="effectType">The <see cref="EffectType"/>.</param>
@@ -3606,11 +3642,11 @@ namespace Exiled.API.Features
                 nameof(Player) => Dictionary.Values.GetRandomValue(),
                 nameof(Pickup) => Pickup.BaseToPickup.GetRandomValue().Value,
                 nameof(Ragdoll) => Ragdoll.List.GetRandomValue(),
-                nameof(Locker) => Map.GetRandomLocker(),
+                nameof(Locker) => Lockers.Locker.Random().Base,
                 nameof(Generator) => Generator.List.GetRandomValue(),
                 nameof(Window) => Window.List.GetRandomValue(),
                 nameof(Scp914) => Scp914.Scp914Controller,
-                nameof(LockerChamber) => Map.GetRandomLocker().Chambers.GetRandomValue(),
+                nameof(LockerChamber) => Lockers.Locker.Random().Chambers.GetRandomValue().Base,
                 _ => null,
             };
 
