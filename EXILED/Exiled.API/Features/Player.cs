@@ -2070,6 +2070,30 @@ namespace Exiled.API.Features
         public void ResetStamina() => Stamina = StaminaStat.MaxValue;
 
         /// <summary>
+        /// Sets the sale of the player.
+        /// </summary>
+        /// <param name="fakeSize">The scale to set to.</param>
+        /// <param name="viewers">Who should see the fake size.</param>
+        public void SetFakeSize(Vector3 fakeSize, IEnumerable<Player> viewers)
+        {
+            Vector3 currentScale = Scale;
+
+            if (fakeSize == currentScale)
+                return;
+
+            try
+            {
+                Transform.localScale = fakeSize;
+                Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, Connection });
+                Transform.localScale = currentScale;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{nameof(SetFakeSize)}: {ex}");
+            }
+        }
+
+        /// <summary>
         /// Gets a user's SCP preference.
         /// </summary>
         /// <param name="roleType">The SCP RoleType.</param>
