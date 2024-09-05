@@ -2084,7 +2084,10 @@ namespace Exiled.API.Features
             try
             {
                 Transform.localScale = fakeSize;
-                Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, Connection });
+
+                foreach (Player target in viewers)
+                    Server.SendSpawnMessage.Invoke(null, new object[] { NetworkIdentity, target.Connection });
+
                 Transform.localScale = currentScale;
             }
             catch (Exception ex)
