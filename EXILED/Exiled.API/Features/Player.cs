@@ -714,23 +714,7 @@ namespace Exiled.API.Features
         public Vector3 Scale
         {
             get => ReferenceHub.transform.localScale;
-            set
-            {
-                if (value == Scale)
-                    return;
-
-                try
-                {
-                    ReferenceHub.transform.localScale = value;
-
-                    foreach (Player target in List)
-                        Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, target.Connection });
-                }
-                catch (Exception exception)
-                {
-                    Log.Error($"{nameof(Scale)} error: {exception}");
-                }
-            }
+            set => SetSize(value, List);
         }
 
         /// <summary>
@@ -2070,7 +2054,30 @@ namespace Exiled.API.Features
         public void ResetStamina() => Stamina = StaminaStat.MaxValue;
 
         /// <summary>
-        /// Sets the sale of the player.
+        /// Sets the scale of a player on the server side.
+        /// </summary>
+        /// <param name="size">The size to set.</param>
+        /// <param name="viewers">Who should see the updated scale.</param>
+        public void SetSize(Vector3 size, IEnumerable<Player> viewers)
+        {
+            if (size == Scale)
+                return;
+
+            try
+            {
+                ReferenceHub.transform.localScale = size;
+
+                foreach (Player target in viewers)
+                    Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, target.Connection });
+            }
+            catch (Exception exception)
+            {
+                Log.Error($"{nameof(SetSize)} error: {exception}");
+            }
+        }
+
+        /// <summary>
+        /// Sets the scale of the player for other players.
         /// </summary>
         /// <param name="fakeSize">The scale to set to.</param>
         /// <param name="viewers">Who should see the fake size.</param>
