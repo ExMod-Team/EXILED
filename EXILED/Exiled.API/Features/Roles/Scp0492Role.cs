@@ -105,7 +105,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the <see cref="Ragdoll"/> that SCP-049-2 is currently consuming. Will be <see langword="null"/> if <see cref="IsConsuming"/> is <see langword="false"/>.
         /// </summary>
-        public Ragdoll RagdollConsuming => Ragdoll.Get(ConsumeAbility.CurRagdoll);
+        public Ragdoll RagdollConsuming => Features.Ragdoll.Get(ConsumeAbility.CurRagdoll);
 
         /// <summary>
         /// Gets the amount of time in between SCP-049-2 attacks.

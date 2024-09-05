@@ -4,9 +4,10 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
 namespace Exiled.API.Enums
 {
+    using System;
+
     /// <summary>
     /// All of the valid spawn location types.
     /// </summary>
@@ -150,6 +151,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Inside a random locker on the map.
         /// </summary>
+        [Obsolete("Use LockerSpawnPoint instead")]
         InsideLocker,
     }
 }
