@@ -2090,12 +2090,12 @@ namespace Exiled.API.Features
 
             try
             {
-                Transform.localScale = fakeSize;
+                ReferenceHub.transform.localScale = fakeSize;
 
                 foreach (Player target in viewers)
                     Server.SendSpawnMessage.Invoke(null, new object[] { NetworkIdentity, target.Connection });
 
-                Transform.localScale = currentScale;
+                ReferenceHub.transform.localScale = currentScale;
             }
             catch (Exception ex)
             {
