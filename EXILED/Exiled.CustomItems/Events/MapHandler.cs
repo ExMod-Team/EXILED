@@ -8,19 +8,21 @@
 namespace Exiled.CustomItems.Events
 {
     using Exiled.CustomItems.API.Features;
+    using MEC;
 
     /// <summary>
     /// Event Handlers for the CustomItem API.
     /// </summary>
     internal sealed class MapHandler
     {
-        /// <summary>
-        /// Handle spawning Custom Items.
-        /// </summary>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Map.Generated"/>
         public void OnMapGenerated()
         {
-            foreach (CustomItem customItem in CustomItem.Registered)
-                customItem?.SpawnAll();
+            Timing.CallDelayed(0.5f, () => // Delay its necessary for the spawnpoints of lockers and rooms to be generated.
+            {
+                foreach (CustomItem customItem in CustomItem.Registered)
+                    customItem?.SpawnAll();
+            });
         }
     }
 }

@@ -80,9 +80,8 @@ namespace Exiled.Events.Patches.Events.Player
                 // voiceModule.
                 new(OpCodes.Ldloc_S, player.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Role), nameof(Role.Base))),
-                new(OpCodes.Isinst, typeof(IVoiceRole)),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(IVoiceRole), nameof(IVoiceRole.VoiceModule))),
+                new(OpCodes.Isinst, typeof(API.Features.Roles.IVoiceRole)),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Roles.IVoiceRole), nameof(API.Features.Roles.IVoiceRole.VoiceModule))),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, voiceModule.LocalIndex),
 

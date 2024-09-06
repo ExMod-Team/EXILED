@@ -68,12 +68,21 @@ namespace Exiled.CustomItems.Commands
                 .Append("- ").AppendLine(item?.Description)
                 .AppendLine(item?.Type.ToString())
                 .Append("- Spawn Limit: ").AppendLine(item?.SpawnProperties?.Limit.ToString()).AppendLine()
-                .Append("[Spawn Locations (").Append(item?.SpawnProperties?.DynamicSpawnPoints.Count + item?.SpawnProperties?.StaticSpawnPoints.Count).AppendLine(")]");
+                .Append("[Spawn Locations (").Append(item?.SpawnProperties?.Count()).AppendLine(")]");
 
             foreach (DynamicSpawnPoint spawnPoint in item?.SpawnProperties?.DynamicSpawnPoints!)
                 message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
 
             foreach (StaticSpawnPoint spawnPoint in item.SpawnProperties.StaticSpawnPoints)
+                message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
+
+            foreach (RoleSpawnPoint spawnPoint in item.SpawnProperties.RoleSpawnPoints)
+                message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
+
+            foreach (LockerSpawnPoint spawnPoint in item.SpawnProperties.LockerSpawnPoints)
+                message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
+
+            foreach (RoomSpawnPoint spawnPoint in item.SpawnProperties.RoomSpawnPoints)
                 message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
 
             response = StringBuilderPool.Pool.ToStringReturn(message);
