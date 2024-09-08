@@ -185,6 +185,15 @@ namespace Exiled.API.Features
                 TurnOffAllLights(duration, zone);
         }
 
+        /// <summary>
+        /// Turns on all lights in the facility.
+        /// </summary>
+        /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
+        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes)
+        {
+            foreach (ZoneType zone in zoneTypes)
+                TurnOnAllLights(zone);
+        }
 
         /// <summary>
         /// Turns on all lights in the facility.
@@ -201,17 +210,6 @@ namespace Exiled.API.Features
                 if (zoneType == ZoneType.Unspecified || room.Zone.HasFlag(zoneType))
                     controller.ServerFlickerLights(0f);
             }
-        }
-
-
-        /// <summary>
-        /// Turns on all lights in the facility.
-        /// </summary>
-        /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
-        public static void TurnOnAllFacilityLights()
-        {
-            // This will turn on all lights in all zones of the facility
-            Map.TurnOnAllLights(ZoneType.Unspecified);
         }
 
         /// <summary>
