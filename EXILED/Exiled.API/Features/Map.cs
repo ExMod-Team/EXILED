@@ -208,10 +208,10 @@ namespace Exiled.API.Features
         /// Turns on all lights in the facility.
         /// </summary>
         /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
-        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes)
+        public static void TurnOnAllFacilityLights()
         {
-            foreach (ZoneType zone in zoneTypes)
-                TurnOnAllLights(0f, zone);
+            // This will turn on all lights in all zones of the facility
+            Map.TurnOnAllLights(ZoneType.Unspecified);
         }
 
         /// <summary>
