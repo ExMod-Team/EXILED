@@ -715,7 +715,7 @@ namespace Exiled.API.Features
         public Vector3 Scale
         {
             get => ReferenceHub.transform.localScale;
-            set => SetSize(value, List);
+            set => SetScale(value, List);
         }
 
         /// <summary>
@@ -2059,7 +2059,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="size">The size to set.</param>
         /// <param name="viewers">Who should see the updated scale.</param>
-        public void SetSize(Vector3 size, IEnumerable<Player> viewers)
+        public void SetScale(Vector3 size, IEnumerable<Player> viewers)
         {
             if (size == Scale)
                 return;
@@ -2073,7 +2073,7 @@ namespace Exiled.API.Features
             }
             catch (Exception exception)
             {
-                Log.Error($"{nameof(SetSize)} error: {exception}");
+                Log.Error($"{nameof(SetScale)} error: {exception}");
             }
         }
 
@@ -2082,7 +2082,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="fakeSize">The scale to set to.</param>
         /// <param name="viewers">Who should see the fake size.</param>
-        public void SetFakeSize(Vector3 fakeSize, IEnumerable<Player> viewers)
+        public void SetFakeScale(Vector3 fakeSize, IEnumerable<Player> viewers)
         {
             Vector3 currentScale = Scale;
 
@@ -2100,7 +2100,7 @@ namespace Exiled.API.Features
             }
             catch (Exception ex)
             {
-                Log.Error($"{nameof(SetFakeSize)}: {ex}");
+                Log.Error($"{nameof(SetFakeScale)}: {ex}");
             }
         }
 
