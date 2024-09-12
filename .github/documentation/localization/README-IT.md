@@ -81,9 +81,9 @@ Tuttavia, alcuni plugin possono ottenere le loro impostazioni di configurazione 
 
 # Per gli Sviluppatori
 
-Se desideri creare un Plugin per EXILED, è piuttosto semplice farlo. Se vuoi un tutorial più dettagliato, visita la nostra [Pagina di Inizio](https://github.com/ExMod-Team/EXILED/blob/master/GettingStarted.md).
+Se desideri creare un Plugin per EXILED, è piuttosto semplice farlo. Se vuoi un tutorial più dettagliato, visita la nostra [Pagina di Inizio](GettingStarted.md).
 
-Per tutorial più completi e costantemente aggiornati, consulta [il sito web di EXILED](https://exiled.to).
+Per tutorial più completi e costantemente aggiornati, consulta [il sito web di EXILED](https://exmod-team.github.io/EXILED/).
 
 Ma assicurati di seguire queste regole quando pubblichi i tuoi plugin:
 

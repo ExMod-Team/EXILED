@@ -24,17 +24,17 @@ La instalación de EXILED es, en realidad, muy simple. Se carga por sí solo por
 Si eliges el instalador automático (si se ejecuta correctamente) se encargará de instalar todas las funcionalidades de EXILED.
 
 # Windows
-### Instalación automática ([más información](https://github.com/galaxy119/EXILED/blob/master/Exiled.Installer/README.md))
+### Instalación automática ([más información](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 **Nota:** Asegurate de que estás en el usuario que ejecuta el servidor o tiene privilegios de administrador antes de iniciar el Instalador.
 
-  - Descarga **`Exiled.Installer-Win.exe` [de aquí](https://github.com/galaxy119/EXILED/releases)** (selecciona Assets -> descarga el Instalador).
+  - Descarga **`Exiled.Installer-Win.exe` [de aquí](https://github.com/ExMod-Team/EXILED/releases)** (selecciona Assets -> descarga el Instalador).
   - Colócalo en tu carpeta del servidor (descarga el servidor dedicado si no lo has hecho todavía).
   - Haz doble-clic en **`Exiled.Installer.exe`** o descarga **[este archivo .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** y colócalo en la carpeta del servidor para descargar la última versión de prueba.
   - Para conseguir e instalar plugins, mira el apartado [Instalando plugins](#installing-plugins) más abajo.
 **Nota:** Si estás instalando EXILED en un servidor remoto, asegúrate de iniciar el .exe con el mismo usuario que tiene el servidor de SCP:SL (o uno con permisos de Administrador)
 
 ### Instalación manual
-  - Descarga **`Exiled.tar.gz` [de aquí](https://github.com/galaxy119/EXILED/releases)**
+  - Descarga **`Exiled.tar.gz` [de aquí](https://github.com/ExMod-Team/EXILED/releases)**
   - Extrae el contenido con [7Zip](https://www.7-zip.org/) o [WinRar](https://www.win-rar.com/download.html?&L=6)
   - Mueve la carpeta **``EXILED``** a **`%appdata%`** *Nota: ¡Esta carpeta tiene que ir en ``C:\Users\%UserName%\AppData\Roaming``, y  ***NO*** en ``C:\Users\%UserName%\AppData\Roaming\SCP Secret Laboratory`` y **DEBE ESTAR** en (...)\AppData\Roaming, no en (...)\AppData\!*
   - Mueve **``SCP Secret Laboratory``** a: **`%appdata%`**.
@@ -50,11 +50,11 @@ Si eliges el instalador automático (si se ejecuta correctamente) se encargará 
   - Colócalo en: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (muévete a esta carpeta presionando Win + R, después escribiendo `%appdata%`)
 
 # Linux
-### Instalación automática ([más información](https://github.com/galaxy119/EXILED/blob/master/Exiled.Installer/README.md))
+### Instalación automática ([más información](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 
 **Nota:** Si estás instalando EXILED en un servidor remoto, asegúrate de que inicias el Instalador con el mismo usuario que ejecuta el servidor de SCP: SL (o con root)
 
-  - Descarga **`Exiled.Installer-Linux` [de aquí](https://github.com/galaxy119/EXILED/releases)** (selecciona Assets -> descarga el Instalador).
+  - Descarga **`Exiled.Installer-Linux` [de aquí](https://github.com/ExMod-Team/EXILED/releases)** (selecciona Assets -> descarga el Instalador).
   - Se instala escribiendo **`./Exiled.Installer-Linux --path /carpeta/del/servidor`** o ponlo en la carpeta del servidor directamente, muévete a la carpeta desde la terminal (`cd`) y escribe: **`./Exiled.Installer-Linux`**.
   - Si quieres la versión de prueba más reciente, añade **`--pre-releases`** al final del comando. Ejemplos: **`./Exiled.Installer-Linux /home/scp/server --pre-releases`**.
   - Otro ejemplo si pusiste `Exiled.Installer-Linux` en la carpeta del servidor: **`/home/scp/server/Exiled.Installer-Linux --pre-releases`**.
@@ -62,7 +62,7 @@ Si eliges el instalador automático (si se ejecuta correctamente) se encargará 
 
 ### Instalación manual
   - **Asegurate** de que estás conectado con el usuario que tiene los servidores de SCP:SL.
-  - Descarga **`Exiled.tar.gz` [de aquí](https://github.com/galaxy119/EXILED/releases)** (SSH: clic derecho para conseguir el link `Exiled.tar.gz`, después escribe: **`wget (enlace_de_descarga)`**)
+  - Descarga **`Exiled.tar.gz` [de aquí](https://github.com/ExMod-Team/EXILED/releases)** (SSH: clic derecho para conseguir el link `Exiled.tar.gz`, después escribe: **`wget (enlace_de_descarga)`**)
   - Para extraerlo, escribe **``tar -xzvf EXILED.tar.gz``** en la terminal.
   - Mueve la carpeta **`EXILED`** a **``~/.config``**. *Nota: Esta carpeta tiene que ir en ``~/.config``, y ***NO*** en ``~/.config/SCP Secret Laboratory``* (SSH: **`mv EXILED ~/.config/`**)
   - Mueve la carpeta **``SCP Secret Laboratory``** a **``~/.config``**. *Nota: Esta carpeta tiene que ir en ``~/.config``, y ***NO*** en ``~/.config/SCP Secret Laboratory``* (SSH: **`mv EXILED ~/.config/`**)
@@ -83,9 +83,9 @@ Mira la documentación o pregúntale al creador del plugin en particular si tien
 
 # Para desarrolladores
 
-Si deseas hacer un plugin para EXILED, es bastante fácil. Si prefieres ver algún tipo de tutorial, visita nuestra página de [Primeros Pasos](https://github.com/galaxy119/EXILED/blob/master/GettingStarted.md).
+Si deseas hacer un plugin para EXILED, es bastante fácil. Si prefieres ver algún tipo de tutorial, visita nuestra página de [Primeros Pasos](GettingStarted.md).
 
-Para una guía más comprensible y tutoriales regularmente actualizados, échale un vistazo a [la página de EXILED](https://exiled.to).
+Para una guía más comprensible y tutoriales regularmente actualizados, échale un vistazo a [la página de EXILED](https://exmod-team.github.io/EXILED/).
 
 Asegúrate de seguir estas normas antes de publicar un plugin:
 
