@@ -2057,7 +2057,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Sets the scale of a player on the server side (will update for players too).
         /// </summary>
-        /// <param name="scale">The size to set.</param>
+        /// <param name="scale">The scale to set.</param>
         /// <param name="viewers">Who should see the updated scale.</param>
         public void SetScale(Vector3 scale, IEnumerable<Player> viewers)
         {
@@ -2081,7 +2081,7 @@ namespace Exiled.API.Features
         /// Sets the scale of the player for other players.
         /// </summary>
         /// <param name="fakeScale">The scale to set to.</param>
-        /// <param name="viewers">Who should see the fake size.</param>
+        /// <param name="viewers">Who should see the fake scale.</param>
         public void SetFakeScale(Vector3 fakeScale, IEnumerable<Player> viewers)
         {
             Vector3 currentScale = Scale;
