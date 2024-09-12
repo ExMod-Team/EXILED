@@ -91,9 +91,9 @@ EXILED 자체도 몇 가지 설정을 가지고 있습니다. 이 설정들은 �
 
 # 개발자들을 위한 정보
 
-만약 EXILED 플러그인을 만들고 싶다면, 사실 간단합니다. 튜토리얼을 원한다면 [여기 (영어)](https://github.com/ExMod-Team/EXILED/blob/master/GettingStarted.md)를 읽어주세요.
+만약 EXILED 플러그인을 만들고 싶다면, 사실 간단합니다. 튜토리얼을 원한다면 [여기 (영어)](GettingStarted.md)를 읽어주세요.
 
-좀 더 상세하고 자주 업데이트 되는 튜토리얼을 원한다면, [EXILED 웹사이트](https://exiled.to)를 방문해보세요.
+좀 더 상세하고 자주 업데이트 되는 튜토리얼을 원한다면, [EXILED 웹사이트](https://exmod-team.github.io/EXILED/)를 방문해보세요.
 
 하지만 플러그인을 만들기 전에, 몇 가지 주의사항을 알아두세요:
 

@@ -25,17 +25,17 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 如果你选择使用一键安装器，在运行正常的情况下它会帮你安装好所有EXILED的功能。
 
 # Windows
-### 全自动安装 ([更多消息](https://github.com/galaxy119/EXILED/blob/master/Exiled.Installer/README.md))
+### 全自动安装 ([更多消息](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 **备注**: 在运行安装包前请确保你所使用的用户有管理员权限。
 
-  - 下载 **[Exiled.Installer-Win.exe](https://github.com/galaxy119/EXILED/releases)** (点击 Assets -> 下载安装包)
+  - 下载 **[Exiled.Installer-Win.exe](https://github.com/ExMod-Team/EXILED/releases)** (点击 Assets -> 下载安装包)
   - 放置到你的服务器文件夹 (如果你还没有下载服务端，则需要先在Steam中下载服务端)
   - 双击 **`Exiled.Installer.exe`** 或 **[install-prerelease.bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** 并放置到服务器文件夹中来安装最新的预更新
   - 获取以及安装插件，请参考下面的[安装插件](#installing-plugins)部分。
 **备注:** 如果你正在一个远程服务器上安装EXILED，请确保你运行的.exe的用户和你运行SCP:SL服务器的一致
 
 ### 手动安装
-  - 下载 **[Exiled.tar.gz](https://github.com/galaxy119/EXILED/releases)**
+  - 下载 **[Exiled.tar.gz](https://github.com/ExMod-Team/EXILED/releases)**
   - 使用 [7Zip](https://www.7-zip.org/) 或 [WinRar](https://www.win-rar.com/download.html?&L=6) 解压里面的内容
   - 移动 **``EXILED``** 文件夹到 **`%appdata%`** （*备注: 这个文件夹需要放在 ``C:\用户\%UserName%\AppData\Roaming``， 而 ***不是*** ``C:\用户\%UserName%\AppData\Roaming\SCP Secret Laboratory``， 而且它 **必须** 在 (...)\AppData\Roaming， 而不是 (...)\AppData\!*）
   - 移动 **``SCP Secret Laboratory``** 文件夹到 **`%appdata%`** 中。
@@ -43,7 +43,7 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 
 
 # Linux
-### 全自动安装 ([更多信息](https://github.com/galaxy119/EXILED/blob/master/Exiled.Installer/README.md))
+### 全自动安装 ([更多信息](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 
 **备注:** 如果你正在一个远程服务器上安装EXILED，请确保你运行的.exe的用户和你运行SCP:SL服务器的一致
 
@@ -76,7 +76,7 @@ EXILED自身提供一些配置选项。
 
 # 致开发者
 
-制作一个EXILED的插件也是一件非常轻松的事情。如果你想要一个教程，请访问我们的[入门指南](https://github.com/galaxy119/EXILED/blob/master/GettingStarted.md).
+制作一个EXILED的插件也是一件非常轻松的事情。如果你想要一个教程，请访问我们的[入门指南](GettingStarted.md).
 
 一个更加详细并且保持更新的教程，请见 [EXILED官网](https://ExMod-Team.github.io/EXILED/articles/install.html)。
 

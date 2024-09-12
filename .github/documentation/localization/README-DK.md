@@ -78,9 +78,9 @@ Nogle plugins kan dog selv hente deres konfigurationsindstillinger fra andre ste
 
 # For udviklere
 
-Hvis du ønsker at lave et plugin til EXILED, er det ganske enkelt at gøre det. Hvis du gerne vil have mere vejledning, kan du besøge vores [Start Side](https://github.com/ExMod-Team/EXILED/blob/master/GettingStarted.md).
+Hvis du ønsker at lave et plugin til EXILED, er det ganske enkelt at gøre det. Hvis du gerne vil have mere vejledning, kan du besøge vores [Start Side](GettingStarted.md).
 
-For mere omfattende og aktivt opdaterede vejledninger, se [EXILED-webstedet](https://exiled.to).
+For mere omfattende og aktivt opdaterede vejledninger, se [EXILED-webstedet](https://exmod-team.github.io/EXILED/).
 
 Men sørg for at følge disse regler, når du udgiver dine plugins:
 
