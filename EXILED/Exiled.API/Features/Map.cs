@@ -189,28 +189,7 @@ namespace Exiled.API.Features
         /// Turns on all lights in the facility.
         /// </summary>
         /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
-        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes)
-        {
-            foreach (ZoneType zone in zoneTypes)
-                TurnOnAllLights(zone);
-        }
-
-        /// <summary>
-        /// Turns on all lights in the facility.
-        /// </summary>
-        /// <param name="zoneType">The <see cref="ZoneType"/> to affect.</param>
-        public static void TurnOnAllLights(ZoneType zoneType)
-        {
-            foreach (RoomLightController controller in RoomLightController.Instances)
-            {
-                Room room = controller.GetComponentInParent<Room>();
-                if (room == null)
-                    continue;
-
-                if (zoneType == ZoneType.Unspecified || room.Zone.HasFlag(zoneType))
-                    controller.ServerFlickerLights(0f);
-            }
-        }
+        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes) => TurnOffAllLights(zoneTypes, 0);
 
         /// <summary>
         /// Changes the <see cref="Color"/> of all lights in the facility.
