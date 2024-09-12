@@ -2055,7 +2055,7 @@ namespace Exiled.API.Features
         public void ResetStamina() => Stamina = StaminaStat.MaxValue;
 
         /// <summary>
-        /// Sets the scale of a player on the server side (will update for players too).
+        /// Sets the scale of a player on the server side.
         /// </summary>
         /// <param name="scale">The scale to set.</param>
         /// <param name="viewers">Who should see the updated scale.</param>
