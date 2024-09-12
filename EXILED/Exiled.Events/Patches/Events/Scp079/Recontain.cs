@@ -37,9 +37,10 @@ namespace Exiled.Events.Patches.Events.Player
 
             CodeInstruction[] recontainedEvent = new CodeInstruction[]
                 {
-                    // Handlers.Scp079.OnRecontained(new RecontainedEventArgs(Player.Get(referenceHub2)));
+                    // Handlers.Scp079.OnRecontained(new RecontainedEventArgs(Player.Get(referenceHub2), this));
                     new(OpCodes.Ldloc, 5),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainedEventArgs))[0]),
                     new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnRecontained))),
                 };

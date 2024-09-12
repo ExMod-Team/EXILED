@@ -1,10 +1,10 @@
 <h1 align="center">EXILED - EXtended In-runtime Library for External Development</h1>
 <div align="center">
     
-[<img src="https://img.shields.io/github/actions/workflow/status/Exiled-Official/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/Exiled-Official/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
-<a href="https://github.com/Exiled-Official/EXILED/releases"><img src="https://img.shields.io/github/v/release/Exiled-Official/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/Exiled-Official/EXILED/releases" alt="GitHub Releases"></a>
-<img src="https://img.shields.io/github/downloads/Exiled-Official/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
-![Github Commits](https://img.shields.io/github/commit-activity/w/Exiled-Official/EXILED/apis-rework?style=for-the-badge&logo=git)
+[<img src="https://img.shields.io/github/actions/workflow/status/ExMod-Team/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/ExMod-Team/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
+<a href="https://github.com/ExMod-Team/EXILED/releases"><img src="https://img.shields.io/github/v/release/ExMod-Team/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/ExMod-Team/EXILED/releases" alt="GitHub Releases"></a>
+<img src="https://img.shields.io/github/downloads/ExMod-Team/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
+![Github Commits](https://img.shields.io/github/commit-activity/w/ExMod-Team/EXILED/apis-rework?style=for-the-badge&logo=git)
 <a href="https://discord.gg/PyUkWTg">
     <img src="https://img.shields.io/discord/656673194693885975?style=for-the-badge&logo=discord" alt="Chat on Discord">
 </a>    
@@ -23,17 +23,17 @@ Instalace EXILED je poměrně jednoduchá. Načítá se prostřednictvím rozhra
 Pokud se rozhodnete použít instalační program, postará se při správném spuštění o instalaci všech funkcí EXILED.
 
 # Windows
-### Automatická instalace ([více informací](https://github.com/Exiled-Official/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatická instalace ([více informací](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 **Poznámka:**: Před spuštěním instalačního programu se ujistěte, že jste uživatelem, který provozuje server, nebo že máte oprávnění správce.
 
-  - Stáhněte **`Exiled.Installer-Win.exe` [odsud](https://github.com/Exiled-Official/EXILED/releases)** (Klikněte na Assets -> klikněte na Instalátor)
+  - Stáhněte **`Exiled.Installer-Win.exe` [odsud](https://github.com/ExMod-Team/EXILED/releases)** (Klikněte na Assets -> klikněte na Instalátor)
   - Umístěte ji do složky serveru (pokud jste ji ještě nestáhli, stáhněte si dedikovaný server).
   - Dvakrát klikněte na **`Exiled.Installer.exe`** nebo **[stáhněte tento .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** a umístěte jej do složky serveru, abyste nainstalovali nejnovější předběžnou verzi.
   - Chcete-li nainstalovat a získat pluginy, podívejte se na sekci Instalace pluginů níže.
 **Poznámka:** Pokud instalujete EXILED na vzdálený server, ujistěte se, že spustíte .exe jako stejný uživatel, který spouští servery SCP:SL (nebo uživatel s právy správce).
 
 ### Manuální instalace
-  - Stáhněte si **`Exiled.tar.gz` [odsud](https://github.com/Exiled-Official/EXILED/releases)**
+  - Stáhněte si **`Exiled.tar.gz` [odsud](https://github.com/ExMod-Team/EXILED/releases)**
   - Extrahujte jeho obsah pomocí [7Zip](https://www.7-zip.org/) nebo [WinRar](https://www.win-rar.com/download.html?&L=6)
   - Přesuňte **``EXILED``** složku do **`%appdata%`** *Poznámka: Tato složka musí jít do ``C:\Users\%UserName%\AppData\Roaming``, a ***NE*** ``C:\Users\%UserName%\AppData\Roaming\SCP Secret Laboratory``, a **MUSÍ** být v (...)\AppData\Roaming, ne (...)\AppData\!*
   - Přesuňte **``SCP Secret Laboratory``** do **`%appdata%`**.
@@ -49,11 +49,11 @@ To je vše, EXILED by nyní měl být nainstalován a aktivní při příštím 
   - Přesuňte jej do: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (dostaňte se sem stiskem Win + R, a pak psaním `%appdata%`)
 
 # Linux
-### Automatická instalace ([více informací](https://github.com/Exiled-Official/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatická instalace ([více informací](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 
 **Poznámka:** Pokud instalujete EXILED na vzdálený server, ujistěte se, že jste instalátor spustili jako stejný uživatel, který spouští servery SCP:SL (nebo jako root).
 
-  - Stáhněte **`Exiled.Installer-Win.exe` [odsud](https://github.com/Exiled-Official/EXILED/releases)** (Klikněte na Assets -> klikněte na Instalátor)
+  - Stáhněte **`Exiled.Installer-Win.exe` [odsud](https://github.com/ExMod-Team/EXILED/releases)** (Klikněte na Assets -> klikněte na Instalátor)
   - Nainstalujte jej pomocí **`./Exiled.Installer-Linux --path /cesta/k/serveru`** nebo ji přesuňte přímo do složky serveru, přejděte do ní pomocí terminálu (`cd`) a zadejte: **`./Exiled.Installer-Linux`**.
   - Pokud chcete nejnovější předběžnou verzi, stačí přidat **`--pre-releases`**. Příklad: **`./Exiled.Installer-Linux /home/scp/server --pre-releases`**
   - Další příklad, pokud jste do složky serveru umístili soubor `Exiled.Installer-Linux`: **`/home/scp/server/Exiled.Installer-Linux --pre-releases`**
@@ -61,7 +61,7 @@ To je vše, EXILED by nyní měl být nainstalován a aktivní při příštím 
 
 ### Manuální instalace
   - **Ujistěte** se že jste přihlášeni jako uživatel, který spouští servery SCP: SL.
-  - Stáhněte si **`Exiled.tar.gz` [odsud](https://github.com/Exiled-Official/EXILED/releases)** (SSH: klikněte pravým a zkopírujte `Exiled.tar.gz` odkaz, pak napište: **`wget (odkaz)`**)
+  - Stáhněte si **`Exiled.tar.gz` [odsud](https://github.com/ExMod-Team/EXILED/releases)** (SSH: klikněte pravým a zkopírujte `Exiled.tar.gz` odkaz, pak napište: **`wget (odkaz)`**)
   - Chcete-li jej rozbalit do aktuální složky, zadejte **``tar -xzvf EXILED.tar.gz``**
   - Přesuňte **`EXILED`** složku do **``~/.config``**. *Poznámka: Tuto složku je třeba umístit do ``~/.config``, a ***NE*** ``~/.config/SCP Secret Laboratory``* (SSH: **`mv EXILED ~/.config/`**)
   - Přesuňte **`SCP Secret Laboratory`** složku do **``~/.config``**. *Poznámka: Tuto složku je třeba umístit do ``~/.config``, a ***NE*** ``~/.config/SCP Secret Laboratory``* (SSH: **`mv SCP Secret Laboratory ~/.config/`**)
@@ -81,7 +81,7 @@ Některé pluginy však mohou získávat svá konfigurační nastavení z jinýc
 
 # Pro vývojáře
 
-Pokud si přejete vytvořit plugin pro EXILED, je to poměrně jednoduché. Pokud byste chtěli více návodů, navštivte prosím naši stránku [Getting Started.](https://github.com/Exiled-Official/EXILED/blob/master/GettingStarted.md).
+Pokud si přejete vytvořit plugin pro EXILED, je to poměrně jednoduché. Pokud byste chtěli více návodů, navštivte prosím naši stránku [Getting Started.](https://github.com/ExMod-Team/EXILED/blob/master/GettingStarted.md).
 
 Obsáhlejší a aktivně aktualizované tutoriály naleznete na [webové stránce EXILED](https://exiled.to).
 

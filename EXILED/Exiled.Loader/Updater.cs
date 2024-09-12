@@ -31,7 +31,7 @@ namespace Exiled.Loader
     /// </summary>
     internal sealed class Updater
     {
-        private const long REPOID = 828620622;
+        private const long REPOID = 833723500;
         private const string INSTALLER_ASSET_NAME_LINUX = "Exiled.Installer-Linux";
         private const string INSTALLER_ASSET_NAME_WIN = "Exiled.Installer-Win.exe";
 
@@ -118,7 +118,7 @@ namespace Exiled.Loader
         }
 
         /// <summary>
-        /// Creates a HTTP Client, and checks at the Exiled-Official GitHub repository.
+        /// Creates a HTTP Client, and checks at the ExMod-Team GitHub repository.
         /// </summary>
         /// <returns>Client determining if it was successful connecting to the Exiled GitHub repository.</returns>
         private HttpClient CreateHttpClient()
@@ -128,7 +128,7 @@ namespace Exiled.Loader
                 Timeout = TimeSpan.FromSeconds(480),
             };
 
-            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/Exiled-Official/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
+            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/ExMod-Team/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
 
             return client;
         }

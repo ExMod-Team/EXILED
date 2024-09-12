@@ -42,6 +42,21 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the prefab of the specified <see cref="PrefabType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="PrefabType"/> to get prefab of.</param>
+        /// <typeparam name="T">The <see cref="Component"/> to get.</typeparam>
+        /// <returns>Returns the prefab component as {T}.</returns>
+        public static T GetPrefab<T>(PrefabType type)
+            where T : Component
+        {
+            if (!Stored.TryGetValue(type, out GameObject gameObject) || !gameObject.TryGetComponent(out T component))
+                return null;
+
+            return component;
+        }
+
+        /// <summary>
         /// Spawns a prefab on server.
         /// </summary>
         /// <param name="prefabType">The prefab type.</param>
@@ -68,9 +83,7 @@ namespace Exiled.API.Features
         public static T Spawn<T>(PrefabType prefabType, Vector3 position = default, Quaternion rotation = default)
             where T : Component
         {
-            if (!Stored.TryGetValue(prefabType, out GameObject gameObject) || !gameObject.TryGetComponent(out T component))
-                return null;
-            T obj = UnityEngine.Object.Instantiate(component, position, rotation);
+            T obj = UnityEngine.Object.Instantiate(GetPrefab<T>(prefabType), position, rotation);
             NetworkServer.Spawn(obj.gameObject);
             return obj;
         }

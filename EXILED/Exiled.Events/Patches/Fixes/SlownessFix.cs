@@ -19,6 +19,7 @@ namespace Exiled.Events.Patches.Fixes
 
     /// <summary>
     /// Patches <see cref="FpcMotor.DesiredMove"/> getter to fix Slowness effect.
+    /// reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/378).
     /// </summary>
     [HarmonyPatch(typeof(FpcMotor), nameof(FpcMotor.DesiredMove), MethodType.Getter)]
     internal class SlownessFix
@@ -41,6 +42,7 @@ namespace Exiled.Events.Patches.Fixes
 
     /// <summary>
     /// Patches <see cref="FpcMotor.UpdatePosition"/> method to fix Slowness effect.
+    /// reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/378).
     /// </summary>
     [HarmonyPatch(typeof(FpcMotor), nameof(FpcMotor.UpdatePosition))]
 #pragma warning disable SA1402 // File may only contain a single type

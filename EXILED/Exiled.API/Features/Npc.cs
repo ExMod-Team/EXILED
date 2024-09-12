@@ -5,27 +5,22 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-#nullable enable
 namespace Exiled.API.Features
 {
+#nullable enable
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using CommandSystem;
-
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Components;
-
+    using Exiled.API.Features.Roles;
     using Footprinting;
-
     using MEC;
-
     using Mirror;
-
     using PlayerRoles;
-
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -51,6 +46,20 @@ namespace Exiled.API.Features
         /// Gets a list of Npcs.
         /// </summary>
         public static new List<Npc> List => Player.List.OfType<Npc>().ToList();
+
+        /// <summary>
+        /// Gets or sets the player's position.
+        /// </summary>
+        public override Vector3 Position
+        {
+            get => base.Position;
+            set
+            {
+                base.Position = value;
+                if (Role is FpcRole fpcRole)
+                    fpcRole.ClientRelativePosition = new(value);
+            }
+        }
 
         /// <summary>
         /// Retrieves the NPC associated with the specified ReferenceHub.

@@ -112,6 +112,15 @@ namespace Exiled.API.Features
         public static double Tps => Math.Round(1f / Time.smoothDeltaTime);
 
         /// <summary>
+        /// Gets or sets the max ticks per second of the server.
+        /// </summary>
+        public static short MaxTps
+        {
+            get => ServerStatic.ServerTickrate;
+            set => ServerStatic.ServerTickrate = value;
+        }
+
+        /// <summary>
         /// Gets the actual frametime of the server.
         /// </summary>
         public static double Frametime => Math.Round(1f / Time.deltaTime);
@@ -177,6 +186,11 @@ namespace Exiled.API.Features
             get => ServerConsole.WhiteListEnabled;
             set => ServerConsole.WhiteListEnabled = value;
         }
+
+        /// <summary>
+        /// Gets the list of user IDs of players currently whitelisted.
+        /// </summary>
+        public static HashSet<string> WhitelistedPlayers => WhiteList.Users;
 
         /// <summary>
         /// Gets a value indicating whether or not this server is verified.

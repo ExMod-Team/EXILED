@@ -1,10 +1,10 @@
 <h1 align="center">EXILED - Bibliothèque d'exécution étendue pour le développement externe</h1>
 <div align="center">
     
-[<img src="https://img.shields.io/github/actions/workflow/status/Exiled-Official/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/Exiled-Official/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
-<a href="https://github.com/Exiled-Official/EXILED/releases"><img src="https://img.shields.io/github/v/release/Exiled-Official/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/Exiled-Official/EXILED/releases" alt="GitHub Releases"></a>
-<img src="https://img.shields.io/github/downloads/Exiled-Official/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
-![Github Commits](https://img.shields.io/github/commit-activity/w/Exiled-Official/EXILED/apis-rework?style=for-the-badge&logo=git)
+[<img src="https://img.shields.io/github/actions/workflow/status/ExMod-Team/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/ExMod-Team/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
+<a href="https://github.com/ExMod-Team/EXILED/releases"><img src="https://img.shields.io/github/v/release/ExMod-Team/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/ExMod-Team/EXILED/releases" alt="GitHub Releases"></a>
+<img src="https://img.shields.io/github/downloads/ExMod-Team/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
+![Github Commits](https://img.shields.io/github/commit-activity/w/ExMod-Team/EXILED/apis-rework?style=for-the-badge&logo=git)
 <a href="https://discord.gg/PyUkWTg">
     <img src="https://img.shields.io/discord/656673194693885975?style=for-the-badge&logo=discord" alt="Chat on Discord">
 </a>    
@@ -23,17 +23,17 @@ L'installation d'EXILED est assez simple. Il se charge via la PluginAPI de North
 Si vous choisissez d'utiliser l'installateur, il se chargera, s'il est exécuté correctement, d'installer toutes les fonctionnalités d'EXILED.
 
 # Windows
-### Installation automatique ([plus d'informations](https://github.com/Exiled-Official/EXILED/blob/master/Exiled.Installer/README.md))
+### Installation automatique ([plus d'informations](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 **Note**: Assurez-vous d'être connecté en tant qu'utilisateur exécutant le serveur, ou que vous disposez de privilèges Admin avant d'exécuter l'installateur.
 
-  - Téléchargez **`Exiled.Installer-Win.exe` [ici](https://github.com/Exiled-Official/EXILED/releases)** (cliquez sur "Assets" -> cliquez sur "Installer")
+  - Téléchargez **`Exiled.Installer-Win.exe` [ici](https://github.com/ExMod-Team/EXILED/releases)** (cliquez sur "Assets" -> cliquez sur "Installer")
   - Placez-le dans le dossier de votre serveur (téléchargez le serveur dédié si vous ne l'avez pas encore fait)
   - Double-cliquez sur **`Exiled.Installer.exe`** ou **[téléchargez ce .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** et placez-le dans le dossier du serveur pour installer la dernière pré-version
   - Pour obtenir et installer des plugins, consultez la section [installation de plugin](#installation-de-plugin) ci-dessous.
 **Note:** Si vous installez EXILED sur un serveur distant, assurez-vous d'exécuter le .exe avec même utilisateur qui exécute vos serveurs SCP:SL (ou un utilisateur avec des privilèges d'administration)
 
 ### Installation manuelle
-  - Téléchargez **`Exiled.tar.gz` [ici](https://github.com/Exiled-Official/EXILED/releases)**
+  - Téléchargez **`Exiled.tar.gz` [ici](https://github.com/ExMod-Team/EXILED/releases)**
   - Extrayez son contenu avec [7Zip](https://www.7-zip.org/) ou [WinRar](https://www.win-rar.com/download.html?&L=6)
   - Déplacez le dossier **``EXILED``** vers **`%appdata%`** *Note: Ce dossier doit être placé dans ``C:\Users\%UserName%\AppData\Roaming``, et ***NON*** ``C:\Users\%UserName%\AppData\Roaming\SCP Secret Laboratory``, et **IL DOIT** être dans (...)\AppData\Roaming, et non (...)\AppData\!*
   - Déplacez **``SCP Secret Laboratory``** vers **`%appdata%`**.
@@ -49,11 +49,11 @@ C'est tout, EXILED devrait maintenant être installé et actif la prochaine fois
   - Déplacer vers: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (pour y accéder, appuyez sur Win + R, puis écrivez `%appdata%`)
 
 # Linux
-### Installation automatique ([plus d'informations](https://github.com/Exiled-Official/EXILED/blob/master/Exiled.Installer/README.md))
+### Installation automatique ([plus d'informations](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 
 **Note:** Si vous installez EXILED sur un serveur distant, assurez-vous d'exécuter l'installateur avec l'utilisateur qui exécute vos serveurs SCP:SL (ou en tant que root).
 
-  - Téléchargez **`Exiled.Installer-Linux` [ici](https://github.com/Exiled-Official/EXILED/releases)** (cliquez sur "Assets" -> téléchargez l'installateur)
+  - Téléchargez **`Exiled.Installer-Linux` [ici](https://github.com/ExMod-Team/EXILED/releases)** (cliquez sur "Assets" -> téléchargez l'installateur)
   - Installez-le en tapant soit **`./Exiled.Installer-Linux --path /path/to/server`** ou déplacez-le directement à l'intérieur du dossier du serveur, accédez-y avec le terminal (`cd`) et tapez: **`./Exiled.Installer-Linux`**.
   - Si vous souhaitez la dernière pré-version, ajoutez simplement **`--pre-releases`**. Exemple: **`./Exiled.Installer-Linux /home/scp/server --pre-releases`**
   - Un autre exemple, si vous avez placé `Exiled.Installer-Linux` dans votre dossier de serveur: **`/home/scp/server/Exiled.Installer-Linux --pre-releases`**
@@ -61,7 +61,7 @@ C'est tout, EXILED devrait maintenant être installé et actif la prochaine fois
 
 ### Installation manuelle
   - **Assurez-vous** d'être connecté en tant qu'utilisateur qui exécute le(s) serveur(s) SCP.
-  - Téléchargez **`Exiled.tar.gz` [ici](https://github.com/Exiled-Official/EXILED/releases)** (SSH : faites un clic droit et obtenez le lien `Exiled.tar.gz` puis tapez: **`wget (link_to_download)`**)
+  - Téléchargez **`Exiled.tar.gz` [ici](https://github.com/ExMod-Team/EXILED/releases)** (SSH : faites un clic droit et obtenez le lien `Exiled.tar.gz` puis tapez: **`wget (link_to_download)`**)
   - Pour l'extraire dans votre dossier actuel, tapez **``tar -xzvf EXILED.tar.gz``**
   - Déplacez le dossier **`EXILED`** vers **``~/.config``**. *Remarque : Ce dossier doit être placé dans ``~/.config``, et ***NON*** ``~/.config/SCP Secret Laboratory``* (SSH: **`mv EXILED ~/.config/`**)
   - Déplacez le dossier **`SCP Secret Laboratory`** vers **``~/.config``**. *Remarque : Ce dossier doit être placé dans ``~/.config``, et ***NON*** ``~/.config/SCP Secret Laboratory``* (SSH: **`mv SCP Secret Laboratory ~/.config/`**)
@@ -81,7 +81,7 @@ Cependant, certains plugins peuvent obtenir leurs paramètres de configuration �
 
 # Pour les Développeurs
 
-Si vous souhaitez créer un plugin pour EXILED, c'est relativement simple à faire. Si vous avez besoin ou souhaitez consulter un tutoriel, suivez les instructions sur notre page [Bien Commencer](https://github.com/Exiled-Official/EXILED/blob/master/Localization/GettingStarted-FR.md).
+Si vous souhaitez créer un plugin pour EXILED, c'est relativement simple à faire. Si vous avez besoin ou souhaitez consulter un tutoriel, suivez les instructions sur notre page [Bien Commencer](https://github.com/ExMod-Team/EXILED/blob/master/Localization/GettingStarted-FR.md).
 
 Pour des tutoriels plus complets et régulièrement mis à jour, consultez [le site d'EXILED](https://exiled.to).
 

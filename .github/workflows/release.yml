@@ -11,9 +11,9 @@ defaults:
     working-directory: ./EXILED
 
 env:
-  EXILED_REFERENCES_URL: https://Exiled-Official.github.io/SL-References/Dev.zip
+  EXILED_REFERENCES_URL: https://exmod-team.github.io/SL-References/Dev.zip
   EXILED_REFERENCES_PATH: ${{ github.workspace }}/EXILED/References
-  EXILED_DLL_ARCHIVER_URL: https://github.com/Exiled-Official/EXILED-DLL-Archiver/releases/latest/download/EXILED-DLL-Archiver.exe
+  EXILED_DLL_ARCHIVER_URL: https://github.com/ExMod-Team/EXILED-DLL-Archiver/releases/latest/download/EXILED-DLL-Archiver.exe
 
 jobs:
   build:
