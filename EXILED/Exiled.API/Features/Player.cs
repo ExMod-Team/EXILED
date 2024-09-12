@@ -2055,18 +2055,18 @@ namespace Exiled.API.Features
         public void ResetStamina() => Stamina = StaminaStat.MaxValue;
 
         /// <summary>
-        /// Sets the scale of a player on the server side.
+        /// Sets the scale of a player on the server side (will update for players too).
         /// </summary>
-        /// <param name="size">The size to set.</param>
+        /// <param name="scale">The size to set.</param>
         /// <param name="viewers">Who should see the updated scale.</param>
-        public void SetScale(Vector3 size, IEnumerable<Player> viewers)
+        public void SetScale(Vector3 scale, IEnumerable<Player> viewers)
         {
-            if (size == Scale)
+            if (scale == Scale)
                 return;
 
             try
             {
-                ReferenceHub.transform.localScale = size;
+                ReferenceHub.transform.localScale = scale;
 
                 foreach (Player target in viewers)
                     Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, target.Connection });
@@ -2080,18 +2080,18 @@ namespace Exiled.API.Features
         /// <summary>
         /// Sets the scale of the player for other players.
         /// </summary>
-        /// <param name="fakeSize">The scale to set to.</param>
+        /// <param name="fakeScale">The scale to set to.</param>
         /// <param name="viewers">Who should see the fake size.</param>
-        public void SetFakeScale(Vector3 fakeSize, IEnumerable<Player> viewers)
+        public void SetFakeScale(Vector3 fakeScale, IEnumerable<Player> viewers)
         {
             Vector3 currentScale = Scale;
 
-            if (fakeSize == currentScale)
+            if (fakeScale == currentScale)
                 return;
 
             try
             {
-                ReferenceHub.transform.localScale = fakeSize;
+                ReferenceHub.transform.localScale = fakeScale;
 
                 foreach (Player target in viewers)
                     Server.SendSpawnMessage.Invoke(null, new object[] { NetworkIdentity, target.Connection });
