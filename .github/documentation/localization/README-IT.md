@@ -27,7 +27,7 @@ L'installazione di EXILED è piuttosto semplice. Si carica tramite l'API del plu
 
   - Scarica **`Exiled.Installer-Win.exe` [da qui](https://github.com/ExMod-Team/EXILED/releases)** (clicca su Assets -> clicca sull'Installer)
   - Mettilo nella cartella del tuo server (scarica il server dedicato se non l'hai già fatto).
-  - Fai doppio clic su **`Exiled.Installer.exe`** o **[scarica questo file .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** e mettilo nella cartella del server per installare l'ultima versione preliminare.
+  - Fai doppio clic su **`Exiled.Installer.exe`** o **[scarica questo file .bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** e mettilo nella cartella del server per installare l'ultima versione preliminare.
   - Per installare e ottenere plugin, consulta la sezione [Installare plugins](#installazione-plugins) qui sotto.
 
 **Nota**: Se stai installando EXILED su un server remoto, assicurati di eseguire il file .exe come lo stesso utente che avvia i tuoi server SCP:SL (o un utente con privilegi di amministratore).

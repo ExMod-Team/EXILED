@@ -30,7 +30,7 @@ EXILED의 설치 과정은 상당히 간단합니다. 노스우드의 Plugin API
 
 - **[여기에서](https://github.com/ExMod-Team/EXILED/releases) `Exiled.Installer-Win.exe`** 를 다운로드합니다. (Assets 클릭 -> Exiled.Installer-Win.exe 클릭)
 - 서버와 같은 폴더에 프로그램을 위치시킵니다. (서버를 다운로드 받지 않았다면 설치하세요.)
-- **`Exiled.Installer.exe`** 를 실행하거나 프리릴리즈 버전을 설치하려면 **이 [.bat 파일](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)을 받아** 서버 폴더에 넣고 실행합니다.
+- **`Exiled.Installer.exe`** 를 실행하거나 프리릴리즈 버전을 설치하려면 **이 [.bat 파일](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)을 받아** 서버 폴더에 넣고 실행합니다.
 - 플러그인을 다운로드하고 설치하려면, 아래 [플러그인 설치](#플러그인-설치) 문단을 참고하세요.
   **주의사항:** EXILED를 원격 서버에 설치하려고 한다면, .exe 파일을 실행할 때 SCP: 비밀 연구소 서버를 실행할 유저와 같은 유저인지, 또는 관리자 권한을 가진 유저인지 확인해주세요.
 

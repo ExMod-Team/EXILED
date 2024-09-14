@@ -16,7 +16,7 @@ If you choose to use the installer it will, if run correctly, take care of insta
 
   - Download the **`Exiled.Installer-Win.exe` [from here](https://github.com/ExMod-Team/EXILED/releases)** (click on Assets -> click the Installer)
   - Place it on your server folder (download the dedicated server if you haven't)
-  - Double click the **`Exiled.Installer.exe`** or **[download this .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** and place it in the server folder to install the latest pre-release
+  - Double click the **`Exiled.Installer.exe`** or **[download this .bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** and place it in the server folder to install the latest pre-release
   - To get and install plugins, check the [Installing plugins](#installing-plugins) section down below.
 **Note:** If you are installing EXILED on a remote server, make sure you run the .exe as the same user that runs your SCP:SL servers (or one with Admin privileges)
 

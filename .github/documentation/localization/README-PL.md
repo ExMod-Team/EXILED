@@ -29,7 +29,7 @@ Jeżeli zdecydujecie się na skorzystanie z instalatora, ten - jeżeli użyty po
 
   - Pobierzcie **`Exiled.Installer-Win.exe` kilkając [tutaj](https://github.com/ExMod-Team/EXILED/releases)** (Naciśnijcie na zasoby (Assets) -> naciśnijcie na instalatora)
   - Umieśćcie go w folderze waszego serwera (pobierzcie serwer dedykowany jeżeli jeszcze tego nie zrobiliście)
-  - Naciśnijcie 2 razy na **`Exiled.Installer.exe`** albo **[pobierzcie ten plik .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** i umieśćcie go w folderze waszego serwera aby zainstalować najnowsze wydanie 'beta'.
+  - Naciśnijcie 2 razy na **`Exiled.Installer.exe`** albo **[pobierzcie ten plik .bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** i umieśćcie go w folderze waszego serwera aby zainstalować najnowsze wydanie 'beta'.
   - Aby zdobyć i zainstalować pluginy, sprawdźcie sekcję [Instalowanie pluginów](#installing-plugins) poniżej.
 **UWAGA:** Jeżeli instalujecie EXILED'a na serwerze, upewnijcie się, że uruchamiacie plik .exe jako ten sam użytkownik, który będzie uruchamiał serwer (albo ma uprawnienia Administratora)
 

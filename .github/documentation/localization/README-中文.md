@@ -30,7 +30,7 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 
   - 下载 **[Exiled.Installer-Win.exe](https://github.com/ExMod-Team/EXILED/releases)** (点击 Assets -> 下载安装包)
   - 放置到你的服务器文件夹 (如果你还没有下载服务端，则需要先在Steam中下载服务端)
-  - 双击 **`Exiled.Installer.exe`** 或 **[install-prerelease.bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** 并放置到服务器文件夹中来安装最新的预更新
+  - 双击 **`Exiled.Installer.exe`** 或 **[install-prerelease.bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** 并放置到服务器文件夹中来安装最新的预更新
   - 获取以及安装插件，请参考下面的[安装插件](#installing-plugins)部分。
 **备注:** 如果你正在一个远程服务器上安装EXILED，请确保你运行的.exe的用户和你运行SCP:SL服务器的一致
 
