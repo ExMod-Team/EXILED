@@ -26,14 +26,18 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="door">
         /// <inheritdoc cref="Door" />
         /// </param>
+        /// <param name="canOpen">
+        /// <inheritdoc cref="CanOpen" />
+        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public InteractingDoorEventArgs(Player player, DoorVariant door, bool isAllowed = true)
+        public InteractingDoorEventArgs(Player player, DoorVariant door, bool canOpen, bool isAllowed = true)
         {
             Player = player;
             Door = Door.Get(door);
             IsAllowed = isAllowed;
+            CanOpen = canOpen;
         }
 
         /// <summary>
@@ -50,5 +54,10 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the player who's interacting with the door.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not the player can open the door.
+        /// </summary>
+        public bool CanOpen { get; set; }
     }
 }
