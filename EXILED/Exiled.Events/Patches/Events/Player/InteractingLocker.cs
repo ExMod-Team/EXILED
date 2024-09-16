@@ -35,6 +35,11 @@ namespace Exiled.Events.Patches.Events.Player
             const int offset = -9;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
 
+            LocalBuilder ev = generator.DeclareLocal(typeof(InteractingLockerEventArgs));
+            Label returnLabel = generator.DefineLabel();
+
+            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -60,15 +65,24 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
 
-                    // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool)
+                    // true
+                    new(OpCodes.Ldc_I4_1),
+
+                    // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool, true)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Player.OnInteractingLocker(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingLocker))),
 
-                    // flag = !ev.IsAllowed
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
+                    new(OpCodes.Brfalse_S, returnLabel),
+
+                    // flag = !ev.CanOpen
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.CanOpen))),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
                     new(OpCodes.Stloc_0),
