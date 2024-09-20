@@ -12,13 +12,13 @@ namespace Exiled.Loader
     /// <summary>
     /// A set of extensions to easily interact with Linux/Unix environment.
     /// </summary>
-    internal static class LinuxPermission
+    public static class LinuxPermission
     {
         /// <summary>
         /// Sets rw and execution permissions given a file, for the current user and group.
         /// </summary>
         /// <param name="path">The path of the file.</param>
-        internal static void SetFileUserAndGroupReadWriteExecutePermissions(string path)
+        public static void SetFileUserAndGroupReadWriteExecutePermissions(string path)
         {
             UnixFileSystemInfo.GetFileSystemEntry(path).FileAccessPermissions |= FileAccessPermissions.UserReadWriteExecute | FileAccessPermissions.GroupReadWriteExecute;
         }
