@@ -77,6 +77,50 @@ namespace Exiled.API.Features
             DecontaminationState.Disabled : (DecontaminationState)DecontaminationController.Singleton._nextPhase;
 
         /// <summary>
+        /// Gets the remaining time for the decontamination process.
+        /// </summary>
+        /// <returns>
+        /// The remaining time in seconds for the decontamination process.
+        /// Returns -1 if the controller is null or if decontamination is overridden.
+        /// Returns 0 if decontamination has not started yet.
+        /// </returns>
+        public static float RemainingDecontaminationTime
+        {
+            get
+            {
+                DecontaminationController controller = DecontaminationController.Singleton;
+                if (controller == null)
+                    return -1f;
+
+                if (controller.DecontaminationOverride != DecontaminationController.DecontaminationStatus.None)
+                    return -1f;
+
+                double currentTime = DecontaminationController.GetServerTime;
+                float totalTime = 0f;
+                bool decontaminationStarted = false;
+
+                for (int i = 0; i < controller.DecontaminationPhases.Length; i++)
+                {
+                    if (currentTime < controller.DecontaminationPhases[i].TimeTrigger)
+                    {
+                        if (!decontaminationStarted)
+                        {
+                            totalTime += (float)(controller.DecontaminationPhases[i].TimeTrigger - currentTime);
+                            decontaminationStarted = true;
+                        }
+                        else
+                        {
+                            totalTime += (float)(controller.DecontaminationPhases[i].TimeTrigger -
+                                                 controller.DecontaminationPhases[i - 1].TimeTrigger);
+                        }
+                    }
+                }
+
+                return decontaminationStarted ? totalTime : 0f;
+            }
+        }
+
+        /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
         /// </summary>
         public static ReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports { get; } = TeleportsValue.AsReadOnly();
