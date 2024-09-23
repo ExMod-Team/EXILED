@@ -186,6 +186,12 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Turns on all lights in the facility.
+        /// </summary>
+        /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
+        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes) => TurnOffAllLights(0, zoneTypes);
+
+        /// <summary>
         /// Changes the <see cref="Color"/> of all lights in the facility.
         /// </summary>
         /// <param name="color">The new <see cref="Color"/> of the lights.</param>
