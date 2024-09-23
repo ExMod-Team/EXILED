@@ -176,6 +176,12 @@ namespace Exiled.API.Features
         public static void StartDecontamination() => DecontaminationController.Singleton.ForceDecontamination();
 
         /// <summary>
+        /// Turns on all lights in the facility.
+        /// </summary>
+        /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
+        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes) => TurnOffAllLights(0, zoneTypes);
+
+        /// <summary>
         /// Turns off all lights in the facility.
         /// </summary>
         /// <param name="duration">The duration of the blackout.</param>
