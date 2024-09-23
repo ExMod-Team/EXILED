@@ -18,7 +18,7 @@ namespace Exiled.CustomItems.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Map.Generated"/>
         public void OnMapGenerated()
         {
-            Timing.CallDelayed(0.5f, () => // Delay its necessary for the spawnpoints of lockers and rooms to be generated.
+            Timing.CallDelayed(0.8f, () => // Delay its necessary for the spawnpoints of lockers and rooms to be generated.
             {
                 foreach (CustomItem customItem in CustomItem.Registered)
                     customItem?.SpawnAll();
