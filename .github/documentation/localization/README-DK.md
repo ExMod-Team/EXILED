@@ -27,7 +27,7 @@ Hvis du vælger at bruge installationsprogrammet, vil det, hvis det køres korre
 **Note**: Sørg for, at du er på den bruger, der kører serveren, eller at du har administratorrettigheder, før du kører installationsprogrammet.
 
   - Download **`Exiled.Installer-Win.exe` [herfra](https://github.com/ExMod-Team/EXILED/releases)** (klik på Assets -> klik på Installer)  - Placer den i din servermappe (download den dedikerede server, hvis du ikke har gjort det).
-  - Dobbeltklik på **`Exiled.Installer.exe`** eller **[download denne .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** og placer den i servermappen for at installere den seneste pre-release
+  - Dobbeltklik på **`Exiled.Installer.exe`** eller **[download denne .bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** og placer den i servermappen for at installere den seneste pre-release
   - For at installere og hente plugins, tjek afsnittet [Installing plugins](#installing-plugins) nedenfor.
 **Bemærk:** Hvis du installerer EXILED på en fjernserver, skal du sørge for at køre .exe som den samme bruger, der kører dine SCP:SL-servere (eller en med administratorrettigheder).
 

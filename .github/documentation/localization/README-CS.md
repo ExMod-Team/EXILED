@@ -28,7 +28,7 @@ Pokud se rozhodnete použít instalační program, postará se při správném s
 
   - Stáhněte **`Exiled.Installer-Win.exe` [odsud](https://github.com/ExMod-Team/EXILED/releases)** (Klikněte na Assets -> klikněte na Instalátor)
   - Umístěte ji do složky serveru (pokud jste ji ještě nestáhli, stáhněte si dedikovaný server).
-  - Dvakrát klikněte na **`Exiled.Installer.exe`** nebo **[stáhněte tento .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** a umístěte jej do složky serveru, abyste nainstalovali nejnovější předběžnou verzi.
+  - Dvakrát klikněte na **`Exiled.Installer.exe`** nebo **[stáhněte tento .bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** a umístěte jej do složky serveru, abyste nainstalovali nejnovější předběžnou verzi.
   - Chcete-li nainstalovat a získat pluginy, podívejte se na sekci Instalace pluginů níže.
 **Poznámka:** Pokud instalujete EXILED na vzdálený server, ujistěte se, že spustíte .exe jako stejný uživatel, který spouští servery SCP:SL (nebo uživatel s právy správce).
 

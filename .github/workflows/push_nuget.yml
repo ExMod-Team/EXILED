@@ -47,3 +47,6 @@ jobs:
     - name: Push NuGet
       shell: pwsh
       run: nuget push ${{ env.PackageFile }} -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json
+
+    - name: Push generated package to GitHub registry
+      run: dotnet nuget push ${{ env.PackageFile }} -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/ExMod-Team/index.json --skip-duplicate

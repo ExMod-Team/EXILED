@@ -29,7 +29,7 @@ Si eliges el instalador automático (si se ejecuta correctamente) se encargará 
 
   - Descarga **`Exiled.Installer-Win.exe` [de aquí](https://github.com/ExMod-Team/EXILED/releases)** (selecciona Assets -> descarga el Instalador).
   - Colócalo en tu carpeta del servidor (descarga el servidor dedicado si no lo has hecho todavía).
-  - Haz doble-clic en **`Exiled.Installer.exe`** o descarga **[este archivo .bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** y colócalo en la carpeta del servidor para descargar la última versión de prueba.
+  - Haz doble-clic en **`Exiled.Installer.exe`** o descarga **[este archivo .bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** y colócalo en la carpeta del servidor para descargar la última versión de prueba.
   - Para conseguir e instalar plugins, mira el apartado [Instalando plugins](#installing-plugins) más abajo.
 **Nota:** Si estás instalando EXILED en un servidor remoto, asegúrate de iniciar el .exe con el mismo usuario que tiene el servidor de SCP:SL (o uno con permisos de Administrador)
 
