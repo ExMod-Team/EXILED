@@ -18,6 +18,7 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Hazards;
     using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
+    using Exiled.API.Features.Pickups.Projectiles;
     using Exiled.API.Features.Toys;
     using global::Hazards;
     using InventorySystem;
@@ -332,24 +333,13 @@ namespace Exiled.API.Features
         /// <param name="attacker">The player who create the explosion.</param>
         public static void Explode(Vector3 position, ProjectileType projectileType, Player attacker = null)
         {
-            ItemType item;
-            if ((item = projectileType.GetItemType()) is ItemType.None)
+            if (projectileType is ProjectileType.None)
                 return;
+
             attacker ??= Server.Host;
-            if (!InventoryItemLoader.TryGetItem(item, out ThrowableItem throwableItem))
-                return;
 
-            if (Object.Instantiate(throwableItem.Projectile) is not TimeGrenade timedGrenadePickup)
-                return;
-
-            if (timedGrenadePickup is Scp018Projectile scp018Projectile)
-                scp018Projectile.SetupModule();
-            else
-                ExplodeEffect(position, projectileType);
-
-            timedGrenadePickup.Position = position;
-            timedGrenadePickup.PreviousOwner = (attacker ?? Server.Host).Footprint;
-            timedGrenadePickup.ServerFuseEnd();
+            TimeGrenadeProjectile projectile = Projectile.CreateAndSpawn<TimeGrenadeProjectile>(projectileType, position, Quaternion.identity, false, attacker);
+            projectile.Explode();
         }
 
         /// <summary>

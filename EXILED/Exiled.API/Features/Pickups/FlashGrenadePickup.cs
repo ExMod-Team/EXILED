@@ -65,18 +65,6 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <inheritdoc/>
-        internal override void WriteProjectileInfo(Projectile projectile)
-        {
-            if (projectile is FlashbangProjectile flashbangProjectile)
-            {
-                flashbangProjectile.MinimalDurationEffect = MinimalDurationEffect;
-                flashbangProjectile.AdditionalBlindedEffect = AdditionalBlindedEffect;
-                flashbangProjectile.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
-                flashbangProjectile.FuseTime = FuseTime;
-            }
-        }
-
-        /// <inheritdoc/>
         protected override void InitializeProperties(ItemBase itemBase)
         {
             base.InitializeProperties(itemBase);

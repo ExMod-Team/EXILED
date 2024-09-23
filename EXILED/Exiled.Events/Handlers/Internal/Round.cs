@@ -10,6 +10,8 @@ namespace Exiled.Events.Handlers.Internal
     using System.Linq;
 
     using CentralAuth;
+
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
@@ -69,6 +71,24 @@ namespace Exiled.Events.Handlers.Internal
         {
             if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason != API.Enums.SpawnReason.Destroyed && Events.Instance.Config.ShouldDropInventory)
                 ev.Player.Inventory.ServerDropEverything();
+        }
+
+        /// <inheritdoc cref="Handlers.Player.OnSpawned(SpawnedEventArgs)" />
+        public static void OnSpawned(SpawnedEventArgs ev)
+        {
+            if (ev.Reason is SpawnReason.Destroyed or SpawnReason.None)
+                return;
+
+            foreach (Player player in Player.List)
+            {
+                if (player == ev.Player)
+                    continue;
+
+                if (player.Role.TeamAppearances.ContainsKey(ev.Player.Role.Team) || player.Role.TeamAppearances.ContainsKey(ev.OldRole.Team))
+                {
+                    player.Role.UpdateAppearanceFor(ev.Player);
+                }
+            }
         }
 
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />

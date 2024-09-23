@@ -8,6 +8,7 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using System.Collections.Generic;
+    using System.Diagnostics;
 
     using API.Enums;
     using API.Features;
@@ -23,6 +24,7 @@ namespace Exiled.Events.EventArgs.Player
     public class ChangingRoleEventArgs : IPlayerEvent, IDeniableEvent
     {
         private RoleTypeId newRole;
+        private SpawnReason reason;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingRoleEventArgs" /> class.
@@ -43,7 +45,7 @@ namespace Exiled.Events.EventArgs.Player
         {
             Player = player;
             NewRole = newRole;
-            Reason = (SpawnReason)reason;
+            this.reason = (SpawnReason)reason;
             SpawnFlags = spawnFlags;
         }
 
@@ -69,6 +71,12 @@ namespace Exiled.Events.EventArgs.Player
             get => newRole;
             set
             {
+                if (reason == SpawnReason.Destroyed)
+                {
+                    Log.Error($"Tried to change NewRole for Destroyed!\n{new StackTrace()}");
+                    return;
+                }
+
                 InventoryRoleInfo inventory = value.GetInventory();
 
                 Items.Clear();
@@ -106,7 +114,24 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets the reason for their class change.
         /// </summary>
-        public SpawnReason Reason { get; set; }
+        public SpawnReason Reason
+        {
+            get
+            {
+                return reason;
+            }
+
+            set
+            {
+                if (reason == SpawnReason.Destroyed)
+                {
+                    Log.Error("Tried to change Destroyed reason!");
+                    return;
+                }
+
+                reason = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the spawn flags for their class change.

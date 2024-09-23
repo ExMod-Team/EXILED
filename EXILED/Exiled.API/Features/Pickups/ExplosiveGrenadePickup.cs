@@ -77,20 +77,6 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <inheritdoc/>
-        internal override void WriteProjectileInfo(Projectile projectile)
-        {
-            if (projectile is ExplosionGrenadeProjectile explosionGrenadeProjectile)
-            {
-                explosionGrenadeProjectile.MaxRadius = MaxRadius;
-                explosionGrenadeProjectile.ScpDamageMultiplier = ScpDamageMultiplier;
-                explosionGrenadeProjectile.BurnDuration = BurnDuration;
-                explosionGrenadeProjectile.DeafenDuration = DeafenDuration;
-                explosionGrenadeProjectile.ConcussDuration = ConcussDuration;
-                explosionGrenadeProjectile.FuseTime = FuseTime;
-            }
-        }
-
-        /// <inheritdoc/>
         protected override void InitializeProperties(ItemBase itemBase)
         {
             base.InitializeProperties(itemBase);

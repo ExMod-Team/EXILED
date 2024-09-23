@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Pickups.Projectiles;
     using Exiled.API.Interfaces;
 
+    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
 
     using UnityEngine;
@@ -28,10 +29,7 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
-            Base.Projectile.gameObject.SetActive(false);
-            Projectile = Pickup.Get<Projectile>(Object.Instantiate(Base.Projectile));
-            Base.Projectile.gameObject.SetActive(true);
-            Projectile.Serial = Serial;
+            InitializeProperties(itemBase);
         }
 
         /// <summary>
@@ -45,22 +43,15 @@ namespace Exiled.API.Features.Items
         {
         }
 
-        /// <inheritdoc/>
-        public override Vector3 Scale
-        {
-            get => base.Scale;
-            set => Projectile.Scale = base.Scale = value;
-        }
-
         /// <summary>
         /// Gets the <see cref="ThrowableItem"/> base for this item.
         /// </summary>
         public new ThrowableItem Base { get; }
 
         /// <summary>
-        /// Gets a <see cref="Pickups.Projectiles.Projectile"/> to change grenade properties.
+        /// Gets or sets how long the fuse will last.
         /// </summary>
-        public Projectile Projectile { get; }
+        public float FuseTime { get; set; }
 
         /// <summary>
         /// Gets or sets the amount of time it takes to pull the pin.
@@ -93,6 +84,30 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Creates the <see cref="Projectile"/> that based on this <see cref="Item"/>.
+        /// </summary>
+        /// <param name="position">The location to spawn the item.</param>
+        /// <param name="rotation">The rotation of the item.</param>
+        /// <param name="spawn">Whether the <see cref="Projectile"/> should be initially spawned.</param>
+        /// <returns>The created <see cref="Projectile"/>.</returns>
+        /// <remarks><see cref="Projectile"/> wont be activated, use <see cref="Projectile.Activate"/> to activate spawned <see cref="Projectile"/>.</remarks>
+        public virtual Projectile CreateProjectile(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        {
+            ThrownProjectile ipb = Object.Instantiate(Base.Projectile, position, rotation);
+
+            ipb.Info = new PickupSyncInfo(Type, Weight, Serial);
+
+            Projectile projectile = Pickup.Get<Projectile>(ipb);
+
+            projectile.ReadThrowableItemInfo(this);
+
+            if (spawn)
+                projectile.Spawn();
+
+            return projectile;
+        }
+
+        /// <summary>
         /// Clones current <see cref="Throwable"/> object.
         /// </summary>
         /// <returns> New <see cref="Throwable"/> object. </returns>
@@ -107,5 +122,17 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <returns>A string containing Throwable-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{PinPullTime}|";
+
+        /// <summary>
+        /// initialize throwable item properties.
+        /// </summary>
+        /// <param name="throwable">target throwable.</param>
+        protected virtual void InitializeProperties(ThrowableItem throwable)
+        {
+            if (throwable.Projectile is TimeGrenade timeGrenade)
+            {
+                FuseTime = timeGrenade._fuseTime;
+            }
+        }
     }
 }

@@ -103,5 +103,19 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         /// <returns>A string containing ExplosionGrenadePickup-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Position}| -{IsLocked}- ={InUse}=";
+
+        /// <inheritdoc/>
+        internal override void ReadGrenadePickupInfo(GrenadePickup pickup)
+        {
+            base.ReadGrenadePickupInfo(pickup);
+            if (pickup is ExplosiveGrenadePickup grenade)
+            {
+                MaxRadius = grenade.MaxRadius;
+                ScpDamageMultiplier = grenade.ScpDamageMultiplier;
+                BurnDuration = grenade.BurnDuration;
+                DeafenDuration = grenade.DeafenDuration;
+                ConcussDuration = grenade.ConcussDuration;
+            }
+        }
     }
 }

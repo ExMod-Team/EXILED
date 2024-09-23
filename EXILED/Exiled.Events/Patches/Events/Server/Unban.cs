@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Unban.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -61,11 +61,10 @@ namespace Exiled.Events.Patches.Events.Server
 
                 new(OpCodes.Ret),
 
-                // id = ev.BanDetails.ToString();
+                // id = ev.TargetId;
                 new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(UnbanningEventArgs), nameof(UnbanningEventArgs.BanDetails))),
-                new(OpCodes.Call, Method(typeof(BanDetails), nameof(BanDetails.ToString))),
-                new(OpCodes.Starg_S, 1),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(UnbanningEventArgs), nameof(UnbanningEventArgs.TargetId))),
+                new(OpCodes.Starg_S, 0),
             });
 
             newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]

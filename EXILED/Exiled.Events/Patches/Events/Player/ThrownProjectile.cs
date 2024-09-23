@@ -11,6 +11,9 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
+    using Exiled.API.Extensions;
+    using Exiled.API.Features;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
@@ -26,9 +29,10 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patches <see cref="ThrowableItem.ServerThrow"/>.
-    /// Adds the <see cref="Handlers.Player.ThrownProjectile"/> event.
+    /// Adds the <see cref="Handlers.Player.ThrownProjectile"/> and <see cref="Handlers.Player.ThrowingProjectile"/> events.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ThrownProjectile))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ThrowingProjectile))]
     [HarmonyPatch(typeof(ThrowableItem), nameof(ThrowableItem.ServerThrow))]
     internal static class ThrownProjectile
     {
@@ -44,21 +48,51 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions.InsertRange(index, new[]
             {
                 // thrownProjectile
-                new(OpCodes.Dup),
+                new CodeInstruction(OpCodes.Dup),
 
                 // API.Features.Player.Get(this.Owner)
-                new CodeInstruction(OpCodes.Ldarg_0),
+                new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ThrowableItem), nameof(ThrowableItem.Owner))),
                 new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // this
                 new(OpCodes.Ldarg_0),
 
-                // ThrownProjectile ev = new(thrownProjectile, player, this);
+                // ThrowingProjectileEventArgs ev = new(thrownProjectile, player, this);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ThrowingProjectileEventArgs))[0]),
+
+                // Handlers.Player.OnThrowingProjectile(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnThrowingProjectile))),
+            });
+
+            offset = 0;
+            index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(InventorySystem.Items.ThrowableProjectiles.ThrownProjectile), nameof(InventorySystem.Items.ThrowableProjectiles.ThrownProjectile.ServerActivate)))) + offset;
+
+            // remove original ServerActivate
+            List<Label> labels = newInstructions[index].ExtractLabels();
+            newInstructions.RemoveAt(index);
+
+            newInstructions.InsertRange(index, new[]
+            {
+                // thrownProjectile
+                new CodeInstruction(OpCodes.Dup).WithLabels(labels),
+
+                // ServerActivate
+                new(OpCodes.Callvirt, Method(typeof(InventorySystem.Items.ThrowableProjectiles.ThrownProjectile), nameof(InventorySystem.Items.ThrowableProjectiles.ThrownProjectile.ServerActivate))),
+
+                // API.Features.Player.Get(this.Owner)
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ThrowableItem), nameof(ThrowableItem.Owner))),
+                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
+
+                // this
+                new(OpCodes.Ldarg_0),
+
+                // ThrownProjectileEventArgs ev = new(thrownProjectile, player, this);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ThrownProjectileEventArgs))[0]),
 
                 // Handlers.Player.OnThrownProjectile(ev);
-                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnThrowingProjectile))),
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnThrownProjectile))),
             });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

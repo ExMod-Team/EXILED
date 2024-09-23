@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
     using System;
     using System.Reflection;
 
+    using Exiled.API.Features.Items;
     using Exiled.API.Interfaces;
     using HarmonyLib;
 
@@ -24,6 +25,9 @@ namespace Exiled.API.Features.Pickups.Projectiles
     {
         private static FieldInfo maxVelocityField;
         private static FieldInfo velocityPerBounceField;
+
+        private float? maxVelocity;
+        private float? velocityPerBounce;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp018Projectile"/> class.
@@ -64,15 +68,25 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
+        /// Gets a value indicating whether current Scp018 instance is projectile-typed, or normal pickup.
+        /// </summary>
+        public bool IsProjectile => Base.PhysicsModule is Scp018Physics;
+
+        /// <summary>
         /// Gets or sets the pickup's max velocity.
         /// </summary>
         public float MaxVelocity
         {
-            get => PhysicsModule._maxVel;
+            get => IsProjectile ? PhysicsModule._maxVel : 0.0f;
             set
             {
-                maxVelocityField ??= AccessTools.Field(typeof(Scp018Physics), nameof(Scp018Physics._maxVel));
-                maxVelocityField.SetValue(PhysicsModule, value);
+                if (IsProjectile)
+                {
+                    maxVelocityField ??= AccessTools.Field(typeof(Scp018Physics), nameof(Scp018Physics._maxVel));
+                    maxVelocityField.SetValue(PhysicsModule, value);
+                }
+
+                maxVelocity = value;
             }
         }
 
@@ -81,11 +95,17 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         public float VelocityPerBounce
         {
-            get => PhysicsModule._maxVel;
+            get => IsProjectile ? PhysicsModule._velPerBounce : 0.0f;
             set
             {
-                velocityPerBounceField ??= AccessTools.Field(typeof(Scp018Physics), nameof(Scp018Physics._velPerBounce));
-                velocityPerBounceField.SetValue(PhysicsModule, value);
+                if (IsProjectile)
+                {
+                    velocityPerBounceField ??= AccessTools.Field(typeof(Scp018Physics), nameof(Scp018Physics._velPerBounce));
+                    velocityPerBounceField.SetValue(PhysicsModule, value);
+                    return;
+                }
+
+                velocityPerBounce = value;
             }
         }
 
@@ -113,5 +133,34 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         /// <returns>A string containing Scp018Pickup-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Position}| -{Damage}- ={IgnoreFriendlyFire}=";
+
+        /// <inheritdoc/>
+        public override void Activate()
+        {
+            if (!IsProjectile)
+                Base.SetupModule();
+            base.Activate();
+        }
+
+        /// <inheritdoc/>
+        internal override void ReadThrowableItemInfo(Throwable throwable)
+        {
+            base.ReadThrowableItemInfo(throwable);
+            if (throwable is Scp018 scp018)
+            {
+                FriendlyFireTime = scp018.FriendlyFireTime;
+            }
+        }
+
+        /// <summary>
+        /// Setups scp018 projectile.
+        /// </summary>
+        internal void SetupProjectile()
+        {
+            if (velocityPerBounce.HasValue)
+                VelocityPerBounce = velocityPerBounce.Value;
+            if (maxVelocity.HasValue)
+                MaxVelocity = maxVelocity.Value;
+        }
     }
 }

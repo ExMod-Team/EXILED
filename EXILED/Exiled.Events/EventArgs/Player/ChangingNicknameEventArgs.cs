@@ -19,11 +19,12 @@ namespace Exiled.Events.EventArgs.Player
         /// Initializes a new instance of the <see cref="ChangingNicknameEventArgs"/> class.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> who's name is being changed.</param>
+        /// <param name="oldName">The old <see cref="Player"/> name.</param>
         /// <param name="newName">The new name to be used.</param>
-        public ChangingNicknameEventArgs(Player player, string newName)
+        public ChangingNicknameEventArgs(Player player, string oldName, string newName)
         {
             Player = player;
-            OldName = player.CustomName;
+            OldName = oldName;
             NewName = newName;
         }
 

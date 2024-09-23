@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Pickups.Projectiles
 {
+    using Exiled.API.Features.Items;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items.ThrowableProjectiles;
@@ -91,5 +92,22 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         /// <returns>A string containing TimeGrenadePickup related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{FuseTime}| ={IsAlreadyDetonated}=";
+
+        /// <summary>
+        /// Helper method for saving data between <see cref="Projectile"/>'s and <see cref="GrenadePickup"/>'s.
+        /// </summary>
+        /// <param name="pickup"><see cref="GrenadePickup"/>-related data to give to the <see cref="Projectile"/>.</param>
+        internal virtual void ReadGrenadePickupInfo(GrenadePickup pickup)
+        {
+            FuseTime = pickup.FuseTime;
+            Scale = pickup.Scale;
+        }
+
+        /// <inheritdoc/>
+        internal override void ReadThrowableItemInfo(Throwable throwable)
+        {
+            base.ReadThrowableItemInfo(throwable);
+            FuseTime = throwable.FuseTime;
+        }
     }
 }

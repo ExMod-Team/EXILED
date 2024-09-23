@@ -73,5 +73,17 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         /// <returns>A string containing FlashbangPickup-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Position}| -{IsLocked}- ={InUse}=";
+
+        /// <inheritdoc/>
+        internal override void ReadGrenadePickupInfo(GrenadePickup pickup)
+        {
+            base.ReadGrenadePickupInfo(pickup);
+            if (pickup is FlashGrenadePickup grenade)
+            {
+                MinimalDurationEffect = grenade.MinimalDurationEffect;
+                AdditionalBlindedEffect = grenade.AdditionalBlindedEffect;
+                SurfaceDistanceIntensifier = grenade.SurfaceDistanceIntensifier;
+            }
+        }
     }
 }

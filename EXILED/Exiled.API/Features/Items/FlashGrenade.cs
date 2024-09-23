@@ -11,13 +11,9 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pickups.Projectiles;
 
-    using InventorySystem.Items;
-    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
 
     using UnityEngine;
-
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="FlashbangGrenade"/>.
@@ -31,7 +27,6 @@ namespace Exiled.API.Features.Items
         public FlashGrenade(ThrowableItem itemBase)
             : base(itemBase)
         {
-            Projectile = (FlashbangProjectile)((Throwable)this).Projectile;
         }
 
         /// <summary>
@@ -45,45 +40,19 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets a <see cref="FlashbangProjectile"/> to change grenade properties.
-        /// </summary>
-        public new FlashbangProjectile Projectile { get; }
-
-        /// <summary>
         /// Gets or sets the minimum duration of player can take the effect.
         /// </summary>
-        public float MinimalDurationEffect
-        {
-            get => Projectile.MinimalDurationEffect;
-            set => Projectile.MinimalDurationEffect = value;
-        }
+        public float MinimalDurationEffect { get; set; }
 
         /// <summary>
         /// Gets or sets the additional duration of the <see cref="EffectType.Blinded"/> effect.
         /// </summary>
-        public float AdditionalBlindedEffect
-        {
-            get => Projectile.AdditionalBlindedEffect;
-            set => Projectile.AdditionalBlindedEffect = value;
-        }
+        public float AdditionalBlindedEffect { get; set; }
 
         /// <summary>
         /// Gets or sets the how mush the flash grenade going to be intensified when explode at <see cref="RoomType.Surface"/>.
         /// </summary>
-        public float SurfaceDistanceIntensifier
-        {
-            get => Projectile.SurfaceDistanceIntensifier;
-            set => Projectile.SurfaceDistanceIntensifier = value;
-        }
-
-        /// <summary>
-        /// Gets or sets how long the fuse will last.
-        /// </summary>
-        public float FuseTime
-        {
-            get => Projectile.FuseTime;
-            set => Projectile.FuseTime = value;
-        }
+        public float SurfaceDistanceIntensifier { get; set; }
 
         /// <summary>
         /// Spawns an active grenade on the map at the specified location.
@@ -96,26 +65,14 @@ namespace Exiled.API.Features.Items
 #if DEBUG
             Log.Debug($"Spawning active grenade: {FuseTime}");
 #endif
-            ItemPickupBase ipb = Object.Instantiate(Projectile.Base, position, Quaternion.identity);
 
-            ipb.Info = new PickupSyncInfo(Type, Weight, ItemSerialGenerator.GenerateNext());
+            Projectile projectile = CreateProjectile(position, Quaternion.identity);
 
-            FlashbangProjectile grenade = Pickup.Get<FlashbangProjectile>(ipb);
+            projectile.PreviousOwner = owner;
 
-            grenade.Base.gameObject.SetActive(true);
+            projectile.Activate();
 
-            grenade.MinimalDurationEffect = MinimalDurationEffect;
-            grenade.AdditionalBlindedEffect = AdditionalBlindedEffect;
-            grenade.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
-            grenade.FuseTime = FuseTime;
-
-            grenade.PreviousOwner = owner ?? Server.Host;
-
-            grenade.Spawn();
-
-            grenade.Base.ServerActivate();
-
-            return grenade;
+            return (FlashbangProjectile)projectile;
         }
 
         /// <summary>
@@ -148,6 +105,19 @@ namespace Exiled.API.Features.Items
                 AdditionalBlindedEffect = flashGrenadePickup.AdditionalBlindedEffect;
                 SurfaceDistanceIntensifier = flashGrenadePickup.SurfaceDistanceIntensifier;
                 FuseTime = flashGrenadePickup.FuseTime;
+            }
+        }
+
+        /// <inheritdoc/>
+        protected override void InitializeProperties(ThrowableItem throwable)
+        {
+            base.InitializeProperties(throwable);
+
+            if (throwable.Projectile is FlashbangGrenade grenade)
+            {
+                MinimalDurationEffect = grenade._minimalEffectDuration;
+                AdditionalBlindedEffect = grenade._additionalBlurDuration;
+                SurfaceDistanceIntensifier = grenade._surfaceZoneDistanceIntensifier;
             }
         }
     }
