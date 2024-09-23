@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features
 {
+    using System.Linq;
+
 #pragma warning disable SA1402
     using System;
     using System.Collections.Generic;
@@ -97,6 +99,8 @@ namespace Exiled.API.Features
         /// <inheritdoc/>
         public virtual void OnRegisteringCommands()
         {
+            Dictionary<Type, List<ICommand>> toRegister = new();
+
             foreach (Type type in Assembly.GetTypes())
             {
                 if (type.GetInterface("ICommand") != typeof(ICommand))
@@ -105,28 +109,42 @@ namespace Exiled.API.Features
                 if (!Attribute.IsDefined(type, typeof(CommandHandlerAttribute)))
                     continue;
 
-                foreach (CustomAttributeData customAttributeData in type.CustomAttributes)
+                foreach (CustomAttributeData customAttributeData in type.GetCustomAttributesData())
                 {
                     try
                     {
                         if (customAttributeData.AttributeType != typeof(CommandHandlerAttribute))
                             continue;
 
-                        Type commandType = (Type)customAttributeData.ConstructorArguments?[0].Value;
+                        Type commandHandlerType = (Type)customAttributeData.ConstructorArguments[0].Value;
 
-                        if (!Commands.TryGetValue(commandType, out Dictionary<Type, ICommand> typeCommands))
+                        ICommand command = GetCommand(type) ?? (ICommand)Activator.CreateInstance(type);
+
+                        if (typeof(ParentCommand).IsAssignableFrom(commandHandlerType))
+                        {
+                            ParentCommand parentCommand = GetCommand(commandHandlerType) as ParentCommand;
+
+                            if (parentCommand == null)
+                            {
+                                if (!toRegister.TryGetValue(commandHandlerType, out List<ICommand> list))
+                                    toRegister.Add(commandHandlerType, new() { command });
+                                else
+                                    list.Add(command);
+
+                                continue;
+                            }
+
+                            parentCommand.RegisterCommand(command);
                             continue;
-
-                        if (!typeCommands.TryGetValue(type, out ICommand command))
-                            command = (ICommand)Activator.CreateInstance(type);
+                        }
 
                         try
                         {
-                            if (commandType == typeof(RemoteAdminCommandHandler))
+                            if (commandHandlerType == typeof(RemoteAdminCommandHandler))
                                 CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(command);
-                            else if (commandType == typeof(GameConsoleCommandHandler))
+                            else if (commandHandlerType == typeof(GameConsoleCommandHandler))
                                 GameCore.Console.singleton.ConsoleCommandHandler.RegisterCommand(command);
-                            else if (commandType == typeof(ClientCommandHandler))
+                            else if (commandHandlerType == typeof(ClientCommandHandler))
                                 QueryProcessor.DotCommandHandler.RegisterCommand(command);
                         }
                         catch (ArgumentException e)
@@ -141,7 +159,7 @@ namespace Exiled.API.Features
                             }
                         }
 
-                        Commands[commandType][type] = command;
+                        Commands[commandHandlerType][type] = command;
                     }
                     catch (Exception exception)
                     {
@@ -149,6 +167,39 @@ namespace Exiled.API.Features
                     }
                 }
             }
+
+            foreach (KeyValuePair<Type, List<ICommand>> kvp in toRegister)
+            {
+                ParentCommand parentCommand = GetCommand(kvp.Key) as ParentCommand;
+
+                foreach (ICommand command in kvp.Value)
+                    parentCommand.RegisterCommand(command);
+            }
+        }
+
+        /// <summary>
+        /// Gets a command by it's type.
+        /// </summary>
+        /// <param name="type"><see cref="ICommand"/>'s type.</param>
+        /// <param name="commandHandler"><see cref="CommandHandler"/>'s type. Defines in which command handler command is registered.</param>
+        /// <returns>A <see cref="ICommand"/>. May be <see langword="null"/> if command is not registered.</returns>
+        public ICommand GetCommand(Type type, Type commandHandler = null)
+        {
+            if (type.GetInterface("ICommand") != typeof(ICommand))
+                return null;
+
+            if (commandHandler != null)
+            {
+                if (!Commands.TryGetValue(commandHandler, out Dictionary<Type, ICommand> commands))
+                    return null;
+
+                if (!commands.TryGetValue(type, out ICommand command))
+                    return null;
+
+                return command;
+            }
+
+            return Commands.Keys.Select(commandHandlerType => GetCommand(type, commandHandlerType)).FirstOrDefault(command => command != null);
         }
 
         /// <inheritdoc/>
