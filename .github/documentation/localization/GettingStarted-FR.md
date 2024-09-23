@@ -13,7 +13,7 @@ Cela permet aussi au developpeurs de plugin à ne pas avoir à constament mettre
 Ce document ci-joint va vous apprendre les bases pour la création d'un plugin Exiled.D'ici là vous pouvez motrer au monde entier toute la créativitée que vous avez en vous et pourrez créé grace à ce-ci!
 
 ### Exemple de Plugin
-Un [Exemple de Plugin](https://github.com/galaxy119/EXILED/tree/master/Exiled.Example) qui est un simple plugin montrant les différents évenements et comment les mettre en place proprement. Cette exemple vous permettra d'apprende à utiliser correctement Exiled. Plusieurs choses sont important dans ce plugin, nous allons donc les voir.
+Un [Exemple de Plugin](https://github.com/Exmod-Team/EXILED/tree/master/EXILED/Exiled.Example) qui est un simple plugin montrant les différents évenements et comment les mettre en place proprement. Cette exemple vous permettra d'apprende à utiliser correctement Exiled. Plusieurs choses sont important dans ce plugin, nous allons donc les voir.
 
 #### On Enable + On Disable Mise à jour Dynamique
 Exiled est un framework qui dispose d'une commande de **Rechargement** qui peut être utilisée pour recharger tous les plugins et en obtenir de nouveaux. Cela signifie que vous devez rendre vos plugins **Dynamiquement à jour.** Cela signifie que chaque variable, événement, coroutine, etc. *doit* être assigné lorsqu'il est activé et annulé lorsqu'il est désactivé. La méthode **On Enable** devrait tout activer, et la méthode **On Disable** devrait tout désactiver. Mais vous vous demandez peut-être ce qu'il en est de **On Reload**? Cette fonction est destinée à transférer les variables statiques, c'est-à-dire que toutes les constantes statiques que vous créez ne seront pas effacées. Vous pouvez donc faire quelque chose comme cela :
@@ -202,4 +202,4 @@ Si vous voulez plus d'informations, vous devriez rejoindre notre [discord!](http
 
 Nous avons un canal #resources que vous pourriez trouver utile, ainsi que des contributeurs Exiled et des développeurs de plugins qui seraient prêts à vous aider dans la création de votre/vos plugin(s).
 
-Ou vous pourriez consulter tous les événements que nous avons ! Si vous voulez les consulter, [ici!](https://github.com/galaxy119/EXILED/tree/master/Exiled.Events/EventArgs)
+Ou vous pourriez consulter tous les événements que nous avons ! Si vous voulez les consulter, [ici!](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Events/EventArgs)
