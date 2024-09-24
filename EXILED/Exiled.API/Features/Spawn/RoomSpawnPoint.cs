@@ -57,6 +57,5 @@ namespace Exiled.API.Features.Spawn
             }
             set => throw new InvalidOperationException("The position of this type of SpawnPoint cannot be changed.");
         }
-
     }
 }
