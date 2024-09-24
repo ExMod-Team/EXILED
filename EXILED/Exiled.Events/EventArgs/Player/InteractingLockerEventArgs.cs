@@ -24,16 +24,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="lockerChamber">
+        /// <param name="locker">
+        /// <inheritdoc cref="InteractingLocker" />
+        /// </param>
+        /// <param name="colliderId">
         /// <inheritdoc cref="InteractingChamber" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public InteractingLockerEventArgs(Player player, MapGeneration.Distributors.LockerChamber lockerChamber, bool isAllowed)
+        public InteractingLockerEventArgs(Player player, MapGeneration.Distributors.Locker locker, byte colliderId, bool isAllowed)
         {
             Player = player;
-            InteractingChamber = API.Features.Lockers.Chamber.Get(lockerChamber);
+            InteractingLocker = API.Features.Lockers.Locker.Get(locker);
+            InteractingChamber = API.Features.Lockers.Chamber.Get(locker.Chambers[colliderId]);
             IsAllowed = isAllowed;
         }
 
@@ -52,7 +56,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the locker which is containing <see cref="InteractingChamber"/>.
         /// </summary>
-        public Locker InteractingLocker => InteractingChamber.Locker;
+        public Locker InteractingLocker { get; }
 
         /// <summary>
         /// Gets the interacting chamber.
