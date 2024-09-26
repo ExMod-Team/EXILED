@@ -8,6 +8,7 @@
 namespace Exiled.Events.EventArgs.Scp173
 {
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     using API.Features;
 
@@ -41,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp173
             Player = player;
             Scp173 = player.Role.As<Scp173Role>();
             BlinkPosition = blinkPos;
-            Targets = targets;
+            Targets = targets.AsReadOnly();
             BlinkCooldown = Scp173BlinkTimer.CooldownBaseline;
         }
 
@@ -58,8 +59,7 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}" /> of players who have triggered SCP-173.
         /// </summary>
-        // TODO: convert to ReadOnlyCollection
-        public List<Player> Targets { get; }
+        public ReadOnlyCollection<Player> Targets { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player is allowed to blink.
