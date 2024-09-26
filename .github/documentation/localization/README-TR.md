@@ -1,10 +1,10 @@
 <h1 align="center">EXILED - EXtended In-runtime Library for External Development</h1>
 <div align="center">
     
-[<img src="https://img.shields.io/github/actions/workflow/status/Exiled-Official/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/Exiled-Official/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
-<a href="https://github.com/Exiled-Official/EXILED/releases"><img src="https://img.shields.io/github/v/release/Exiled-Official/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/Exiled-Official/EXILED/releases" alt="GitHub Releases"></a>
-<img src="https://img.shields.io/github/downloads/Exiled-Official/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
-![Github Commits](https://img.shields.io/github/commit-activity/w/Exiled-Official/EXILED/apis-rework?style=for-the-badge&logo=git)
+[<img src="https://img.shields.io/github/actions/workflow/status/ExMod-Team/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/ExMod-Team/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
+<a href="https://github.com/ExMod-Team/EXILED/releases"><img src="https://img.shields.io/github/v/release/ExMod-Team/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/ExMod-Team/EXILED/releases" alt="GitHub Releases"></a>
+<img src="https://img.shields.io/github/downloads/ExMod-Team/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
+![Github Commits](https://img.shields.io/github/commit-activity/w/ExMod-Team/EXILED/apis-rework?style=for-the-badge&logo=git)
 <a href="https://discord.gg/PyUkWTg">
     <img src="https://img.shields.io/discord/656673194693885975?style=for-the-badge&logo=discord" alt="Chat on Discord">
 </a>    
@@ -23,17 +23,17 @@ EXILED'ı indirmek oldukça kolaydır. EXILED kendini Northwood'un Plugin API'si
 Eğer kurulum programını kullanmayı seçerseniz ve doğru bir şekilde çalıştırırsanız, bütün EXILED özelliklerini yüklemekle ilgili işlemleri otomatik olarak gerçekleştirir.
 
 # Windows
-### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/Exiled-Official/EXILED/blob/master/Exiled.Installer/README.md))
+### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 **Not**: Sunucuyu indirdiğin kullanıcıda olduğundan emin ol veya yönetici olduğundan emin ol.
 
-  - **`Exiled.Installer-Win.exe`'i [Buradan indir](https://github.com/Exiled-Official/EXILED/releases)** (Assets'e tıkla -> Installer'ı indir)
+  - **`Exiled.Installer-Win.exe`'i [Buradan indir](https://github.com/ExMod-Team/EXILED/releases)** (Assets'e tıkla -> Installer'ı indir)
   - İndirdiğinizde sunucu klasörünüze yerleştirin. (Eğer indirmediyseniz, sunucuyu indirin.)
-  - **`Exiled.Installer.exe`**'e iki kere tıkla ve aç veya **[tıklayarak .bat'ı indir](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** En son ön yayınını yüklemek için sunucu klasörünün içine koy.
+  - **`Exiled.Installer.exe`**'e iki kere tıkla ve aç veya **[tıklayarak .bat'ı indir](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** En son ön yayınını yüklemek için sunucu klasörünün içine koy.
   - Eklenti indirmek için [Eklenti indirme](#Eklenti-İndirme) Kısmına göz gezdir.
 **Not:** eğer EXILED'ı uzaktan bağlantılı olan bir sunucuya indiriyor iseniz .exe'yi Sunucu açtığınız kullanıcı ile aynı olduğundan emin oluyon veya Yönetici izinleri verin.
 
 ### Manuel indirme
-  -  **`Exiled.tar.gz` ['yi buradan indir](https://github.com/Exiled-Official/EXILED/releases)**
+  -  **`Exiled.tar.gz` ['yi buradan indir](https://github.com/ExMod-Team/EXILED/releases)**
   - İçeriğini [7Zip](https://www.7-zip.org/) veya [WinRar](https://www.win-rar.com/download.html?&L=6) ile çıkartın.
   - **``EXILED``** Klasörünü **`%appdata%`** ya taşıyın *Not: Bu klasör  ``C:\Users\%UserName%\AppData\Roaming``, ve ``C:\Users\%UserName%\AppData\Roaming\SCP Secret Laboratory``**'nin içinde değil!**, ve (...)\AppData\Roaming'**de olması zorunludur**. (...)\AppData*'YA DEĞİL!
   - **``SCP Secret Laboratory``**Klasörünü **`%appdata%`**'ya taşı.
@@ -49,11 +49,11 @@ Bu kadar, EXILED şimdi sunucunuzda kuruldu ve bir sonraki sunucu başladığın
   - İndirdiğiniz eklentiyi: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins``'dizinine taşıyın (Win + R Tuşlarına basarak `%appdata%` yazarak buraya taşıyabilirsiniz)
 
 # Linux
-### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/Exiled-Official/EXILED/blob/master/Exiled.Installer/README.md))
+### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 
 **Not:** EXILED'ı uzaktan bağlanılan bir sunucuya indiriyor iseniz, indirme programını sunucuyu kurduğunuz kullanıcı ile açın veya (root) yetkiniz olması gerekir.
 
-  - **`Exiled.Installer-Linux`'u [Buradan indir](https://github.com/Exiled-Official/EXILED/releases)** (Assets'e tıkla -> Installer'ı indir)
+  - **`Exiled.Installer-Linux`'u [Buradan indir](https://github.com/ExMod-Team/EXILED/releases)** (Assets'e tıkla -> Installer'ı indir)
   - Ya **`./Exiled.Installer-Linux --path /sunucuya/giden/klasör`** Yazarak ya da doğrudan sunucu klasörüne taşıyarak ve ardından terminalde (`cd` kullanarak) şu komutu yazarak yükleyin: **`./Exiled.Installer-Linux`**.
   - eğer en yeni ön yayını istiyor iseniz **`--pre-releases`** ekle. Örnek: **`./Exiled.Installer-Linux /sunucuya/giden/klasör --pre-releases`**
   - Başka bir örnek: `eğer Exiled.Installer-Linux` dosyası sunucu klasörüne yerleştirdiyseniz `/sunucuya/giden/klasör/Exiled.Installer-Linux --pre-releases`
@@ -61,7 +61,7 @@ Bu kadar, EXILED şimdi sunucunuzda kuruldu ve bir sonraki sunucu başladığın
 
 ### Manuel indirme
   - SCP sunucusunu açan kullanıcı olduğundan **Emin** ol
-  - **`Exiled.tar.gz` ['yi buradan indir](https://github.com/Exiled-Official/EXILED/releases)** (SSH: sağ tık yap ve `Exiled.tar.gz`'nin bağlantısını al, ve **`wget (bağlantı)`** Komudunu yazın.)
+  - **`Exiled.tar.gz` ['yi buradan indir](https://github.com/ExMod-Team/EXILED/releases)** (SSH: sağ tık yap ve `Exiled.tar.gz`'nin bağlantısını al, ve **`wget (bağlantı)`** Komudunu yazın.)
   - Bulunduğunuz klasöre çıkartmak için **``tar -xzvf EXILED.tar.gz``** Komudunu yazın.
   - **`EXILED`** Klasörünü **``~/.config``**'e taşı. *Not: Bu klasör ``~/.config``'e gitmeli, ``~/.config/SCP Secret Laboratory``**'nin içine değil!** (SSH: **`mv EXILED ~/.config/`**)
   - **`SCP Secret Laboratory`** Klasörünü **``~/.config``**'e taşı. *Not: Bu klasör ``~/.config``'nin içine gitmelidir,  ``~/.config/SCP Secret Laboratory``**'nin içine değil!** (SSH: **`mv SCP Secret Laboratory ~/.config/`**)
@@ -81,9 +81,9 @@ Ancak, bazı eklentiler kendi başlarına diğer yerlerden yapılandırma/ayarla
 
 # Geliştiriciler için
 
-Eğer EXILED için bir eklenti yapmak istiyorsanız, bunu yapmak oldukça basittir [Daha fazla bilgi için tıkla!](https://github.com/Exiled-Official/EXILED/blob/master/GettingStarted.md).
+Eğer EXILED için bir eklenti yapmak istiyorsanız, bunu yapmak oldukça basittir [Daha fazla bilgi için tıkla!](GettingStarted.md).
 
-Daha kapsamlı ve sürekli güncellenen öğreticiler için [EXILED websitesine](https://exiled.to) göz atın.
+Daha kapsamlı ve sürekli güncellenen öğreticiler için [EXILED websitesine](https://exmod-team.github.io/EXILED/) göz atın.
 
 Ama pluginlerini herkese açık yaparken bu kuralları takip etmekte fayda var:
 

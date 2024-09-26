@@ -42,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             {
                 // RecontainingEventArgs ev = new(this._activatorGlass)
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldfld, PropertyGetter(typeof(Scp079Recontainer), nameof(Scp079Recontainer._activatorGlass))),
+                new(OpCodes.Ldfld, Field(typeof(Scp079Recontainer), nameof(Scp079Recontainer._activatorGlass))),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainingEventArgs))[0]),
                 new(OpCodes.Stloc_S, ev.LocalIndex),
 
@@ -52,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
                 // if (!ev.IsAllowed) return;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, Method(typeof(RecontainingEventArgs), nameof(RecontainingEventArgs.IsAllowed))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(RecontainingEventArgs), nameof(RecontainingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, returnLabel),
             });
 

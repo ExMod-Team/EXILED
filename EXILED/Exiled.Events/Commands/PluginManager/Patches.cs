@@ -23,6 +23,7 @@ namespace Exiled.Events.Commands.PluginManager
     /// <summary>
     /// The command to show all the patches done by plugins.
     /// </summary>
+    [CommandHandler(typeof(PluginManager))]
     public sealed class Patches : ICommand
     {
         /// <summary>

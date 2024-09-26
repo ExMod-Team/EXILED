@@ -20,6 +20,7 @@ namespace Exiled.Events.Commands.Config
     /// <summary>
     /// The config merge command.
     /// </summary>
+    [CommandHandler(typeof(EConfig))]
     public class Merge : ICommand
     {
         /// <summary>

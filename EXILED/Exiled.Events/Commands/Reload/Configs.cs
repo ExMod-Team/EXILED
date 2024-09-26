@@ -20,6 +20,7 @@ namespace Exiled.Events.Commands.Reload
     /// <summary>
     /// The reload configs command.
     /// </summary>
+    [CommandHandler(typeof(Reload))]
     public class Configs : ICommand
     {
         /// <summary>

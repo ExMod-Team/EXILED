@@ -16,6 +16,7 @@ namespace Exiled.API.Features
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
+    using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Toys;
     using global::Hazards;
@@ -42,11 +43,6 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Map
     {
-        /// <summary>
-        /// A list of <see cref="Locker"/>s on the map.
-        /// </summary>
-        internal static readonly List<Locker> LockersValue = new(35);
-
         /// <summary>
         /// A list of <see cref="PocketDimensionTeleport"/>s on the map.
         /// </summary>
@@ -84,9 +80,13 @@ namespace Exiled.API.Features
         public static ReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports { get; } = TeleportsValue.AsReadOnly();
 
         /// <summary>
-        /// Gets all <see cref="Locker"/> objects.
+        /// Gets all <see cref="MapGeneration.Distributors.Locker"/> objects in the current map.
         /// </summary>
-        public static ReadOnlyCollection<Locker> Lockers { get; } = LockersValue.AsReadOnly();
+        /// <remarks>
+        /// This property is obsolete. Use <see cref="Lockers.Locker.List"/> instead to retrieve a collection of all <see cref="Locker"/> instances.
+        /// </remarks>
+        [Obsolete("Use Locker.List instead.")]
+        public static ReadOnlyCollection<MapGeneration.Distributors.Locker> Lockers { get; } = Features.Lockers.Locker.BaseToExiledLockers.Keys.ToList().AsReadOnly();
 
         /// <summary>
         /// Gets all <see cref="AdminToy"/> objects.
@@ -104,6 +104,18 @@ namespace Exiled.API.Features
                 if (!SeedSynchronizer.MapGenerated)
                     SeedSynchronizer._singleton.Network_syncSeed = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether decontamination is enabled.
+        /// </summary>
+        public static bool IsDecontaminationEnabled
+        {
+            get => DecontaminationController.Singleton.NetworkDecontaminationOverride == DecontaminationController.DecontaminationStatus.None;
+            set =>
+                DecontaminationController.Singleton.NetworkDecontaminationOverride = value
+                    ? DecontaminationController.DecontaminationStatus.None
+                    : DecontaminationController.DecontaminationStatus.Disabled;
         }
 
         /// <summary>
@@ -159,9 +171,15 @@ namespace Exiled.API.Features
         public static void ClearBroadcasts() => Server.Broadcast.RpcClearElements();
 
         /// <summary>
-        /// Starts the light containment zone decontamination process.
+        /// Forces the light containment zone decontamination process.
         /// </summary>
         public static void StartDecontamination() => DecontaminationController.Singleton.ForceDecontamination();
+
+        /// <summary>
+        /// Turns on all lights in the facility.
+        /// </summary>
+        /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
+        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes) => TurnOffAllLights(0, zoneTypes);
 
         /// <summary>
         /// Turns off all lights in the facility.
@@ -212,10 +230,14 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a random <see cref="Locker"/>.
+        /// Gets a random <see cref="MapGeneration.Distributors.Locker"/> object from the current map.
         /// </summary>
-        /// <returns><see cref="Locker"/> object.</returns>
-        public static Locker GetRandomLocker() => Lockers.GetRandomValue();
+        /// <remarks>
+        /// This method is obsolete. Use <see cref="Features.Lockers.Locker.Random"/> instead to get a random <see cref="Locker"/> instance.
+        /// </remarks>
+        /// <returns>A randomly selected <see cref="MapGeneration.Distributors.Locker"/> object.</returns>
+        [Obsolete("Use Locker.Random() instead.")]
+        public static MapGeneration.Distributors.Locker GetRandomLocker() => Lockers.GetRandomValue();
 
         /// <summary>
         /// Gets a random <see cref="Pickup"/>.
@@ -388,8 +410,6 @@ namespace Exiled.API.Features
         internal static void ClearCache()
         {
             Item.BaseToItem.Clear();
-
-            LockersValue.RemoveAll(locker => locker == null);
 
             Ragdoll.BasicRagdollToRagdoll.Clear();
 
