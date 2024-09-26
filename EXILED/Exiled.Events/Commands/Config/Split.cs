@@ -20,6 +20,7 @@ namespace Exiled.Events.Commands.Config
     /// <summary>
     /// The config split command.
     /// </summary>
+    [CommandHandler(typeof(EConfig))]
     public class Split : ICommand
     {
         /// <summary>

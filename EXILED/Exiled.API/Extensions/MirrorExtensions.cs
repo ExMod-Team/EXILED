@@ -271,6 +271,15 @@ namespace Exiled.API.Extensions
                 writer.WriteByte(unitId);
             }
 
+            if (roleBase is ZombieRole)
+            {
+                if (player.Role.Base is not ZombieRole)
+                    isRisky = true;
+
+                writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(player.MaxHealth), ushort.MinValue, ushort.MaxValue));
+                writer.WriteBool(true);
+            }
+
             if (roleBase is FpcStandardRoleBase fpc)
             {
                 if (player.Role.Base is not FpcStandardRoleBase playerfpc)
@@ -282,14 +291,6 @@ namespace Exiled.API.Extensions
                 fpc?.FpcModule.MouseLook.GetSyncValues(0, out value, out ushort _);
                 writer.WriteRelativePosition(player.RelativePosition);
                 writer.WriteUShort(value);
-            }
-
-            if (roleBase is ZombieRole)
-            {
-                if (player.Role.Base is not ZombieRole)
-                    isRisky = true;
-
-                writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(player.MaxHealth), ushort.MinValue, ushort.MaxValue));
             }
 
             foreach (Player target in playersToAffect)
@@ -357,6 +358,24 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
+        /// Moves object for the player.
+        /// </summary>
+        /// <param name="player">Target to send.</param>
+        /// <param name="identity">The <see cref="Mirror.NetworkIdentity"/> to move.</param>
+        /// <param name="pos">The position to change.</param>
+        public static void MoveNetworkIdentityObject(this Player player, NetworkIdentity identity, Vector3 pos)
+        {
+            identity.gameObject.transform.position = pos;
+            ObjectDestroyMessage objectDestroyMessage = new()
+            {
+                netId = identity.netId,
+            };
+
+            player.Connection.Send(objectDestroyMessage, 0);
+            SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, player.Connection });
+        }
+
+        /// <summary>
         /// Sends to the player a Fake Change Scene.
         /// </summary>
         /// <param name="player">The player to send the Scene.</param>
@@ -404,6 +423,26 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
+        /// Moves object for all the players.
+        /// </summary>
+        /// <param name="identity">The <see cref="NetworkIdentity"/> to move.</param>
+        /// <param name="pos">The position to change.</param>
+        public static void MoveNetworkIdentityObject(this NetworkIdentity identity, Vector3 pos)
+        {
+            identity.gameObject.transform.position = pos;
+            ObjectDestroyMessage objectDestroyMessage = new()
+            {
+                netId = identity.netId,
+            };
+
+            foreach (Player ply in Player.List)
+            {
+                ply.Connection.Send(objectDestroyMessage, 0);
+                SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, ply.Connection });
+            }
+        }
+
+        /// <summary>
         /// Scales an object for all players.
         /// </summary>
         /// <param name="identity">The <see cref="Mirror.NetworkIdentity"/> to scale.</param>
@@ -431,6 +470,7 @@ namespace Exiled.API.Extensions
         /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
         /// <param name="propertyName">Property name starting with Network.</param>
         /// <param name="value">Value of send to target.</param>
+        [Obsolete("Use overload with type-template instead.")]
         public static void SendFakeSyncVar(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, object value)
         {
             if (!target.IsConnected)
@@ -451,6 +491,38 @@ namespace Exiled.API.Extensions
             {
                 targetWriter.WriteULong(SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"]);
                 WriterExtensions[value.GetType()]?.Invoke(null, new object[2] { targetWriter, value });
+            }
+        }
+
+        /// <summary>
+        /// Send fake values to client's <see cref="SyncVarAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T">Target SyncVar property type.</typeparam>
+        /// <param name="target">Target to send.</param>
+        /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
+        /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
+        /// <param name="propertyName">Property name starting with Network.</param>
+        /// <param name="value">Value of send to target.</param>
+        public static void SendFakeSyncVar<T>(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, T value)
+        {
+            if (!target.IsConnected)
+                return;
+
+            NetworkWriterPooled writer = NetworkWriterPool.Get();
+            NetworkWriterPooled writer2 = NetworkWriterPool.Get();
+            MakeCustomSyncWriter(behaviorOwner, targetType, null, CustomSyncVarGenerator, writer, writer2);
+            target.Connection.Send(new EntityStateMessage
+            {
+                netId = behaviorOwner.netId,
+                payload = writer.ToArraySegment(),
+            });
+
+            NetworkWriterPool.Return(writer);
+            NetworkWriterPool.Return(writer2);
+            void CustomSyncVarGenerator(NetworkWriter targetWriter)
+            {
+                targetWriter.WriteULong(SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"]);
+                WriterExtensions[typeof(T)]?.Invoke(null, new object[2] { targetWriter, value });
             }
         }
 

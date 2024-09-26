@@ -1,10 +1,10 @@
 <h1 align="center">EXILED - EXtended In-runtime Library for External Development</h1>
 <div align="center">
     
-[<img src="https://img.shields.io/github/actions/workflow/status/Exiled-Official/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/Exiled-Official/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
-<a href="https://github.com/Exiled-Official/EXILED/releases"><img src="https://img.shields.io/github/v/release/Exiled-Official/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/Exiled-Official/EXILED/releases" alt="GitHub Releases"></a>
-<img src="https://img.shields.io/github/downloads/Exiled-Official/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
-![Github Commits](https://img.shields.io/github/commit-activity/w/Exiled-Official/EXILED/apis-rework?style=for-the-badge&logo=git)
+[<img src="https://img.shields.io/github/actions/workflow/status/ExMod-Team/EXILED/main.yml?style=for-the-badge&logo=githubactions&label=build" alt="CI"/>](https://github.com/ExMod-Team/EXILED/actions/workflows/main.yml/badge.svg?branch=master)
+<a href="https://github.com/ExMod-Team/EXILED/releases"><img src="https://img.shields.io/github/v/release/ExMod-Team/EXILED?display_name=tag&style=for-the-badge&logo=gitbook&label=Release" href="https://github.com/ExMod-Team/EXILED/releases" alt="GitHub Releases"></a>
+<img src="https://img.shields.io/github/downloads/ExMod-Team/EXILED/total?style=for-the-badge&logo=github" alt="Downloads">
+![Github Commits](https://img.shields.io/github/commit-activity/w/ExMod-Team/EXILED/apis-rework?style=for-the-badge&logo=git)
 <a href="https://discord.gg/PyUkWTg">
     <img src="https://img.shields.io/discord/656673194693885975?style=for-the-badge&logo=discord" alt="Chat on Discord">
 </a>    
@@ -25,17 +25,17 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 如果你选择使用一键安装器，在运行正常的情况下它会帮你安装好所有EXILED的功能。
 
 # Windows
-### 全自动安装 ([更多消息](https://github.com/galaxy119/EXILED/blob/master/Exiled.Installer/README.md))
+### 全自动安装 ([更多消息](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 **备注**: 在运行安装包前请确保你所使用的用户有管理员权限。
 
-  - 下载 **[Exiled.Installer-Win.exe](https://github.com/galaxy119/EXILED/releases)** (点击 Assets -> 下载安装包)
+  - 下载 **[Exiled.Installer-Win.exe](https://github.com/ExMod-Team/EXILED/releases)** (点击 Assets -> 下载安装包)
   - 放置到你的服务器文件夹 (如果你还没有下载服务端，则需要先在Steam中下载服务端)
-  - 双击 **`Exiled.Installer.exe`** 或 **[install-prerelease.bat](https://www.dropbox.com/s/xny4xus73ze6mq9/install-prerelease.bat?dl=1)** 并放置到服务器文件夹中来安装最新的预更新
+  - 双击 **`Exiled.Installer.exe`** 或 **[install-prerelease.bat](https://www.dropbox.com/scl/fi/7yh0r3q0vdn6ic4rhuu3l/install-prerelease.bat?rlkey=99fwjbwy1xg61qgtak0qzb9rd&st=8xs4xks8&dl=1)** 并放置到服务器文件夹中来安装最新的预更新
   - 获取以及安装插件，请参考下面的[安装插件](#installing-plugins)部分。
 **备注:** 如果你正在一个远程服务器上安装EXILED，请确保你运行的.exe的用户和你运行SCP:SL服务器的一致
 
 ### 手动安装
-  - 下载 **[Exiled.tar.gz](https://github.com/galaxy119/EXILED/releases)**
+  - 下载 **[Exiled.tar.gz](https://github.com/ExMod-Team/EXILED/releases)**
   - 使用 [7Zip](https://www.7-zip.org/) 或 [WinRar](https://www.win-rar.com/download.html?&L=6) 解压里面的内容
   - 移动 **``EXILED``** 文件夹到 **`%appdata%`** （*备注: 这个文件夹需要放在 ``C:\用户\%UserName%\AppData\Roaming``， 而 ***不是*** ``C:\用户\%UserName%\AppData\Roaming\SCP Secret Laboratory``， 而且它 **必须** 在 (...)\AppData\Roaming， 而不是 (...)\AppData\!*）
   - 移动 **``SCP Secret Laboratory``** 文件夹到 **`%appdata%`** 中。
@@ -43,11 +43,11 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 
 
 # Linux
-### 全自动安装 ([更多信息](https://github.com/galaxy119/EXILED/blob/master/Exiled.Installer/README.md))
+### 全自动安装 ([更多信息](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
 
 **备注:** 如果你正在一个远程服务器上安装EXILED，请确保你运行的.exe的用户和你运行SCP:SL服务器的一致
 
-  - 下载 [Exiled.Installer-Linux](https://github.com/Exiled-Official/EXILED/releases) (点击 Assets -> 下载安装包)
+  - 下载 [Exiled.Installer-Linux](https://github.com/ExMod-Team/EXILED/releases) (点击 Assets -> 下载安装包)
   - 输入 **`./Exiled.Installer-Linux --path /path/to/server`** 来安装，或者是直接把它放到服务器文件夹里， 首先在控制台（终端）中使用 (`cd`)指令移动安装器，之后再输入: **`./Exiled.Installer-Linux`运行安装程序。.
   - 如果你想要最新的预更新， 只需添加 **`--pre-releases`**. 例子: **`./Exiled.Installer-Linux /home/scp/server --pre-releases`**
   - 另一个例子， 如果你把 `Exiled.Installer-Linux` 放到了你服务器的文件夹中，你还可以这样操作: **`/home/scp/server/Exiled.Installer-Linux --pre-releases`**
@@ -55,7 +55,7 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 
 ### 手动安装
   - 首先**确保**你登录的是用于运行SCP服务器的用户。
-  - 下载 [Exiled.tar.gz](https://github.com/Exiled-Official/EXILED/releases) (SSH: 右键获取 `Exiled.tar.gz` 的链接， 然后输入: **`wget (下载链接)`**)
+  - 下载 [Exiled.tar.gz](https://github.com/ExMod-Team/EXILED/releases) (SSH: 右键获取 `Exiled.tar.gz` 的链接， 然后输入: **`wget (下载链接)`**)
   - 解压到你目前的文件夹，输入 **``tar -xzvf EXILED.tar.gz``**
   - 移动 **`EXILED`** 文件夹到 **``~/.config``**中。 *备注: EXILED文件夹应该放到 ``~/.config``， 而 ***不是*** ``~/.config/SCP Secret Laboratory``* (SSH指令例子: **`mv EXILED ~/.config/`**)
   - 移动 **``SCP Secret Laboratory``** 文件到 **``~/.config``** (SSH指令例子: **`mv SCP Secret Laboratory ~/.config/`**).
@@ -76,9 +76,9 @@ EXILED自身提供一些配置选项。
 
 # 致开发者
 
-制作一个EXILED的插件也是一件非常轻松的事情。如果你想要一个教程，请访问我们的[入门指南](https://github.com/galaxy119/EXILED/blob/master/GettingStarted.md).
+制作一个EXILED的插件也是一件非常轻松的事情。如果你想要一个教程，请访问我们的[入门指南](GettingStarted.md).
 
-一个更加详细并且保持更新的教程，请见 [EXILED官网](https://Exiled-Official.github.io/EXILED/articles/install.html)。
+一个更加详细并且保持更新的教程，请见 [EXILED官网](https://ExMod-Team.github.io/EXILED/articles/install.html)。
 
 制作插件时应遵守以下规则：
 

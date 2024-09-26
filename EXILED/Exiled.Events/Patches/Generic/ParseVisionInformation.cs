@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Generic
             // otherwise the second check won't be executed
             Label secondCheckPointer = generator.DefineLabel();
 
-            newInstructions[0].WithLabels(continueLabel);
+            newInstructions[0].labels.Add(continueLabel);
 
             // if (referenceHub.roleManager.CurrentRole.RoleTypeId == RoleTypeId.Tutorial && !ExiledEvents.Instance.Config.CanTutorialTriggerScp096
             // || Scp096Role.TurnedPlayers.Contains(Player.Get(referenceHub)))

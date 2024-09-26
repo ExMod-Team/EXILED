@@ -14,6 +14,7 @@ namespace Exiled.Events.Commands.Reload
     /// <summary>
     /// The reload all command.
     /// </summary>
+    [CommandHandler(typeof(Reload))]
     public class All : ICommand
     {
         /// <summary>
