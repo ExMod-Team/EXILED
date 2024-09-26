@@ -27,7 +27,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patch the <see cref="BreakableWindow.Damage(float, PlayerStatsSystem.DamageHandlerBase, Vector3)" />.
     /// Adds the <see cref="Player.PlayerDamageWindow" /> event.
     /// </summary>
-    [EventPatch(typeof(Player), nameof(Player.PlayerDamageWindow))]
+    [EventPatch(typeof(Player), nameof(Player.DamagingWindow))]
     [HarmonyPatch(typeof(BreakableWindow), nameof(BreakableWindow.Damage))]
     internal static class DamagingWindow
     {
@@ -61,8 +61,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
 
-                    // Handlers.Player.OnPlayerDamageWindow(ev);
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnPlayerDamageWindow))),
+                    // Handlers.Player.OnDamagingWindow(ev);
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnDamagingWindow))),
 
                     // if (!ev.IsAllowed)
                     //    return;

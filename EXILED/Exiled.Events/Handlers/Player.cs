@@ -490,8 +490,8 @@ namespace Exiled.Events.Handlers
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> damage a Window.
-        /// </summary> // TODO: DamagingWindow instead of PlayerDamageWindow
-        public static Event<DamagingWindowEventArgs> PlayerDamageWindow { get; set; } = new();
+        /// </summary>
+        public static Event<DamagingWindowEventArgs> DamagingWindow { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> damage a Door.
@@ -1022,7 +1022,7 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> damage a window.
         /// </summary>
         /// <param name="ev">The <see cref="DamagingWindowEventArgs"/> instance. </param>
-        public static void OnPlayerDamageWindow(DamagingWindowEventArgs ev) => PlayerDamageWindow.InvokeSafely(ev);
+        public static void OnDamagingWindow(DamagingWindowEventArgs ev) => DamagingWindow.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> damage a window.
