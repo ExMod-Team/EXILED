@@ -89,7 +89,7 @@ namespace Exiled.Events.Commands.Hub
                 releaseToDownload = foundRelease;
             }
 
-            ReleaseAsset[] releaseAssets = releaseToDownload.Assets.Where(x => x.Name.IndexOf("-nwapi", StringComparison.OrdinalIgnoreCase) == -1).ToArray();
+            ReleaseAsset[] releaseAssets = releaseToDownload.Assets.Where(x => x.Name.IndexOf("nwapi", StringComparison.OrdinalIgnoreCase) == -1).ToArray();
 
             Log.Info($"Downloading release \"{releaseToDownload.TagName}\". Found {releaseAssets.Length} asset(s) to download.");
 
