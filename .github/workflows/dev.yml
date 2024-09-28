@@ -48,7 +48,7 @@ jobs:
       shell: pwsh
       run: |
         ./build.ps1 -BuildNuGet
-        $File = (Get-ChildItem -Path . -Include 'EXILEDOFFICIAL.*.nupkg' -Recurse).Name
+        $File = (Get-ChildItem -Path . -Include 'EXILED-OFFICIAL.*.nupkg' -Recurse).Name
         Out-File -FilePath ${{ github.env }} -InputObject "PackageFile=$File" -Encoding utf-8 -Append
 
     - name: Upload nuget package
