@@ -715,23 +715,7 @@ namespace Exiled.API.Features
         public Vector3 Scale
         {
             get => ReferenceHub.transform.localScale;
-            set
-            {
-                if (value == Scale)
-                    return;
-
-                try
-                {
-                    ReferenceHub.transform.localScale = value;
-
-                    foreach (Player target in List)
-                        Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, target.Connection });
-                }
-                catch (Exception exception)
-                {
-                    Log.Error($"{nameof(Scale)} error: {exception}");
-                }
-            }
+            set => SetScale(value, List);
         }
 
         /// <summary>
@@ -2069,6 +2053,56 @@ namespace Exiled.API.Features
         /// Resets the <see cref="Player"/>'s stamina.
         /// </summary>
         public void ResetStamina() => Stamina = StaminaStat.MaxValue;
+
+        /// <summary>
+        /// Sets the scale of a player on the server side.
+        /// </summary>
+        /// <param name="scale">The scale to set.</param>
+        /// <param name="viewers">Who should see the updated scale.</param>
+        public void SetScale(Vector3 scale, IEnumerable<Player> viewers)
+        {
+            if (scale == Scale)
+                return;
+
+            try
+            {
+                ReferenceHub.transform.localScale = scale;
+
+                foreach (Player target in viewers)
+                    Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, target.Connection });
+            }
+            catch (Exception exception)
+            {
+                Log.Error($"{nameof(SetScale)} error: {exception}");
+            }
+        }
+
+        /// <summary>
+        /// Sets the scale of the player for other players.
+        /// </summary>
+        /// <param name="fakeScale">The scale to set to.</param>
+        /// <param name="viewers">Who should see the fake scale.</param>
+        public void SetFakeScale(Vector3 fakeScale, IEnumerable<Player> viewers)
+        {
+            Vector3 currentScale = Scale;
+
+            if (fakeScale == currentScale)
+                return;
+
+            try
+            {
+                ReferenceHub.transform.localScale = fakeScale;
+
+                foreach (Player target in viewers)
+                    Server.SendSpawnMessage.Invoke(null, new object[] { NetworkIdentity, target.Connection });
+
+                ReferenceHub.transform.localScale = currentScale;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{nameof(SetFakeScale)}: {ex}");
+            }
+        }
 
         /// <summary>
         /// Gets a user's SCP preference.
