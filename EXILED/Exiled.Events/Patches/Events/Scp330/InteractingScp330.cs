@@ -7,14 +7,15 @@
 
 namespace Exiled.Events.Patches.Events.Scp330
 {
+#pragma warning disable SA1402
+#pragma warning disable SA1313
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.API.Features;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp330;
-    using Exiled.Events.Handlers;
     using HarmonyLib;
     using Interactables.Interobjects;
     using InventorySystem.Items.Usables.Scp330;
@@ -26,9 +27,9 @@ namespace Exiled.Events.Patches.Events.Scp330
 
     /// <summary>
     /// Patches the <see cref="Scp330Interobject.ServerInteract(ReferenceHub, byte)" /> method to add the
-    /// <see cref="Scp330.InteractingScp330" /> event.
+    /// <see cref="Handlers.Scp330.InteractingScp330" /> event.
     /// </summary>
-    [EventPatch(typeof(Scp330), nameof(Scp330.InteractingScp330))]
+    [EventPatch(typeof(Handlers.Scp330), nameof(Handlers.Scp330.InteractingScp330))]
     [HarmonyPatch(typeof(Scp330Interobject), nameof(Scp330Interobject.ServerInteract))]
     public static class InteractingScp330
     {
@@ -66,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Scp330.OnInteractingScp330(ev)
-                    new(OpCodes.Call, Method(typeof(Scp330), nameof(Scp330.OnInteractingScp330))),
+                    new(OpCodes.Call, Method(typeof(Handlers.Scp330), nameof(Handlers.Scp330.OnInteractingScp330))),
 
                     // if (!ev.IsAllowed)
                     //    return;
@@ -133,6 +134,22 @@ namespace Exiled.Events.Patches.Events.Scp330
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+
+    /// <summary>
+    /// Replaces <see cref="Scp330Candies.GetRandom"/> with <see cref="InteractingScp330EventArgs.Candy"/>.
+    /// </summary>
+    [EventPatch(typeof(Handlers.Scp330), nameof(Handlers.Scp330.InteractingScp330))]
+    [HarmonyPatch(typeof(Scp330Bag), nameof(Scp330Bag.TryAddSpecific))]
+    internal static class ReplaceCandy
+    {
+        private static void Prefix(Scp330Bag __instance, ref CandyKindID kind)
+        {
+            Scp330 scp330 = Item.Get<Scp330>(__instance);
+
+            if (scp330.CandyToAdd != CandyKindID.None)
+                kind = scp330.CandyToAdd;
         }
     }
 }

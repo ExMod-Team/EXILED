@@ -88,6 +88,11 @@ namespace Exiled.API.Features.Items
         public CandyKindID ExposedType { get; set; } = CandyKindID.None;
 
         /// <summary>
+        /// Gets or sets the candy that will be added to the bag. Used for events.
+        /// </summary>
+        internal CandyKindID CandyToAdd { get; set; } = CandyKindID.None;
+
+        /// <summary>
         /// Adds a specific candy to the bag.
         /// </summary>
         /// <param name="type">The <see cref="CandyKindID"/> to add.</param>
