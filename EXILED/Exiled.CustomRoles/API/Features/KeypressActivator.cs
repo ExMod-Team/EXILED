@@ -85,7 +85,7 @@ namespace Exiled.CustomRoles.API.Features
             if (!altTracker.TryGetValue(player, out int pressCount))
                 yield break;
 
-            Log.Debug($"{player.Nickname}: {pressCount} {(player.Role is FpcRole fpc ? fpc.MoveState : false)}");
+            Log.Debug($"{player.Nickname}: {pressCount} { player.Role is FpcRole { MoveState: PlayerMovementState.Sneaking }}");
             AbilityKeypressTriggerType type = pressCount switch
             {
                 1 when player.Role is FpcRole { MoveState: PlayerMovementState.Sneaking } => AbilityKeypressTriggerType.DisplayInfo,
