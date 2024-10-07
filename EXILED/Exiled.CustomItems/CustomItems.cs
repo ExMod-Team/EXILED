@@ -54,7 +54,7 @@ namespace Exiled.CustomItems
 
             Exiled.Events.Handlers.Player.ChangingItem -= playerHandler!.OnChangingItem;
 
-            harmony?.UnpatchAll();
+            harmony?.UnpatchAll(harmony.Id);
 
             base.OnDisabled();
         }

@@ -142,7 +142,7 @@ namespace Exiled.Events.Features
         public void UnpatchAll()
         {
             Log.Debug("Unpatching events...");
-            Harmony.UnpatchAll(Harmony.Id);
+            Harmony.UnpatchAll();
             UnpatchedTypes = GetAllPatchTypes();
 
             Log.Debug("All events have been unpatched. Goodbye!");
