@@ -260,8 +260,6 @@ namespace Exiled.API.Extensions
             if (!player.IsConnected)
                 return;
 
-            Log.Error($"{nameof(ChangeAppearance)} Вызывал {new StackTrace()} [IRacle] проверь можно ли переписать на свои штуки");
-
             if (!player.Role.CheckAppearanceCompatibility(type))
             {
                 Log.Error($"[IRacle] Кринжанули братки {player.Role.Type} {type}");
