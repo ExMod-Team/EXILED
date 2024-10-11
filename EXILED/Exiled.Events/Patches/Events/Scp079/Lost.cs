@@ -55,12 +55,12 @@ namespace Exiled.Events.Patches.Events.Scp079
 
                     // if (!ev.IsAllowed)
                     //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(GainingLevelEventArgs), nameof(GainingLevelEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(LosingSignalEventArgs), nameof(LosingSignalEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
                 });
 
             newInstructions.InsertRange(
-                0,
+                newInstructions.Count - 1,
                 new[]
                 {
                     // Role._lastOwner
