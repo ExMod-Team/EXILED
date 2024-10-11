@@ -10,6 +10,6 @@ Exiled has a tool that allows you to install **automatically** the framework for
 
 ## Guides
 
-- [Window Automatic Installation](/EXILED/articles/installation/automatic/windows.html).
-- [Linux Automatic Installation](/EXILED/articles/installation/automatic/linux.html).
-- [Manual Installation](EXILED/articles/installation/manual.html).
+- [Window Automatic Installation](/articles/installation/automatic/windows.html).
+- [Linux Automatic Installation](/articles/installation/automatic/linux.html).
+- [Manual Installation](/articles/installation/manual.html).

@@ -3,15 +3,15 @@
   <metadata>
 
     <id>EXILEDOFFICIAL</id>
-    <title>Exiled-Official</title>
+    <title>ExMod-Team</title>
     <version>$version$</version>
-    <authors>Exiled-Official</authors>
-    <owners>Exiled-Official</owners>
+    <authors>ExMod-Team</authors>
+    <owners>ExMod-Team</owners>
     <copyright>Copyright © Exiled Official 2024 - $year$</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <repository type="Git" url="https://github.com/Exiled-Official/EXILED" />
-    <licenseUrl>https://github.com/Exiled-Official/EXILED/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/Exiled-Official/EXILED</projectUrl>
+    <repository type="Git" url="https://github.com/ExMod-Team/EXILED" />
+    <licenseUrl>https://github.com/ExMod-Team/EXILED/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/ExMod-Team/EXILED</projectUrl>
     <icon>images\Exiled_Icon.jpg</icon>
     <description>Plugin framework for SCP: Secret Laboratory.</description>
 

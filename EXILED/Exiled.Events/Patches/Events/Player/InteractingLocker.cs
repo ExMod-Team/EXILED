@@ -32,29 +32,28 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            const int offset = -9;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_0);
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
                     // Player.Get(ply);
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // this.Chambers[colliderId]
+                    // this
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Locker), nameof(Locker.Chambers))),
+
+                    // colliderId
                     new(OpCodes.Ldarg_2),
-                    new(OpCodes.Ldelem_Ref),
 
                     // !flag
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
 
-                    // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool)
+                    // InteractingLockerEventArgs ev = new(Player, Locker, byte, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
                     new(OpCodes.Dup),
 
