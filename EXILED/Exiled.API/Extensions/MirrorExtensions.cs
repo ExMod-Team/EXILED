@@ -242,9 +242,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
-        /// <param name="skipJump">Whether or not to skip the little jump that works around an invisibility issue.</param>
-        /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
-        public static void ChangeAppearance(this Player player, RoleTypeId type, bool skipJump = false, byte unitId = 0) => ChangeAppearance(player, type, Player.List.Where(x => x != player), skipJump, unitId);
+        public static void ChangeAppearance(this Player player, RoleTypeId type) => ChangeAppearance(player, type, Player.List.Where(x => x != player));
 
         /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
@@ -253,16 +251,14 @@ namespace Exiled.API.Extensions
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
         /// <param name="playersToAffect">The players who should see the changed appearance.</param>
-        /// <param name="skipJump">Whether or not to skip the little jump that works around an invisibility issue.</param>
-        /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
-        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect, bool skipJump = false, byte unitId = 0)
+        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect)
         {
             if (!player.IsConnected)
                 return;
 
             if (!player.Role.CheckAppearanceCompatibility(type))
             {
-                Log.Error($"[IRacle] Кринжанули братки {player.Role.Type} {type}");
+                Log.Error($"Prevent Seld-Desync of {player.Nickname} ({player.Role.Type}) with {type}");
                 return;
             }
 
@@ -272,10 +268,6 @@ namespace Exiled.API.Extensions
             }
 
             player.Role.UpdateAppearance();
-
-            // To counter a bug that makes the player invisible until they move after changing their appearance, we will teleport them upwards slightly to force a new position update for all clients.
-            if (!skipJump)
-                player.Position += Vector3.up * 0.25f;
         }
 
         /// <summary>
