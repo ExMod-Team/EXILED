@@ -36,7 +36,7 @@ namespace Exiled.API.Features.CustomStats
         /// <inheritdoc/>
         public override void Update()
         {
-            if (MaxValue == default)
+            if (MaxValue == -1)
             {
                 base.Update();
                 return;
