@@ -21,6 +21,7 @@ namespace Exiled.Events.Commands.PluginManager
     /// <summary>
     /// The command to enable a plugin.
     /// </summary>
+    [CommandHandler(typeof(PluginManager))]
     public sealed class Enable : ICommand
     {
         /// <summary>

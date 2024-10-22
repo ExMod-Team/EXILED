@@ -18,6 +18,7 @@ namespace Exiled.Events.Commands.Reload
     /// <summary>
     /// The reload remoteadmin command.
     /// </summary>
+    [CommandHandler(typeof(Reload))]
     public class RemoteAdmin : ICommand
     {
         /// <summary>

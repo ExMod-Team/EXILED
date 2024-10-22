@@ -115,8 +115,6 @@ namespace Exiled.API.Features.Items
 
             ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
 
-            Base.OnRemoved(ipb);
-
             Pickup pickup = Pickup.Get(ipb);
 
             if (spawn)

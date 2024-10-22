@@ -633,18 +633,10 @@ namespace Exiled.API.Features.Items
         {
             Base.Owner = newOwner.ReferenceHub;
 
-            Base.HitregModule = Base switch
+            if (Base.HitregModule is StandardHitregBase hitReg)
             {
-                AutomaticFirearm automaticFirearm =>
-                    new SingleBulletHitreg(automaticFirearm, automaticFirearm.Owner, automaticFirearm._recoilPattern),
-                Shotgun shotgun =>
-                    new BuckshotHitreg(shotgun, shotgun.Owner, shotgun.GetBuckshotPattern),
-                ParticleDisruptor particleDisruptor =>
-                    new DisruptorHitreg(particleDisruptor, particleDisruptor.Owner, particleDisruptor._explosionSettings),
-                Revolver revolver =>
-                    new SingleBulletHitreg(revolver, revolver.Owner),
-                _ => throw new NotImplementedException("Should never happend"),
-            };
+                hitReg.Hub = Base.Owner;
+            }
 
             Base._sendStatusNextFrame = true;
             Base._footprintValid = false;
