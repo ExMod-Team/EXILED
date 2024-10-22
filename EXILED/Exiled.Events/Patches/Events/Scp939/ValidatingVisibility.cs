@@ -51,8 +51,8 @@ namespace Exiled.Events.Patches.Events.Scp939
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.None, false));
 
-            offset = 2;
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(HitboxIdentity), nameof(HitboxIdentity.IsEnemy), new[] { typeof(ReferenceHub), typeof(ReferenceHub) }))) + offset;
+            offset = 0;
+            index = newInstructions.FindIndex(i => i.LoadsConstant(1)) + offset;
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.SeenAsScp));
 
