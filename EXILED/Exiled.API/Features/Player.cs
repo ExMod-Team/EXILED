@@ -2160,6 +2160,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
         /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
+        [Obsolete("Use `void UseItem(Usable)`")]
         public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
 
         /// <summary>
@@ -2167,20 +2168,24 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="item">The item to be used.</param>
         /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
+        [Obsolete("Use `void UseItem(Usable)`")]
         public bool UseItem(Item item)
         {
             if (item is not Usable usableItem)
                 return false;
 
-            usableItem.Base.Owner = referenceHub;
-            usableItem.Base.ServerOnUsingCompleted();
-
-            typeof(UsableItemsController).InvokeStaticEvent(nameof(UsableItemsController.ServerOnUsingCompleted), new object[] { referenceHub, usableItem.Base });
-
-            if (usableItem.Base is not null)
-                usableItem.Destroy();
+            UseItem(usableItem);
 
             return true;
+        }
+
+        /// <summary>
+        /// Forces the player to use an item.
+        /// </summary>
+        /// <param name="item">The item to be used.</param>
+        public void UseItem(Usable item)
+        {
+            item.Use(this);
         }
 
         /// <summary>
