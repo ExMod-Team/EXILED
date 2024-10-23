@@ -81,7 +81,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <summary>
         /// Immediately exploding the <see cref="TimeGrenadeProjectile"/>.
         /// </summary>
-        public void Explode()
+        public virtual void Explode()
         {
             Base.ServerFuseEnd();
             Base._alreadyDetonated = true;

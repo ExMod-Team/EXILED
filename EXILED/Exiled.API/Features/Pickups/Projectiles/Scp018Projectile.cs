@@ -135,6 +135,14 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Position}| -{Damage}- ={IgnoreFriendlyFire}=";
 
         /// <inheritdoc/>
+        public override void Explode()
+        {
+            if (!IsProjectile)
+                Base.SetupModule();
+            base.Explode();
+        }
+
+        /// <inheritdoc/>
         public override void Activate()
         {
             if (!IsProjectile)
