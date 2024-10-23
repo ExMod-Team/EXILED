@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Generic.Scp079API
 
     /// <summary>
     /// Patches <see cref="InventorySystem.Items.ThrowableProjectiles.Scp018Projectile.SetupModule"/>.
-    /// Adds the <see cref="Exiled.Events.Config.RecontainScp079IfNoScpsLeft" /> support.
+    /// Adds the <see cref="Scp018Projectile.VelocityPerBounce" /> and <see cref="Scp018Projectile.MaxVelocity" /> support.
     /// </summary>
     [HarmonyPatch(typeof(InventorySystem.Items.ThrowableProjectiles.Scp018Projectile), nameof(InventorySystem.Items.ThrowableProjectiles.Scp018Projectile.SetupModule))]
     internal class Scp018Properties
