@@ -64,6 +64,7 @@ namespace Exiled.Events.Patches.Events.Scp939
             offset = 0;
             index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_3) + offset;
 
+            // just pre-check for SeenByLastTime or NotSeen VisibilityState, and then il inject
             newInstructions.InsertRange(index, Enumerable.Concat(
                 new CodeInstruction[]
                 {
@@ -87,6 +88,7 @@ namespace Exiled.Events.Patches.Events.Scp939
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
 
+        // helper method for injecting instructions
         private static IEnumerable<CodeInstruction> StaticCallEvent(ILGenerator generator, LocalBuilder ev, Label ret, CodeInstruction insertInstuction, Scp939VisibilityState state, bool setLabel = true)
         {
             CodeInstruction first = new CodeInstruction(OpCodes.Ldc_I4, (int)state);
@@ -104,23 +106,31 @@ namespace Exiled.Events.Patches.Events.Scp939
             }
         }
 
+        // mail il logic
         private static IEnumerable<CodeInstruction> CallEvent(ILGenerator generator, LocalBuilder ev, Label ret)
         {
             Label cnt = generator.DefineLabel();
 
+            // ...VisibilityState loaded in stack
+            // ValidatingVisibilityEventArgs ev = new(state, scp939, target)
             yield return new(OpCodes.Ldarg_0);
             yield return new(OpCodes.Callvirt, PropertyGetter(typeof(Scp939VisibilityController), nameof(Scp939VisibilityController.Owner)));
             yield return new(OpCodes.Ldarg_1);
             yield return new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ValidatingVisibilityEventArgs))[0]);
-
             yield return new(OpCodes.Dup);
             yield return new(OpCodes.Dup);
             yield return new(OpCodes.Stloc_S, ev.LocalIndex);
 
+            // Scp939.OnValidatingVisibility(ev)
+            // if (!ev.IsAllowed)
+            //     return false;
             yield return new(OpCodes.Call, Method(typeof(Handlers.Scp939), nameof(Handlers.Scp939.OnValidatingVisibility)));
             yield return new(OpCodes.Callvirt, PropertyGetter(typeof(ValidatingVisibilityEventArgs), nameof(ValidatingVisibilityEventArgs.IsAllowed)));
             yield return new(OpCodes.Brfalse_S, ret);
 
+            // if (IsLateSeen)
+            //     ValidatingVisibility.SetToLastSeen(target);
+            // return true;
             yield return new(OpCodes.Ldloc_S, ev.LocalIndex);
             yield return new(OpCodes.Callvirt, PropertyGetter(typeof(ValidatingVisibilityEventArgs), nameof(ValidatingVisibilityEventArgs.IsLateSeen)));
             yield return new(OpCodes.Brfalse_S, cnt);

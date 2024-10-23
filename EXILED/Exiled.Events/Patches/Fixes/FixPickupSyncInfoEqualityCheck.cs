@@ -36,6 +36,9 @@ namespace Exiled.Events.Patches.Fixes
 
             Label label = newInstructions[index].labels[0];
 
+            // if (this.Serial == other.Serial)
+            //     return false
+            // (add serial check, and moves on false ret label)
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
