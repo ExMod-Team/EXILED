@@ -35,7 +35,7 @@ namespace Exiled.CustomItems
             roundHandler = new MapHandler();
             playerHandler = new PlayerHandler();
 
-            Exiled.Events.Handlers.Map.Generated += roundHandler.OnMapGenerated;
+            Exiled.Events.Handlers.Server.WaitingForPlayers += roundHandler.OnWaitingForPlayers;
 
             Exiled.Events.Handlers.Player.ChangingItem += playerHandler.OnChangingItem;
 
@@ -50,7 +50,7 @@ namespace Exiled.CustomItems
         /// <inheritdoc />
         public override void OnDisabled()
         {
-            Exiled.Events.Handlers.Map.Generated -= roundHandler!.OnMapGenerated;
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= roundHandler!.OnWaitingForPlayers;
 
             Exiled.Events.Handlers.Player.ChangingItem -= playerHandler!.OnChangingItem;
 
