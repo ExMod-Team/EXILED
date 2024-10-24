@@ -288,5 +288,10 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.TraumatizedByEvil"/>
         /// </summary>
         TraumatizedByEvil,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.OrangeWitness"/>
+        /// </summary>
+        OrangeWitness,
     }
 }

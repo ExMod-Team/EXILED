@@ -82,6 +82,7 @@ namespace Exiled.API.Extensions
             { EffectType.SugarRush, typeof(SugarRush) },
             { EffectType.TemporaryBypass, typeof(TemporaryBypass) },
             { EffectType.TraumatizedByEvil, typeof(TraumatizedByEvil) },
+            { EffectType.OrangeWitness, typeof(OrangeWitness) },
         });
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace Exiled.API.Extensions
         /// <param name="statusEffectBase">The <see cref="StatusEffectBase"/> enum.</param>
         /// <returns>The <see cref="EffectType"/>.</returns>
         public static EffectType GetEffectType(this StatusEffectBase statusEffectBase)
-            => TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType effect) ? effect : throw new InvalidOperationException("Invalid effect status base provided");
+            => TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType effect) ? effect : throw new InvalidOperationException($"Invalid effect status base provided {statusEffectBase.GetType().Name}");
 
         /// <summary>
         /// Gets the <see cref="EffectType"/> of the specified <see cref="StatusEffectBase"/>.
