@@ -9,7 +9,6 @@ namespace Exiled.API.Features.Pickups
 {
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
-    using Exiled.API.Features.Pickups.Projectiles;
     using Exiled.API.Interfaces;
 
     using Footprinting;
@@ -70,18 +69,6 @@ namespace Exiled.API.Features.Pickups
         {
             Base._replaceNextFrame = true;
             Base._attacker = attacker;
-        }
-
-        /// <summary>
-        /// Helper method for saving data between projectiles and pickups.
-        /// </summary>
-        /// <param name="projectile"><see cref="Projectile"/>-related data to write to.</param>
-        internal virtual void WriteProjectileInfo(Projectile projectile)
-        {
-            if (projectile is TimeGrenadeProjectile timeGrenadeProjectile)
-            {
-                timeGrenadeProjectile.FuseTime = FuseTime;
-            }
         }
 
         /// <inheritdoc/>

@@ -7,7 +7,9 @@
 
 namespace Exiled.API.Features.Items
 {
+    using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
+    using InventorySystem.Items.Usables;
 
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
 
@@ -39,6 +41,23 @@ namespace Exiled.API.Features.Items
         /// Gets the <see cref="BaseConsumable"/> that this class is encapsulating.
         /// </summary>
         public new BaseConsumable Base { get; }
+
+        /// <inheritdoc/>
+        public override void Use(Player owner = null)
+        {
+            Player oldOwner = Owner;
+            owner ??= Owner;
+
+            if (owner is null)
+                throw new System.InvalidOperationException("The Owner of the item cannot be null.");
+
+            Base.Owner = owner.ReferenceHub;
+            Base.ActivateEffects();
+
+            typeof(UsableItemsController).InvokeStaticEvent(nameof(UsableItemsController.ServerOnUsingCompleted), new object[] { owner.ReferenceHub, Base });
+
+            Base.Owner = oldOwner.ReferenceHub;
+        }
 
         /// <inheritdoc/>
         internal override void ChangeOwner(Player oldOwner, Player newOwner)

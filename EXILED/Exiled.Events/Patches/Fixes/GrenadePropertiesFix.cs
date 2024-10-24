@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Fixes
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection.Emit;
@@ -15,14 +16,21 @@ namespace Exiled.Events.Patches.Fixes
     using API.Features.Pickups.Projectiles;
     using API.Features.Pools;
 
+    using Exiled.API.Features.Pickups;
+
     using HarmonyLib;
 
     using InventorySystem.Items;
+    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
+
+    using Mirror;
 
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
+
+    using Log = API.Features.Log;
 
     /// <summary>
     /// Patches <see cref="ThrowableItem.ServerThrow(float, float, Vector3, Vector3)"/> to fix all grenade properties.
@@ -34,81 +42,36 @@ namespace Exiled.Events.Patches.Fixes
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder throwable = generator.DeclareLocal(typeof(ThrowableItem));
-            LocalBuilder projectile = generator.DeclareLocal(typeof(Projectile));
-            LocalBuilder playerCamera = generator.DeclareLocal(typeof(Transform));
-
-            Label cnt = generator.DefineLabel();
-
-            const int offset = 1;
-            int index = newInstructions.FindLastIndex(i => i.StoresField(Field(typeof(ThrowableItem), nameof(ThrowableItem._alreadyFired)))) + offset;
-
-            newInstructions.RemoveRange(index, 11);
+            const int offset = -1;
+            int index = newInstructions.FindLastIndex(i => i.Calls(PropertyGetter(typeof(ItemBase), nameof(ItemBase.Owner)))) + offset;
 
             // if (Item.Get(this) is not Throwable throwable)
             // {
             //     Log.Error("Item is not Throwable, should never happen");
             //     return;
             // }
-            // Projectile projectile = throwable.Projectile;
-            // ThrownProjectile baseProjectile = projectile.Base;
-            // baseProjectile.transform.position = this.Owner.PlayerCameraReference.position;
-            // baseProjectile.transform.rotation = this.Owner.PlayerCameraReference.rotation;
-            // baseProjectile.gameObject.SetActive(true);
+            // ((Projectile)Pickup.Get(projectile)).ReadThrowableItemInfo(throwable)
             newInstructions.InsertRange(index, new[]
             {
-                // if (Item.Get(this) is Throwable throwable) goto cnt;
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).First(x => !x.IsGenericMethod && x.Name is nameof(Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemBase))),
-                new(OpCodes.Isinst, typeof(Throwable)),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, throwable.LocalIndex),
-                new(OpCodes.Brtrue_S, cnt),
-
-                // Log.Error("Item is not Throwable, should never happen");
-                // return;
-                new(OpCodes.Ldstr, "Item is not Throwable, should never happen"),
-                new(OpCodes.Call, Method(typeof(API.Features.Log), nameof(API.Features.Log.Error), new[] { typeof(string) })),
-                new(OpCodes.Ret),
-
-                // Projectile projectile = throwable.Projectile;
-                new CodeInstruction(OpCodes.Ldloc_S, throwable.LocalIndex).WithLabels(cnt),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Throwable), nameof(Throwable.Projectile))),
-                new(OpCodes.Dup),
-
-                // ThrownProjectile baseProjectile = projectile.Base;
-                new(OpCodes.Stloc_S, projectile.LocalIndex),
-                new(OpCodes.Callvirt, DeclaredPropertyGetter(typeof(Projectile), nameof(Projectile.Base))),
-                new(OpCodes.Dup),
-                new(OpCodes.Dup),
-                new(OpCodes.Dup),
-
-                // baseProjectile.transform.position = this.Owner.PlayerCameraReference.position;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(ThrownProjectile), nameof(ThrownProjectile.transform))),
+                // ((Projectile)Pickup.Get(projectile)).ReadThrowableItemInfo(throwable)
+                new CodeInstruction(OpCodes.Dup),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Pickup)).First(x => !x.IsGenericMethod && x.Name is nameof(Pickup.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemPickupBase))),
+                new(OpCodes.Isinst, typeof(Projectile)),
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(ThrowableItem), nameof(ThrowableItem.Owner))),
-                new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.PlayerCameraReference))),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, playerCamera.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Transform), nameof(Transform.position))),
-                new(OpCodes.Callvirt, PropertySetter(typeof(Transform), nameof(Transform.position))),
-
-                // baseProjectile.transform.rotation = this.Owner.PlayerCameraReference.rotation;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(ThrownProjectile), nameof(ThrownProjectile.transform))),
-                new(OpCodes.Ldloc_S, playerCamera.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Transform), nameof(Transform.rotation))),
-                new(OpCodes.Callvirt, PropertySetter(typeof(Transform), nameof(Transform.rotation))),
-
-                // baseProjectile.gameObject.SetActive(true);
-                new(OpCodes.Callvirt, PropertyGetter(typeof(ThrownProjectile), nameof(ThrownProjectile.gameObject))),
-                new(OpCodes.Ldc_I4_1),
-                new(OpCodes.Callvirt, Method(typeof(GameObject), nameof(GameObject.SetActive))),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).First(x => !x.IsGenericMethod && x.Name is nameof(Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemBase))),
+                new(OpCodes.Castclass, typeof(Throwable)),
+                new(OpCodes.Callvirt, Method(typeof(Projectile), nameof(Projectile.ReadThrowableItemInfo))),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static void NotifyWrongType(Item item)
+        {
+            Log.Warn($"Item is not Throwable, should never happen: '{item}'");
         }
     }
 }

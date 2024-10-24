@@ -44,7 +44,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the round is started or not.
         /// </summary>
-        public static bool IsStarted => ReferenceHub.LocalHub?.characterClassManager.RoundStarted ?? false;
+        public static bool IsStarted => ReferenceHub.LocalHub != null && ReferenceHub.LocalHub.characterClassManager.RoundStarted;
 
         /// <summary>
         /// Gets a value indicating whether the round in progress or not.
@@ -59,7 +59,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the round is lobby or not.
         /// </summary>
-        public static bool IsLobby => !(IsEnded || IsStarted);
+        public static bool IsLobby => ReferenceHub.LocalHub != null && !(IsEnded || IsStarted);
 
         /// <summary>
         /// Gets or sets a value indicating the amount of Chaos Targets remaining.
