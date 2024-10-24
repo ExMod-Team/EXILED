@@ -44,11 +44,12 @@ namespace Exiled.Events.Patches.Events.Player
                 0,
                 new CodeInstruction[]
                 {
-                    // InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, false);
+                    // InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, false, true);
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingDoorEventArgs))[0]),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
                 });
@@ -58,15 +59,21 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // Handlers.Player.OnInteractingDoor(ev);
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Dup),
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingDoor))),
 
-                    // if (ev.IsAllowed)
+                    // if (!ev.IsAllowed)
+                    //    return;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
+                    new(OpCodes.Brfalse_S, retLabel),
+
+                    // if (ev.CanOpen)
                     //    go to interactionAllowed;
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
                     new(OpCodes.Brtrue_S, interactionAllowed),
                 });
@@ -86,12 +93,12 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions[index].WithLabels(interactionAllowed);
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
-                    // ev.IsAllowed = flag;
+                    // ev.CanOpen = flag;
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(jmp),
                     new(OpCodes.Ldloc_0),
-                    new(OpCodes.Callvirt, PropertySetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.CanOpen))),
 
                     // Handlers.Player.OnInteractingDoor(ev);
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
@@ -99,8 +106,14 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingDoor))),
 
                     // if (!ev.IsAllowed)
-                    //    go to permission denied;
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
+                    new(OpCodes.Brfalse_S, retLabel),
+
+                    // if (!ev.CanOpen)
+                    //    go to permission denied;
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.CanOpen))),
                     new(OpCodes.Brfalse_S, permissionDenied),
                 });
 
