@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="PrefabType.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -278,6 +278,6 @@ namespace Exiled.API.Enums
         PrismaticCloud,
 
         [Prefab(2157375951, "TantrumObj (Brown Candy)")]
-        TantrumBrownCandy
+        TantrumBrownCandy,
     }
 }
