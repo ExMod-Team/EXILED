@@ -32,8 +32,7 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            const int offset = -9;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_0);
 
             LocalBuilder ev = generator.DeclareLocal(typeof(InteractingLockerEventArgs));
             Label returnLabel = generator.DefineLabel();
@@ -45,17 +44,11 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // Player.Get(ply);
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this
                     new(OpCodes.Ldarg_0),
-
-                    // this.Chambers[colliderId]
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Locker), nameof(Locker.Chambers))),
-                    new(OpCodes.Ldarg_2),
-                    new(OpCodes.Ldelem_Ref),
 
                     // colliderId
                     new(OpCodes.Ldarg_2),
@@ -68,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool, true)
+                    // InteractingLockerEventArgs ev = new(Player, Locker, byte, bool, true)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

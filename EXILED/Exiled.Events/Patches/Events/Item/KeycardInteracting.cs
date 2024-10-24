@@ -168,8 +168,9 @@ namespace Exiled.Events.Patches.Events.Item
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
 
-        private static bool CheckPermissions(BaseKeycardPickup keycard, DoorPermissions permissions)
+        private static bool CheckPermissions(BaseKeycardPickup keycard, DoorVariant door)
         {
+            DoorPermissions permissions = door.RequiredPermissions;
             if (permissions.RequiredPermissions == KeycardPermissions.None)
             {
                 return true;

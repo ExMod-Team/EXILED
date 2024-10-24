@@ -4,8 +4,10 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
+
 namespace Exiled.API.Features.Lockers
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -36,6 +38,7 @@ namespace Exiled.API.Features.Lockers
         {
             Base = chamber;
             Locker = locker;
+            Id = (byte)Array.IndexOf(locker.Base.Chambers, chamber);
 
             Chambers.Add(chamber, this);
         }
@@ -150,6 +153,11 @@ namespace Exiled.API.Features.Lockers
         /// Gets a value indicating whether the chamber is currently open.
         /// </summary>
         public bool IsOpen => Base.IsOpen;
+
+        /// <summary>
+        /// Gets the id of this chamber in <see cref="Locker"/>.
+        /// </summary>
+        public byte Id { get; }
 
         /// <summary>
         /// Gets the <see cref="Stopwatch"/> of current cooldown.

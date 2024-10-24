@@ -17,6 +17,7 @@ namespace Exiled.Events.Commands.Reload
     /// <summary>
     /// The reload permissions command.
     /// </summary>
+    [CommandHandler(typeof(Reload))]
     public class Permissions : ICommand
     {
         /// <summary>

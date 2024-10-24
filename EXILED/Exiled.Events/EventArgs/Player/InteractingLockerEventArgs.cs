@@ -7,11 +7,11 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using System;
+
     using API.Features;
-
+    using Exiled.API.Features.Lockers;
     using Interfaces;
-
-    using MapGeneration.Distributors;
 
     /// <summary>
     /// Contains all information before a player interacts with a locker.
@@ -25,13 +25,10 @@ namespace Exiled.Events.EventArgs.Player
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="locker">
-        /// <inheritdoc cref="Locker" />
+        /// <inheritdoc cref="InteractingLocker" />
         /// </param>
-        /// <param name="lockerChamber">
-        /// <inheritdoc cref="Chamber" />
-        /// </param>
-        /// <param name="chamberId">
-        /// <inheritdoc cref="ChamberId" />
+        /// <param name="colliderId">
+        /// <inheritdoc cref="InteractingChamber" />
         /// </param>
         /// <param name="canOpen">
         /// <inheritdoc cref="CanOpen" />
@@ -39,12 +36,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public InteractingLockerEventArgs(Player player, Locker locker, LockerChamber lockerChamber, byte chamberId, bool canOpen, bool isAllowed)
+        public InteractingLockerEventArgs(Player player, MapGeneration.Distributors.Locker locker, byte colliderId, bool isAllowed, bool canpOpen = true)
         {
             Player = player;
-            Locker = locker;
-            Chamber = lockerChamber;
-            ChamberId = chamberId;
+            InteractingLocker = API.Features.Lockers.Locker.Get(locker);
+            InteractingChamber = API.Features.Lockers.Chamber.Get(locker.Chambers[colliderId]);
             IsAllowed = isAllowed;
             CanOpen = canOpen;
         }
@@ -52,17 +48,30 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the <see cref="MapGeneration.Distributors.Locker" /> instance.
         /// </summary>
-        public Locker Locker { get; }
+        [Obsolete("Use InteractingLocker instead.")]
+        public MapGeneration.Distributors.Locker Locker => InteractingLocker.Base;
 
         /// <summary>
         /// Gets the interacting chamber.
         /// </summary>
-        public LockerChamber Chamber { get; }
+        [Obsolete("Use InteractingChamber instead.")]
+        public MapGeneration.Distributors.LockerChamber Chamber => InteractingChamber.Base;
+
+        /// <summary>
+        /// Gets the locker which is containing <see cref="InteractingChamber"/>.
+        /// </summary>
+        public Locker InteractingLocker { get; }
+
+        /// <summary>
+        /// Gets the interacting chamber.
+        /// </summary>
+        public Chamber InteractingChamber { get; }
 
         /// <summary>
         /// Gets the chamber id.
         /// </summary>
-        public byte ChamberId { get; }
+        [Obsolete("Use Chamber::Id instead.")]
+        public byte ChamberId => InteractingChamber.Id;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the player can interact with the locker.

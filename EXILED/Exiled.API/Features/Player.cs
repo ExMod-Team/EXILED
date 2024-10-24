@@ -2001,8 +2001,8 @@ namespace Exiled.API.Features
                 if (item.Serial == Inventory.CurItem.SerialNumber)
                     Inventory.NetworkCurItem = ItemIdentifier.None;
 
+                ItemsValue.Remove(item);
                 Inventory.UserInventory.Items.Remove(item.Serial);
-                typeof(InventoryExtensions).InvokeStaticEvent(nameof(InventoryExtensions.OnItemRemoved), new object[] { ReferenceHub, item.Base, null });
 
                 Inventory.SendItemsNextFrame = true;
             }
@@ -2974,8 +2974,8 @@ namespace Exiled.API.Features
         /// <seealso cref="DropItems()"/>
         public void ClearItems(bool destroy = true)
         {
-            if (CurrentArmor is not null)
-                CurrentArmor.RemoveExcessOnDrop = true;
+            if (CurrentArmor is Armor armor)
+                armor.RemoveExcessOnDrop = false;
 
             while (Items.Count > 0)
                 RemoveItem(Items.ElementAt(0), destroy);
