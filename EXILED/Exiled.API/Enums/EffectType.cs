@@ -216,8 +216,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Makes you a marshmallow guy.
         /// </summary>
-        [Obsolete("Not functional in-game")]
         Marshmallow,
+
+        /// <summary>
+        /// Makes you metal.
+        /// </summary>
+        Metal,
 
         /// <summary>
         /// The effect that is given to the player when getting attacked by SCP-3114's Strangle ability.
@@ -239,5 +243,50 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.Slowness"/>.
         /// </summary>
         Slowness,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.OrangeCandy"/>
+        /// </summary>
+        OrangeCandy,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Prismatic"/>
+        /// </summary>
+        Prismatic,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SlowMetabolism"/>
+        /// </summary>
+        SlowMetabolism,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Spicy"/>
+        /// </summary>
+        Spicy,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SugarCrave"/>
+        /// </summary>
+        SugarCrave,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SugarHigh"/>
+        /// </summary>
+        SugarHigh,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SugarRush"/>
+        /// </summary>
+        SugarRush,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.TemporaryBypass"/>
+        /// </summary>
+        TemporaryBypass,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.TraumatizedByEvil"/>
+        /// </summary>
+        TraumatizedByEvil,
     }
 }

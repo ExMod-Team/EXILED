@@ -249,5 +249,21 @@ namespace Exiled.API.Enums
         /// Damage caused by the marshmallow man.
         /// </summary>
         Marshmallow,
+
+        /// <summary>
+        /// Generic damage. No CASSIE message will be sent.
+        /// </summary>
+        Silent,
+
+        /// <summary>
+        /// Damage caused by Spicy Flame.
+        /// </summary>
+        /// <seealso cref="EffectType.Spicy"/>
+        SpicyFlame,
+
+        /// <summary>
+        /// Damage caused by Metal Pipe.
+        /// </summary>
+        MetalPipe,
     }
 }

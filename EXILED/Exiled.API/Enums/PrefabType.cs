@@ -273,5 +273,11 @@ namespace Exiled.API.Enums
 
         [Prefab(3721192489, "Scp3114_Ragdoll")]
         Scp3114Ragdoll,
+
+        [Prefab(1891631329, "PrismaticCloud")]
+        PrismaticCloud,
+
+        [Prefab(2157375951, "TantrumObj (Brown Candy)")]
+        TantrumBrownCandy
     }
 }

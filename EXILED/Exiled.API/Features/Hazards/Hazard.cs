@@ -125,6 +125,7 @@ namespace Exiled.API.Features.Hazards
             TantrumEnvironmentalHazard tantrumEnvironmentalHazard => new TantrumHazard(tantrumEnvironmentalHazard),
             Scp939AmnesticCloudInstance scp939AmnesticCloudInstance => new AmnesticCloudHazard(scp939AmnesticCloudInstance),
             SinkholeEnvironmentalHazard sinkholeEnvironmentalHazard => new SinkholeHazard(sinkholeEnvironmentalHazard),
+            PrismaticCloud prismaticCloud => new PrismaticCloudHazard(prismaticCloud),
             global::Hazards.TemporaryHazard temporaryHazard => new TemporaryHazard(temporaryHazard),
             _ => new Hazard(environmentalHazard)
         };

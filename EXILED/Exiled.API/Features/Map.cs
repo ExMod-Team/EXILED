@@ -49,6 +49,7 @@ namespace Exiled.API.Features
         internal static readonly List<PocketDimensionTeleport> TeleportsValue = new(8);
 
         private static AmbientSoundPlayer ambientSoundPlayer;
+        private static SkyboxHubert skyboxHubert;
 
         private static SqueakSpawner squeakSpawner;
 
@@ -61,6 +62,22 @@ namespace Exiled.API.Features
         /// Gets the amnestic cloud prefab.
         /// </summary>
         public static Scp939AmnesticCloudInstance AmnesticCloudPrefab => AmnesticCloudHazard.AmnesticCloudPrefab; // TODO: Remove this.
+
+        /// <summary>
+        /// Gets the Hubert Sky prefab.
+        /// </summary>
+        public static SkyboxHubert SkyboxHubert
+        {
+            get
+            {
+                if (skyboxHubert == null)
+                {
+                    skyboxHubert = Object.FindObjectOfType<SkyboxHubert>();
+                }
+
+                return skyboxHubert;
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
@@ -127,6 +144,15 @@ namespace Exiled.API.Features
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
         public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the hubert sky is enabled.
+        /// </summary>
+        public static bool IsHubertSky
+        {
+            get => SkyboxHubert.Hubert;
+            set => SkyboxHubert.NetworkHubert = value;
+        }
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.
@@ -369,6 +395,19 @@ namespace Exiled.API.Features
             if ((item = projectileType.GetItemType()) is ItemType.None)
                 return;
             ExplosionUtils.ServerSpawnEffect(position, item);
+        }
+
+        /// <summary>
+        /// Spawn projectile effect HalloweenOnly.
+        /// </summary>
+        /// <param name="position">The position where effect will be created.</param>
+        /// <param name="projectileType">The projectile that will create the effect.</param>
+        public static void ExplodeEffectHalloween(Vector3 position, ProjectileType projectileType)
+        {
+            ItemType item;
+            if ((item = projectileType.GetItemType()) is ItemType.None)
+                return;
+            ExplosionUtils.ServerSpawnEffect(position, item, true);
         }
 
         /// <summary>
