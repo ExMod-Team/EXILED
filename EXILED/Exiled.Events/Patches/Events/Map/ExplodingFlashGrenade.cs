@@ -61,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Map
 
         private static void ProcessEvent(FlashbangGrenade instance, float distance)
         {
-            List<Player> targetToAffect = ListPool<Player>.Pool.Get();
+            HashSet<Player> targetToAffect = HashSetPool<Player>.Pool.Get();
             foreach (ReferenceHub referenceHub in ReferenceHub.AllHubs)
             {
                 Player player = Player.Get(referenceHub);
@@ -79,7 +79,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             ExplodingGrenadeEventArgs explodingGrenadeEvent = new(Player.Get(instance.PreviousOwner.Hub), instance, targetToAffect);
 
-            ListPool<Player>.Pool.Return(targetToAffect);
+            HashSetPool<Player>.Pool.Return(targetToAffect);
 
             Handlers.Map.OnExplodingGrenade(explodingGrenadeEvent);
 

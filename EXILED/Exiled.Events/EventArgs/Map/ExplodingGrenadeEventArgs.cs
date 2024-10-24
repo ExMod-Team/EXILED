@@ -39,7 +39,7 @@ namespace Exiled.Events.EventArgs.Map
             Player = Player.Get(thrower.Hub);
             Projectile = Pickup.Get<EffectGrenadeProjectile>(grenade);
             Position = position;
-            TargetsToAffect = ListPool<Player>.Pool.Get();
+            TargetsToAffect = HashSetPool<Player>.Pool.Get();
 
             if (Projectile.Base is not ExplosionGrenade)
                 return;
@@ -59,8 +59,7 @@ namespace Exiled.Events.EventArgs.Map
                         {
                             if (Server.FriendlyFire || IndividualFriendlyFire.CheckFriendlyFirePlayer(thrower, hub))
                             {
-                                if (!TargetsToAffect.Contains(player))
-                                    TargetsToAffect.Add(player);
+                                TargetsToAffect.Add(player);
                             }
                         }
 
@@ -69,8 +68,7 @@ namespace Exiled.Events.EventArgs.Map
                         {
                             if (Server.FriendlyFire || thrower.Hub == Server.Host.ReferenceHub || HitboxIdentity.IsEnemy(thrower.Role, hub.roleManager.CurrentRole.RoleTypeId))
                             {
-                                if (!TargetsToAffect.Contains(player))
-                                    TargetsToAffect.Add(player);
+                                TargetsToAffect.Add(player);
                             }
                         }
 
@@ -94,12 +92,12 @@ namespace Exiled.Events.EventArgs.Map
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ExplodingGrenadeEventArgs(Player thrower, EffectGrenade grenade, List<Player> targetsToAffect, bool isAllowed = true)
+        public ExplodingGrenadeEventArgs(Player thrower, EffectGrenade grenade, HashSet<Player> targetsToAffect, bool isAllowed = true)
         {
             Player = thrower ?? Server.Host;
             Projectile = Pickup.Get<EffectGrenadeProjectile>(grenade);
             Position = Projectile.Position;
-            TargetsToAffect = ListPool<Player>.Pool.Get(targetsToAffect ?? new());
+            TargetsToAffect = HashSetPool<Player>.Pool.Get(targetsToAffect ?? new HashSet<Player>());
             IsAllowed = isAllowed;
         }
 
@@ -108,7 +106,7 @@ namespace Exiled.Events.EventArgs.Map
         /// </summary>
         ~ExplodingGrenadeEventArgs()
         {
-            ListPool<Player>.Pool.Return(TargetsToAffect);
+            HashSetPool<Player>.Pool.Return(TargetsToAffect);
         }
 
         /// <summary>
@@ -119,7 +117,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets the players who could be affected by the grenade, if any, and the damage that be dealt.
         /// </summary>
-        public List<Player> TargetsToAffect { get; }
+        public HashSet<Player> TargetsToAffect { get; }
 
         /// <summary>
         /// Gets the grenade that is exploding.
