@@ -26,7 +26,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Bleeding.Id, DamageType.Bleeding },
             { DeathTranslations.Crushed.Id, DamageType.Crushed },
             { DeathTranslations.Decontamination.Id, DamageType.Decontamination },
-            { DeathTranslations.Explosion.Id, DamageType.Explosion },
+            { DeathTranslations.Explosion.Id, DamageType.SpicyFlame },
             { DeathTranslations.Falldown.Id, DamageType.Falldown },
             { DeathTranslations.Poisoned.Id, DamageType.Poison },
             { DeathTranslations.Recontained.Id, DamageType.Recontainment },
@@ -49,6 +49,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.MicroHID.Id, DamageType.MicroHid },
             { DeathTranslations.Hypothermia.Id, DamageType.Hypothermia },
             { DeathTranslations.MarshmallowMan.Id, DamageType.Marshmallow },
+            { DeathTranslations.MetalPipe.Id, DamageType.MetalPipe },
         };
 
         private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
@@ -57,7 +58,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Bleeding, DamageType.Bleeding },
             { DeathTranslations.Crushed, DamageType.Crushed },
             { DeathTranslations.Decontamination, DamageType.Decontamination },
-            { DeathTranslations.Explosion, DamageType.Explosion },
+            { DeathTranslations.Explosion, DamageType.SpicyFlame },
             { DeathTranslations.Falldown, DamageType.Falldown },
             { DeathTranslations.Poisoned, DamageType.Poison },
             { DeathTranslations.Recontained, DamageType.Recontainment },
@@ -80,6 +81,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.MicroHID, DamageType.MicroHid },
             { DeathTranslations.Hypothermia, DamageType.Hypothermia },
             { DeathTranslations.MarshmallowMan, DamageType.Marshmallow },
+            { DeathTranslations.MetalPipe, DamageType.MetalPipe },
         };
 
         private static readonly Dictionary<ItemType, DamageType> ItemConversionInternal = new()
@@ -162,6 +164,10 @@ namespace Exiled.API.Extensions
         {
             switch (damageHandlerBase)
             {
+                case SilentDamageHandler:
+                    return DamageType.Silent;
+                case MetalPipeDamageHandler:
+                    return DamageType.MetalPipe;
                 case CustomReasonDamageHandler:
                     return DamageType.Custom;
                 case WarheadDamageHandler:

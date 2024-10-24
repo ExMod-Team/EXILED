@@ -260,6 +260,6 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         /// <param name="alreadySpawned">The List of Roles already spawned.</param>
         /// <returns>The Spawn Chance.</returns>
-        public float GetSpawnChance(List<RoleTypeId> alreadySpawned) => Base is ISpawnableScp spawnableScp ? spawnableScp.GetSpawnChance(alreadySpawned) : 0;
+        public float GetSpawnChance(List<RoleTypeId> alreadySpawned) => Scp3114Spawner.SpawnChance;
     }
 }
