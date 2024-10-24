@@ -62,6 +62,12 @@ namespace Exiled.API.Features
         public static bool IsLobby => !(IsEnded || IsStarted);
 
         /// <summary>
+        /// Gets a value indicating the last ClassList.
+        /// </summary>
+        /// <remarks>this value is only updated when Round is <see cref="InProgress"/> and not <see cref="IsLocked"/>.</remarks>
+        public static RoundSummary.SumInfo_ClassList LastClassList { get; internal set; }
+
+        /// <summary>
         /// Gets or sets a value indicating the amount of Chaos Targets remaining.
         /// </summary>
         public static int ChaosTargetCount
@@ -121,6 +127,7 @@ namespace Exiled.API.Features
         public static int SurvivingSCPs
         {
             get => RoundSummary.SurvivingSCPs;
+            [Obsolete("This value is rewritten by NW every time it's used", true)]
             set => RoundSummary.SurvivingSCPs = value;
         }
 
