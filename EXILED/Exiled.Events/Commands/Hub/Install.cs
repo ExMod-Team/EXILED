@@ -89,9 +89,11 @@ namespace Exiled.Events.Commands.Hub
                 releaseToDownload = foundRelease;
             }
 
-            Log.Info($"Downloading release \"{releaseToDownload.TagName}\". Found {releaseToDownload.Assets.Length} asset(s) to download.");
+            ReleaseAsset[] releaseAssets = releaseToDownload.Assets.Where(x => x.Name.IndexOf("nwapi", StringComparison.OrdinalIgnoreCase) == -1).ToArray();
 
-            foreach (ReleaseAsset asset in releaseToDownload.Assets)
+            Log.Info($"Downloading release \"{releaseToDownload.TagName}\". Found {releaseAssets.Length} asset(s) to download.");
+
+            foreach (ReleaseAsset asset in releaseAssets)
             {
                 Log.Info($"Downloading asset {asset.Name}. Asset size: {Math.Round(asset.Size / 1000f, 2)} KB.");
                 using HttpResponseMessage assetResponse = client.GetAsync(asset.BrowserDownloadUrl).ConfigureAwait(false).GetAwaiter().GetResult();
