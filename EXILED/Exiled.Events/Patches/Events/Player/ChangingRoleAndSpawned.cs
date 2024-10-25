@@ -174,7 +174,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brtrue_S, nothing),
 
                     // nothing
-                    new CodeInstruction(OpCodes.Nop).WithLabels(skip),
+                    new CodeInstruction(OpCodes.Nop).WithLabels(nothing),
 
                     // if (player.ReferenceHub == ReferenceHub.LocalHub)
                     //     goto skip;
