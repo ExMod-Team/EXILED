@@ -160,18 +160,18 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (player == null)
                     //     goto nothing;
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Brtrue_S, nothing),
+                    new(OpCodes.Brfalse_S, nothing),
 
                     // if (player.ReferenceHub == null)
                     //     goto nothing;
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
                     new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.ReferenceHub))),
-                    new(OpCodes.Brtrue_S, nothing),
+                    new(OpCodes.Brfalse_S, nothing),
 
                     // if (ReferenceHub.LocalHub == null)
                     //     goto nothing;
                     new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
-                    new(OpCodes.Brtrue_S, nothing),
+                    new(OpCodes.Brfalse_S, nothing),
 
                     // if (player.ReferenceHub == ReferenceHub.LocalHub)
                     //     goto skip;
