@@ -173,7 +173,7 @@ namespace Exiled.API.Features
                 }
                 else
                 {
-                    npc.ReferenceHub.authManager.InstanceMode = ClientInstanceMode.Unverified;
+                    npc.ReferenceHub.authManager.InstanceMode = ClientInstanceMode.Host;
                     npc.ReferenceHub.authManager._privUserId = userId == string.Empty ? $"Dummy@localhost" : userId;
                 }
             }
