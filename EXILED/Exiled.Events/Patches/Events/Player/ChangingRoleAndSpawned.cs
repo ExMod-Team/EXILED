@@ -44,6 +44,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label returnLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
             Label jmp = generator.DefineLabel();
+            Label skip = generator.DefineLabel();
 
             LocalBuilder changingRoleEventArgs = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
@@ -155,8 +156,16 @@ namespace Exiled.Events.Patches.Events.Player
                 newInstructions.Count - 1,
                 new[]
                 {
+                    // if (player.ReferenceHub == ReferenceHub.LocalHub)
+                    //     goto skip;
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.ReferenceHub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
+                    new(OpCodes.Call, Method(typeof(ReferenceHub), "op_Equality")),
+                    new(OpCodes.Brtrue_S, skip),
+
                     // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // OldRole
                     new(OpCodes.Ldloc_0),
@@ -166,6 +175,8 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // Handlers.Player.OnSpawned(spawnedEventArgs)
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnSpawned))),
+
+                    new CodeInstruction(OpCodes.Nop).WithLabels(skip),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

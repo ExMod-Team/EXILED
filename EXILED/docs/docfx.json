@@ -16,6 +16,7 @@
       "dest": "api",
       "filter": "filterConfig.yml",
       "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
     }
   ],
   "build": {

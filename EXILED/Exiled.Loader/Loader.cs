@@ -394,7 +394,17 @@ namespace Exiled.Loader
                 GameCore.Version.BackwardCompatibility,
                 GameCore.Version.BackwardRevision))
             {
-                ServerConsole.AddLog($"Exiled is outdated, a new version will be installed automatically as soon as it's available.\nSCP:SL: {GameCore.Version.VersionString} Exiled Supported Version: {AutoUpdateFiles.RequiredSCPSLVersion}", ConsoleColor.DarkRed);
+                string messageText = new Version(
+                    GameCore.Version.Major,
+                    GameCore.Version.Minor,
+                    GameCore.Version.Revision) < new Version(
+                    AutoUpdateFiles.RequiredSCPSLVersion.Major,
+                    AutoUpdateFiles.RequiredSCPSLVersion.Minor,
+                    AutoUpdateFiles.RequiredSCPSLVersion.Revision)
+                            ? "SCP: SL is outdated. Update SCP: SL Dedicated Server to required version or downgrade Exiled."
+                            : "Exiled is outdated, a new version will be installed automatically as soon as it's available.";
+
+                ServerConsole.AddLog($"{messageText}\nSCP:SL version: {GameCore.Version.VersionString} Exiled Supported Version: {AutoUpdateFiles.RequiredSCPSLVersion}", ConsoleColor.DarkRed);
                 yield break;
             }
 
