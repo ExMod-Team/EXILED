@@ -27,7 +27,7 @@ namespace Exiled.Events.Patches.Fixes
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Call && instruction.operand == Method(typeof(UnityEngine.Mathf), nameof(UnityEngine.Mathf.Abs), new System.Type[] { typeof(float) })) + 11;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(UnityEngine.Mathf), nameof(UnityEngine.Mathf.Abs), new System.Type[] { typeof(float) }))) + 11;
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 new CodeInstruction(OpCodes.Pop),
