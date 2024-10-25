@@ -173,9 +173,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
                     new(OpCodes.Brtrue_S, nothing),
 
-                    // nothing
-                    new CodeInstruction(OpCodes.Nop).WithLabels(nothing),
-
                     // if (player.ReferenceHub == ReferenceHub.LocalHub)
                     //     goto skip;
                     new(OpCodes.Ldloc_S, player.LocalIndex),
@@ -183,6 +180,9 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
                     new(OpCodes.Call, Method(typeof(ReferenceHub), "op_Equality")),
                     new(OpCodes.Brtrue_S, skip),
+
+                    // nothing
+                    new CodeInstruction(OpCodes.Nop).WithLabels(nothing),
 
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
