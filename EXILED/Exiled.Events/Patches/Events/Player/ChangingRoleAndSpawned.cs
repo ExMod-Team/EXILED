@@ -171,7 +171,7 @@ namespace Exiled.Events.Patches.Events.Player
                     //     goto skip;
                     new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
                     new(OpCodes.Brtrue_S, skip),
-                    
+
                     // if (player.ReferenceHub == ReferenceHub.LocalHub)
                     //     goto skip;
                     new(OpCodes.Ldloc_S, player.LocalIndex),
