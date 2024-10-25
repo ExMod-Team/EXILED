@@ -156,6 +156,22 @@ namespace Exiled.Events.Patches.Events.Player
                 newInstructions.Count - 1,
                 new[]
                 {
+                    // if (player == null)
+                    //     goto skip;
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Brtrue_S, skip),
+
+                    // if (player.ReferenceHub == null)
+                    //     goto skip;
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.ReferenceHub))),
+                    new(OpCodes.Brtrue_S, skip),
+
+                    // if (ReferenceHub.LocalHub == null)
+                    //     goto skip;
+                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
+                    new(OpCodes.Brtrue_S, skip),
+                    
                     // if (player.ReferenceHub == ReferenceHub.LocalHub)
                     //     goto skip;
                     new(OpCodes.Ldloc_S, player.LocalIndex),
