@@ -34,6 +34,7 @@ namespace Exiled.Events.Patches.Fixes
             {
                 // popped 24000
                 new CodeInstruction(OpCodes.Pop),
+
                 // loadded 480
                 new CodeInstruction(OpCodes.Ldc_I4, 480),
             });
