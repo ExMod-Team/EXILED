@@ -28,16 +28,11 @@ namespace Exiled.Events.Patches.Fixes
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            int offset = -2;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloc_2) + offset;
-            newInstructions.InsertRange(index, new CodeInstruction[]
-            {
-                // popped length
-                new CodeInstruction(OpCodes.Pop),
+            int offset = -1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newarr) + offset;
 
-                // loadded 480
-                new CodeInstruction(OpCodes.Ldc_I4, 480),
-            });
+            // set new array size to 480
+            newInstructions[index].operand = 480;
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
