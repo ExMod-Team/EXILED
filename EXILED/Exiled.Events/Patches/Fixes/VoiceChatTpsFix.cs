@@ -32,9 +32,9 @@ namespace Exiled.Events.Patches.Fixes
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newarr) + offset;
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                //popped 24000
+                // popped 24000
                 new CodeInstruction(OpCodes.Pop),
-                //loadded 480
+                // loadded 480
                 new CodeInstruction(OpCodes.Ldc_I4, 480),
             });
 
