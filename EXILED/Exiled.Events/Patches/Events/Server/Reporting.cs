@@ -84,7 +84,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Starg_S, 2),
                 });
 
-            offset = -2;
+            offset = -11;
             index = newInstructions.FindLastIndex(
                 instruction => instruction.StoresField(Field(typeof(CheaterReport), nameof(CheaterReport._lastReport)))) + offset;
 
