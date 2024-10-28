@@ -27,12 +27,12 @@ jobs:
     steps:
 
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1.7.2
+      uses: actions/setup-dotnet@v4.0.1
 
     - name: Setup Nuget
-      uses: iRebbok/setup-nuget@master
+      uses: NuGet/setup-nuget@v2
 
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v4.1.7
 
     - name: Get references
       shell: pwsh
@@ -46,17 +46,17 @@ jobs:
       shell: pwsh
       run: |
         ./build.ps1 -BuildNuGet
-        $File = (Get-ChildItem -Path . -Include 'EXILEDOFFICIAL.*.nupkg' -Recurse).Name
+        $File = (Get-ChildItem -Path . -Include 'ExMod.Exiled.*.nupkg' -Recurse).Name
         Out-File -FilePath ${{ github.env }} -InputObject "PackageFile=$File" -Encoding utf-8 -Append
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: Build Results
         path: EXILED/bin/Release
 
     - name: Upload nuget package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.PackageFile }}
         path: EXILED/${{ env.PackageFile }}

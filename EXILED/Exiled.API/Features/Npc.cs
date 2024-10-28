@@ -5,27 +5,23 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-#nullable enable
 namespace Exiled.API.Features
 {
+#nullable enable
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
 
+    using CentralAuth;
     using CommandSystem;
-
     using Exiled.API.Enums;
-    using Exiled.API.Extensions;
     using Exiled.API.Features.Components;
-
+    using Exiled.API.Features.Roles;
     using Footprinting;
-
     using MEC;
-
     using Mirror;
-
     using PlayerRoles;
-
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -51,6 +47,20 @@ namespace Exiled.API.Features
         /// Gets a list of Npcs.
         /// </summary>
         public static new List<Npc> List => Player.List.OfType<Npc>().ToList();
+
+        /// <summary>
+        /// Gets or sets the player's position.
+        /// </summary>
+        public override Vector3 Position
+        {
+            get => base.Position;
+            set
+            {
+                base.Position = value;
+                if (Role is FpcRole fpcRole)
+                    fpcRole.ClientRelativePosition = new(value);
+            }
+        }
 
         /// <summary>
         /// Retrieves the NPC associated with the specified ReferenceHub.
@@ -131,56 +141,153 @@ namespace Exiled.API.Features
         /// <param name="userId">The userID of the NPC.</param>
         /// <param name="position">The position to spawn the NPC.</param>
         /// <returns>The <see cref="Npc"/> spawned.</returns>
-        public static Npc Spawn(string name, RoleTypeId role, int id = 0, string userId = "", Vector3? position = null)
+        [Obsolete("This metod is marked as obsolet due to a bug that make player have the same id. Use Npc.Spawn(string) instead")]
+        public static Npc Spawn(string name, RoleTypeId role, int id = 0, string userId = PlayerAuthenticationManager.DedicatedId, Vector3? position = null)
         {
-            GameObject newObject = Object.Instantiate(NetworkManager.singleton.playerPrefab);
+            GameObject newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);
+
             Npc npc = new(newObject)
             {
-                IsVerified = true,
                 IsNPC = true,
             };
+
+            if (!RecyclablePlayerId.FreeIds.Contains(id) && RecyclablePlayerId._autoIncrement >= id)
+            {
+                Log.Warn($"{Assembly.GetCallingAssembly().GetName().Name} tried to spawn an NPC with a duplicate PlayerID. Using auto-incremented ID instead to avoid an ID clash.");
+                id = new RecyclablePlayerId(true).Value;
+            }
+
+            try
+            {
+                if (userId == PlayerAuthenticationManager.DedicatedId)
+                {
+                    npc.ReferenceHub.authManager.SyncedUserId = userId;
+                    try
+                    {
+                        npc.ReferenceHub.authManager.InstanceMode = ClientInstanceMode.DedicatedServer;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Debug($"Ignore: {e.Message}");
+                    }
+                }
+                else
+                {
+                    npc.ReferenceHub.authManager.InstanceMode = ClientInstanceMode.Unverified;
+                    npc.ReferenceHub.authManager._privUserId = userId == string.Empty ? $"Dummy@localhost" : userId;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Debug($"Ignore: {e.Message}");
+            }
+
             try
             {
                 npc.ReferenceHub.roleManager.InitializeNewRole(RoleTypeId.None, RoleChangeReason.None);
             }
             catch (Exception e)
             {
-                Log.Debug($"Ignore: {e}");
-            }
-
-            if (RecyclablePlayerId.FreeIds.Contains(id))
-            {
-                RecyclablePlayerId.FreeIds.RemoveFromQueue(id);
-            }
-            else if (RecyclablePlayerId._autoIncrement >= id)
-            {
-                RecyclablePlayerId._autoIncrement = id = RecyclablePlayerId._autoIncrement + 1;
+                Log.Debug($"Ignore: {e.Message}");
             }
 
             FakeConnection fakeConnection = new(id);
             NetworkServer.AddPlayerForConnection(fakeConnection, newObject);
-            try
-            {
-                npc.ReferenceHub.authManager.UserId = string.IsNullOrEmpty(userId) ? $"Dummy@localhost" : userId;
-            }
-            catch (Exception e)
-            {
-                Log.Debug($"Ignore: {e}");
-            }
 
             npc.ReferenceHub.nicknameSync.Network_myNickSync = name;
             Dictionary.Add(newObject, npc);
 
-            Timing.CallDelayed(
-                0.3f,
-                () =>
-                {
-                    npc.Role.Set(role, SpawnReason.RoundStart, position is null ? RoleSpawnFlags.All : RoleSpawnFlags.AssignInventory);
-                });
+            Timing.CallDelayed(0.5f, () =>
+            {
+                npc.Role.Set(role, SpawnReason.RoundStart, position is null ? RoleSpawnFlags.All : RoleSpawnFlags.AssignInventory);
 
-            if (position is not null)
-                Timing.CallDelayed(0.5f, () => npc.Position = position.Value);
+                if (position is not null)
+                    npc.Position = position.Value;
+            });
+
             return npc;
+        }
+
+        /// <summary>
+        /// Spawns an NPC based on the given parameters.
+        /// </summary>
+        /// <param name="name">The name of the NPC.</param>
+        /// <param name="role">The RoleTypeId of the NPC, defaulting to None.</param>
+        /// <param name="ignored">Whether the NPC should be ignored by round ending checks.</param>
+        /// <param name="userId">The userID of the NPC for authentication. Defaults to the Dedicated ID.</param>
+        /// <param name="position">The position where the NPC should spawn. If null, the default spawn location is used.</param>
+        /// <returns>The <see cref="Npc"/> spawned.</returns>
+        public static Npc Spawn(string name, RoleTypeId role = RoleTypeId.None, bool ignored = false, string userId = PlayerAuthenticationManager.DedicatedId, Vector3? position = null)
+        {
+            GameObject newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);
+
+            Npc npc = new(newObject)
+            {
+                IsNPC = true,
+            };
+
+            FakeConnection fakeConnection = new(npc.Id);
+
+            try
+            {
+                if (userId == PlayerAuthenticationManager.DedicatedId)
+                {
+                    npc.ReferenceHub.authManager.SyncedUserId = userId;
+                    try
+                    {
+                        npc.ReferenceHub.authManager.InstanceMode = ClientInstanceMode.DedicatedServer;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Debug($"Ignore: {e.Message}");
+                    }
+                }
+                else
+                {
+                    npc.ReferenceHub.authManager.InstanceMode = ClientInstanceMode.Unverified;
+                    npc.ReferenceHub.authManager._privUserId = userId == string.Empty ? $"Dummy-{npc.Id}@localhost" : userId;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Debug($"Ignore: {e.Message}");
+            }
+
+            try
+            {
+                npc.ReferenceHub.roleManager.InitializeNewRole(RoleTypeId.None, RoleChangeReason.None);
+            }
+            catch (Exception e)
+            {
+                Log.Debug($"Ignore: {e.Message}");
+            }
+
+            NetworkServer.AddPlayerForConnection(fakeConnection, newObject);
+
+            npc.ReferenceHub.nicknameSync.Network_myNickSync = name;
+            Dictionary.Add(newObject, npc);
+
+            Timing.CallDelayed(0.5f, () =>
+            {
+                npc.Role.Set(role, SpawnReason.RoundStart, position is null ? RoleSpawnFlags.All : RoleSpawnFlags.AssignInventory);
+
+                if (position is not null)
+                    npc.Position = position.Value;
+            });
+
+            if (ignored)
+                Round.IgnoredPlayers.Add(npc.ReferenceHub);
+
+            return npc;
+        }
+
+        /// <summary>
+        /// Destroys all NPCs currently spawned.
+        /// </summary>
+        public static void DestroyAll()
+        {
+            foreach (Npc npc in List)
+                npc.Destroy();
         }
 
         /// <summary>
@@ -188,13 +295,31 @@ namespace Exiled.API.Features
         /// </summary>
         public void Destroy()
         {
-            NetworkConnectionToClient conn = ReferenceHub.connectionToClient;
-            if (ReferenceHub._playerId.Value <= RecyclablePlayerId._autoIncrement)
-                ReferenceHub._playerId.Destroy();
-            ReferenceHub.OnDestroy();
-            CustomNetworkManager.TypedSingleton.OnServerDisconnect(conn);
-            Dictionary.Remove(GameObject);
-            Object.Destroy(GameObject);
+            try
+            {
+                Round.IgnoredPlayers.Remove(ReferenceHub);
+                NetworkConnectionToClient conn = ReferenceHub.connectionToClient;
+                ReferenceHub.OnDestroy();
+                CustomNetworkManager.TypedSingleton.OnServerDisconnect(conn);
+                Dictionary.Remove(GameObject);
+                Object.Destroy(GameObject);
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error while destroying a NPC: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Schedules the destruction of the NPC after a delay.
+        /// </summary>
+        /// <param name="time">The delay in seconds before the NPC is destroyed.</param>
+        public void LateDestroy(float time)
+        {
+            Timing.CallDelayed(time, () =>
+            {
+                this?.Destroy();
+            });
         }
     }
 }

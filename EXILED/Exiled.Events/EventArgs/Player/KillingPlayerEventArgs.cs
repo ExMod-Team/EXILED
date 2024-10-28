@@ -7,13 +7,15 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using Interfaces;
+    using System;
 
+    using Interfaces;
     using PlayerStatsSystem;
 
     /// <summary>
     /// Contains all information before player data to kill player is sent.
     /// </summary>
+    [Obsolete]
     public class KillingPlayerEventArgs : IPlayerEvent
     {
         /// <summary>

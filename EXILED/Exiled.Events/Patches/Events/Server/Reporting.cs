@@ -41,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Server
             LocalBuilder evReportingCheater = generator.DeclareLocal(typeof(ReportingCheaterEventArgs));
 
             int offset = 2;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_S && instruction.operand == (object)4) + offset;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_S && instruction.operand is byte and 4) + offset;
 
             Label ret = generator.DefineLabel();
 
@@ -84,7 +84,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Starg_S, 2),
                 });
 
-            offset = -2;
+            offset = -11;
             index = newInstructions.FindLastIndex(
                 instruction => instruction.StoresField(Field(typeof(CheaterReport), nameof(CheaterReport._lastReport)))) + offset;
 

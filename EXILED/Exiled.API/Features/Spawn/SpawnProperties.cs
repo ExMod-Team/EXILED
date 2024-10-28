@@ -35,9 +35,19 @@ namespace Exiled.API.Features.Spawn
         public List<RoleSpawnPoint> RoleSpawnPoints { get; set; } = new();
 
         /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of possible room-based spawn points.
+        /// </summary>
+        public List<RoomSpawnPoint> RoomSpawnPoints { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of possible locker-based spawn points.
+        /// </summary>
+        public List<LockerSpawnPoint> LockerSpawnPoints { get; set; } = new();
+
+        /// <summary>
         /// Counts how many spawn points are in this instance.
         /// </summary>
         /// <returns>How many spawn points there are.</returns>
-        public int Count() => DynamicSpawnPoints.Count + StaticSpawnPoints.Count + RoleSpawnPoints.Count;
+        public int Count() => DynamicSpawnPoints.Count + StaticSpawnPoints.Count + RoleSpawnPoints.Count + RoomSpawnPoints.Count + LockerSpawnPoints.Count;
     }
 }

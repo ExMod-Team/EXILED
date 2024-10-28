@@ -840,6 +840,16 @@ namespace Exiled.CustomRoles.API.Features
                 }
             }
 
+            if (SpawnProperties.RoomSpawnPoints.Count > 0)
+            {
+                foreach ((float chance, Vector3 pos) in SpawnProperties.RoomSpawnPoints)
+                {
+                    double r = Loader.Random.NextDouble() * 100;
+                    if (r <= chance)
+                        return pos;
+                }
+            }
+
             return Vector3.zero;
         }
 

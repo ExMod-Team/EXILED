@@ -43,9 +43,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
-            Label continueLabel1 = generator.DefineLabel();
-            Label continueLabel2 = generator.DefineLabel();
             Label jmp = generator.DefineLabel();
+            Label skip = generator.DefineLabel();
 
             LocalBuilder changingRoleEventArgs = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
@@ -55,15 +54,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // player = Player.Get(this._hub)
-                    //
-                    // if (player == null)
-                    //    goto continueLabel;
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel),
 
                     // if (Player.IsVerified)
                     //  goto jmp
@@ -133,17 +127,10 @@ namespace Exiled.Events.Patches.Events.Player
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SetupPoolObject)))) + offset;
 
-            newInstructions[index].WithLabels(continueLabel1);
-
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // if (player == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel1),
-
                     // player.Role = Role.Create(roleBase);
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
                     new(OpCodes.Ldloc_2),
@@ -154,22 +141,10 @@ namespace Exiled.Events.Patches.Events.Player
             offset = 1;
             index = newInstructions.FindIndex(i => i.Calls(Method(typeof(PlayerRoleManager.RoleChanged), nameof(PlayerRoleManager.RoleChanged.Invoke)))) + offset;
 
-            newInstructions[index].labels.Add(continueLabel2);
-
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
-                    // if (player == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel2),
-
-                    // if (changingRoleEventArgs == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, changingRoleEventArgs.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel2),
-
                     // changingRoleEventArgs
                     new(OpCodes.Ldloc_S, changingRoleEventArgs.LocalIndex),
 
@@ -181,13 +156,16 @@ namespace Exiled.Events.Patches.Events.Player
                 newInstructions.Count - 1,
                 new[]
                 {
-                    // if (player == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, returnLabel),
+                    // if (player.ReferenceHub == ReferenceHub.LocalHub)
+                    //     goto skip;
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.ReferenceHub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.LocalHub))),
+                    new(OpCodes.Call, Method(typeof(ReferenceHub), "op_Equality")),
+                    new(OpCodes.Brtrue_S, skip),
 
                     // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // OldRole
                     new(OpCodes.Ldloc_0),
@@ -197,6 +175,8 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // Handlers.Player.OnSpawned(spawnedEventArgs)
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnSpawned))),
+
+                    new CodeInstruction(OpCodes.Nop).WithLabels(skip),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

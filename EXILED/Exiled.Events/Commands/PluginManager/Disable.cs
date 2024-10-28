@@ -17,6 +17,7 @@ namespace Exiled.Events.Commands.PluginManager
     /// <summary>
     /// The command to disable a plugin.
     /// </summary>
+    [CommandHandler(typeof(PluginManager))]
     public sealed class Disable : ICommand
     {
         /// <summary>

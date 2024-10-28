@@ -11,20 +11,21 @@ namespace Exiled.API.Features.Roles
     using System.Reflection;
 
     using Exiled.API.Features.Pools;
-
     using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
-
+    using PlayerRoles.Ragdolls;
+    using PlayerRoles.Spectating;
+    using PlayerRoles.Visibility;
+    using PlayerRoles.Voice;
     using PlayerStatsSystem;
     using RelativePositioning;
-
     using UnityEngine;
 
     /// <summary>
     /// Defines a role that represents an fpc class.
     /// </summary>
-    public abstract class FpcRole : Role
+    public abstract class FpcRole : Role, IVoiceRole
     {
         private static FieldInfo enableFallDamageField;
         private bool isUsingStamina = true;
@@ -50,9 +51,18 @@ namespace Exiled.API.Features.Roles
         public FpcStandardRoleBase FirstPersonController { get; }
 
         /// <summary>
-        /// Gets or sets the player's relative position.
+        /// Gets or sets the player's relative position as perceived by the server.
         /// </summary>
         public RelativePosition RelativePosition
+        {
+            get => new(Owner.Position);
+            set => Owner.Position = value.Position;
+        }
+
+        /// <summary>
+        /// Gets or sets the player's relative position as perceived by the client.
+        /// </summary>
+        public RelativePosition ClientRelativePosition
         {
             get => FirstPersonController.FpcModule.Motor.ReceivedPosition;
             set => FirstPersonController.FpcModule.Motor.ReceivedPosition = value;
@@ -233,6 +243,30 @@ namespace Exiled.API.Features.Roles
             get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
             set => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
         }
+
+        /// <summary>
+        /// Gets or sets a prefab ragdoll for this role.
+        /// </summary>
+        public BasicRagdoll Ragdoll
+        {
+            get => FirstPersonController.Ragdoll;
+            set => FirstPersonController.Ragdoll = value;
+        }
+
+        /// <summary>
+        /// Gets a voice module for this role.
+        /// </summary>
+        public VoiceModuleBase VoiceModule => FirstPersonController.VoiceModule;
+
+        /// <summary>
+        /// Gets a <see cref="VisibilityController"/> for this role.
+        /// </summary>
+        public VisibilityController VisibilityController => FirstPersonController.VisibilityController;
+
+        /// <summary>
+        /// Gets a <see cref="SpectatableModuleBase"/> for this role.
+        /// </summary>
+        public SpectatableModuleBase SpectatableModuleBase => FirstPersonController.SpectatorModule;
 
         /// <summary>
         /// Resets the <see cref="Player"/>'s stamina.

@@ -8,13 +8,14 @@
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
+    using PlayerRoles.Voice;
 
     using NoneGameRole = PlayerRoles.NoneRole;
 
     /// <summary>
     /// Defines a role that represents players with no role.
     /// </summary>
-    public class NoneRole : Role
+    public class NoneRole : Role, IVoiceRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NoneRole"/> class.
@@ -27,5 +28,8 @@ namespace Exiled.API.Features.Roles
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.None;
+
+        /// <inheritdoc/>
+        public VoiceModuleBase VoiceModule => (Base as NoneGameRole) !.VoiceModule;
     }
 }

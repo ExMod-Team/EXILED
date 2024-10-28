@@ -111,7 +111,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the ragdoll that is currently being revived by SCP-049. Will be <see langword="null"/> if <see cref="IsRecalling"/> is <see langword="false"/>.
         /// </summary>
-        public Ragdoll RecallingRagdoll => Ragdoll.Get(ResurrectAbility.CurRagdoll);
+        public Ragdoll RecallingRagdoll => Features.Ragdoll.Get(ResurrectAbility.CurRagdoll);
 
         /// <summary>
         /// Gets all the dead zombies.
@@ -255,7 +255,7 @@ namespace Exiled.API.Features.Roles
             HumeShieldModuleBase humeShield = ResurrectAbility.CastRole.HumeShieldModule;
             humeShield.HsCurrent = Mathf.Min(humeShield.HsCurrent + 100f, humeShield.HsMax);
 
-            return Resurrect(Ragdoll.GetLast(player));
+            return Resurrect(Features.Ragdoll.GetLast(player));
         }
 
         /// <summary>

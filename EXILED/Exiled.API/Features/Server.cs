@@ -11,6 +11,8 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
     using System.Reflection;
 
+    using Exiled.API.Enums;
+
     using GameCore;
 
     using Interfaces;
@@ -110,6 +112,15 @@ namespace Exiled.API.Features
         /// Gets the actual ticks per second of the server.
         /// </summary>
         public static double Tps => Math.Round(1f / Time.smoothDeltaTime);
+
+        /// <summary>
+        /// Gets or sets the max ticks per second of the server.
+        /// </summary>
+        public static short MaxTps
+        {
+            get => ServerStatic.ServerTickrate;
+            set => ServerStatic.ServerTickrate = value;
+        }
 
         /// <summary>
         /// Gets the actual frametime of the server.

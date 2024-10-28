@@ -36,7 +36,7 @@ namespace Exiled.Events.EventArgs.Player
         public TogglingRadioEventArgs(Player player, RadioItem radio, bool newState, bool isAllowed = true)
         {
             Player = player;
-            Radio = (Radio)Item.Get(radio);
+            Radio = Item.Get<Radio>(radio);
             NewState = newState;
             IsAllowed = isAllowed;
         }

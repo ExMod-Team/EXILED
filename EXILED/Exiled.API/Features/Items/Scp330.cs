@@ -88,6 +88,11 @@ namespace Exiled.API.Features.Items
         public CandyKindID ExposedType { get; set; } = CandyKindID.None;
 
         /// <summary>
+        /// Gets or sets the candy that will be added to the bag. Used for events.
+        /// </summary>
+        internal CandyKindID CandyToAdd { get; set; } = CandyKindID.None;
+
+        /// <summary>
         /// Adds a specific candy to the bag.
         /// </summary>
         /// <param name="type">The <see cref="CandyKindID"/> to add.</param>
@@ -197,7 +202,7 @@ namespace Exiled.API.Features.Items
 
                 ipb.Info = new(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-                Scp330Pickup pickup = (Scp330Pickup)Pickup.Get(ipb);
+                Scp330Pickup pickup = Pickup.Get<Scp330Pickup>(ipb);
 
                 if (exposedType is not CandyKindID.None)
                     pickup.ExposedCandy = exposedType;
@@ -218,7 +223,7 @@ namespace Exiled.API.Features.Items
 
                 ipb.Info = new(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-                Scp330Pickup pickup = (Scp330Pickup)Pickup.Get(ipb);
+                Scp330Pickup pickup = Pickup.Get<Scp330Pickup>(ipb);
 
                 if (exposedType is not CandyKindID.None)
                     pickup.ExposedCandy = exposedType;

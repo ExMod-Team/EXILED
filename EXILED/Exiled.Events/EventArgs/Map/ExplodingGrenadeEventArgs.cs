@@ -37,7 +37,7 @@ namespace Exiled.Events.EventArgs.Map
         public ExplodingGrenadeEventArgs(Footprint thrower, Vector3 position, ExplosionGrenade grenade, Collider[] targets)
         {
             Player = Player.Get(thrower.Hub);
-            Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
+            Projectile = Pickup.Get<EffectGrenadeProjectile>(grenade);
             Position = position;
             TargetsToAffect = ListPool<Player>.Pool.Get();
 
@@ -97,7 +97,7 @@ namespace Exiled.Events.EventArgs.Map
         public ExplodingGrenadeEventArgs(Player thrower, EffectGrenade grenade, List<Player> targetsToAffect, bool isAllowed = true)
         {
             Player = thrower ?? Server.Host;
-            Projectile = (EffectGrenadeProjectile)Pickup.Get(grenade);
+            Projectile = Pickup.Get<EffectGrenadeProjectile>(grenade);
             Position = Projectile.Position;
             TargetsToAffect = ListPool<Player>.Pool.Get(targetsToAffect ?? new());
             IsAllowed = isAllowed;

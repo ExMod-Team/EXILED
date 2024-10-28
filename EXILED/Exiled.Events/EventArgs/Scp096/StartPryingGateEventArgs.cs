@@ -36,7 +36,7 @@ namespace Exiled.Events.EventArgs.Scp096
         {
             Player = player;
             Scp096 = player.Role.As<Scp096Role>();
-            Gate = Door.Get(gate).As<Gate>();
+            Gate = Door.Get<Gate>(gate);
             IsAllowed = isAllowed;
         }
 
