@@ -39,7 +39,6 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
             LocalBuilder ev = generator.DeclareLocal(typeof(SendingCommandEventArgs));
-
             int offset = 2;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(CommandHandler), nameof(CommandHandler.TryGetCommand)))) + offset;
 
@@ -47,6 +46,7 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions[index].WithLabels(contlabel);
 
             int sendreplyidx = newInstructions.FindIndex(instructions => instructions.Calls(Method(typeof(string), nameof(string.IsNullOrEmpty)))) + offset;
+
             Label sendreply = generator.DefineLabel();
             newInstructions[sendreplyidx].WithLabels(sendreply);
 
@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                    // sender
                    new (OpCodes.Ldarg_1),
 
-                   // Player.Get(sender)
+                   // Player.get(sender)
                    new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(CommandSender) })),
 
                    // command
@@ -69,28 +69,28 @@ namespace Exiled.Events.Patches.Events.Player
                    // response
                    new (OpCodes.Ldloc_S, 6),
 
-                   // SendingCommandEventArgs ev = new SendingCommandEventargs();
-                   new (OpCodes.Newobj, GetDeclaredConstructors(typeof(EventArgs))[0]),
+                   // new SendingCommandEventArgs
+                   new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingCommandEventArgs))[0]),
                    new (OpCodes.Dup),
                    new (OpCodes.Stloc_S, ev.LocalIndex),
 
-                   // Player.OnSendingCommand(ev)
+                   // OnSendingCommad(ev)
                    new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingCommand))),
 
-                   // if ev.IsAllowed=>cont
+                   // if ev.IsAllowed cont
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
                    new (OpCodes.Callvirt, PropertyGetter(typeof(SendingCommandEventArgs), nameof(SendingCommandEventArgs.IsAllowed))),
                    new (OpCodes.Brtrue_S, contlabel),
 
-                   // if ev.Response == null=>ret
+                   // if ev.Response.IsNullOrEmpty rets
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-                   new (OpCodes.Callvirt, PropertyGetter(typeof(SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
                    new (OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
                    new (OpCodes.Brtrue_S, ret),
 
                    // response = ev.Response
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-                   new (OpCodes.Callvirt, PropertyGetter(typeof(SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
                    new (OpCodes.Stloc_S, 6),
 
                    // goto sendreply
@@ -104,7 +104,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new CodeInstruction[]
                 {
-                   // if ev.Response == null=>skip
+                   // if ev.Response.IsNullOrEmpty skip
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
                    new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
                    new (OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
