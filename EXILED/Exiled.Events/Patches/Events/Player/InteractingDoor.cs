@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Events.Player
                 0,
                 new CodeInstruction[]
                 {
-                    // InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, false);
+                    // InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, false, true);
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Ldarg_0),
