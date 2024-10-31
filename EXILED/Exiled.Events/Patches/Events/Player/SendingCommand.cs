@@ -1,0 +1,125 @@
+// -----------------------------------------------------------------------
+// <copyright file="SendingCommand.cs" company="Exiled Team">
+// Copyright (c) Exiled Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Exiled.Events.Patches.Events.Player
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection.Emit;
+
+    using API.Features;
+    using API.Features.Pools;
+    using CommandSystem;
+    using Exiled.Events.Attributes;
+    using Exiled.Events.EventArgs.Player;
+
+    using HarmonyLib;
+
+    using RemoteAdmin;
+
+    using static HarmonyLib.AccessTools;
+
+    /// <summary>
+    /// Patches <see cref="CommandProcessor.ProcessQuery(string, CommandSender)" />.
+    /// Adds the <see cref="Handlers.Player.SendingCommand" /> event.
+    /// </summary>
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingCommand))]
+    [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
+    internal static class SendingCommand
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            Label ret = generator.DefineLabel();
+            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+
+            LocalBuilder ev = generator.DeclareLocal(typeof(SendingCommandEventArgs));
+
+            int offset = 2;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(CommandHandler), nameof(CommandHandler.TryGetCommand)))) + offset;
+
+            Label contlabel = generator.DefineLabel();
+            newInstructions[index].WithLabels(contlabel);
+
+            int sendreplyidx = newInstructions.FindIndex(instructions => instructions.Calls(Method(typeof(string), nameof(string.IsNullOrEmpty)))) + offset;
+            Label sendreply = generator.DefineLabel();
+            newInstructions[sendreplyidx].WithLabels(sendreply);
+
+            newInstructions.InsertRange(
+                index,
+                new CodeInstruction[]
+                {
+                   // sender
+                   new (OpCodes.Ldarg_1),
+
+                   // Player.Get(sender)
+                   new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(CommandSender) })),
+
+                   // command
+                   new (OpCodes.Ldloc_1),
+
+                   // query
+                   new (OpCodes.Ldarg_0),
+
+                   // response
+                   new (OpCodes.Ldloc_S, 6),
+
+                   // SendingCommandEventArgs ev = new SendingCommandEventargs();
+                   new (OpCodes.Newobj, GetDeclaredConstructors(typeof(EventArgs))[0]),
+                   new (OpCodes.Dup),
+                   new (OpCodes.Stloc_S, ev.LocalIndex),
+
+                   // Player.OnSendingCommand(ev)
+                   new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingCommand))),
+
+                   // if ev.IsAllowed=>cont
+                   new (OpCodes.Ldloc_S, ev.LocalIndex),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof(SendingCommandEventArgs), nameof(SendingCommandEventArgs.IsAllowed))),
+                   new (OpCodes.Brtrue_S, contlabel),
+
+                   // if ev.Response == null=>ret
+                   new (OpCodes.Ldloc_S, ev.LocalIndex),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof(SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
+                   new (OpCodes.Brtrue_S, ret),
+
+                   // response = ev.Response
+                   new (OpCodes.Ldloc_S, ev.LocalIndex),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof(SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Stloc_S, 6),
+
+                   // goto sendreply
+                   new (OpCodes.Br, sendreply),
+                });
+            offset = -4;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(string), nameof(string.ToUpperInvariant)))) + offset;
+            Label skip = generator.DefineLabel();
+            newInstructions[index].WithLabels(skip);
+            newInstructions.InsertRange(
+                index,
+                new CodeInstruction[]
+                {
+                   // if ev.Response == null=>skip
+                   new (OpCodes.Ldloc_S, ev.LocalIndex),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
+                   new (OpCodes.Brtrue_S, skip),
+
+                   // response = ev.Response
+                   new (OpCodes.Ldloc_S, ev.LocalIndex),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Stloc_S, 6),
+                });
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+}
