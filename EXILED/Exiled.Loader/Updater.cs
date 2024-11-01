@@ -171,7 +171,7 @@ namespace Exiled.Loader
             }
             catch (Utf8Json.JsonParsingException)
             {
-                Log.Error("Encountered GitHub ratelimit, unable to check and download the latest version of Exiled.");
+                Log.Warn("Encountered GitHub ratelimit, unable to check and download the latest version of Exiled.");
             }
             catch (Exception ex)
             {

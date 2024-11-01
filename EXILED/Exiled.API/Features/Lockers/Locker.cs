@@ -61,6 +61,11 @@ namespace Exiled.API.Features.Lockers
         public LockerType Type { get; }
 
         /// <summary>
+        /// Gets the <see cref="Locker"/> <see cref="UnityEngine.GameObject"/>.
+        /// </summary>
+        public GameObject GameObject => Base.gameObject;
+
+        /// <summary>
         /// Gets the <see cref="Locker"/> <see cref="UnityEngine.Transform"/>.
         /// </summary>
         public Transform Transform => Base.transform;
