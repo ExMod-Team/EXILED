@@ -543,7 +543,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> sended command.
         /// </summary>
-        public static Event<SendingCommandEventArgs> SendingCommand { get; set; } = new();
+        public static Event<SendingValidRACommandEventArgs> SendingValidRACommand { get; set; } = new();
 
         /// <summary>
         /// Called before reserved slot is resolved for a <see cref="API.Features.Player"/>.
@@ -1172,8 +1172,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="Player"/>'s sended command.
         /// </summary>
-        /// <param name="ev">The <see cref="SendingCommandEventArgs"/> instance.</param>
-        public static void OnSendingCommand(SendingCommandEventArgs ev) => SendingCommand.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="SendingValidRACommandEventArgs"/> instance.</param>
+        public static void OnSendingValidRACommand(SendingValidRACommandEventArgs ev) => SendingValidRACommand.InvokeSafely(ev);
 
         /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.

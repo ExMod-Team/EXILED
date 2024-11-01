@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="SendingCommand.cs" company="Exiled Team">
+// <copyright file="SendingValidRACommand.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -25,20 +25,21 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patches <see cref="CommandProcessor.ProcessQuery(string, CommandSender)" />.
-    /// Adds the <see cref="Handlers.Player.SendingCommand" /> event.
+    /// Adds the <see cref="Handlers.Player.SendingValidRACommand" /> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingCommand))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingValidRACommand))]
     [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
-    internal static class SendingCommand
+    internal static class SendingValidRACommand
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ret = generator.DefineLabel();
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+            Label setptroperresp = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(SendingCommandEventArgs));
+            Label ret = generator.DefineLabel();
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
+            LocalBuilder ev = generator.DeclareLocal(typeof(SendingValidRACommandEventArgs));
             int offset = 2;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(CommandHandler), nameof(CommandHandler.TryGetCommand)))) + offset;
 
@@ -70,30 +71,35 @@ namespace Exiled.Events.Patches.Events.Player
                    new (OpCodes.Ldloc_S, 6),
 
                    // new SendingCommandEventArgs
-                   new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingCommandEventArgs))[0]),
+                   new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingValidRACommandEventArgs))[0]),
                    new (OpCodes.Dup),
                    new (OpCodes.Stloc_S, ev.LocalIndex),
 
                    // OnSendingCommad(ev)
-                   new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingCommand))),
+                   new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingValidRACommand))),
 
                    // if ev.IsAllowed cont
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-                   new (OpCodes.Callvirt, PropertyGetter(typeof(SendingCommandEventArgs), nameof(SendingCommandEventArgs.IsAllowed))),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof(SendingValidRACommandEventArgs), nameof(SendingValidRACommandEventArgs.IsAllowed))),
                    new (OpCodes.Brtrue_S, contlabel),
 
                    // if ev.Response.IsNullOrEmpty rets
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingValidRACommandEventArgs), nameof(SendingValidRACommandEventArgs.Response))),
                    new (OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
-                   new (OpCodes.Brtrue_S, ret),
+                   new (OpCodes.Brtrue_S, setptroperresp),
 
                    // response = ev.Response
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingValidRACommandEventArgs), nameof(SendingValidRACommandEventArgs.Response))),
                    new (OpCodes.Stloc_S, 6),
 
                    // goto sendreply
+                   new (OpCodes.Br, sendreply),
+
+                   // response = "The Command Execution Was Pervented Ny Plugin."
+                   new CodeInstruction(OpCodes.Ldstr, "The Command Execution Was Pervented By Plugin.").WithLabels(setptroperresp),
+                   new (OpCodes.Stloc_S, 6),
                    new (OpCodes.Br, sendreply),
                 });
             offset = -4;
@@ -106,13 +112,13 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                    // if ev.Response.IsNullOrEmpty skip
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingValidRACommandEventArgs), nameof(SendingValidRACommandEventArgs.Response))),
                    new (OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
                    new (OpCodes.Brtrue_S, skip),
 
                    // response = ev.Response
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingCommandEventArgs), nameof(SendingCommandEventArgs.Response))),
+                   new (OpCodes.Callvirt, PropertyGetter(typeof (SendingValidRACommandEventArgs), nameof(SendingValidRACommandEventArgs.Response))),
                    new (OpCodes.Stloc_S, 6),
                 });
 

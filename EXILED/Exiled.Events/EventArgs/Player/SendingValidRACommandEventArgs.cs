@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="SendingCommandEventArgs.cs" company="Exiled Team">
+// <copyright file="SendingValidRACommandEventArgs.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -17,10 +17,10 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information before a player sends a command.
     /// </summary>
-    public class SendingCommandEventArgs : IPlayerEvent, IDeniableEvent
+    public class SendingValidRACommandEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SendingCommandEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="SendingValidRACommandEventArgs" /> class.
         /// </summary>
         /// <param name="player">
         /// <inheritdoc cref="Player" />
@@ -34,7 +34,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="response">
         /// <inheritdoc cref="Response" />
         /// </param>
-        public SendingCommandEventArgs(Player player, ICommand command, string query, string response)
+        public SendingValidRACommandEventArgs(Player player, ICommand command, string query, string response)
         {
             Player = player;
             Command = command;
