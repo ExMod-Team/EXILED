@@ -49,5 +49,10 @@ namespace Exiled.Events.EventArgs.Server
         /// Gets or sets the time to restart the next round.
         /// </summary>
         public int TimeToRestart { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether Round Summary will be sent to all players.
+        /// </summary>
+        public bool ShowRoundSummary { get; set; } = true;
     }
 }
