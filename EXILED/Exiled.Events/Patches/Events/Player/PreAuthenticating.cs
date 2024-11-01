@@ -36,9 +36,11 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label ret = generator.DefineLabel();
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
-
             LocalBuilder ev = generator.DeclareLocal(typeof(PreAuthenticatingEventArgs));
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldstr && instruction.operand == (object)"{0};{1};{2};{3}");
+
+            Label cont = generator.DefineLabel();
+            newInstructions[index].labels.Add(cont);
 
             newInstructions.InsertRange(
                 index,
@@ -75,13 +77,6 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // OnPreAuthenticating(ev)
                     new (OpCodes.Call, AccessTools.Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPreAuthenticating))),
-                    new (OpCodes.Ldloc_S, ev.LocalIndex),
-
-                    // ev.isallowed
-                    new (OpCodes.Callvirt, PropertyGetter(typeof(PreAuthenticatingEventArgs), nameof(PreAuthenticatingEventArgs.IsAllowed))),
-
-                    // ret
-                    new (OpCodes.Brfalse_S, ret),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
