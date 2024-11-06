@@ -7,6 +7,7 @@
 
 namespace Exiled.CustomItems.Events
 {
+    using Exiled.API.Features;
     using Exiled.CustomItems.API.Features;
     using MEC;
 
@@ -15,13 +16,22 @@ namespace Exiled.CustomItems.Events
     /// </summary>
     internal sealed class MapHandler
     {
-        /// <inheritdoc cref="Exiled.Events.Handlers.Map.Generated"/>
-        public void OnMapGenerated()
+        /// <inheritdoc cref="Exiled.Events.Handlers.Server.WaitingForPlayers"/>
+        public void OnWaitingForPlayers()
         {
-            Timing.CallDelayed(0.5f, () => // Delay its necessary for the spawnpoints of lockers and rooms to be generated.
+            Timing.CallDelayed(2, () => // The delay is necessary because the generation of the lockers takes time, due to the way they are made in the base game.
             {
                 foreach (CustomItem customItem in CustomItem.Registered)
-                    customItem?.SpawnAll();
+                {
+                    try
+                    {
+                        customItem?.SpawnAll();
+                    }
+                    catch (System.Exception e)
+                    {
+                        Log.Error($"There was an error while spawning the custom item '{customItem?.Name}' ({customItem?.Id}) | {e.Message}");
+                    }
+                }
             });
         }
     }
