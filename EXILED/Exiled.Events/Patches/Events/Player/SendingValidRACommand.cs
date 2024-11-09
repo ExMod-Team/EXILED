@@ -98,7 +98,7 @@ namespace Exiled.Events.Patches.Events.Player
                    new (OpCodes.Br, sendreply),
 
                    // response = "The Command Execution Was Pervented Ny Plugin."
-                   new CodeInstruction(OpCodes.Ldstr, "The Command Execution Was Pervented By Plugin.").WithLabels(setptroperresp),
+                   new CodeInstruction(OpCodes.Ldstr, "The Command Execution Was Prevented By Plugin.").WithLabels(setptroperresp),
                    new (OpCodes.Stloc_S, 6),
                    new (OpCodes.Br, sendreply),
                 });
