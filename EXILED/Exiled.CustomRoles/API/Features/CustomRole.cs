@@ -840,6 +840,16 @@ namespace Exiled.CustomRoles.API.Features
                 }
             }
 
+            if (SpawnProperties.RoomSpawnPoints.Count > 0)
+            {
+                foreach ((float chance, Vector3 pos) in SpawnProperties.RoomSpawnPoints)
+                {
+                    double r = Loader.Random.NextDouble() * 100;
+                    if (r <= chance)
+                        return pos;
+                }
+            }
+
             return Vector3.zero;
         }
 
@@ -869,7 +879,7 @@ namespace Exiled.CustomRoles.API.Features
             Exiled.Events.Handlers.Player.ChangingRole -= OnInternalChangingRole;
             Exiled.Events.Handlers.Player.Spawning -= OnInternalSpawning;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= OnSpawningRagdoll;
-            Exiled.Events.Handlers.Player.Destroying += OnDestroying;
+            Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
         }
 
         /// <summary>

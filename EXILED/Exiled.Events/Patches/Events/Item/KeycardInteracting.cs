@@ -11,10 +11,10 @@ namespace Exiled.Events.Patches.Events.Item
     using System.Reflection.Emit;
 
     using API.Features;
+    using API.Features.Pickups;
     using API.Features.Pools;
 
     using Exiled.Events;
-    using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
 
     using Footprinting;
@@ -23,18 +23,19 @@ namespace Exiled.Events.Patches.Events.Item
 
     using Interactables.Interobjects.DoorUtils;
 
-    using InventorySystem.Items.Keycards;
+    using InventorySystem.Items;
 
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
+    using BaseKeycardPickup = InventorySystem.Items.Keycards.KeycardPickup;
+
     /// <summary>
-    /// Patches <see cref="KeycardPickup.ProcessCollision(Collision)"/>.
+    /// Patches <see cref="BaseKeycardPickup.ProcessCollision(Collision)"/> and adds <see cref="KeycardPickup.Permissions"/> implementation.
     /// Adds the <see cref="Handlers.Player.InteractingDoor"/> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Item), nameof(Handlers.Item.KeycardInteracting))]
-    [HarmonyPatch(typeof(KeycardPickup), nameof(KeycardPickup.ProcessCollision))]
+    [HarmonyPatch(typeof(BaseKeycardPickup), nameof(BaseKeycardPickup.ProcessCollision))]
     internal static class KeycardInteracting
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -46,7 +47,6 @@ namespace Exiled.Events.Patches.Events.Item
             LocalBuilder havePermissions = generator.DeclareLocal(typeof(bool));
 
             Label skip = generator.DefineLabel();
-            Label skip2 = generator.DefineLabel();
             Label ret = generator.DefineLabel();
 
             int offset = 1;
@@ -58,6 +58,7 @@ namespace Exiled.Events.Patches.Events.Item
                 index,
                 new[]
                 {
+                    // check and write door lock state (isUnlocked)
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
                     new CodeInstruction(OpCodes.Stloc_S, isUnlocked.LocalIndex),
@@ -81,23 +82,28 @@ namespace Exiled.Events.Patches.Events.Item
                     new CodeInstruction(OpCodes.Nop).WithLabels(skip),
                 });
 
-            newInstructions.RemoveRange(index + 6, 2);
+            // 6 new instructions
+            offset = 6;
+            index += offset;
 
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(DoorPermissions), nameof(DoorPermissions.CheckPermissions)))) + offset;
+            newInstructions.RemoveRange(index, 14);
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    new(OpCodes.Stloc_S, havePermissions.LocalIndex),
-                    new(OpCodes.Br_S, skip2),
-
-                    // save original return
-                    new CodeInstruction(OpCodes.Ret).MoveLabelsFrom(newInstructions[index + 1]),
-                    new CodeInstruction(OpCodes.Nop).WithLabels(skip2),
+                    // override permissions check, to implement KeycardPickup::Permissions
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldloc_1),
+                    new CodeInstruction(OpCodes.Call, Method(typeof(KeycardInteracting), nameof(KeycardInteracting.CheckPermissions))),
+                    new CodeInstruction(OpCodes.Stloc_S, havePermissions.LocalIndex),
                 });
 
-            newInstructions.RemoveRange(index + 4, 2);
+            // 4 new instructions
+            offset = 4;
+            index += offset;
+
+            newInstructions.RemoveRange(index, 2);
 
             offset = -5;
             index = newInstructions.FindIndex(i => i.Calls(PropertySetter(typeof(DoorVariant), nameof(DoorVariant.NetworkTargetState)))) + offset;
@@ -111,7 +117,7 @@ namespace Exiled.Events.Patches.Events.Item
 
                     // PreviousOwner.Hub
                     new CodeInstruction(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldflda, Field(typeof(KeycardPickup), nameof(KeycardPickup.PreviousOwner))),
+                    new(OpCodes.Ldflda, Field(typeof(BaseKeycardPickup), nameof(BaseKeycardPickup.PreviousOwner))),
                     new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
@@ -145,10 +151,8 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Brfalse_S, ret),
                 });
 
-            index = newInstructions.Count - 1;
-
             newInstructions.InsertRange(
-                index,
+                newInstructions.Count - 1,
                 new[]
                 {
                     // call animation sets(we don't want to call the event more than once)
@@ -162,6 +166,27 @@ namespace Exiled.Events.Patches.Events.Item
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static bool CheckPermissions(BaseKeycardPickup keycard, DoorVariant door)
+        {
+            DoorPermissions permissions = door.RequiredPermissions;
+            if (permissions.RequiredPermissions == KeycardPermissions.None)
+            {
+                return true;
+            }
+
+            if (Pickup.Get(keycard) is KeycardPickup keycardPickup)
+            {
+                if (!permissions.RequireAll)
+                {
+                    return ((KeycardPermissions)keycardPickup.Permissions & permissions.RequiredPermissions) != 0;
+                }
+
+                return ((KeycardPermissions)keycardPickup.Permissions & permissions.RequiredPermissions) == permissions.RequiredPermissions;
+            }
+
+            return InventorySystem.InventoryItemLoader.AvailableItems.TryGetValue(keycard.Info.ItemId, out ItemBase itemBase) && permissions.CheckPermissions(itemBase, null);
         }
     }
 }

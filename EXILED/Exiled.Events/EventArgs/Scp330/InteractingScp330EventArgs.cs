@@ -31,11 +31,23 @@ namespace Exiled.Events.EventArgs.Scp330
         public InteractingScp330EventArgs(Player player, int usage)
         {
             Player = player;
-            Scp330 = Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag) ? (Scp330)Item.Get(scp330Bag) : null;
-            Candy = Scp330Candies.GetRandom();
             UsageCount = usage;
             ShouldSever = usage >= 2;
+            ShouldPlaySound = true;
             IsAllowed = Player.IsHuman;
+
+            if (Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag))
+            {
+                Scp330 = (Scp330)Item.Get(scp330Bag);
+            }
+            else
+            {
+                Scp330 = (Scp330)Item.Create(ItemType.SCP330, player);
+                Scp330.RemoveAllCandy();
+                player.AddItem(Scp330);
+            }
+
+            Scp330.CandyToAdd = Scp330Candies.GetRandom();
         }
 
         /// <summary>
@@ -46,7 +58,11 @@ namespace Exiled.Events.EventArgs.Scp330
         /// <summary>
         /// Gets or sets a value indicating the type of candy that will be received from this interaction.
         /// </summary>
-        public CandyKindID Candy { get; set; }
+        public CandyKindID Candy
+        {
+            get => Scp330.CandyToAdd;
+            set => Scp330.CandyToAdd = value;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player's hands should get severed.
@@ -54,9 +70,15 @@ namespace Exiled.Events.EventArgs.Scp330
         public bool ShouldSever { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the sound should be played.
+        /// </summary>
+        /// <remarks>It won't work if <see cref="IsAllowed"/> = <see langword="false"/>.</remarks>
+        public bool ShouldPlaySound { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the player is allowed to interact with SCP-330.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
+        public bool IsAllowed { get; set; }
 
         /// <summary>
         /// Gets the <see cref="API.Features.Player" /> triggering the event.
@@ -64,11 +86,9 @@ namespace Exiled.Events.EventArgs.Scp330
         public Player Player { get; }
 
         /// <inheritdoc/>
-        /// <remarks>This value can be null.</remarks>
         public Scp330 Scp330 { get; }
 
         /// <inheritdoc/>
-        /// <remarks>This value can be null.</remarks>
         public Item Item => Scp330;
     }
 }

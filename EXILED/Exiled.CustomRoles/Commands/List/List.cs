@@ -45,7 +45,14 @@ namespace Exiled.CustomRoles.Commands.List
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = "Invalid subcommand! Available: registered.";
+            if (arguments.IsEmpty() && TryGetCommand(Registered.Instance.Command, out ICommand command))
+            {
+                command.Execute(arguments, sender, out response);
+                response += $"\nTo view all abilities registered use command: {string.Join(" ", arguments.Array)} abilities";
+                return true;
+            }
+
+            response = "Invalid subcommand! Available: registered, abilities";
             return false;
         }
     }

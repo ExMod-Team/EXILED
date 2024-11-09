@@ -16,6 +16,7 @@
       "dest": "api",
       "filter": "filterConfig.yml",
       "namespaceLayout": "nested",
+      "enumSortOrder": "declaringOrder",
     }
   ],
   "build": {
@@ -26,7 +27,7 @@
       "_enableSearch": true,
       "_lang": "en",
       "_gitContribute": {
-        "repo": "https://github.com/Exiled-Official/EXILED",
+        "repo": "https://github.com/ExMod-Team/EXILED",
         "branch": "dev"
       }
     },

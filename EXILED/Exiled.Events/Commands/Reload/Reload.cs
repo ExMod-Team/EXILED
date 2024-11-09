@@ -18,14 +18,6 @@ namespace Exiled.Events.Commands.Reload
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Reload : ParentCommand
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Reload"/> class.
-        /// </summary>
-        public Reload()
-        {
-            LoadGeneratedCommands();
-        }
-
         /// <inheritdoc/>
         public override string Command { get; } = "reload";
 
@@ -38,13 +30,6 @@ namespace Exiled.Events.Commands.Reload
         /// <inheritdoc/>
         public override void LoadGeneratedCommands()
         {
-            RegisterCommand(All.Instance);
-            RegisterCommand(Configs.Instance);
-            RegisterCommand(Translations.Instance);
-            RegisterCommand(Plugins.Instance);
-            RegisterCommand(GamePlay.Instance);
-            RegisterCommand(RemoteAdmin.Instance);
-            RegisterCommand(Permissions.Instance);
         }
 
         /// <inheritdoc/>

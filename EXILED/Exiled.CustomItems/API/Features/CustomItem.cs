@@ -619,6 +619,7 @@ namespace Exiled.CustomItems.API.Features
 
                 spawned++;
 
+#pragma warning disable CS0618 // Type or member is obsolete \\ TODO: REMOVE THIS
                 if (spawnPoint is DynamicSpawnPoint dynamicSpawnPoint && dynamicSpawnPoint.Location == SpawnLocationType.InsideLocker)
                 {
                     for (int i = 0; i < 50; i++)
@@ -660,15 +661,17 @@ namespace Exiled.CustomItems.API.Features
                         }
 
                         Vector3 position = chamber._spawnpoint.transform.position;
-                        Spawn(position, null);
-                        Log.Debug($"Spawned {Name} at {position} ({spawnPoint.Name})");
 
+                        Pickup? pickup = Spawn(position, null);
+                        if (pickup?.Base is BaseFirearmPickup firearmPickup && this is CustomWeapon customWeapon)
+                        {
+                            firearmPickup.Status = new FirearmStatus(customWeapon.ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
+                            firearmPickup.NetworkStatus = firearmPickup.Status;
+                        }
+
+                        Log.Debug($"Spawned {Name} at {position} ({spawnPoint.Name})");
                         break;
                     }
-                }
-                else if (spawnPoint is RoleSpawnPoint roleSpawnPoint)
-                {
-                    Spawn(roleSpawnPoint.Role.GetRandomSpawnLocation().Position, null);
                 }
                 else
                 {
@@ -681,6 +684,7 @@ namespace Exiled.CustomItems.API.Features
 
                     Log.Debug($"Spawned {Name} at {spawnPoint.Position} ({spawnPoint.Name})");
                 }
+#pragma warning restore CS0618 // Type or member is obsolete
             }
 
             return spawned;
@@ -694,8 +698,8 @@ namespace Exiled.CustomItems.API.Features
             if (SpawnProperties is null)
                 return;
 
-            // This will go over each spawn property type (static, dynamic and role) to try and spawn the item.
-            // It will attempt to spawn in role-based locations, and then dynamic ones, and finally static.
+            // This will go over each spawn property type (static, dynamic, role-based, room-based, and locker-based) to try and spawn the item.
+            // It will attempt to spawn in role-based locations, then dynamic ones, followed by room-based, locker-based, and finally static.
             // Math.Min is used here to ensure that our recursive Spawn() calls do not result in exceeding the spawn limit config.
             // This is the same as:
             // int spawned = 0;
@@ -703,8 +707,12 @@ namespace Exiled.CustomItems.API.Features
             // if (spawned < SpawnProperties.Limit)
             //    spawned += Spawn(SpawnProperties.DynamicSpawnPoints, SpawnProperties.Limit - spawned);
             // if (spawned < SpawnProperties.Limit)
+            //    spawned += Spawn(SpawnProperties.RoomSpawnPoints, SpawnProperties.Limit - spawned);
+            // if (spawned < SpawnProperties.Limit)
+            //    spawned += Spawn(SpawnProperties.LockerSpawnPoints, SpawnProperties.Limit - spawned);
+            // if (spawned < SpawnProperties.Limit)
             //    Spawn(SpawnProperties.StaticSpawnPoints, SpawnProperties.Limit - spawned);
-            Spawn(SpawnProperties.StaticSpawnPoints, Math.Min(0, SpawnProperties.Limit - Math.Min(0, Spawn(SpawnProperties.DynamicSpawnPoints, SpawnProperties.Limit) - Spawn(SpawnProperties.RoleSpawnPoints, SpawnProperties.Limit))));
+            Spawn(SpawnProperties.StaticSpawnPoints, Math.Min(SpawnProperties.Limit, SpawnProperties.Limit - Math.Min(Spawn(SpawnProperties.DynamicSpawnPoints, SpawnProperties.Limit), SpawnProperties.Limit - Math.Min(Spawn(SpawnProperties.RoleSpawnPoints, SpawnProperties.Limit), SpawnProperties.Limit - Math.Min(Spawn(SpawnProperties.RoomSpawnPoints, SpawnProperties.Limit), SpawnProperties.Limit - Spawn(SpawnProperties.LockerSpawnPoints, SpawnProperties.Limit))))));
         }
 
         /// <summary>
