@@ -500,7 +500,11 @@ namespace Exiled.API.Features.Doors
             else
             {
                 DoorLockType locks = DoorLockType;
-                locks |= lockType;
+                if (locks.HasFlag(lockType))
+                    locks &= ~lockType;
+                else
+                    locks |= lockType;
+
                 Base.NetworkActiveLocks = (ushort)locks;
             }
 
@@ -514,7 +518,11 @@ namespace Exiled.API.Features.Doors
         /// <param name="lockType">The <see cref="Enums.DoorLockType"/> of the lockdown.</param>
         public void Lock(float time, DoorLockType lockType)
         {
-            ChangeLock(lockType);
+            DoorLockType locks = DoorLockType;
+            locks |= lockType;
+            Base.NetworkActiveLocks = (ushort)locks;
+            DoorEvents.TriggerAction(Base, IsLocked ? DoorAction.Locked : DoorAction.Unlocked, null);
+
             Unlock(time, lockType);
         }
 
