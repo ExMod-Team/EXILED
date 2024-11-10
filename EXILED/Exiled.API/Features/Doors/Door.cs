@@ -500,11 +500,7 @@ namespace Exiled.API.Features.Doors
             else
             {
                 DoorLockType locks = DoorLockType;
-                if (locks.HasFlag(lockType))
-                    locks &= ~lockType;
-                else
-                    locks |= lockType;
-
+                locks |= lockType;
                 Base.NetworkActiveLocks = (ushort)locks;
             }
 
