@@ -26,6 +26,7 @@ namespace Exiled.Loader
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
+    using MEC;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NodeDeserializers;
 
@@ -115,15 +116,39 @@ namespace Exiled.Loader
             .Build();
 
         /// <summary>
-        /// Loads all plugins, both globals and locals.
+        /// Loads all plugins.
         /// </summary>
         public static void LoadPlugins()
         {
             File.Delete(Path.Combine(Paths.Plugins, "Exiled.Updater.dll"));
 
-            LoadPluginsFromDirectory();
-            LoadPluginsFromDirectory("global");
-            LoadPluginsFromDirectory(Server.Port.ToString());
+            foreach (string assemblyPath in Directory.GetFiles(Paths.Plugins, "*.dll"))
+            {
+                Assembly assembly = LoadAssembly(assemblyPath);
+
+                if (assembly is null)
+                    continue;
+
+                Locations[assembly] = assemblyPath;
+            }
+
+            foreach (Assembly assembly in Locations.Keys)
+            {
+                if (Locations[assembly].Contains("dependencies"))
+                    continue;
+
+                IPlugin<IConfig> plugin = CreatePlugin(assembly);
+
+                if (plugin is null)
+                    continue;
+
+                AssemblyInformationalVersionAttribute attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+
+                Log.Info($"Loaded plugin {plugin.Name}@{(plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : attribute is not null ? attribute.InformationalVersion : string.Empty)}");
+
+                Server.PluginAssemblies.Add(assembly, plugin);
+                Plugins.Add(plugin);
+            }
         }
 
         /// <summary>
@@ -459,51 +484,6 @@ namespace Exiled.Loader
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Load every plugin inside the given directory, if null it's default EXILED one (global).
-        /// </summary>
-        /// <param name="dir">The sub-directory of the plugin - if null the default EXILED one will be used.</param>
-        private static void LoadPluginsFromDirectory(string dir = null)
-        {
-            string path = Paths.Plugins;
-            if (dir != null)
-                path = Path.Combine(path, dir);
-
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
-
-            foreach (string assemblyPath in Directory.GetFiles(path, "*.dll"))
-            {
-                Assembly assembly = LoadAssembly(assemblyPath);
-
-                if (assembly == null)
-                    continue;
-
-                Locations[assembly] = assemblyPath;
-            }
-
-            foreach (Assembly assembly in Locations.Keys)
-            {
-                if (Locations[assembly].Contains("dependencies"))
-                    continue;
-
-                IPlugin<IConfig> plugin = CreatePlugin(assembly);
-
-                if (plugin == null)
-                    continue;
-
-                if (Plugins.Any(p => p.Name == plugin.Name))
-                    continue;
-
-                AssemblyInformationalVersionAttribute attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-
-                Log.Info($"Loaded plugin {plugin.Name}@{(plugin.Version != null ? $"{plugin.Version}" : attribute != null ? attribute.InformationalVersion : string.Empty)}");
-
-                Server.PluginAssemblies.Add(assembly, plugin);
-                Plugins.Add(plugin);
-            }
         }
 
         /// <summary>
