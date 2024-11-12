@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
 
-    <id>EXILEDOFFICIAL</id>
+    <id>ExMod.Exiled</id>
     <title>ExMod-Team</title>
     <version>$version$</version>
     <authors>ExMod-Team</authors>
@@ -12,7 +12,7 @@
     <repository type="Git" url="https://github.com/ExMod-Team/EXILED" />
     <licenseUrl>https://github.com/ExMod-Team/EXILED/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/ExMod-Team/EXILED</projectUrl>
-    <icon>images\Exiled_Icon.jpg</icon>
+    <icon>images\Exiled_Icon.png</icon>
     <description>Plugin framework for SCP: Secret Laboratory.</description>
 
     <dependencies>
@@ -51,7 +51,7 @@
     <!-- Project files -->
 
     <!-- Icon -->
-    <file src="..\assets\Exiled_Icon.jpg" target="images" />
+    <file src="..\assets\Exiled_Icon.png" target="images" />
   </files>
 
 </package>

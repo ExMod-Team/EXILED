@@ -153,10 +153,16 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(
                 newInstructions.Count - 1,
-                new[]
+                new CodeInstruction[]
                 {
+                    // if (this.isLocalPlayer)
+                    //     return;
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.isLocalPlayer))),
+                    new(OpCodes.Brtrue_S, returnLabel),
+
                     // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // OldRole
                     new(OpCodes.Ldloc_0),
