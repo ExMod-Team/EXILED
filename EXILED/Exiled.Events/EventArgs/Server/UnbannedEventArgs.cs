@@ -7,10 +7,12 @@
 
 namespace Exiled.Events.EventArgs.Server
 {
+    using Exiled.Events.EventArgs.Interfaces;
+
     /// <summary>
     /// Contains all information after a player gets unbanned.
     /// </summary>
-    public class UnbannedEventArgs
+    public class UnbannedEventArgs : IExiledEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UnbannedEventArgs"/> class.

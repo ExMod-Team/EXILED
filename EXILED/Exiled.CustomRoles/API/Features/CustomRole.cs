@@ -879,7 +879,7 @@ namespace Exiled.CustomRoles.API.Features
             Exiled.Events.Handlers.Player.ChangingRole -= OnInternalChangingRole;
             Exiled.Events.Handlers.Player.Spawning -= OnInternalSpawning;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= OnSpawningRagdoll;
-            Exiled.Events.Handlers.Player.Destroying += OnDestroying;
+            Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
         }
 
         /// <summary>
