@@ -45,7 +45,7 @@ namespace Exiled.API.Features.Pools
         /// <returns>The value of the <see cref="StringBuilder"/>.</returns>
         public string ToStringReturn(StringBuilder obj)
         {
-            string s = obj.ToString();
+            var s = obj.ToString();
 
             Return(obj);
 

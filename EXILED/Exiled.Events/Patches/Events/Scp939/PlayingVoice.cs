@@ -33,15 +33,15 @@ namespace Exiled.Events.Patches.Events.Scp939
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder refHub = generator.DeclareLocal(typeof(ReferenceHub));
+            var refHub = generator.DeclareLocal(typeof(ReferenceHub));
 
-            Label ret = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
             // base-game code compiles inside sealed hidden class for delegate, so we create own local var
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(global::Utils.Networking.ReferenceHubReaderWriter), nameof(global::Utils.Networking.ReferenceHubReaderWriter.ReadReferenceHub)))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(global::Utils.Networking.ReferenceHubReaderWriter), nameof(global::Utils.Networking.ReferenceHubReaderWriter.ReadReferenceHub)))) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Scp939
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

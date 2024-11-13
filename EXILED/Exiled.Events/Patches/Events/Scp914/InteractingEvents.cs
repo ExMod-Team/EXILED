@@ -33,13 +33,13 @@ namespace Exiled.Events.Patches.Events.Scp914
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingKnobSettingEventArgs));
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var ev = generator.DeclareLocal(typeof(ChangingKnobSettingEventArgs));
 
-            Label ret = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -100,7 +100,7 @@ namespace Exiled.Events.Patches.Events.Scp914
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

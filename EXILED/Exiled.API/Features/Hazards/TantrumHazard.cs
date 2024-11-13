@@ -88,7 +88,7 @@ namespace Exiled.API.Features.Hazards
         /// <returns>The <see cref="TantrumHazard"/> instance.</returns>
         public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true)
         {
-            TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
+            var tantrum = Object.Instantiate(TantrumPrefab);
 
             if (!isActive)
                 tantrum.SynchronizedPosition = new(position);

@@ -158,7 +158,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new DisruptorDamageHandler(Attacker, damage);
                     break;
                 case DamageType.Scp096:
-                    Scp096Role curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
+                    var curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
 
                     if (curr096 != null)
                         curr096._lastOwner = attacker.ReferenceHub;
@@ -166,7 +166,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new Scp096DamageHandler(curr096, damage, Scp096DamageHandler.AttackType.SlapRight);
                     break;
                 case DamageType.Scp939:
-                    Scp939Role curr939 = attacker.ReferenceHub.roleManager.CurrentRole as Scp939Role ?? new Scp939Role();
+                    var curr939 = attacker.ReferenceHub.roleManager.CurrentRole as Scp939Role ?? new Scp939Role();
 
                     if (curr939 != null)
                         curr939._lastOwner = attacker.ReferenceHub;
@@ -230,7 +230,7 @@ namespace Exiled.API.Features.DamageHandlers
         /// <returns> Handles processing damage outcome. </returns>
         public override HandlerOutput ApplyDamage(ReferenceHub ply)
         {
-            HandlerOutput output = base.ApplyDamage(ply);
+            var output = base.ApplyDamage(ply);
             if (output is HandlerOutput.Death)
             {
                 if (customCassieAnnouncement?.Announcement != null)

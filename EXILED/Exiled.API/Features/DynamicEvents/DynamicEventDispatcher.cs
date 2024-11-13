@@ -77,7 +77,7 @@ namespace Exiled.API.Features.DynamicEvents
         /// <returns>The left-hand <see cref="DynamicEventDispatcher"/> operator.</returns>
         public static DynamicEventDispatcher operator +(DynamicEventDispatcher left, DynamicEventDispatcher right)
         {
-            foreach ((KeyValuePair<object, List<Action>> kvp, Action action) in right.BoundDelegates
+            foreach ((var kvp, var action) in right.BoundDelegates
                 .SelectMany(kvp => kvp.Value.Select(action => (kvp, action))))
                 left.Bind(kvp.Key, action);
 
@@ -116,7 +116,7 @@ namespace Exiled.API.Features.DynamicEvents
         /// <returns>The left-hand <see cref="DynamicEventDispatcher"/> operator.</returns>
         public static DynamicEventDispatcher operator -(DynamicEventDispatcher left, DynamicEventDispatcher right)
         {
-            foreach ((KeyValuePair<object, List<Action>> kvp, Action action) in right.BoundDelegates
+            foreach ((var kvp, var action) in right.BoundDelegates
                 .SelectMany(kvp => kvp.Value.Select(action => (kvp, action))))
                 left.Unbind(kvp.Key);
 
@@ -148,7 +148,7 @@ namespace Exiled.API.Features.DynamicEvents
         /// <param name="obj">The listener instance.</param>
         public virtual void Invoke(object obj)
         {
-            if (boundDelegates.TryGetValue(obj, out List<Action> delegates))
+            if (boundDelegates.TryGetValue(obj, out var delegates))
                 delegates.ForEach(del => del());
         }
 
@@ -157,7 +157,7 @@ namespace Exiled.API.Features.DynamicEvents
         /// </summary>
         public virtual void InvokeAll()
         {
-            foreach (KeyValuePair<object, List<Action>> kvp in boundDelegates)
+            foreach (var kvp in boundDelegates)
                 kvp.Value.ForEach(del => del());
         }
 

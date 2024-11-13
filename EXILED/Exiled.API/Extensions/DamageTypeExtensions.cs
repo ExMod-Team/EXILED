@@ -199,7 +199,7 @@ namespace Exiled.API.Extensions
 
                 case ScpDamageHandler scpDamageHandler:
                     {
-                        DeathTranslation translation = DeathTranslations.TranslationsById[scpDamageHandler._translationId];
+                        var translation = DeathTranslations.TranslationsById[scpDamageHandler._translationId];
                         if (translation.Id == DeathTranslations.PocketDecay.Id)
                             return DamageType.Scp106;
 
@@ -210,7 +210,7 @@ namespace Exiled.API.Extensions
 
                 case UniversalDamageHandler universal:
                     {
-                        DeathTranslation translation = DeathTranslations.TranslationsById[universal.TranslationId];
+                        var translation = DeathTranslations.TranslationsById[universal.TranslationId];
 
                         if (TranslationIdConversion.ContainsKey(translation.Id))
                             return TranslationIdConversion[translation.Id];

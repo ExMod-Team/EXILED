@@ -24,15 +24,15 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            foreach (CodeInstruction instruction in newInstructions)
+            foreach (var instruction in newInstructions)
             {
                 if (instruction.operand == (object)ushort.MaxValue)
                     instruction.operand = ushort.MinValue;
             }
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

@@ -59,11 +59,11 @@ namespace Exiled.Events.Features
         {
             try
             {
-                List<Type> types = ListPool<Type>.Pool.Get(UnpatchedTypes.Where(x => x.GetCustomAttributes<EventPatchAttribute>().Any((epa) => epa.Event == @event)));
+                var types = ListPool<Type>.Pool.Get(UnpatchedTypes.Where(x => x.GetCustomAttributes<EventPatchAttribute>().Any((epa) => epa.Event == @event)));
 
-                foreach (Type type in types)
+                foreach (var type in types)
                 {
-                    List<MethodInfo> methodInfos = new PatchClassProcessor(Harmony, type).Patch();
+                    var methodInfos = new PatchClassProcessor(Harmony, type).Patch();
                     if (DisabledPatchesHashSet.Any(x => methodInfos.Contains(x)))
                         ReloadDisabledPatches();
                     UnpatchedTypes.Remove(type);
@@ -92,10 +92,10 @@ namespace Exiled.Events.Features
                 bool lastDebugStatus = Harmony.DEBUG;
                 Harmony.DEBUG = true;
 #endif
-                List<Type> toPatch = ListPool<Type>.Pool.Get(includeEvents ? UnpatchedTypes : UnpatchedTypes.Where((type) => !type.GetCustomAttributes<EventPatchAttribute>().Any()));
-                for (int i = 0; i < toPatch.Count; i++)
+                var toPatch = ListPool<Type>.Pool.Get(includeEvents ? UnpatchedTypes : UnpatchedTypes.Where((type) => !type.GetCustomAttributes<EventPatchAttribute>().Any()));
+                for (var i = 0; i < toPatch.Count; i++)
                 {
-                    Type patch = toPatch[i];
+                    var patch = toPatch[i];
                     try
                     {
                         Harmony.CreateClassProcessor(patch).Patch();
@@ -128,7 +128,7 @@ namespace Exiled.Events.Features
         /// </summary>
         public void ReloadDisabledPatches()
         {
-            foreach (MethodBase method in DisabledPatchesHashSet)
+            foreach (var method in DisabledPatchesHashSet)
             {
                 Harmony.Unpatch(method, HarmonyPatchType.All, Harmony.Id);
 

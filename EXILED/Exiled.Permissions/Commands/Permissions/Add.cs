@@ -50,7 +50,7 @@ namespace Exiled.Permissions.Commands.Permissions
                 return false;
             }
 
-            Extensions.Permissions.Groups.TryGetValue(arguments.At(1), out Features.Group group);
+            Extensions.Permissions.Groups.TryGetValue(arguments.At(1), out var group);
 
             if (!group.Permissions.Contains(arguments.At(0)))
             {

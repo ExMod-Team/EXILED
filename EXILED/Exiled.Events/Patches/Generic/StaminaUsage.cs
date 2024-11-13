@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(Inventory __instance, ref float __result)
         {
-            if (Player.TryGet(__instance._hub, out Player player))
+            if (Player.TryGet(__instance._hub, out var player))
             {
                 if (player.Role.Is(out FpcRole fpc))
                     __result *= fpc.IsUsingStamina ? fpc.StaminaUsageMultiplier : 0;

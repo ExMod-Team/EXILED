@@ -28,11 +28,11 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            Label continueLabel = generator.DefineLabel();
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var continueLabel = generator.DefineLabel();
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Brtrue) + offset;
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Brtrue) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -62,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Starg_S, 1),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

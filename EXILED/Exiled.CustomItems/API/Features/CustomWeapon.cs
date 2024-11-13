@@ -79,7 +79,7 @@ namespace Exiled.CustomItems.API.Features
             firearm.Ammo = ClipSize;
             firearm.MaxAmmo = ClipSize;
 
-            Pickup? pickup = firearm.CreatePickup(position);
+            var pickup = firearm.CreatePickup(position);
 
             if (pickup is null)
             {
@@ -104,10 +104,10 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
-                byte ammo = firearm.Ammo;
+                var ammo = firearm.Ammo;
                 firearm.MaxAmmo = ClipSize;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
-                Pickup? pickup = firearm.CreatePickup(position);
+                var pickup = firearm.CreatePickup(position);
                 pickup.Scale = Scale;
 
                 if (previousOwner is not null)
@@ -123,7 +123,7 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         public override void Give(Player player, bool displayMessage = true)
         {
-            Item item = player.AddItem(Type);
+            var item = player.AddItem(Type);
 
             if (item is Firearm firearm)
             {
@@ -214,14 +214,14 @@ namespace Exiled.CustomItems.API.Features
             Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Continuing with internal reload..");
             ev.IsAllowed = false;
 
-            byte remainingClip = ((Firearm)ev.Player.CurrentItem).Ammo;
+            var remainingClip = ((Firearm)ev.Player.CurrentItem).Ammo;
 
             if (remainingClip >= ClipSize)
                 return;
 
             Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] is reloading a {Name} ({Id}) [{Type} ({remainingClip}/{ClipSize})]!");
 
-            AmmoType ammoType = ev.Firearm.AmmoType;
+            var ammoType = ev.Firearm.AmmoType;
 
             if (!ev.Player.Ammo.ContainsKey(ammoType.GetItemType()))
             {
@@ -231,7 +231,7 @@ namespace Exiled.CustomItems.API.Features
 
             ev.Player.Connection.Send(new RequestMessage(ev.Firearm.Serial, RequestType.Reload));
 
-            byte amountToReload = (byte)Math.Min(ClipSize - remainingClip, ev.Player.Ammo[ammoType.GetItemType()]);
+            var amountToReload = (byte)Math.Min(ClipSize - remainingClip, ev.Player.Ammo[ammoType.GetItemType()]);
 
             if (amountToReload <= 0)
                 return;

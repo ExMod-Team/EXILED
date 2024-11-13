@@ -33,9 +33,9 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            CodeInstruction[] recontainedEvent = new CodeInstruction[]
+            var recontainedEvent = new CodeInstruction[]
                 {
                     // Handlers.Scp079.OnRecontained(new RecontainedEventArgs(Player.Get(referenceHub2), this));
                     new(OpCodes.Ldloc, 5),
@@ -45,8 +45,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnRecontained))),
                 };
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(PlayerStats), nameof(PlayerStats.DealDamage))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(PlayerStats), nameof(PlayerStats.DealDamage))) + offset;
 
             newInstructions.InsertRange(index, recontainedEvent);
 
@@ -54,7 +54,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(index, recontainedEvent);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

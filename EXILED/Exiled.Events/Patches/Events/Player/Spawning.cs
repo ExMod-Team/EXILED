@@ -37,15 +37,15 @@ namespace Exiled.Events.Patches.Events.Player
 
         private static bool Prefix(ReferenceHub hub, PlayerRoleBase prevRole, PlayerRoleBase newRole)
         {
-            if (newRole.ServerSpawnReason == RoleChangeReason.Destroyed || !Player.TryGet(hub, out Player player))
+            if (newRole.ServerSpawnReason == RoleChangeReason.Destroyed || !Player.TryGet(hub, out var player))
                 return true;
 
-            Vector3 oldPosition = hub.transform.position;
-            float oldRotation = (prevRole as IFpcRole)?.FpcModule.MouseLook.CurrentVertical ?? 0;
+            var oldPosition = hub.transform.position;
+            var oldRotation = (prevRole as IFpcRole)?.FpcModule.MouseLook.CurrentVertical ?? 0;
 
             if (newRole is IFpcRole fpcRole)
             {
-                if (newRole.ServerSpawnFlags.HasFlag(RoleSpawnFlags.UseSpawnpoint) && fpcRole.SpawnpointHandler != null && fpcRole.SpawnpointHandler.TryGetSpawnpoint(out Vector3 position, out float horizontalRot))
+                if (newRole.ServerSpawnFlags.HasFlag(RoleSpawnFlags.UseSpawnpoint) && fpcRole.SpawnpointHandler != null && fpcRole.SpawnpointHandler.TryGetSpawnpoint(out var position, out var horizontalRot))
                 {
                     oldPosition = position;
                     oldRotation = horizontalRot;

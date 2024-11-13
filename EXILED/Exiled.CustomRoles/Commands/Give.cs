@@ -60,7 +60,7 @@ namespace Exiled.CustomRoles.Commands
                     return false;
                 }
 
-                if (!CustomRole.TryGet(arguments.At(0), out CustomRole? role) || role is null)
+                if (!CustomRole.TryGet(arguments.At(0), out var role) || role is null)
                 {
                     response = $"Custom role {arguments.At(0)} not found!";
                     return false;
@@ -70,7 +70,7 @@ namespace Exiled.CustomRoles.Commands
                 {
                     if (sender is PlayerCommandSender playerCommandSender)
                     {
-                        Player player = Player.Get(playerCommandSender);
+                        var player = Player.Get(playerCommandSender);
 
                         role.AddRole(player);
                         response = $"{role.Name} given to {player.Nickname}.";
@@ -81,15 +81,15 @@ namespace Exiled.CustomRoles.Commands
                     return false;
                 }
 
-                string identifier = string.Join(" ", arguments.Skip(1));
+                var identifier = string.Join(" ", arguments.Skip(1));
 
                 switch (identifier)
                 {
                     case "*":
                     case "all":
-                        List<Player> players = ListPool<Player>.Pool.Get(Player.List);
+                        var players = ListPool<Player>.Pool.Get(Player.List);
 
-                        foreach (Player player in players)
+                        foreach (var player in players)
                             role.AddRole(player);
 
                         response = $"Custom role {role.Name} given to all players.";

@@ -54,13 +54,13 @@ namespace Exiled.CustomRoles.Commands
                 return false;
             }
 
-            if ((!(uint.TryParse(arguments.At(0), out uint id) && CustomRole.TryGet(id, out CustomRole? role)) && !CustomRole.TryGet(arguments.At(0), out role)) || role is null)
+            if ((!(uint.TryParse(arguments.At(0), out var id) && CustomRole.TryGet(id, out var role)) && !CustomRole.TryGet(arguments.At(0), out role)) || role is null)
             {
                 response = $"{arguments.At(0)} is not a valid custom role.";
                 return false;
             }
 
-            StringBuilder builder = StringBuilderPool.Pool.Get().AppendLine();
+            var builder = StringBuilderPool.Pool.Get().AppendLine();
 
             builder.Append("<color=#E6AC00>-</color> <color=#00D639>").Append(role.Name)
                 .Append("</color> <color=#05C4E8>(").Append(role.Id).Append(")</color>")

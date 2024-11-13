@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Generic
 #pragma warning disable SA1313
         private static void Postfix(ItemType ammoType, ReferenceHub player, ref ushort __result)
         {
-            if (!Player.TryGet(player, out Player ply) || !ply.CustomAmmoLimits.TryGetValue(ammoType.GetAmmoType(), out ushort limit))
+            if (!Player.TryGet(player, out var ply) || !ply.CustomAmmoLimits.TryGetValue(ammoType.GetAmmoType(), out var limit))
                 return;
 
             __result = (ushort)Mathf.Clamp(limit + __result - InventoryLimits.GetAmmoLimit(null, ammoType), ushort.MinValue, ushort.MaxValue);

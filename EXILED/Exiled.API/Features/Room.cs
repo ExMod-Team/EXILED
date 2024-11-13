@@ -148,7 +148,7 @@ namespace Exiled.API.Features
             get => RoomLightController == null ? Color.clear : RoomLightController.NetworkOverrideColor;
             set
             {
-                foreach (RoomLightController light in RoomLightControllers)
+                foreach (var light in RoomLightControllers)
                 {
                     light.NetworkOverrideColor = value;
                 }
@@ -163,7 +163,7 @@ namespace Exiled.API.Features
             get => RoomLightController != null && !RoomLightController.NetworkLightsEnabled;
             set
             {
-                foreach (RoomLightController light in RoomLightControllers)
+                foreach (var light in RoomLightControllers)
                 {
                     light.NetworkLightsEnabled = !value;
                 }
@@ -223,7 +223,7 @@ namespace Exiled.API.Features
         /// <param name="roomIdentifier">The <see cref="Identifier"/> to search with.</param>
         /// <returns>The <see cref="Room"/> of the given identified, if any. Can be <see langword="null"/>.</returns>
         public static Room Get(RoomIdentifier roomIdentifier) => roomIdentifier == null ? null :
-            RoomIdentifierToRoom.TryGetValue(roomIdentifier, out Room room) ? room : null;
+            RoomIdentifierToRoom.TryGetValue(roomIdentifier, out var room) ? room : null;
 
         /// <summary>
         /// Gets a <see cref="Room"/> from a given <see cref="RoomIdentifier"/>.
@@ -283,7 +283,7 @@ namespace Exiled.API.Features
             else
             {
                 // Check for SCP-079 if it's a player
-                Player ply = Player.Get(objectInRoom);
+                var ply = Player.Get(objectInRoom);
 
                 // Raycasting doesn't make sense,
                 // SCP-079 position is constant,
@@ -325,7 +325,7 @@ namespace Exiled.API.Features
         {
             if (duration == -1)
             {
-                foreach (RoomLightController light in RoomLightControllers)
+                foreach (var light in RoomLightControllers)
                 {
                     light.SetLights(false);
                 }
@@ -333,7 +333,7 @@ namespace Exiled.API.Features
                 return;
             }
 
-            foreach (RoomLightController light in RoomLightControllers)
+            foreach (var light in RoomLightControllers)
             {
                 light.ServerFlickerLights(duration);
             }
@@ -348,7 +348,7 @@ namespace Exiled.API.Features
         /// <seealso cref="Door.LockAll(float, IEnumerable{ZoneType}, DoorLockType)"/>
         public void LockDown(float duration, DoorLockType lockType = DoorLockType.Regular079)
         {
-            foreach (Door door in Doors)
+            foreach (var door in Doors)
             {
                 door.ChangeLock(lockType);
                 door.IsOpen = false;
@@ -382,7 +382,7 @@ namespace Exiled.API.Features
         /// <seealso cref="Door.UnlockAll(Func{Door, bool})"/>
         public void UnlockAll()
         {
-            foreach (Door door in Doors)
+            foreach (var door in Doors)
                 door.Unlock();
         }
 
@@ -475,7 +475,7 @@ namespace Exiled.API.Features
 
         private static ZoneType FindZone(GameObject gameObject)
         {
-            Transform transform = gameObject.transform;
+            var transform = gameObject.transform;
 
             return transform.parent?.name.RemoveBracketsOnEndOfName() switch
             {

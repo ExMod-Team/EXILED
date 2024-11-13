@@ -195,7 +195,7 @@ namespace Exiled.CustomItems.API.Features
             if (string.IsNullOrEmpty(name))
                 return false;
 
-            customItem = uint.TryParse(name, out uint id) ? Get(id) : Get(name);
+            customItem = uint.TryParse(name, out var id) ? Get(id) : Get(name);
 
             return customItem is not null;
         }
@@ -284,7 +284,7 @@ namespace Exiled.CustomItems.API.Features
         {
             pickup = default;
 
-            if (!TryGet(id, out CustomItem? item))
+            if (!TryGet(id, out var item))
                 return false;
 
             pickup = item?.Spawn(position);
@@ -303,7 +303,7 @@ namespace Exiled.CustomItems.API.Features
         {
             pickup = default;
 
-            if (!TryGet(name, out CustomItem? item))
+            if (!TryGet(name, out var item))
                 return false;
 
             pickup = item?.Spawn(position, null);
@@ -320,7 +320,7 @@ namespace Exiled.CustomItems.API.Features
         /// <returns>Returns a value indicating if the player was given the <see cref="CustomItem"/> or not.</returns>
         public static bool TryGive(Player player, string name, bool displayMessage = true)
         {
-            if (!TryGet(name, out CustomItem? item))
+            if (!TryGet(name, out var item))
                 return false;
 
             item?.Give(player, displayMessage);
@@ -337,7 +337,7 @@ namespace Exiled.CustomItems.API.Features
         /// <returns>Returns a value indicating if the player was given the <see cref="CustomItem"/> or not.</returns>
         public static bool TryGive(Player player, uint id, bool displayMessage = true)
         {
-            if (!TryGet(id, out CustomItem? item))
+            if (!TryGet(id, out var item))
                 return false;
 
             item?.Give(player, displayMessage);
@@ -354,7 +354,7 @@ namespace Exiled.CustomItems.API.Features
         /// <returns>Returns a value indicating if the player was given the <see cref="CustomItem"/> or not.</returns>
         public static bool TryGive(Player player, Type t, bool displayMessage = true)
         {
-            if (!TryGet(t, out CustomItem? item))
+            if (!TryGet(t, out var item))
                 return false;
 
             item?.Give(player, displayMessage);
@@ -371,34 +371,34 @@ namespace Exiled.CustomItems.API.Features
         public static IEnumerable<CustomItem> RegisterItems(bool skipReflection = false, object? overrideClass = null)
         {
             List<CustomItem> items = new();
-            Assembly assembly = Assembly.GetCallingAssembly();
-            foreach (Type type in assembly.GetTypes())
+            var assembly = Assembly.GetCallingAssembly();
+            foreach (var type in assembly.GetTypes())
             {
                 if ((type.BaseType != typeof(CustomItem) && !type.IsSubclassOf(typeof(CustomItem))) || type.GetCustomAttribute(typeof(CustomItemAttribute)) is null)
                     continue;
 
-                foreach (Attribute attribute in type.GetCustomAttributes(typeof(CustomItemAttribute), true).Cast<Attribute>())
+                foreach (var attribute in type.GetCustomAttributes(typeof(CustomItemAttribute), true).Cast<Attribute>())
                 {
                     CustomItem? customItem = null;
-                    bool flag = false;
+                    var flag = false;
 
                     if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                     {
-                        IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
-                        foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
+                        var plugin = Server.PluginAssemblies[assembly];
+                        foreach (var property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                         {
                             if (property.PropertyType != type)
                             {
                                 if (property.GetValue(overrideClass ?? plugin.Config) is IEnumerable enumerable)
                                 {
-                                    List<CustomItem> list = ListPool<CustomItem>.Pool.Get();
-                                    foreach (object item in enumerable)
+                                    var list = ListPool<CustomItem>.Pool.Get();
+                                    foreach (var item in enumerable)
                                     {
                                         if (item is CustomItem ci)
                                             list.Add(ci);
                                     }
 
-                                    foreach (CustomItem item in list)
+                                    foreach (var item in list)
                                     {
                                         if (item.GetType() != type)
                                             break;
@@ -450,22 +450,22 @@ namespace Exiled.CustomItems.API.Features
         public static IEnumerable<CustomItem> RegisterItems(IEnumerable<Type> targetTypes, bool isIgnored = false, bool skipReflection = false, object? overrideClass = null)
         {
             List<CustomItem> items = new();
-            Assembly assembly = Assembly.GetCallingAssembly();
-            foreach (Type type in assembly.GetTypes())
+            var assembly = Assembly.GetCallingAssembly();
+            foreach (var type in assembly.GetTypes())
             {
                 if ((type.BaseType != typeof(CustomItem) && !type.IsSubclassOf(typeof(CustomItem))) || type.GetCustomAttribute(typeof(CustomItemAttribute)) is null ||
                     (isIgnored && targetTypes.Contains(type)) || (!isIgnored && !targetTypes.Contains(type)))
                     continue;
 
-                foreach (Attribute attribute in type.GetCustomAttributes(typeof(CustomItemAttribute), true).Cast<Attribute>())
+                foreach (var attribute in type.GetCustomAttributes(typeof(CustomItemAttribute), true).Cast<Attribute>())
                 {
                     CustomItem? customItem = null;
 
                     if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                     {
-                        IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
+                        var plugin = Server.PluginAssemblies[assembly];
 
-                        foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
+                        foreach (var property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                         {
                             if (property.PropertyType != type)
                                 continue;
@@ -496,7 +496,7 @@ namespace Exiled.CustomItems.API.Features
         {
             List<CustomItem> unregisteredItems = new();
 
-            foreach (CustomItem customItem in Registered)
+            foreach (var customItem in Registered)
             {
                 customItem.TryUnregister();
                 unregisteredItems.Add(customItem);
@@ -515,7 +515,7 @@ namespace Exiled.CustomItems.API.Features
         {
             List<CustomItem> unregisteredItems = new();
 
-            foreach (CustomItem customItem in Registered)
+            foreach (var customItem in Registered)
             {
                 if ((targetTypes.Contains(customItem.GetType()) && isIgnored) || (!targetTypes.Contains(customItem.GetType()) && !isIgnored))
                     continue;
@@ -588,7 +588,7 @@ namespace Exiled.CustomItems.API.Features
         /// <returns>The <see cref="Pickup"/> of the spawned <see cref="CustomItem"/>.</returns>
         public virtual Pickup? Spawn(Vector3 position, Item item, Player? previousOwner = null)
         {
-            Pickup? pickup = item.CreatePickup(position);
+            var pickup = item.CreatePickup(position);
             pickup.Scale = Scale;
             pickup.Weight = Weight;
 
@@ -610,7 +610,7 @@ namespace Exiled.CustomItems.API.Features
         {
             uint spawned = 0;
 
-            foreach (SpawnPoint spawnPoint in spawnPoints)
+            foreach (var spawnPoint in spawnPoints)
             {
                 Log.Debug($"Attempting to spawn {Name} at {spawnPoint.Position}.");
 
@@ -622,7 +622,7 @@ namespace Exiled.CustomItems.API.Features
 #pragma warning disable CS0618 // Type or member is obsolete \\ TODO: REMOVE THIS
                 if (spawnPoint is DynamicSpawnPoint dynamicSpawnPoint && dynamicSpawnPoint.Location == SpawnLocationType.InsideLocker)
                 {
-                    for (int i = 0; i < 50; i++)
+                    for (var i = 0; i < 50; i++)
                     {
                         if (Map.Lockers is null)
                         {
@@ -630,7 +630,7 @@ namespace Exiled.CustomItems.API.Features
                             continue;
                         }
 
-                        Locker locker =
+                        var locker =
                             Map.Lockers[
                                 Loader.Random.Next(Map.Lockers.Count)];
 
@@ -652,7 +652,7 @@ namespace Exiled.CustomItems.API.Features
                             continue;
                         }
 
-                        LockerChamber chamber = locker.Chambers[Loader.Random.Next(Mathf.Max(0, locker.Chambers.Length - 1))];
+                        var chamber = locker.Chambers[Loader.Random.Next(Mathf.Max(0, locker.Chambers.Length - 1))];
 
                         if (chamber is null)
                         {
@@ -660,9 +660,9 @@ namespace Exiled.CustomItems.API.Features
                             continue;
                         }
 
-                        Vector3 position = chamber._spawnpoint.transform.position;
+                        var position = chamber._spawnpoint.transform.position;
 
-                        Pickup? pickup = Spawn(position, null);
+                        var pickup = Spawn(position, null);
                         if (pickup?.Base is BaseFirearmPickup firearmPickup && this is CustomWeapon customWeapon)
                         {
                             firearmPickup.Status = new FirearmStatus(customWeapon.ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
@@ -675,7 +675,7 @@ namespace Exiled.CustomItems.API.Features
                 }
                 else
                 {
-                    Pickup? pickup = Spawn(spawnPoint.Position, null);
+                    var pickup = Spawn(spawnPoint.Position, null);
                     if (pickup?.Base is BaseFirearmPickup firearmPickup && this is CustomWeapon customWeapon)
                     {
                         firearmPickup.Status = new FirearmStatus(customWeapon.ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
@@ -1005,7 +1005,7 @@ namespace Exiled.CustomItems.API.Features
             if (ev.Reason == SpawnReason.Escaped)
                 return;
 
-            foreach (Item item in ev.Player.Items.ToList())
+            foreach (var item in ev.Player.Items.ToList())
             {
                 if (!Check(item))
                     continue;
@@ -1024,7 +1024,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalOwnerDying(DyingEventArgs ev)
         {
-            foreach (Item item in ev.Player.Items.ToList())
+            foreach (var item in ev.Player.Items.ToList())
             {
                 if (!Check(item))
                     continue;
@@ -1048,7 +1048,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalOwnerEscaping(EscapingEventArgs ev)
         {
-            foreach (Item item in ev.Player.Items.ToList())
+            foreach (var item in ev.Player.Items.ToList())
             {
                 if (!Check(item))
                     continue;
@@ -1072,7 +1072,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalOwnerHandcuffing(HandcuffingEventArgs ev)
         {
-            foreach (Item item in ev.Target.Items.ToList())
+            foreach (var item in ev.Target.Items.ToList())
             {
                 if (!Check(item))
                     continue;
@@ -1127,7 +1127,7 @@ namespace Exiled.CustomItems.API.Features
 
             if (ShouldMessageOnGban)
             {
-                foreach (Player player in Player.Get(RoleTypeId.Spectator))
+                foreach (var player in Player.Get(RoleTypeId.Spectator))
                     Timing.CallDelayed(0.5f, () => player.SendFakeSyncVar(ev.Player.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_displayName), $"{ev.Player.Nickname} (CustomItem: {Name})"));
             }
 

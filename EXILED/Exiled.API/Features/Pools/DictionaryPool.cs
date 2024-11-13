@@ -53,7 +53,7 @@ namespace Exiled.API.Features.Pools
             // if (!pool.TryDequeue(out Dictionary<TKey, TValue> dict))
             Dictionary<TKey, TValue> dict = new();
 
-            foreach (KeyValuePair<TKey, TValue> pair in pairs)
+            foreach (var pair in pairs)
                 dict.Add(pair.Key, pair.Value);
 
             return dict;
@@ -76,7 +76,7 @@ namespace Exiled.API.Features.Pools
         /// <returns>The contents of the returned dictionary as an array.</returns>
         public KeyValuePair<TKey, TValue>[] ToArrayReturn(Dictionary<TKey, TValue> obj)
         {
-            KeyValuePair<TKey, TValue>[] array = obj.ToArray();
+            var array = obj.ToArray();
 
             Return(obj);
 

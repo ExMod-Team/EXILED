@@ -32,10 +32,10 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
 
-            LocalBuilder cameraBase = generator.DeclareLocal(typeof(Scp079Camera));
-            Label ret = generator.DefineLabel();
+            var cameraBase = generator.DeclareLocal(typeof(Scp079Camera));
+            var ret = generator.DefineLabel();
 
             // if (this is Scp079Camera camera)
             //     Room.RoomIdentifierToRoom[Room].CamerasValue.Add(new Camera(camera));
@@ -60,7 +60,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -75,10 +75,10 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
 
-            LocalBuilder cameraBase = generator.DeclareLocal(typeof(Scp079Camera));
-            Label ret = generator.DefineLabel();
+            var cameraBase = generator.DeclareLocal(typeof(Scp079Camera));
+            var ret = generator.DefineLabel();
 
             // if (__instance is Scp079Camera cameraBase)
             //     Camera.Camera079ToCamera.Remove(cameraBase);
@@ -99,7 +99,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

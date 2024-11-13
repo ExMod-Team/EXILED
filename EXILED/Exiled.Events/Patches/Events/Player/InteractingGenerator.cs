@@ -40,22 +40,22 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
-            LocalBuilder isAllowedUnlocking = generator.DeclareLocal(typeof(bool));
+            var player = generator.DeclareLocal(typeof(API.Features.Player));
+            var isAllowedUnlocking = generator.DeclareLocal(typeof(bool));
 
-            Label isOpening = generator.DefineLabel();
-            Label isActivating = generator.DefineLabel();
-            Label check = generator.DefineLabel();
-            Label check2 = generator.DefineLabel();
-            Label notAllowed = generator.DefineLabel();
-            Label skip = generator.DefineLabel();
-            Label skip2 = generator.DefineLabel();
-            Label @break = newInstructions.FindLast(instruction => instruction.IsLdarg(0)).labels[0];
+            var isOpening = generator.DefineLabel();
+            var isActivating = generator.DefineLabel();
+            var check = generator.DefineLabel();
+            var check2 = generator.DefineLabel();
+            var notAllowed = generator.DefineLabel();
+            var skip = generator.DefineLabel();
+            var skip2 = generator.DefineLabel();
+            var @break = newInstructions.FindLast(instruction => instruction.IsLdarg(0)).labels[0];
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Stopwatch), nameof(Stopwatch.Stop)))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Stopwatch), nameof(Stopwatch.Stop)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -170,7 +170,7 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions.RemoveRange(index, 7);
 
             offset = -2;
-            int index2 = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerUnlockGeneratorEvent))[0]) + offset;
+            var index2 = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerUnlockGeneratorEvent))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -307,7 +307,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse_S, notAllowed),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

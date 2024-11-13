@@ -44,12 +44,12 @@ namespace Exiled.Events.EventArgs.Map
             if (Projectile.Base is not ExplosionGrenade)
                 return;
 
-            foreach (Collider collider in targets)
+            foreach (var collider in targets)
             {
-                if (!collider.TryGetComponent(out IDestructible destructible) || !ReferenceHub.TryGetHubNetID(destructible.NetworkId, out ReferenceHub hub))
+                if (!collider.TryGetComponent(out IDestructible destructible) || !ReferenceHub.TryGetHubNetID(destructible.NetworkId, out var hub))
                     continue;
 
-                Player player = Player.Get(hub);
+                var player = Player.Get(hub);
                 if (player is null)
                     continue;
 

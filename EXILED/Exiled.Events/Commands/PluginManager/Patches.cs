@@ -50,19 +50,19 @@ namespace Exiled.Events.Commands.PluginManager
                 return false;
             }
 
-            StringBuilder sb = StringBuilderPool.Shared.Rent();
+            var sb = StringBuilderPool.Shared.Rent();
 
             sb.AppendLine("All patches:");
             sb.AppendLine("Patched:");
 
-            foreach (Type patch in Patcher.GetAllPatchTypes().Where((type) => !Patcher.UnpatchedTypes.Contains(type)))
+            foreach (var patch in Patcher.GetAllPatchTypes().Where((type) => !Patcher.UnpatchedTypes.Contains(type)))
             {
                 sb.AppendLine($"\t{patch.FullName}");
             }
 
             sb.AppendLine("Unpatched: ");
 
-            foreach (Type patch in Patcher.UnpatchedTypes)
+            foreach (var patch in Patcher.UnpatchedTypes)
             {
                 sb.AppendLine($"\t{patch.FullName}");
             }

@@ -112,8 +112,8 @@ namespace Exiled.CustomRoles.API.Features
         public static IEnumerable<CustomAbility> RegisterAbilities(bool skipReflection = false, object? overrideClass = null)
         {
             List<CustomAbility> abilities = new();
-            Assembly assembly = Assembly.GetCallingAssembly();
-            foreach (Type type in assembly.GetTypes())
+            var assembly = Assembly.GetCallingAssembly();
+            foreach (var type in assembly.GetTypes())
             {
                 if (type.BaseType != typeof(CustomAbility) || type.GetCustomAttribute(typeof(CustomAbilityAttribute)) is null)
                     continue;
@@ -122,10 +122,10 @@ namespace Exiled.CustomRoles.API.Features
 
                 if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                 {
-                    IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
+                    var plugin = Server.PluginAssemblies[assembly];
 
-                    foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ??
-                                                      plugin.Config.GetType().GetProperties())
+                    foreach (var property in overrideClass?.GetType().GetProperties() ??
+                                             plugin.Config.GetType().GetProperties())
                     {
                         if (property.PropertyType != type)
                             continue;
@@ -156,8 +156,8 @@ namespace Exiled.CustomRoles.API.Features
         public static IEnumerable<CustomAbility> RegisterAbilities(IEnumerable<Type> targetTypes, bool isIgnored = false, bool skipReflection = false, object? overrideClass = null)
         {
             List<CustomAbility> abilities = new();
-            Assembly assembly = Assembly.GetCallingAssembly();
-            foreach (Type type in assembly.GetTypes())
+            var assembly = Assembly.GetCallingAssembly();
+            foreach (var type in assembly.GetTypes())
             {
                 if (((type.BaseType != typeof(CustomAbility)) && !type.IsSubclassOf(typeof(CustomAbility))) || type.GetCustomAttribute(typeof(CustomAbilityAttribute)) is null ||
                     (isIgnored && targetTypes.Contains(type)) || (!isIgnored && !targetTypes.Contains(type)))
@@ -167,9 +167,9 @@ namespace Exiled.CustomRoles.API.Features
 
                 if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                 {
-                    IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
+                    var plugin = Server.PluginAssemblies[assembly];
 
-                    foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
+                    foreach (var property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                     {
                         if (property.PropertyType != type)
                             continue;
@@ -196,7 +196,7 @@ namespace Exiled.CustomRoles.API.Features
         {
             List<CustomAbility> unregisteredAbilities = new();
 
-            foreach (CustomAbility customAbility in Registered)
+            foreach (var customAbility in Registered)
             {
                 customAbility.TryUnregister();
                 unregisteredAbilities.Add(customAbility);
@@ -215,7 +215,7 @@ namespace Exiled.CustomRoles.API.Features
         {
             List<CustomAbility> unregisteredAbilities = new();
 
-            foreach (CustomAbility customAbility in Registered)
+            foreach (var customAbility in Registered)
             {
                 if ((targetTypes.Contains(customAbility.GetType()) && isIgnored) || (!targetTypes.Contains(customAbility.GetType()) && !isIgnored))
                     continue;

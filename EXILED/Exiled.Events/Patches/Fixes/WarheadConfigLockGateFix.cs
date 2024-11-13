@@ -30,13 +30,13 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // replace Contains with StartWith
-            int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(string), nameof(string.Contains), new[] { typeof(string) }));
+            var index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(string), nameof(string.Contains), new[] { typeof(string) }));
             newInstructions[index].operand = Method(typeof(string), nameof(string.StartsWith), new System.Type[] { typeof(string) });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

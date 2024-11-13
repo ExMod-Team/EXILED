@@ -37,10 +37,10 @@ namespace Exiled.Loader
             {
                 Log.Info($"Loading plugin configs... ({LoaderPlugin.Config.ConfigType})");
 
-                Dictionary<string, object> rawDeserializedConfigs = Loader.Deserializer.Deserialize<Dictionary<string, object>>(rawConfigs) ?? DictionaryPool<string, object>.Pool.Get();
+                var rawDeserializedConfigs = Loader.Deserializer.Deserialize<Dictionary<string, object>>(rawConfigs) ?? DictionaryPool<string, object>.Pool.Get();
                 SortedDictionary<string, IConfig> deserializedConfigs = new(StringComparer.Ordinal);
 
-                foreach (IPlugin<IConfig> plugin in Loader.Plugins)
+                foreach (var plugin in Loader.Plugins)
                 {
                     deserializedConfigs.Add(plugin.Prefix, plugin.LoadConfig(rawDeserializedConfigs));
                 }
@@ -87,7 +87,7 @@ namespace Exiled.Loader
         {
             rawConfigs ??= Loader.Deserializer.Deserialize<Dictionary<string, object>>(Read()) ?? new Dictionary<string, object>();
 
-            if (!rawConfigs.TryGetValue(plugin.Prefix, out object rawDeserializedConfig))
+            if (!rawConfigs.TryGetValue(plugin.Prefix, out var rawDeserializedConfig))
             {
                 Log.Warn($"{plugin.Name} doesn't have default configs, generating...");
 
@@ -98,7 +98,7 @@ namespace Exiled.Loader
 
             try
             {
-                string rawConfigString = Loader.Serializer.Serialize(rawDeserializedConfig);
+                var rawConfigString = Loader.Serializer.Serialize(rawDeserializedConfig);
                 config = (IConfig)Loader.Deserializer.Deserialize(rawConfigString, plugin.Config.GetType());
                 plugin.Config.CopyProperties(config);
             }
@@ -175,7 +175,7 @@ namespace Exiled.Loader
         /// <returns>Returns a value indicating whether the configs have been saved successfully or not.</returns>
         public static bool SaveSeparatedConfig(this string pluginPrefix, string configs)
         {
-            string configPath = Paths.GetConfigPath(pluginPrefix);
+            var configPath = Paths.GetConfigPath(pluginPrefix);
 
             try
             {
@@ -275,7 +275,7 @@ namespace Exiled.Loader
             ServerStatic.PermissionsHandler = new PermissionsHandler(ref ServerStatic.RolesConfig, ref ServerStatic.SharedGroupsConfig, ref ServerStatic.SharedGroupsMembersConfig);
             ServerStatic.GetPermissionsHandler().RefreshPermissions();
 
-            foreach (Player player in Player.List)
+            foreach (var player in Player.List)
             {
                 player.ReferenceHub.serverRoles.SetGroup(null, false);
                 player.ReferenceHub.serverRoles.RefreshPermissions();

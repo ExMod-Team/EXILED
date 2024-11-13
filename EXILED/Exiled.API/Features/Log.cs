@@ -40,7 +40,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be sent.</param>
         public static void Debug(object message)
         {
-            Assembly callingAssembly = Assembly.GetCallingAssembly();
+            var callingAssembly = Assembly.GetCallingAssembly();
 
 #if DEBUG
             if (callingAssembly.GetName().Name is "Exiled.API")
@@ -75,7 +75,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be sent.</param>
         public static void Debug(string message)
         {
-            Assembly callingAssembly = Assembly.GetCallingAssembly();
+            var callingAssembly = Assembly.GetCallingAssembly();
 #if DEBUG
             if (callingAssembly.GetName().Name is "Exiled.API")
             {

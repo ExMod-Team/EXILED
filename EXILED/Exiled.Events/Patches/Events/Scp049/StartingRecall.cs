@@ -29,9 +29,9 @@ namespace Exiled.Events.Patches.Events.Scp049
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

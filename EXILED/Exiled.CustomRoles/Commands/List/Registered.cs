@@ -53,11 +53,11 @@ namespace Exiled.CustomRoles.Commands.List
                 return false;
             }
 
-            StringBuilder builder = StringBuilderPool.Pool.Get().AppendLine();
+            var builder = StringBuilderPool.Pool.Get().AppendLine();
 
             builder.Append("[Registered custom roles (").Append(CustomRole.Registered.Count).AppendLine(")]");
 
-            foreach (CustomRole role in CustomRole.Registered.OrderBy(r => r.Id))
+            foreach (var role in CustomRole.Registered.OrderBy(r => r.Id))
                 builder.Append('[').Append(role.Id).Append(". ").Append(role.Name).Append(" (").Append(role.Role).Append(')').AppendLine("]");
 
             response = StringBuilderPool.Pool.ToStringReturn(builder);

@@ -33,12 +33,12 @@ namespace Exiled.Events.Patches.Events.Scp939
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ret = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
-            int offset = 3;
-            int index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(RippleTriggerBase), nameof(RippleTriggerBase.CheckVisibility)))) + offset;
+            var offset = 3;
+            var index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(RippleTriggerBase), nameof(RippleTriggerBase.CheckVisibility)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -70,7 +70,7 @@ namespace Exiled.Events.Patches.Events.Scp939
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

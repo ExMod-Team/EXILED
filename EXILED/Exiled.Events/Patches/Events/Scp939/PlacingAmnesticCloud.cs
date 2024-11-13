@@ -32,14 +32,14 @@ namespace Exiled.Events.Patches.Events.Scp939
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(PlacingAmnesticCloudEventArgs));
+            var ev = generator.DeclareLocal(typeof(PlacingAmnesticCloudEventArgs));
 
-            Label jump = generator.DefineLabel();
+            var jump = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
 
             newInstructions[index].labels.Add(jump);
 
@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Scp939
                 new(OpCodes.Callvirt, PropertyGetter(typeof(PlacingAmnesticCloudEventArgs), nameof(PlacingAmnesticCloudEventArgs.IsReady))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

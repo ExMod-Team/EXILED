@@ -32,15 +32,15 @@ namespace Exiled.Events.Patches.Events.Scp3114
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instruction, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instruction);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instruction);
 
-            Label retLabel = newInstructions[newInstructions.Count - 2].labels[0];
-            Label jumpLabel = generator.DefineLabel();
+            var retLabel = newInstructions[newInstructions.Count - 2].labels[0];
+            var jumpLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(StranglingEventArgs));
+            var ev = generator.DeclareLocal(typeof(StranglingEventArgs));
 
             const int offset = -1;
-            int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.playerEffectsController)))) + offset;
+            var index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.playerEffectsController)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
                 new CodeInstruction(OpCodes.Nop).WithLabels(jumpLabel),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

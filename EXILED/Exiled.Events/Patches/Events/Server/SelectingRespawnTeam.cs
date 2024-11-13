@@ -32,11 +32,11 @@ namespace Exiled.Events.Patches.Events.Server
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            LocalBuilder ev = generator.DeclareLocal(typeof(SelectingRespawnTeamEventArgs));
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var ev = generator.DeclareLocal(typeof(SelectingRespawnTeamEventArgs));
 
             const int offset = 1;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
+            var index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Stloc_1),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

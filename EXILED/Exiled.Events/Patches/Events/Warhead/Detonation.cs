@@ -29,10 +29,10 @@ namespace Exiled.Events.Patches.Events.Warhead
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
-            LocalBuilder ev = generator.DeclareLocal(typeof(DetonatingEventArgs));
+            var continueLabel = generator.DefineLabel();
+            var ev = generator.DeclareLocal(typeof(DetonatingEventArgs));
 
             newInstructions[0].labels.Add(continueLabel);
 
@@ -71,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Warhead
                 });
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(
+            var index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(AlphaWarheadController), nameof(AlphaWarheadController.RpcShake)))) + offset;
 
             newInstructions.InsertRange(
@@ -82,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Warhead
                     new CodeInstruction(OpCodes.Call, Method(typeof(Warhead), nameof(Warhead.OnDetonated))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

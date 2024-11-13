@@ -34,16 +34,16 @@ namespace Exiled.CustomRoles.Commands
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            Player player = Player.Get((CommandSender)sender);
-            string abilityName = string.Empty;
+            var player = Player.Get((CommandSender)sender);
+            var abilityName = string.Empty;
             ActiveAbility? ability;
 
             if (arguments.Count > 0)
             {
-                foreach (string s in arguments.Skip(1))
+                foreach (var s in arguments.Skip(1))
                     abilityName += s;
 
-                if (!CustomAbility.TryGet(abilityName, out CustomAbility? customAbility) || customAbility is null)
+                if (!CustomAbility.TryGet(abilityName, out var customAbility) || customAbility is null)
                 {
                     response = $"Ability {abilityName} does not exist.";
                     return false;

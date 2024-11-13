@@ -44,11 +44,11 @@ namespace Exiled.CustomRoles.Commands.List
                 return false;
             }
 
-            StringBuilder builder = StringBuilderPool.Pool.Get().AppendLine();
+            var builder = StringBuilderPool.Pool.Get().AppendLine();
 
             builder.Append("[Registered custom roles (").Append(CustomRole.Registered.Count).AppendLine(")]");
 
-            foreach (CustomAbility ability in CustomAbility.Registered.OrderBy(r => r.Name))
+            foreach (var ability in CustomAbility.Registered.OrderBy(r => r.Name))
                 builder.Append('[').Append(ability.Name).Append(" (").Append(ability.Description).Append(')').AppendLine("]");
 
             response = StringBuilderPool.Pool.ToStringReturn(builder);

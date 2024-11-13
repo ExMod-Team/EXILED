@@ -26,8 +26,8 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Item.OnChangingAttachments(ChangingAttachmentsEventArgs)"/>
         public void OnChangingAttachments(ChangingAttachmentsEventArgs ev)
         {
-            string oldAttachments = ev.CurrentAttachmentIdentifiers.Aggregate(string.Empty, (current, attachmentIdentifier) => current + $"{attachmentIdentifier.Name}\n");
-            string newAttachments = ev.NewAttachmentIdentifiers.Aggregate(string.Empty, (current, attachmentIdentifier) => current + $"{attachmentIdentifier.Name}\n");
+            var oldAttachments = ev.CurrentAttachmentIdentifiers.Aggregate(string.Empty, (current, attachmentIdentifier) => current + $"{attachmentIdentifier.Name}\n");
+            var newAttachments = ev.NewAttachmentIdentifiers.Aggregate(string.Empty, (current, attachmentIdentifier) => current + $"{attachmentIdentifier.Name}\n");
 
             Log.Info($"Item {ev.Firearm.Type} attachments are changing. Old attachments:\n{oldAttachments} - New Attachments:\n{newAttachments}");
         }

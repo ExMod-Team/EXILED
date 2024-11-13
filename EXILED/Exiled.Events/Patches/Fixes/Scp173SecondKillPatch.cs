@@ -26,14 +26,14 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            int offset = -5;
-            int index = newInstructions.FindIndex(x => x.Is(OpCodes.Callvirt, Method(typeof(MovementTracer), nameof(MovementTracer.GenerateBounds)))) + offset;
+            var offset = -5;
+            var index = newInstructions.FindIndex(x => x.Is(OpCodes.Callvirt, Method(typeof(MovementTracer), nameof(MovementTracer.GenerateBounds)))) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -45,7 +45,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Brtrue_S, returnLabel),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

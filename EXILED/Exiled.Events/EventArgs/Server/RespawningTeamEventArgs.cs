@@ -84,14 +84,14 @@ namespace Exiled.Events.EventArgs.Server
             {
                 nextKnownTeam = value;
 
-                if (!RespawnManager.SpawnableTeams.TryGetValue(value, out SpawnableTeamHandlerBase spawnableTeam))
+                if (!RespawnManager.SpawnableTeams.TryGetValue(value, out var spawnableTeam))
                 {
                     MaximumRespawnAmount = 0;
                     return;
                 }
 
                 MaximumRespawnAmount = spawnableTeam.MaxWaveSize;
-                if (RespawnManager.SpawnableTeams.TryGetValue(nextKnownTeam, out SpawnableTeamHandlerBase @base))
+                if (RespawnManager.SpawnableTeams.TryGetValue(nextKnownTeam, out var @base))
                     @base.GenerateQueue(SpawnQueue, Players.Count);
             }
         }
@@ -100,7 +100,7 @@ namespace Exiled.Events.EventArgs.Server
         /// Gets the current spawnable team.
         /// </summary>
         public SpawnableTeamHandlerBase SpawnableTeam
-            => RespawnManager.SpawnableTeams.TryGetValue(NextKnownTeam, out SpawnableTeamHandlerBase @base) ? @base : null;
+            => RespawnManager.SpawnableTeams.TryGetValue(NextKnownTeam, out var @base) ? @base : null;
 
         /// <summary>
         /// Gets or sets a value indicating whether or not the spawn can occur.

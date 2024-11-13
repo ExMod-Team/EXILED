@@ -35,12 +35,12 @@ namespace Exiled.Events.Patches.Events.Scp330
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ICandy), nameof(ICandy.ServerApplyEffects)))) + offset;
+            var offset = -3;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ICandy), nameof(ICandy.ServerApplyEffects)))) + offset;
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
@@ -100,7 +100,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Call, Method(typeof(Scp330), nameof(Scp330.OnEatenScp330))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

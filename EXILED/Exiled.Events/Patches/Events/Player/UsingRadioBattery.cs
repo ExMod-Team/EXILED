@@ -31,16 +31,16 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = newInstructions[newInstructions.Count - 1].labels[0];
-            Label continueLabel = generator.DefineLabel();
+            var returnLabel = newInstructions[newInstructions.Count - 1].labels[0];
+            var continueLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(UsingRadioBatteryEventArgs));
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
+            var ev = generator.DeclareLocal(typeof(UsingRadioBatteryEventArgs));
+            var player = generator.DeclareLocal(typeof(Player));
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_0) + offset;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_0) + offset;
 
             newInstructions[index].WithLabels(continueLabel);
 
@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_0),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

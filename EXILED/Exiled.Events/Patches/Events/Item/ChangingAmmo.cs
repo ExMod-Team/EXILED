@@ -32,17 +32,17 @@ namespace Exiled.Events.Patches.Events.Item
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 3;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse_S) + offset;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse_S) + offset;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingAmmoEventArgs));
-            LocalBuilder ammo = generator.DeclareLocal(typeof(byte));
+            var ev = generator.DeclareLocal(typeof(ChangingAmmoEventArgs));
+            var ammo = generator.DeclareLocal(typeof(byte));
 
-            Label cdc = generator.DefineLabel();
-            Label jmp = generator.DefineLabel();
-            Label jcc = generator.DefineLabel();
+            var cdc = generator.DefineLabel();
+            var jmp = generator.DefineLabel();
+            var jcc = generator.DefineLabel();
 
             newInstructions[index].labels.Add(cdc);
 
@@ -132,7 +132,7 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Stfld, Field(typeof(Firearm), nameof(Firearm._status))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

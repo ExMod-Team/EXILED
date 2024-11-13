@@ -50,7 +50,7 @@ namespace Exiled.Events
             instance = this;
             base.OnEnabled();
 
-            Stopwatch watch = Stopwatch.StartNew();
+            var watch = Stopwatch.StartNew();
 
             Patch();
 
@@ -127,7 +127,7 @@ namespace Exiled.Events
                 bool lastDebugStatus = Harmony.DEBUG;
                 Harmony.DEBUG = true;
 #endif
-                Patcher.PatchAll(!Config.UseDynamicPatching, out int failedPatch);
+                Patcher.PatchAll(!Config.UseDynamicPatching, out var failedPatch);
 
                 if (failedPatch == 0)
                     Log.Debug("Events patched successfully!");

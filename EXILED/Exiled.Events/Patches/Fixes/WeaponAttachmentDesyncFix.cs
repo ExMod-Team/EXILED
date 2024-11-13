@@ -27,16 +27,16 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label skipLabel = generator.DefineLabel();
-            Label skipLabel2 = generator.DefineLabel();
-            Label insertLabel = generator.DefineLabel();
+            var skipLabel = generator.DefineLabel();
+            var skipLabel2 = generator.DefineLabel();
+            var insertLabel = generator.DefineLabel();
 
-            LocalBuilder flagLocal = generator.DeclareLocal(typeof(bool));
+            var flagLocal = generator.DeclareLocal(typeof(bool));
 
             const int offset = -1;
-            int ifIndex = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_3) + offset;
+            var ifIndex = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_3) + offset;
 
             newInstructions[ifIndex].operand = insertLabel;
 
@@ -93,7 +93,7 @@ namespace Exiled.Events.Patches.Fixes
                     new(OpCodes.Ret),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

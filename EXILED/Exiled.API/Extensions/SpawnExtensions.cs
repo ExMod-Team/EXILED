@@ -45,12 +45,12 @@ namespace Exiled.API.Extensions
         /// <returns>The <see cref="Transform"/> used for that spawn location. Can be <see langword="null"/>.</returns>
         public static Transform GetDoor(this SpawnLocationType location)
         {
-            string doorName = location.GetDoorName();
+            var doorName = location.GetDoorName();
 
             if (string.IsNullOrEmpty(doorName))
                 return null;
 
-            return DoorNametagExtension.NamedDoors.TryGetValue(doorName, out DoorNametagExtension nametag) ? nametag.transform : null;
+            return DoorNametagExtension.NamedDoors.TryGetValue(doorName, out var nametag) ? nametag.transform : null;
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Exiled.API.Extensions
         /// <returns>The <see cref="Vector3"/> used for that spawn location. Can be <see cref="Vector3.zero"/>.</returns>
         public static Vector3 GetPosition(this SpawnLocationType location)
         {
-            Transform transform = location.GetDoor();
+            var transform = location.GetDoor();
 
             if (transform is null)
                 return default;

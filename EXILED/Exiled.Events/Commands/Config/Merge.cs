@@ -46,9 +46,9 @@ namespace Exiled.Events.Commands.Config
                 return false;
             }
 
-            SortedDictionary<string, IConfig> configs = ConfigManager.LoadSorted(ConfigManager.Read());
+            var configs = ConfigManager.LoadSorted(ConfigManager.Read());
             LoaderPlugin.Config.ConfigType = ConfigType.Default;
-            bool haveBeenSaved = ConfigManager.Save(configs);
+            var haveBeenSaved = ConfigManager.Save(configs);
             PluginAPI.Loader.AssemblyLoader.InstalledPlugins.FirstOrDefault(x => x.PluginName == "Exiled Loader")?.SaveConfig(new LoaderPlugin(), nameof(LoaderPlugin.Config));
 
             response = $"Configs have been merged successfully! Feel free to remove the directory in the following path:\n\"{Paths.IndividualConfigs}\"";

@@ -33,15 +33,15 @@ namespace Exiled.Events.Patches.Events.Map
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(AnnouncingNtfEntranceEventArgs));
-            LocalBuilder unitInformation = generator.DeclareLocal(typeof(string[]));
+            var ev = generator.DeclareLocal(typeof(AnnouncingNtfEntranceEventArgs));
+            var unitInformation = generator.DeclareLocal(typeof(string[]));
 
-            Label ret = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_1) + offset;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_1) + offset;
 
             // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
             // string unitNameClear = Regex.Replace(unitName, "<[^>]*?>", string.Empty);
@@ -123,7 +123,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

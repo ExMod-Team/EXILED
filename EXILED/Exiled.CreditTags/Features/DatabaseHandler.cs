@@ -90,8 +90,8 @@ namespace Exiled.CreditTags.Features
         /// <returns>Returns a value indicating whether the rank was found.</returns>
         public static bool TryGetRank(string userId, out RankType rank)
         {
-            byte[] hash = Sha.Sha256(userId);
-            string hashedId = Sha.HashToString(hash);
+            var hash = Sha.Sha256(userId);
+            var hashedId = Sha.HashToString(hash);
             Log.Debug("User Id: " + userId + ", Hashed Id: " + hashedId);
             return RankCache.TryGetValue(hashedId, out rank);
         }
@@ -127,7 +127,7 @@ namespace Exiled.CreditTags.Features
         {
             try
             {
-                TagItem[] items = TagItem.FromYaml(data);
+                var items = TagItem.FromYaml(data);
 
                 if (items is null || items.Length == 0)
                 {
@@ -135,7 +135,7 @@ namespace Exiled.CreditTags.Features
                     return;
                 }
 
-                foreach (TagItem item in items)
+                foreach (var item in items)
                 {
                     Log.Debug($"Processing item: {item.Id} - {item.Type}");
                     RankCache[item.Id] = (RankType)item.Type;

@@ -28,10 +28,10 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label isAllowed = generator.DefineLabel();
-            Label ret = generator.DefineLabel();
+            var isAllowed = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 0,
@@ -69,7 +69,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
-            foreach (CodeInstruction instruction in newInstructions)
+            foreach (var instruction in newInstructions)
                 yield return instruction;
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

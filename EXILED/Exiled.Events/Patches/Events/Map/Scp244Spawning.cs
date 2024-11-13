@@ -34,14 +34,14 @@ namespace Exiled.Events.Patches.Events.Map
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder pickup = generator.DeclareLocal(typeof(ItemPickupBase));
+            var pickup = generator.DeclareLocal(typeof(ItemPickupBase));
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
+            var offset = -2;
+            var index = newInstructions.FindIndex(i => i.Calls(Method(typeof(NetworkServer), nameof(NetworkServer.Spawn), new[] { typeof(GameObject), typeof(NetworkConnection) }))) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -76,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Map
                 new CodeInstruction(OpCodes.Ldloc_S, pickup.LocalIndex).WithLabels(continueLabel),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

@@ -60,7 +60,7 @@ namespace Exiled.API.Features.Roles
         {
             get
             {
-                Player spectatedPlayer = Player.Get(Base.SyncedSpectatedNetId);
+                var spectatedPlayer = Player.Get(Base.SyncedSpectatedNetId);
 
                 return spectatedPlayer != Owner ? spectatedPlayer : null;
             }

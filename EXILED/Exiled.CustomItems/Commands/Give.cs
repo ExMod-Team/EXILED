@@ -57,7 +57,7 @@ namespace Exiled.CustomItems.Commands
                 return false;
             }
 
-            if (!CustomItem.TryGet(arguments.At(0), out CustomItem? item))
+            if (!CustomItem.TryGet(arguments.At(0), out var item))
             {
                 response = $"Custom item {arguments.At(0)} not found!";
                 return false;
@@ -67,7 +67,7 @@ namespace Exiled.CustomItems.Commands
             {
                 if (sender is PlayerCommandSender playerCommandSender)
                 {
-                    Player player = Player.Get(playerCommandSender.SenderId);
+                    var player = Player.Get(playerCommandSender.SenderId);
 
                     if (!CheckEligible(player))
                     {
@@ -84,14 +84,14 @@ namespace Exiled.CustomItems.Commands
                 return false;
             }
 
-            string identifier = string.Join(" ", arguments.Skip(1));
+            var identifier = string.Join(" ", arguments.Skip(1));
 
             switch (identifier)
             {
                 case "*":
                 case "all":
-                    List<Player> eligiblePlayers = Player.List.Where(CheckEligible).ToList();
-                    foreach (Player ply in eligiblePlayers)
+                    var eligiblePlayers = Player.List.Where(CheckEligible).ToList();
+                    foreach (var ply in eligiblePlayers)
                         item?.Give(ply);
 
                     response = $"Custom item {item?.Name} given to all players who can receive them ({eligiblePlayers.Count} players)";

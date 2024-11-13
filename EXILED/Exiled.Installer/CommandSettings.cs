@@ -25,7 +25,7 @@ namespace Exiled.Installer
                 new[] { "-p", "--path" },
                 (parsed) =>
                 {
-                    string path = parsed.Tokens.SingleOrDefault()?.Value ?? Directory.GetCurrentDirectory();
+                    var path = parsed.Tokens.SingleOrDefault()?.Value ?? Directory.GetCurrentDirectory();
 
                     if (string.IsNullOrEmpty(path))
                     {
@@ -48,12 +48,12 @@ namespace Exiled.Installer
                 "--appdata",
                 (parsed) =>
                 {
-                    string appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
                     if (string.IsNullOrEmpty(appdataPath))
                         Console.Error.WriteLine("AppData path is null, make sure it exists");
 
-                    string path = parsed.Tokens.SingleOrDefault()?.Value ?? appdataPath;
+                    var path = parsed.Tokens.SingleOrDefault()?.Value ?? appdataPath;
 
                     if (string.IsNullOrEmpty(path))
                     {
@@ -71,12 +71,12 @@ namespace Exiled.Installer
                 "--exiled",
                 (parsed) =>
                 {
-                    string appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var appdataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
                     if (string.IsNullOrEmpty(appdataPath))
                         Console.Error.WriteLine("Your Exiled path is null, make sure it exists");
 
-                    string path = parsed.Tokens.SingleOrDefault()?.Value ?? appdataPath;
+                    var path = parsed.Tokens.SingleOrDefault()?.Value ?? appdataPath;
 
                     if (string.IsNullOrEmpty(path))
                     {

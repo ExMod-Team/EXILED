@@ -31,17 +31,17 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
-            Label ev = generator.DefineLabel();
-            Label cardCheck = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
+            var ev = generator.DefineLabel();
+            var cardCheck = generator.DefineLabel();
 
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
-            LocalBuilder allowed = generator.DeclareLocal(typeof(bool));
-            LocalBuilder card = generator.DeclareLocal(typeof(Keycard));
+            var player = generator.DeclareLocal(typeof(Player));
+            var allowed = generator.DeclareLocal(typeof(bool));
+            var card = generator.DeclareLocal(typeof(Keycard));
 
-            int index = newInstructions.FindIndex(i => i.Is(OpCodes.Ldfld, Field(typeof(PlayerInteract), nameof(PlayerInteract._sr))));
+            var index = newInstructions.FindIndex(i => i.Is(OpCodes.Ldfld, Field(typeof(PlayerInteract), nameof(PlayerInteract._sr))));
 
             newInstructions.RemoveRange(index, 17);
 
@@ -110,7 +110,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ret),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

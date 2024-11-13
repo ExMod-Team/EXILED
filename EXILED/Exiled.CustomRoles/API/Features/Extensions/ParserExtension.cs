@@ -35,7 +35,7 @@ namespace Exiled.CustomRoles.API.Features.Extensions
                 switch (parser.Current)
                 {
                     case Scalar scalar:
-                        bool keyMatched = selector(scalar);
+                        var keyMatched = selector(scalar);
                         parser.MoveNext();
                         if (keyMatched)
                         {

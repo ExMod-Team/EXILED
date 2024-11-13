@@ -69,15 +69,15 @@ namespace Exiled.Events.EventArgs.Player
             get => newRole;
             set
             {
-                InventoryRoleInfo inventory = value.GetInventory();
+                var inventory = value.GetInventory();
 
                 Items.Clear();
                 Ammo.Clear();
 
-                foreach (ItemType itemType in inventory.Items)
+                foreach (var itemType in inventory.Items)
                     Items.Add(itemType);
 
-                foreach (KeyValuePair<ItemType, ushort> ammoPair in inventory.Ammo)
+                foreach (var ammoPair in inventory.Ammo)
                     Ammo.Add(ammoPair.Key, ammoPair.Value);
 
                 newRole = value;

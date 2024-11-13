@@ -170,7 +170,7 @@ namespace Exiled.API.Features
             get => DateTime.Now - TimeSpan.FromSeconds(NetworkInfo.ExistenceTime);
             set
             {
-                float creationTime = (float)(NetworkTime.time - (DateTime.Now - value).TotalSeconds);
+                var creationTime = (float)(NetworkTime.time - (DateTime.Now - value).TotalSeconds);
                 NetworkInfo = new RagdollData(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Nickname, creationTime);
             }
         }
@@ -293,7 +293,7 @@ namespace Exiled.API.Features
             if (networkInfo.RoleType.GetRoleBase() is not IRagdollRole ragdollRole)
                 return false;
 
-            GameObject modelRagdoll = ragdollRole.Ragdoll.gameObject;
+            var modelRagdoll = ragdollRole.Ragdoll.gameObject;
 
             if (modelRagdoll == null || !Object.Instantiate(modelRagdoll).TryGetComponent(out BasicRagdoll basicRagdoll))
                 return false;
@@ -340,7 +340,7 @@ namespace Exiled.API.Features
         /// <returns>The ragdoll.</returns>
         public static Ragdoll CreateAndSpawn(RagdollData networkInfo)
         {
-            if (!TryCreate(networkInfo, out Ragdoll doll))
+            if (!TryCreate(networkInfo, out var doll))
                 return null;
 
             doll.Spawn();
@@ -380,7 +380,7 @@ namespace Exiled.API.Features
         /// <param name="ragdoll">The <see cref="BasicRagdoll"/> to get.</param>
         /// <returns>A <see cref="Ragdoll"/> or <see langword="null"/> if not found.</returns>
         public static Ragdoll Get(BasicRagdoll ragdoll) => ragdoll == null ? null :
-            BasicRagdollToRagdoll.TryGetValue(ragdoll, out Ragdoll doll) ? doll : ragdoll is BaseScp3114Ragdoll scp3114Ragdoll ? new Scp3114Ragdoll(scp3114Ragdoll) : new Ragdoll(ragdoll);
+            BasicRagdollToRagdoll.TryGetValue(ragdoll, out var doll) ? doll : ragdoll is BaseScp3114Ragdoll scp3114Ragdoll ? new Scp3114Ragdoll(scp3114Ragdoll) : new Ragdoll(ragdoll);
 
         /// <summary>
         /// Gets the <see cref="IEnumerable{T}"/> of <see cref="Ragdoll"/> belonging to the <see cref="Player"/>, if any.

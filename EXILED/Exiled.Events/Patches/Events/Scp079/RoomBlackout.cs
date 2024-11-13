@@ -29,20 +29,20 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel;
-            Label continueLabel = generator.DefineLabel();
-            Label allowedJump = generator.DefineLabel();
-            Label jump = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
+            var allowedJump = generator.DefineLabel();
+            var jump = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(RoomBlackoutEventArgs));
+            var ev = generator.DeclareLocal(typeof(RoomBlackoutEventArgs));
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse);
+            var index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse);
 
             returnLabel = (Label)newInstructions[index].operand;
 
-            int offset = -2;
+            var offset = -2;
             index += offset;
 
             newInstructions.InsertRange(
@@ -155,7 +155,7 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RoomBlackoutEventArgs), nameof(RoomBlackoutEventArgs.BlackoutDuration))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

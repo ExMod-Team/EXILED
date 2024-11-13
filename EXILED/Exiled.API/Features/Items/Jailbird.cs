@@ -130,7 +130,7 @@ namespace Exiled.API.Features.Items
         /// <returns>The amount of damage associated with the specified wear state.</returns>
         public float GetDamage(JailbirdWearState wearState)
         {
-            foreach (Keyframe keyframe in Base._deterioration._damageToWearState.keys)
+            foreach (var keyframe in Base._deterioration._damageToWearState.keys)
             {
                 if (Base._deterioration.FloatToState(keyframe.value) == wearState)
                     return keyframe.time;
@@ -152,13 +152,13 @@ namespace Exiled.API.Features.Items
         public void Break()
         {
             WearState = JailbirdWearState.Broken;
-            using (new AutosyncRpc(Base, true, out NetworkWriter networkWriter))
+            using (new AutosyncRpc(Base, true, out var networkWriter))
             {
                 networkWriter.WriteByte(0);
                 networkWriter.WriteByte((byte)JailbirdWearState.Broken);
             }
 
-            using (new AutosyncRpc(Base, true, out NetworkWriter networkWriter2))
+            using (new AutosyncRpc(Base, true, out var networkWriter2))
             {
                 networkWriter2.WriteByte(1);
             }

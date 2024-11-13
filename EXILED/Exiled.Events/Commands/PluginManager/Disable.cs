@@ -51,7 +51,7 @@ namespace Exiled.Events.Commands.PluginManager
                 return false;
             }
 
-            IPlugin<IConfig> plugin = Loader.Loader.GetPlugin(arguments.At(0));
+            var plugin = Loader.Loader.GetPlugin(arguments.At(0));
             if (plugin is null)
             {
                 response = "Plugin not enabled or not found.";

@@ -42,7 +42,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="baseRole">the base <see cref="PlayerRoleBase"/>.</param>
         protected Role(PlayerRoleBase baseRole)
         {
-            if (baseRole.TryGetOwner(out ReferenceHub hub))
+            if (baseRole.TryGetOwner(out var hub))
                 Owner = Player.Get(hub);
 
             Base = baseRole;

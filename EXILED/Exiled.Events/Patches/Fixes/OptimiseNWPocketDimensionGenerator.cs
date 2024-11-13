@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // replace "PocketDimensionTeleport[] array = UnityEngine.Object.FindObjectsOfType<PocketDimensionTeleport>();"
             // with
@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Call, Method(typeof(Enumerable), nameof(Enumerable.ToArray)).MakeGenericMethod(typeof(PocketDimensionTeleport))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

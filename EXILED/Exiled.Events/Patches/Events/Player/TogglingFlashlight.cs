@@ -30,12 +30,12 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(TogglingFlashlightEventArgs));
+            var ev = generator.DeclareLocal(typeof(TogglingFlashlightEventArgs));
 
-            int offset = -8;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            var offset = -8;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -61,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             // Remove all msg.NewState to inject or logic
-            for (int i = 0; i < 2; i++)
+            for (var i = 0; i < 2; i++)
             {
                 offset = -1;
                 index = newInstructions.FindLastIndex(i => i.LoadsField(Field(typeof(FlashlightNetworkHandler.FlashlightMessage), nameof(FlashlightNetworkHandler.FlashlightMessage.NewState)))) + offset;
@@ -74,7 +74,7 @@ namespace Exiled.Events.Patches.Events.Player
                 });
             }
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

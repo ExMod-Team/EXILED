@@ -33,7 +33,7 @@ namespace Exiled.Events.Patches.Generic
             if (__instance == null || __instance.gameObject == null || Player.Get(__instance.gameObject) is not { } player || hint is not TextHint textHint)
                 return;
 
-            if (PlayerCurrentHints.TryGetValue(player, out CoroutineHandle oldCoroutine))
+            if (PlayerCurrentHints.TryGetValue(player, out var oldCoroutine))
                 Timing.KillCoroutines(oldCoroutine);
 
             PlayerCurrentHints[player] = Timing.RunCoroutine(CurrentHintToNull(player, hint.DurationScalar));

@@ -64,16 +64,16 @@ namespace Exiled.Installer
 
         internal static async Task MainSafe(CommandSettings args)
         {
-            bool error = false;
+            var error = false;
             try
             {
                 Console.WriteLine(Header);
 
                 if (args.GetVersions)
                 {
-                    IEnumerable<Release> releases1 = await GetReleases().ConfigureAwait(false);
+                    var releases1 = await GetReleases().ConfigureAwait(false);
                     Console.WriteLine(Resources.Program_MainSafe_____AVAILABLE_VERSIONS____);
-                    foreach (Release r in releases1)
+                    foreach (var r in releases1)
                         Console.WriteLine(FormatRelease(r, true));
 
                     if (args.Exit)
@@ -93,15 +93,15 @@ namespace Exiled.Installer
                 Console.WriteLine(Resources.Program_MainSafe_Prereleases_included____0_, args.PreReleases);
                 Console.WriteLine(Resources.Program_MainSafe_Target_release_version____0_, string.IsNullOrEmpty(args.TargetVersion) ? "(null)" : args.TargetVersion);
 
-                IEnumerable<Release> releases = await GetReleases().ConfigureAwait(false);
+                var releases = await GetReleases().ConfigureAwait(false);
                 Console.WriteLine(Resources.Program_MainSafe_Searching_for_the_latest_release_that_matches_the_parameters___);
 
-                Release targetRelease = FindRelease(args, releases);
+                var targetRelease = FindRelease(args, releases);
 
                 Console.WriteLine(Resources.Program_MainSafe_Release_found_);
                 Console.WriteLine(FormatRelease(targetRelease!));
 
-                ReleaseAsset? exiledAsset = targetRelease!.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
+                var exiledAsset = targetRelease!.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
                 if (exiledAsset is null)
                 {
                     Console.WriteLine(Resources.Program_MainSafe_____ASSETS____);
@@ -116,8 +116,8 @@ namespace Exiled.Installer
                 httpClient.Timeout = TimeSpan.FromSeconds(SecondsWaitForDownload);
                 httpClient.DefaultRequestHeaders.Add("User-Agent", Header);
 
-                using HttpResponseMessage downloadResult = await httpClient.GetAsync(exiledAsset.BrowserDownloadUrl).ConfigureAwait(false);
-                using Stream downloadArchiveStream = await downloadResult.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                using var downloadResult = await httpClient.GetAsync(exiledAsset.BrowserDownloadUrl).ConfigureAwait(false);
+                using var downloadArchiveStream = await downloadResult.Content.ReadAsStreamAsync().ConfigureAwait(false);
 
                 using GZipInputStream gzInputStream = new(downloadArchiveStream);
                 using TarInputStream tarInputStream = new(gzInputStream, null);
@@ -145,9 +145,9 @@ namespace Exiled.Installer
 
         private static async Task<IEnumerable<Release>> GetReleases()
         {
-            IEnumerable<Release> releases = (await GitHubClient.Repository.Release.GetAll(RepoID).ConfigureAwait(false))
+            var releases = (await GitHubClient.Repository.Release.GetAll(RepoID).ConfigureAwait(false))
                 .Where(
-                    r => Version.TryParse(r.TagName, out Version version)
+                    r => Version.TryParse(r.TagName, out var version)
                          && version > VersionLimit);
 
             return releases.OrderByDescending(r => r.CreatedAt.Ticks);
@@ -162,7 +162,7 @@ namespace Exiled.Installer
             builder.AppendLine($"PRE: {r.Prerelease} | ID: {r.Id} | TAG: {r.TagName}");
             if (includeAssets)
             {
-                foreach (ReleaseAsset asset in r.Assets)
+                foreach (var asset in r.Assets)
                     builder.Append("   - ").AppendLine(FormatAsset(asset));
             }
 
@@ -182,9 +182,9 @@ namespace Exiled.Installer
 
             if (entry.IsDirectory)
             {
-                TarEntry[] entries = entry.GetDirectoryEntries();
+                var entries = entry.GetDirectoryEntries();
 
-                for (int z = 0; z < entries.Length; z++)
+                for (var z = 0; z < entries.Length; z++)
                     ProcessTarEntry(args, tarInputStream, entries[z]);
             }
             else
@@ -200,7 +200,7 @@ namespace Exiled.Installer
                 switch (ResolveEntry(entry))
                 {
                     case PathResolution.Absolute:
-                        ResolvePath(entry.Name, args.AppData.FullName, out string path);
+                        ResolvePath(entry.Name, args.AppData.FullName, out var path);
                         ExtractEntry(tarInputStream, entry, path);
                         break;
                     case PathResolution.Exiled:
@@ -256,11 +256,11 @@ namespace Exiled.Installer
                 return result;
             }
 
-            string fileName = entry.Name;
-            bool fileInFolder = !string.IsNullOrEmpty(Path.GetDirectoryName(fileName));
-            foreach (KeyValuePair<string, string> pair in Markup)
+            var fileName = entry.Name;
+            var fileInFolder = !string.IsNullOrEmpty(Path.GetDirectoryName(fileName));
+            foreach (var pair in Markup)
             {
-                bool isFolder = pair.Key.EndsWith('\\');
+                var isFolder = pair.Key.EndsWith('\\');
                 if (fileInFolder && isFolder &&
                     pair.Key[0..^1].Equals(fileName.Substring(0, fileName.IndexOf(Path.DirectorySeparatorChar)), StringComparison.OrdinalIgnoreCase))
                 {
@@ -280,11 +280,11 @@ namespace Exiled.Installer
         private static Release FindRelease(CommandSettings args, IEnumerable<Release> releases)
         {
             Console.WriteLine(Resources.Program_TryFindRelease_Trying_to_find_release__);
-            Version? targetVersion = args.TargetVersion is not null ? new Version(args.TargetVersion) : null;
+            var targetVersion = args.TargetVersion is not null ? new Version(args.TargetVersion) : null;
 
-            List<Release> enumerable = releases.ToList();
+            var enumerable = releases.ToList();
 
-            foreach (Release release in enumerable)
+            foreach (var release in enumerable)
             {
                 if (targetVersion != null)
                 {

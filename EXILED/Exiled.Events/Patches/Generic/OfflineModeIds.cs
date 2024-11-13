@@ -27,10 +27,10 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = -1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Call && instruction.OperandIs(PropertySetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId)))) + offset;
+            var index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Call && instruction.OperandIs(PropertySetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Generic
                     new CodeInstruction(OpCodes.Call, Method(typeof(OfflineModeIds), nameof(BuildUserId))),
                 });
 
-            for (int i = 0; i < newInstructions.Count; i++)
+            for (var i = 0; i < newInstructions.Count; i++)
                 yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -56,12 +56,12 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label skipLabel = generator.DefineLabel();
+            var skipLabel = generator.DefineLabel();
 
             const int offset = 1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Call && instruction.OperandIs(PropertySetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId)))) + offset;
+            var index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Call && instruction.OperandIs(PropertySetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId)))) + offset;
 
             // if (!Player.PlayersUserIds.ContainsKey(this.UserId))
             //       Player.PlayersUserIds.Add(this.UserId, this._hub);
@@ -88,7 +88,7 @@ namespace Exiled.Events.Patches.Generic
                     new CodeInstruction(OpCodes.Nop).WithLabels(skipLabel),
                 });
 
-            for (int i = 0; i < newInstructions.Count; i++)
+            for (var i = 0; i < newInstructions.Count; i++)
                 yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -103,12 +103,12 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt) + offset;
+            var index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt) + offset;
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
@@ -119,7 +119,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int i = 0; i < newInstructions.Count; i++)
+            for (var i = 0; i < newInstructions.Count; i++)
                 yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -134,10 +134,10 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt && x.OperandIs(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.SyncServerCmdBinding)))) + offset;
+            var index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt && x.OperandIs(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.SyncServerCmdBinding)))) + offset;
 
             // EventManager.ExecuteEvent(new PlayerJoinedEvent(this._hub));
             newInstructions.InsertRange(
@@ -150,7 +150,7 @@ namespace Exiled.Events.Patches.Generic
                     new CodeInstruction(OpCodes.Call, Method(typeof(OfflineModeJoin), nameof(ExecuteNwEvent))),
                 });
 
-            for (int i = 0; i < newInstructions.Count; i++)
+            for (var i = 0; i < newInstructions.Count; i++)
                 yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

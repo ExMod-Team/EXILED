@@ -31,23 +31,23 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
-            LocalBuilder eventArgs = generator.DeclareLocal(typeof(SpawningEventArgs));
+            var player = generator.DeclareLocal(typeof(Player));
+            var eventArgs = generator.DeclareLocal(typeof(SpawningEventArgs));
 
             const int toRemove = 7;
 
             const int offset = -1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.Calls(PropertyGetter(typeof(Component), nameof(Component.transform)))) + offset;
+            var index = newInstructions.FindLastIndex(instruction => instruction.Calls(PropertyGetter(typeof(Component), nameof(Component.transform)))) + offset;
 
             newInstructions[index + toRemove].MoveLabelsFrom(newInstructions[index]);
 
             newInstructions.RemoveRange(index, toRemove);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

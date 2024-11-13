@@ -144,7 +144,7 @@ namespace Exiled.API.Features
         [Obsolete("This metod is marked as obsolet due to a bug that make player have the same id. Use Npc.Spawn(string) instead")]
         public static Npc Spawn(string name, RoleTypeId role, int id = 0, string userId = PlayerAuthenticationManager.DedicatedId, Vector3? position = null)
         {
-            GameObject newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);
+            var newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);
 
             Npc npc = new(newObject)
             {
@@ -219,7 +219,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Npc"/> spawned.</returns>
         public static Npc Spawn(string name, RoleTypeId role = RoleTypeId.None, bool ignored = false, string userId = PlayerAuthenticationManager.DedicatedId, Vector3? position = null)
         {
-            GameObject newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);
+            var newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);
 
             Npc npc = new(newObject)
             {
@@ -286,7 +286,7 @@ namespace Exiled.API.Features
         /// </summary>
         public static void DestroyAll()
         {
-            foreach (Npc npc in List)
+            foreach (var npc in List)
                 npc.Destroy();
         }
 
@@ -298,7 +298,7 @@ namespace Exiled.API.Features
             try
             {
                 Round.IgnoredPlayers.Remove(ReferenceHub);
-                NetworkConnectionToClient conn = ReferenceHub.connectionToClient;
+                var conn = ReferenceHub.connectionToClient;
                 ReferenceHub.OnDestroy();
                 CustomNetworkManager.TypedSingleton.OnServerDisconnect(conn);
                 Dictionary.Remove(GameObject);

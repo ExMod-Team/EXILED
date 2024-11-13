@@ -38,19 +38,19 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label retLabel = generator.DefineLabel();
-            Label isMutedLabel = generator.DefineLabel();
-            Label skipLabel = generator.DefineLabel();
+            var retLabel = generator.DefineLabel();
+            var isMutedLabel = generator.DefineLabel();
+            var skipLabel = generator.DefineLabel();
             List<Label> labels;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(VoiceChattingEventArgs));
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
-            LocalBuilder voiceModule = generator.DeclareLocal(typeof(VoiceModuleBase));
+            var ev = generator.DeclareLocal(typeof(VoiceChattingEventArgs));
+            var player = generator.DeclareLocal(typeof(API.Features.Player));
+            var voiceModule = generator.DeclareLocal(typeof(VoiceModuleBase));
 
             const int offset = 3;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(VoiceModuleBase), nameof(VoiceModuleBase.CheckRateLimit)))) + offset;
+            var index = newInstructions.FindIndex(i => i.Calls(Method(typeof(VoiceModuleBase), nameof(VoiceModuleBase.CheckRateLimit)))) + offset;
 
             // retrieve the base game jump label
             labels = newInstructions[index].ExtractLabels();
@@ -141,7 +141,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

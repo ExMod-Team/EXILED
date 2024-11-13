@@ -33,10 +33,10 @@ namespace Exiled.Events.Patches.Events.Scp0492
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 0;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_I4_0) + offset;
+            var offset = 0;
+            var index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_I4_0) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Scp0492
                 new(OpCodes.Ret),
             });
 
-            foreach (CodeInstruction instruction in newInstructions)
+            foreach (var instruction in newInstructions)
                 yield return instruction;
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

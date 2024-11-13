@@ -102,13 +102,13 @@ namespace Exiled.API.Features
         /// <returns>All GameObjects present inside SCP-914's intake chamber. And also return Player and Pickup casted.</returns>
         public static IEnumerable<GameObject> Scp914InputObject(out IEnumerable<Player> playersret, out IEnumerable<Pickup> pickupsret)
         {
-            HashSet<GameObject> inside914 = HashSetPool<GameObject>.Pool.Get();
-            List<Player> players = ListPool<Player>.Pool.Get();
-            List<Pickup> pickups = ListPool<Pickup>.Pool.Get();
+            var inside914 = HashSetPool<GameObject>.Pool.Get();
+            var players = ListPool<Player>.Pool.Get();
+            var pickups = ListPool<Pickup>.Pool.Get();
 
-            foreach (Collider collider in InsideIntake.ToList())
+            foreach (var collider in InsideIntake.ToList())
             {
-                GameObject gameObject = collider.transform.root.gameObject;
+                var gameObject = collider.transform.root.gameObject;
                 if (inside914.Add(gameObject))
                 {
                     Pickup pickup;
@@ -116,7 +116,7 @@ namespace Exiled.API.Features
                     {
                         pickups.Add(pickup);
                     }
-                    else if (Player.TryGet(gameObject, out Player player)
+                    else if (Player.TryGet(gameObject, out var player)
                         && Physics.Linecast(player.Position, IntakePosition, Scp914Upgrader.SolidObjectMask))
                     {
                         players.Add(player);

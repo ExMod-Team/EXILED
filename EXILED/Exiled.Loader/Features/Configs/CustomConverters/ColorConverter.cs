@@ -34,8 +34,8 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
             if (!parser.TryConsume<MappingStart>(out _))
                 throw new InvalidDataException($"Cannot deserialize object of type {type.FullName}");
 
-            List<object> coordinates = ListPool<object>.Pool.Get(4);
-            int i = 0;
+            var coordinates = ListPool<object>.Pool.Get(4);
+            var i = 0;
 
             while (!parser.TryConsume<MappingEnd>(out _))
             {
@@ -45,7 +45,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                     continue;
                 }
 
-                if (!parser.TryConsume(out Scalar scalar) || !float.TryParse(scalar.Value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out float coordinate))
+                if (!parser.TryConsume(out Scalar scalar) || !float.TryParse(scalar.Value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out var coordinate))
                 {
                     ListPool<object>.Pool.Return(coordinates);
                     throw new InvalidDataException("Invalid float value.");
@@ -54,7 +54,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                 coordinates.Add(coordinate);
             }
 
-            object color = Activator.CreateInstance(type, coordinates.ToArray());
+            var color = Activator.CreateInstance(type, coordinates.ToArray());
 
             ListPool<object>.Pool.Return(coordinates);
 
@@ -64,7 +64,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         /// <inheritdoc cref="IYamlTypeConverter" />
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
-            Dictionary<string, float> coordinates = DictionaryPool<string, float>.Pool.Get();
+            var coordinates = DictionaryPool<string, float>.Pool.Get();
 
             if (value is Color color)
             {
@@ -76,7 +76,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
             emitter.Emit(new MappingStart());
 
-            foreach (KeyValuePair<string, float> coordinate in coordinates)
+            foreach (var coordinate in coordinates)
             {
                 emitter.Emit(new Scalar(coordinate.Key));
                 emitter.Emit(new Scalar(coordinate.Value.ToString(CultureInfo.GetCultureInfo("en-US"))));

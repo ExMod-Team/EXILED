@@ -32,14 +32,14 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(EnteringPocketDimensionEventArgs));
+            var ev = generator.DeclareLocal(typeof(EnteringPocketDimensionEventArgs));
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            int offset = 0;
-            int index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(Scp106Attack), nameof(Scp106Attack.OnPlayerTeleported)))) + offset;
+            var offset = 0;
+            var index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(Scp106Attack), nameof(Scp106Attack.OnPlayerTeleported)))) + offset;
 
             // EnteringPocketDimensionEventArgs ev = new(Player.Get(this._targetHub), Player.Get(base.Owner), true);
             //
@@ -81,7 +81,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

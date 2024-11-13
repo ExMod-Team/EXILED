@@ -30,14 +30,14 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label retLabel = generator.DefineLabel();
+            var retLabel = generator.DefineLabel();
 
             const int offset = 1;
 
             // remove the reference hub Foreach
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.AllHubs))));
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.AllHubs))));
 
             newInstructions.RemoveRange(index, newInstructions.FindIndex(i => i.opcode == OpCodes.Endfinally) + offset - index);
 
@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Call, Method(typeof(TriggeringTesla), nameof(TriggeringTeslaEvent), new[] { typeof(BaseTeslaGate), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType() })),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -66,9 +66,9 @@ namespace Exiled.Events.Patches.Events.Player
 
         private static void TriggeringTeslaEvent(BaseTeslaGate baseTeslaGate, ref bool inIdleRange, ref bool isTriggerable)
         {
-            TeslaGate teslaGate = TeslaGate.Get(baseTeslaGate);
+            var teslaGate = TeslaGate.Get(baseTeslaGate);
 
-            foreach (Player player in Player.List)
+            foreach (var player in Player.List)
             {
                 if (player is null || !teslaGate.CanBeIdle(player))
                     continue;

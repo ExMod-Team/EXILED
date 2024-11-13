@@ -37,11 +37,11 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            Label returnLabel = generator.DefineLabel();
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var returnLabel = generator.DefineLabel();
 
-            int offset = -3;
-            int index = newInstructions.FindIndex(
+            var offset = -3;
+            var index = newInstructions.FindIndex(
                 instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerRemoveHandcuffsEvent))[0]) + offset;
 
             newInstructions.InsertRange(
@@ -132,7 +132,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -150,11 +150,11 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            Label returnLabel = generator.DefineLabel();
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var returnLabel = generator.DefineLabel();
 
-            int offset = 2;
-            int index = newInstructions.FindLastIndex(
+            var offset = 2;
+            var index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(ReferenceHub), nameof(ReferenceHub.TryGetHubNetID)))) + offset;
 
             newInstructions.InsertRange(
@@ -326,7 +326,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 2].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

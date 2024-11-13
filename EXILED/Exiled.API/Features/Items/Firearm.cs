@@ -68,7 +68,7 @@ namespace Exiled.API.Features.Items
         internal Firearm(ItemType type)
             : this((BaseFirearm)Server.Host.Inventory.CreateItemInstance(new(type, 0), false))
         {
-            FirearmStatusFlags firearmStatusFlags = FirearmStatusFlags.MagazineInserted;
+            var firearmStatusFlags = FirearmStatusFlags.MagazineInserted;
             if (Base.HasAdvantageFlag(AttachmentDescriptiveAdvantages.Flashlight))
                 firearmStatusFlags |= FirearmStatusFlags.FlashlightEnabled;
 
@@ -88,7 +88,7 @@ namespace Exiled.API.Features.Items
         {
             get
             {
-                IEnumerable<KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>>> playerPreferences =
+                var playerPreferences =
                     AttachmentsServerHandler.PlayerPreferences.Where(
                         kvp => kvp.Key is not null).Select(
                         (KeyValuePair<ReferenceHub, Dictionary<ItemType, uint>> keyValuePair) =>
@@ -192,7 +192,7 @@ namespace Exiled.API.Features.Items
         {
             get
             {
-                foreach (Attachment attachment in Attachments.Where(att => att.IsEnabled))
+                foreach (var attachment in Attachments.Where(att => att.IsEnabled))
                     yield return AvailableAttachments[FirearmType].FirstOrDefault(att => att == attachment);
             }
         }
@@ -259,7 +259,7 @@ namespace Exiled.API.Features.Items
             uint toRemove = 0;
             uint code = 1;
 
-            foreach (Attachment attachment in Base.Attachments)
+            foreach (var attachment in Base.Attachments)
             {
                 if (attachment.Slot == identifier.Slot && attachment.IsEnabled)
                 {
@@ -270,7 +270,7 @@ namespace Exiled.API.Features.Items
                 code *= 2;
             }
 
-            uint newCode = identifier.Code == 0
+            var newCode = identifier.Code == 0
                 ? AvailableAttachments[FirearmType].FirstOrDefault(
                     attId =>
                         attId.Name == identifier.Name).Code
@@ -292,7 +292,7 @@ namespace Exiled.API.Features.Items
         /// <param name="identifiers">The <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to add.</param>
         public void AddAttachment(IEnumerable<AttachmentIdentifier> identifiers)
         {
-            foreach (AttachmentIdentifier identifier in identifiers)
+            foreach (var identifier in identifiers)
                 AddAttachment(identifier);
         }
 
@@ -302,7 +302,7 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentNames">The <see cref="IEnumerable{T}"/> of <see cref="AttachmentName"/> to add.</param>
         public void AddAttachment(IEnumerable<AttachmentName> attachmentNames)
         {
-            foreach (AttachmentName attachmentName in attachmentNames)
+            foreach (var attachmentName in attachmentNames)
                 AddAttachment(attachmentName);
         }
 
@@ -315,7 +315,7 @@ namespace Exiled.API.Features.Items
             if (!Attachments.Any(attachment => (attachment.Name == identifier.Name) && attachment.IsEnabled))
                 return;
 
-            uint code = identifier.Code;
+            var code = identifier.Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
@@ -331,7 +331,7 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentName">The <see cref="AttachmentName"/> to remove.</param>
         public void RemoveAttachment(AttachmentName attachmentName)
         {
-            uint code = AttachmentIdentifier.Get(FirearmType, attachmentName).Code;
+            var code = AttachmentIdentifier.Get(FirearmType, attachmentName).Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
@@ -347,12 +347,12 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentSlot">The <see cref="AttachmentSlot"/> to remove.</param>
         public void RemoveAttachment(AttachmentSlot attachmentSlot)
         {
-            Attachment firearmAttachment = Attachments.FirstOrDefault(att => (att.Slot == attachmentSlot) && att.IsEnabled);
+            var firearmAttachment = Attachments.FirstOrDefault(att => (att.Slot == attachmentSlot) && att.IsEnabled);
 
             if (firearmAttachment is null)
                 return;
 
-            uint code = AvailableAttachments[FirearmType].FirstOrDefault(attId => attId == firearmAttachment).Code;
+            var code = AvailableAttachments[FirearmType].FirstOrDefault(attId => attId == firearmAttachment).Code;
 
             Base.ApplyAttachmentsCode(Base.GetCurrentAttachmentsCode() & ~code, true);
 
@@ -368,7 +368,7 @@ namespace Exiled.API.Features.Items
         /// <param name="identifiers">The <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to remove.</param>
         public void RemoveAttachment(IEnumerable<AttachmentIdentifier> identifiers)
         {
-            foreach (AttachmentIdentifier identifier in identifiers)
+            foreach (var identifier in identifiers)
                 RemoveAttachment(identifier);
         }
 
@@ -378,7 +378,7 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentNames">The <see cref="IEnumerable{T}"/> of <see cref="AttachmentName"/> to remove.</param>
         public void RemoveAttachment(IEnumerable<AttachmentName> attachmentNames)
         {
-            foreach (AttachmentName attachmentName in attachmentNames)
+            foreach (var attachmentName in attachmentNames)
                 RemoveAttachment(attachmentName);
         }
 
@@ -388,7 +388,7 @@ namespace Exiled.API.Features.Items
         /// <param name="attachmentSlots">The <see cref="IEnumerable{T}"/> of <see cref="AttachmentSlot"/> to remove.</param>
         public void RemoveAttachment(IEnumerable<AttachmentSlot> attachmentSlots)
         {
-            foreach (AttachmentSlot attachmentSlot in attachmentSlots)
+            foreach (var attachmentSlot in attachmentSlots)
                 RemoveAttachment(attachmentSlot);
         }
 
@@ -458,12 +458,12 @@ namespace Exiled.API.Features.Items
         /// <param name="attachments">The <see cref="AttachmentIdentifier"/>[] to add.</param>
         public void AddPreference(Player player, FirearmType itemType, AttachmentIdentifier[] attachments)
         {
-            foreach (KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>> kvp in PlayerPreferences)
+            foreach (var kvp in PlayerPreferences)
             {
                 if (kvp.Key != player)
                     continue;
 
-                if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
+                if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out var dictionary))
                     dictionary[itemType.GetItemType()] = attachments.GetAttachmentsCode();
             }
         }
@@ -482,7 +482,7 @@ namespace Exiled.API.Features.Items
         /// <param name="preference">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="Enums.FirearmType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
         public void AddPreference(Player player, Dictionary<FirearmType, AttachmentIdentifier[]> preference)
         {
-            foreach (KeyValuePair<FirearmType, AttachmentIdentifier[]> kvp in preference)
+            foreach (var kvp in preference)
                 AddPreference(player, kvp);
         }
 
@@ -494,7 +494,7 @@ namespace Exiled.API.Features.Items
         /// <param name="attachments">The <see cref="AttachmentIdentifier"/>[] to add.</param>
         public void AddPreference(IEnumerable<Player> players, FirearmType type, AttachmentIdentifier[] attachments)
         {
-            foreach (Player player in players)
+            foreach (var player in players)
                 AddPreference(player, type, attachments);
         }
 
@@ -505,7 +505,7 @@ namespace Exiled.API.Features.Items
         /// <param name="preference">The <see cref="KeyValuePair{TKey, TValue}"/> of <see cref="Enums.FirearmType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
         public void AddPreference(IEnumerable<Player> players, KeyValuePair<FirearmType, AttachmentIdentifier[]> preference)
         {
-            foreach (Player player in players)
+            foreach (var player in players)
                 AddPreference(player, preference.Key, preference.Value);
         }
 
@@ -516,7 +516,7 @@ namespace Exiled.API.Features.Items
         /// <param name="preference">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="Enums.FirearmType"/> and <see cref="AttachmentIdentifier"/>[] to add.</param>
         public void AddPreference(IEnumerable<Player> players, Dictionary<FirearmType, AttachmentIdentifier[]> preference)
         {
-            foreach ((Player player, KeyValuePair<FirearmType, AttachmentIdentifier[]> kvp) in players.SelectMany(player => preference.Select(kvp => (player, kvp))))
+            foreach ((var player, var kvp) in players.SelectMany(player => preference.Select(kvp => (player, kvp))))
                 AddPreference(player, kvp);
         }
 
@@ -527,12 +527,12 @@ namespace Exiled.API.Features.Items
         /// <param name="type">The <see cref="Enums.FirearmType"/> to remove.</param>
         public void RemovePreference(Player player, FirearmType type)
         {
-            foreach (KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>> kvp in PlayerPreferences)
+            foreach (var kvp in PlayerPreferences)
             {
                 if (kvp.Key != player)
                     continue;
 
-                if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
+                if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out var dictionary))
                     dictionary[type.GetItemType()] = type.GetBaseCode();
             }
         }
@@ -544,7 +544,7 @@ namespace Exiled.API.Features.Items
         /// <param name="type">The <see cref="Enums.FirearmType"/> to remove.</param>
         public void RemovePreference(IEnumerable<Player> players, FirearmType type)
         {
-            foreach (Player player in players)
+            foreach (var player in players)
                 RemovePreference(player, type);
         }
 
@@ -555,7 +555,7 @@ namespace Exiled.API.Features.Items
         /// <param name="types">The <see cref="IEnumerable{T}"/> of <see cref="Enums.FirearmType"/> to remove.</param>
         public void RemovePreference(Player player, IEnumerable<FirearmType> types)
         {
-            foreach (FirearmType itemType in types)
+            foreach (var itemType in types)
                 RemovePreference(player, itemType);
         }
 
@@ -566,7 +566,7 @@ namespace Exiled.API.Features.Items
         /// <param name="types">The <see cref="IEnumerable{T}"/> of <see cref="Enums.FirearmType"/> to remove.</param>
         public void RemovePreference(IEnumerable<Player> players, IEnumerable<FirearmType> types)
         {
-            foreach ((Player player, FirearmType firearmType) in players.SelectMany(player => types.Select(itemType => (player, itemType))))
+            foreach ((var player, var firearmType) in players.SelectMany(player => types.Select(itemType => (player, itemType))))
                 RemovePreference(player, firearmType);
         }
 
@@ -576,9 +576,9 @@ namespace Exiled.API.Features.Items
         /// <param name="player">The <see cref="Player"/> of which must be cleared.</param>
         public void ClearPreferences(Player player)
         {
-            if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
+            if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out var dictionary))
             {
-                foreach (KeyValuePair<ItemType, uint> kvp in dictionary)
+                foreach (var kvp in dictionary)
                     dictionary[kvp.Key] = kvp.Key.GetFirearmType().GetBaseCode();
             }
         }
@@ -589,7 +589,7 @@ namespace Exiled.API.Features.Items
         /// <param name="players">The <see cref="IEnumerable{T}"/> of <see cref="Player"/> of which must be cleared.</param>
         public void ClearPreferences(IEnumerable<Player> players)
         {
-            foreach (Player player in players)
+            foreach (var player in players)
                 ClearPreferences(player);
         }
 
@@ -598,7 +598,7 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public void ClearPreferences()
         {
-            foreach (Player player in Player.List)
+            foreach (var player in Player.List)
                 ClearPreferences(player);
         }
 

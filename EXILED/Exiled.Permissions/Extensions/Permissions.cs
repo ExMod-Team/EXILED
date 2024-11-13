@@ -56,7 +56,7 @@ namespace Exiled.Permissions.Extensions
         {
             get
             {
-                foreach (KeyValuePair<string, Group> group in Groups)
+                foreach (var group in Groups)
                 {
                     if (group.Value.IsDefault)
                         return group.Value;
@@ -99,9 +99,9 @@ namespace Exiled.Permissions.Extensions
 
             try
             {
-                Dictionary<string, object> rawDeserializedPerms = Deserializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(Instance.Config.FullPath)) ?? DictionaryPool<string, object>.Pool.Get();
+                var rawDeserializedPerms = Deserializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(Instance.Config.FullPath)) ?? DictionaryPool<string, object>.Pool.Get();
                 Dictionary<string, Group> deserializedPerms = new();
-                foreach (KeyValuePair<string, object> group in rawDeserializedPerms)
+                foreach (var group in rawDeserializedPerms)
                 {
                     try
                     {
@@ -130,7 +130,7 @@ namespace Exiled.Permissions.Extensions
                 Log.Error($"Unable to parse permission config:\n{e}.\nMake sure your config file is setup correctly, every group defined must include inheritance and permissions values, even if they are empty.");
             }
 
-            foreach (KeyValuePair<string, Group> group in Groups.Reverse())
+            foreach (var group in Groups.Reverse())
             {
                 try
                 {
@@ -207,10 +207,10 @@ namespace Exiled.Permissions.Extensions
             Log.Debug($"UserID: {player.UserId} | PlayerId: {player.Id}");
             Log.Debug($"Permission string: {permission}");
 
-            string plyGroupKey = player.Group is not null ? ServerStatic.GetPermissionsHandler()._groups.FirstOrDefault(g => g.Value.EqualsTo(player.Group)).Key : null;
+            var plyGroupKey = player.Group is not null ? ServerStatic.GetPermissionsHandler()._groups.FirstOrDefault(g => g.Value.EqualsTo(player.Group)).Key : null;
             Log.Debug($"GroupKey: {plyGroupKey ?? "(null)"}");
 
-            if (plyGroupKey is null || !Groups.TryGetValue(plyGroupKey, out Group group))
+            if (plyGroupKey is null || !Groups.TryGetValue(plyGroupKey, out var group))
             {
                 Log.Debug("The source group is null, the default group is used");
                 group = DefaultGroup;
@@ -230,13 +230,13 @@ namespace Exiled.Permissions.Extensions
 
             if (permission.Contains(permSeparator))
             {
-                StringBuilder strBuilder = StringBuilderPool.Pool.Get();
-                string[] seraratedPermissions = permission.Split(permSeparator);
+                var strBuilder = StringBuilderPool.Pool.Get();
+                var seraratedPermissions = permission.Split(permSeparator);
 
                 bool Check(string source) => group.CombinedPermissions.Contains(source, StringComparison.OrdinalIgnoreCase);
 
-                bool result = false;
-                for (int z = 0; z < seraratedPermissions.Length; z++)
+                var result = false;
+                for (var z = 0; z < seraratedPermissions.Length; z++)
                 {
                     if (z != 0)
                     {
@@ -273,7 +273,7 @@ namespace Exiled.Permissions.Extensions
             }
 
             // It'll work when there is no dot in the permission.
-            bool result2 = group.CombinedPermissions.Contains(permission, StringComparison.OrdinalIgnoreCase);
+            var result2 = group.CombinedPermissions.Contains(permission, StringComparison.OrdinalIgnoreCase);
 
             Log.Debug($"Result outside the block: {result2}");
 

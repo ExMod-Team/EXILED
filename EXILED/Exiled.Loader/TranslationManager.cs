@@ -37,10 +37,10 @@ namespace Exiled.Loader
             {
                 Log.Info($"Loading plugin translations... ({LoaderPlugin.Config.ConfigType})");
 
-                Dictionary<string, object> rawDeserializedTranslations = Loader.Deserializer.Deserialize<Dictionary<string, object>>(rawTranslations) ?? DictionaryPool<string, object>.Pool.Get();
+                var rawDeserializedTranslations = Loader.Deserializer.Deserialize<Dictionary<string, object>>(rawTranslations) ?? DictionaryPool<string, object>.Pool.Get();
                 SortedDictionary<string, ITranslation> deserializedTranslations = new(StringComparer.Ordinal);
 
-                foreach (IPlugin<IConfig> plugin in Loader.Plugins)
+                foreach (var plugin in Loader.Plugins)
                 {
                     if (plugin.InternalTranslation is null)
                         continue;
@@ -115,7 +115,7 @@ namespace Exiled.Loader
         /// <returns>Returns a value indicating whether the translations have been saved successfully or not.</returns>
         public static bool SaveSeparatedTranslation(this string pluginPrefix, string translations)
         {
-            string translationsPath = Paths.GetTranslationPath(pluginPrefix);
+            var translationsPath = Paths.GetTranslationPath(pluginPrefix);
 
             try
             {
@@ -217,7 +217,7 @@ namespace Exiled.Loader
                 rawTranslations = Loader.Deserializer.Deserialize<Dictionary<string, object>>(Read()) ?? DictionaryPool<string, object>.Pool.Get();
             }
 
-            if (!rawTranslations.TryGetValue(plugin.Prefix, out object rawDeserializedTranslation))
+            if (!rawTranslations.TryGetValue(plugin.Prefix, out var rawDeserializedTranslation))
             {
                 Log.Warn($"{plugin.Name} doesn't have default translations, generating...");
                 return plugin.InternalTranslation;

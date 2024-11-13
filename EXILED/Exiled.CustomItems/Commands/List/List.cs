@@ -45,7 +45,7 @@ namespace Exiled.CustomItems.Commands.List
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (arguments.IsEmpty() && TryGetCommand(Registered.Instance.Command, out ICommand command))
+            if (arguments.IsEmpty() && TryGetCommand(Registered.Instance.Command, out var command))
             {
                 command.Execute(arguments, sender, out response);
                 response += $"\nTo view custom items in players' inventories, use the command: {string.Join(" ", arguments.Array)} insideinventories";

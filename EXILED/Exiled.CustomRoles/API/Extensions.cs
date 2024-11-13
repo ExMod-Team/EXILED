@@ -32,7 +32,7 @@ namespace Exiled.CustomRoles.API
         {
             List<CustomRole> roles = new();
 
-            foreach (CustomRole customRole in CustomRole.Registered)
+            foreach (var customRole in CustomRole.Registered)
             {
                 if (customRole.Check(player))
                     roles.Add(customRole);
@@ -50,7 +50,7 @@ namespace Exiled.CustomRoles.API
             if (customRoles is null)
                 throw new ArgumentNullException(nameof(customRoles));
 
-            foreach (CustomRole customRole in customRoles)
+            foreach (var customRole in customRoles)
                 customRole.TryRegister();
         }
 
@@ -75,7 +75,7 @@ namespace Exiled.CustomRoles.API
             if (customRoles is null)
                 throw new ArgumentNullException(nameof(customRoles));
 
-            foreach (CustomRole customRole in customRoles)
+            foreach (var customRole in customRoles)
                 customRole.TryUnregister();
         }
 
@@ -96,13 +96,13 @@ namespace Exiled.CustomRoles.API
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to get abilities for.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of their active abilities, or <see langword="null"/> if none.</returns>
-        public static IEnumerable<ActiveAbility>? GetActiveAbilities(this Player player) => !ActiveAbility.AllActiveAbilities.TryGetValue(player, out HashSet<ActiveAbility> abilities) ? null : abilities;
+        public static IEnumerable<ActiveAbility>? GetActiveAbilities(this Player player) => !ActiveAbility.AllActiveAbilities.TryGetValue(player, out var abilities) ? null : abilities;
 
         /// <summary>
         /// Gets the <see cref="Player"/>'s selected ability.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to check.</param>
         /// <returns>The <see cref="ActiveAbility"/> the <see cref="Player"/> has selected, or <see langword="null"/>.</returns>
-        public static ActiveAbility? GetSelectedAbility(this Player player) => !ActiveAbility.AllActiveAbilities.TryGetValue(player, out HashSet<ActiveAbility> abilities) ? null : abilities.FirstOrDefault(a => a.Check(player, CheckType.Selected));
+        public static ActiveAbility? GetSelectedAbility(this Player player) => !ActiveAbility.AllActiveAbilities.TryGetValue(player, out var abilities) ? null : abilities.FirstOrDefault(a => a.Check(player, CheckType.Selected));
     }
 }

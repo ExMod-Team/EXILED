@@ -93,7 +93,7 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public float RemainingCooldown
         {
-            get => UsableItemsController.GlobalItemCooldowns.TryGetValue(Serial, out float value) ? value : -1;
+            get => UsableItemsController.GlobalItemCooldowns.TryGetValue(Serial, out var value) ? value : -1;
             set => UsableItemsController.GlobalItemCooldowns[Serial] = Time.timeSinceLevelLoad + value;
         }
 
@@ -113,9 +113,9 @@ namespace Exiled.API.Features.Items
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            var ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
 
-            Pickup pickup = Pickup.Get(ipb);
+            var pickup = Pickup.Get(ipb);
 
             if (spawn)
                 pickup.Spawn();

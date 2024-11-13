@@ -29,9 +29,9 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder issuingPlayer = generator.DeclareLocal(typeof(Player));
+            var issuingPlayer = generator.DeclareLocal(typeof(Player));
 
             newInstructions.InsertRange(
                 0,
@@ -44,8 +44,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc, issuingPlayer.LocalIndex),
                 });
 
-            int offset = -6;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FileManager), nameof(FileManager.AppendFile)))) + offset;
+            var offset = -6;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FileManager), nameof(FileManager.AppendFile)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -75,7 +75,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnBanned))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

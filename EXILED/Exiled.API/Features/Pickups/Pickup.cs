@@ -83,7 +83,7 @@ namespace Exiled.API.Features.Pickups
         /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
         internal Pickup(ItemType type)
         {
-            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out ItemBase itemBase))
+            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out var itemBase))
                 return;
 
             Base = Object.Instantiate(itemBase.PickupDropModel);
@@ -310,7 +310,7 @@ namespace Exiled.API.Features.Pickups
             if (pickupBase == null)
                 return null;
 
-            if (BaseToPickup.TryGetValue(pickupBase, out Pickup pickup))
+            if (BaseToPickup.TryGetValue(pickupBase, out var pickup))
                 return pickup;
 
             return pickupBase switch
@@ -390,9 +390,9 @@ namespace Exiled.API.Features.Pickups
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Pickup"/> containing all existing <see cref="ItemPickupBase"/> instances.</returns>
         public static IEnumerable<Pickup> Get(IEnumerable<GameObject> gameObjects)
         {
-            foreach (GameObject gameObject in gameObjects)
+            foreach (var gameObject in gameObjects)
             {
-                Pickup pickup = Get(gameObject);
+                var pickup = Get(gameObject);
                 if (pickup is null)
                     continue;
 
@@ -409,9 +409,9 @@ namespace Exiled.API.Features.Pickups
         public static IEnumerable<T> Get<T>(IEnumerable<ItemPickupBase> pickups)
             where T : Pickup
         {
-            foreach (ItemPickupBase ipb in pickups)
+            foreach (var ipb in pickups)
             {
-                Pickup pickup = Get(ipb);
+                var pickup = Get(ipb);
                 if (pickup is null || !pickup.Cast(out T param))
                     continue;
 
@@ -429,7 +429,7 @@ namespace Exiled.API.Features.Pickups
         public static IEnumerable<T> Get<T>(ItemType type)
             where T : Pickup
         {
-            foreach (Pickup pickup in List)
+            foreach (var pickup in List)
             {
                 if (pickup.Type != type || !pickup.Cast(out T param))
                     continue;
@@ -447,9 +447,9 @@ namespace Exiled.API.Features.Pickups
         public static IEnumerable<T> Get<T>(IEnumerable<GameObject> gameObjects)
             where T : Pickup
         {
-            foreach (GameObject gameObject in gameObjects)
+            foreach (var gameObject in gameObjects)
             {
-                Pickup pickup = Get(gameObject);
+                var pickup = Get(gameObject);
                 if (pickup is null || !pickup.Cast(out T param))
                     continue;
 

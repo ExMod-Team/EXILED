@@ -36,12 +36,12 @@ namespace Exiled.Events.Patches.Events.Scp096
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             const int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.TargetState)))) + offset;
+            var index = newInstructions.FindIndex(instruction => instruction.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.TargetState)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -74,7 +74,7 @@ namespace Exiled.Events.Patches.Events.Scp096
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

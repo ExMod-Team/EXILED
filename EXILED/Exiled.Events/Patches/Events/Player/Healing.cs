@@ -31,17 +31,17 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
-            Label skipHealing = generator.DefineLabel();
-            Label skipHealed = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
+            var skipHealing = generator.DefineLabel();
+            var skipHealed = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(HealingEventArgs));
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
-            LocalBuilder lastHealth = generator.DeclareLocal(typeof(float));
+            var ev = generator.DeclareLocal(typeof(HealingEventArgs));
+            var player = generator.DeclareLocal(typeof(Player));
+            var lastHealth = generator.DeclareLocal(typeof(float));
 
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldarg_1);
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldarg_1);
 
             newInstructions.InsertRange(index, new[]
             {
@@ -104,7 +104,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Handlers.Player), nameof(Handlers.Player.OnHealed))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

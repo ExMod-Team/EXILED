@@ -26,11 +26,11 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldc_I4_0);
+            var index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldc_I4_0);
             newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(index, new CodeInstruction[]
@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Ret),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

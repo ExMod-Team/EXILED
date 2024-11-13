@@ -72,7 +72,7 @@ namespace Exiled.API.Features.Core.Generic
         /// <returns><see langword="true"/> if the instance was destroyed; otherwise, <see langword="false"/>.</returns>
         public static bool Destroy(T @object)
         {
-            if (Instances.TryGetValue(@object, out Singleton<T> _))
+            if (Instances.TryGetValue(@object, out var _))
             {
                 Instances[@object] = null;
                 return Instances.Remove(@object);

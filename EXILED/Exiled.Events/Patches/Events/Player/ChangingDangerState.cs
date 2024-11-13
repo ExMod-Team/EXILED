@@ -33,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static bool Prefix(DangerStackBase __instance, bool value)
         {
-            DangerType type = __instance.GetDangerType();
+            var type = __instance.GetDangerType();
 
             if (value == __instance._isActive)
                 return false;
@@ -54,7 +54,7 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static bool Prefix(EncounterDangerBase __instance, ReferenceHub target)
         {
-            DangerType type = __instance.GetDangerType();
+            var type = __instance.GetDangerType();
 
             ChangingDangerStateEventArgs ev = new(Player.Get(__instance.Owner), __instance, type, true, Player.Get(target));
             Handlers.Player.OnChangingDangerState(ev);
@@ -72,14 +72,14 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingGroupEventArgs));
+            var ev = generator.DeclareLocal(typeof(ChangingGroupEventArgs));
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            int offset = -6;
-            int index = newInstructions.FindLastIndex(
+            var offset = -6;
+            var index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(List<DangerStackBase>), nameof(List<DangerStackBase>.Add)))) + offset;
 
             newInstructions.InsertRange(
@@ -124,7 +124,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -142,14 +142,14 @@ namespace Exiled.Events.Patches.Events.Player
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingGroupEventArgs));
+            var ev = generator.DeclareLocal(typeof(ChangingGroupEventArgs));
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            int offset = -3;
-            int index = newInstructions.FindLastIndex(
+            var offset = -3;
+            var index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(List<DangerStackBase>), nameof(List<DangerStackBase>.RemoveAt)))) + offset;
 
             newInstructions.InsertRange(
@@ -196,7 +196,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

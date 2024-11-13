@@ -161,7 +161,7 @@ namespace Exiled.API.Features
         /// <param name="duration">The duration in seconds.</param>
         public static void ShowHint(string message, float duration = 3f)
         {
-            foreach (Player player in Player.List)
+            foreach (var player in Player.List)
                 player.ShowHint(message, duration);
         }
 
@@ -188,9 +188,9 @@ namespace Exiled.API.Features
         /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
         public static void TurnOffAllLights(float duration, ZoneType zoneTypes = ZoneType.Unspecified)
         {
-            foreach (RoomLightController controller in RoomLightController.Instances)
+            foreach (var controller in RoomLightController.Instances)
             {
-                Room room = controller.GetComponentInParent<Room>();
+                var room = controller.GetComponentInParent<Room>();
                 if (room == null)
                     continue;
 
@@ -206,7 +206,7 @@ namespace Exiled.API.Features
         /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
         public static void TurnOffAllLights(float duration, IEnumerable<ZoneType> zoneTypes)
         {
-            foreach (ZoneType zone in zoneTypes)
+            foreach (var zone in zoneTypes)
                 TurnOffAllLights(duration, zone);
         }
 
@@ -216,7 +216,7 @@ namespace Exiled.API.Features
         /// <param name="color">The new <see cref="Color"/> of the lights.</param>
         public static void ChangeLightsColor(Color color)
         {
-            foreach (RoomLightController light in RoomLightController.Instances)
+            foreach (var light in RoomLightController.Instances)
                 light.NetworkOverrideColor = color;
         }
 
@@ -225,7 +225,7 @@ namespace Exiled.API.Features
         /// </summary>
         public static void ResetLightsColor()
         {
-            foreach (RoomLightController light in RoomLightController.Instances)
+            foreach (var light in RoomLightController.Instances)
                 light.NetworkOverrideColor = Color.clear;
         }
 
@@ -246,7 +246,7 @@ namespace Exiled.API.Features
         /// <returns><see cref="Pickup"/> object.</returns>
         public static Pickup GetRandomPickup(ItemType type = ItemType.None)
         {
-            List<Pickup> pickups = (type != ItemType.None ? Pickup.List.Where(p => p.Type == type) : Pickup.List).ToList();
+            var pickups = (type != ItemType.None ? Pickup.List.Where(p => p.Type == type) : Pickup.List).ToList();
             return pickups.GetRandomValue();
         }
 
@@ -281,7 +281,7 @@ namespace Exiled.API.Features
         /// </summary>
         public static void CleanAllItems()
         {
-            foreach (Pickup pickup in Pickup.List.ToList())
+            foreach (var pickup in Pickup.List.ToList())
                 pickup.Destroy();
         }
 
@@ -291,7 +291,7 @@ namespace Exiled.API.Features
         /// <param name="pickups">The List of pickups to destroy.</param>
         public static void CleanAllItems(IEnumerable<Pickup> pickups)
         {
-            foreach (Pickup pickup in pickups)
+            foreach (var pickup in pickups)
                 pickup.Destroy();
         }
 
@@ -300,7 +300,7 @@ namespace Exiled.API.Features
         /// </summary>
         public static void CleanAllRagdolls()
         {
-            foreach (Ragdoll ragDoll in Ragdoll.List.ToList())
+            foreach (var ragDoll in Ragdoll.List.ToList())
                 ragDoll.Destroy();
         }
 
@@ -310,7 +310,7 @@ namespace Exiled.API.Features
         /// <param name="ragDolls">The List of RagDolls to destroy.</param>
         public static void CleanAllRagdolls(IEnumerable<Ragdoll> ragDolls)
         {
-            foreach (Ragdoll ragDoll in ragDolls)
+            foreach (var ragDoll in ragDolls)
                 ragDoll.Destroy();
         }
 

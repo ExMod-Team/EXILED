@@ -29,7 +29,7 @@ namespace Exiled.Events.Patches.Events.Map
     {
         private static void Postfix(ItemPickupBase ipb)
         {
-            if (TrackedItems.TryGetValue(ipb, out PocketItem pocketItem))
+            if (TrackedItems.TryGetValue(ipb, out var pocketItem))
             {
                 PlacingPickupIntoPocketDimensionEventArgs ev = new(ipb, pocketItem, true);
                 Map.OnPlacingPickupIntoPocketDimension(ev);

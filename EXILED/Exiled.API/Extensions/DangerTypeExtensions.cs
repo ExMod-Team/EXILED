@@ -46,7 +46,7 @@ namespace Exiled.API.Extensions
         /// <param name="danger">The <see cref="DangerType"/> enum.</param>
         /// <returns>The <see cref="System.Type"/>.</returns>
         public static Type Type(this DangerType danger)
-            => DangerTypeToType.TryGetValue(danger, out Type type) ? type : throw new InvalidOperationException("Invalid danger enum provided");
+            => DangerTypeToType.TryGetValue(danger, out var type) ? type : throw new InvalidOperationException("Invalid danger enum provided");
 
         /// <summary>
         /// Gets an instance of <see cref="System.Type"/> points to a danger.
@@ -63,7 +63,7 @@ namespace Exiled.API.Extensions
         /// <param name="dangerStackBase">The <see cref="DangerStackBase"/> enum.</param>
         /// <returns>The <see cref="DangerType"/>.</returns>
         public static DangerType GetDangerType(this DangerStackBase dangerStackBase)
-            => TypeToDangerType.TryGetValue(dangerStackBase.GetType(), out DangerType danger) ? danger : throw new InvalidOperationException("Invalid danger base provided");
+            => TypeToDangerType.TryGetValue(dangerStackBase.GetType(), out var danger) ? danger : throw new InvalidOperationException("Invalid danger base provided");
 
         /// <summary>
         /// Gets the <see cref="DangerType"/> of the specified <see cref="DangerStackBase"/>.

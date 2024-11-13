@@ -41,7 +41,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
         internal Projectile(ItemType type)
         {
-            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out ItemBase itemBase) || itemBase is not ThrowableItem throwable)
+            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out var itemBase) || itemBase is not ThrowableItem throwable)
                 return;
 
             throwable.Projectile.gameObject.SetActive(false);

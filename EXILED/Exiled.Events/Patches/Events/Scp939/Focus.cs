@@ -32,14 +32,14 @@ namespace Exiled.Events.Patches.Events.Scp939
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder state = generator.DeclareLocal(typeof(bool));
+            var state = generator.DeclareLocal(typeof(bool));
 
-            Label ret = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
-            int offset = -3;
-            int index = newInstructions.FindIndex(i => i.operand == (object)PropertySetter(typeof(Scp939FocusKeySync), nameof(Scp939FocusKeySync.FocusKeyHeld))) + offset;
+            var offset = -3;
+            var index = newInstructions.FindIndex(i => i.operand == (object)PropertySetter(typeof(Scp939FocusKeySync), nameof(Scp939FocusKeySync.FocusKeyHeld))) + offset;
 
             // Remove argument for this.FocusKeyHeld(reader.ReadBool()) to overwrite them in InsertRange
             newInstructions.RemoveRange(index, 3);
@@ -78,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Scp939
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

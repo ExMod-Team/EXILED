@@ -50,13 +50,13 @@ namespace Exiled.API.Features.DynamicEvents
             if (ev is null)
                 return;
 
-            string eventName = ev.GetType().FullName;
+            var eventName = ev.GetType().FullName;
 
-            foreach (Delegate @delegate in ev.GetInvocationList())
+            foreach (var @delegate in ev.GetInvocationList())
             {
                 try
                 {
-                    FDelegate<T> handler = (FDelegate<T>)@delegate;
+                    var handler = (FDelegate<T>)@delegate;
                     handler(arg);
                 }
                 catch (Exception ex)
@@ -76,13 +76,13 @@ namespace Exiled.API.Features.DynamicEvents
             if (ev is null)
                 return;
 
-            string eventName = ev.GetType().FullName;
+            var eventName = ev.GetType().FullName;
 
-            foreach (Delegate @delegate in ev.GetInvocationList())
+            foreach (var @delegate in ev.GetInvocationList())
             {
                 try
                 {
-                    FDelegate handler = (FDelegate)@delegate;
+                    var handler = (FDelegate)@delegate;
                     handler();
                 }
                 catch (Exception ex)
@@ -98,15 +98,15 @@ namespace Exiled.API.Features.DynamicEvents
         /// <param name="obj">The type instance.</param>
         public void BindAllFromTypeInstance(object obj)
         {
-            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-            foreach (FieldInfo field in obj.GetType().GetFields(flags))
+            foreach (var field in obj.GetType().GetFields(flags))
             {
                 if (field.GetCustomAttribute<DynamicEventDispatcherAttribute>() is not null)
                     field.SetValue(obj, Activator.CreateInstance(field.FieldType, flags, null, null, null), flags, null, null);
             }
 
-            foreach (PropertyInfo property in obj.GetType().GetProperties(flags))
+            foreach (var property in obj.GetType().GetProperties(flags))
             {
                 if (property.GetCustomAttribute<DynamicEventDispatcherAttribute>() is not null)
                     property.SetValue(obj, Activator.CreateInstance(property.PropertyType, flags, null, null, null), flags, null, null, null);
@@ -119,15 +119,15 @@ namespace Exiled.API.Features.DynamicEvents
         /// <param name="obj">The type instance.</param>
         public void UnbindAllFromTypeInstance(object obj)
         {
-            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-            foreach (FieldInfo field in obj.GetType().GetFields(flags))
+            foreach (var field in obj.GetType().GetFields(flags))
             {
                 if (field.GetValue(obj) is IDynamicEventDispatcher ev)
                     ev.UnbindAll();
             }
 
-            foreach (PropertyInfo property in obj.GetType().GetProperties(flags))
+            foreach (var property in obj.GetType().GetProperties(flags))
             {
                 try
                 {

@@ -40,10 +40,10 @@ namespace Exiled.Events.Patches.Generic
             IEnumerable<CodeInstruction> instructions,
             ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 0;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldarg_S) + offset;
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldarg_S) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Generic
                 new(OpCodes.Callvirt, Method(typeof(Pickup), nameof(Pickup.ReadItemInfo))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -74,7 +74,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
             {
@@ -84,7 +84,7 @@ namespace Exiled.Events.Patches.Generic
                 new(OpCodes.Pop),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

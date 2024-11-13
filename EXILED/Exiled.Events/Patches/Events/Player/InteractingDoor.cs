@@ -31,14 +31,14 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(InteractingDoorEventArgs));
+            var ev = generator.DeclareLocal(typeof(InteractingDoorEventArgs));
 
             List<Label> jmp = null;
-            Label interactionAllowed = generator.DefineLabel();
-            Label permissionDenied = generator.DefineLabel();
-            Label retLabel = generator.DefineLabel();
+            var interactionAllowed = generator.DefineLabel();
+            var permissionDenied = generator.DefineLabel();
+            var retLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 0,
@@ -54,8 +54,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, ev.LocalIndex),
                 });
 
-            int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(DoorVariant), nameof(DoorVariant.LockBypassDenied)))) + offset;
+            var offset = -3;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(DoorVariant), nameof(DoorVariant.LockBypassDenied)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -119,7 +119,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

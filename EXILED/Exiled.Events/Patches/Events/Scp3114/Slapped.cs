@@ -32,12 +32,12 @@ namespace Exiled.Events.Patches.Events.Scp3114
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(instruction =>
+            var index = newInstructions.FindIndex(instruction =>
                 instruction.opcode == OpCodes.Ret);
 
-            Label label = generator.DefineLabel();
+            var label = generator.DefineLabel();
 
             newInstructions[index] = new CodeInstruction(OpCodes.Br, label);
 
@@ -63,7 +63,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
                 new(OpCodes.Call, Method(typeof(Scp3114), nameof(Scp3114.OnSlapped))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

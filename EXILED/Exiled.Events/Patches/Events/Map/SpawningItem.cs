@@ -33,21 +33,21 @@ namespace Exiled.Events.Patches.Events.Map
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder door = generator.DeclareLocal(typeof(DoorVariant));
-            LocalBuilder initiallySpawn = generator.DeclareLocal(typeof(bool));
-            LocalBuilder ev = generator.DeclareLocal(typeof(SpawningItemEventArgs));
+            var door = generator.DeclareLocal(typeof(DoorVariant));
+            var initiallySpawn = generator.DeclareLocal(typeof(bool));
+            var ev = generator.DeclareLocal(typeof(SpawningItemEventArgs));
 
-            Label skip = generator.DefineLabel();
-            Label skipdoorSpawn = generator.DefineLabel();
-            Label doorSpawn = generator.DefineLabel();
-            Label returnLabel = generator.DefineLabel();
+            var skip = generator.DefineLabel();
+            var skipdoorSpawn = generator.DefineLabel();
+            var doorSpawn = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            int lastIndex = newInstructions.FindLastIndex(instruction => instruction.IsLdarg(0));
+            var lastIndex = newInstructions.FindLastIndex(instruction => instruction.IsLdarg(0));
 
-            int offset = -1;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup)))) + offset;
+            var offset = -1;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -131,7 +131,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

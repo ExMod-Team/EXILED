@@ -29,10 +29,10 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 6;
-            int index = newInstructions.FindIndex(
+            var index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(VisibilityController), nameof(VisibilityController.ValidateVisibility)))) + offset;
 
             newInstructions.InsertRange(
@@ -52,7 +52,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Call, Method(typeof(GhostModePatch), nameof(HandleGhostMode), new[] { typeof(ReferenceHub), typeof(ReferenceHub), typeof(bool).MakeByRefType() })),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

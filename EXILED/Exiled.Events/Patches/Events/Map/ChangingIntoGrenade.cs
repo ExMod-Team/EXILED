@@ -39,23 +39,23 @@ namespace Exiled.Events.Patches.Events.Map
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // Extract the existing label we will be removing.
-            Label returnLabel = generator.DefineLabel();
-            Label dontResetLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
+            var dontResetLabel = generator.DefineLabel();
 
-            LocalBuilder changingIntoGrenade = generator.DeclareLocal(typeof(ChangingIntoGrenadeEventArgs));
-            LocalBuilder changedIntoGrenade = generator.DeclareLocal(typeof(ChangedIntoGrenadeEventArgs));
-            LocalBuilder thrownProjectile = generator.DeclareLocal(typeof(ThrownProjectile));
+            var changingIntoGrenade = generator.DeclareLocal(typeof(ChangingIntoGrenadeEventArgs));
+            var changedIntoGrenade = generator.DeclareLocal(typeof(ChangedIntoGrenadeEventArgs));
+            var thrownProjectile = generator.DeclareLocal(typeof(ThrownProjectile));
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
+            var offset = 1;
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret) + offset;
 
-            Label enterLabel = newInstructions[index].labels[0];
+            var enterLabel = newInstructions[index].labels[0];
 
             // Remove the existing instructions that get the itemBase to spawn, we will be doing this ourselves.
-            int instructionsToRemove = 14;
+            var instructionsToRemove = 14;
 
             newInstructions.RemoveRange(index, instructionsToRemove);
 
@@ -128,7 +128,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

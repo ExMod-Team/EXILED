@@ -40,7 +40,7 @@ namespace Exiled.CustomRoles.API.Features.Parsers
         /// <inheritdoc cref="INodeDeserializer"/>
         public bool Deserialize(IParser reader, Type expectedType, Func<IParser, Type, object?> nestedObjectDeserializer, out object? value)
         {
-            if (!reader.Accept<MappingStart>(out MappingStart? mapping))
+            if (!reader.Accept<MappingStart>(out var mapping))
             {
                 value = null;
                 return false;
@@ -59,7 +59,7 @@ namespace Exiled.CustomRoles.API.Features.Parsers
                 return false;
             }
 
-            Mark? start = reader.Current?.Start;
+            var start = reader.Current?.Start;
             Type? actualType;
             ParsingEventBuffer buffer;
             try
@@ -86,10 +86,10 @@ namespace Exiled.CustomRoles.API.Features.Parsers
 
         private static Type? CheckWithDiscriminators(Type expectedType, IEnumerable<ITypeDiscriminator> supportedTypes, ParsingEventBuffer buffer)
         {
-            foreach (ITypeDiscriminator discriminator in supportedTypes)
+            foreach (var discriminator in supportedTypes)
             {
                 buffer.Reset();
-                if (!discriminator.TryResolve(buffer, out Type? actualType))
+                if (!discriminator.TryResolve(buffer, out var actualType))
                     continue;
 
                 return actualType;
@@ -103,10 +103,10 @@ namespace Exiled.CustomRoles.API.Features.Parsers
         {
             LinkedList<ParsingEvent> result = new();
             result.AddLast(reader.Consume<MappingStart>());
-            int depth = 0;
+            var depth = 0;
             do
             {
-                ParsingEvent next = reader.Consume<ParsingEvent>();
+                var next = reader.Consume<ParsingEvent>();
                 depth += next.NestingIncrease;
                 result.AddLast(next);
             }

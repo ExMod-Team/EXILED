@@ -35,14 +35,14 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(TriggeringDoorEventArgs));
+            var ev = generator.DeclareLocal(typeof(TriggeringDoorEventArgs));
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(
+            var offset = -2;
+            var index = newInstructions.FindIndex(
                 instruction => instruction.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.TargetState)))) + offset;
 
             // TriggeringDoorEventArgs ev = new(Player.Get(base.Owner), this.LastDoor, (float)this.GetCostForDoor(this.TargetAction, this.LastDoor));
@@ -113,7 +113,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

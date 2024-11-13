@@ -73,7 +73,7 @@ namespace Exiled.CustomRoles.API.Features
         private void OnEndingRound(EndingRoundEventArgs ev)
         {
             altTracker.Clear();
-            foreach (CoroutineHandle handle in coroutineTracker.Values)
+            foreach (var handle in coroutineTracker.Values)
                 Timing.KillCoroutines(handle);
             coroutineTracker.Clear();
         }
@@ -82,11 +82,11 @@ namespace Exiled.CustomRoles.API.Features
         {
             yield return Timing.WaitForSeconds(0.25f);
 
-            if (!altTracker.TryGetValue(player, out int pressCount))
+            if (!altTracker.TryGetValue(player, out var pressCount))
                 yield break;
 
             Log.Debug($"{player.Nickname}: {pressCount} {(player.Role is FpcRole fpc ? fpc.MoveState : false)}");
-            AbilityKeypressTriggerType type = pressCount switch
+            var type = pressCount switch
             {
                 1 when player.Role is FpcRole { MoveState: PlayerMovementState.Sneaking } => AbilityKeypressTriggerType.DisplayInfo,
                 1 => AbilityKeypressTriggerType.Activate,
@@ -95,11 +95,11 @@ namespace Exiled.CustomRoles.API.Features
                 _ => AbilityKeypressTriggerType.None,
             };
 
-            bool preformed = PreformAction(player, type, out string response);
+            var preformed = PreformAction(player, type, out var response);
             switch (preformed)
             {
                 case true when type == AbilityKeypressTriggerType.Activate:
-                    string[] split = response.Split('|');
+                    var split = response.Split('|');
                     response = string.Format(CustomRoles.Instance.Config.UsedAbilityHint.Content, split);
                     break;
                 case true when type is AbilityKeypressTriggerType.SwitchBackward or AbilityKeypressTriggerType.SwitchForward:
@@ -123,7 +123,7 @@ namespace Exiled.CustomRoles.API.Features
 
         private bool PreformAction(Player player, AbilityKeypressTriggerType type, out string response)
         {
-            ActiveAbility? selected = player.GetSelectedAbility();
+            var selected = player.GetSelectedAbility();
             if (type == AbilityKeypressTriggerType.Activate)
             {
                 if (selected is null)
@@ -141,7 +141,7 @@ namespace Exiled.CustomRoles.API.Features
 
             if (type is AbilityKeypressTriggerType.SwitchForward or AbilityKeypressTriggerType.SwitchBackward)
             {
-                List<ActiveAbility> abilities = ListPool<ActiveAbility>.Pool.Get(player.GetActiveAbilities());
+                var abilities = ListPool<ActiveAbility>.Pool.Get(player.GetActiveAbilities());
 
                 if (abilities.Count == 0)
                 {
@@ -151,8 +151,8 @@ namespace Exiled.CustomRoles.API.Features
 
                 if (selected is not null)
                 {
-                    int index = abilities.IndexOf(selected);
-                    int mod = type == AbilityKeypressTriggerType.SwitchForward ? 1 : -1;
+                    var index = abilities.IndexOf(selected);
+                    var mod = type == AbilityKeypressTriggerType.SwitchForward ? 1 : -1;
                     if (index + mod > abilities.Count - 1)
                         index = 0;
                     else if (index + mod < 0)
@@ -192,11 +192,11 @@ namespace Exiled.CustomRoles.API.Features
                     return false;
                 }
 
-                StringBuilder builder = StringBuilderPool.Pool.Get();
+                var builder = StringBuilderPool.Pool.Get();
                 builder.AppendLine(selected.Name);
                 builder.AppendLine(selected.Description);
                 builder.AppendLine(selected.Duration.ToString(CultureInfo.InvariantCulture)).Append(" (").Append(selected.Cooldown).Append(") ").AppendLine();
-                builder.AppendLine($"Usable: ").Append(selected.CanUseAbility(player, out string res));
+                builder.AppendLine($"Usable: ").Append(selected.CanUseAbility(player, out var res));
                 if (!string.IsNullOrEmpty(res))
                     builder.Append(" [").Append(res).Append("]");
                 response = StringBuilderPool.Pool.ToStringReturn(builder);

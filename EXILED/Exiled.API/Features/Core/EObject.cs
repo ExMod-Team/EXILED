@@ -96,7 +96,7 @@ namespace Exiled.API.Features.Core
         /// <returns>A <see cref="Type"/> matching the type name or <see langword="null"/> if not found.</returns>
         public static Type GetObjectTypeByName(string typeName)
         {
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (type.Name != typeName || type.BaseType != typeof(EObject))
                     continue;
@@ -116,11 +116,11 @@ namespace Exiled.API.Features.Core
         public static Type RegisterObjectType<T>(string name)
             where T : EObject
         {
-            Type matching = GetObjectTypeFromRegisteredTypes<T>(name);
+            var matching = GetObjectTypeFromRegisteredTypes<T>(name);
             if (matching is not null)
                 return matching;
 
-            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (var t in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (t.Name != typeof(T).Name)
                     continue;
@@ -149,11 +149,11 @@ namespace Exiled.API.Features.Core
         /// <returns>The registered <see cref="Type"/>.</returns>
         public static Type RegisterObjectType(Type type, string name)
         {
-            Type matching = GetObjectTypeFromRegisteredTypes(type, name);
+            var matching = GetObjectTypeFromRegisteredTypes(type, name);
             if (matching is not null)
                 return matching;
 
-            foreach (Type t in Assembly.GetExecutingAssembly().GetTypes()
+            foreach (var t in Assembly.GetExecutingAssembly().GetTypes()
                 .Where(item => item.BaseType == typeof(EObject) || item.IsSubclassOf(typeof(EObject))))
             {
                 if (t.Name != type.Name)
@@ -189,7 +189,7 @@ namespace Exiled.API.Features.Core
         /// <returns><see langword="true"/> if the type was unregistered successfully; otherwise, <see langword="false"/>.</returns>
         public static bool UnregisterObjectType(string name)
         {
-            foreach (KeyValuePair<Type, List<string>> kvp in RegisteredTypesValue)
+            foreach (var kvp in RegisteredTypesValue)
             {
                 if (kvp.Value.Contains(name))
                     continue;
@@ -209,7 +209,7 @@ namespace Exiled.API.Features.Core
         /// <returns>The <see cref="Type"/> with the name that matches the given name.</returns>
         public static Type FindObjectDefinedTypeByName(string name, bool ignoreAbstractTypes = true)
         {
-            Type[] assemblyTypes =
+            var assemblyTypes =
                 ignoreAbstractTypes ?
                 Assembly.GetExecutingAssembly().GetTypes().Where(t => !t.IsAbstract).ToArray() :
                 Assembly.GetExecutingAssembly().GetTypes();
@@ -230,7 +230,7 @@ namespace Exiled.API.Features.Core
         {
             Type t = null;
 
-            foreach (KeyValuePair<Type, List<string>> kvp in RegisteredTypesValue)
+            foreach (var kvp in RegisteredTypesValue)
             {
                 if (kvp.Key != typeof(T))
                     continue;
@@ -254,7 +254,7 @@ namespace Exiled.API.Features.Core
         {
             Type t = null;
 
-            foreach (KeyValuePair<Type, List<string>> kvp in RegisteredTypesValue)
+            foreach (var kvp in RegisteredTypesValue)
             {
                 if (kvp.Key != typeof(T) || !kvp.Value.Contains(name))
                     continue;
@@ -276,7 +276,7 @@ namespace Exiled.API.Features.Core
         {
             Type t = null;
 
-            foreach (KeyValuePair<Type, List<string>> kvp in RegisteredTypesValue)
+            foreach (var kvp in RegisteredTypesValue)
             {
                 if (kvp.Key != type)
                     continue;
@@ -299,7 +299,7 @@ namespace Exiled.API.Features.Core
         {
             Type t = null;
 
-            foreach (KeyValuePair<Type, List<string>> kvp in RegisteredTypesValue)
+            foreach (var kvp in RegisteredTypesValue)
             {
                 if (kvp.Key != type || !kvp.Value.Contains(name))
                     continue;
@@ -327,8 +327,8 @@ namespace Exiled.API.Features.Core
         /// <returns>The new <see cref="EObject"/> instance.</returns>
         public static EObject CreateDefaultSubobject(Type type, params object[] parameters)
         {
-            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
-            EObject @object = Activator.CreateInstance(type, flags, null, parameters, null) is not EObject outer ? null : outer;
+            var flags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+            var @object = Activator.CreateInstance(type, flags, null, parameters, null) is not EObject outer ? null : outer;
 
             // Do not use implicit bool conversion as @object may be null
             if (@object != null)
@@ -487,8 +487,8 @@ namespace Exiled.API.Features.Core
         /// </summary>
         public static void DestroyAllObjects()
         {
-            List<EObject> objects = ListPool<EObject>.Pool.Get(InternalObjects);
-            foreach (EObject @object in objects)
+            var objects = ListPool<EObject>.Pool.Get(InternalObjects);
+            foreach (var @object in objects)
                 @object.Destroy();
 
             objects.Clear();
@@ -502,8 +502,8 @@ namespace Exiled.API.Features.Core
         public static void DestroyAllObjectsOfType<T>()
             where T : EObject
         {
-            List<EObject> objects = ListPool<EObject>.Pool.Get(InternalObjects);
-            foreach (EObject @object in objects)
+            var objects = ListPool<EObject>.Pool.Get(InternalObjects);
+            foreach (var @object in objects)
             {
                 if (@object.Cast(out T obj))
                     obj.Destroy();
@@ -522,7 +522,7 @@ namespace Exiled.API.Features.Core
         public static T FindActiveObjectOfType<T>(Func<EObject, bool> predicate)
             where T : EObject
         {
-            foreach (EObject @object in InternalObjects.Where(predicate))
+            foreach (var @object in InternalObjects.Where(predicate))
             {
                 if (@object.Cast(out T obj))
                     return obj;
@@ -540,8 +540,8 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsOfType<T>(Func<EObject, bool> predicate)
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
-            foreach (EObject @object in InternalObjects.Where(predicate))
+            var objects = ListPool<T>.Pool.Get();
+            foreach (var @object in InternalObjects.Where(predicate))
             {
                 if (@object.Cast(out T obj))
                     objects.Add(obj);
@@ -558,8 +558,8 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsOfType<T>()
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
-            foreach (EObject @object in InternalObjects)
+            var objects = ListPool<T>.Pool.Get();
+            foreach (var @object in InternalObjects)
             {
                 if (@object.Cast(out T obj))
                     objects.Add(obj);
@@ -577,8 +577,8 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsOfType<T>(string name)
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
-            foreach (EObject @object in InternalObjects)
+            var objects = ListPool<T>.Pool.Get();
+            foreach (var @object in InternalObjects)
             {
                 if (@object.Cast(out T obj) && (obj.Name == name))
                     objects.Add(obj);
@@ -596,8 +596,8 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsOfType<T>(Type type)
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
-            foreach (EObject @object in InternalObjects.Where(obj => obj.GetType() == type))
+            var objects = ListPool<T>.Pool.Get();
+            foreach (var @object in InternalObjects.Where(obj => obj.GetType() == type))
             {
                 if (@object.Cast(out T obj))
                     objects.Add(obj);
@@ -616,8 +616,8 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsOfType<T>(Type type, Func<EObject, bool> predicate)
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
-            foreach (EObject @object in InternalObjects
+            var objects = ListPool<T>.Pool.Get();
+            foreach (var @object in InternalObjects
                 .Where(obj => obj.GetType() == type)
                 .Where(predicate))
             {
@@ -637,8 +637,8 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsWithTagOfType<T>(string tag)
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
-            foreach (EObject @object in InternalObjects)
+            var objects = ListPool<T>.Pool.Get();
+            foreach (var @object in InternalObjects)
             {
                 if (@object.Cast(out T obj) && obj.Tag.ToLower().Contains(tag))
                     objects.Add(obj);
@@ -656,8 +656,8 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsOfType<T>(Func<object, bool> predicate)
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
-            foreach (EObject @object in InternalObjects.Where(predicate).Cast<EObject>())
+            var objects = ListPool<T>.Pool.Get();
+            foreach (var @object in InternalObjects.Where(predicate).Cast<EObject>())
             {
                 if (@object.Cast(out T obj))
                     objects.Add(obj);
@@ -675,7 +675,7 @@ namespace Exiled.API.Features.Core
         public static T[] FindActiveObjectsOfType<T>(Func<T, bool> predicate)
             where T : EObject
         {
-            List<T> objects = ListPool<T>.Pool.Get();
+            var objects = ListPool<T>.Pool.Get();
             foreach (EObject @object in InternalObjects
                 .Where(obj => obj.Cast(out T _))
                 .Select(obj => obj.Cast<T>())
@@ -695,7 +695,7 @@ namespace Exiled.API.Features.Core
         public static void DestroyActiveObjectsOfType<T>()
             where T : EObject
         {
-            foreach (EObject @object in InternalObjects)
+            foreach (var @object in InternalObjects)
             {
                 if (@object.Cast(out T obj))
                     obj.Destroy();
@@ -711,7 +711,7 @@ namespace Exiled.API.Features.Core
         public static bool DestroyActiveObject<T>(GameObject gameObject)
             where T : EObject
         {
-            foreach (EObject @object in InternalObjects)
+            foreach (var @object in InternalObjects)
             {
                 if (@object.Cast(out T obj) && (obj.Base == gameObject))
                 {
@@ -731,7 +731,7 @@ namespace Exiled.API.Features.Core
         /// <returns><see langword="true"/> if the object was destroyed; otherwise, <see langword="false"/>.</returns>
         public static bool DestroyActiveObject(Type type, GameObject gameObject)
         {
-            foreach (EObject @object in InternalObjects)
+            foreach (var @object in InternalObjects)
             {
                 if ((@object.GetType() == type) && (@object.Base == gameObject))
                 {
@@ -771,7 +771,7 @@ namespace Exiled.API.Features.Core
         {
             unchecked
             {
-                int hash = 23;
+                var hash = 23;
                 hash = (hash * 29) + Base.GetHashCode();
                 hash = (hash * 29) + Name.GetHashCode();
                 hash = (hash * 29) + Tag.GetHashCode();
@@ -823,22 +823,22 @@ namespace Exiled.API.Features.Core
             if (source.Length > target.Length)
                 (source, target) = (target, source);
 
-            int m = target.Length;
-            int n = source.Length;
-            int[,] distance = new int[2, m + 1];
+            var m = target.Length;
+            var n = source.Length;
+            var distance = new int[2, m + 1];
 
-            for (int j = 1; j <= m; j++)
+            for (var j = 1; j <= m; j++)
                 distance[0, j] = j;
 
-            int currentRow = 0;
-            for (int i = 1; i <= n; ++i)
+            var currentRow = 0;
+            for (var i = 1; i <= n; ++i)
             {
                 currentRow = i & 1;
                 distance[currentRow, 0] = i;
-                int previousRow = currentRow ^ 1;
-                for (int j = 1; j <= m; j++)
+                var previousRow = currentRow ^ 1;
+                for (var j = 1; j <= m; j++)
                 {
-                    int cost = target[j - 1] == source[i - 1] ? 0 : 1;
+                    var cost = target[j - 1] == source[i - 1] ? 0 : 1;
                     distance[currentRow, j] = Math.Min(
                         Math.Min(
                             distance[previousRow, j] + 1,

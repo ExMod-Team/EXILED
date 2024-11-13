@@ -33,18 +33,18 @@ namespace Exiled.Events.Patches.Events.Scp244
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnFalse = generator.DefineLabel();
-            Label continueProcessing = generator.DefineLabel();
+            var returnFalse = generator.DefineLabel();
+            var continueProcessing = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(DamagingScp244EventArgs));
+            var ev = generator.DeclareLocal(typeof(DamagingScp244EventArgs));
 
             // Remove grenade damage check, let event handler do it.
             newInstructions.RemoveRange(0, 5);
 
-            int insertOffset = 5;
-            int index = newInstructions.FindIndex(
+            var insertOffset = 5;
+            var index = newInstructions.FindIndex(
                 instruction => instruction.Calls(PropertyGetter(typeof(Scp244DeployablePickup), nameof(Scp244DeployablePickup.ModelDestroyed)))) + insertOffset;
 
             newInstructions.RemoveRange(index, 3);
@@ -100,7 +100,7 @@ namespace Exiled.Events.Patches.Events.Scp244
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DamageHandler), nameof(DamageHandler.Damage))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

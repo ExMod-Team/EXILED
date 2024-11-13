@@ -29,15 +29,15 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder scp106Role = generator.DeclareLocal(typeof(Scp106Role));
-            Label continueLabel = generator.DefineLabel();
+            var scp106Role = generator.DeclareLocal(typeof(Scp106Role));
+            var continueLabel = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(x => x.operand == (object)Method(typeof(SpawnProtected), nameof(SpawnProtected.CheckPlayer))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(x => x.operand == (object)Method(typeof(SpawnProtected), nameof(SpawnProtected.CheckPlayer))) + offset;
 
-            Label skip = (Label)newInstructions[index].operand;
+            var skip = (Label)newInstructions[index].operand;
 
             index += offset;
 
@@ -63,7 +63,7 @@ namespace Exiled.Events.Patches.Fixes
                 new CodeInstruction(OpCodes.Brtrue_S, skip),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

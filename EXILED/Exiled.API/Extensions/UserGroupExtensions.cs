@@ -47,7 +47,7 @@ namespace Exiled.API.Extensions
         /// <returns>The value of that group, or <see langword="null"/> if not found.</returns>
         public static UserGroup GetValue(string groupName)
         {
-            ServerStatic.GetPermissionsHandler().GetAllGroups().TryGetValue(groupName, out UserGroup userGroup);
+            ServerStatic.GetPermissionsHandler().GetAllGroups().TryGetValue(groupName, out var userGroup);
             return userGroup;
         }
     }

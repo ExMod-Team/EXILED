@@ -31,12 +31,12 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingMoveStateEventArgs));
+            var ev = generator.DeclareLocal(typeof(ChangingMoveStateEventArgs));
 
-            Label continueLabel = generator.DefineLabel();
-            Label returnLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             const int index = 0;
 
@@ -83,7 +83,7 @@ namespace Exiled.Events.Patches.Events.Player
             // return the state
             newInstructions[newInstructions.Count - 2].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

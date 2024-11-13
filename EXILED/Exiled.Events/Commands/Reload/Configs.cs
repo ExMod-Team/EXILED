@@ -46,12 +46,12 @@ namespace Exiled.Events.Commands.Reload
                 return false;
             }
 
-            bool haveBeenReloaded = ConfigManager.Reload();
+            var haveBeenReloaded = ConfigManager.Reload();
 
             Handlers.Server.OnReloadedConfigs();
             API.Features.Log.DebugEnabled.Clear();
 
-            foreach (IPlugin<IConfig> plugin in Loader.Plugins)
+            foreach (var plugin in Loader.Plugins)
             {
                 plugin.OnUnregisteringCommands();
                 plugin.OnRegisteringCommands();

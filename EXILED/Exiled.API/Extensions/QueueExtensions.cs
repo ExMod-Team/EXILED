@@ -25,15 +25,15 @@ namespace Exiled.API.Extensions
         /// <typeparam name="T">The <see cref="Type"/> of data used.</typeparam>
         public static void RemoveFromQueue<T>(this Queue<T> queue, T data)
         {
-            List<T> toKeep = ListPool<T>.Pool.Get();
-            for (int i = 0; i < queue.Count; i++)
+            var toKeep = ListPool<T>.Pool.Get();
+            for (var i = 0; i < queue.Count; i++)
             {
-                T item = queue.Dequeue();
+                var item = queue.Dequeue();
                 if (!item.Equals(data))
                     toKeep.Add(item);
             }
 
-            foreach (T item2 in toKeep)
+            foreach (var item2 in toKeep)
                 queue.Enqueue(item2);
 
             ListPool<T>.Pool.Return(toKeep);

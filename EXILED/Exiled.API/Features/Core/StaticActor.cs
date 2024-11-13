@@ -62,7 +62,7 @@ namespace Exiled.API.Features.Core
         public static T Get<T>()
             where T : StaticActor
         {
-            foreach (StaticActor actor in FindActiveObjectsOfType<StaticActor>())
+            foreach (var actor in FindActiveObjectsOfType<StaticActor>())
             {
                 if (!actor.Cast(out StaticActor staticActor) || staticActor.GetType() != typeof(T))
                     continue;
@@ -82,7 +82,7 @@ namespace Exiled.API.Features.Core
         public static T Get<T>(Type type)
             where T : StaticActor
         {
-            foreach (StaticActor actor in FindActiveObjectsOfType<StaticActor>())
+            foreach (var actor in FindActiveObjectsOfType<StaticActor>())
             {
                 if (!actor.Cast(out StaticActor staticActor) || staticActor.GetType() != type)
                     continue;
@@ -100,7 +100,7 @@ namespace Exiled.API.Features.Core
         /// <returns>The corresponding <see cref="StaticActor"/>.</returns>
         public static StaticActor Get(Type type)
         {
-            foreach (StaticActor actor in FindActiveObjectsOfType<StaticActor>())
+            foreach (var actor in FindActiveObjectsOfType<StaticActor>())
             {
                 if (!actor.Cast(out StaticActor staticActor) || staticActor.GetType() != type)
                     continue;

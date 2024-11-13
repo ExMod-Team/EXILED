@@ -26,13 +26,13 @@ namespace Exiled.Events.Patches.Events.Item
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(UsingRadioPickupBatteryEventArgs));
+            var ev = generator.DeclareLocal(typeof(UsingRadioPickupBatteryEventArgs));
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldloc_1);
+            var index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldloc_1);
 
             newInstructions.InsertRange(
                 index,
@@ -70,7 +70,7 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Stloc_1),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

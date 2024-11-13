@@ -31,15 +31,15 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            Label baseGame = generator.DefineLabel();
-            Label conditional = generator.DefineLabel();
-            Label continueLabel = generator.DefineLabel();
-            Label skipLabel = generator.DefineLabel();
-            LocalBuilder ev = generator.DeclareLocal(typeof(ReservedSlotsCheckEventArgs));
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var baseGame = generator.DefineLabel();
+            var conditional = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
+            var skipLabel = generator.DefineLabel();
+            var ev = generator.DeclareLocal(typeof(ReservedSlotsCheckEventArgs));
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj) + offset;
+            var offset = -2;
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj) + offset;
 
             newInstructions[index].WithLabels(baseGame);
 
@@ -98,7 +98,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Stloc_0).WithLabels(skipLabel),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

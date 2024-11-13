@@ -37,14 +37,14 @@ namespace Exiled.Events.Patches.Events.Scp330
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(DroppingScp330EventArgs));
+            var ev = generator.DeclareLocal(typeof(DroppingScp330EventArgs));
 
             const int offset = -1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.inventory)))) + offset;
+            var index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.inventory)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -82,11 +82,11 @@ namespace Exiled.Events.Patches.Events.Scp330
                 });
 
             // Set our location of previous owner
-            int jumpOverOffset = 1;
-            int jumpOverIndex = newInstructions.FindLastIndex(
+            var jumpOverOffset = 1;
+            var jumpOverIndex = newInstructions.FindLastIndex(
                 instruction => instruction.StoresField(Field(typeof(ItemPickupBase), nameof(ItemPickupBase.PreviousOwner)))) + jumpOverOffset;
 
-            int candyKindIdIndex = 4;
+            var candyKindIdIndex = 4;
 
             newInstructions.InsertRange(
                 jumpOverIndex,
@@ -100,7 +100,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

@@ -55,7 +55,7 @@ namespace Exiled.API.Features.Pools
         /// <returns>The contents of the returned list as an array.</returns>
         public T[] ToArrayReturn(List<T> obj)
         {
-            T[] array = obj.ToArray();
+            var array = obj.ToArray();
 
             Return(obj);
 

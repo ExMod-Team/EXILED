@@ -43,7 +43,7 @@ namespace Exiled.API.Features.Toys
             : base(target, AdminToyType.ShootingTarget)
         {
             Base = target;
-            Type = TypeLookup.TryGetValue(Base.gameObject.name.Substring(0, Base.gameObject.name.Length - 7), out ShootingTargetType type) ? type : ShootingTargetType.Unknown;
+            Type = TypeLookup.TryGetValue(Base.gameObject.name.Substring(0, Base.gameObject.name.Length - 7), out var type) ? type : ShootingTargetType.Unknown;
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
         public static ShootingTargetToy Get(ShootingTarget shootingTarget)
         {
-            AdminToy adminToy = Map.Toys.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
+            var adminToy = Map.Toys.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
             return adminToy is not null ? adminToy as ShootingTargetToy : new ShootingTargetToy(shootingTarget);
         }
 

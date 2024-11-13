@@ -87,7 +87,7 @@ namespace Exiled.API.Extensions
         /// <param name="effect">The <see cref="EffectType"/> enum.</param>
         /// <returns>The <see cref="System.Type"/>.</returns>
         public static Type Type(this EffectType effect)
-            => EffectTypeToType.TryGetValue(effect, out Type type) ? type : throw new InvalidOperationException("Invalid effect enum provided");
+            => EffectTypeToType.TryGetValue(effect, out var type) ? type : throw new InvalidOperationException("Invalid effect enum provided");
 
         /// <summary>
         /// Gets an instance of <see cref="System.Type"/> points to an effect.
@@ -104,7 +104,7 @@ namespace Exiled.API.Extensions
         /// <param name="statusEffectBase">The <see cref="StatusEffectBase"/> enum.</param>
         /// <returns>The <see cref="EffectType"/>.</returns>
         public static EffectType GetEffectType(this StatusEffectBase statusEffectBase)
-            => TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType effect) ? effect : throw new InvalidOperationException("Invalid effect status base provided");
+            => TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out var effect) ? effect : throw new InvalidOperationException("Invalid effect status base provided");
 
         /// <summary>
         /// Gets the <see cref="EffectType"/> of the specified <see cref="StatusEffectBase"/>.
@@ -146,7 +146,7 @@ namespace Exiled.API.Extensions
         /// <param name="effect">The <see cref="EffectType"/>.</param>
         /// <returns>Whether or not the effect heals.</returns>
         /// <seealso cref="IsHarmful(EffectType)"/>
-        public static bool IsHealing(this EffectType effect) => effect.TryGetType(out Type type) && typeof(IHealablePlayerEffect).IsAssignableFrom(type);
+        public static bool IsHealing(this EffectType effect) => effect.TryGetType(out var type) && typeof(IHealablePlayerEffect).IsAssignableFrom(type);
 
         /// <summary>
         /// Returns whether or not the provided <paramref name="effect"/> is a negative effect.
@@ -174,14 +174,14 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="effect">The <see cref="EffectType"/>.</param>
         /// <returns>Whether or not the effect modifies the player's movement speed.</returns>
-        public static bool IsMovement(this EffectType effect) => effect.TryGetType(out Type type) && typeof(IMovementSpeedModifier).IsAssignableFrom(type);
+        public static bool IsMovement(this EffectType effect) => effect.TryGetType(out var type) && typeof(IMovementSpeedModifier).IsAssignableFrom(type);
 
         /// <summary>
         /// Returns whether or not the provided <paramref name="effect"/> is displayed to spectators as text.
         /// </summary>
         /// <param name="effect">The <see cref="EffectType"/>.</param>
         /// <returns>Whether or not the effect is displayed to spectators as text.</returns>
-        public static bool IsDisplayed(this EffectType effect) => effect.TryGetType(out Type type) && typeof(ISpectatorDataPlayerEffect).IsAssignableFrom(type);
+        public static bool IsDisplayed(this EffectType effect) => effect.TryGetType(out var type) && typeof(ISpectatorDataPlayerEffect).IsAssignableFrom(type);
 
         /// <summary>
         /// Returns the <see cref="EffectCategory"/> of the given <paramref name="effect"/>.
@@ -190,7 +190,7 @@ namespace Exiled.API.Extensions
         /// <returns>The <see cref="EffectCategory"/> representing the effect.</returns>
         public static EffectCategory GetCategories(this EffectType effect)
         {
-            EffectCategory category = EffectCategory.None;
+            var category = EffectCategory.None;
             if (effect.IsPositive())
                 category |= EffectCategory.Positive;
             if (effect.IsNegative())

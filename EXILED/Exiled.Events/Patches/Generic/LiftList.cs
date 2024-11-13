@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Generic
         {
             Lift.ElevatorChamberToLift.Clear();
 
-            foreach (KeyValuePair<ElevatorManager.ElevatorGroup, ElevatorChamber> lift in ElevatorManager.SpawnedChambers)
+            foreach (var lift in ElevatorManager.SpawnedChambers)
             {
                 _ = new Lift(lift.Value);
             }

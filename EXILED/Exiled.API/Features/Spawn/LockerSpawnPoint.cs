@@ -57,7 +57,7 @@ namespace Exiled.API.Features.Spawn
         {
             get
             {
-                Locker foundLocker = Locker.Random(Zone, Type) ?? throw new NullReferenceException("No locker found in the specified zone.");
+                var foundLocker = Locker.Random(Zone, Type) ?? throw new NullReferenceException("No locker found in the specified zone.");
 
                 // If UseChamber is true, use a random chamber's position.
                 if (UseChamber)

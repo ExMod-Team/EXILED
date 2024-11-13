@@ -32,10 +32,10 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
 
-            int offset = -3;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(RoomIdUtils), nameof(RoomIdUtils.PositionToCoords)))) + offset;
+            var offset = -3;
+            var index = newInstructions.FindIndex(i => i.Calls(Method(typeof(RoomIdUtils), nameof(RoomIdUtils.PositionToCoords)))) + offset;
 
             // Room.CreateComponent(gameObject);
             newInstructions.InsertRange(
@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Call, Method(typeof(Room), nameof(Room.CreateComponent))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -62,7 +62,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(RoomIdentifier __instance)
         {
-            if (!Room.RoomIdentifierToRoom.TryGetValue(__instance, out Room room))
+            if (!Room.RoomIdentifierToRoom.TryGetValue(__instance, out var room))
             {
                 return;
             }

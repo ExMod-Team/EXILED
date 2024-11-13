@@ -33,12 +33,12 @@ namespace Exiled.Events.Patches.Events.Player
     {
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            Label continueLabel = generator.DefineLabel();
-            Label retLabel = generator.DefineLabel();
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var continueLabel = generator.DefineLabel();
+            var retLabel = generator.DefineLabel();
 
-            int offset = -1;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(Dictionary<ReferenceHub, PlayerHandler>.Enumerator), nameof(Dictionary<ReferenceHub, PlayerHandler>.Enumerator.MoveNext)))) + offset;
+            var offset = -1;
+            var index = newInstructions.FindIndex(i => i.Calls(Method(typeof(Dictionary<ReferenceHub, PlayerHandler>.Enumerator), nameof(Dictionary<ReferenceHub, PlayerHandler>.Enumerator.MoveNext)))) + offset;
 
             newInstructions[index].labels.Add(retLabel);
 
@@ -101,7 +101,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

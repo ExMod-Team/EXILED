@@ -67,7 +67,7 @@ namespace Exiled.Events.Handlers.Internal
 
         private static void GenerateAttachments()
         {
-            foreach (FirearmType firearmType in EnumUtils<FirearmType>.Values)
+            foreach (var firearmType in EnumUtils<FirearmType>.Values)
             {
                 if (firearmType == FirearmType.None)
                     continue;
@@ -77,12 +77,12 @@ namespace Exiled.Events.Handlers.Internal
 
                 Firearm.ItemTypeToFirearmInstance.Add(firearmType, firearm);
 
-                List<AttachmentIdentifier> attachmentIdentifiers = ListPool<AttachmentIdentifier>.Pool.Get();
-                HashSet<AttachmentSlot> attachmentsSlots = HashSetPool<AttachmentSlot>.Pool.Get();
+                var attachmentIdentifiers = ListPool<AttachmentIdentifier>.Pool.Get();
+                var attachmentsSlots = HashSetPool<AttachmentSlot>.Pool.Get();
 
                 uint code = 1;
 
-                foreach (Attachment attachment in firearm.Attachments)
+                foreach (var attachment in firearm.Attachments)
                 {
                     attachmentsSlots.Add(attachment.Slot);
                     attachmentIdentifiers.Add(new(code, attachment.Name, attachment.Slot));

@@ -140,7 +140,7 @@ namespace Exiled.API.Structs
         {
             identifier = default;
 
-            foreach (AttachmentIdentifier attId in Features.Items.Firearm.AvailableAttachments.Values.SelectMany(kvp => kvp.Where(kvp2 => kvp2.Name.ToString() == s)))
+            foreach (var attId in Features.Items.Firearm.AvailableAttachments.Values.SelectMany(kvp => kvp.Where(kvp2 => kvp2.Name.ToString() == s)))
             {
                 identifier = attId;
                 return true;

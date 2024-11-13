@@ -91,9 +91,9 @@ namespace Exiled.API.Features.Doors
             get => Base.GetHealthPercent();
             set
             {
-                float health = value / Subdoors.Count;
+                var health = value / Subdoors.Count;
 
-                foreach (BreakableDoor door in Subdoors)
+                foreach (var door in Subdoors)
                 {
                     door.Health = health;
                 }
@@ -106,9 +106,9 @@ namespace Exiled.API.Features.Doors
             get => Subdoors.Sum(door => door.MaxHealth);
             set
             {
-                float health = value / Subdoors.Count;
+                var health = value / Subdoors.Count;
 
-                foreach (BreakableDoor door in Subdoors)
+                foreach (var door in Subdoors)
                 {
                     door.MaxHealth = health;
                 }
@@ -121,7 +121,7 @@ namespace Exiled.API.Features.Doors
             get => Subdoors.Aggregate(DoorDamageType.None, (current, door) => current | door.IgnoredDamage);
             set
             {
-                foreach (BreakableDoor door in Subdoors)
+                foreach (var door in Subdoors)
                 {
                     door.IgnoredDamage = value;
                 }

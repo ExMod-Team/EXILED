@@ -34,14 +34,14 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label retLabel = generator.DefineLabel();
-            LocalBuilder ev = generator.DeclareLocal(typeof(TogglingNoClipEventArgs));
+            var retLabel = generator.DefineLabel();
+            var ev = generator.DeclareLocal(typeof(TogglingNoClipEventArgs));
 
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloc_0);
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloc_0);
 
-            Label checkLabel = newInstructions[index].ExtractLabels()[0];
+            var checkLabel = newInstructions[index].ExtractLabels()[0];
 
             // Remove the base-game FpcNoclip.IsPermitted(hub) call, as we will be using that for our default value for ev.IsAllowed
             newInstructions.RemoveRange(index, 4);
@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

@@ -35,12 +35,12 @@ namespace Exiled.Events.Commands.Hub.HubApi
         /// <returns>A <see cref="HubPlugin"/> instance containing installation data.</returns>
         public static async Task<HubPlugin?> GetInstallationData(string pluginName, HttpClient client)
         {
-            string url = InstallApiEndpoint + pluginName;
-            using HttpResponseMessage response = await client.GetAsync(url).ConfigureAwait(false);
+            var url = InstallApiEndpoint + pluginName;
+            using var response = await client.GetAsync(url).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {
-                using Stream stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
+                using var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 return JsonSerializer.Deserialize<HubPlugin>(stream);
             }
 

@@ -30,10 +30,10 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
-            Label skip = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
+            var skip = generator.DefineLabel();
 
             // if ((referenceHub.roleManager.CurrentRole.RoleTypeId == RoleTypeId.Tutorial && ExiledEvents.Instance.Config.TutorialNotAffectedByScp079Scan) || Scp079Role.TurnedPlayers.Contains(Player.Get(referenceHub)))
             //     return;
@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

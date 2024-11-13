@@ -34,14 +34,14 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label cnt = generator.DefineLabel();
+            var cnt = generator.DefineLabel();
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoomLightController), nameof(RoomLightController.Instances)))) + offset;
+            var offset = 0;
+            var index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoomLightController), nameof(RoomLightController.Instances)))) + offset;
 
-            Label skip = newInstructions[index].labels[0];
+            var skip = newInstructions[index].labels[0];
 
             offset = -3;
             index += offset;
@@ -64,7 +64,7 @@ namespace Exiled.Events.Patches.Fixes
                 new CodeInstruction(OpCodes.Nop).WithLabels(cnt),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -99,10 +99,10 @@ namespace Exiled.Events.Patches.Fixes
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 0;
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldnull) + offset;
+            var offset = 0;
+            var index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldnull) + offset;
 
             // replace null with new Scp3114FriendlyFireFix2(this.PreviousOwner, num2)
             newInstructions.RemoveAt(index);
@@ -115,7 +115,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp3114FriendlyFireFix2))[0]),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

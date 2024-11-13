@@ -180,7 +180,7 @@ namespace Exiled.API.Features
             get
             {
                 List<Side> sides = new(4);
-                foreach (Player player in Player.Get(ply => ply.IsAlive))
+                foreach (var player in Player.Get(ply => ply.IsAlive))
                 {
                     if (!sides.Contains(player.Role.Side))
                         sides.Add(player.Role.Side);
@@ -217,7 +217,7 @@ namespace Exiled.API.Features
 
             // Great hack since the game has no
             // hard dependency on 'CustomNetworkManager.EnableFastRestart'
-            bool oldValue = CustomNetworkManager.EnableFastRestart;
+            var oldValue = CustomNetworkManager.EnableFastRestart;
             CustomNetworkManager.EnableFastRestart = fastRestart;
 
             RoundRestart.InitiateRoundRestart();

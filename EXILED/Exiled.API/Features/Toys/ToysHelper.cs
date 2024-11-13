@@ -33,7 +33,7 @@ namespace Exiled.API.Features.Toys
             {
                 if (primitiveBaseObject is null)
                 {
-                    foreach (GameObject gameObject in NetworkClient.prefabs.Values)
+                    foreach (var gameObject in NetworkClient.prefabs.Values)
                     {
                         if (gameObject.TryGetComponent(out PrimitiveObjectToy component))
                         {
@@ -56,7 +56,7 @@ namespace Exiled.API.Features.Toys
             {
                 if (lightBaseObject is null)
                 {
-                    foreach (GameObject gameObject in NetworkClient.prefabs.Values)
+                    foreach (var gameObject in NetworkClient.prefabs.Values)
                     {
                         if (gameObject.TryGetComponent(out LightSourceToy component))
                         {
@@ -79,7 +79,7 @@ namespace Exiled.API.Features.Toys
             {
                 if (sportShootingTargetObject is null)
                 {
-                    foreach (GameObject gameObject in NetworkClient.prefabs.Values)
+                    foreach (var gameObject in NetworkClient.prefabs.Values)
                     {
                         if ((gameObject.name == "sportTargetPrefab") && gameObject.TryGetComponent(out ShootingTarget shootingTarget))
                         {
@@ -102,7 +102,7 @@ namespace Exiled.API.Features.Toys
             {
                 if (dboyShootingTargetObject is null)
                 {
-                    foreach (GameObject gameObject in NetworkClient.prefabs.Values)
+                    foreach (var gameObject in NetworkClient.prefabs.Values)
                     {
                         if ((gameObject.name == "dboyTargetPrefab") && gameObject.TryGetComponent(out ShootingTarget shootingTarget))
                         {
@@ -125,7 +125,7 @@ namespace Exiled.API.Features.Toys
             {
                 if (binaryShootingTargetObject is null)
                 {
-                    foreach (GameObject gameObject in NetworkClient.prefabs.Values)
+                    foreach (var gameObject in NetworkClient.prefabs.Values)
                     {
                         if ((gameObject.name == "binaryTargetPrefab") && gameObject.TryGetComponent(out ShootingTarget shootingTarget))
                         {

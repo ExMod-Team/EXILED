@@ -31,12 +31,12 @@ namespace Exiled.Events.Patches.Events.Map
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ignoreLabel = generator.DefineLabel();
+            var ignoreLabel = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.StoresField(Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade._hitPlayerCount)))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(instruction => instruction.StoresField(Field(typeof(FlashbangGrenade), nameof(FlashbangGrenade._hitPlayerCount)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             newInstructions[newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ble_S) - 3].WithLabels(ignoreLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -61,10 +61,10 @@ namespace Exiled.Events.Patches.Events.Map
 
         private static void ProcessEvent(FlashbangGrenade instance, float distance)
         {
-            List<Player> targetToAffect = ListPool<Player>.Pool.Get();
-            foreach (ReferenceHub referenceHub in ReferenceHub.AllHubs)
+            var targetToAffect = ListPool<Player>.Pool.Get();
+            foreach (var referenceHub in ReferenceHub.AllHubs)
             {
-                Player player = Player.Get(referenceHub);
+                var player = Player.Get(referenceHub);
                 if ((instance.transform.position - referenceHub.transform.position).sqrMagnitude >= distance)
                     continue;
                 if (!ExiledEvents.Instance.Config.CanFlashbangsAffectThrower && instance.PreviousOwner.SameLife(new(referenceHub)))
@@ -86,7 +86,7 @@ namespace Exiled.Events.Patches.Events.Map
             if (!explodingGrenadeEvent.IsAllowed)
                 return;
 
-            foreach (Player player in explodingGrenadeEvent.TargetsToAffect)
+            foreach (var player in explodingGrenadeEvent.TargetsToAffect)
             {
                 instance.ProcessPlayer(player.ReferenceHub);
             }

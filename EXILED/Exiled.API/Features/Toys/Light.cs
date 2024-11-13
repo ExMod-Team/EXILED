@@ -116,7 +116,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The corresponding <see cref="LightSourceToy"/> instance.</returns>
         public static Light Get(LightSourceToy lightSourceToy)
         {
-            AdminToy adminToy = Map.Toys.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
+            var adminToy = Map.Toys.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
             return adminToy is not null ? adminToy as Light : new Light(lightSourceToy);
         }
     }

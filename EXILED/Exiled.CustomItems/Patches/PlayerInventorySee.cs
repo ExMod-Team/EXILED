@@ -33,17 +33,17 @@ namespace Exiled.CustomItems.Patches
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstruction = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstruction = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder item = generator.DeclareLocal(typeof(Item));
-            LocalBuilder customItem = generator.DeclareLocal(typeof(CustomItem));
+            var item = generator.DeclareLocal(typeof(Item));
+            var customItem = generator.DeclareLocal(typeof(CustomItem));
 
-            int offset = 0;
-            int index = newInstruction.FindIndex(i => (i.opcode == OpCodes.Ldfld) && ((FieldInfo)i.operand == Field(typeof(ItemBase), nameof(ItemBase.ItemTypeId)))) + offset;
+            var offset = 0;
+            var index = newInstruction.FindIndex(i => (i.opcode == OpCodes.Ldfld) && ((FieldInfo)i.operand == Field(typeof(ItemBase), nameof(ItemBase.ItemTypeId)))) + offset;
 
-            Label continueLabel = generator.DefineLabel();
-            Label checkLabel = generator.DefineLabel();
-            Label endLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
+            var checkLabel = generator.DefineLabel();
+            var endLabel = generator.DefineLabel();
 
             newInstruction[index + 4].labels.Add(continueLabel);
 
@@ -70,7 +70,7 @@ namespace Exiled.CustomItems.Patches
                     new CodeInstruction(OpCodes.Nop).WithLabels(endLabel),
                 });
 
-            for (int z = 0; z < newInstruction.Count; z++)
+            for (var z = 0; z < newInstruction.Count; z++)
                 yield return newInstruction[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstruction);

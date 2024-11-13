@@ -41,15 +41,15 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const string LeadingTeam = "<leadingTeam>5__9";
             const string NewList = "<newList>5__3";
 
-            int offset = -1;
-            int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.GetTeam), new Type[] { typeof(ReferenceHub), }))) + offset;
+            var offset = -1;
+            var index = newInstructions.FindIndex(x => x.Calls(Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.GetTeam), new Type[] { typeof(ReferenceHub), }))) + offset;
 
-            Label jmp = generator.DefineLabel();
+            var jmp = generator.DefineLabel();
 
             // if (Round.IgnoredPlayers.Contains(referencehub)
             //  goto jmp;
@@ -71,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Server
             // Replace ChaosTargetCount == 0 with ChaosTargetCount <= 0
             offset = 1;
             index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(RoundSummary), nameof(RoundSummary.ChaosTargetCount)))) + offset;
-            Label label = (Label)newInstructions[index].operand;
+            var label = (Label)newInstructions[index].operand;
             newInstructions.RemoveAt(index);
 
             newInstructions.InsertRange(
@@ -85,7 +85,7 @@ namespace Exiled.Events.Patches.Events.Server
             offset = -1;
             index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;
 
-            LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
+            var evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
 
             newInstructions.InsertRange(
                 index,
@@ -142,12 +142,12 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Call, PropertySetter(typeof(Round), nameof(Round.LastClassList))),
             });
 
-            Label skip = generator.DefineLabel();
+            var skip = generator.DefineLabel();
 
             offset = 7;
             index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldstr && x.operand == (object)"auto_round_restart_time") + offset;
 
-            LocalBuilder timeToRestartIndex = (LocalBuilder)newInstructions[index - 1].operand;
+            var timeToRestartIndex = (LocalBuilder)newInstructions[index - 1].operand;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -184,7 +184,7 @@ namespace Exiled.Events.Patches.Events.Server
             index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Call && x.operand == (object)Method(typeof(RoundSummary), nameof(RoundSummary.RpcShowRoundSummary))) + offset;
             newInstructions[index].labels.Add(skip);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

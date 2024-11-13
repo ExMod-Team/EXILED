@@ -39,14 +39,14 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
-            Label continueLabel = generator.DefineLabel();
-            Label jmp = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
+            var jmp = generator.DefineLabel();
 
-            LocalBuilder changingRoleEventArgs = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
+            var changingRoleEventArgs = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
+            var player = generator.DeclareLocal(typeof(API.Features.Player));
 
             newInstructions.InsertRange(
                 0,
@@ -122,8 +122,8 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(
+            var offset = 1;
+            var index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SetupPoolObject)))) + offset;
 
             newInstructions.InsertRange(
@@ -176,7 +176,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -197,19 +197,19 @@ namespace Exiled.Events.Patches.Events.Player
                 if (ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
                     return;
 
-                Inventory inventory = ev.Player.Inventory;
+                var inventory = ev.Player.Inventory;
 
                 if (ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
                     List<ItemPickupBase> list = new();
-                    if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
+                    if (inventory.TryGetBodyArmor(out var bodyArmor))
                         bodyArmor.DontRemoveExcessOnDrop = true;
 
                     while (inventory.UserInventory.Items.Count > 0)
                     {
-                        int startCount = inventory.UserInventory.Items.Count;
-                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
-                        ItemPickupBase item = inventory.ServerDropItem(key);
+                        var startCount = inventory.UserInventory.Items.Count;
+                        var key = inventory.UserInventory.Items.ElementAt(0).Key;
+                        var item = inventory.ServerDropItem(key);
 
                         // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
                         if (startCount == inventory.UserInventory.Items.Count)
@@ -224,8 +224,8 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     while (inventory.UserInventory.Items.Count > 0)
                     {
-                        int startCount = inventory.UserInventory.Items.Count;
-                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
+                        var startCount = inventory.UserInventory.Items.Count;
+                        var key = inventory.UserInventory.Items.ElementAt(0).Key;
                         inventory.ServerRemoveItem(key, null);
 
                         // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
@@ -237,13 +237,13 @@ namespace Exiled.Events.Patches.Events.Player
                     inventory.SendAmmoNextFrame = true;
                 }
 
-                foreach (ItemType item in ev.Items)
+                foreach (var item in ev.Items)
                     inventory.ServerAddItem(item);
 
-                foreach (KeyValuePair<ItemType, ushort> keyValuePair in ev.Ammo)
+                foreach (var keyValuePair in ev.Ammo)
                     inventory.ServerAddAmmo(keyValuePair.Key, keyValuePair.Value);
 
-                foreach (KeyValuePair<ushort, InventorySystem.Items.ItemBase> item in inventory.UserInventory.Items)
+                foreach (var item in inventory.UserInventory.Items)
                     InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, item.Value);
 
                 InventoryItemProvider.SpawnPreviousInventoryPickups(ev.Player.ReferenceHub);

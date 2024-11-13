@@ -36,7 +36,7 @@ namespace Exiled.Events.EventArgs.Scp330
             ShouldPlaySound = true;
             IsAllowed = Player.IsHuman;
 
-            if (Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag))
+            if (Scp330Bag.TryGetBag(player.ReferenceHub, out var scp330Bag))
             {
                 Scp330 = (Scp330)Item.Get(scp330Bag);
             }

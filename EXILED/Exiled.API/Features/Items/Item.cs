@@ -54,7 +54,7 @@ namespace Exiled.API.Features.Items
 
             if (Base.ItemSerial is 0 && itemBase.Owner != null)
             {
-                ushort serial = ItemSerialGenerator.GenerateNext();
+                var serial = ItemSerialGenerator.GenerateNext();
                 Serial = serial;
                 itemBase.OnAdded(null);
 #if DEBUG
@@ -184,7 +184,7 @@ namespace Exiled.API.Features.Items
             if (itemBase == null)
                 return null;
 
-            if (BaseToItem.TryGetValue(itemBase, out Item item))
+            if (BaseToItem.TryGetValue(itemBase, out var item))
                 return item;
 
             return itemBase switch
@@ -342,11 +342,11 @@ namespace Exiled.API.Features.Items
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            var ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
 
             Base.OnRemoved(ipb);
 
-            Pickup pickup = Pickup.Get(ipb);
+            var pickup = Pickup.Get(ipb);
 
             if (spawn)
                 pickup.Spawn();

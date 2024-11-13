@@ -128,7 +128,7 @@ namespace Exiled.API.Features.Core
             {
                 yield return Timing.WaitForSeconds(TickRate);
 
-                foreach (Action action in Instructions)
+                foreach (var action in Instructions)
                 {
                     try
                     {

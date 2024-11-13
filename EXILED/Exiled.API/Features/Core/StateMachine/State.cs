@@ -62,14 +62,14 @@ namespace Exiled.API.Features.Core.StateMachine
         /// <param name="useAttribute">A value indicating whether attribute should be used.</param>
         public static void InitializeStates(bool useAttribute = true)
         {
-            foreach (Type type in Assembly.GetCallingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract))
+            foreach (var type in Assembly.GetCallingAssembly().GetTypes().Where(t => t.IsClass && !t.IsAbstract))
             {
                 if (!type.IsSubclassOf(typeof(State)) && type.BaseType != typeof(State))
                     continue;
 
                 if (useAttribute)
                 {
-                    StateAttribute stateAtt = type.GetCustomAttribute<StateAttribute>();
+                    var stateAtt = type.GetCustomAttribute<StateAttribute>();
                     if (stateAtt is null)
                     {
                         Log.Error($"A {nameof(State)} cannot be initialized due to missing {nameof(StateAttribute)} attribute");
@@ -77,7 +77,7 @@ namespace Exiled.API.Features.Core.StateMachine
                     }
                 }
 
-                State state = CreateDefaultSubobject<State>(type);
+                var state = CreateDefaultSubobject<State>(type);
                 if (state is null)
                     continue;
 
@@ -120,9 +120,9 @@ namespace Exiled.API.Features.Core.StateMachine
         /// <returns>All <see cref="State"/>s belonging to the specified id between the specified range.</returns>
         public static IEnumerable<State> Get(byte minRange, byte maxRange)
         {
-            for (byte i = minRange; i < maxRange; i++)
+            for (var i = minRange; i < maxRange; i++)
             {
-                State state = Get(i);
+                var state = Get(i);
                 if (state is not null)
                     yield return Get(i);
             }
@@ -135,9 +135,9 @@ namespace Exiled.API.Features.Core.StateMachine
         /// <returns>All <see cref="State"/>s belonging to the specified id between the defined ids.</returns>
         public static IEnumerable<State> Get(params byte[] ids)
         {
-            foreach (byte id in ids)
+            foreach (var id in ids)
             {
-                State state = Get(id);
+                var state = Get(id);
                 if (state is not null)
                     yield return Get(id);
             }
@@ -150,9 +150,9 @@ namespace Exiled.API.Features.Core.StateMachine
         /// <returns>All <see cref="State"/>s belonging to the specified id between the defined names.</returns>
         public static IEnumerable<State> Get(params string[] names)
         {
-            foreach (string name in names)
+            foreach (var name in names)
             {
-                State state = Get(name);
+                var state = Get(name);
                 if (state is not null)
                     yield return state;
             }
@@ -165,9 +165,9 @@ namespace Exiled.API.Features.Core.StateMachine
         /// <returns>All <see cref="State"/>s belonging to the specified id between the defined types.</returns>
         public static IEnumerable<State> Get(params Type[] types)
         {
-            foreach (Type type in types)
+            foreach (var type in types)
             {
-                State state = Get(type);
+                var state = Get(type);
                 if (state is not null)
                     yield return Get(type);
             }
@@ -249,7 +249,7 @@ namespace Exiled.API.Features.Core.StateMachine
         /// <inheritdoc/>
         protected override void Tick()
         {
-            foreach (StateController controller in ActiveControllers)
+            foreach (var controller in ActiveControllers)
             {
                 if (controller.CanEverTick)
                     controller.StateUpdate(this);

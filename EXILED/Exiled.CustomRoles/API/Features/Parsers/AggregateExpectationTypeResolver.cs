@@ -36,11 +36,11 @@ namespace Exiled.CustomRoles.API.Features.Parsers
         {
             targetKey = namingConvention.Apply(TargetKey);
             typeLookup = new Dictionary<string, Type?>();
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
                 {
-                    foreach (Type? t in assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(T))))
+                    foreach (var t in assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(T))))
                         typeLookup.Add(t.Name, t);
                 }
                 catch (Exception e)
@@ -59,8 +59,8 @@ namespace Exiled.CustomRoles.API.Features.Parsers
         {
             if (buffer.TryFindMappingEntry(
                 scalar => targetKey == scalar.Value,
-                out Scalar? key,
-                out ParsingEvent? value))
+                out var key,
+                out var value))
             {
                 if (value is Scalar valueScalar)
                 {
@@ -83,10 +83,10 @@ namespace Exiled.CustomRoles.API.Features.Parsers
 
         private Type? CheckName(string value)
         {
-            if (typeLookup.TryGetValue(value, out Type? childType))
+            if (typeLookup.TryGetValue(value, out var childType))
                 return childType;
 
-            string known = string.Join(",", typeLookup.Keys);
+            var known = string.Join(",", typeLookup.Keys);
             throw new Exception(
                 $"Could not match `{targetKey}: {value}` to a known expectation. Expecting one of: {known}");
         }

@@ -87,7 +87,7 @@ namespace Exiled.API.Features.Items
         /// this.ServerThrow(projectileSettings.StartVelocity, projectileSettings.UpwardsFactor, projectileSettings.StartTorque, startVel);
         public void Throw(bool fullForce = true)
         {
-            ThrowableItem.ProjectileSettings settings = fullForce ? Base.FullThrowSettings : Base.WeakThrowSettings;
+            var settings = fullForce ? Base.FullThrowSettings : Base.WeakThrowSettings;
 
             Base.ServerThrow(settings.StartVelocity, settings.UpwardsFactor, settings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(Owner?.Velocity ?? Vector3.one));
         }

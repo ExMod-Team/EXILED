@@ -74,7 +74,7 @@ namespace Exiled.CreditTags
             if (player.DoNotTrack && !Instance.Config.IgnoreDntFlag && !force)
                 return false;
 
-            if (!DatabaseHandler.TryGetRank(player.UserId, out RankType cachedRank))
+            if (!DatabaseHandler.TryGetRank(player.UserId, out var cachedRank))
                 return false;
 
             ShowRank(cachedRank);
@@ -82,13 +82,13 @@ namespace Exiled.CreditTags
 
             void ShowRank(RankType rank)
             {
-                bool canReceiveCreditBadge = force ||
-                                             (((string.IsNullOrEmpty(player.RankName) &&
-                                                string.IsNullOrEmpty(player.ReferenceHub.serverRoles.HiddenBadge)) ||
-                                               Config.BadgeOverride) && player.GlobalBadge is null);
-                bool canReceiveCreditCustomInfo = string.IsNullOrEmpty(player.CustomInfo) || Config.CustomPlayerInfoOverride;
+                var canReceiveCreditBadge = force ||
+                                            (((string.IsNullOrEmpty(player.RankName) &&
+                                               string.IsNullOrEmpty(player.ReferenceHub.serverRoles.HiddenBadge)) ||
+                                              Config.BadgeOverride) && player.GlobalBadge is null);
+                var canReceiveCreditCustomInfo = string.IsNullOrEmpty(player.CustomInfo) || Config.CustomPlayerInfoOverride;
 
-                if (!Ranks.TryGetValue(rank, out Rank value))
+                if (!Ranks.TryGetValue(rank, out var value))
                     return;
 
                 switch (Config.Mode)

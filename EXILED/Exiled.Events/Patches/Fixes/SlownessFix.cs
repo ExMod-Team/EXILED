@@ -26,14 +26,14 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(x => x.operand == (object)Field(typeof(FpcMotor), nameof(FpcMotor._lastMaxSpeed))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(x => x.operand == (object)Field(typeof(FpcMotor), nameof(FpcMotor._lastMaxSpeed))) + offset;
 
             newInstructions.Insert(index, new(OpCodes.Call, Method(typeof(Mathf), nameof(Mathf.Abs), new[] { typeof(float) })));
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -51,14 +51,14 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(FpcMotor), nameof(FpcMotor.Speed)))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(FpcMotor), nameof(FpcMotor.Speed)))) + offset;
 
             newInstructions.Insert(index, new(OpCodes.Call, Method(typeof(Mathf), nameof(Mathf.Abs), new[] { typeof(float) })));
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

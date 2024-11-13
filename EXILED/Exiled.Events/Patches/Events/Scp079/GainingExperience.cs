@@ -35,11 +35,11 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(GainingExperienceEventArgs));
+            var ev = generator.DeclareLocal(typeof(GainingExperienceEventArgs));
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             // GainingExperienceEventArgs ev = new(Player.Get(this.gameObject), reason, amount, true)
             newInstructions.InsertRange(
@@ -95,7 +95,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

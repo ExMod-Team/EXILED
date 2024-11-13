@@ -231,7 +231,7 @@ namespace Exiled.CustomRoles.API.Features
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException(nameof(name));
 
-            customRole = uint.TryParse(name, out uint id) ? Get(id) : Get(name);
+            customRole = uint.TryParse(name, out var id) ? Get(id) : Get(name);
 
             return customRole is not null;
         }
@@ -262,7 +262,7 @@ namespace Exiled.CustomRoles.API.Features
             if (player is null)
                 throw new ArgumentNullException(nameof(player));
 
-            List<CustomRole> tempList = ListPool<CustomRole>.Pool.Get();
+            var tempList = ListPool<CustomRole>.Pool.Get();
             tempList.AddRange(Registered?.Where(customRole => customRole.Check(player)) ?? Array.Empty<CustomRole>());
 
             customRoles = tempList.AsReadOnly();
@@ -295,7 +295,7 @@ namespace Exiled.CustomRoles.API.Features
 
             assembly ??= Assembly.GetCallingAssembly();
 
-            foreach (Type type in assembly.GetTypes())
+            foreach (var type in assembly.GetTypes())
             {
                 if (type.BaseType != typeof(CustomRole) && type.GetCustomAttribute(typeof(CustomRoleAttribute), inheritAttributes) is null)
                 {
@@ -304,13 +304,13 @@ namespace Exiled.CustomRoles.API.Features
                 }
 
                 Log.Debug($"Getting attributed for {type}");
-                foreach (Attribute attribute in type.GetCustomAttributes(typeof(CustomRoleAttribute), inheritAttributes).Cast<Attribute>())
+                foreach (var attribute in type.GetCustomAttributes(typeof(CustomRoleAttribute), inheritAttributes).Cast<Attribute>())
                 {
                     CustomRole? customRole = null;
 
-                    if (!skipReflection && Server.PluginAssemblies.TryGetValue(assembly, out IPlugin<IConfig> plugin))
+                    if (!skipReflection && Server.PluginAssemblies.TryGetValue(assembly, out var plugin))
                     {
-                        foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
+                        foreach (var property in overrideClass?.GetType().GetProperties() ?? plugin.Config.GetType().GetProperties())
                         {
                             if (property.PropertyType != type)
                                 continue;
@@ -344,9 +344,9 @@ namespace Exiled.CustomRoles.API.Features
         public static IEnumerable<CustomRole> RegisterRoles(IEnumerable<Type> targetTypes, bool isIgnored = false, bool skipReflection = false, object? overrideClass = null)
         {
             List<CustomRole> roles = new();
-            Assembly assembly = Assembly.GetCallingAssembly();
+            var assembly = Assembly.GetCallingAssembly();
 
-            foreach (Type type in assembly.GetTypes())
+            foreach (var type in assembly.GetTypes())
             {
                 if (type.BaseType != typeof(CustomItem) ||
                     type.GetCustomAttribute(typeof(CustomRoleAttribute)) is null ||
@@ -356,16 +356,16 @@ namespace Exiled.CustomRoles.API.Features
                     continue;
                 }
 
-                foreach (Attribute attribute in type.GetCustomAttributes(typeof(CustomRoleAttribute), true).Cast<Attribute>())
+                foreach (var attribute in type.GetCustomAttributes(typeof(CustomRoleAttribute), true).Cast<Attribute>())
                 {
                     CustomRole? customRole = null;
 
                     if (!skipReflection && Server.PluginAssemblies.ContainsKey(assembly))
                     {
-                        IPlugin<IConfig> plugin = Server.PluginAssemblies[assembly];
+                        var plugin = Server.PluginAssemblies[assembly];
 
-                        foreach (PropertyInfo property in overrideClass?.GetType().GetProperties() ??
-                                                          plugin.Config.GetType().GetProperties())
+                        foreach (var property in overrideClass?.GetType().GetProperties() ??
+                                                 plugin.Config.GetType().GetProperties())
                         {
                             if (property.PropertyType != type)
                                 continue;
@@ -395,7 +395,7 @@ namespace Exiled.CustomRoles.API.Features
         {
             List<CustomRole> unregisteredRoles = new();
 
-            foreach (CustomRole customRole in Registered)
+            foreach (var customRole in Registered)
             {
                 customRole.TryUnregister();
                 unregisteredRoles.Add(customRole);
@@ -414,7 +414,7 @@ namespace Exiled.CustomRoles.API.Features
         {
             List<CustomRole> unregisteredRoles = new();
 
-            foreach (CustomRole customRole in Registered)
+            foreach (var customRole in Registered)
             {
                 if ((targetTypes.Contains(customRole.GetType()) && isIgnored) || (!targetTypes.Contains(customRole.GetType()) && !isIgnored))
                     continue;
@@ -532,7 +532,7 @@ namespace Exiled.CustomRoles.API.Features
                         player.ClearInventory();
                     }
 
-                    foreach (string itemName in Inventory)
+                    foreach (var itemName in Inventory)
                     {
                         Log.Debug($"{Name}: Adding {itemName} to inventory.");
                         TryAddItem(player, itemName);
@@ -541,7 +541,7 @@ namespace Exiled.CustomRoles.API.Features
                     if (Ammo.Count > 0)
                     {
                         Log.Debug($"{Name}: Adding Ammo to {player.Nickname} inventory.");
-                        foreach (AmmoType type in EnumUtils<AmmoType>.Values)
+                        foreach (var type in EnumUtils<AmmoType>.Values)
                         {
                             if (type != AmmoType.None)
                                 player.SetAmmo(type, Ammo.ContainsKey(type) ? Ammo[type] == ushort.MaxValue ? InventoryLimits.GetAmmoLimit(type.GetItemType(), player.ReferenceHub) : Ammo[type] : (ushort)0);
@@ -554,7 +554,7 @@ namespace Exiled.CustomRoles.API.Features
             player.MaxHealth = MaxHealth;
             player.Scale = Scale;
 
-            Vector3 position = GetSpawnPosition();
+            var position = GetSpawnPosition();
             if (position != Vector3.zero)
             {
                 player.Position = position;
@@ -567,7 +567,7 @@ namespace Exiled.CustomRoles.API.Features
 
             if (CustomAbilities is not null)
             {
-                foreach (CustomAbility ability in CustomAbilities)
+                foreach (var ability in CustomAbilities)
                     ability.AddAbility(player);
             }
 
@@ -579,7 +579,7 @@ namespace Exiled.CustomRoles.API.Features
 
             if (!string.IsNullOrEmpty(ConsoleMessage))
             {
-                StringBuilder builder = StringBuilderPool.Pool.Get();
+                var builder = StringBuilderPool.Pool.Get();
 
                 builder.AppendLine(Name);
                 builder.AppendLine(Description);
@@ -590,7 +590,7 @@ namespace Exiled.CustomRoles.API.Features
                 {
                     builder.AppendLine(AbilityUsage);
                     builder.AppendLine("Your custom abilities are:");
-                    for (int i = 1; i < CustomAbilities.Count + 1; i++)
+                    for (var i = 1; i < CustomAbilities.Count + 1; i++)
                         builder.AppendLine($"{i}. {CustomAbilities[i - 1].Name} - {CustomAbilities[i - 1].Description}");
 
                     builder.AppendLine(
@@ -616,7 +616,7 @@ namespace Exiled.CustomRoles.API.Features
             player.Scale = Vector3.one;
             if (CustomAbilities is not null)
             {
-                foreach (CustomAbility ability in CustomAbilities)
+                foreach (var ability in CustomAbilities)
                 {
                     ability.RemoveAbility(player);
                 }
@@ -688,9 +688,9 @@ namespace Exiled.CustomRoles.API.Features
         /// <returns> Whether the item was able to be added. </returns>
         public bool TryAddFriendlyFire(Dictionary<RoleTypeId, float> ffRules, bool overwrite = false)
         {
-            Dictionary<RoleTypeId, float> temporaryFriendlyFireRules = DictionaryPool<RoleTypeId, float>.Pool.Get();
+            var temporaryFriendlyFireRules = DictionaryPool<RoleTypeId, float>.Pool.Get();
 
-            foreach (KeyValuePair<RoleTypeId, float> roleFF in ffRules)
+            foreach (var roleFF in ffRules)
             {
                 if (overwrite)
                 {
@@ -712,7 +712,7 @@ namespace Exiled.CustomRoles.API.Features
 
             if (!overwrite)
             {
-                foreach (KeyValuePair<RoleTypeId, float> roleFF in temporaryFriendlyFireRules)
+                foreach (var roleFF in temporaryFriendlyFireRules)
                 {
                     TryAddFriendlyFire(roleFF);
                 }
@@ -779,7 +779,7 @@ namespace Exiled.CustomRoles.API.Features
         /// <returns>Whether or not the item was able to be added.</returns>
         protected bool TryAddItem(Player player, string itemName)
         {
-            if (CustomItem.TryGet(itemName, out CustomItem? customItem))
+            if (CustomItem.TryGet(itemName, out var customItem))
             {
                 customItem?.Give(player, DisplayCustomItemMessages);
 
@@ -812,9 +812,9 @@ namespace Exiled.CustomRoles.API.Features
 
             if (SpawnProperties.StaticSpawnPoints.Count > 0)
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.StaticSpawnPoints)
+                foreach ((var chance, var pos) in SpawnProperties.StaticSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
+                    var r = Loader.Random.NextDouble() * 100;
                     if (r <= chance)
                         return pos;
                 }
@@ -822,9 +822,9 @@ namespace Exiled.CustomRoles.API.Features
 
             if (SpawnProperties.DynamicSpawnPoints.Count > 0)
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.DynamicSpawnPoints)
+                foreach ((var chance, var pos) in SpawnProperties.DynamicSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
+                    var r = Loader.Random.NextDouble() * 100;
                     if (r <= chance)
                         return pos;
                 }
@@ -832,9 +832,9 @@ namespace Exiled.CustomRoles.API.Features
 
             if (SpawnProperties.RoleSpawnPoints.Count > 0)
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.RoleSpawnPoints)
+                foreach ((var chance, var pos) in SpawnProperties.RoleSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
+                    var r = Loader.Random.NextDouble() * 100;
                     if (r <= chance)
                         return pos;
                 }
@@ -842,9 +842,9 @@ namespace Exiled.CustomRoles.API.Features
 
             if (SpawnProperties.RoomSpawnPoints.Count > 0)
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.RoomSpawnPoints)
+                foreach ((var chance, var pos) in SpawnProperties.RoomSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
+                    var r = Loader.Random.NextDouble() * 100;
                     if (r <= chance)
                         return pos;
                 }
@@ -871,7 +871,7 @@ namespace Exiled.CustomRoles.API.Features
         /// </summary>
         protected virtual void UnsubscribeEvents()
         {
-            foreach (Player player in TrackedPlayers)
+            foreach (var player in TrackedPlayers)
                 RemoveRole(player);
 
             Log.Debug($"{Name}: Unloading events.");

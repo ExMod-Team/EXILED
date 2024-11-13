@@ -116,15 +116,15 @@ namespace Exiled.API.Features.DamageHandlers
             StartVelocity = player.Velocity;
 
             As<BaseFirearmHandler>().StartVelocity.y = Mathf.Max(As<BaseFirearmHandler>().StartVelocity.y, 0f);
-            AhpStat ahpModule = player.GetModule<AhpStat>();
-            HealthStat healthModule = player.GetModule<HealthStat>();
+            var ahpModule = player.GetModule<AhpStat>();
+            var healthModule = player.GetModule<HealthStat>();
 
             if (Damage <= StandardDamageHandler.KillValue)
                 return KillPlayer(player, CustomBase);
 
             ProcessDamage(player);
 
-            foreach (StatusEffectBase statusEffect in player.ActiveEffects)
+            foreach (var statusEffect in player.ActiveEffects)
             {
                 if (statusEffect is IDamageModifierEffect damageModifierEffect)
                     Damage *= damageModifierEffect.GetDamageModifier(Damage, CustomBase, As<BaseFirearmHandler>().Hitbox);

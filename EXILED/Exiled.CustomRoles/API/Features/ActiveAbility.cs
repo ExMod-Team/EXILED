@@ -136,7 +136,7 @@ namespace Exiled.CustomRoles.API.Features
         {
             if (player is null)
                 return false;
-            bool result = type switch
+            var result = type switch
             {
                 CheckType.Active => ActivePlayers.Contains(player),
                 CheckType.Selected => SelectedPlayers.Contains(player),
@@ -174,7 +174,7 @@ namespace Exiled.CustomRoles.API.Features
                 return true;
             }
 
-            DateTime usableTime = LastUsed[player] + TimeSpan.FromSeconds(Cooldown);
+            var usableTime = LastUsed[player] + TimeSpan.FromSeconds(Cooldown);
             if (DateTime.Now > usableTime)
             {
                 response = string.Empty;

@@ -35,16 +35,16 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
-            Label setMaxHpLabel = generator.DefineLabel();
-            Label rpcLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
+            var setMaxHpLabel = generator.DefineLabel();
+            var rpcLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(InteractingShootingTargetEventArgs));
+            var ev = generator.DeclareLocal(typeof(InteractingShootingTargetEventArgs));
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldarg_2) + offset;
+            var offset = 0;
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldarg_2) + offset;
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
@@ -126,7 +126,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stfld, Field(typeof(BaseTarget), nameof(BaseTarget._autoDestroyTime))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

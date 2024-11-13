@@ -37,14 +37,14 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloca_S) + offset;
+            var offset = -2;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloca_S) + offset;
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingCameraEventArgs));
+            var ev = generator.DeclareLocal(typeof(ChangingCameraEventArgs));
 
             newInstructions.InsertRange(
                 index,
@@ -93,7 +93,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brtrue_S) + offset;
             newInstructions[index].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

@@ -52,13 +52,13 @@ namespace Exiled.Events.Commands.PluginManager
                 return false;
             }
 
-            StringBuilder sb = StringBuilderPool.Pool.Get();
+            var sb = StringBuilderPool.Pool.Get();
 
             // Append a new line to start the response on a new line
             sb.AppendLine();
 
-            SortedSet<IPlugin<IConfig>> plugins = Loader.Loader.Plugins;
-            int enabledPluginCount = plugins.Where(plugin => plugin.Config.IsEnabled).Count();
+            var plugins = Loader.Loader.Plugins;
+            var enabledPluginCount = plugins.Where(plugin => plugin.Config.IsEnabled).Count();
 
             // Append two new lines before the list
             sb.Append("Total number of plugins: ").Append(plugins.Count).AppendLine()
@@ -68,9 +68,9 @@ namespace Exiled.Events.Commands.PluginManager
 
             StringBuilder AppendNewRow() => sb.AppendLine().Append("\t");
 
-            for (int z = 0; z < plugins.Count; z++)
+            for (var z = 0; z < plugins.Count; z++)
             {
-                IPlugin<IConfig> plugin = plugins.ElementAt(z);
+                var plugin = plugins.ElementAt(z);
 
                 sb.Append(string.IsNullOrEmpty(plugin.Name) ? "(Unknown)" : plugin.Name).Append(":");
 

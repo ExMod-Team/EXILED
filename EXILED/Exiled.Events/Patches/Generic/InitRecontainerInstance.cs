@@ -27,7 +27,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // Recontainer.Base = this;
             newInstructions.InsertRange(
@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Call, PropertySetter(typeof(Recontainer), nameof(Recontainer.Base))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

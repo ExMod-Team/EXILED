@@ -32,13 +32,13 @@ namespace Exiled.Events.Patches.Events.Scp106
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(TeleportingEventArgs));
-            Label continueLabel = generator.DefineLabel();
+            var ev = generator.DeclareLocal(typeof(TeleportingEventArgs));
+            var continueLabel = generator.DefineLabel();
 
-            int offset = -2;
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret) + offset;
+            var offset = -2;
+            var index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -82,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Scp106
                     new(OpCodes.Stloc_0),
                 });
 
-            foreach (CodeInstruction instruction in newInstructions)
+            foreach (var instruction in newInstructions)
                 yield return instruction;
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

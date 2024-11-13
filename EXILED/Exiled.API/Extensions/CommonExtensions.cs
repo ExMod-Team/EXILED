@@ -28,7 +28,7 @@ namespace Exiled.API.Extensions
             if (enumerable is null)
                 return default;
 
-            T[] array = enumerable.ToArray();
+            var array = enumerable.ToArray();
             return array.Length == 0 ? default : array[Random.Range(0, array.Length)];
         }
 
@@ -44,7 +44,7 @@ namespace Exiled.API.Extensions
             if (enumerable is null)
                 return default;
 
-            T[] array = enumerable.Where(condition).ToArray();
+            var array = enumerable.Where(condition).ToArray();
             return array.Length == 0 ? default : array.GetRandomValue();
         }
 
@@ -56,7 +56,7 @@ namespace Exiled.API.Extensions
         /// <returns>The new modfied curve.</returns>
         public static AnimationCurve Multiply(this AnimationCurve curve, float amount)
         {
-            for (int i = 0; i < curve.length; i++)
+            for (var i = 0; i < curve.length; i++)
                 curve.keys[i].value *= amount;
 
             return curve;
@@ -70,7 +70,7 @@ namespace Exiled.API.Extensions
         /// <returns>The new modfied curve.</returns>
         public static AnimationCurve Add(this AnimationCurve curve, float amount)
         {
-            for (int i = 0; i < curve.length; i++)
+            for (var i = 0; i < curve.length; i++)
                 curve.keys[i].value += amount;
 
             return curve;

@@ -27,15 +27,15 @@ namespace Exiled.CustomItems.API
         /// <param name="displayMessage">Indicates a value whether <see cref="CustomItem.ShowPickedUpMessage"/> will be called when the player receives the <see cref="CustomItem"/> or not.</param>
         public static void ResetInventory(this Player player, IEnumerable<string> newItems, bool displayMessage = false)
         {
-            foreach (Item item in player.Items)
+            foreach (var item in player.Items)
             {
-                if (CustomItem.TryGet(item, out CustomItem? customItem))
+                if (CustomItem.TryGet(item, out var customItem))
                     customItem?.TrackedSerials.Remove(item.Serial);
             }
 
             player.ClearInventory();
 
-            foreach (string item in newItems)
+            foreach (var item in newItems)
             {
                 if (Enum.TryParse(item, true, out ItemType parsedItem))
                 {
@@ -57,7 +57,7 @@ namespace Exiled.CustomItems.API
             if (customItems is null)
                 throw new ArgumentNullException("customItems");
 
-            foreach (CustomItem customItem in customItems)
+            foreach (var customItem in customItems)
                 customItem.TryRegister();
         }
 
@@ -76,7 +76,7 @@ namespace Exiled.CustomItems.API
             if (customItems is null)
                 throw new ArgumentNullException("customItems");
 
-            foreach (CustomItem customItem in customItems)
+            foreach (var customItem in customItems)
                 customItem.TryUnregister();
         }
 

@@ -40,10 +40,10 @@ namespace Exiled.API.Extensions
         /// <param name="param">The event arguments.</param>
         public static void InvokeStaticEvent(this Type type, string eventName, object[] param)
         {
-            MulticastDelegate eventDelegate = (MulticastDelegate)type.GetField(eventName, AccessTools.all).GetValue(null);
+            var eventDelegate = (MulticastDelegate)type.GetField(eventName, AccessTools.all).GetValue(null);
             if (eventDelegate != null)
             {
-                foreach (Delegate handler in eventDelegate.GetInvocationList())
+                foreach (var handler in eventDelegate.GetInvocationList())
                 {
                     handler.Method.Invoke(handler.Target, param);
                 }
@@ -57,12 +57,12 @@ namespace Exiled.API.Extensions
         /// <param name="source">The source object to copy properties from.</param>
         public static void CopyProperties(this object target, object source)
         {
-            Type type = target.GetType();
+            var type = target.GetType();
 
             if (type != source.GetType())
                 throw new InvalidTypeException("Target and source type mismatch!");
 
-            foreach (PropertyInfo sourceProperty in type.GetProperties())
+            foreach (var sourceProperty in type.GetProperties())
                 type.GetProperty(sourceProperty.Name)?.SetValue(target, sourceProperty.GetValue(source, null), null);
         }
     }

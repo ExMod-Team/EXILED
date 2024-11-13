@@ -155,7 +155,7 @@ namespace Exiled.API.Features.Core
         public T AddComponent<T>(string name = "")
             where T : EActor
         {
-            T component = CreateDefaultSubobject<T>(Base, string.IsNullOrEmpty(name) ? $"{GetType().Name}-Component#{ComponentsInChildren.Count}" : name).Cast<T>();
+            var component = CreateDefaultSubobject<T>(Base, string.IsNullOrEmpty(name) ? $"{GetType().Name}-Component#{ComponentsInChildren.Count}" : name).Cast<T>();
             if (component is null)
                 return null;
 
@@ -166,7 +166,7 @@ namespace Exiled.API.Features.Core
         /// <inheritdoc/>
         public EActor AddComponent(Type type, string name = "")
         {
-            EActor component = CreateDefaultSubobject(type, Base, string.IsNullOrEmpty(name) ? $"{GetType().Name}-Component#{ComponentsInChildren.Count}" : name).Cast<EActor>();
+            var component = CreateDefaultSubobject(type, Base, string.IsNullOrEmpty(name) ? $"{GetType().Name}-Component#{ComponentsInChildren.Count}" : name).Cast<EActor>();
             if (component is null)
                 return null;
 
@@ -193,7 +193,7 @@ namespace Exiled.API.Features.Core
         public bool TryGetComponent<T>(Type type, out T component)
             where T : EActor
         {
-            EActor actor = GetComponent(type);
+            var actor = GetComponent(type);
 
             if (actor.Cast(out component))
                 component = actor.Cast<T>();

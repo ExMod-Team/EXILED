@@ -35,18 +35,18 @@ namespace Exiled.Events.Patches.Events.Scp330
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(InteractingScp330EventArgs));
+            var ev = generator.DeclareLocal(typeof(InteractingScp330EventArgs));
 
             // Remove original "No scp can touch" logic.
             newInstructions.RemoveRange(0, 3);
 
             // Find ServerProcessPickup, insert before it.
-            int offset = -3;
-            int index = newInstructions.FindLastIndex(
+            var offset = -3;
+            var index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(Method(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup)))) + offset;
 
             newInstructions.InsertRange(
@@ -108,7 +108,7 @@ namespace Exiled.Events.Patches.Events.Scp330
             index = newInstructions.FindLastIndex(
                 instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + offset;
 
-            Label notSeverLabel = newInstructions[index].labels[0];
+            var notSeverLabel = newInstructions[index].labels[0];
 
             offset = 2;
             index = newInstructions.FindLastIndex(
@@ -130,7 +130,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -146,7 +146,7 @@ namespace Exiled.Events.Patches.Events.Scp330
     {
         private static void Prefix(Scp330Bag __instance, ref CandyKindID kind)
         {
-            Scp330 scp330 = Item.Get<Scp330>(__instance);
+            var scp330 = Item.Get<Scp330>(__instance);
 
             if (scp330.CandyToAdd != CandyKindID.None)
                 kind = scp330.CandyToAdd;

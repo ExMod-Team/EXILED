@@ -45,11 +45,11 @@ namespace Exiled.API.Extensions
         public static T ModifyFlags<T>(this T flags, bool value, params T[] changeFlags)
             where T : Enum
         {
-            long currentValue = Convert.ToInt64(flags);
+            var currentValue = Convert.ToInt64(flags);
 
-            foreach (T flag in changeFlags)
+            foreach (var flag in changeFlags)
             {
-                long flagValue = Convert.ToInt64(flag);
+                var flagValue = Convert.ToInt64(flag);
 
                 if (value)
                     currentValue |= flagValue;

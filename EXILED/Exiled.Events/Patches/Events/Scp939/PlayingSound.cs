@@ -35,11 +35,11 @@ namespace Exiled.Events.Patches.Events.Scp939
         {
             List<CodeInstruction> newInstructions = new();
 
-            LocalBuilder option = generator.DeclareLocal(typeof(byte));
-            LocalBuilder isReady = generator.DeclareLocal(typeof(bool));
-            LocalBuilder ev = generator.DeclareLocal(typeof(PlayingSoundEventArgs));
+            var option = generator.DeclareLocal(typeof(byte));
+            var isReady = generator.DeclareLocal(typeof(bool));
+            var ev = generator.DeclareLocal(typeof(PlayingSoundEventArgs));
 
-            Label ret = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
             newInstructions.AddRange(new CodeInstruction[]
             {
@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Scp939
                 new CodeInstruction(OpCodes.Ret).WithLabels(ret),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
         }
 

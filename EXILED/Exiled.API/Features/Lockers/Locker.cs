@@ -107,7 +107,7 @@ namespace Exiled.API.Features.Lockers
         {
             get
             {
-                Chamber randomChamber = Chambers.GetRandomValue();
+                var randomChamber = Chambers.GetRandomValue();
 
                 // Determine if the chamber uses multiple spawn points and has at least one available spawn point.
                 if (randomChamber.UseMultipleSpawnpoints && randomChamber.Spawnpoints.Count() > 0)
@@ -127,7 +127,7 @@ namespace Exiled.API.Features.Lockers
         /// <param name="locker">The <see cref="BaseLocker"/> to get.</param>
         /// <returns>A <see cref="Locker"/> or <see langword="null"/> if not found.</returns>
         public static Locker? Get(BaseLocker locker) => locker == null ? null :
-            BaseToExiledLockers.TryGetValue(locker, out Locker supply) ? supply : new Locker(locker);
+            BaseToExiledLockers.TryGetValue(locker, out var supply) ? supply : new Locker(locker);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Locker"/> given the specified <see cref="ZoneType"/>.
@@ -169,10 +169,10 @@ namespace Exiled.API.Features.Lockers
         public void AddItem(Pickup item)
         {
             // Select a random chamber from the available locker chambers.
-            Chamber chamber = Chambers.GetRandomValue();
+            var chamber = Chambers.GetRandomValue();
 
             // Determine the parent transform where the item will be placed.
-            Transform parentTransform = chamber.UseMultipleSpawnpoints && chamber.Spawnpoints.Count() > 0
+            var parentTransform = chamber.UseMultipleSpawnpoints && chamber.Spawnpoints.Count() > 0
                 ? chamber.Spawnpoints.GetRandomValue()
                 : chamber.Spawnpoint;
 

@@ -108,8 +108,8 @@ namespace Exiled.Events.Patches.Generic
 
             try
             {
-                Player attacker = Player.Get(attackerFootprint.Hub);
-                Player victim = Player.Get(victimHub);
+                var attacker = Player.Get(attackerFootprint.Hub);
+                var victim = Player.Get(victimHub);
                 if (attacker is null || victim is null)
                 {
                     Log.Debug($"CheckFriendlyFirePlayerRules, Attacker null: {attacker is null}, Victim null: {victim is null}");
@@ -129,7 +129,7 @@ namespace Exiled.Events.Patches.Generic
                     // If 035 is being shot, then we need to check if we are an 035, then check if the attacker is allowed to attack us
                     if (victim.CustomRoleFriendlyFireMultiplier.Count > 0)
                     {
-                        if (victim.CustomRoleFriendlyFireMultiplier.TryGetValue(victim.UniqueRole, out Dictionary<RoleTypeId, float> pairedData))
+                        if (victim.CustomRoleFriendlyFireMultiplier.TryGetValue(victim.UniqueRole, out var pairedData))
                         {
                             if (pairedData.ContainsKey(attacker.Role))
                             {
@@ -144,7 +144,7 @@ namespace Exiled.Events.Patches.Generic
                     // If 035 is attacking, whether to allow or disallow based on victim role.
                     if (attacker.CustomRoleFriendlyFireMultiplier.Count > 0)
                     {
-                        if (attacker.CustomRoleFriendlyFireMultiplier.TryGetValue(attacker.UniqueRole, out Dictionary<RoleTypeId, float> pairedData))
+                        if (attacker.CustomRoleFriendlyFireMultiplier.TryGetValue(attacker.UniqueRole, out var pairedData))
                         {
                             if (pairedData.ContainsKey(victim.Role))
                             {
@@ -158,7 +158,7 @@ namespace Exiled.Events.Patches.Generic
                 // If we're SCP then we need to check if we can attack other SCP, or D-Class, etc. This is default FF logic without unique roles.
                 if (attacker.FriendlyFireMultiplier.Count > 0)
                 {
-                    if (attacker.FriendlyFireMultiplier.TryGetValue(victim.Role, out float ffMulti))
+                    if (attacker.FriendlyFireMultiplier.TryGetValue(victim.Role, out var ffMulti))
                     {
                         ffMultiplier = ffMulti;
                         return true;
@@ -182,9 +182,9 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label jmp = generator.DefineLabel();
+            var jmp = generator.DefineLabel();
 
             // CheckFriendlyFirePlayer(this.PreviousOwner.Hub, referenceHub)
             newInstructions.InsertRange(
@@ -207,7 +207,7 @@ namespace Exiled.Events.Patches.Generic
                     new CodeInstruction(OpCodes.Nop).WithLabels(jmp),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -222,16 +222,16 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -1;
-            int index = newInstructions.FindLastIndex(
+            var offset = -1;
+            var index = newInstructions.FindLastIndex(
                 instruction => instruction.Calls(PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Attacker)))) + offset;
 
-            LocalBuilder ffMulti = generator.DeclareLocal(typeof(float));
+            var ffMulti = generator.DeclareLocal(typeof(float));
 
-            Label uniqueFFMulti = generator.DefineLabel();
-            Label normalProcessing = generator.DefineLabel();
+            var uniqueFFMulti = generator.DefineLabel();
+            var normalProcessing = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
@@ -259,10 +259,10 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Brtrue_S, uniqueFFMulti),
                 });
 
-            int ffMultiplierIndexOffset = 0;
+            var ffMultiplierIndexOffset = 0;
 
             // int ffMultiplierIndex = newInstructions.FindLast(index, instruction => instruction.LoadsField(Field(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler._ffMultiplier)))) + ffMultiplierIndexOffset;
-            int ffMultiplierIndex = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(StandardDamageHandler), nameof(StandardDamageHandler.ProcessDamage)))) + ffMultiplierIndexOffset;
+            var ffMultiplierIndex = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(StandardDamageHandler), nameof(StandardDamageHandler.ProcessDamage)))) + ffMultiplierIndexOffset;
 
             newInstructions[ffMultiplierIndex].WithLabels(normalProcessing);
 
@@ -289,7 +289,7 @@ namespace Exiled.Events.Patches.Generic
                     // Next line is ProcessDamage, which uses AttackerDamageHandler information.
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

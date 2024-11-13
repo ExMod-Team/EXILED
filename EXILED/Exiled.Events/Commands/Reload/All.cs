@@ -34,9 +34,9 @@ namespace Exiled.Events.Commands.Reload
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            bool success = true;
+            var success = true;
 
-            if (!Configs.Instance.Execute(arguments, sender, out string responsetemp))
+            if (!Configs.Instance.Execute(arguments, sender, out var responsetemp))
                 success = false;
             sender.Respond(responsetemp);
 

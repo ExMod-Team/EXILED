@@ -66,9 +66,9 @@ namespace Exiled.Permissions.Commands.Permissions.Group
                 return false;
             }
 
-            Permissions.Groups.TryGetValue(arguments.At(0), out Features.Group group);
+            Permissions.Groups.TryGetValue(arguments.At(0), out var group);
 
-            StringBuilder stringBuilder = StringBuilderPool.Pool.Get();
+            var stringBuilder = StringBuilderPool.Pool.Get();
 
             stringBuilder.AppendLine($"Group: {arguments.At(0)}");
 
@@ -85,7 +85,7 @@ namespace Exiled.Permissions.Commands.Permissions.Group
             {
                 stringBuilder.AppendLine("Inheritance: ");
 
-                foreach (string inheritance in group.Inheritance)
+                foreach (var inheritance in group.Inheritance)
                     stringBuilder.AppendLine("- " + inheritance);
             }
 
@@ -93,7 +93,7 @@ namespace Exiled.Permissions.Commands.Permissions.Group
             {
                 stringBuilder.AppendLine("Permissions: ");
 
-                foreach (string permission in group.Permissions)
+                foreach (var permission in group.Permissions)
                     stringBuilder.AppendLine($"- {permission}");
             }
 

@@ -31,9 +31,9 @@ namespace Exiled.API.Extensions
         /// <returns>Returns the distance between the two strings.</returns>
         public static int GetDistance(this string firstString, string secondString)
         {
-            int n = firstString.Length;
-            int m = secondString.Length;
-            int[,] d = new int[n + 1, m + 1];
+            var n = firstString.Length;
+            var m = secondString.Length;
+            var d = new int[n + 1, m + 1];
 
             if (n == 0)
                 return m;
@@ -41,19 +41,19 @@ namespace Exiled.API.Extensions
             if (m == 0)
                 return n;
 
-            for (int i = 0; i <= n; d[i, 0] = i++)
+            for (var i = 0; i <= n; d[i, 0] = i++)
             {
             }
 
-            for (int j = 0; j <= m; d[0, j] = j++)
+            for (var j = 0; j <= m; d[0, j] = j++)
             {
             }
 
-            for (int i = 1; i <= n; i++)
+            for (var i = 1; i <= n; i++)
             {
-                for (int j = 1; j <= m; j++)
+                for (var j = 1; j <= m; j++)
                 {
-                    int cost = secondString[j - 1] == firstString[i - 1] ? 0 : 1;
+                    var cost = secondString[j - 1] == firstString[i - 1] ? 0 : 1;
 
                     d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
                 }
@@ -69,7 +69,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns a <see cref="ValueTuple"/> containing the exctracted command name and arguments.</returns>
         public static (string commandName, string[] arguments) ExtractCommand(this string commandLine)
         {
-            string[] extractedArguments = commandLine.Split(' ');
+            var extractedArguments = commandLine.Split(' ');
 
             return (extractedArguments[0].ToLower(), extractedArguments.Skip(1).ToArray());
         }
@@ -82,7 +82,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns the new snake_case string.</returns>
         public static string ToSnakeCase(this string str, bool shouldReplaceSpecialChars = true)
         {
-            string snakeCaseString = string.Concat(str.Select((ch, i) => (i > 0) && char.IsUpper(ch) ? "_" + ch.ToString() : ch.ToString())).ToLower();
+            var snakeCaseString = string.Concat(str.Select((ch, i) => (i > 0) && char.IsUpper(ch) ? "_" + ch.ToString() : ch.ToString())).ToLower();
 
             return shouldReplaceSpecialChars ? Regex.Replace(snakeCaseString, @"[^0-9a-zA-Z_]+", string.Empty) : snakeCaseString;
         }
@@ -96,12 +96,12 @@ namespace Exiled.API.Extensions
         /// <returns>Returns the converted <see cref="IEnumerable{T}"/>.</returns>
         public static string ToString<T>(this IEnumerable<T> enumerable, bool showIndex = true)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Pool.Get();
-            int index = 0;
+            var stringBuilder = StringBuilderPool.Pool.Get();
+            var index = 0;
 
             stringBuilder.AppendLine();
 
-            foreach (T enumerator in enumerable)
+            foreach (var enumerator in enumerable)
             {
                 if (showIndex)
                     stringBuilder.Append($"{index++} ");
@@ -119,7 +119,7 @@ namespace Exiled.API.Extensions
         /// <returns>Name without brackets.</returns>
         public static string RemoveBracketsOnEndOfName(this string name)
         {
-            int bracketStart = name.IndexOf('(') - 1;
+            var bracketStart = name.IndexOf('(') - 1;
 
             if (bracketStart > 0)
                 name = name.Remove(bracketStart, name.Length - bracketStart);
@@ -135,7 +135,7 @@ namespace Exiled.API.Extensions
         /// <returns>Substring before the symbol.</returns>
         public static string GetBefore(this string input, char symbol)
         {
-            int start = input.IndexOf(symbol);
+            var start = input.IndexOf(symbol);
             if (start > 0)
                 input = input.Substring(0, start);
 
@@ -163,7 +163,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns the raw user id.</returns>
         public static string GetRawUserId(this string userId)
         {
-            int index = userId.IndexOf('@');
+            var index = userId.IndexOf('@');
             return index == -1 ? userId : userId.Substring(0, index);
         }
 
@@ -174,8 +174,8 @@ namespace Exiled.API.Extensions
         /// <returns>The hashed userid.</returns>
         public static string GetHashedUserId(this string userId)
         {
-            byte[] textData = Encoding.UTF8.GetBytes(userId.Substring(0, userId.LastIndexOf('@')));
-            byte[] hash = Sha256.ComputeHash(textData);
+            var textData = Encoding.UTF8.GetBytes(userId.Substring(0, userId.LastIndexOf('@')));
+            var hash = Sha256.ComputeHash(textData);
             return BitConverter.ToString(hash).Replace("-", string.Empty);
         }
     }

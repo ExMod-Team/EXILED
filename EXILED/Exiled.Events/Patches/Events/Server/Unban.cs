@@ -28,11 +28,11 @@ namespace Exiled.Events.Patches.Events.Server
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(UnbanningEventArgs));
+            var ev = generator.DeclareLocal(typeof(UnbanningEventArgs));
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
@@ -82,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnUnbanned))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

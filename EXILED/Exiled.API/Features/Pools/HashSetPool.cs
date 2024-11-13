@@ -49,7 +49,7 @@ namespace Exiled.API.Features.Pools
         /// <returns>The contents of the returned hashset as an array.</returns>
         public T[] ToArrayReturn(HashSet<T> obj)
         {
-            T[] array = obj.ToArray();
+            var array = obj.ToArray();
 
             Return(obj);
 

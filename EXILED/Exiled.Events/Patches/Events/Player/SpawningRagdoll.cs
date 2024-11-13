@@ -39,14 +39,14 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label cnt = generator.DefineLabel();
+            var cnt = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(SpawningRagdollEventArgs));
+            var ev = generator.DeclareLocal(typeof(SpawningRagdollEventArgs));
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertySetter(typeof(BasicRagdoll), nameof(BasicRagdoll.NetworkInfo)))) + offset;
+            var offset = 0;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(PropertySetter(typeof(BasicRagdoll), nameof(BasicRagdoll.NetworkInfo)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -124,7 +124,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnSpawnedRagdoll))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

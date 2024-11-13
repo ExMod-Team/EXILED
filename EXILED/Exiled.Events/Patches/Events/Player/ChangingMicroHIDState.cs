@@ -31,12 +31,12 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label skipLabel = generator.DefineLabel();
-            Label continueLabel = generator.DefineLabel();
+            var skipLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingMicroHIDStateEventArgs));
+            var ev = generator.DeclareLocal(typeof(ChangingMicroHIDStateEventArgs));
 
             List<CodeInstruction> instructionsToAdd = new()
             {
@@ -87,12 +87,12 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             };
 
-            int offset = 1;
+            var offset = 1;
 
-            foreach (CodeInstruction instruction in newInstructions.FindAll(i => i.StoresField(Field(typeof(MicroHIDItem), nameof(MicroHIDItem.State)))))
+            foreach (var instruction in newInstructions.FindAll(i => i.StoresField(Field(typeof(MicroHIDItem), nameof(MicroHIDItem.State)))))
                 newInstructions.InsertRange(newInstructions.IndexOf(instruction) + offset, instructionsToAdd);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

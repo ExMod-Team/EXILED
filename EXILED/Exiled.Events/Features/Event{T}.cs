@@ -174,7 +174,7 @@ namespace Exiled.Events.Features
             if (InnerEvent is null)
                 return;
 
-            foreach (CustomEventHandler<T> handler in InnerEvent.GetInvocationList().Cast<CustomEventHandler<T>>())
+            foreach (var handler in InnerEvent.GetInvocationList().Cast<CustomEventHandler<T>>())
             {
                 try
                 {
@@ -193,7 +193,7 @@ namespace Exiled.Events.Features
             if (InnerAsyncEvent is null)
                 return;
 
-            foreach (CustomAsyncEventHandler<T> handler in InnerAsyncEvent.GetInvocationList().Cast<CustomAsyncEventHandler<T>>())
+            foreach (var handler in InnerAsyncEvent.GetInvocationList().Cast<CustomAsyncEventHandler<T>>())
             {
                 try
                 {

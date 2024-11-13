@@ -42,7 +42,7 @@ namespace Exiled.API.Features
         public static void PatchAll(Harmony harmony, out int failedPatch)
         {
             failedPatch = 0;
-            foreach (Type type in AccessTools.GetTypesFromAssembly(Assembly.GetCallingAssembly()))
+            foreach (var type in AccessTools.GetTypesFromAssembly(Assembly.GetCallingAssembly()))
             {
                 try
                 {
@@ -73,11 +73,11 @@ namespace Exiled.API.Features
             try
             {
                 Harmony harmony = new(id);
-                bool isPatchGroup = false;
-                foreach (Type type in Assembly.GetCallingAssembly().GetTypes())
+                var isPatchGroup = false;
+                foreach (var type in Assembly.GetCallingAssembly().GetTypes())
                 {
-                    PatchClassProcessor processor = harmony.CreateClassProcessor(type);
-                    PatchGroupAttribute patchGroup = type.GetCustomAttribute<PatchGroupAttribute>();
+                    var processor = harmony.CreateClassProcessor(type);
+                    var patchGroup = type.GetCustomAttribute<PatchGroupAttribute>();
 
                     if (patchGroup is null)
                     {
@@ -98,9 +98,9 @@ namespace Exiled.API.Features
                 if (!isPatchGroup)
                     return harmony;
 
-                foreach (MethodBase methodBase in harmony.GetPatchedMethods())
+                foreach (var methodBase in harmony.GetPatchedMethods())
                 {
-                    if (PatchedGroupMethods.TryGetValue(methodBase, out HashSet<string> ids))
+                    if (PatchedGroupMethods.TryGetValue(methodBase, out var ids))
                         ids.Add(groupId);
                     else
                         PatchedGroupMethodsValue.Add(methodBase, new HashSet<string> { groupId });
@@ -118,7 +118,7 @@ namespace Exiled.API.Features
             }
             catch (Exception ex)
             {
-                MethodBase callee = new StackTrace().GetFrame(1).GetMethod();
+                var callee = new StackTrace().GetFrame(1).GetMethod();
                 Log.Error($"Callee ({callee.DeclaringType.Name}::{callee.Name}) Patching failed!, " + ex);
             }
 
@@ -134,15 +134,15 @@ namespace Exiled.API.Features
         public static void UnpatchAll(string id = "", string groupId = null)
         {
             Harmony harmony = new(id);
-            foreach (MethodBase methodBase in Harmony.GetAllPatchedMethods().ToList())
+            foreach (var methodBase in Harmony.GetAllPatchedMethods().ToList())
             {
-                PatchProcessor processor = harmony.CreateProcessor(methodBase);
+                var processor = harmony.CreateProcessor(methodBase);
 
-                Patches patchInfo = Harmony.GetPatchInfo(methodBase);
+                var patchInfo = Harmony.GetPatchInfo(methodBase);
                 if (!patchInfo.Owners.Contains(id))
                     continue;
 
-                PatchGroupAttribute patchGroup = methodBase.GetCustomAttribute<PatchGroupAttribute>();
+                var patchGroup = methodBase.GetCustomAttribute<PatchGroupAttribute>();
                 if (patchGroup is null)
                     goto Unpatch;
 
@@ -153,7 +153,7 @@ namespace Exiled.API.Features
                     continue;
 
                 Unpatch:
-                bool hasMethodBody = methodBase.HasMethodBody();
+                var hasMethodBody = methodBase.HasMethodBody();
                 if (hasMethodBody)
                 {
                     patchInfo.Postfixes.Do(

@@ -147,7 +147,7 @@ namespace Exiled.API.Features.Toys
             if (adminToyBase == null)
                 return null;
 
-            if (BaseToAdminToy.TryGetValue(adminToyBase, out AdminToy adminToy))
+            if (BaseToAdminToy.TryGetValue(adminToyBase, out var adminToy))
                 return adminToy;
 
             return adminToyBase switch

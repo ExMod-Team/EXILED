@@ -152,7 +152,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="breakableWindow">The base-game <see cref="Window"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
+        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out var window)
             ? window
             : new(breakableWindow, breakableWindow.GetComponentInParent<Room>());
 

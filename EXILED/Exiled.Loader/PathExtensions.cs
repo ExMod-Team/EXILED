@@ -28,7 +28,7 @@ namespace Exiled.Loader
             if (assembly is null)
                 throw new ArgumentNullException(nameof(assembly));
 
-            Loader.Locations.TryGetValue(assembly, out string path);
+            Loader.Locations.TryGetValue(assembly, out var path);
             return path;
         }
 

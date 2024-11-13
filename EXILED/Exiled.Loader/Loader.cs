@@ -122,9 +122,9 @@ namespace Exiled.Loader
         {
             File.Delete(Path.Combine(Paths.Plugins, "Exiled.Updater.dll"));
 
-            foreach (string assemblyPath in Directory.GetFiles(Paths.Plugins, "*.dll"))
+            foreach (var assemblyPath in Directory.GetFiles(Paths.Plugins, "*.dll"))
             {
-                Assembly assembly = LoadAssembly(assemblyPath);
+                var assembly = LoadAssembly(assemblyPath);
 
                 if (assembly is null)
                     continue;
@@ -132,17 +132,17 @@ namespace Exiled.Loader
                 Locations[assembly] = assemblyPath;
             }
 
-            foreach (Assembly assembly in Locations.Keys)
+            foreach (var assembly in Locations.Keys)
             {
                 if (Locations[assembly].Contains("dependencies"))
                     continue;
 
-                IPlugin<IConfig> plugin = CreatePlugin(assembly);
+                var plugin = CreatePlugin(assembly);
 
                 if (plugin is null)
                     continue;
 
-                AssemblyInformationalVersionAttribute attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+                var attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
 
                 Log.Info($"Loaded plugin {plugin.Name}@{(plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : attribute is not null ? attribute.InformationalVersion : string.Empty)}");
 
@@ -160,7 +160,7 @@ namespace Exiled.Loader
         {
             try
             {
-                Assembly assembly = Assembly.Load(File.ReadAllBytes(path));
+                var assembly = Assembly.Load(File.ReadAllBytes(path));
 
                 ResolveAssemblyEmbeddedResources(assembly);
 
@@ -183,7 +183,7 @@ namespace Exiled.Loader
         {
             try
             {
-                foreach (Type type in assembly.GetTypes())
+                foreach (var type in assembly.GetTypes())
                 {
                     if (type.IsAbstract || type.IsInterface)
                     {
@@ -201,7 +201,7 @@ namespace Exiled.Loader
 
                     IPlugin<IConfig> plugin = null;
 
-                    ConstructorInfo constructor = type.GetConstructor(Type.EmptyTypes);
+                    var constructor = type.GetConstructor(Type.EmptyTypes);
                     if (constructor is not null)
                     {
                         Log.Debug("Public default constructor found, creating instance...");
@@ -212,7 +212,7 @@ namespace Exiled.Loader
                     {
                         Log.Debug($"Constructor wasn't found, searching for a property with the {type.FullName} type...");
 
-                        object value = Array.Find(type.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public), property => property.PropertyType == type)?.GetValue(null);
+                        var value = Array.Find(type.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public), property => property.PropertyType == type)?.GetValue(null);
 
                         if (value is not null)
                             plugin = value as IPlugin<IConfig>;
@@ -237,7 +237,7 @@ namespace Exiled.Loader
             {
                 Log.Error($"Error while initializing plugin {assembly.GetName().Name} (at {assembly.Location})! {reflectionTypeLoadException}");
 
-                foreach (Exception loaderException in reflectionTypeLoadException.LoaderExceptions)
+                foreach (var loaderException in reflectionTypeLoadException.LoaderExceptions)
                 {
                     Log.Error(loaderException);
                 }
@@ -255,9 +255,9 @@ namespace Exiled.Loader
         /// </summary>
         public static void EnablePlugins()
         {
-            List<IPlugin<IConfig>> toLoad = Plugins.ToList();
+            var toLoad = Plugins.ToList();
 
-            foreach (IPlugin<IConfig> plugin in toLoad.ToList())
+            foreach (var plugin in toLoad.ToList())
             {
                 try
                 {
@@ -277,7 +277,7 @@ namespace Exiled.Loader
                 }
             }
 
-            foreach (IPlugin<IConfig> plugin in toLoad)
+            foreach (var plugin in toLoad)
             {
                 try
                 {
@@ -299,7 +299,7 @@ namespace Exiled.Loader
         /// </summary>
         public static void ReloadPlugins()
         {
-            foreach (IPlugin<IConfig> plugin in Plugins)
+            foreach (var plugin in Plugins)
             {
                 try
                 {
@@ -334,7 +334,7 @@ namespace Exiled.Loader
         /// </summary>
         public static void DisablePlugins()
         {
-            foreach (IPlugin<IConfig> plugin in Plugins)
+            foreach (var plugin in Plugins)
             {
                 try
                 {
@@ -372,7 +372,7 @@ namespace Exiled.Loader
             {
                 Thread thread = new(() =>
                 {
-                    Updater updater = Updater.Initialize(LoaderPlugin.Config);
+                    var updater = Updater.Initialize(LoaderPlugin.Config);
                     updater.CheckUpdate();
                 })
                 {
@@ -394,7 +394,7 @@ namespace Exiled.Loader
                 GameCore.Version.BackwardCompatibility,
                 GameCore.Version.BackwardRevision))
             {
-                string messageText = new Version(
+                var messageText = new Version(
                     GameCore.Version.Major,
                     GameCore.Version.Minor,
                     GameCore.Version.Revision) < new Version(
@@ -441,7 +441,7 @@ namespace Exiled.Loader
 
                 if (type is { IsGenericType: true })
                 {
-                    Type genericTypeDef = type.GetGenericTypeDefinition();
+                    var genericTypeDef = type.GetGenericTypeDefinition();
 
                     if (genericTypeDef == typeof(Plugin<>) || genericTypeDef == typeof(Plugin<,>))
                         return true;
@@ -456,8 +456,8 @@ namespace Exiled.Loader
             if (plugin.IgnoreRequiredVersionCheck)
                 return false;
 
-            Version requiredVersion = plugin.RequiredExiledVersion;
-            Version actualVersion = Version;
+            var requiredVersion = plugin.RequiredExiledVersion;
+            var actualVersion = Version;
 
             // Check Major version
             // It's increased when an incompatible API change was made
@@ -496,9 +496,9 @@ namespace Exiled.Loader
             {
                 Log.Debug($"Attempting to load embedded resources for {target.FullName}");
 
-                string[] resourceNames = target.GetManifestResourceNames();
+                var resourceNames = target.GetManifestResourceNames();
 
-                foreach (string name in resourceNames)
+                foreach (var name in resourceNames)
                 {
                     Log.Debug($"Found resource {name}");
 
@@ -508,7 +508,7 @@ namespace Exiled.Loader
 
                         Log.Debug($"Loading resource {name}");
 
-                        Stream dataStream = target.GetManifestResourceStream(name);
+                        var dataStream = target.GetManifestResourceStream(name);
 
                         if (dataStream == null)
                         {
@@ -524,7 +524,7 @@ namespace Exiled.Loader
                     }
                     else if (name.EndsWith(".dll.compressed", StringComparison.OrdinalIgnoreCase))
                     {
-                        Stream dataStream = target.GetManifestResourceStream(name);
+                        var dataStream = target.GetManifestResourceStream(name);
 
                         if (dataStream == null)
                         {
@@ -614,9 +614,9 @@ namespace Exiled.Loader
         /// </summary>
         private static bool CheckUAC()
         {
-            TOKEN_ELEVATION_TYPE tet = TOKEN_ELEVATION_TYPE.TokenElevationTypeDefault;
-            uint tetSize = (uint)Marshal.SizeOf((int)tet);
-            IntPtr tetPtr = Marshal.AllocHGlobal((int)tetSize);
+            var tet = TOKEN_ELEVATION_TYPE.TokenElevationTypeDefault;
+            var tetSize = (uint)Marshal.SizeOf((int)tet);
+            var tetPtr = Marshal.AllocHGlobal((int)tetSize);
             try
             {
                 if (GetTokenInformation(WindowsIdentity.GetCurrent().Token, TOKEN_INFORMATION_CLASS.TokenElevationType, tetPtr, tetSize, out _))
@@ -639,9 +639,9 @@ namespace Exiled.Loader
             {
                 Log.Info($"Loading dependencies at {Paths.Dependencies}");
 
-                foreach (string dependency in Directory.GetFiles(Paths.Dependencies, "*.dll"))
+                foreach (var dependency in Directory.GetFiles(Paths.Dependencies, "*.dll"))
                 {
-                    Assembly assembly = LoadAssembly(dependency);
+                    var assembly = LoadAssembly(dependency);
 
                     if (assembly is null)
                         continue;

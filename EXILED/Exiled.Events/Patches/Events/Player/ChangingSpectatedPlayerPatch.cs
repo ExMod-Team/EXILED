@@ -30,8 +30,8 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            LocalBuilder owner = generator.DeclareLocal(typeof(ReferenceHub));
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var owner = generator.DeclareLocal(typeof(ReferenceHub));
 
             newInstructions.InsertRange(
                 0,
@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnChangingSpectatedPlayer))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

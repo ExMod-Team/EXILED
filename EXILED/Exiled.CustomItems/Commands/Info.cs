@@ -55,14 +55,14 @@ namespace Exiled.CustomItems.Commands
                 return false;
             }
 
-            if (!(uint.TryParse(arguments.At(0), out uint id) && CustomItem.TryGet(id, out CustomItem? item)) &&
+            if (!(uint.TryParse(arguments.At(0), out var id) && CustomItem.TryGet(id, out var item)) &&
                 !CustomItem.TryGet(arguments.At(0), out item))
             {
                 response = $"{arguments.At(0)} is not a valid custom item.";
                 return false;
             }
 
-            StringBuilder message = StringBuilderPool.Pool.Get().AppendLine();
+            var message = StringBuilderPool.Pool.Get().AppendLine();
 
             message.Append("<color=#E6AC00>-</color> <color=#00D639>").Append(item?.Name).Append("</color> <color=#05C4EB>(").Append(item?.Id).AppendLine(")</color>")
                 .Append("- ").AppendLine(item?.Description)
@@ -70,19 +70,19 @@ namespace Exiled.CustomItems.Commands
                 .Append("- Spawn Limit: ").AppendLine(item?.SpawnProperties?.Limit.ToString()).AppendLine()
                 .Append("[Spawn Locations (").Append(item?.SpawnProperties?.Count()).AppendLine(")]");
 
-            foreach (DynamicSpawnPoint spawnPoint in item?.SpawnProperties?.DynamicSpawnPoints!)
+            foreach (var spawnPoint in item?.SpawnProperties?.DynamicSpawnPoints!)
                 message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
 
-            foreach (StaticSpawnPoint spawnPoint in item.SpawnProperties.StaticSpawnPoints)
+            foreach (var spawnPoint in item.SpawnProperties.StaticSpawnPoints)
                 message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
 
-            foreach (RoleSpawnPoint spawnPoint in item.SpawnProperties.RoleSpawnPoints)
+            foreach (var spawnPoint in item.SpawnProperties.RoleSpawnPoints)
                 message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
 
-            foreach (LockerSpawnPoint spawnPoint in item.SpawnProperties.LockerSpawnPoints)
+            foreach (var spawnPoint in item.SpawnProperties.LockerSpawnPoints)
                 message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
 
-            foreach (RoomSpawnPoint spawnPoint in item.SpawnProperties.RoomSpawnPoints)
+            foreach (var spawnPoint in item.SpawnProperties.RoomSpawnPoints)
                 message.Append(spawnPoint.Name).Append(' ').Append(spawnPoint.Position).Append(" Chance: ").Append(spawnPoint.Chance).AppendLine("%");
 
             response = StringBuilderPool.Pool.ToStringReturn(message);

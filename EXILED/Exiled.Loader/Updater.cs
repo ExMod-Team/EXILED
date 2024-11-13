@@ -112,8 +112,8 @@ namespace Exiled.Loader
         /// </summary>
         internal void CheckUpdate()
         {
-            using HttpClient client = CreateHttpClient();
-            if (Busy = FindUpdate(client, !File.Exists(Path.Combine(Paths.Dependencies, "Exiled.API.dll")), out NewVersion newVersion))
+            using var client = CreateHttpClient();
+            if (Busy = FindUpdate(client, !File.Exists(Path.Combine(Paths.Dependencies, "Exiled.API.dll")), out var newVersion))
                 Update(client, newVersion);
         }
 
@@ -144,14 +144,14 @@ namespace Exiled.Loader
         {
             try
             {
-                ExiledLib smallestVersion = ExiledLib.Min();
+                var smallestVersion = ExiledLib.Min();
 
                 Log.Info($"Found the smallest version of Exiled - {smallestVersion.Library.GetName().Name}:{smallestVersion.Version}");
 
-                TaggedRelease[] releases = TagReleases(client.GetReleases(REPOID, new GetReleasesSettings(50, 1)).GetAwaiter().GetResult());
-                if (FindRelease(releases, out Release targetRelease, smallestVersion, forced))
+                var releases = TagReleases(client.GetReleases(REPOID, new GetReleasesSettings(50, 1)).GetAwaiter().GetResult());
+                if (FindRelease(releases, out var targetRelease, smallestVersion, forced))
                 {
-                    if (!FindAsset(InstallerName, targetRelease, out ReleaseAsset asset))
+                    if (!FindAsset(InstallerName, targetRelease, out var asset))
                     {
                         // Error: no asset
                         Log.Warn("Couldn't find the asset, the update will not be installed");
@@ -192,16 +192,16 @@ namespace Exiled.Loader
             try
             {
                 Log.Info("Downloading installer...");
-                using HttpResponseMessage installer = client.GetAsync(newVersion.Asset.BrowserDownloadUrl).ConfigureAwait(false).GetAwaiter().GetResult();
+                using var installer = client.GetAsync(newVersion.Asset.BrowserDownloadUrl).ConfigureAwait(false).GetAwaiter().GetResult();
                 Log.Info("Downloaded!");
 
-                string serverPath = Environment.CurrentDirectory;
-                string installerPath = Path.Combine(serverPath, newVersion.Asset.Name);
+                var serverPath = Environment.CurrentDirectory;
+                var installerPath = Path.Combine(serverPath, newVersion.Asset.Name);
 
                 if (File.Exists(installerPath) && (PlatformId == PlatformID.Unix))
                     LinuxPermission.SetFileUserAndGroupReadWriteExecutePermissions(installerPath);
 
-                using (Stream installerStream = installer.Content.ReadAsStreamAsync().ConfigureAwait(false).GetAwaiter().GetResult())
+                using (var installerStream = installer.Content.ReadAsStreamAsync().ConfigureAwait(false).GetAwaiter().GetResult())
                 using (FileStream fs = new(installerPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     installerStream.CopyToAsync(fs).ConfigureAwait(false).GetAwaiter().GetResult();
 
@@ -224,7 +224,7 @@ namespace Exiled.Loader
                     StandardOutputEncoding = ProcessEncoding,
                 };
 
-                Process installerProcess = Process.Start(startInfo);
+                var installerProcess = Process.Start(startInfo);
                 if (installerProcess is null)
                 {
                     Log.Error("Unable to start installer.");
@@ -276,8 +276,8 @@ namespace Exiled.Loader
         /// <returns>The last item in the array, which is the newest version of Exiled.</returns>
         private TaggedRelease[] TagReleases(Release[] releases)
         {
-            TaggedRelease[] arr = new TaggedRelease[releases.Length];
-            for (int z = 0; z < arr.Length; z++)
+            var arr = new TaggedRelease[releases.Length];
+            for (var z = 0; z < arr.Length; z++)
                 arr[z] = new TaggedRelease(releases[z]);
 
             return arr;
@@ -293,11 +293,11 @@ namespace Exiled.Loader
         /// <returns>the if the specific release was found or not.</returns>
         private bool FindRelease(TaggedRelease[] releases, out Release release, ExiledLib smallestVersion, bool forced = false)
         {
-            bool includePRE = config.ShouldDownloadTestingReleases || ExiledLib.Any(l => l.Version.PreRelease is not null);
+            var includePRE = config.ShouldDownloadTestingReleases || ExiledLib.Any(l => l.Version.PreRelease is not null);
 
-            for (int z = 0; z < releases.Length; z++)
+            for (var z = 0; z < releases.Length; z++)
             {
-                TaggedRelease taggedRelease = releases[z];
+                var taggedRelease = releases[z];
                 if (taggedRelease.Release.PreRelease && !includePRE)
                     continue;
 
@@ -321,7 +321,7 @@ namespace Exiled.Loader
         /// <returns>if it was able to find the asset or not.</returns>
         private bool FindAsset(string assetName, Release release, out ReleaseAsset asset)
         {
-            for (int z = 0; z < release.Assets.Length; z++)
+            for (var z = 0; z < release.Assets.Length; z++)
             {
                 asset = release.Assets[z];
                 if (assetName.Equals(asset.Name, StringComparison.OrdinalIgnoreCase))

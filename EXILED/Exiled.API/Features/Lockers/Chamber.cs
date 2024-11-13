@@ -82,7 +82,7 @@ namespace Exiled.API.Features.Lockers
             {
                 Base._toBeSpawned.Clear();
 
-                foreach (Pickup pickup in value)
+                foreach (var pickup in value)
                     Base._toBeSpawned.Add(pickup.Base);
             }
         }
@@ -200,9 +200,9 @@ namespace Exiled.API.Features.Lockers
         /// </param>
         public void AddItemToSpawn(ItemType itemType, int quantity = 1, bool spawnIfIsOpen = false)
         {
-            for (int i = 0; i < quantity; i++)
+            for (var i = 0; i < quantity; i++)
             {
-                Pickup pickup = Pickup.Create(itemType);
+                var pickup = Pickup.Create(itemType);
 
                 if (spawnIfIsOpen && IsOpen)
                 {
@@ -237,6 +237,6 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         /// <param name="chamber"><see cref="LockerChamber"/>.</param>
         /// <returns><see cref="Chamber"/>.</returns>
-        internal static Chamber Get(LockerChamber chamber) => Chambers.TryGetValue(chamber, out Chamber chmb) ? chmb : new(chamber, Locker.Get(x => x.Chambers.Any(x => x.Base == chamber)).FirstOrDefault());
+        internal static Chamber Get(LockerChamber chamber) => Chambers.TryGetValue(chamber, out var chmb) ? chmb : new(chamber, Locker.Get(x => x.Chambers.Any(x => x.Base == chamber)).FirstOrDefault());
     }
 }

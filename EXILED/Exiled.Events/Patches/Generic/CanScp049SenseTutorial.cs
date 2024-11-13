@@ -31,12 +31,12 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse);
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse);
 
-            Label continueLabel = (Label)newInstructions[index].operand;
-            Label skip = generator.DefineLabel();
+            var continueLabel = (Label)newInstructions[index].operand;
+            var skip = generator.DefineLabel();
 
             index += 1;
 
@@ -68,7 +68,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Brtrue_S, continueLabel),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

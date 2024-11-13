@@ -162,7 +162,7 @@ namespace Exiled.API.Features
         /// </summary>
         public static void CloseBlastDoors()
         {
-            foreach (BlastDoor door in BlastDoors)
+            foreach (var door in BlastDoors)
                 door.SetClosed(false, true);
         }
 

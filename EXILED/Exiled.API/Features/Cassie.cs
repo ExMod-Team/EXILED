@@ -64,10 +64,10 @@ namespace Exiled.API.Features
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
         public static void MessageTranslated(string message, string translation, bool isHeld = false, bool isNoisy = true, bool isSubtitles = true)
         {
-            StringBuilder announcement = StringBuilderPool.Pool.Get();
-            string[] cassies = message.Split('\n');
-            string[] translations = translation.Split('\n');
-            for (int i = 0; i < cassies.Length; i++)
+            var announcement = StringBuilderPool.Pool.Get();
+            var cassies = message.Split('\n');
+            var translations = translation.Split('\n');
+            for (var i = 0; i < cassies.Length; i++)
                 announcement.Append($"{translations[i].Replace(' ', ' ')}<size=0> {cassies[i]} </size><split>");
 
             RespawnEffectsController.PlayCassieAnnouncement(announcement.ToString(), isHeld, isNoisy, isSubtitles);
@@ -146,7 +146,7 @@ namespace Exiled.API.Features
         /// <param name="info">Hit Information.</param>
         public static void CustomScpTermination(string scpName, CustomHandlerBase info)
         {
-            string result = scpName;
+            var result = scpName;
             if (info.Is(out MicroHidDamageHandler _))
                 result += " SUCCESSFULLY TERMINATED BY AUTOMATIC SECURITY SYSTEM";
             else if (info.Is(out WarheadDamageHandler _))
@@ -160,7 +160,7 @@ namespace Exiled.API.Features
             else
                 result += " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED";
 
-            float num = AlphaWarheadController.TimeUntilDetonation <= 0f ? 3.5f : 1f;
+            var num = AlphaWarheadController.TimeUntilDetonation <= 0f ? 3.5f : 1f;
             GlitchyMessage(result, UnityEngine.Random.Range(0.1f, 0.14f) * num, UnityEngine.Random.Range(0.07f, 0.08f) * num);
         }
 

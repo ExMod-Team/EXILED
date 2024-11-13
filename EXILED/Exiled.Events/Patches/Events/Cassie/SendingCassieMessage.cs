@@ -31,9 +31,9 @@ namespace Exiled.Events.Patches.Events.Cassie
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             // SendingCassieMessageEventArgs ev = new SendingCassieMessageEventArgs(words, makeHold, makeNoise, true);
             // Cassie.OnSendingCassieMessage(ev);
@@ -70,7 +70,7 @@ namespace Exiled.Events.Patches.Events.Cassie
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

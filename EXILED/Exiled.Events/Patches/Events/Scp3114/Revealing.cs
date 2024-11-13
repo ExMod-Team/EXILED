@@ -34,14 +34,14 @@ namespace Exiled.Events.Patches.Events.Scp3114
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
+            var player = generator.DeclareLocal(typeof(API.Features.Player));
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse_S) + offset;
+            var offset = 1;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse_S) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -106,7 +106,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
                 new(OpCodes.Call, Method(typeof(Handlers.Scp3114), nameof(Handlers.Scp3114.OnRevealed))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -124,11 +124,11 @@ namespace Exiled.Events.Patches.Events.Scp3114
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label retLabel = generator.DefineLabel();
+            var retLabel = generator.DefineLabel();
 
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
+            var player = generator.DeclareLocal(typeof(API.Features.Player));
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
@@ -159,7 +159,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
             });
 
             const int offset = 0;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+            var index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -178,7 +178,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
 
             newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

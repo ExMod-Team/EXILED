@@ -37,14 +37,14 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ElevatorTeleportingEventArgs));
+            var ev = generator.DeclareLocal(typeof(ElevatorTeleportingEventArgs));
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_3) + offset;
+            var offset = 0;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_3) + offset;
 
             // ElevatorTeleportingEventArgs ev = new(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, elevatorDoor, (float)this._cost);
             //
@@ -108,7 +108,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

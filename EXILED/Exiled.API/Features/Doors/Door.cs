@@ -343,7 +343,7 @@ namespace Exiled.API.Features.Doors
         /// <returns>The <see cref="Door"/> with the given name or <see langword="null"/> if not found.</returns>
         public static Door Get(string name)
         {
-            DoorNametagExtension.NamedDoors.TryGetValue(name, out DoorNametagExtension nameExtension);
+            DoorNametagExtension.NamedDoors.TryGetValue(name, out var nameExtension);
             return nameExtension is null ? null : Get(nameExtension.TargetDoor);
         }
 
@@ -371,7 +371,7 @@ namespace Exiled.API.Features.Doors
         /// <returns>The door closest to the provided position.</returns>
         public static Door GetClosest(Vector3 position, out float distance)
         {
-            Door doorToReturn = List.OrderBy(door => Vector3.Distance(position, door.Position)).FirstOrDefault();
+            var doorToReturn = List.OrderBy(door => Vector3.Distance(position, door.Position)).FirstOrDefault();
 
             distance = Vector3.Distance(position, doorToReturn.Position);
             return doorToReturn;
@@ -385,7 +385,7 @@ namespace Exiled.API.Features.Doors
         /// <returns><see cref="Door"/> object.</returns>
         public static Door Random(ZoneType type = ZoneType.Unspecified, bool onlyUnbroken = false)
         {
-            List<Door> doors = onlyUnbroken || type is not ZoneType.Unspecified ? Get(x => (x.Room is null || x.Room.Zone.HasFlag(type) || type == ZoneType.Unspecified) && (x is Breakable { IsDestroyed: true } || !onlyUnbroken)).ToList() : DoorVariantToDoor.Values.ToList();
+            var doors = onlyUnbroken || type is not ZoneType.Unspecified ? Get(x => (x.Room is null || x.Room.Zone.HasFlag(type) || type == ZoneType.Unspecified) && (x is Breakable { IsDestroyed: true } || !onlyUnbroken)).ToList() : DoorVariantToDoor.Values.ToList();
             return doors[UnityEngine.Random.Range(0, doors.Count)];
         }
 
@@ -404,7 +404,7 @@ namespace Exiled.API.Features.Doors
         /// <param name="lockType">The specified <see cref="Enums.DoorLockType"/>.</param>
         public static void LockAll(float duration, ZoneType zoneType = ZoneType.Unspecified, DoorLockType lockType = DoorLockType.Regular079)
         {
-            foreach (Door door in Get(door => zoneType is not ZoneType.Unspecified && door.Zone.HasFlag(zoneType)))
+            foreach (var door in Get(door => zoneType is not ZoneType.Unspecified && door.Zone.HasFlag(zoneType)))
             {
                 door.IsOpen = false;
                 door.ChangeLock(lockType);
@@ -420,7 +420,7 @@ namespace Exiled.API.Features.Doors
         /// <param name="lockType">The specified <see cref="Enums.DoorLockType"/>.</param>
         public static void LockAll(float duration, IEnumerable<ZoneType> zoneTypes, DoorLockType lockType = DoorLockType.Regular079)
         {
-            foreach (ZoneType zone in zoneTypes)
+            foreach (var zone in zoneTypes)
                 LockAll(duration, zone, lockType);
         }
 
@@ -431,7 +431,7 @@ namespace Exiled.API.Features.Doors
         /// <param name="lockType">The specified <see cref="Enums.DoorLockType"/>.</param>
         public static void LockAll(float duration, DoorLockType lockType = DoorLockType.Regular079)
         {
-            foreach (Door door in List)
+            foreach (var door in List)
             {
                 door.IsOpen = false;
                 door.ChangeLock(lockType);
@@ -444,7 +444,7 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public static void UnlockAll()
         {
-            foreach (Door door in List)
+            foreach (var door in List)
                 door.Unlock();
         }
 
@@ -466,7 +466,7 @@ namespace Exiled.API.Features.Doors
         /// <param name="predicate">The condition to satify.</param>
         public static void UnlockAll(Func<Door, bool> predicate)
         {
-            foreach (Door door in Get(predicate))
+            foreach (var door in Get(predicate))
                 door.Unlock();
         }
 
@@ -499,7 +499,7 @@ namespace Exiled.API.Features.Doors
             }
             else
             {
-                DoorLockType locks = DoorLockType;
+                var locks = DoorLockType;
                 if (locks.HasFlag(lockType))
                     locks &= ~lockType;
                 else
@@ -576,7 +576,7 @@ namespace Exiled.API.Features.Doors
         {
             if (Nametag is null)
             {
-                string doorName = GameObject.name.GetBefore(' ');
+                var doorName = GameObject.name.GetBefore(' ');
                 return doorName switch
                 {
                     "LCZ" => Room?.Type switch

@@ -63,9 +63,9 @@ namespace Exiled.Events.Commands.Hub
                 return false;
             }
 
-            using HttpClient client = HubApi.ApiProvider.CreateClient();
+            using var client = HubApi.ApiProvider.CreateClient();
 
-            HubPlugin? pluginData = HubApi.ApiProvider.GetInstallationData(arguments.At(0), client).GetAwaiter().GetResult();
+            var pluginData = HubApi.ApiProvider.GetInstallationData(arguments.At(0), client).GetAwaiter().GetResult();
 
             if (pluginData == null)
             {
@@ -73,12 +73,12 @@ namespace Exiled.Events.Commands.Hub
                 return false;
             }
 
-            Release[] pluginReleases = client.GetReleases(pluginData.Value.RepositoryId, new GetReleasesSettings(50, 1)).GetAwaiter().GetResult();
-            Release releaseToDownload = pluginReleases[0];
+            var pluginReleases = client.GetReleases(pluginData.Value.RepositoryId, new GetReleasesSettings(50, 1)).GetAwaiter().GetResult();
+            var releaseToDownload = pluginReleases[0];
 
             if (arguments.Count > 1)
             {
-                Release foundRelease = pluginReleases.FirstOrDefault(x => x.TagName == arguments.At(1));
+                var foundRelease = pluginReleases.FirstOrDefault(x => x.TagName == arguments.At(1));
 
                 if (foundRelease.Id == 0)
                 {
@@ -89,21 +89,21 @@ namespace Exiled.Events.Commands.Hub
                 releaseToDownload = foundRelease;
             }
 
-            ReleaseAsset[] releaseAssets = releaseToDownload.Assets.Where(x => x.Name.IndexOf("nwapi", StringComparison.OrdinalIgnoreCase) == -1).ToArray();
+            var releaseAssets = releaseToDownload.Assets.Where(x => x.Name.IndexOf("nwapi", StringComparison.OrdinalIgnoreCase) == -1).ToArray();
 
             Log.Info($"Downloading release \"{releaseToDownload.TagName}\". Found {releaseAssets.Length} asset(s) to download.");
 
-            foreach (ReleaseAsset asset in releaseAssets)
+            foreach (var asset in releaseAssets)
             {
                 Log.Info($"Downloading asset {asset.Name}. Asset size: {Math.Round(asset.Size / 1000f, 2)} KB.");
-                using HttpResponseMessage assetResponse = client.GetAsync(asset.BrowserDownloadUrl).ConfigureAwait(false).GetAwaiter().GetResult();
+                using var assetResponse = client.GetAsync(asset.BrowserDownloadUrl).ConfigureAwait(false).GetAwaiter().GetResult();
 
-                string pluginPath = Path.Combine(Paths.Plugins, asset.Name);
+                var pluginPath = Path.Combine(Paths.Plugins, asset.Name);
 
                 if (File.Exists(pluginPath) && Environment.OSVersion.Platform == PlatformID.Unix)
                     LinuxPermission.SetFileUserAndGroupReadWriteExecutePermissions(pluginPath);
 
-                using Stream stream = assetResponse.Content.ReadAsStreamAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                using var stream = assetResponse.Content.ReadAsStreamAsync().ConfigureAwait(false).GetAwaiter().GetResult();
                 using FileStream fileStream = new(pluginPath, FileMode.Create, FileAccess.Write, FileShare.None);
                 stream.CopyToAsync(fileStream).ConfigureAwait(false).GetAwaiter().GetResult();
 

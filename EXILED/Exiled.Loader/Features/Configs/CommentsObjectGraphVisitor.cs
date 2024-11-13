@@ -31,7 +31,7 @@ namespace Exiled.Loader.Features.Configs
         {
             if (value is CommentsObjectDescriptor commentsDescriptor && commentsDescriptor.Comment is not null)
             {
-                foreach (string subComment in commentsDescriptor.Comment.Split('\n'))
+                foreach (var subComment in commentsDescriptor.Comment.Split('\n'))
                 {
                     context.Emit(new Comment(subComment, false));
                 }

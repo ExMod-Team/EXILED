@@ -46,7 +46,7 @@ namespace Exiled.Permissions.Commands.Permissions
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            StringBuilder stringBuilder = StringBuilderPool.Pool.Get();
+            var stringBuilder = StringBuilderPool.Pool.Get();
 
             stringBuilder.AppendLine("Available commands: ");
             stringBuilder.AppendLine("- EP RELOAD - Reloads permissions.");

@@ -292,7 +292,7 @@ namespace Exiled.API.Features
         /// <returns><see langword="true"/> if the SessionVariables contains an element with the specified key; otherwise, <see langword="false"/>.</returns>
         public static bool TryGetSessionVariable<T>(string key, out T result)
         {
-            if (SessionVariables.TryGetValue(key, out object value) && value is T type)
+            if (SessionVariables.TryGetValue(key, out var value) && value is T type)
             {
                 result = type;
                 return true;

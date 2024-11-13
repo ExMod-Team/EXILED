@@ -46,11 +46,11 @@ namespace Exiled.Events.Commands.Reload
                 return false;
             }
 
-            bool haveBeenReloaded = TranslationManager.Reload();
+            var haveBeenReloaded = TranslationManager.Reload();
 
             Handlers.Server.OnReloadedTranslations();
 
-            foreach (IPlugin<IConfig> plugin in Loader.Plugins)
+            foreach (var plugin in Loader.Plugins)
             {
                 plugin.OnUnregisteringCommands();
                 plugin.OnRegisteringCommands();

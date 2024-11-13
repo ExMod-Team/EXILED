@@ -41,9 +41,9 @@ namespace Exiled.Events.Patches.Events.Map
         /// <returns>An array of colliders.</returns>
         public static Collider[] TrimColliders(ExplodingGrenadeEventArgs ev, Collider[] colliderArray)
         {
-            List<Collider> colliders = ListPool<Collider>.Pool.Get();
+            var colliders = ListPool<Collider>.Pool.Get();
 
-            foreach (Collider collider in colliderArray)
+            foreach (var collider in colliderArray)
             {
                 if (!collider.TryGetComponent(out IDestructible dest) || Player.Get(dest.NetworkId) is not Player player || ev.TargetsToAffect.Contains(player))
                 {
@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Map
                 }
             }
 
-            Collider[] array = colliders.ToArray();
+            var array = colliders.ToArray();
             ListPool<Collider>.Pool.Return(colliders);
 
             return array;
@@ -59,14 +59,14 @@ namespace Exiled.Events.Patches.Events.Map
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_3) + offset;
+            var offset = 1;
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_3) + offset;
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ExplodingGrenadeEventArgs));
+            var ev = generator.DeclareLocal(typeof(ExplodingGrenadeEventArgs));
 
             newInstructions.InsertRange(
                 index,
@@ -107,7 +107,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

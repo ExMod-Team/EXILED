@@ -32,17 +32,17 @@ namespace Exiled.Example.Commands
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            Player player = Player.Get(sender);
+            var player = Player.Get(sender);
 
             Log.Warn($"{player.Items.Count} -- {player.Inventory.UserInventory.Items.Count}");
 
-            foreach (Player item in Player.List)
+            foreach (var item in Player.List)
                 Log.Warn(item);
 
-            foreach (Pickup pickup in Pickup.List)
+            foreach (var pickup in Pickup.List)
                 Log.Warn($"{pickup.Type} ({pickup.Serial}) -- {pickup.Position}");
 
-            foreach (PocketDimensionTeleport teleport in Map.PocketDimensionTeleports)
+            foreach (var teleport in Map.PocketDimensionTeleports)
                 Log.Warn($"{teleport._type}");
 
             player.ClearInventory();

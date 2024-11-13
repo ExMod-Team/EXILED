@@ -31,7 +31,7 @@ namespace Exiled.CreditTags.Commands
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            CommandSender cmdSender = (CommandSender)sender;
+            var cmdSender = (CommandSender)sender;
 
             if (Player.Get(cmdSender.SenderId) is not Player player)
             {
@@ -39,7 +39,7 @@ namespace Exiled.CreditTags.Commands
                 return false;
             }
 
-            bool found = CreditTags.Instance.ShowCreditTag(player, true);
+            var found = CreditTags.Instance.ShowCreditTag(player, true);
             response = found ? "Your credit tag has been shown." : "You do not own a credit tag.";
             return true;
         }

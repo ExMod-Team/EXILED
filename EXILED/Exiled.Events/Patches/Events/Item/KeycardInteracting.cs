@@ -40,17 +40,17 @@ namespace Exiled.Events.Patches.Events.Item
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder isUnlocked = generator.DeclareLocal(typeof(bool));
-            LocalBuilder notEmptyPermissions = generator.DeclareLocal(typeof(bool));
-            LocalBuilder havePermissions = generator.DeclareLocal(typeof(bool));
+            var isUnlocked = generator.DeclareLocal(typeof(bool));
+            var notEmptyPermissions = generator.DeclareLocal(typeof(bool));
+            var havePermissions = generator.DeclareLocal(typeof(bool));
 
-            Label skip = generator.DefineLabel();
-            Label ret = generator.DefineLabel();
+            var skip = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.ActiveLocks)))) + offset;
+            var offset = 1;
+            var index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.ActiveLocks)))) + offset;
 
             newInstructions.RemoveAt(index);
 
@@ -162,7 +162,7 @@ namespace Exiled.Events.Patches.Events.Item
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -170,7 +170,7 @@ namespace Exiled.Events.Patches.Events.Item
 
         private static bool CheckPermissions(BaseKeycardPickup keycard, DoorVariant door)
         {
-            DoorPermissions permissions = door.RequiredPermissions;
+            var permissions = door.RequiredPermissions;
             if (permissions.RequiredPermissions == KeycardPermissions.None)
             {
                 return true;
@@ -186,7 +186,7 @@ namespace Exiled.Events.Patches.Events.Item
                 return ((KeycardPermissions)keycardPickup.Permissions & permissions.RequiredPermissions) == permissions.RequiredPermissions;
             }
 
-            return InventorySystem.InventoryItemLoader.AvailableItems.TryGetValue(keycard.Info.ItemId, out ItemBase itemBase) && permissions.CheckPermissions(itemBase, null);
+            return InventorySystem.InventoryItemLoader.AvailableItems.TryGetValue(keycard.Info.ItemId, out var itemBase) && permissions.CheckPermissions(itemBase, null);
         }
     }
 }

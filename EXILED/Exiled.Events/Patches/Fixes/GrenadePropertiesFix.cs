@@ -32,16 +32,16 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder throwable = generator.DeclareLocal(typeof(ThrowableItem));
-            LocalBuilder projectile = generator.DeclareLocal(typeof(Projectile));
-            LocalBuilder playerCamera = generator.DeclareLocal(typeof(Transform));
+            var throwable = generator.DeclareLocal(typeof(ThrowableItem));
+            var projectile = generator.DeclareLocal(typeof(Projectile));
+            var playerCamera = generator.DeclareLocal(typeof(Transform));
 
-            Label cnt = generator.DefineLabel();
+            var cnt = generator.DefineLabel();
 
             const int offset = 1;
-            int index = newInstructions.FindLastIndex(i => i.StoresField(Field(typeof(ThrowableItem), nameof(ThrowableItem._alreadyFired)))) + offset;
+            var index = newInstructions.FindLastIndex(i => i.StoresField(Field(typeof(ThrowableItem), nameof(ThrowableItem._alreadyFired)))) + offset;
 
             newInstructions.RemoveRange(index, 11);
 
@@ -105,7 +105,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Callvirt, Method(typeof(GameObject), nameof(GameObject.SetActive))),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

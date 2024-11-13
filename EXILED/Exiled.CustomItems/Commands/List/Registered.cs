@@ -59,11 +59,11 @@ namespace Exiled.CustomItems.Commands.List
                 return false;
             }
 
-            StringBuilder message = StringBuilderPool.Pool.Get().AppendLine();
+            var message = StringBuilderPool.Pool.Get().AppendLine();
 
             message.Append("[Registered custom items (").Append(CustomItem.Registered.Count).AppendLine(")]");
 
-            foreach (CustomItem customItem in CustomItem.Registered.OrderBy(item => item.Id))
+            foreach (var customItem in CustomItem.Registered.OrderBy(item => item.Id))
                 message.Append('[').Append(customItem.Id).Append(". ").Append(customItem.Name).Append(" (").Append(customItem.Type).Append(')').AppendLine("]");
 
             response = StringBuilderPool.Pool.ToStringReturn(message);

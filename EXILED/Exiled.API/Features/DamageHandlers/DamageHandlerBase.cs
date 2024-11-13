@@ -134,7 +134,7 @@ namespace Exiled.API.Features.DamageHandlers
                         };
                     case UniversalDamageHandler universal:
                         {
-                            DeathTranslation translation = DeathTranslations.TranslationsById[universal.TranslationId];
+                            var translation = DeathTranslations.TranslationsById[universal.TranslationId];
 
                             if (DamageTypeExtensions.TranslationIdConversion.ContainsKey(translation.Id))
                                 return DamageTypeExtensions.TranslationIdConversion[translation.Id];

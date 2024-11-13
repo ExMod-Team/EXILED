@@ -56,11 +56,11 @@ namespace Exiled.CustomItems.Commands.List
                 return false;
             }
 
-            StringBuilder message = StringBuilderPool.Pool.Get();
+            var message = StringBuilderPool.Pool.Get();
 
-            int count = 0;
+            var count = 0;
 
-            foreach (CustomItem customItem in CustomItem.Registered)
+            foreach (var customItem in CustomItem.Registered)
             {
                 if (customItem.TrackedSerials.Count == 0)
                     continue;
@@ -71,9 +71,9 @@ namespace Exiled.CustomItems.Commands.List
 
                 count += customItem.TrackedSerials.Count;
 
-                foreach (int insideInventory in customItem.TrackedSerials)
+                foreach (var insideInventory in customItem.TrackedSerials)
                 {
-                    Player owner = Player.List.FirstOrDefault(player => player.Inventory.UserInventory.Items.Any(item => item.Key == insideInventory));
+                    var owner = Player.List.FirstOrDefault(player => player.Inventory.UserInventory.Items.Any(item => item.Key == insideInventory));
 
                     message.Append(insideInventory).Append(". ");
 

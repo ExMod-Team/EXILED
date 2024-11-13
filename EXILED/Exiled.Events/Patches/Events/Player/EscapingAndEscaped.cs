@@ -38,16 +38,16 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             List<Label> labels;
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
-            LocalBuilder role = generator.DeclareLocal(typeof(Role));
+            var ev = generator.DeclareLocal(typeof(EscapingEventArgs));
+            var role = generator.DeclareLocal(typeof(Role));
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            var offset = -2;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -140,7 +140,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -164,18 +164,18 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder fpcRole = generator.DeclareLocal(typeof(FpcStandardRoleBase));
+            var fpcRole = generator.DeclareLocal(typeof(FpcStandardRoleBase));
 
             // replace HumanRole to FpcStandardRoleBase
             newInstructions.Find(x => x.opcode == OpCodes.Isinst).operand = typeof(FpcStandardRoleBase);
 
             // after this index all invalid exit are considered Custom
-            int customExit = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
-            for (int i = 0; i < newInstructions.Count; i++)
+            var customExit = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
+            for (var i = 0; i < newInstructions.Count; i++)
             {
-                OpCode opcode = newInstructions[i].opcode;
+                var opcode = newInstructions[i].opcode;
                 if (opcode == OpCodes.Stloc_0)
                     newInstructions[i] = new CodeInstruction(OpCodes.Stloc_S, fpcRole.LocalIndex).WithLabels(newInstructions[i].labels);
                 else if (opcode == OpCodes.Ldloc_0)
@@ -184,7 +184,7 @@ namespace Exiled.Events.Patches.Events.Player
                     newInstructions[i].opcode = OpCodes.Ldc_I4_5;
             }
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

@@ -33,12 +33,12 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label @break = (Label)newInstructions.FindLast(i => i.opcode == OpCodes.Leave_S).operand;
+            var @break = (Label)newInstructions.FindLast(i => i.opcode == OpCodes.Leave_S).operand;
 
-            int offset = -2;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj) + offset;
+            var offset = -2;
+            var index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj) + offset;
 
             // InteractingElevatorEventArgs ev = new(Player.Get(referenceHub), elevatorChamber, true);
             //
@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse_S, @break),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

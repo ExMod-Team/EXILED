@@ -156,7 +156,7 @@ namespace Exiled.API.Features
         /// <param name="effects">The effects to be played.</param>
         public static void PlayEffects(byte[] effects)
         {
-            foreach (RespawnEffectsController controller in RespawnEffectsController.AllControllers)
+            foreach (var controller in RespawnEffectsController.AllControllers)
                 controller?.RpcPlayEffects(effects);
         }
 

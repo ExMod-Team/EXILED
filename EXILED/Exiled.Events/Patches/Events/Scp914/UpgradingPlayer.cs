@@ -34,19 +34,19 @@ namespace Exiled.Events.Patches.Events.Scp914
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // Find override position
             const int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FpcExtensionMethods), nameof(FpcExtensionMethods.TryOverridePosition)))) + offset;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FpcExtensionMethods), nameof(FpcExtensionMethods.TryOverridePosition)))) + offset;
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder curSetting = generator.DeclareLocal(typeof(Scp914KnobSetting));
-            LocalBuilder ev = generator.DeclareLocal(typeof(UpgradingPlayerEventArgs));
+            var curSetting = generator.DeclareLocal(typeof(Scp914KnobSetting));
+            var ev = generator.DeclareLocal(typeof(UpgradingPlayerEventArgs));
 
             // Move labels from override - 3 position (Right after a branch)
-            List<Label> labels = newInstructions[index].labels;
+            var labels = newInstructions[index].labels;
 
             // Remove TryOverride, and !upgradeInventory
             newInstructions.RemoveRange(index, 5);
@@ -118,14 +118,14 @@ namespace Exiled.Events.Patches.Events.Scp914
             index = newInstructions.FindIndex(
                 instruction => instruction.LoadsField(Field(typeof(Scp914Upgrader), nameof(Scp914Upgrader.OnInventoryItemUpgraded))));
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
             // Find iterator jump by going -3 from leave_s
-            int continueIndex = newInstructions.FindIndex(index, instruction => instruction.opcode == OpCodes.Leave_S) - 3;
+            var continueIndex = newInstructions.FindIndex(index, instruction => instruction.opcode == OpCodes.Leave_S) - 3;
 
             newInstructions[continueIndex].labels.Add(continueLabel);
 
-            LocalBuilder ev2 = generator.DeclareLocal(typeof(UpgradingInventoryItemEventArgs));
+            var ev2 = generator.DeclareLocal(typeof(UpgradingInventoryItemEventArgs));
 
             newInstructions.InsertRange(
                 index,
@@ -168,7 +168,7 @@ namespace Exiled.Events.Patches.Events.Scp914
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

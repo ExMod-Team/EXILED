@@ -35,7 +35,7 @@ namespace Exiled.Events.Patches.Events.Player
         /// <param name="hub">The player's hub.</param>
         internal static void PlayerVerified(ReferenceHub hub)
         {
-            if (!Player.UnverifiedPlayers.TryGetValue(hub.gameObject, out Player player))
+            if (!Player.UnverifiedPlayers.TryGetValue(hub.gameObject, out var player))
                 Joined.CallEvent(hub, out player);
 
             Player.Dictionary.Add(hub.gameObject, player);
@@ -63,10 +63,10 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt && x.OperandIs(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.SyncServerCmdBinding)))) + offset;
+            var index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt && x.OperandIs(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.SyncServerCmdBinding)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -78,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Call, Method(typeof(Verified), nameof(Verified.PlayerVerified))),
                 });
 
-            for (int i = 0; i < newInstructions.Count; i++)
+            for (var i = 0; i < newInstructions.Count; i++)
                 yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

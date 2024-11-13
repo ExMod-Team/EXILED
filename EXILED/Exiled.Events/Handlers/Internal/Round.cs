@@ -78,7 +78,7 @@ namespace Exiled.Events.Handlers.Internal
                 return;
             if ((Events.Instance.Config.CanScp049SenseTutorial || ev.Target.Role.Type is not RoleTypeId.Tutorial) && !Scp049Role.TurnedPlayers.Contains(ev.Target))
                 return;
-            ev.Target = ev.Scp049.SenseAbility.CanFindTarget(out ReferenceHub hub) ? Player.Get(hub) : null;
+            ev.Target = ev.Scp049.SenseAbility.CanFindTarget(out var hub) ? Player.Get(hub) : null;
         }
 
         /// <inheritdoc cref="Handlers.Player.OnVerified(VerifiedEventArgs)" />
@@ -87,7 +87,7 @@ namespace Exiled.Events.Handlers.Internal
             RoleAssigner.CheckLateJoin(ev.Player.ReferenceHub, ClientInstanceMode.ReadyClient);
 
             // TODO: Remove if this has been fixed for https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/52
-            foreach (Room room in Room.List.Where(current => current.AreLightsOff))
+            foreach (var room in Room.List.Where(current => current.AreLightsOff))
             {
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), true);
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), false);

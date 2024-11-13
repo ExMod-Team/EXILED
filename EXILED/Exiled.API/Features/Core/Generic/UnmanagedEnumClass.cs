@@ -63,13 +63,13 @@ namespace Exiled.API.Features.Core.Generic
                 if (isDefined)
                     return name;
 
-                IEnumerable<FieldInfo> fields = typeof(TObject)
+                var fields = typeof(TObject)
                     .GetFields(BindingFlags.Static | BindingFlags.GetField | BindingFlags.Public)
                     .Where(t => t.FieldType == typeof(TObject));
 
-                foreach (FieldInfo field in fields)
+                foreach (var field in fields)
                 {
-                    TObject instance = (TObject)field.GetValue(null);
+                    var instance = (TObject)field.GetValue(null);
                     instance.name = field.Name;
                 }
 
@@ -110,7 +110,7 @@ namespace Exiled.API.Features.Core.Generic
         /// <returns>The cast object.</returns>
         public static IEnumerable<TObject> Cast(IEnumerable<TSource> values)
         {
-            foreach (TSource value in values)
+            foreach (var value in values)
                 yield return UnmanagedEnumClass<TSource, TObject>.values[value];
         }
 
@@ -123,7 +123,7 @@ namespace Exiled.API.Features.Core.Generic
         public static IEnumerable<T> Cast<T>(IEnumerable<TSource> values)
             where T : TObject
         {
-            foreach (TSource value in values)
+            foreach (var value in values)
                 yield return Cast<T>(value);
         }
 
@@ -154,10 +154,10 @@ namespace Exiled.API.Features.Core.Generic
         {
             results = null;
 
-            List<TObject> tmpValues = ListPool<TObject>.Pool.Get();
-            foreach (TSource value in values)
+            var tmpValues = ListPool<TObject>.Pool.Get();
+            foreach (var value in values)
             {
-                if (!UnmanagedEnumClass<TSource, TObject>.values.TryGetValue(value, out TObject result))
+                if (!UnmanagedEnumClass<TSource, TObject>.values.TryGetValue(value, out var result))
                     return false;
 
                 tmpValues.Add(result);
@@ -194,7 +194,7 @@ namespace Exiled.API.Features.Core.Generic
         /// <returns>The corresponding <typeparamref name="TObject"/> object instance, or <see langword="null"/> if not found.</returns>
         public static TObject Parse(string obj)
         {
-            foreach (TObject value in values.Values.Where(value => string.Compare(value.Name, obj, true) == 0))
+            foreach (var value in values.Values.Where(value => string.Compare(value.Name, obj, true) == 0))
                 return value;
 
             return null;

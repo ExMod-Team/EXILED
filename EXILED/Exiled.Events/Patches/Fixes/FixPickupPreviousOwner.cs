@@ -28,10 +28,10 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(List<AmmoPickup>), nameof(List<AmmoPickup>.Add)))) + offset;
+            var index = newInstructions.FindLastIndex(instruction => instruction.Calls(Method(typeof(List<AmmoPickup>), nameof(List<AmmoPickup>.Add)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Fixes
                     new(OpCodes.Stfld, Field(typeof(ItemPickupBase), nameof(ItemPickupBase.PreviousOwner))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

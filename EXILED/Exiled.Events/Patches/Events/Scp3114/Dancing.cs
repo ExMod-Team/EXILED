@@ -33,13 +33,13 @@ namespace Exiled.Events.Patches.Events.Scp3114
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse_S);
+            var index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse_S);
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(DancingEventArgs));
+            var ev = generator.DeclareLocal(typeof(DancingEventArgs));
 
             // reader.ReadBool()
             newInstructions.InsertRange(
@@ -76,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DancingEventArgs), nameof(DancingEventArgs.IsDancing))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -92,10 +92,10 @@ namespace Exiled.Events.Patches.Events.Scp3114
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -4;
-            int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(NetworkWriter), nameof(NetworkWriter.WriteByte))) + offset;
+            var offset = -4;
+            var index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(NetworkWriter), nameof(NetworkWriter.WriteByte))) + offset;
 
             newInstructions.RemoveRange(index, 4);
 
@@ -109,7 +109,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
                     new(OpCodes.Call, Method(typeof(ChooseDanceType), nameof(Handle))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

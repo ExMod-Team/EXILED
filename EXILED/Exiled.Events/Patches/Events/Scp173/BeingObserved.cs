@@ -33,16 +33,16 @@ namespace Exiled.Events.Patches.Events.Scp173
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
             const int offset = -4;
-            MethodInfo scp173ExecuteEvent = typeof(EventManager)
+            var scp173ExecuteEvent = typeof(EventManager)
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
                 .FirstOrDefault(m => m.Name == nameof(EventManager.ExecuteEvent)
                                      && !m.IsGenericMethod);
-            int index = newInstructions.FindLastIndex(i => i.Calls(scp173ExecuteEvent)) + offset;
+            var index = newInstructions.FindLastIndex(i => i.Calls(scp173ExecuteEvent)) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -80,7 +80,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

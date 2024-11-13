@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
 
             // new Generator(this)
             newInstructions.InsertRange(
@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Pop),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
 
             // Generator.Scp079GeneratorToGenerator.Remove(this)
             newInstructions.InsertRange(
@@ -68,7 +68,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Pop),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

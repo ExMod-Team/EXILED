@@ -30,11 +30,11 @@ namespace Exiled.Events.Patches.Events.Scp0492
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            Label continueLabel = newInstructions[newInstructions.FindIndex(i => i.opcode == OpCodes.Leave_S) + 1].labels[0];
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var continueLabel = newInstructions[newInstructions.FindIndex(i => i.opcode == OpCodes.Leave_S) + 1].labels[0];
 
             const int offset = -1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_S) + offset;
+            var index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_S) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Scp0492
                 new(OpCodes.Brfalse_S, continueLabel),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

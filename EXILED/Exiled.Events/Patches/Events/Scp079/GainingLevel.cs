@@ -34,14 +34,14 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(GainingLevelEventArgs));
+            var ev = generator.DeclareLocal(typeof(GainingLevelEventArgs));
 
             // GainingLevelEventArgs ev = new GainingLevelEventArgs(Player.Get(base.Owner), value + 1, true);
             //
@@ -92,7 +92,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

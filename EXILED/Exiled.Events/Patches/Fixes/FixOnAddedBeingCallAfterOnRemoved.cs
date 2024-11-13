@@ -29,7 +29,7 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
             /*
                 // Modify this
                 itemBase2.OnAdded(pickup);
@@ -46,18 +46,18 @@ namespace Exiled.Events.Patches.Fixes
                 }
                 itemBase2.OnAdded(pickup);
              */
-            int opCodesToMove = 3;
-            int offset = -2;
-            int indexOnAdded = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemBase), nameof(ItemBase.OnAdded)))) + offset;
+            var opCodesToMove = 3;
+            var offset = -2;
+            var indexOnAdded = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemBase), nameof(ItemBase.OnAdded)))) + offset;
 
             offset = 1;
-            int indexInvoke = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Action<ReferenceHub, ItemBase, ItemPickupBase>), nameof(Action<ReferenceHub, ItemBase, ItemPickupBase>.Invoke)))) + offset;
+            var indexInvoke = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Action<ReferenceHub, ItemBase, ItemPickupBase>), nameof(Action<ReferenceHub, ItemBase, ItemPickupBase>.Invoke)))) + offset;
 
             newInstructions.InsertRange(indexInvoke, newInstructions.GetRange(indexOnAdded, opCodesToMove));
             newInstructions[indexInvoke].MoveLabelsFrom(newInstructions[indexInvoke + opCodesToMove]);
             newInstructions.RemoveRange(indexOnAdded, opCodesToMove);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }

@@ -54,7 +54,7 @@ namespace Exiled.CreditTags.Features
         {
             ThreadSafeRequest request = new();
 
-            UnityWebRequest webRequest = UnityWebRequest.Get(url);
+            var webRequest = UnityWebRequest.Get(url);
             webRequest.SetRequestHeader("User-Agent", "Exiled.CreditTags");
             webRequest.SetRequestHeader("If-None-Match", etag);
 
@@ -73,7 +73,7 @@ namespace Exiled.CreditTags.Features
                 }
                 else
                 {
-                    string newETag = webRequest.GetResponseHeader("Etag");
+                    var newETag = webRequest.GetResponseHeader("Etag");
                     if (!string.IsNullOrEmpty(newETag))
                     {
                         DatabaseHandler.SaveETag(newETag);

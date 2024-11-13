@@ -83,7 +83,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
         /// <returns>The <see cref="PlayerRoleBase"/>.</returns>
-        public static PlayerRoleBase GetRoleBase(this RoleTypeId roleType) => roleType.TryGetRoleBase(out PlayerRoleBase roleBase) ? roleBase : null;
+        public static PlayerRoleBase GetRoleBase(this RoleTypeId roleType) => roleType.TryGetRoleBase(out var roleBase) ? roleBase : null;
 
         /// <summary>
         /// Tries to get the base <see cref="PlayerRoleBase"/> of the given <see cref="RoleTypeId"/>.
@@ -132,7 +132,7 @@ namespace Exiled.API.Extensions
         {
             if (roleType.TryGetRoleBase(out FpcStandardRoleBase fpcRole) &&
                 fpcRole.SpawnpointHandler != null &&
-                fpcRole.SpawnpointHandler.TryGetSpawnpoint(out Vector3 position, out float horizontalRotation))
+                fpcRole.SpawnpointHandler.TryGetSpawnpoint(out var position, out var horizontalRotation))
             {
                 return new(roleType, position, horizontalRotation);
             }
@@ -146,7 +146,7 @@ namespace Exiled.API.Extensions
         /// <param name="role">The <see cref="RoleTypeId"/>.</param>
         /// <returns>The <see cref="InventoryRoleInfo"/> that the role receives on spawn. </returns>
         public static InventoryRoleInfo GetInventory(this RoleTypeId role)
-            => StartingInventories.DefinedInventories.TryGetValue(role, out InventoryRoleInfo info)
+            => StartingInventories.DefinedInventories.TryGetValue(role, out var info)
                 ? info
                 : new(Array.Empty<ItemType>(), new());
 
@@ -164,7 +164,7 @@ namespace Exiled.API.Extensions
         /// <returns>An <see cref="Array"/> of <see cref="ItemType"/> that the role receives on spawn. Will be empty for classes that do not spawn with ammo.</returns>
         public static Dictionary<AmmoType, ushort> GetStartingAmmo(this RoleTypeId roleType)
         {
-            InventoryRoleInfo info = roleType.GetInventory();
+            var info = roleType.GetInventory();
 
             return info.Ammo.ToDictionary(kvp => kvp.Key.GetAmmoType(), kvp => kvp.Value);
         }

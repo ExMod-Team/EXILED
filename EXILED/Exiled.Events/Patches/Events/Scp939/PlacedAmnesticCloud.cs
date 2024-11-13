@@ -29,12 +29,12 @@ namespace Exiled.Events.Patches.Events.Scp939
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder cloud = generator.DeclareLocal(typeof(Scp939AmnesticCloudInstance));
+            var cloud = generator.DeclareLocal(typeof(Scp939AmnesticCloudInstance));
 
             const int offset = -2;
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt && x.OperandIs(Method(typeof(Scp939AmnesticCloudInstance), nameof(Scp939AmnesticCloudInstance.ServerSetup)))) + offset;
+            var index = newInstructions.FindIndex(x => x.opcode == OpCodes.Callvirt && x.OperandIs(Method(typeof(Scp939AmnesticCloudInstance), nameof(Scp939AmnesticCloudInstance.ServerSetup)))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -64,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Scp939
                     new(OpCodes.Call, Method(typeof(Scp939), nameof(Scp939.OnPlacedAmnesticCloud))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

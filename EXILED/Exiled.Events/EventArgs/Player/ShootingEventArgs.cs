@@ -71,7 +71,7 @@ namespace Exiled.Events.EventArgs.Player
             get => ShotMessage.TargetPosition.Position;
             set
             {
-                ShotMessage msg = ShotMessage;
+                var msg = ShotMessage;
                 ShotMessage = new ShotMessage
                 {
                     ShooterPosition = msg.ShooterPosition,
@@ -92,7 +92,7 @@ namespace Exiled.Events.EventArgs.Player
             get => ShotMessage.TargetNetId;
             set
             {
-                ShotMessage msg = ShotMessage;
+                var msg = ShotMessage;
                 ShotMessage = new ShotMessage
                 {
                     ShooterPosition = msg.ShooterPosition,

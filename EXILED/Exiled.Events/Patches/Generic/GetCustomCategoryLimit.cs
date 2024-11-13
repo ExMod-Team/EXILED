@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Generic
 #pragma warning disable SA1313
         private static void Postfix(ItemCategory category, ReferenceHub player, ref sbyte __result)
         {
-            if (!Player.TryGet(player, out Player ply) || !ply.CustomCategoryLimits.TryGetValue(category, out sbyte limit))
+            if (!Player.TryGet(player, out var ply) || !ply.CustomCategoryLimits.TryGetValue(category, out var limit))
                 return;
 
             __result = (sbyte)Mathf.Clamp(limit + __result - InventoryLimits.GetCategoryLimit(null, category), sbyte.MinValue, sbyte.MaxValue);

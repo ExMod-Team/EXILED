@@ -37,15 +37,15 @@ namespace Exiled.Events.Patches.Events.Item
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
+            var index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ReceivingPreferenceEventArgs));
-            LocalBuilder curCode = generator.DeclareLocal(typeof(uint));
+            var ev = generator.DeclareLocal(typeof(ReceivingPreferenceEventArgs));
+            var curCode = generator.DeclareLocal(typeof(uint));
 
-            Label cdc = generator.DefineLabel();
-            Label ret = generator.DefineLabel();
+            var cdc = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
             newInstructions[index].labels.Add(cdc);
 
@@ -101,7 +101,7 @@ namespace Exiled.Events.Patches.Events.Item
 
             newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

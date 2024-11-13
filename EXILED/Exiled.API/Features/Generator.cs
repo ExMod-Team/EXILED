@@ -225,7 +225,7 @@ namespace Exiled.API.Features
         /// <param name="scp079Generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <returns>A <see cref="Generator"/> or <see langword="null"/> if not found.</returns>
         public static Generator Get(Scp079Generator scp079Generator) => scp079Generator == null ? null :
-            Scp079GeneratorToGenerator.TryGetValue(scp079Generator, out Generator generator) ? generator : new(scp079Generator);
+            Scp079GeneratorToGenerator.TryGetValue(scp079Generator, out var generator) ? generator : new(scp079Generator);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Generator"/> given the specified <see cref="GeneratorState"/>.
@@ -299,7 +299,7 @@ namespace Exiled.API.Features
         /// <param name="isEnabled">A value indicating whether the flag is enabled.</param>
         public void SetPermissionFlag(KeycardPermissions flag, bool isEnabled)
         {
-            Interactables.Interobjects.DoorUtils.KeycardPermissions permission = (Interactables.Interobjects.DoorUtils.KeycardPermissions)flag;
+            var permission = (Interactables.Interobjects.DoorUtils.KeycardPermissions)flag;
 
             if (isEnabled)
                 Base._requiredPermission |= permission;

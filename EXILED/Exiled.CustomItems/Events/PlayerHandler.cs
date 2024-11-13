@@ -22,7 +22,7 @@ namespace Exiled.CustomItems.Events
         {
             if (!ev.IsAllowed)
                 return;
-            if (CustomItem.TryGet(ev.Item, out CustomItem? newItem) && (newItem?.ShouldMessageOnGban ?? false))
+            if (CustomItem.TryGet(ev.Item, out var newItem) && (newItem?.ShouldMessageOnGban ?? false))
             {
                 SpectatorCustomNickname(ev.Player, $"{ev.Player.CustomName} (CustomItem: {newItem.Name})");
             }
@@ -34,7 +34,7 @@ namespace Exiled.CustomItems.Events
 
         private void SpectatorCustomNickname(Player player, string itemName)
         {
-            foreach (Player spectator in Player.List)
+            foreach (var spectator in Player.List)
                 spectator.SendFakeSyncVar(player.NetworkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_displayName), itemName);
         }
     }

@@ -119,7 +119,7 @@ namespace Exiled.API.Features.Hazards
         /// <param name="environmentalHazard">The <see cref="EnvironmentalHazard"/> instance.</param>
         /// <returns><see cref="Hazard"/> for <see cref="EnvironmentalHazard"/>.</returns>
         public static Hazard Get(EnvironmentalHazard environmentalHazard) =>
-            EnvironmentalHazardToHazard.TryGetValue(environmentalHazard, out Hazard hazard) ? hazard
+            EnvironmentalHazardToHazard.TryGetValue(environmentalHazard, out var hazard) ? hazard
             : environmentalHazard switch
         {
             TantrumEnvironmentalHazard tantrumEnvironmentalHazard => new TantrumHazard(tantrumEnvironmentalHazard),

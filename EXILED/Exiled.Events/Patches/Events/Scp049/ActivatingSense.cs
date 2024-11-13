@@ -34,18 +34,18 @@ namespace Exiled.Events.Patches.Events.Scp049
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // Label than return in the this.Cooldown.Trigger((double)ev.FailedCooldown)
-            int offset = 3;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldnull) + offset;
-            Label failedLabel = generator.DefineLabel();
+            var offset = 3;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldnull) + offset;
+            var failedLabel = generator.DefineLabel();
             newInstructions[index].labels.Add(failedLabel);
 
             offset = 1;
             index = newInstructions.FindIndex(instruction => instruction.operand == (object)PropertySetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Target))) + offset;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(FinishingRecallEventArgs));
+            var ev = generator.DeclareLocal(typeof(FinishingRecallEventArgs));
 
             newInstructions.InsertRange(
                 index,
@@ -122,7 +122,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                     new(OpCodes.Conv_R8),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

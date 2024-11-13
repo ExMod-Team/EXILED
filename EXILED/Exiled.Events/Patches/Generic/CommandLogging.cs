@@ -41,11 +41,11 @@ namespace Exiled.Events.Patches.Generic
                 if (query.StartsWith("$", StringComparison.Ordinal))
                     return;
 
-                Player player = sender is PlayerCommandSender playerCommandSender && sender != Server.Host.Sender
+                var player = sender is PlayerCommandSender playerCommandSender && sender != Server.Host.Sender
                     ? Player.Get(playerCommandSender)
                     : Server.Host;
 
-                string logMessage = string.Empty;
+                var logMessage = string.Empty;
 
                 try
                 {
@@ -61,12 +61,12 @@ namespace Exiled.Events.Patches.Generic
                 if (string.IsNullOrEmpty(logMessage))
                     return;
 
-                string directory = Path.Combine(Paths.Exiled, "Logs");
+                var directory = Path.Combine(Paths.Exiled, "Logs");
 
                 if (!Directory.Exists(directory))
                     Directory.CreateDirectory(directory);
 
-                string filePath = Path.Combine(directory, $"{Server.Port}-RAlog.txt");
+                var filePath = Path.Combine(directory, $"{Server.Port}-RAlog.txt");
 
                 if (!File.Exists(filePath))
                     File.Create(filePath).Close();
@@ -81,11 +81,11 @@ namespace Exiled.Events.Patches.Generic
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int index = 0;
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Generic
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

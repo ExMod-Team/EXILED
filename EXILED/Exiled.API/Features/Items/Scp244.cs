@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
-            Scp244DeployablePickup scp244Pickup = (Scp244DeployablePickup)Type.GetPickupBase();
+            var scp244Pickup = (Scp244DeployablePickup)Type.GetPickupBase();
             Health = scp244Pickup._health;
             ActivationDot = scp244Pickup._activationDot;
             MaxDiameter = scp244Pickup.MaxDiameter;
@@ -86,13 +86,13 @@ namespace Exiled.API.Features.Items
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            Scp244DeployablePickup ipb = (Scp244DeployablePickup)InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            var ipb = (Scp244DeployablePickup)InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
 
             Base.OnRemoved(ipb);
 
             ipb.State = Base._primed ? Scp244State.Active : Scp244State.Idle;
 
-            Pickup pickup = Pickup.Get(ipb);
+            var pickup = Pickup.Get(ipb);
 
             if (spawn)
                 pickup.Spawn();

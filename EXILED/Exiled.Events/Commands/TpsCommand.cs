@@ -31,8 +31,8 @@ namespace Exiled.Events.Commands
         /// <inheritdoc />
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            double diff = Server.Tps / Server.MaxTps;
-            string color = diff switch
+            var diff = Server.Tps / Server.MaxTps;
+            var color = diff switch
             {
                 > 0.9 => "green",
                 > 0.5 => "yellow",

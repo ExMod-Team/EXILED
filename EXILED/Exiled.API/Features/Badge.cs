@@ -51,7 +51,7 @@ namespace Exiled.API.Features
         /// <returns>Whether or not the provided hex color code can be used in badges.</returns>
         public static bool IsValidColor(string hex, out Misc.PlayerInfoColorTypes? colorType)
         {
-            foreach (KeyValuePair<Misc.PlayerInfoColorTypes, string> option in Misc.AllowedColors)
+            foreach (var option in Misc.AllowedColors)
             {
                 if (option.Value.Equals(hex, StringComparison.OrdinalIgnoreCase))
                 {

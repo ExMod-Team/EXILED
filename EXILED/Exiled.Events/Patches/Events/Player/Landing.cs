@@ -31,10 +31,10 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             const int offset = -1;
-            int index = newInstructions.FindIndex(
+            var index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(AnimatedCharacterModel), nameof(AnimatedCharacterModel.PlayFootstep)))) + offset;
 
             newInstructions.InsertRange(
@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnLanding))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

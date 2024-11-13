@@ -27,15 +27,15 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ret = generator.DefineLabel();
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(x => x.operand == (object)Method(typeof(ScpAttackAbilityBase<Scp3114Role>), nameof(ScpAttackAbilityBase<Scp3114Role>.HasAttackResultFlag))) + offset;
+            var ret = generator.DefineLabel();
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(x => x.operand == (object)Method(typeof(ScpAttackAbilityBase<Scp3114Role>), nameof(ScpAttackAbilityBase<Scp3114Role>.HasAttackResultFlag))) + offset;
             newInstructions[index].operand = ret;
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

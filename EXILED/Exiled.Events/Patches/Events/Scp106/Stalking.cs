@@ -31,13 +31,13 @@ namespace Exiled.Events.Patches.Events.Scp106
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(StalkingEventArgs));
+            var ev = generator.DeclareLocal(typeof(StalkingEventArgs));
 
-            Label returnLabel = generator.DefineLabel();
-            int offset = 2;
-            int index = newInstructions.FindIndex(instruction => instruction.operand == (object)PropertyGetter(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.IsActive))) + offset;
+            var returnLabel = generator.DefineLabel();
+            var offset = 2;
+            var index = newInstructions.FindIndex(instruction => instruction.operand == (object)PropertyGetter(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.IsActive))) + offset;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -110,7 +110,7 @@ namespace Exiled.Events.Patches.Events.Scp106
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

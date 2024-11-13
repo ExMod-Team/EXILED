@@ -21,7 +21,7 @@ namespace Exiled.CustomItems.Events
         {
             Timing.CallDelayed(2, () => // The delay is necessary because the generation of the lockers takes time, due to the way they are made in the base game.
             {
-                foreach (CustomItem customItem in CustomItem.Registered)
+                foreach (var customItem in CustomItem.Registered)
                 {
                     try
                     {

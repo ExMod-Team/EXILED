@@ -86,7 +86,7 @@ namespace Exiled.API.Features
         /// <inheritdoc/>
         public virtual void OnEnabled()
         {
-            AssemblyInformationalVersionAttribute attribute = Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            var attribute = Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
             Log.Info($"{Name} v{(Version is not null ? $"{Version.Major}.{Version.Minor}.{Version.Build}" : attribute is not null ? attribute.InformationalVersion : string.Empty)} by {Author} has been enabled!");
         }
 
@@ -101,7 +101,7 @@ namespace Exiled.API.Features
         {
             Dictionary<Type, List<ICommand>> toRegister = new();
 
-            foreach (Type type in Assembly.GetTypes())
+            foreach (var type in Assembly.GetTypes())
             {
                 if (type.GetInterface("ICommand") != typeof(ICommand))
                     continue;
@@ -109,24 +109,24 @@ namespace Exiled.API.Features
                 if (!Attribute.IsDefined(type, typeof(CommandHandlerAttribute)))
                     continue;
 
-                foreach (CustomAttributeData customAttributeData in type.GetCustomAttributesData())
+                foreach (var customAttributeData in type.GetCustomAttributesData())
                 {
                     try
                     {
                         if (customAttributeData.AttributeType != typeof(CommandHandlerAttribute))
                             continue;
 
-                        Type commandHandlerType = (Type)customAttributeData.ConstructorArguments[0].Value;
+                        var commandHandlerType = (Type)customAttributeData.ConstructorArguments[0].Value;
 
-                        ICommand command = GetCommand(type) ?? (ICommand)Activator.CreateInstance(type);
+                        var command = GetCommand(type) ?? (ICommand)Activator.CreateInstance(type);
 
                         if (typeof(ParentCommand).IsAssignableFrom(commandHandlerType))
                         {
-                            ParentCommand parentCommand = GetCommand(commandHandlerType) as ParentCommand;
+                            var parentCommand = GetCommand(commandHandlerType) as ParentCommand;
 
                             if (parentCommand == null)
                             {
-                                if (!toRegister.TryGetValue(commandHandlerType, out List<ICommand> list))
+                                if (!toRegister.TryGetValue(commandHandlerType, out var list))
                                     toRegister.Add(commandHandlerType, new() { command });
                                 else
                                     list.Add(command);
@@ -168,11 +168,11 @@ namespace Exiled.API.Features
                 }
             }
 
-            foreach (KeyValuePair<Type, List<ICommand>> kvp in toRegister)
+            foreach (var kvp in toRegister)
             {
-                ParentCommand parentCommand = GetCommand(kvp.Key) as ParentCommand;
+                var parentCommand = GetCommand(kvp.Key) as ParentCommand;
 
-                foreach (ICommand command in kvp.Value)
+                foreach (var command in kvp.Value)
                     parentCommand.RegisterCommand(command);
             }
         }
@@ -190,10 +190,10 @@ namespace Exiled.API.Features
 
             if (commandHandler != null)
             {
-                if (!Commands.TryGetValue(commandHandler, out Dictionary<Type, ICommand> commands))
+                if (!Commands.TryGetValue(commandHandler, out var commands))
                     return null;
 
-                if (!commands.TryGetValue(type, out ICommand command))
+                if (!commands.TryGetValue(type, out var command))
                     return null;
 
                 return command;
@@ -205,9 +205,9 @@ namespace Exiled.API.Features
         /// <inheritdoc/>
         public virtual void OnUnregisteringCommands()
         {
-            foreach (KeyValuePair<Type, Dictionary<Type, ICommand>> types in Commands)
+            foreach (var types in Commands)
             {
-                foreach (ICommand command in types.Value.Values)
+                foreach (var command in types.Value.Values)
                 {
                     if (types.Key == typeof(RemoteAdminCommandHandler))
                         CommandProcessor.RemoteAdminCommandHandler.UnregisterCommand(command);

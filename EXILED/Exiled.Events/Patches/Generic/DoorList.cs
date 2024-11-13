@@ -32,9 +32,9 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ret = generator.DefineLabel();
+            var ret = generator.DefineLabel();
 
             // if (Rooms != null)
             //     return;
@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -69,11 +69,11 @@ namespace Exiled.Events.Patches.Generic
             if (Door.DoorVariantToDoor.ContainsKey(doorVariant))
                 return;
 
-            List<Room> rooms = doorVariant.Rooms.Select(identifier => Room.RoomIdentifierToRoom[identifier]).ToList();
+            var rooms = doorVariant.Rooms.Select(identifier => Room.RoomIdentifierToRoom[identifier]).ToList();
 
-            Door door = Door.Create(doorVariant, rooms);
+            var door = Door.Create(doorVariant, rooms);
 
-            foreach (Room room in rooms)
+            foreach (var room in rooms)
             {
                 room.DoorsValue.Add(door);
                 room.NearestRoomsValue.AddRange(rooms.Except(new List<Room>() { room }));
@@ -81,10 +81,10 @@ namespace Exiled.Events.Patches.Generic
 
             if (door.Is(out CheckpointDoor checkpoint))
             {
-                foreach (DoorVariant subDoor in checkpoint.Base.SubDoors)
+                foreach (var subDoor in checkpoint.Base.SubDoors)
                 {
                     subDoor.RegisterRooms();
-                    BreakableDoor targetDoor = Door.Get<BreakableDoor>(subDoor);
+                    var targetDoor = Door.Get<BreakableDoor>(subDoor);
 
                     targetDoor.ParentCheckpointDoor = checkpoint;
                     checkpoint.SubDoorsValue.Add(targetDoor);

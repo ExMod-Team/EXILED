@@ -229,7 +229,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets the speaker SCP-079 is currently using. Can be <see langword="null"/>.
         /// </summary>
-        public Scp079Speaker Speaker => Scp079Speaker.TryGetSpeaker(Base.CurrentCamera, out Scp079Speaker speaker) ? speaker : null;
+        public Scp079Speaker Speaker => Scp079Speaker.TryGetSpeaker(Base.CurrentCamera, out var speaker) ? speaker : null;
 
         /// <summary>
         /// Gets the doors SCP-079 has locked. Can be <see langword="null"/>.
@@ -538,7 +538,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="consumeEnergy">Indicates if the energy cost should be consumed or not.</param>
         public void BlackoutZone(bool consumeEnergy = true)
         {
-            foreach (RoomLightController lightController in RoomLightController.Instances)
+            foreach (var lightController in RoomLightController.Instances)
             {
                 if (lightController.Room.Zone == BlackoutZoneAbility._syncZone)
                 {
@@ -590,10 +590,10 @@ namespace Exiled.API.Features.Roles
         /// <param name="consumeEnergy">Indicates if the energy cost should be consume or not.</param>
         public void ActivateTesla(bool consumeEnergy = true)
         {
-            Scp079Camera cam = CurrentCameraSync.CurrentCamera;
+            var cam = CurrentCameraSync.CurrentCamera;
             RewardManager.MarkRoom(cam.Room);
 
-            if (!TeslaGateController.Singleton.TeslaGates.TryGetFirst(x => RoomIdUtils.IsTheSameRoom(cam.Position, x.transform.position), out global::TeslaGate teslaGate))
+            if (!TeslaGateController.Singleton.TeslaGates.TryGetFirst(x => RoomIdUtils.IsTheSameRoom(cam.Position, x.transform.position), out var teslaGate))
                 return;
 
             if (consumeEnergy)

@@ -26,12 +26,12 @@ namespace Exiled.Events.Patches.Generic.Scp079API
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // replace "this.ChaosTargetCount += (int)((double)respawnedPlayers.Count * 0.75);"
             // with " this.ChaosTargetCount += (int)((double)respawnedPlayers.Count * ConfigFile.ServerConfig.GetDouble("respawn_target_multiplier", 0.75);"
-            int offset = 0;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_R8) + offset;
+            var offset = 0;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldc_R8) + offset;
             newInstructions.RemoveAt(index);
 
             newInstructions.InsertRange(
@@ -45,7 +45,7 @@ namespace Exiled.Events.Patches.Generic.Scp079API
                     new(OpCodes.Call, Method(typeof(YamlConfig), nameof(YamlConfig.GetDouble))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

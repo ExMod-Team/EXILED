@@ -200,7 +200,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
         /// <returns>The corresponding <see cref="TeslaGate"/> instance.</returns>
-        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => BaseTeslaGateToTeslaGate.TryGetValue(baseTeslaGate, out TeslaGate teslagate) ?
+        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => BaseTeslaGateToTeslaGate.TryGetValue(baseTeslaGate, out var teslagate) ?
             teslagate :
             new(baseTeslaGate, Room.FindParentRoom(baseTeslaGate.gameObject));
 

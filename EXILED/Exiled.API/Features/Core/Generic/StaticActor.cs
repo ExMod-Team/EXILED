@@ -49,7 +49,7 @@ namespace Exiled.API.Features.Core.Generic
         /// <returns>The existing <typeparamref name="T"/> instance, or <see langword="null"/> if not found.</returns>
         public static T FindExistingInstance()
         {
-            T[] existingInstances = FindActiveObjectsOfType<T>();
+            var existingInstances = FindActiveObjectsOfType<T>();
             return existingInstances?.Length == 0 ? null : existingInstances[0];
         }
 

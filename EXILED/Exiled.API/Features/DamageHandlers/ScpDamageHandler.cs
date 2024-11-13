@@ -48,7 +48,7 @@ namespace Exiled.API.Features.DamageHandlers
                         };
                     case BaseScpHandler scp:
                         {
-                            DeathTranslation translation = DeathTranslations.TranslationsById[scp._translationId];
+                            var translation = DeathTranslations.TranslationsById[scp._translationId];
                             if (translation.Id == DeathTranslations.PocketDecay.Id)
                                 return DamageType.Scp106;
                             return DamageTypeExtensions.TranslationIdConversion.ContainsKey(translation.Id) ? DamageTypeExtensions.TranslationIdConversion[translation.Id] : DamageType.Scp;

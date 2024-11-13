@@ -30,9 +30,9 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_0);
+            var index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_0);
 
             newInstructions.InsertRange(
                 index,
@@ -67,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_0),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

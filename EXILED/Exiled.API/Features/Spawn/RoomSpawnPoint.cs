@@ -46,7 +46,7 @@ namespace Exiled.API.Features.Spawn
         {
             get
             {
-                Room roomInstance = Features.Room.Get(Room) ?? throw new InvalidOperationException("The room instance could not be found.");
+                var roomInstance = Features.Room.Get(Room) ?? throw new InvalidOperationException("The room instance could not be found.");
 
                 if (roomInstance.Type == RoomType.Surface)
                     return Offset != Vector3.zero ? Offset : roomInstance.Position;

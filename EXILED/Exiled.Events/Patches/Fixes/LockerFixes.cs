@@ -28,10 +28,10 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -1;
-            int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(LockerChamber), nameof(LockerChamber._spawnOnFirstChamberOpening)))) + offset;
+            var offset = -1;
+            var index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(LockerChamber), nameof(LockerChamber._spawnOnFirstChamberOpening)))) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Ret),
             });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Fixes
             if (!chamber._spawnOnFirstChamberOpening)
                 return;
 
-            foreach (ItemPickupBase ipb in chamber._toBeSpawned)
+            foreach (var ipb in chamber._toBeSpawned)
             {
                 if (ipb != null)
                     ItemDistributor.SpawnPickup(ipb);

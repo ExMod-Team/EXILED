@@ -252,7 +252,7 @@ namespace Exiled.API.Features.Roles
                 return false;
             player.ReferenceHub.transform.position = ResurrectAbility.CastRole.FpcModule.Position;
 
-            HumeShieldModuleBase humeShield = ResurrectAbility.CastRole.HumeShieldModule;
+            var humeShield = ResurrectAbility.CastRole.HumeShieldModule;
             humeShield.HsCurrent = Mathf.Min(humeShield.HsCurrent + 100f, humeShield.HsMax);
 
             return Resurrect(Features.Ragdoll.GetLast(player));
@@ -286,7 +286,7 @@ namespace Exiled.API.Features.Roles
                 return;
 
             AttackAbility.Cooldown.Trigger(Scp049AttackAbility.CooldownTime);
-            CardiacArrest cardiacArrest = AttackAbility._target.playerEffectsController.GetEffect<CardiacArrest>();
+            var cardiacArrest = AttackAbility._target.playerEffectsController.GetEffect<CardiacArrest>();
 
             if (cardiacArrest.IsEnabled)
             {
@@ -328,7 +328,7 @@ namespace Exiled.API.Features.Roles
                 if (SenseAbility.Target.roleManager.CurrentRole is not PlayerRoles.HumanRole humanRole)
                     return;
 
-                float radius = humanRole.FpcModule.CharController.radius;
+                var radius = humanRole.FpcModule.CharController.radius;
                 if (!VisionInformation.GetVisionInformation(SenseAbility.Owner, SenseAbility.Owner.PlayerCameraReference, humanRole.CameraPosition, radius, SenseAbility._distanceThreshold).IsLooking)
                     return;
 

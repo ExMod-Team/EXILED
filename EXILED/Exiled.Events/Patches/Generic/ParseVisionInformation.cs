@@ -32,17 +32,17 @@ namespace Exiled.Events.Patches.Generic
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
             // Second check pointer
             // We use it to pass execution
             // to the second check if the first check fails,
             // otherwise the second check won't be executed
-            Label secondCheckPointer = generator.DefineLabel();
+            var secondCheckPointer = generator.DefineLabel();
 
             newInstructions[0].labels.Add(continueLabel);
 
@@ -79,7 +79,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Ret),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

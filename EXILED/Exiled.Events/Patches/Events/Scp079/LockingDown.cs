@@ -37,14 +37,14 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            var returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(LockingDownEventArgs));
+            var ev = generator.DeclareLocal(typeof(LockingDownEventArgs));
 
-            int offset = -6;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            var offset = -6;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
 
             // LockingDownEventArgs ev = new(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, (float)this._cost);
             //
@@ -105,7 +105,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

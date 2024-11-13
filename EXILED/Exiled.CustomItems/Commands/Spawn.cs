@@ -57,7 +57,7 @@ namespace Exiled.CustomItems.Commands
                 return false;
             }
 
-            if (!CustomItem.TryGet(arguments.At(0), out CustomItem? item))
+            if (!CustomItem.TryGet(arguments.At(0), out var item))
             {
                 response = $" {arguments.At(0)} is not a valid custom item.";
                 return false;
@@ -83,7 +83,7 @@ namespace Exiled.CustomItems.Commands
                 }
                 else if (arguments.Count > 3)
                 {
-                    if (!float.TryParse(arguments.At(1), out float x) || !float.TryParse(arguments.At(2), out float y) || !float.TryParse(arguments.At(3), out float z))
+                    if (!float.TryParse(arguments.At(1), out var x) || !float.TryParse(arguments.At(2), out var y) || !float.TryParse(arguments.At(3), out var z))
                     {
                         response = "Invalid coordinates selected.";
                         return false;

@@ -90,7 +90,7 @@ namespace Exiled.API.Extensions
         /// <returns>The <see cref="ItemBase"/>, or <see langword="null"/> if not found.</returns>
         public static ItemBase GetItemBase(this ItemType type)
         {
-            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out ItemBase itemBase))
+            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out var itemBase))
                 return null;
 
             return itemBase;
@@ -112,7 +112,7 @@ namespace Exiled.API.Extensions
         public static T GetItemBase<T>(this ItemType type)
             where T : ItemBase
         {
-            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out ItemBase itemBase))
+            if (!InventoryItemLoader.AvailableItems.TryGetValue(type, out var itemBase))
                 return null;
 
             return itemBase as T;
@@ -125,7 +125,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns the maximum.</returns>
         public static byte GetMaxAmmo(this FirearmType item)
         {
-            if (!InventoryItemLoader.AvailableItems.TryGetValue(item.GetItemType(), out ItemBase itemBase) || itemBase is not InventorySystem.Items.Firearms.Firearm firearm)
+            if (!InventoryItemLoader.AvailableItems.TryGetValue(item.GetItemType(), out var itemBase) || itemBase is not InventorySystem.Items.Firearms.Firearm firearm)
                 return 0;
 
             return firearm.AmmoManagerModule.MaxAmmo;
@@ -268,7 +268,7 @@ namespace Exiled.API.Extensions
             if (type.GetBaseCode() > code)
                 code = type.GetBaseCode();
 
-            if (!Firearm.ItemTypeToFirearmInstance.TryGetValue(type, out Firearm firearm))
+            if (!Firearm.ItemTypeToFirearmInstance.TryGetValue(type, out var firearm))
                 throw new ArgumentException($"Couldn't find a Firearm instance matching the ItemType value: {type}.");
 
             firearm.Base.ApplyAttachmentsCode(code, true);
@@ -311,7 +311,7 @@ namespace Exiled.API.Extensions
         {
             if (type is FirearmType.None)
                 return 0;
-            else if (Firearm.BaseCodesValue.TryGetValue(type, out uint baseCode))
+            else if (Firearm.BaseCodesValue.TryGetValue(type, out var baseCode))
                 return baseCode;
             else
                 throw new KeyNotFoundException($"Basecode for weapon {type} not found! Stored BaseCodesValue:\n{Firearm.BaseCodesValue.Keys.ToString(true)}\n{Firearm.BaseCodesValue.Values.ToString(true)}");

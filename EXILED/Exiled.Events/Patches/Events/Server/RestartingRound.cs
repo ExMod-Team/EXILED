@@ -31,7 +31,7 @@ namespace Exiled.Events.Patches.Events.Server
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             newInstructions.InsertRange(
                 0,
@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Events.Server
                 });
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse);
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse);
 
             newInstructions.InsertRange(
                 index + offset,
@@ -62,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Brtrue, newInstructions[index].operand),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
@@ -70,11 +70,11 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static bool ShouldServerRestart()
         {
-            bool flag = false;
+            var flag = false;
 
             try
             {
-                int num = ConfigFile.ServerConfig.GetInt("restart_after_rounds");
+                var num = ConfigFile.ServerConfig.GetInt("restart_after_rounds");
 
                 flag = num > 0 && RoundRestart.UptimeRounds >= num;
             }

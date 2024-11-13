@@ -37,7 +37,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="PrefabAttribute" />.</returns>
         public static PrefabAttribute GetPrefabAttribute(this PrefabType prefabType)
         {
-            Type type = prefabType.GetType();
+            var type = prefabType.GetType();
             return type.GetField(Enum.GetName(type, prefabType)).GetCustomAttribute<PrefabAttribute>();
         }
 
@@ -50,7 +50,7 @@ namespace Exiled.API.Features
         public static T GetPrefab<T>(PrefabType type)
             where T : Component
         {
-            if (!Stored.TryGetValue(type, out GameObject gameObject) || !gameObject.TryGetComponent(out T component))
+            if (!Stored.TryGetValue(type, out var gameObject) || !gameObject.TryGetComponent(out T component))
                 return null;
 
             return component;
@@ -65,9 +65,9 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="GameObject"/> instantied.</returns>
         public static GameObject Spawn(PrefabType prefabType, Vector3 position = default, Quaternion rotation = default)
         {
-            if (!Stored.TryGetValue(prefabType, out GameObject gameObject))
+            if (!Stored.TryGetValue(prefabType, out var gameObject))
                 return null;
-            GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation);
+            var newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation);
             NetworkServer.Spawn(newGameObject);
             return newGameObject;
         }
@@ -83,7 +83,7 @@ namespace Exiled.API.Features
         public static T Spawn<T>(PrefabType prefabType, Vector3 position = default, Quaternion rotation = default)
             where T : Component
         {
-            T obj = UnityEngine.Object.Instantiate(GetPrefab<T>(prefabType), position, rotation);
+            var obj = UnityEngine.Object.Instantiate(GetPrefab<T>(prefabType), position, rotation);
             NetworkServer.Spawn(obj.gameObject);
             return obj;
         }
@@ -95,9 +95,9 @@ namespace Exiled.API.Features
         {
             Stored.Clear();
 
-            foreach (PrefabType prefabType in EnumUtils<PrefabType>.Values)
+            foreach (var prefabType in EnumUtils<PrefabType>.Values)
             {
-                PrefabAttribute attribute = prefabType.GetPrefabAttribute();
+                var attribute = prefabType.GetPrefabAttribute();
                 Stored.Add(prefabType, NetworkClient.prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.name.Contains(attribute.Name)).Value);
             }
         }

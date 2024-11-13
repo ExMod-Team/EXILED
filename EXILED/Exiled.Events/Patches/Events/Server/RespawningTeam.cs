@@ -34,14 +34,14 @@ namespace Exiled.Events.Patches.Events.Server
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -6;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(UnitNamingRule), nameof(UnitNamingRule.TryGetNamingRule)))) + offset;
+            var offset = -6;
+            var index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(UnitNamingRule), nameof(UnitNamingRule.TryGetNamingRule)))) + offset;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(RespawningTeamEventArgs));
+            var ev = generator.DeclareLocal(typeof(RespawningTeamEventArgs));
 
-            Label continueLabel = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
@@ -109,7 +109,7 @@ namespace Exiled.Events.Patches.Events.Server
             offset = -6;
             newInstructions.RemoveRange(newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && (MethodInfo)i.operand == Method(typeof(SpawnableTeamHandlerBase), nameof(SpawnableTeamHandlerBase.GenerateQueue))) + offset, 7);
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

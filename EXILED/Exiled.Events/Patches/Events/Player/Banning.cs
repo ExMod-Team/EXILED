@@ -30,17 +30,17 @@ namespace Exiled.Events.Patches.Events.Player
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label notEmpty = generator.DefineLabel();
-            Label empty = generator.DefineLabel();
-            Label continueLabel = generator.DefineLabel();
+            var notEmpty = generator.DefineLabel();
+            var empty = generator.DefineLabel();
+            var continueLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(BanningEventArgs));
-            LocalBuilder msg = generator.DeclareLocal(typeof(string));
+            var ev = generator.DeclareLocal(typeof(BanningEventArgs));
+            var msg = generator.DeclareLocal(typeof(string));
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Starg_S) + offset;
+            var offset = 1;
+            var index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Starg_S) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.Insert(index, new(OpCodes.Ldloc_S, msg.LocalIndex));
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

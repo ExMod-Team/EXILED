@@ -27,15 +27,15 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(ReferenceHubReaderWriter), nameof(ReferenceHubReaderWriter.TryReadReferenceHub)))) - 2;
+            var index = newInstructions.FindIndex(i => i.Calls(Method(typeof(ReferenceHubReaderWriter), nameof(ReferenceHubReaderWriter.TryReadReferenceHub)))) - 2;
 
-            int breakIndex = newInstructions.FindIndex(i => i.Calls(Method(typeof(JailbirdHitreg), nameof(JailbirdHitreg.DetectDestructibles)))) - 1;
-            Label breakLabel = generator.DefineLabel();
+            var breakIndex = newInstructions.FindIndex(i => i.Calls(Method(typeof(JailbirdHitreg), nameof(JailbirdHitreg.DetectDestructibles)))) - 1;
+            var breakLabel = generator.DefineLabel();
             newInstructions[breakIndex].WithLabels(breakLabel);
 
-            List<Label> loopBeginingLabels = newInstructions[index].ExtractLabels();
+            var loopBeginingLabels = newInstructions[index].ExtractLabels();
 
             newInstructions.InsertRange(index, new[]
             {
@@ -52,7 +52,7 @@ namespace Exiled.Events.Patches.Fixes
 
             newInstructions[index].WithLabels(loopBeginingLabels);
 
-            foreach (CodeInstruction instruction in newInstructions)
+            foreach (var instruction in newInstructions)
                 yield return instruction;
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);

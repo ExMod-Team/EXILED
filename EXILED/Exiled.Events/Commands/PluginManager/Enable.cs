@@ -55,8 +55,8 @@ namespace Exiled.Events.Commands.PluginManager
                 return false;
             }
 
-            string assemblyPath = Path.Combine(Paths.Plugins, $"{arguments.At(0)}.dll");
-            Assembly assembly = Loader.Loader.LoadAssembly(assemblyPath);
+            var assemblyPath = Path.Combine(Paths.Plugins, $"{arguments.At(0)}.dll");
+            var assembly = Loader.Loader.LoadAssembly(assemblyPath);
             if (assembly is null)
             {
                 response = "Plugin not found.";
@@ -71,14 +71,14 @@ namespace Exiled.Events.Commands.PluginManager
 
             Loader.Loader.Locations[assembly] = assemblyPath;
 
-            IPlugin<IConfig> plugin = Loader.Loader.CreatePlugin(assembly);
+            var plugin = Loader.Loader.CreatePlugin(assembly);
             if (plugin is null)
             {
                 response = "Plugin is null, skipping.";
                 return false;
             }
 
-            AssemblyInformationalVersionAttribute attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+            var attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
 
             Log.Info($"Loaded plugin {plugin.Name}@{(plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : attribute is not null ? attribute.InformationalVersion : string.Empty)}");
 

@@ -33,14 +33,14 @@ namespace Exiled.Events.Patches.Events.Scp173
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+            var newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = newInstructions[newInstructions.Count - 1].labels[0];
+            var returnLabel = newInstructions[newInstructions.Count - 1].labels[0];
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(PlacingTantrumEventArgs));
+            var ev = generator.DeclareLocal(typeof(PlacingTantrumEventArgs));
 
             const int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            var index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
 
             // PlacingTantrumEventArgs ev = new(this, Player, gameObject, cooldown, true);
             //
@@ -84,7 +84,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
+            for (var z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
