@@ -704,7 +704,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether or not the player's <see cref="RoleTypeId"/> is any human rank.
         /// </summary>
-        public bool IsHuman => RoleExtensions.IsHuman(Role?.Type ?? RoleTypeId.None);
+        public bool IsHuman => Role is not null && RoleExtensions.IsHuman(Role.Type);
 
         /// <summary>
         /// Gets a value indicating whether or not the player's <see cref="RoleTypeId"/> is equal to <see cref="RoleTypeId.Tutorial"/>.
