@@ -52,7 +52,7 @@ namespace Exiled.API.Extensions
             Team.FoundationForces or Team.Scientists => Side.Mtf,
             Team.ChaosInsurgency or Team.ClassD => Side.ChaosInsurgency,
             Team.OtherAlive => Side.Tutorial,
-            _ => Side.None
+            _ => Side.None,
         };
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Exiled.API.Extensions
             RoleTypeId.Scp049 or RoleTypeId.Scp939 or RoleTypeId.Scp0492 or RoleTypeId.Scp079 or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp3114 => Team.SCPs,
             RoleTypeId.FacilityGuard or RoleTypeId.NtfCaptain or RoleTypeId.NtfPrivate or RoleTypeId.NtfSergeant or RoleTypeId.NtfSpecialist => Team.FoundationForces,
             RoleTypeId.Tutorial => Team.OtherAlive,
-            _ => Team.Dead
+            _ => Team.Dead,
         };
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Exiled.API.Extensions
             Team.ClassD or Team.ChaosInsurgency => LeadingTeam.ChaosInsurgency,
             Team.FoundationForces or Team.Scientists => LeadingTeam.FacilityForces,
             Team.SCPs => LeadingTeam.Anomalies,
-            _ => LeadingTeam.Draw
+            _ => LeadingTeam.Draw,
         };
 
         /// <summary>
