@@ -687,24 +687,24 @@ namespace Exiled.API.Features
         /// Equivalent to checking the player's <see cref="Team"/>.
         /// </summary>
         // TODO: Change logic for FacilityGuard in next major update
-        public bool IsNTF => Role?.Team is Team.FoundationForces;
+        public bool IsNTF => Role?.Type.IsNtf() ?? false;
 
         /// <summary>
         /// Gets a value indicating whether or not the player's <see cref="RoleTypeId"/> is any Chaos rank.
         /// Equivalent to checking the player's <see cref="Team"/>.
         /// </summary>
-        public bool IsCHI => Role?.Team is Team.ChaosInsurgency;
+        public bool IsCHI => Role?.Type.IsChaos() ?? false;
 
         /// <summary>
         /// Gets a value indicating whether or not the player's <see cref="RoleTypeId"/> is any SCP.
         /// Equivalent to checking the player's <see cref="Team"/>.
         /// </summary>
-        public bool IsScp => Role?.Team is Team.SCPs;
+        public bool IsScp => Role?.Type.IsScp() ?? false;
 
         /// <summary>
         /// Gets a value indicating whether or not the player's <see cref="RoleTypeId"/> is any human rank.
         /// </summary>
-        public bool IsHuman => Role is not null && Role.Is(out HumanRole _);
+        public bool IsHuman => RoleExtensions.IsHuman(Role?.Type ?? RoleTypeId.None);
 
         /// <summary>
         /// Gets a value indicating whether or not the player's <see cref="RoleTypeId"/> is equal to <see cref="RoleTypeId.Tutorial"/>.
