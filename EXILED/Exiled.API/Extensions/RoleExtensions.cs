@@ -124,6 +124,13 @@ namespace Exiled.API.Extensions
         public static bool IsFpcRole(this RoleTypeId roleType) => roleType.GetRoleBase() is IFpcRole;
 
         /// <summary>
+        ///  Checks if the role is an SCP role.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>A boolean which is true when the role is an SCP role.</returns>
+        public static bool IsScp(this RoleTypeId roleType) => roleType.GetTeam() == Team.SCPs;
+
+        /// <summary>
         /// Gets a random spawn point of a <see cref="RoleTypeId"/>.
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
@@ -168,12 +175,5 @@ namespace Exiled.API.Extensions
 
             return info.Ammo.ToDictionary(kvp => kvp.Key.GetAmmoType(), kvp => kvp.Value);
         }
-
-        /// <summary>
-        ///  Checks if the role is an SCP role.
-        /// </summary>
-        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
-        /// <returns>A boolean which is true when the role is an SCP role.</returns>
-        public static bool IsScp(this RoleTypeId roleType) => roleType.GetTeam() == Team.SCPs;
     }
 }
