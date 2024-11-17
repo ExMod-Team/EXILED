@@ -45,7 +45,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the player can send a command.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
 
         /// <summary>
         /// Gets or sets the response of the command. If this value is null, the response will stay unchanged.
