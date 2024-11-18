@@ -63,6 +63,16 @@ namespace Exiled.API.Features.Lockers
         public Quaternion Rotation => Base.transform.rotation;
 
         /// <summary>
+        /// Gets the <see cref="Chamber"/> <see cref="UnityEngine.GameObject"/>.
+        /// </summary>
+        public GameObject GameObject => Base.gameObject;
+
+        /// <summary>
+        /// Gets the <see cref="Chamber"/> <see cref="UnityEngine.Transform"/>.
+        /// </summary>
+        public Transform Transform => Base.transform;
+
+        /// <summary>
         /// Gets or sets all pickups that should be spawned when the door is initially opened.
         /// </summary>
         public IEnumerable<Pickup> ToBeSpawned
