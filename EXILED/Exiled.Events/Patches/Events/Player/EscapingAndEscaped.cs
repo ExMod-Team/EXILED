@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Escaping.cs" company="Exiled Team">
+// <copyright file="EscapingAndEscaped.cs" company="Exiled Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
 #pragma warning disable SA1402 // File may only contain a single type
+#pragma warning disable IDE0060
 
     using System;
     using System.Collections.Generic;
@@ -18,8 +19,8 @@ namespace Exiled.Events.Patches.Events.Player
     using API.Enums;
     using API.Features;
     using API.Features.Pools;
-
     using EventArgs.Player;
+    using Exiled.API.Features.Roles;
     using Exiled.Events.Attributes;
     using HarmonyLib;
     using PlayerRoles.FirstPersonControl;
@@ -28,11 +29,12 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Escape.ServerHandlePlayer(ReferenceHub)"/> for <see cref="Handlers.Player.Escaping" />.
+    /// Patches <see cref="Escape.ServerHandlePlayer(ReferenceHub)"/> for <see cref="Handlers.Player.Escaping" /> and <see cref="Handlers.Player.Escaped"/>.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaping))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaped))]
     [HarmonyPatch(typeof(Escape), nameof(Escape.ServerHandlePlayer))]
-    internal static class Escaping
+    internal static class EscapingAndEscaped
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -42,6 +44,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label returnLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
+            LocalBuilder role = generator.DeclareLocal(typeof(Role));
 
             int offset = -2;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
@@ -97,8 +100,43 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // GrantAllTickets(ev)
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(labels),
-                    new(OpCodes.Call, Method(typeof(Escaping), nameof(GrantAllTickets))),
+                    new(OpCodes.Call, Method(typeof(EscapingAndEscaped), nameof(GrantAllTickets))),
                 });
+
+            offset = 4;
+            index = newInstructions.FindIndex(x => x.Is(OpCodes.Stfld, Field(typeof(Escape.EscapeMessage), nameof(Escape.EscapeMessage.EscapeTime)))) + offset;
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // role = ev.Player.Role
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Player))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.Role))),
+                new(OpCodes.Stloc_S, role.LocalIndex),
+            });
+
+            newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
+            {
+                // ev.Player
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Player))),
+
+                // escapeScenario
+                new(OpCodes.Ldloc_1),
+
+                // role
+                new(OpCodes.Ldloc_S, role.LocalIndex),
+
+                // ev.RespawnTickets.Key
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.RespawnTickets))),
+
+                // EscapedEventArgs ev2 = new(ev.Player, ev.EscapeScenario, role, float, SpawnableTeamType);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapedEventArgs))[0]),
+
+                // Handlers.Player.OnEscaped(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnEscaped))),
+            });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
@@ -120,6 +158,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Replaces last returned <see cref="EscapeScenario.None"/> to <see cref="EscapeScenario.CustomEscape"/>.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaping))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaped))]
     [HarmonyPatch(typeof(Escape), nameof(Escape.ServerGetScenario))]
     internal static class GetScenario
     {
