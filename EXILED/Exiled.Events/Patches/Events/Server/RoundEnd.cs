@@ -20,6 +20,7 @@ namespace Exiled.Events.Patches.Events.Server
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
+    using static RoundSummary;
 
     /// <summary>
     /// Patches <see cref="RoundSummary._ProcessServerSideCode()" />.
@@ -131,6 +132,18 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Stloc_S, 4),
                 });
 
+            // Round.LastClassList = this.newList;
+            offset = 1;
+            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Stfld && x.operand == (object)Field(typeof(SumInfo_ClassList), nameof(SumInfo_ClassList.warhead_kills))) + offset;
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(PrivateType, NewList)),
+                new(OpCodes.Call, PropertySetter(typeof(Round), nameof(Round.LastClassList))),
+            });
+
+            Label skip = generator.DefineLabel();
+
             offset = 7;
             index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldstr && x.operand == (object)"auto_round_restart_time") + offset;
 
@@ -153,6 +166,7 @@ namespace Exiled.Events.Patches.Events.Server
                     // RoundEndedEventArgs evEndedRound = new(RoundSummary.LeadingTeam, RoundSummary.SumInfo_ClassList, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoundEndedEventArgs))[0]),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
 
                     // Handlers.Server.OnRoundEnded(evEndedRound);
                     new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnRoundEnded))),
@@ -160,7 +174,15 @@ namespace Exiled.Events.Patches.Events.Server
                     // timeToRestart = ev.TimeToRestart
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RoundEndedEventArgs), nameof(RoundEndedEventArgs.TimeToRestart))),
                     new(OpCodes.Stloc_S, timeToRestartIndex),
+
+                    // if (!ShowRoundSummary) goto skip;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoundEndedEventArgs), nameof(RoundEndedEventArgs.ShowRoundSummary))),
+                    new(OpCodes.Brfalse_S, skip),
                 });
+
+            offset = 1;
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Call && x.operand == (object)Method(typeof(RoundSummary), nameof(RoundSummary.RpcShowRoundSummary))) + offset;
+            newInstructions[index].labels.Add(skip);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
