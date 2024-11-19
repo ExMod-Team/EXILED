@@ -17,7 +17,7 @@ namespace Exiled.API.Features.CustomStats
     public class CustomStaminaStat : StaminaStat
     {
         /// <inheritdoc/>
-        public override float MaxValue => CustomMaxValue == default ? base.MaxValue : CustomMaxValue;
+        public override float MaxValue => CustomMaxValue == -1 ? base.MaxValue : CustomMaxValue;
 
         /// <summary>
         /// Gets or sets the maximum amount of stamina the player will have.
