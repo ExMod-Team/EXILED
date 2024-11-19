@@ -37,7 +37,7 @@ namespace Exiled.API.Features.CustomStats
         /// <param name="writer">The writer.</param>
         public override void WriteValue(NetworkWriter writer)
         {
-            if (CustomMaxValue == default)
+            if (CustomMaxValue == -1)
             {
                 base.WriteValue(writer);
                 return;
