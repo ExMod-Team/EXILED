@@ -131,13 +131,6 @@ namespace Exiled.API.Extensions
         public static bool IsScp(this RoleTypeId roleType) => roleType.GetTeam() == Team.SCPs;
 
         /// <summary>
-        /// Checks if the role is a human role.
-        /// </summary>
-        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
-        /// <returns>A boolean which is true when the role is a human role.</returns>
-        public static bool IsHuman(this RoleTypeId roleType) => !roleType.IsDead() && !roleType.IsScp();
-
-        /// <summary>
         /// Checks if the role is a dead role.
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
