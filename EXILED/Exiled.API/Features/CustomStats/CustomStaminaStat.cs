@@ -29,7 +29,7 @@ namespace Exiled.API.Features.CustomStats
         /// </summary>
         /// <param name="value">The value to clamp.</param>
         /// <returns>The clamped num.</returns>
-        public float Clamp(float value) => CustomMaxValue == default ? Mathf.Clamp01(value) : Mathf.Clamp(value, 0, MaxValue);
+        public float Clamp(float value) => CustomMaxValue == -1 ? Mathf.Clamp01(value) : Mathf.Clamp(value, 0, MaxValue);
 
         /// <summary>
         /// Overiding NW Method to sync Player percentage of Stamina.
