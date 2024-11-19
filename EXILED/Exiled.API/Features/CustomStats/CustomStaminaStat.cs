@@ -51,6 +51,6 @@ namespace Exiled.API.Features.CustomStats
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <returns>the float value sync to server.</returns>
-        public override float ReadValue(NetworkReader reader) => CustomMaxValue == default ? base.ReadValue(reader) : CurValue * CustomMaxValue;
+        public override float ReadValue(NetworkReader reader) => CustomMaxValue == -1 ? base.ReadValue(reader) : CurValue * CustomMaxValue;
     }
 }
