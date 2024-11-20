@@ -49,7 +49,7 @@ namespace Exiled.API.Features.Roles
         public Vector3 DeathPosition => Base.DeathPosition.Position;
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="Player"/> is ready to respawn or not.
+        /// Gets a value indicating whether the <see cref="Player"/> is ready to respawn.
         /// </summary>
         public bool IsReadyToRespawn => Base.ReadyToRespawn;
 

@@ -15,13 +15,13 @@ namespace Exiled.API.Interfaces
     public interface IConfig
     {
         /// <summary>
-        /// Gets or sets a value indicating whether the plugin is enabled or not.
+        /// Gets or sets a value indicating whether the plugin is enabled.
         /// </summary>
         [Description("Whether this plugin is enabled.")]
         bool IsEnabled { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether debug messages should be displayed in the console or not.
+        /// Gets or sets a value indicating whether debug messages should be displayed in the console.
         /// </summary>
         [Description("Whether debug messages should be shown in the console.")]
         bool Debug { get; set; }

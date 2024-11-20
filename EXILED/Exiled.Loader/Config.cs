@@ -30,15 +30,15 @@ namespace Exiled.Loader
         public bool Debug { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets a value indicating whether outdated Exiled versions should be loaded or not.
+        /// Gets or sets a value indicating whether outdated Exiled versions should be loaded.
         /// </summary>
-        [Description("Indicates whether outdated Exiled versions should be loaded or not.")]
+        [Description("Indicates whether outdated Exiled versions should be loaded.")]
         public bool ShouldLoadOutdatedExiled { get; set; } = false;
 
         /// <summary>
-        /// Gets or sets a value indicating whether outdated plugins should be loaded or not.
+        /// Gets or sets a value indicating whether outdated plugins should be loaded.
         /// </summary>
-        [Description("Indicates whether outdated plugins should be loaded or not.")]
+        [Description("Indicates whether outdated plugins should be loaded.")]
         public bool ShouldLoadOutdatedPlugins { get; set; } = true;
 
         /// <summary>
@@ -72,9 +72,9 @@ namespace Exiled.Loader
         public ScalarStyle MultiLineScalarStyle { get; set; } = ScalarStyle.Literal;
 
         /// <summary>
-        /// Gets or sets a value indicating whether testing releases have to be downloaded or not.
+        /// Gets or sets a value indicating whether testing releases have to be downloaded.
         /// </summary>
-        [Description("Indicates whether testing releases have to be downloaded or not.")]
+        [Description("Indicates whether testing releases have to be downloaded.")]
         public bool ShouldDownloadTestingReleases { get; set; } = false;
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace Exiled.Events.EventArgs.Cassie
         /// <param name="makeNoise">
         /// <inheritdoc cref="MakeNoise" />
         /// </param>
-        /// <param name="isAllowed">Indicates whether the event can be executed or not.</param>
+        /// <param name="isAllowed">Indicates whether the event can be executed.</param>
         public SendingCassieMessageEventArgs(string words, bool makeHold, bool makeNoise, bool isAllowed = true)
         {
             Words = words;

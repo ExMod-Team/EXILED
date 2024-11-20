@@ -82,7 +82,7 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the radio is enabled or not.
+        /// Gets or sets a value indicating whether the radio is enabled.
         /// </summary>
         public bool IsEnabled
         {

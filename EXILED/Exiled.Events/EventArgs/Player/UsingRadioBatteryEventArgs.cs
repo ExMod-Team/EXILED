@@ -56,7 +56,7 @@ namespace Exiled.Events.EventArgs.Player
         public float Drain { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the radio battery charge can be changed or not.
+        /// Gets or sets a value indicating whether the radio battery charge can be changed.
         /// </summary>
         public bool IsAllowed { get; set; }
 

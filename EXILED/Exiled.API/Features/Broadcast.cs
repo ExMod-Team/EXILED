@@ -56,9 +56,9 @@ namespace Exiled.API.Features
         public global::Broadcast.BroadcastFlags Type { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the broadcast should be shown or not.
+        /// Gets or sets a value indicating whether the broadcast should be shown.
         /// </summary>
-        [Description("Indicates whether the broadcast should be shown or not")]
+        [Description("Indicates whether the broadcast should be shown")]
         public bool Show { get; set; }
 
         /// <summary>

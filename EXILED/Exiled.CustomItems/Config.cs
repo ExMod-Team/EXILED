@@ -19,7 +19,7 @@ namespace Exiled.CustomItems
     public class Config : IConfig
     {
         /// <inheritdoc/>
-        [Description("Indicates whether this plugin is enabled or not.")]
+        [Description("Indicates whether this plugin is enabled.")]
         public bool IsEnabled { get; set; } = true;
 
         /// <inheritdoc/>

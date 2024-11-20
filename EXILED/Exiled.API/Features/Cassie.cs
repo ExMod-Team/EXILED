@@ -49,7 +49,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="message">The message to be reproduced.</param>
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
-        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises or not during the message.</param>
+        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
         public static void Message(string message, bool isHeld = false, bool isNoisy = true, bool isSubtitles = false) =>
             RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles);
@@ -60,7 +60,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be reproduced.</param>
         /// <param name="translation">The translation should be show in the subtitles.</param>
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
-        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises or not during the message.</param>
+        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
         public static void MessageTranslated(string message, string translation, bool isHeld = false, bool isNoisy = true, bool isSubtitles = true)
         {
@@ -89,7 +89,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be reproduced.</param>
         /// <param name="delay">The seconds that have to pass before reproducing the message.</param>
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
-        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises or not during the message.</param>
+        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
         public static void DelayedMessage(string message, float delay, bool isHeld = false, bool isNoisy = true, bool isSubtitles = false) =>
             Timing.CallDelayed(delay, () => RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles));

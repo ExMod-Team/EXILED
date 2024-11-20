@@ -49,7 +49,7 @@ namespace Exiled.Events.Patches.Events.Scp244
 
             newInstructions.RemoveRange(index, 3);
 
-            // Insert event handler at start of function to determine whether to allow function to run or not.
+            // Insert event handler at start of function to determine whether to allow function to run.
             newInstructions.InsertRange(
                 index,
                 new[]

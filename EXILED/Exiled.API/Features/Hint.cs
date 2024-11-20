@@ -48,9 +48,9 @@ namespace Exiled.API.Features
         public float Duration { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the hint should be shown or not.
+        /// Gets or sets a value indicating whether the hint should be shown.
         /// </summary>
-        [Description("Indicates whether the hint should be shown or not")]
+        [Description("Indicates whether the hint should be shown")]
         public bool Show { get; set; }
 
         /// <summary>

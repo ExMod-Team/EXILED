@@ -21,7 +21,7 @@ namespace Exiled.Events.EventArgs.Item
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="swingItem">The item being swung.</param>
-        /// <param name="isAllowed">Whether the item can be swung or not.</param>
+        /// <param name="isAllowed">Whether the item can be swung.</param>
         public SwingingEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase swingItem, bool isAllowed = true)
         {
             Player = Player.Get(player);

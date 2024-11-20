@@ -193,7 +193,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="Player"/> is crouching or not.
+        /// Gets a value indicating whether the <see cref="Player"/> is crouching.
         /// </summary>
         public bool IsCrouching => FirstPersonController.FpcModule.StateProcessor.CrouchPercent > 0;
 

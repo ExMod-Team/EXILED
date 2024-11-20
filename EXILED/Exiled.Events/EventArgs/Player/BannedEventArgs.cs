@@ -54,7 +54,7 @@ namespace Exiled.Events.EventArgs.Player
         public BanHandler.BanType Type { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the ban is forced or not.
+        /// Gets a value indicating whether the ban is forced.
         /// </summary>
         public bool IsForced { get; }
     }

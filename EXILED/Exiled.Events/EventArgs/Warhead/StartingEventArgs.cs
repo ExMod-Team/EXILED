@@ -19,7 +19,7 @@ namespace Exiled.Events.EventArgs.Warhead
         /// </summary>
         /// <param name="player">The player who's going to start the warhead.</param>
         /// <param name="isAuto">Indicating whether the nuke was set off automatically.</param>
-        /// <param name="isAllowed">Indicating whether the event can be executed or not.</param>
+        /// <param name="isAllowed">Indicating whether the event can be executed.</param>
         public StartingEventArgs(Player player, bool isAuto, bool isAllowed = true)
             : base(player, isAllowed)
         {

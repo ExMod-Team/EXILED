@@ -20,7 +20,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="text">The badge text.</param>
         /// <param name="color">The badge color.</param>
-        /// <param name="isGlobal">Indicates whether the badge is global or not.</param>
+        /// <param name="isGlobal">Indicates whether the badge is global.</param>
         public Badge(string text, string color, bool isGlobal = false)
         {
             Text = text;
@@ -39,7 +39,7 @@ namespace Exiled.API.Features
         public string Color { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the badge is global or not.
+        /// Gets a value indicating whether the badge is global.
         /// </summary>
         public bool IsGlobal { get; }
 

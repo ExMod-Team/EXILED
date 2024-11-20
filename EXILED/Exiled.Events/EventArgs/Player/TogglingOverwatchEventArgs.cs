@@ -43,12 +43,12 @@ namespace Exiled.Events.EventArgs.Player
         public API.Features.Player Player { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether overwatch will be enabled or not.
+        /// Gets or sets a value indicating whether overwatch will be enabled.
         /// </summary>
         public bool IsEnabled { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the event is allowed or not.
+        /// Gets or sets a value indicating whether the event is allowed.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
     }

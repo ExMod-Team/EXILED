@@ -82,9 +82,9 @@ namespace Exiled.API.Features
         public bool AddDurationIfActive { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the effect should be enabled or not.
+        /// Gets or sets a value indicating whether the effect should be enabled.
         /// </summary>
-        [Description("Indicates whether the effect should be enabled or not")]
+        [Description("Indicates whether the effect should be enabled")]
         public bool IsEnabled { get; set; }
 
         /// <summary>

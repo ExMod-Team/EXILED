@@ -42,22 +42,22 @@ namespace Exiled.API.Features
         public static DateTime StartedTime => DateTime.Now - ElapsedTime;
 
         /// <summary>
-        /// Gets a value indicating whether the round is started or not.
+        /// Gets a value indicating whether the round is started.
         /// </summary>
         public static bool IsStarted => ReferenceHub.LocalHub?.characterClassManager.RoundStarted ?? false;
 
         /// <summary>
-        /// Gets a value indicating whether the round in progress or not.
+        /// Gets a value indicating whether the round in progress.
         /// </summary>
         public static bool InProgress => ReferenceHub.LocalHub != null && RoundSummary.RoundInProgress();
 
         /// <summary>
-        /// Gets a value indicating whether the round is ended or not.
+        /// Gets a value indicating whether the round is ended.
         /// </summary>
         public static bool IsEnded => RoundSummary.singleton._roundEnded;
 
         /// <summary>
-        /// Gets a value indicating whether the round is lobby or not.
+        /// Gets a value indicating whether the round is lobby.
         /// </summary>
         public static bool IsLobby => !(IsEnded || IsStarted);
 
@@ -77,7 +77,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the round is locked or not.
+        /// Gets or sets a value indicating whether the round is locked.
         /// </summary>
         public static bool IsLocked
         {
@@ -86,7 +86,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the lobby is locked or not.
+        /// Gets or sets a value indicating whether the lobby is locked.
         /// </summary>
         public static bool IsLobbyLocked
         {

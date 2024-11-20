@@ -62,7 +62,7 @@ namespace Exiled.Events.EventArgs.Player
         public HidState NewState { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the MicroHID state can be changed or not.
+        /// Gets or sets a value indicating whether the MicroHID state can be changed.
         /// </summary>
         public bool IsAllowed { get; set; }
 

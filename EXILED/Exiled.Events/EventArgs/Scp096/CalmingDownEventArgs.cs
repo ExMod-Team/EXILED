@@ -39,7 +39,7 @@ namespace Exiled.Events.EventArgs.Scp096
         public Player Player { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether SCP-096 enrage time left should be cleared or not.
+        /// Gets or sets a value indicating whether SCP-096 enrage time left should be cleared.
         /// </summary>
         public bool ShouldClearEnragedTimeLeft { get; set; }
 

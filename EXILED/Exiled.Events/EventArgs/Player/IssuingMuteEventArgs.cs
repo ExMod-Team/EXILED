@@ -41,7 +41,7 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the player is being intercom muted or not.
+        /// Gets or sets a value indicating whether the player is being intercom muted.
         /// </summary>
         public bool IsIntercom { get; set; }
 

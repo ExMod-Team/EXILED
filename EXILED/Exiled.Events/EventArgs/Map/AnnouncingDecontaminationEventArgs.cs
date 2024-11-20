@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Map
         public PhaseFunction PhaseFunction { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the announcement is going to be global or not.
+        /// Gets a value indicating whether the announcement is going to be global.
         /// </summary>
         public bool IsGlobal { get; }
     }

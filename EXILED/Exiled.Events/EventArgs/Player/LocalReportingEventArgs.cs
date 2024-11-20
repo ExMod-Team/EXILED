@@ -50,7 +50,7 @@ namespace Exiled.Events.EventArgs.Player // TODO: Wrong namespace should be Serv
         public string Reason { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the report can be processed or not.
+        /// Gets or sets a value indicating whether the report can be processed.
         /// </summary>
         public bool IsAllowed { get; set; }
 

@@ -17,7 +17,7 @@ namespace Exiled.Permissions.Features
     public class Group
     {
         /// <summary>
-        /// Gets or sets a value indicating whether group is the default one or not.
+        /// Gets or sets a value indicating whether group is the default.
         /// </summary>
         [YamlMember(Alias = "default")]
         public bool IsDefault { get; set; }

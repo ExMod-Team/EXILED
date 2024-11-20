@@ -90,7 +90,7 @@ namespace Exiled.Loader
         /// Saves default distribution translations.
         /// </summary>
         /// <param name="translations">The translations to be saved, already serialized in yaml format.</param>
-        /// <returns>Returns a value indicating whether the translations have been saved successfully or not.</returns>
+        /// <returns>Returns a value indicating whether the translations have been saved successfully.</returns>
         public static bool SaveDefaultTranslation(string translations)
         {
             try
@@ -112,7 +112,7 @@ namespace Exiled.Loader
         /// </summary>
         /// <param name="pluginPrefix">The prefix of the plugin which its translation is going to be saved.</param>
         /// <param name="translations">The translations to be saved, already serialized in yaml format.</param>
-        /// <returns>Returns a value indicating whether the translations have been saved successfully or not.</returns>
+        /// <returns>Returns a value indicating whether the translations have been saved successfully.</returns>
         public static bool SaveSeparatedTranslation(this string pluginPrefix, string translations)
         {
             string translationsPath = Paths.GetTranslationPath(pluginPrefix);
@@ -136,7 +136,7 @@ namespace Exiled.Loader
         /// Saves plugin translations.
         /// </summary>
         /// <param name="translations">The translations to be saved.</param>
-        /// <returns>Returns a value indicating whether the translations have been saved successfully or not.</returns>
+        /// <returns>Returns a value indicating whether the translations have been saved successfully.</returns>
         public static bool Save(SortedDictionary<string, ITranslation> translations)
         {
             try
@@ -184,7 +184,7 @@ namespace Exiled.Loader
         /// <summary>
         /// Clears the translations.
         /// </summary>
-        /// <returns>Returns a value indicating whether translations have been cleared successfully or not.</returns>
+        /// <returns>Returns a value indicating whether translations have been cleared successfully.</returns>
         public static bool Clear()
         {
             try

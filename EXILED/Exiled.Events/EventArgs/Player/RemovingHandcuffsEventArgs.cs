@@ -22,7 +22,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="cuffer">The cuffer player.</param>
         /// <param name="target">The target player to be uncuffed.</param>
         /// <param name="uncuffReason">The reason of removing handcuffs.</param>
-        /// <param name="isAllowed">Indicates whether the event can be executed or not.</param>
+        /// <param name="isAllowed">Indicates whether the event can be executed.</param>
         public RemovingHandcuffsEventArgs(Player cuffer, Player target, UncuffReason uncuffReason, bool isAllowed = true)
         {
             Player = cuffer;

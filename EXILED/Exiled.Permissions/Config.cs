@@ -27,9 +27,9 @@ namespace Exiled.Permissions
         }
 
         /// <summary>
-        /// Gets a value indicating whether the debug should be shown or not.
+        /// Gets a value indicating whether the debug should be shown.
         /// </summary>
-        [Description("Indicates whether the debug should be shown or not")]
+        [Description("Indicates whether the debug should be shown")]
         public bool ShouldDebugBeShown { get; private set; }
 
         /// <summary>

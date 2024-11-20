@@ -131,7 +131,7 @@ namespace Exiled.CustomRoles.API.Features
         public virtual float SpawnChance { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the spawn system is ignored for this role or not.
+        /// Gets or sets a value indicating whether the spawn system is ignored for this role.
         /// </summary>
         public virtual bool IgnoreSpawnSystem { get; set; }
 

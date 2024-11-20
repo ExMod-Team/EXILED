@@ -21,7 +21,7 @@ namespace Exiled.Events.EventArgs.Player
         ///    The player who's being unmuted.
         /// </param>
         /// <param name="isIntercom">
-        ///    Indicates whether the player is being intercom unmuted or not.
+        ///    Indicates whether the player is being intercom unmuted.
         /// </param>
         /// <param name="isAllowed">
         ///    Indicates whether the player can be unmuted.

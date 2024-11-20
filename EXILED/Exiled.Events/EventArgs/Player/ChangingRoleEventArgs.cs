@@ -95,7 +95,7 @@ namespace Exiled.Events.EventArgs.Player
         public Dictionary<ItemType, ushort> Ammo { get; } = DictionaryPool<ItemType, ushort>.Pool.Get();
 
         /// <summary>
-        /// Gets or sets a value indicating whether the inventory will be preserved or not.
+        /// Gets or sets a value indicating whether the inventory will be preserved.
         /// </summary>
         public bool ShouldPreserveInventory
         {
