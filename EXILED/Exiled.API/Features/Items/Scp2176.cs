@@ -48,9 +48,14 @@ namespace Exiled.API.Features.Items
         public new Scp2176Projectile Projectile { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether SCP-2176's next collision will make the dropped sound effect.
+        /// </summary>
+        public bool DropSound { get; set; }
+
+        /// <summary>
         /// Gets or sets how long the fuse will last.
         /// </summary>
-        public float FuseTime
+        public new float FuseTime
         {
             get => Projectile.FuseTime;
             set => Projectile.FuseTime = value;

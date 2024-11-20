@@ -13,6 +13,7 @@ namespace Exiled.API.Features.Pickups
 
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pickups.Projectiles;
     using Exiled.API.Interfaces;
 
@@ -298,7 +299,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets a value indicating whether this pickup is spawned.
         /// </summary>
-        public bool IsSpawned => NetworkServer.spawned.ContainsValue(Base.netIdentity);
+        public bool IsSpawned => Base && NetworkServer.spawned.ContainsValue(Base.netIdentity);
 
         /// <summary>
         /// Gets an existing <see cref="Pickup"/> or creates a new instance of one.
@@ -589,7 +590,7 @@ namespace Exiled.API.Features.Pickups
         /// Spawns pickup on a server.
         /// </summary>
         /// <seealso cref="UnSpawn"/>
-        public void Spawn()
+        public virtual void Spawn()
         {
             // condition for projectiles
             if (!GameObject.activeSelf)
@@ -656,6 +657,20 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         /// <returns>A string containing Pickup-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Position}| -{IsLocked}- ={InUse}=";
+
+        /// <summary>
+        /// Creates the <see cref="Item"/> that based on this <see cref="Pickup"/>.
+        /// </summary>
+        /// <returns>The created <see cref="Pickup"/>.</returns>
+        public virtual Item CreateItem()
+        {
+            Item item = Item.Create(Type);
+            item.Serial = Serial;
+            item.Base.OnAdded(Base);
+            item.ReadPickupInfo(this);
+
+            return item;
+        }
 
         /// <summary>
         /// Helper method for saving data between items and pickups.

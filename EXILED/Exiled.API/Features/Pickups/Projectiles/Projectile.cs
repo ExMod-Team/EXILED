@@ -11,11 +11,14 @@ namespace Exiled.API.Features.Pickups.Projectiles
 
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Items;
     using Exiled.API.Interfaces;
+
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
+
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -154,7 +157,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <summary>
         /// Activates the current <see cref="Projectile"/>.
         /// </summary>
-        public void Activate() => Base.ServerActivate();
+        public virtual void Activate() => Base.ServerActivate();
 
         /// <summary>
         /// Spawns a <see cref="Projectile"/>.
@@ -182,5 +185,14 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         /// <returns>A string containing ProjectilePickup-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Position}| -{IsLocked}- ={InUse}=";
+
+        /// <summary>
+        /// Helper method for saving data between <see cref="Projectile"/>'s and <see cref="Throwable"/>'s.
+        /// </summary>
+        /// <param name="throwable"><see cref="Throwable"/>-related data to give to the <see cref="Projectile"/>.</param>
+        internal virtual void ReadThrowableItemInfo(Throwable throwable)
+        {
+            Scale = throwable.Scale;
+        }
     }
 }

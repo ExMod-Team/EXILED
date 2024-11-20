@@ -29,6 +29,9 @@ namespace Exiled.Events.Patches.Events.Player
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            LocalBuilder player = generator.DeclareLocal(typeof(Player));
+            LocalBuilder oldName = generator.DeclareLocal(typeof(string));
             Label continueLabel = generator.DefineLabel();
 
             const int offset = 1;
@@ -40,11 +43,19 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(typeof(NicknameSync), nameof(NicknameSync._hub))),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, player.LocalIndex),
+
+                // player.CustomName
+                new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.CustomName))),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, oldName.LocalIndex),
 
                 // value;
                 new(OpCodes.Ldarg_1),
 
-                // new ChangingNicknameEventArgs(Player.Get(this._hub, value)
+                // new ChangingNicknameEventArgs(player, player.CustomName, value)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingNicknameEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
@@ -60,6 +71,21 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ret),
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(ChangingNicknameEventArgs), nameof(ChangingNicknameEventArgs.NewName))).WithLabels(continueLabel),
                 new(OpCodes.Starg_S, 1),
+            });
+
+            newInstructions.InsertRange(newInstructions.Count - 1, new[]
+            {
+                // player
+                new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+
+                // oldName
+                new CodeInstruction(OpCodes.Ldloc_S, oldName.LocalIndex),
+
+                // new ChangingNicknameEventArgs(player, oldName)
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangedNicknameEventArgs))[0]),
+
+                // Handlers.Player.OnChangedNickname(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnChangedNickname))),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)

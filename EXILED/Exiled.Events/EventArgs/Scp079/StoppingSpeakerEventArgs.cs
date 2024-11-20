@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Scp079
 {
+    using System;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
@@ -14,6 +16,7 @@ namespace Exiled.Events.EventArgs.Scp079
     /// <summary>
     /// Contains all information before SCP-079 finishes using a speaker.
     /// </summary>
+    [Obsolete("Not used will be deleted")]
     public class StoppingSpeakerEventArgs : IScp079Event, IDeniableEvent
     {
         /// <summary>
@@ -28,6 +31,7 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
+        [Obsolete("Not used will be deleted")]
         public StoppingSpeakerEventArgs(Player player, Room room, bool isAllowed = true)
         {
             Player = player;

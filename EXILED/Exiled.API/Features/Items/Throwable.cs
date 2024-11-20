@@ -63,6 +63,11 @@ namespace Exiled.API.Features.Items
         public Projectile Projectile { get; }
 
         /// <summary>
+        /// Gets or sets how long the fuse will last.
+        /// </summary>
+        public float FuseTime { get; set; }
+
+        /// <summary>
         /// Gets or sets the amount of time it takes to pull the pin.
         /// </summary>
         public float PinPullTime

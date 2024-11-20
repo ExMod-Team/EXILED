@@ -63,7 +63,10 @@ namespace Exiled.API.Extensions
                 throw new InvalidTypeException("Target and source type mismatch!");
 
             foreach (PropertyInfo sourceProperty in type.GetProperties())
-                type.GetProperty(sourceProperty.Name)?.SetValue(target, sourceProperty.GetValue(source, null), null);
+            {
+                if (sourceProperty.SetMethod != null && sourceProperty.GetMethod != null)
+                    sourceProperty.SetValue(target, sourceProperty.GetValue(source, null), null);
+            }
         }
     }
 }

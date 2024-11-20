@@ -7,10 +7,15 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System.Collections.Generic;
+
+    using Mirror;
+
     using PlayerRoles;
 
     using Respawning;
     using Respawning.NamingRules;
+    using UnityEngine;
 
     using HumanGameRole = PlayerRoles.HumanRole;
 
@@ -71,5 +76,17 @@ namespace Exiled.API.Features.Roles
         /// <param name="hitbox">The <see cref="HitboxType"/>.</param>
         /// <returns>The armor efficacy.</returns>
         public int GetArmorEfficacy(HitboxType hitbox) => Base.GetArmorEfficacy(hitbox);
+
+        /// <inheritdoc/>
+        internal override void SendAppearanceSpawnMessage(NetworkWriter writer, PlayerRoleBase basicRole)
+        {
+            if (UsesUnitNames)
+            {
+                byte defaultUnitId = (byte)Mathf.Clamp(UnitNameMessageHandler.ReceivedNames.TryGetValue(Base.AssignedSpawnableTeam, out List<string> list) ? (list.Count - 1) : 0, byte.MinValue, byte.MaxValue);
+                writer.WriteByte(basicRole is HumanGameRole humanRole && humanRole.UsesUnitNames ? humanRole.UnitNameId : defaultUnitId);
+            }
+
+            base.SendAppearanceSpawnMessage(writer, basicRole);
+        }
     }
 }

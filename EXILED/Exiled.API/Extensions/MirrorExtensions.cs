@@ -10,12 +10,15 @@ namespace Exiled.API.Extensions
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Text;
 
     using Exiled.API.Enums;
+    using Exiled.API.Features.Roles;
+
     using Features;
     using Features.Pools;
 
@@ -239,9 +242,43 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
+        public static void ChangeAppearance(this Player player, RoleTypeId type) => ChangeAppearance(player, type, Player.List.Where(x => x != player));
+
+        /// <summary>
+        /// Change <see cref="Player"/> character model for appearance.
+        /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
+        /// </summary>
+        /// <param name="player">Player to change.</param>
+        /// <param name="type">Model type.</param>
         /// <param name="skipJump">Whether or not to skip the little jump that works around an invisibility issue.</param>
         /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
         public static void ChangeAppearance(this Player player, RoleTypeId type, bool skipJump = false, byte unitId = 0) => ChangeAppearance(player, type, Player.List.Where(x => x != player), skipJump, unitId);
+
+        /// <summary>
+        /// Change <see cref="Player"/> character model for appearance.
+        /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
+        /// </summary>
+        /// <param name="player">Player to change.</param>
+        /// <param name="type">Model type.</param>
+        /// <param name="playersToAffect">The players who should see the changed appearance.</param>
+        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect)
+        {
+            if (!player.IsConnected)
+                return;
+
+            if (!player.Role.CheckAppearanceCompatibility(type))
+            {
+                Log.Error($"Prevent Seld-Desync of {player.Nickname} ({player.Role.Type}) with {type}");
+                return;
+            }
+
+            foreach (Player target in playersToAffect)
+            {
+                player.Role.TrySetIndividualAppearance(target, type, false);
+            }
+
+            player.Role.UpdateAppearance();
+        }
 
         /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
@@ -264,9 +301,9 @@ namespace Exiled.API.Extensions
             writer.WriteUInt(player.NetId);
             writer.WriteRoleType(type);
 
-            if (roleBase is HumanRole humanRole && humanRole.UsesUnitNames)
+            if (roleBase is PlayerRoles.HumanRole humanRole && humanRole.UsesUnitNames)
             {
-                if (player.Role.Base is not HumanRole)
+                if (player.Role.Base is not PlayerRoles.HumanRole)
                     isRisky = true;
                 writer.WriteByte(unitId);
             }
