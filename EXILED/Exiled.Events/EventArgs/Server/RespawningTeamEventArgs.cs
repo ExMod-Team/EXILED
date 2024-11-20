@@ -103,7 +103,7 @@ namespace Exiled.Events.EventArgs.Server
             => RespawnManager.SpawnableTeams.TryGetValue(NextKnownTeam, out SpawnableTeamHandlerBase @base) ? @base : null;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the spawn can occur.
+        /// Gets or sets a value indicating whether the spawn can occur.
         /// </summary>
         public bool IsAllowed { get; set; }
 

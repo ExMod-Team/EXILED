@@ -60,7 +60,7 @@ namespace Exiled.API.Features.Items
         public bool Holsterable => Base.AllowHolster;
 
         /// <summary>
-        /// Gets a value indicating whether or not this is a worn item.
+        /// Gets a value indicating whether this is a worn item.
         /// </summary>
         public bool IsWorn => Base.IsWorn;
 
@@ -74,7 +74,7 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not excess ammo should be removed when the armor is dropped.
+        /// Gets or sets a value indicating whether excess ammo should be removed when the armor is dropped.
         /// </summary>
         public bool RemoveExcessOnDrop
         {

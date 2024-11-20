@@ -101,7 +101,7 @@ namespace Exiled.API.Features.Doors
         public IReadOnlyCollection<Room> Rooms { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the door is fully closed.
+        /// Gets a value indicating whether the door is fully closed.
         /// </summary>
         public virtual bool IsFullyClosed => ExactState is 0;
 
@@ -111,7 +111,7 @@ namespace Exiled.API.Features.Doors
         public virtual bool IsFullyOpen => ExactState is 1;
 
         /// <summary>
-        /// Gets a value indicating whether or not the door is currently moving.
+        /// Gets a value indicating whether the door is currently moving.
         /// </summary>
         public virtual bool IsMoving => !(IsFullyOpen || IsFullyClosed);
 
@@ -135,32 +135,32 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not this door is a gate.
+        /// Gets a value indicating whether this door is a gate.
         /// </summary>
         public bool IsGate => this is Gate;
 
         /// <summary>
-        /// Gets a value indicating whether or not this door is a checkpoint door.
+        /// Gets a value indicating whether this door is a checkpoint door.
         /// </summary>
         public bool IsCheckpoint => this is Checkpoint;
 
         /// <summary>
-        /// Gets a value indicating whether or not this door is an elevator door.
+        /// Gets a value indicating whether this door is an elevator door.
         /// </summary>
         public bool IsElevator => this is Elevator;
 
         /// <summary>
-        /// Gets a value indicating whether or not this door can be damaged.
+        /// Gets a value indicating whether this door can be damaged.
         /// </summary>
         public bool IsDamageable => this is Interfaces.IDamageableDoor;
 
         /// <summary>
-        /// Gets a value indicating whether or not this door is non-interactable.
+        /// Gets a value indicating whether this door is non-interactable.
         /// </summary>
         public bool IsNonInteractable => this is Interfaces.INonInteractableDoor;
 
         /// <summary>
-        /// Gets a value indicating whether or not this door is subdoor belonging to a checkpoint.
+        /// Gets a value indicating whether this door is subdoor belonging to a checkpoint.
         /// </summary>
         public bool IsPartOfCheckpoint => ParentCheckpointDoor is not null;
 
@@ -170,7 +170,7 @@ namespace Exiled.API.Features.Doors
         public Checkpoint ParentCheckpointDoor { get; internal set; }
 
         /// <summary>
-        /// Gets a value indicating whether or not this door requires a keycard to open.
+        /// Gets a value indicating whether this door requires a keycard to open.
         /// </summary>
         /// <remarks>
         /// This value is <see langword="false"/> if <see cref="KeycardPermissions"/> is equal to <see cref="KeycardPermissions.None"/>.
@@ -204,7 +204,7 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-106 can walk through the door.
+        /// Gets or sets a value indicating whether SCP-106 can walk through the door.
         /// </summary>
         public bool AllowsScp106
         {
@@ -217,7 +217,7 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not the door is locked.
+        /// Gets a value indicating whether the door is locked.
         /// </summary>
         public bool IsLocked => DoorLockType > 0;
 

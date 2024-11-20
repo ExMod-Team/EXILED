@@ -74,12 +74,12 @@ namespace Exiled.API.Features
         public static string Version => GameCore.Version.VersionString;
 
         /// <summary>
-        /// Gets a value indicating whether or not streaming of this version is allowed.
+        /// Gets a value indicating whether streaming of this version is allowed.
         /// </summary>
         public static bool StreamingAllowed => GameCore.Version.StreamingAllowed;
 
         /// <summary>
-        /// Gets a value indicating whether or not this server is on a beta version of SCP:SL.
+        /// Gets a value indicating whether this server is on a beta version of SCP:SL.
         /// </summary>
         public static bool IsBeta => GameCore.Version.PublicBeta || GameCore.Version.PrivateBeta;
 
@@ -99,7 +99,7 @@ namespace Exiled.API.Features
         public static string IpAddress => ServerConsole.Ip;
 
         /// <summary>
-        /// Gets a value indicating whether or not this server is a dedicated server.
+        /// Gets a value indicating whether this server is a dedicated server.
         /// </summary>
         public static bool IsDedicated => ServerStatic.IsDedicated;
 
@@ -128,7 +128,7 @@ namespace Exiled.API.Features
         public static double Frametime => Math.Round(1f / Time.deltaTime);
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not friendly fire is enabled.
+        /// Gets or sets a value indicating whether friendly fire is enabled.
         /// </summary>
         /// <seealso cref="Player.IsFriendlyFireEnabled"/>
         public static bool FriendlyFire
@@ -159,7 +159,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not late join is enabled.
+        /// Gets a value indicating whether late join is enabled.
         /// </summary>
         public static bool LateJoinEnabled => LateJoinTime > 0;
 
@@ -181,7 +181,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this server has the whitelist enabled.
+        /// Gets or sets a value indicating whether this server has the whitelist enabled.
         /// </summary>
         public static bool IsWhitelisted
         {
@@ -195,12 +195,12 @@ namespace Exiled.API.Features
         public static HashSet<string> WhitelistedPlayers => WhiteList.Users;
 
         /// <summary>
-        /// Gets a value indicating whether or not this server is verified.
+        /// Gets a value indicating whether this server is verified.
         /// </summary>
         public static bool IsVerified => CustomNetworkManager.IsVerified;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not idle mode is enabled.
+        /// Gets or sets a value indicating whether idle mode is enabled.
         /// </summary>
         public static bool IsIdleModeEnabled
         {

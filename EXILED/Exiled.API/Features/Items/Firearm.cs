@@ -176,7 +176,7 @@ namespace Exiled.API.Features.Items
         public bool CanSeeThroughDark => FlashlightEnabled || NightVisionEnabled;
 
         /// <summary>
-        /// Gets a value indicating whether or not the firearm is automatic.
+        /// Gets a value indicating whether the firearm is automatic.
         /// </summary>
         public bool IsAutomatic => Base is AutomaticFirearm;
 
@@ -419,7 +419,7 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <param name="identifier">The <see cref="AttachmentIdentifier"/> to check.</param>
         /// <param name="firearmAttachment">The corresponding <see cref="Attachment"/>.</param>
-        /// <returns>A value indicating whether or not the firearm has the specified <see cref="Attachment"/>.</returns>
+        /// <returns>A value indicating whether the firearm has the specified <see cref="Attachment"/>.</returns>
         public bool TryGetAttachment(AttachmentIdentifier identifier, out Attachment firearmAttachment)
         {
             firearmAttachment = default;
@@ -437,7 +437,7 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <param name="attachmentName">The <see cref="AttachmentName"/> to check.</param>
         /// <param name="firearmAttachment">The corresponding <see cref="Attachment"/>.</param>
-        /// <returns>A value indicating whether or not the firearm has the specified <see cref="Attachment"/>.</returns>
+        /// <returns>A value indicating whether the firearm has the specified <see cref="Attachment"/>.</returns>
         public bool TryGetAttachment(AttachmentName attachmentName, out Attachment firearmAttachment)
         {
             firearmAttachment = default;

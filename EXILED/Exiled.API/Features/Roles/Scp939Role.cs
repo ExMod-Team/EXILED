@@ -158,12 +158,12 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-939 is currently using its focus ability.
+        /// Gets a value indicating whether SCP-939 is currently using its focus ability.
         /// </summary>
         public bool IsFocused => FocusAbility.TargetState;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-939 is currently lunging.
+        /// Gets a value indicating whether SCP-939 is currently lunging.
         /// </summary>
         public bool IsLunging => LungeAbility.State is not Scp939LungeState.None;
 
@@ -217,7 +217,7 @@ namespace Exiled.API.Features.Roles
         public int SavedVoices => MimicryRecorder.SavedVoices.Count;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-939 has a placed mimic point.
+        /// Gets a value indicating whether SCP-939 has a placed mimic point.
         /// </summary>
         public bool MimicryPointActive => MimicPointController.Active;
 

@@ -41,12 +41,12 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can interact with the door.
+        /// Gets or sets a value indicating whether the player can interact with the door.
         /// </summary>
         public bool CanInteract { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can access the door.
+        /// Gets or sets a value indicating whether the player can access the door.
         /// </summary>
         public bool IsAllowed { get; set; }
 

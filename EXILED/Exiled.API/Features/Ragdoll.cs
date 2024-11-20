@@ -67,7 +67,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not the clean up event can be executed.
+        /// Gets a value indicating whether the clean-up event can be executed.
         /// </summary>
         public bool AllowCleanUp => NetworkInfo.ExistenceTime < FreezeTime;
 
@@ -115,12 +115,12 @@ namespace Exiled.API.Features
         public DeathAnimation[] DeathAnimations => Base.AllDeathAnimations;
 
         /// <summary>
-        /// Gets a value indicating whether or not the ragdoll has been already cleaned up.
+        /// Gets a value indicating whether the ragdoll has been already cleaned up.
         /// </summary>
         public bool IsFrozen => Base._frozen;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the ragdoll can be cleaned up.
+        /// Gets or sets a value indicating whether the ragdoll can be cleaned up.
         /// </summary>
         public bool CanBeCleanedUp
         {
@@ -185,13 +185,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not the ragdoll has expired and SCP-049 is unable to revive it if was not being targets.
+        /// Gets a value indicating whether the ragdoll has expired and SCP-049 is unable to revive it if was not being targets.
         /// <seealso cref="Roles.Scp049Role.CanResurrect(Ragdoll)"/>
         /// </summary>
         public bool IsExpired => NetworkInfo.ExistenceTime > PlayerRoles.PlayableScps.Scp049.Scp049ResurrectAbility.HumanCorpseDuration;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this ragdoll has been consumed by an SCP-049-2.
+        /// Gets or sets a value indicating whether this ragdoll has been consumed by an SCP-049-2.
         /// </summary>
         public bool IsConsumed
         {

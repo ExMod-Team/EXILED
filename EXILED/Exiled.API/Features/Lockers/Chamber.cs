@@ -142,7 +142,7 @@ namespace Exiled.API.Features.Lockers
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not items should be spawned as soon as they one chamber is opened.
+        /// Gets or sets a value indicating whether items should be spawned as soon as they one chamber is opened.
         /// </summary>
         public bool InitiallySpawn
         {

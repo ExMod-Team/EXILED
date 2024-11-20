@@ -35,7 +35,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public bool IsAllowed { get; set; } = true;
 
         /// <summary>
-        /// Gets a value indicating whether or not the recontained has been made automatically or by triggering the proccess.
+        /// Gets a value indicating whether the recontained has been made automatically or by triggering the proccess.
         /// </summary>
         public bool IsAutomatic { get; }
     }

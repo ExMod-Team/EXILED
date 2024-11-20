@@ -26,7 +26,7 @@ namespace Exiled.Events.EventArgs.Scp173
         /// The <see cref="Exiled.API.Features.Player"/> instance of the SCP-173.
         /// </param>
         /// <param name="isAllowed">
-        /// Whether or not the target will be counted as observing the SCP-173.
+        /// Whether the target will be counted as observing the SCP-173.
         /// </param>
         public BeingObservedEventArgs(API.Features.Player target, API.Features.Player scp173, bool isAllowed = true)
         {
@@ -50,7 +50,7 @@ namespace Exiled.Events.EventArgs.Scp173
         public Scp173Role Scp173 { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can be counted as observing.
+        /// Gets or sets a value indicating whether the player can be counted as observing.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

@@ -107,7 +107,7 @@ namespace Exiled.Events
         /// <summary>
         /// Gets or sets a value indicating whether to log RA commands.
         /// </summary>
-        [Description("Whether or not to log RA commands.")]
+        [Description("Whether to log RA commands.")]
         public bool LogRaCommands { get; set; } = true;
     }
 }

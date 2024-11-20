@@ -49,13 +49,13 @@ namespace Exiled.Events.EventArgs.Player
         public VoiceModuleBase VoiceModule { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the player is transmitting.
+        /// Gets a value indicating whether the player is transmitting.
         /// </summary>
         [Obsolete("IsTransmitting is always true.")]
         public bool IsTransmitting => true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can transmit.
+        /// Gets or sets a value indicating whether the player can transmit.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

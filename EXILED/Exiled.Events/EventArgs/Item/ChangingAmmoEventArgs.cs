@@ -61,7 +61,7 @@ namespace Exiled.Events.EventArgs.Item
         public byte NewAmmo { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the ammo can be changed.
+        /// Gets or sets a value indicating whether the ammo can be changed.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

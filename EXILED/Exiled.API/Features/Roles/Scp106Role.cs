@@ -121,7 +121,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-106 is currently submerged.
+        /// Gets or sets a value indicating whether SCP-106 is currently submerged.
         /// </summary>
         public bool IsSubmerged
         {
@@ -130,7 +130,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-106 can activate teslas.
+        /// Gets a value indicating whether SCP-106 can activate teslas.
         /// </summary>
         public bool CanActivateTesla => Base.CanActivateShock;
 
@@ -140,7 +140,7 @@ namespace Exiled.API.Features.Roles
         public bool CanStopStalk => StalkAbility.CanBeCleared;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-106 is currently slow down by a door.
+        /// Gets a value indicating whether SCP-106 is currently slow down by a door.
         /// </summary>
         public bool IsSlowdown => MovementModule._slowndownTarget is < 1;
 
@@ -155,12 +155,12 @@ namespace Exiled.API.Features.Roles
         public float SinkholeNormalizedState => SinkholeController.NormalizedState;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-106 is currently in the middle of an animation.
+        /// Gets a value indicating whether SCP-106 is currently in the middle of an animation.
         /// </summary>
         public bool IsDuringAnimation => SinkholeController.IsDuringAnimation;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-106 sinkhole is hidden.
+        /// Gets a value indicating whether SCP-106 sinkhole is hidden.
         /// </summary>
         public bool IsSinkholeHidden => SinkholeController.IsHidden;
 
@@ -263,7 +263,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-106 will enter his stalking mode.
+        /// Gets or sets a value indicating whether SCP-106 will enter his stalking mode.
         /// </summary>
         public bool IsStalking
         {

@@ -55,7 +55,7 @@ namespace Exiled.Events.EventArgs.Scp914
         public Scp914KnobSetting KnobSetting { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the upgrade is successful.
+        /// Gets or sets a value indicating whether the upgrade is successful.
         /// </summary>
         public bool IsAllowed { get; set; }
 

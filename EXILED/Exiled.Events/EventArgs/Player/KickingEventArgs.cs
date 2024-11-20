@@ -86,7 +86,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not action is taken against the target.
+        /// Gets or sets a value indicating whether action is taken against the target.
         /// </summary>
         public bool IsAllowed
         {

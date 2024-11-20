@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Item
         public Item Item => Jailbird;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the Jailbird can be charged.
+        /// Gets or sets a value indicating whether the Jailbird can be charged.
         /// </summary>
         public bool IsAllowed
         {

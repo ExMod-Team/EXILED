@@ -23,8 +23,8 @@ namespace Exiled.API.Structs
         /// <param name="position">The position of the primitive.</param>
         /// <param name="rotation">The rotation of the primitive.</param>
         /// <param name="scale">The scale of the primitive.</param>
-        /// <param name="spawn">Whether or not the primitive should be spawned.</param>
-        /// <param name="isStatic">Whether or not the primitive should be static.</param>
+        /// <param name="spawn">Whether the primitive should be spawned.</param>
+        /// <param name="isStatic">Whether the primitive should be static.</param>
         public PrimitiveSettings(PrimitiveType primitiveType, Color color, Vector3 position, Vector3 rotation, Vector3 scale, bool spawn, bool isStatic)
         {
             PrimitiveType = primitiveType;
@@ -45,7 +45,7 @@ namespace Exiled.API.Structs
         /// <param name="position">The position of the primitive.</param>
         /// <param name="rotation">The rotation of the primitive.</param>
         /// <param name="scale">The scale of the primitive.</param>
-        /// <param name="spawn">Whether or not the primitive should be spawned.</param>
+        /// <param name="spawn">Whether the primitive should be spawned.</param>
         public PrimitiveSettings(PrimitiveType primitiveType, Color color, Vector3 position, Vector3 rotation, Vector3 scale, bool spawn)
         {
             PrimitiveType = primitiveType;
@@ -67,7 +67,7 @@ namespace Exiled.API.Structs
         /// <param name="position">The position of the primitive.</param>
         /// <param name="rotation">The rotation of the primitive.</param>
         /// <param name="scale">The scale of the primitive.</param>
-        /// <param name="spawn">Whether or not the primitive should be spawned.</param>
+        /// <param name="spawn">Whether the primitive should be spawned.</param>
         public PrimitiveSettings(PrimitiveType primitiveType, PrimitiveFlags primitiveFlags, Color color, Vector3 position, Vector3 rotation, Vector3 scale, bool spawn)
         {
             PrimitiveType = primitiveType;
@@ -111,12 +111,12 @@ namespace Exiled.API.Structs
         public Vector3 Scale { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the primitive should be spawned.
+        /// Gets a value indicating whether the primitive should be spawned.
         /// </summary>
         public bool IsStatic { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the primitive should be spawned.
+        /// Gets a value indicating whether the primitive should be spawned.
         /// </summary>
         public bool Spawn { get; }
     }

@@ -37,7 +37,7 @@ namespace Exiled.Events.EventArgs.Player
         public Player Target { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can be handcuffed. Denying the event will only have an effect when <see cref="UncuffReason" /> is <see cref="UncuffReason.Player" />  until next major update.
+        /// Gets or sets a value indicating whether the player can be handcuffed. Denying the event will only have an effect when <see cref="UncuffReason" /> is <see cref="UncuffReason.Player" />  until next major update.
         /// </summary>
         /// TODO: Update docs and patches
         public bool IsAllowed { get; set; }

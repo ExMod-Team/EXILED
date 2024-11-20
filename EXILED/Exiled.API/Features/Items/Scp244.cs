@@ -51,7 +51,7 @@ namespace Exiled.API.Features.Items
         public new Scp244Item Base { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-244 will spawn primed.
+        /// Gets or sets a value indicating whether SCP-244 will spawn primed.
         /// </summary>
         public bool Primed
         {

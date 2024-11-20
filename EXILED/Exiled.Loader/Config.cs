@@ -22,11 +22,11 @@ namespace Exiled.Loader
     public sealed class Config : IConfig
     {
         /// <inheritdoc />
-        [Description("Whether or not EXILED is enabled on this server.")]
+        [Description("Whether EXILED is enabled on this server.")]
         public bool IsEnabled { get; set; } = true;
 
         /// <inheritdoc />
-        [Description("Whether or not debug messages should be shown.")]
+        [Description("Whether debug messages should be shown.")]
         public bool Debug { get; set; } = false;
 
         /// <summary>
