@@ -1,0 +1,62 @@
+﻿// -----------------------------------------------------------------------
+// <copyright file="BanManager.cs" company="Exiled Team">
+// Copyright (c) Exiled Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Exiled.API.Features
+{
+    using System;
+
+    /// <summary>
+    /// Useful class to manage player bans.
+    /// </summary>
+    public static class BanManager
+    {
+        /// <summary>
+        /// Bans an offline player.
+        /// </summary>
+        /// <param name="banType">Type of the ban (UserID/IP).</param>
+        /// <param name="id">The UserID or IP address to ban.</param>
+        /// <param name="reason">The ban reason.</param>
+        /// <param name="duration">A <see cref="TimeSpan"/>representing the duration.</param>
+        /// <returns>Whether the ban was successful.</returns>
+        public static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, TimeSpan duration)
+        {
+            return OfflineBanPlayer(banType, id, reason, duration.TotalSeconds);
+        }
+
+        /// <summary>
+        /// Unbans a player.
+        /// </summary>
+        /// <param name="banType">Type of the ban (UserID/IP).</param>
+        /// <param name="id">The UserID or IP address to ban.</param>\
+        public static void UnbanPlayer(BanHandler.BanType banType, string id)
+        {
+            BanHandler.RemoveBan(id, banType);
+        }
+
+        /// <summary>
+        /// Bans an offline player.
+        /// </summary>
+        /// <param name="banType">Type of the ban (UserID/IP).</param>
+        /// <param name="id">The UserID or IP address to ban.</param>
+        /// <param name="reason">The ban reason.</param>
+        /// <param name="duration">Duration in seconds.</param>
+        /// <returns>Whether the ban was successful.</returns>
+        private static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, double duration)
+        {
+            BanDetails details = new()
+            {
+                OriginalName = "Unknown - offline ban",
+                Id = id,
+                IssuanceTime = DateTime.UtcNow.Ticks,
+                Expires = DateTime.UtcNow.AddSeconds(duration).Ticks,
+                Reason = reason,
+                Issuer = "SERVER CONSOLE",
+            };
+            return BanHandler.IssueBan(details, banType);
+        }
+    }
+}
