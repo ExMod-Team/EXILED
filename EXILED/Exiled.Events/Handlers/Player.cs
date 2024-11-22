@@ -70,7 +70,7 @@ namespace Exiled.Events.Handlers
         public static Event<EarningAchievementEventArgs> EarningAchievement { get; set; } = new();
 
         /// <summary>
-        /// Invoked before the player starts to use an <see cref="API.Features.Items.Item"/>.
+        /// Invoked before the player starts to use an <see cref="API.Features.Items.Item"/>. In other words, it is invoked just before the animation starts.
         /// </summary>
         /// <remarks>
         /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576 and SCP-268.
