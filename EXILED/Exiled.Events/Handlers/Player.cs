@@ -78,7 +78,7 @@ namespace Exiled.Events.Handlers
         public static Event<UsingItemEventArgs> UsingItem { get; set; } = new();
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> finishes using an <see cref="API.Features.Items.Usable"/>.
+        /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>.
         /// </summary>
         /// <remarks>
         /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576, SCP-268 and all candies.
