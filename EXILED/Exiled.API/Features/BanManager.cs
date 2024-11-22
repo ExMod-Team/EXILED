@@ -21,21 +21,16 @@ namespace Exiled.API.Features
         /// <param name="id">The UserID or IP address to ban.</param>
         /// <param name="reason">The ban reason.</param>
         /// <param name="duration">A <see cref="TimeSpan"/>representing the duration.</param>
+        /// <param name="issuer">The Nickname of the ban issuer.</param>
         /// <returns>Whether the ban was successful.</returns>
-        public static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, TimeSpan duration)
-        {
-            return OfflineBanPlayer(banType, id, reason, duration.TotalSeconds);
-        }
+        public static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, TimeSpan duration, string issuer = "SERVER CONSOLE") => OfflineBanPlayer(banType, id, reason, duration.TotalSeconds, issuer);
 
         /// <summary>
         /// Unbans a player.
         /// </summary>
         /// <param name="banType">Type of the ban (UserID/IP).</param>
         /// <param name="id">The UserID or IP address to ban.</param>\
-        public static void UnbanPlayer(BanHandler.BanType banType, string id)
-        {
-            BanHandler.RemoveBan(id, banType);
-        }
+        public static void UnbanPlayer(BanHandler.BanType banType, string id) => BanHandler.RemoveBan(id, banType);
 
         /// <summary>
         /// Bans an offline player.
@@ -44,8 +39,9 @@ namespace Exiled.API.Features
         /// <param name="id">The UserID or IP address to ban.</param>
         /// <param name="reason">The ban reason.</param>
         /// <param name="duration">Duration in seconds.</param>
+        /// <param name="issuer">The Nickname of the ban issuer.</param>
         /// <returns>Whether the ban was successful.</returns>
-        private static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, double duration)
+        private static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, double duration, string issuer)
         {
             BanDetails details = new()
             {
@@ -54,7 +50,7 @@ namespace Exiled.API.Features
                 IssuanceTime = DateTime.UtcNow.Ticks,
                 Expires = DateTime.UtcNow.AddSeconds(duration).Ticks,
                 Reason = reason,
-                Issuer = "SERVER CONSOLE",
+                Issuer = issuer,
             };
             return BanHandler.IssueBan(details, banType);
         }
