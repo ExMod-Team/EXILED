@@ -70,13 +70,19 @@ namespace Exiled.Events.Handlers
         public static Event<EarningAchievementEventArgs> EarningAchievement { get; set; } = new();
 
         /// <summary>
-        /// Invoked before using an <see cref="API.Features.Items.Item"/>.
+        /// Invoked before the player starts to use an <see cref="API.Features.Items.Item"/>.
         /// </summary>
+        /// <remarks>
+        /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576 and SCP-268.
+        /// </remarks>
         public static Event<UsingItemEventArgs> UsingItem { get; set; } = new();
 
         /// <summary>
-        /// Invoked after a <see cref="API.Features.Player"/> uses an <see cref="API.Features.Items.Usable"/>.
+        /// Invoked before a <see cref="API.Features.Player"/> finishes using an <see cref="API.Features.Items.Usable"/>.
         /// </summary>
+        /// <remarks>
+        /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576, SCP-268 and all candies.
+        /// </remarks>
         public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new ();
 
         /// <summary>
@@ -85,6 +91,7 @@ namespace Exiled.Events.Handlers
         /// <remarks>
         /// Invoked after <see cref="UsingItem"/>, if a player's class has
         /// changed during their health increase, won't fire.
+        /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576, SCP-268 and all candies.
         /// </remarks>
         public static Event<UsedItemEventArgs> UsedItem { get; set; } = new();
 
