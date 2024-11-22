@@ -74,7 +74,7 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <remarks>
         /// Will be invoked even if the <see cref="API.Features.Items.Item"/> is on cooldown.
-        /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576 and SCP-268. Candies are not included.
+        /// Candies are the only usable that do not invoke this event.
         /// </remarks>
         public static Event<UsingItemEventArgs> UsingItem { get; set; } = new();
 
