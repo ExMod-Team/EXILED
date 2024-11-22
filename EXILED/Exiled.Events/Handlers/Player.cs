@@ -81,9 +81,6 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>. In other words, it is invoked after the animation finishes but before the <see cref="API.Features.Items.Usable"/> is actually used.
         /// </summary>
-        /// <remarks>
-        /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576, SCP-268 and all candies.
-        /// </remarks>
         public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new ();
 
         /// <summary>
@@ -92,7 +89,6 @@ namespace Exiled.Events.Handlers
         /// <remarks>
         /// Invoked after <see cref="UsingItem"/>, if a player's class has
         /// changed during their health increase, won't fire.
-        /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576, SCP-268 and all candies.
         /// </remarks>
         public static Event<UsedItemEventArgs> UsedItem { get; set; } = new();
 
