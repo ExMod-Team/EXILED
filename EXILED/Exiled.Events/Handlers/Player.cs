@@ -73,7 +73,7 @@ namespace Exiled.Events.Handlers
         /// Invoked before the player starts to use an <see cref="API.Features.Items.Item"/>. In other words, it is invoked just before the animation starts.
         /// </summary>
         /// <remarks>
-        /// Will be invoked even if the user is on cooldown.
+        /// Will be invoked even if the <see cref="API.Features.Items.Item"/> is on cooldown.
         /// Items that will invoke this event: SCP-1853, SCP-207, Anti-Cola, all medical, SCP-244, SCP-1576 and SCP-268. Candies are not included.
         /// </remarks>
         public static Event<UsingItemEventArgs> UsingItem { get; set; } = new();
