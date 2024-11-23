@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Generic
                 return false;
             }
 
-            stat.CurValue = stat.Clamp(__instance._stat.CurValue + (__instance.ServerRegenRate * Time.deltaTime));
+            stat.CurValue = stat.Clamp(stat.CurValue + (__instance.ServerRegenRate * Time.deltaTime));
             __result = state;
             return false;
         }
