@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Generic
                 float radius = __instance._mod.CharController.radius;
                 __instance._mod.CharController.height = num3;
                 __instance._mod.CharController.center = Vector3.down * num2;
-                __instance._camPivot.localPosition = Vector3.up * (float)((num3 / 2.0) - num2 - radius + 0.08799999952316284);
+                __instance._camPivot.localPosition = Vector3.up * (float)((num3 / 2.0) - num2 - radius + FpcStateProcessor.EyeHeight);
             }
 
             if (!NetworkServer.active || __instance._useRate == 0.0)
