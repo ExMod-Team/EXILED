@@ -546,7 +546,7 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingNicknameEventArgs> ChangingNickname { get; set; } = new();
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> send's valid RA command.
+        /// Invoked before a <see cref="API.Features.Player"/> sends valid RA command.
         /// </summary>
         public static Event<SendingValidRACommandEventArgs> SendingValidRACommand { get; set; } = new();
 
