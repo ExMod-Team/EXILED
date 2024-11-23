@@ -1,11 +1,11 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="FixStaminaBar.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FixStaminaStat.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.Patches.Fixes
+namespace Exiled.Events.Patches.Generic
 {
     using Exiled.API.Features.CustomStats;
     using HarmonyLib;
@@ -17,7 +17,7 @@ namespace Exiled.Events.Patches.Fixes
     /// Fix for <see cref="CustomStaminaStat"/>.
     /// </summary>
     [HarmonyPatch(typeof(FpcStateProcessor), nameof(FpcStateProcessor.UpdateMovementState))]
-    internal static class FixStaminaBar
+    internal static class FixStaminaStat
     {
 #pragma warning disable SA1313
         private static bool Prefix(FpcStateProcessor __instance, PlayerMovementState state, PlayerMovementState __result)
