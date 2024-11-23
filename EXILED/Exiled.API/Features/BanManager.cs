@@ -26,13 +26,6 @@ namespace Exiled.API.Features
         public static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, TimeSpan duration, string issuer = "SERVER CONSOLE") => OfflineBanPlayer(banType, id, reason, duration.TotalSeconds, issuer);
 
         /// <summary>
-        /// Unbans a player.
-        /// </summary>
-        /// <param name="banType">Type of the ban (UserID/IP).</param>
-        /// <param name="id">The UserID or IP address to ban.</param>\
-        public static void UnbanPlayer(BanHandler.BanType banType, string id) => BanHandler.RemoveBan(id, banType);
-
-        /// <summary>
         /// Bans an offline player.
         /// </summary>
         /// <param name="banType">Type of the ban (UserID/IP).</param>
@@ -41,7 +34,7 @@ namespace Exiled.API.Features
         /// <param name="duration">Duration in seconds.</param>
         /// <param name="issuer">The Nickname of the ban issuer.</param>
         /// <returns>Whether the ban was successful.</returns>
-        private static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, double duration, string issuer)
+        public static bool OfflineBanPlayer(BanHandler.BanType banType, string id, string reason, double duration, string issuer = "SERVER CONSOLE")
         {
             BanDetails details = new()
             {
@@ -54,5 +47,12 @@ namespace Exiled.API.Features
             };
             return BanHandler.IssueBan(details, banType);
         }
+
+        /// <summary>
+        /// Unbans a player.
+        /// </summary>
+        /// <param name="banType">Type of the ban (UserID/IP).</param>
+        /// <param name="id">The UserID or IP address to ban.</param>\
+        public static void UnbanPlayer(BanHandler.BanType banType, string id) => BanHandler.RemoveBan(id, banType);
     }
 }
