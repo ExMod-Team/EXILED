@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Player.cs" company="Exiled Team">
+// <copyright file="Player.cs" company="ExMod Team">
 // Copyright (c) Exiled Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
