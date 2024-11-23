@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SwingingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SwingingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -21,7 +21,7 @@ namespace Exiled.Events.EventArgs.Item
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="swingItem">The item being swung.</param>
-        /// <param name="isAllowed">Whether the item can be swung or not.</param>
+        /// <param name="isAllowed">Whether the item can be swung.</param>
         public SwingingEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase swingItem, bool isAllowed = true)
         {
             Player = Player.Get(player);
@@ -45,7 +45,7 @@ namespace Exiled.Events.EventArgs.Item
         public Item Item => Jailbird;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the item can be swung.
+        /// Gets or sets a value indicating whether the item can be swung.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

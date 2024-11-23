@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Patches.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Patches.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace Exiled.Events.Commands.PluginManager
         public string[] Aliases { get; } = { "patched" };
 
         /// <inheritdoc/>
-        public string Description { get; } = "Returns information about all patches (whether they are patched or not)";
+        public string Description { get; } = "Returns information about all patches (whether they are patched)";
 
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)

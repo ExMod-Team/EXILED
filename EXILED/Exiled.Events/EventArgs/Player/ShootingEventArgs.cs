@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ShootingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ShootingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the shot can be fired.
+        /// Gets or sets a value indicating whether the shot can be fired.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
     }

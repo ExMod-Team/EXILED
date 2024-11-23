@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp244.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp244.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Exiled.API.Features.Items
         public new Scp244Item Base { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-244 will spawn primed.
+        /// Gets or sets a value indicating whether SCP-244 will spawn primed.
         /// </summary>
         public bool Primed
         {

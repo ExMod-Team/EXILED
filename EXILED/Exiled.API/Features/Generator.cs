@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Generator.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Generator.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -247,7 +247,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="scp079Generator">The <see cref="Scp079Generator"/> instance.</param>
         /// <param name="generator">A <see cref="Generator"/> or <see langword="null"/> if not found.</param>
-        /// <returns>Whether or not a generator was found.</returns>
+        /// <returns>Whether a generator was found.</returns>
         public static bool TryGet(Scp079Generator scp079Generator, out Generator generator)
         {
             generator = Get(scp079Generator);
@@ -259,7 +259,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="state">The <see cref="GeneratorState"/> to search for.</param>
         /// <param name="generators">A <see cref="IEnumerable{T}"/> of <see cref="Generator"/> matching the <see cref="GeneratorState"/>.</param>
-        /// <returns>Whether or not at least one generator was found.</returns>
+        /// <returns>Whether at least one generator was found.</returns>
         public static bool TryGet(GeneratorState state, out IEnumerable<Generator> generators)
         {
             generators = Get(state);
@@ -271,7 +271,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="predicate">The condition to satify.</param>
         /// <param name="generators">A <see cref="IEnumerable{T}"/> of <see cref="Generator"/> which contains elements that satify the condition.</param>
-        /// <returns>Whether or not at least one generator was found.</returns>
+        /// <returns>Whether at least one generator was found.</returns>
         public static bool TryGet(Func<Generator, bool> predicate, out IEnumerable<Generator> generators)
         {
             generators = Get(predicate);

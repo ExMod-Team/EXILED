@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpawningTeamVehicleEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SpawningTeamVehicleEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace Exiled.Events.EventArgs.Map
         public SpawnableTeamType Team { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the vehicle can be spawned.
+        /// Gets or sets a value indicating whether the vehicle can be spawned.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

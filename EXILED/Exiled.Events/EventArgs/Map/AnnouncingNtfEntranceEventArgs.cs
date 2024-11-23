@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="AnnouncingNtfEntranceEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="AnnouncingNtfEntranceEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -53,7 +53,7 @@ namespace Exiled.Events.EventArgs.Map
         public int UnitNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the NTF spawn will be announced by C.A.S.S.I.E.
+        /// Gets or sets a value indicating whether the NTF spawn will be announced by C.A.S.S.I.E.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

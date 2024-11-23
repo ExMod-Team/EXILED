@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChargingJailbirdEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChargingJailbirdEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace Exiled.Events.EventArgs.Item
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="swingItem">The item being charged.</param>
-        /// <param name="isAllowed">Whether the item can be charged or not.</param>
+        /// <param name="isAllowed">Whether the item can be charged.</param>
         public ChargingJailbirdEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase swingItem, bool isAllowed = true)
         {
             Player = Player.Get(player);
@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Item
         public Item Item => Jailbird;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the Jailbird can be charged.
+        /// Gets or sets a value indicating whether the Jailbird can be charged.
         /// </summary>
         public bool IsAllowed
         {

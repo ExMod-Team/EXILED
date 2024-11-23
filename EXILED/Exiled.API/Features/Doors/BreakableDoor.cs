@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="BreakableDoor.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="BreakableDoor.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -47,7 +47,7 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not door is destroyed.
+        /// Gets or sets a value indicating whether door is destroyed.
         /// </summary>
         public bool IsDestroyed
         {
@@ -56,7 +56,7 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not this door is breakable.
+        /// Gets a value indicating whether this door is breakable.
         /// </summary>
         public bool IsBreakable => !IsDestroyed;
 

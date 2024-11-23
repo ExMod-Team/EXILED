@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="CustomItem.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CustomItem.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -116,7 +116,7 @@ namespace Exiled.CustomItems.API.Features
         public HashSet<int> TrackedSerials { get; } = new();
 
         /// <summary>
-        /// Gets a value indicating whether or not this item causes things to happen that may be considered hacks, and thus be shown to global moderators as being present in a player's inventory when they gban them.
+        /// Gets a value indicating whether this item causes things to happen that may be considered hacks, and thus be shown to global moderators as being present in a player's inventory when they gban them.
         /// </summary>
         [YamlIgnore]
         public virtual bool ShouldMessageOnGban { get; } = false;
@@ -175,7 +175,7 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="id">The <see cref="CustomItem"/> ID to look for.</param>
         /// <param name="customItem">The found <see cref="CustomItem"/>, <see langword="null"/> if not registered.</param>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found or not.</returns>
+        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found.</returns>
         public static bool TryGet(uint id, out CustomItem? customItem)
         {
             customItem = Get(id);
@@ -188,7 +188,7 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="name">The <see cref="CustomItem"/> name to look for.</param>
         /// <param name="customItem">The found <see cref="CustomItem"/>, <see langword="null"/> if not registered.</param>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found or not.</returns>
+        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found.</returns>
         public static bool TryGet(string name, out CustomItem? customItem)
         {
             customItem = null;
@@ -205,7 +205,7 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="t">The <see cref="System.Type"/> of the item to look for.</param>
         /// <param name="customItem">The found <see cref="CustomItem"/>, <see langword="null"/> if not registered.</param>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found or not.</returns>
+        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found.</returns>
         public static bool TryGet(Type t, out CustomItem? customItem)
         {
             customItem = Get(t);
@@ -279,7 +279,7 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="id">The ID of the <see cref="CustomItem"/> to spawn.</param>
         /// <param name="position">The <see cref="Vector3"/> location to spawn the item.</param>
         /// <param name="pickup">The <see cref="ItemPickupBase"/> instance of the <see cref="CustomItem"/>.</param>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was spawned or not.</returns>
+        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was spawned.</returns>
         public static bool TrySpawn(uint id, Vector3 position, out Pickup? pickup)
         {
             pickup = default;
@@ -298,7 +298,7 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="name">The name of the <see cref="CustomItem"/> to spawn.</param>
         /// <param name="position">The <see cref="Vector3"/> location to spawn the item.</param>
         /// <param name="pickup">The <see cref="ItemPickupBase"/> instance of the <see cref="CustomItem"/>.</param>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was spawned or not.</returns>
+        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was spawned.</returns>
         public static bool TrySpawn(string name, Vector3 position, out Pickup? pickup)
         {
             pickup = default;
@@ -365,7 +365,7 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Registers all the <see cref="CustomItem"/>'s present in the current assembly.
         /// </summary>
-        /// <param name="skipReflection">Whether or not reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
+        /// <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
         /// <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="CustomItem"/> which contains all registered <see cref="CustomItem"/>'s.</returns>
         public static IEnumerable<CustomItem> RegisterItems(bool skipReflection = false, object? overrideClass = null)
@@ -444,7 +444,7 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="targetTypes">The <see cref="IEnumerable{T}"/> of <see cref="System.Type"/> containing the target types.</param>
         /// <param name="isIgnored">A value indicating whether the target types should be ignored.</param>
-        /// <param name="skipReflection">Whether or not reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
+        /// <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
         /// <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="CustomItem"/> which contains all registered <see cref="CustomItem"/>'s.</returns>
         public static IEnumerable<CustomItem> RegisterItems(IEnumerable<Type> targetTypes, bool isIgnored = false, bool skipReflection = false, object? overrideClass = null)
@@ -720,7 +720,7 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="player">The <see cref="Player"/> who will receive the item.</param>
         /// <param name="item">The <see cref="Item"/> to be given.</param>
-        /// <param name="displayMessage">Indicates whether or not <see cref="ShowPickedUpMessage"/> will be called when the player receives the item.</param>
+        /// <param name="displayMessage">Indicates whether <see cref="ShowPickedUpMessage"/> will be called when the player receives the item.</param>
         public virtual void Give(Player player, Item item, bool displayMessage = true)
         {
             try
@@ -746,14 +746,14 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="player">The <see cref="Player"/> who will receive the item.</param>
         /// <param name="pickup">The <see cref="ItemPickupBase"/> to be given.</param>
-        /// <param name="displayMessage">Indicates whether or not <see cref="ShowPickedUpMessage"/> will be called when the player receives the item.</param>
+        /// <param name="displayMessage">Indicates whether <see cref="ShowPickedUpMessage"/> will be called when the player receives the item.</param>
         public virtual void Give(Player player, Pickup pickup, bool displayMessage = true) => Give(player, player.AddItem(pickup), displayMessage);
 
         /// <summary>
         /// Gives the <see cref="CustomItem"/> to a player.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> who will receive the item.</param>
-        /// <param name="displayMessage">Indicates whether or not <see cref="ShowPickedUpMessage"/> will be called when the player receives the item.</param>
+        /// <param name="displayMessage">Indicates whether <see cref="ShowPickedUpMessage"/> will be called when the player receives the item.</param>
         public virtual void Give(Player player, bool displayMessage = true) => Give(player, Item.Create(Type), displayMessage);
 
         /// <summary>
@@ -807,7 +807,7 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Registers a <see cref="CustomItem"/>.
         /// </summary>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was registered or not.</returns>
+        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was registered.</returns>
         internal bool TryRegister()
         {
             if (!Instance?.Config.IsEnabled ?? false)
@@ -842,7 +842,7 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Tries to unregister a <see cref="CustomItem"/>.
         /// </summary>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was unregistered or not.</returns>
+        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was unregistered.</returns>
         internal bool TryUnregister()
         {
             Destroy();
@@ -965,7 +965,7 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="player">The <see cref="Player"/> acquiring the item.</param>
         /// <param name="item">The <see cref="Item"/> being acquired.</param>
-        /// <param name="displayMessage">Whether or not the Pickup hint should be displayed.</param>
+        /// <param name="displayMessage">Whether the Pickup hint should be displayed.</param>
         protected virtual void OnAcquired(Player player, Item item, bool displayMessage)
         {
             if (displayMessage)

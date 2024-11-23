@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Config.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Config.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -27,9 +27,9 @@ namespace Exiled.Permissions
         }
 
         /// <summary>
-        /// Gets a value indicating whether the debug should be shown or not.
+        /// Gets a value indicating whether the debug should be shown.
         /// </summary>
-        [Description("Indicates whether the debug should be shown or not")]
+        [Description("Indicates whether the debug should be shown")]
         public bool ShouldDebugBeShown { get; private set; }
 
         /// <summary>

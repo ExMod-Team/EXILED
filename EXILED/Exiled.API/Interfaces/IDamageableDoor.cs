@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="IDamageableDoor.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="IDamageableDoor.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -25,12 +25,12 @@ namespace Exiled.API.Interfaces
         public float MaxHealth { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not door is destroyed.
+        /// Gets or sets a value indicating whether door is destroyed.
         /// </summary>
         public bool IsDestroyed { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether or not this door is breakable.
+        /// Gets a value indicating whether this door is breakable.
         /// </summary>
         public bool IsBreakable { get; }
 

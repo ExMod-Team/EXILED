@@ -1,0 +1,117 @@
+<#@ template debug="true" hostspecific="false" language="C#" #>
+<#@ assembly name="System" #>
+<#@ assembly name="%EXILED_REFERENCES%\System.Core.dll" #>
+<#@ assembly name="%EXILED_REFERENCES%\Mirror.dll" #>
+<#@ assembly name="%EXILED_REFERENCES%\UnityEngine.CoreModule.dll" #>
+<#@ assembly name="%EXILED_REFERENCES%\Assembly-CSharp-Publicized.dll" #>
+<#@ assembly name="bin\Release\Exiled.API.dll" #>
+<#@ assembly name="bin\Release\Exiled.Loader.dll" #>
+<#@ import namespace="Exiled.API.Enums" #>
+<#@ import namespace="Exiled.API.Extensions" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Reflection" #>
+<#@ import namespace="PlayerRoles" #>
+<#@ output extension=".md" #>
+
+---
+title: NW Documentation
+---
+
+Last Update (<#= Exiled.Loader.AutoUpdateFiles.RequiredSCPSLVersion#>)
+
+### Index
+
+- [RoleType, Team, Side, LeadingTeam](#roletype-team-side-and-leadingteam)
+- [Damage Handlers](#damagehandlers)
+<#
+try
+{
+    string response = string.Empty;
+
+    // Load the assembly
+    var assembly = typeof(BanPlayer).Assembly;
+    Type[] types = null;
+    try
+    {
+        types = assembly.GetTypes();
+    }
+    catch (ReflectionTypeLoadException e)
+    {
+        types = e.Types;
+    }
+    foreach (var type in types.Where(t => t != null).OrderBy(t => t.Name))
+    {
+        if (type.IsEnum && !type.IsGenericType)
+        {
+            WriteLine($"- [{type.Name}](#{type.Name.ToLower()})");
+            response += $"\n### {type.Name}\n\n";
+            response += $"<details><summary><b>{type.FullName}</b></summary>\n\n";
+            response += $"```\n";
+
+            foreach (var value in Enum.GetValues(type))
+            {
+                response += $" [{Convert.ToInt64(value)}] = {value.ToString()}\n";
+            }
+            response += "```\n\n</details>\n";
+         }
+    }
+    WriteLine(response);
+}
+catch(Exception ex)
+{
+    WriteLine(ex?.ToString());
+}
+#>
+
+### External resources
+
+- [Available Colors (en.scpslgame.com)](https://en.scpslgame.com/index.php/Docs:Permissions#Colors)
+
+## Resources
+
+### RoleType, Team, Side and LeadingTeam
+
+<details><summary> <b>Roles</b></summary>
+
+```
+| Id  | RoleTypeId     | Team             | Side             | LeadingTeam     |
+|-----|----------------|------------------|------------------|-----------------|
+<#= string.Join("\n",Enum.GetValues(typeof(RoleTypeId)).Cast<RoleTypeId>().ToList().OrderBy(x => x).Select(x => $"| {((int)x).ToString().PadRight(3)} | {x.ToString().PadRight(14)} | {RoleExtensions.GetTeam(x).ToString().PadRight(16)} | {RoleExtensions.GetSide(RoleExtensions.GetTeam(x)).ToString().PadRight(16)} | {RoleExtensions.GetLeadingTeam(RoleExtensions.GetTeam(x)).ToString().PadRight(16)}|"))#>
+```
+
+</details>
+
+
+
+### DamageHandlers
+
+<details><summary> <b>Damage Handlers</b></summary>
+
+```md title="Latest Updated: <#= Exiled.Loader.AutoUpdateFiles.RequiredSCPSLVersion#>"
+All available DamageHandlers
+
++ Symbol ':' literally means "inherits from"
+* In C#, inheritance is a process in which one object acquires all the properties and behaviors of its parent object automatically.
+
+
+<#
+    string alldamagehandler = string.Empty;
+    // Load the assembly
+    var assembly2 = typeof(BanPlayer).Assembly;
+    Type[] types2 = null;
+    try
+    {
+        types2 = assembly2.GetTypes();
+    }
+    catch (ReflectionTypeLoadException e)
+    {
+        types2 = e.Types;
+    }
+
+    foreach (Type type2 in types2.Where(t => t != null && t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(PlayerStatsSystem.DamageHandlerBase))))
+    {
+        WriteLine($"{type2.FullName} : {type2.BaseType.Name}");
+    }
+#>
+```
+</details>

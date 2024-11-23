@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingRadioPresetEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingRadioPresetEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -62,7 +62,7 @@ namespace Exiled.Events.EventArgs.Player
         public RadioRange NewValue { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the radio preset can be changed or not.
+        /// Gets or sets a value indicating whether the radio preset can be changed.
         /// <remarks>Client radio graphics won't sync with <see cref="OldValue" />.</remarks>
         /// </summary>
         public bool IsAllowed { get; set; }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Config.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Config.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -30,7 +30,7 @@ namespace Exiled.CreditTags
         [Description("Overrides Custom Player Info if exists")]
         public bool CustomPlayerInfoOverride { get; private set; } = false;
 
-        [Description("Whether or not the plugin should ignore a player's DNT flag. By default (false), players with DNT flag will not be checked for credit tags.")]
+        [Description("Whether the plugin should ignore a player's DNT flag. By default (false), players with DNT flag will not be checked for credit tags.")]
         public bool IgnoreDntFlag { get; private set; } = false;
     }
 }

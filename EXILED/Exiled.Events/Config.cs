@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Config.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Config.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -27,21 +27,21 @@ namespace Exiled.Events
         public bool UseDynamicPatching { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether SCP-173 can be blocked or not by the tutorial.
+        /// Gets or sets a value indicating whether SCP-173 can be blocked by the tutorial.
         /// </summary>
-        [Description("Indicates whether SCP-173 can be blocked or not by the tutorial")]
+        [Description("Indicates whether SCP-173 can be blocked by the tutorial")]
         public bool CanTutorialBlockScp173 { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether SCP-096 can be triggered or not by the tutorial.
+        /// Gets or sets a value indicating whether SCP-096 can be triggered by the tutorial.
         /// </summary>
-        [Description("Indicates whether SCP-096 can be triggered or not by the tutorial")]
+        [Description("Indicates whether SCP-096 can be triggered by the tutorial")]
         public bool CanTutorialTriggerScp096 { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether SCP-049 can activate the sense ability on tutorials.
         /// </summary>
-        [Description("Indicates whether SCP-049 can sense tutorial players or not")]
+        [Description("Indicates whether SCP-049 can sense tutorial players")]
         public bool CanScp049SenseTutorial { get; set; } = true;
 
         /// <summary>
@@ -69,9 +69,9 @@ namespace Exiled.Events
         public bool ShouldDropInventory { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the blood can be spawned or not.
+        /// Gets or sets a value indicating whether the blood can be spawned.
         /// </summary>
-        [Description("Indicates whether the blood can be spawned or not")]
+        [Description("Indicates whether the blood can be spawned")]
         public bool CanSpawnBlood { get; set; } = true;
 
         /// <summary>
@@ -99,15 +99,15 @@ namespace Exiled.Events
         public bool ShouldReloadTranslationsAtRoundRestart { get; set; } = false;
 
         /// <summary>
-        /// Gets a value indicating whether bans should be logged or not.
+        /// Gets a value indicating whether bans should be logged.
         /// </summary>
-        [Description("Indicates whether bans should be logged or not")]
+        [Description("Indicates whether bans should be logged")]
         public bool ShouldLogBans { get; private set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether to log RA commands.
         /// </summary>
-        [Description("Whether or not to log RA commands.")]
+        [Description("Whether to log RA commands.")]
         public bool LogRaCommands { get; set; } = true;
     }
 }
