@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="TeslaGate.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="TeslaGate.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -92,7 +92,7 @@ namespace Exiled.API.Features
         public Room Room { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not the tesla gate's shock burst is in progess.
+        /// Gets a value indicating whether the tesla gate's shock burst is in progess.
         /// </summary>
         public bool IsShocking => Base.InProgress;
 
@@ -166,7 +166,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the tesla gate's next burst should be treated as instant burst.
+        /// Gets or sets a value indicating whether the tesla gate's next burst should be treated as instant burst.
         /// <para>The instant burst ignores the standard cooldown time, reducing it to the cooldown time used for bursts triggered by SCP-079.</para>
         /// </summary>
         public bool UseInstantBurst
@@ -216,7 +216,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
         /// <param name="gate">A <see cref="TeslaGate"/> or <see langword="null"/> if not found.</param>
-        /// <returns>Whether or not the tesla gate was found.</returns>
+        /// <returns>Whether the tesla gate was found.</returns>
         public static bool TryGet(BaseTeslaGate baseTeslaGate, out TeslaGate gate)
         {
             gate = Get(baseTeslaGate);
@@ -228,7 +228,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="predicate">The condition to satify.</param>
         /// <param name="gates">A <see cref="IEnumerable{T}"/> of <see cref="TeslaGate"/> which contains elements that satify the condition.</param>
-        /// <returns>Whether or not at least one tesla gate was found.</returns>
+        /// <returns>Whether at least one tesla gate was found.</returns>
         public static bool TryGet(Func<TeslaGate, bool> predicate, out IEnumerable<TeslaGate> gates)
         {
             gates = Get(predicate);

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="BlinkingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="BlinkingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -62,7 +62,7 @@ namespace Exiled.Events.EventArgs.Scp173
         public List<Player> Targets { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player is allowed to blink.
+        /// Gets or sets a value indicating whether the player is allowed to blink.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
 

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="CustomWeapon.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CustomWeapon.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -60,7 +60,7 @@ namespace Exiled.CustomItems.API.Features
         public virtual byte ClipSize { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not to allow friendly fire with this weapon on FF-enabled servers.
+        /// Gets or sets a value indicating whether to allow friendly fire with this weapon on FF-enabled servers.
         /// </summary>
         public virtual bool FriendlyFire { get; set; }
 

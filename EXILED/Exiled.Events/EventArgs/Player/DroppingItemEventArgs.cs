@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DroppingItemEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DroppingItemEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -47,12 +47,12 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the item was thrown.
+        /// Gets or sets a value indicating whether the item was thrown.
         /// </summary>
         public bool IsThrown { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the item can be dropped.
+        /// Gets or sets a value indicating whether the item can be dropped.
         /// </summary>
         public bool IsAllowed
         {

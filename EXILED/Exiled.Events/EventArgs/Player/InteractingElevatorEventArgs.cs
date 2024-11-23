@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="InteractingElevatorEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="InteractingElevatorEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Exiled.Events.EventArgs.Player
         public Lift Lift { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can interact with the elevator.
+        /// Gets or sets a value indicating whether the player can interact with the elevator.
         /// </summary>
         public bool IsAllowed { get; set; }
 

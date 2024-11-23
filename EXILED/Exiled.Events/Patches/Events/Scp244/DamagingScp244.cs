@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DamagingScp244.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DamagingScp244.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -49,7 +49,7 @@ namespace Exiled.Events.Patches.Events.Scp244
 
             newInstructions.RemoveRange(index, 3);
 
-            // Insert event handler at start of function to determine whether to allow function to run or not.
+            // Insert event handler at start of function to determine whether to allow function to run.
             newInstructions.InsertRange(
                 index,
                 new[]

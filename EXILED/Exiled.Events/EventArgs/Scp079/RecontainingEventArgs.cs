@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RecontainingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RecontainingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -35,7 +35,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public bool IsAllowed { get; set; } = true;
 
         /// <summary>
-        /// Gets a value indicating whether or not the recontained has been made automatically or by triggering the proccess.
+        /// Gets a value indicating whether the recontained has been made automatically or by triggering the proccess.
         /// </summary>
         public bool IsAutomatic { get; }
     }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="EndingRoundEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="EndingRoundEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Exiled.Events.EventArgs.Server
         public LeadingTeam LeadingTeam { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the round is going to finish or not.
+        /// Gets or sets a value indicating whether the round is going to finish.
         /// </summary>
         public bool IsRoundEnded { get; set; } // TODO: Obsolete this in Exiled 10
 
@@ -61,7 +61,7 @@ namespace Exiled.Events.EventArgs.Server
         public bool IsForceEnded { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the event can be executed or not.
+        /// Gets or sets a value indicating whether the event can be executed.
         /// </summary>
         public bool IsAllowed
         {

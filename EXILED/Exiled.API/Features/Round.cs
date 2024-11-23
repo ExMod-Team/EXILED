@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Round.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Round.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -42,22 +42,22 @@ namespace Exiled.API.Features
         public static DateTime StartedTime => DateTime.Now - ElapsedTime;
 
         /// <summary>
-        /// Gets a value indicating whether the round is started or not.
+        /// Gets a value indicating whether the round is started.
         /// </summary>
         public static bool IsStarted => ReferenceHub.LocalHub?.characterClassManager.RoundStarted ?? false;
 
         /// <summary>
-        /// Gets a value indicating whether the round in progress or not.
+        /// Gets a value indicating whether the round in progress.
         /// </summary>
         public static bool InProgress => ReferenceHub.LocalHub != null && RoundSummary.RoundInProgress();
 
         /// <summary>
-        /// Gets a value indicating whether the round is ended or not.
+        /// Gets a value indicating whether the round is ended.
         /// </summary>
         public static bool IsEnded => RoundSummary.singleton._roundEnded;
 
         /// <summary>
-        /// Gets a value indicating whether the round is lobby or not.
+        /// Gets a value indicating whether the round is lobby.
         /// </summary>
         public static bool IsLobby => !(IsEnded || IsStarted);
 
@@ -77,7 +77,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the round is locked or not.
+        /// Gets or sets a value indicating whether the round is locked.
         /// </summary>
         public static bool IsLocked
         {
@@ -86,7 +86,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the lobby is locked or not.
+        /// Gets or sets a value indicating whether the lobby is locked.
         /// </summary>
         public static bool IsLobbyLocked
         {
@@ -194,7 +194,7 @@ namespace Exiled.API.Features
         /// Restarts the round with custom settings.
         /// </summary>
         /// <param name="fastRestart">
-        /// Indicates whether or not it'll be a fast restart.
+        /// Indicates whether it'll be a fast restart.
         /// If it's a fast restart, then players won't be reconnected from
         /// the server; otherwise, they will.
         /// </param>
@@ -234,9 +234,9 @@ namespace Exiled.API.Features
         /// Forces the round to end, regardless of which factions are alive.
         /// </summary>
         /// <param name="forceEnd">
-        /// Indicates whether or not it'll force the restart with no check if it's locked.
+        /// Indicates whether it'll force the restart with no check if it's locked.
         /// </param>
-        /// <returns>A <see cref="bool"/> describing whether or not the round was successfully ended.</returns>
+        /// <returns>A <see cref="bool"/> describing whether the round was successfully ended.</returns>
         public static bool EndRound(bool forceEnd = false)
         {
             if (RoundSummary.singleton.KeepRoundOnOne && Player.Dictionary.Count < 2 && !forceEnd)
