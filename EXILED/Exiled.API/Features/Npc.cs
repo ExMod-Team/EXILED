@@ -244,7 +244,7 @@ namespace Exiled.API.Features
                 }
                 else
                 {
-                    npc.ReferenceHub.authManager.InstanceMode = ClientInstanceMode.Unverified;
+                    npc.ReferenceHub.authManager.InstanceMode = userId == PlayerAuthenticationManager.HostId ? ClientInstanceMode.Host : ClientInstanceMode.Unverified;
                     npc.ReferenceHub.authManager._privUserId = userId == string.Empty ? $"Dummy-{npc.Id}@localhost" : userId;
                 }
             }
