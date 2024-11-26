@@ -8,14 +8,13 @@
 namespace Exiled.API.Enums
 {
     using Features;
-
     using PlayerRoles;
+    using Respawning.Waves;
 
     /// <summary>
     /// Layers game respawn effects.
     /// </summary>
-    /// <seealso cref="Respawn.PlayEffect(RespawnEffectType)"/>
-    /// <seealso cref="Respawn.PlayEffects(RespawnEffectType[])"/>
+    /// <seealso cref="Respawn.PlayEffect(SpawnableWaveBase)"/>
     public enum RespawnEffectType
     {
         /// <summary>

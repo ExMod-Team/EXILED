@@ -268,7 +268,7 @@ namespace Exiled.API.Enums
         ElevatorGateB,
 
         /// <summary>
-        /// Represents the Elevator door for <see cref="ElevatorGroup.Nuke"/>.
+        /// Represents the Elevator door for <see cref="ElevatorGroup.Nuke01"/> and <see cref="ElevatorGroup.Nuke02"/>.
         /// </summary>
         ElevatorNuke,
 

@@ -181,13 +181,30 @@ namespace Exiled.API.Features
             return false;
         }
 
-        // TODO: Docs.
+        // TODO: Write docs.
+
+        /// <summary>
+        /// to be filled.
+        /// </summary>
+        /// <param name="faction">to be filled..</param>
+        /// <param name="time">to be filled...</param>
         public static void AdvanceTime(Faction faction, float time) => WaveManager.AdvanceTimer(faction, time);
 
-        // TODO: Docs.
+        // TODO: Write docs.
+
+        /// <summary>
+        /// to be filled.
+        /// </summary>
+        /// <param name="wave">to be filled..</param>
         public static void SpawnWave(SpawnableWaveBase wave) => WaveManager.Spawn(wave);
 
-        // TODO: Docs.
+        // TODO: Write docs.
+
+        /// <summary>
+        /// to be filled.
+        /// </summary>
+        /// <param name="faction">to be filled..</param>
+        /// <param name="mini">to be filled...</param>
         public static void SpawnWave<T>(Faction faction, bool mini)
             where T : SpawnableWaveBase
         {

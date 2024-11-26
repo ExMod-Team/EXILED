@@ -134,6 +134,14 @@ namespace Exiled.API.Features
         public static new Npc? Get(NetworkConnection conn) => Player.Get(conn) as Npc;
 
         // TODO: Write docs.
+
+        /// <summary>
+        /// to be filled.
+        /// </summary>
+        /// <param name="name">to be filled..</param>
+        /// <param name="role">to be filled...</param>
+        /// <param name="position">to be filled....</param>
+        /// <returns>to be filled.....</returns>
         public static Npc Create(string name, RoleTypeId role, Vector3 position)
         {
             // TODO: Test this.
