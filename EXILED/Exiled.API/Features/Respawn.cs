@@ -205,6 +205,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="faction">to be filled..</param>
         /// <param name="mini">to be filled...</param>
+        /// <typeparam name="T">to be filled....</typeparam>
         public static void SpawnWave<T>(Faction faction, bool mini)
             where T : SpawnableWaveBase
         {
@@ -295,6 +296,12 @@ namespace Exiled.API.Features
                 ForceWave(wave);
         }
 
+        // TODO: Write docs.
+
+        /// <summary>
+        /// to be filled.
+        /// </summary>
+        /// <param name="wave">to be filled....</param>
         public static void ForceWave(SpawnableWaveBase wave)
         {
             WaveManager.Spawn(wave);

@@ -128,7 +128,7 @@ namespace Exiled.API.Features.Pickups
         public Room Room => Room.FindParentRoom(GameObject);
 
         /// <summary>
-        /// Gets or sets the pickup's PhysicsModule.
+        /// Gets (or sets) the pickup's PhysicsModule.
         /// </summary>
         public PickupStandardPhysics PhysicsModule => Base.PhysicsModule as PickupStandardPhysics;
 
