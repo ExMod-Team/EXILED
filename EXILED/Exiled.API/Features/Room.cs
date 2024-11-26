@@ -429,19 +429,20 @@ namespace Exiled.API.Features
                 "LCZ_372" => RoomType.LczGlassBox,
                 "LCZ_ChkpA" => RoomType.LczCheckpointA,
                 "HCZ_079" => RoomType.Hcz079,
-                "HCZ_Room3ar" => RoomType.HczArmory,
+                "HCZ_TArmory" => RoomType.HczArmory,
                 "HCZ_Testroom" => RoomType.HczTestRoom,
                 "HCZ_Hid" => RoomType.HczHid,
                 "HCZ_049" => RoomType.Hcz049,
                 "HCZ_Crossing" => RoomType.HczCrossing,
                 "HCZ_106" => RoomType.Hcz106,
                 "HCZ_Nuke" => RoomType.HczNuke,
-                "HCZ_Tesla" => RoomType.HczTesla,
+                "HCZ_Tesla_Rework" => RoomType.HczTesla,
                 "HCZ_Servers" => RoomType.HczServers,
                 "HCZ_Room3" => RoomType.HczTCross,
                 "HCZ_457" => RoomType.Hcz096,
                 "HCZ_Curve" => RoomType.HczCurve,
                 "HCZ_Straight" => RoomType.HczStraight,
+                "HCZ_Crossroom_Water" => RoomType.HczCrossRoomWater,
                 "EZ_Endoof" => RoomType.EzVent,
                 "EZ_Intercom" => RoomType.EzIntercom,
                 "EZ_GateA" => RoomType.EzGateA,
@@ -493,12 +494,12 @@ namespace Exiled.API.Features
             RoomIdentifierToRoom.Add(Identifier, this);
 
             Zone = FindZone(gameObject);
-#if Debug
+#if DEBUG
             if (Type is RoomType.Unknown)
                 Log.Error($"[ZONETYPE UNKNOWN] {this}");
 #endif
             Type = FindType(gameObject);
-#if Debug
+#if DEBUG
             if (Type is RoomType.Unknown)
                 Log.Error($"[ROOMTYPE UNKNOWN] {this}");
 #endif

@@ -13,14 +13,18 @@ namespace Exiled.API.Features.Items
 
     using CameraShaking;
     using Enums;
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Interfaces;
+    using Exiled.API.Structs;
     using Extensions;
-    using Interfaces;
+    using InventorySystem;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Pickups;
     using MEC;
-    using Pickups;
-    using Structs;
     using UnityEngine;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;

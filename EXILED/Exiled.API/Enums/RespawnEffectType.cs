@@ -14,7 +14,6 @@ namespace Exiled.API.Enums
     /// <summary>
     /// Layers game respawn effects.
     /// </summary>
-    /// <seealso cref="Respawn.PlayEffect(SpawnableWaveBase)"/>
     public enum RespawnEffectType
     {
         /// <summary>

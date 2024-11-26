@@ -59,8 +59,8 @@ namespace Exiled.API.Features.Doors
             }
 
             Type = GetDoorType();
-#if Debug
-            if (Type is DoorType.Unknown)
+#if DEBUG
+            if (Type is DoorType.UnknownDoor or DoorType.UnknownGate or DoorType.UnknownElevator)
                 Log.Error($"[DOORTYPE UNKNOWN] {this}");
 #endif
         }
@@ -641,7 +641,7 @@ namespace Exiled.API.Features.Doors
                 "NUKE_ARMORY" => DoorType.NukeArmory,
                 "LCZ_ARMORY" => DoorType.LczArmory,
                 "SURFACE_NUKE" => DoorType.NukeSurface,
-                "HID" => DoorType.HID,
+                "HID_CHAMBER" => DoorType.HIDChamber,
                 "HCZ_ARMORY" => DoorType.HczArmory,
                 "096" => DoorType.Scp096,
                 "049_ARMORY" => DoorType.Scp049Armory,
@@ -654,8 +654,8 @@ namespace Exiled.API.Features.Doors
                 "SERVERS_BOTTOM" => DoorType.ServersBottom,
                 "173_CONNECTOR" => DoorType.Scp173Connector,
                 "LCZ_WC" => DoorType.LczWc,
-                "HID_RIGHT" => DoorType.HIDRight,
-                "HID_LEFT" => DoorType.HIDLeft,
+                "HID_UPPER" => DoorType.HIDUpper,
+                "HID_LOWER" => DoorType.HIDLower,
                 "173_ARMORY" => DoorType.Scp173Armory,
                 "173_GATE" => DoorType.Scp173Gate,
                 "GR18" => DoorType.GR18Gate,
@@ -664,6 +664,7 @@ namespace Exiled.API.Features.Doors
                 "330_CHAMBER" => DoorType.Scp330Chamber,
                 "GR18_INNER" => DoorType.GR18Inner,
                 "939_CRYO" => DoorType.Scp939Cryo,
+                "ESCAPE_FINAL" => DoorType.EscapeFinal,
 
                 // Doors spawned by the DoorSpawnPoint component
                 "LCZ_CAFE" => DoorType.LczCafe,

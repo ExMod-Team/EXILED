@@ -283,5 +283,10 @@ namespace Exiled.API.Enums
         /// Heavy Containment Elevator Zone's System B room.
         /// </summary>
         HczElevatorB,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczCrossRoomWater,
     }
 }
