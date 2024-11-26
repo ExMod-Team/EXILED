@@ -75,6 +75,16 @@ namespace Exiled.API.Features
             DecontaminationState.Disabled : (DecontaminationState)DecontaminationController.Singleton._nextPhase;
 
         /// <summary>
+        /// Gets the remaining time for the decontamination process.
+        /// </summary>
+        /// <returns>
+        /// The remaining time in seconds for the decontamination process.
+        /// Returns -1 if the controller is null or if decontamination is overridden.
+        /// Returns 0 if decontamination has not started yet.
+        /// </returns>
+        public static float RemainingDecontaminationTime => DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime;
+
+        /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
         /// </summary>
         public static ReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports { get; } = TeleportsValue.AsReadOnly();
