@@ -15,14 +15,14 @@ namespace Exiled.API.Features
 
     using CentralAuth;
     using CommandSystem;
-    using Exiled.API.Enums;
-    using Exiled.API.Features.Components;
-    using Exiled.API.Features.Roles;
+    using Components;
+    using Enums;
     using Footprinting;
     using GameCore;
     using MEC;
     using Mirror;
     using PlayerRoles;
+    using Roles;
     using UnityEngine;
 
     using Object = UnityEngine.Object;

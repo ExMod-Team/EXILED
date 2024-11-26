@@ -7,7 +7,7 @@
 
 namespace Exiled.API.Enums
 {
-    using Exiled.API.Features.Doors;
+    using Features.Doors;
     using Interactables.Interobjects;
 
     /// <summary>

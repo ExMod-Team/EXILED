@@ -7,12 +7,10 @@
 
 namespace Exiled.API.Features.Pickups.Projectiles
 {
-    using System;
     using System.Reflection;
 
-    using Exiled.API.Interfaces;
     using HarmonyLib;
-
+    using Interfaces;
     using InventorySystem.Items.ThrowableProjectiles;
 
     using BaseScp018Projectile = InventorySystem.Items.ThrowableProjectiles.Scp018Projectile;
