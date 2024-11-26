@@ -82,41 +82,7 @@ namespace Exiled.API.Features
         /// Returns -1 if the controller is null or if decontamination is overridden.
         /// Returns 0 if decontamination has not started yet.
         /// </returns>
-        public static float RemainingDecontaminationTime
-        {
-            get
-            {
-                DecontaminationController controller = DecontaminationController.Singleton;
-                if (controller == null)
-                    return -1f;
-
-                if (controller.DecontaminationOverride != DecontaminationController.DecontaminationStatus.None)
-                    return -1f;
-
-                double currentTime = DecontaminationController.GetServerTime;
-                float totalTime = 0f;
-                bool decontaminationStarted = false;
-
-                for (int i = 0; i < controller.DecontaminationPhases.Length; i++)
-                {
-                    if (currentTime < controller.DecontaminationPhases[i].TimeTrigger)
-                    {
-                        if (!decontaminationStarted)
-                        {
-                            totalTime += (float)(controller.DecontaminationPhases[i].TimeTrigger - currentTime);
-                            decontaminationStarted = true;
-                        }
-                        else
-                        {
-                            totalTime += (float)(controller.DecontaminationPhases[i].TimeTrigger -
-                                                 controller.DecontaminationPhases[i - 1].TimeTrigger);
-                        }
-                    }
-                }
-
-                return decontaminationStarted ? totalTime : 0f;
-            }
-        }
+        public static float RemainingDecontaminationTime => DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime;
 
         /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
