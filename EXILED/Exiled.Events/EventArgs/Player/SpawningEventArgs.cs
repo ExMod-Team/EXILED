@@ -7,11 +7,13 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using System;
+    using System.Runtime.CompilerServices;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles;
-
     using UnityEngine;
 
     /// <summary>
@@ -31,15 +33,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="rotation">
         /// <inheritdoc cref="HorizontalRotation" />
         /// </param>
-        /// <param name="oldRole">
-        /// the spawned player's old <see cref="PlayerRoleBase">role</see>.
-        /// </param>
-        public SpawningEventArgs(Player player, Vector3 position, float rotation, PlayerRoleBase oldRole)
+        public SpawningEventArgs(Player player, Vector3 position, float rotation)
         {
             Player = player;
             Position = position;
             HorizontalRotation = rotation;
-            OldRole = Role.Create(oldRole);
         }
 
         /// <summary>
@@ -66,6 +64,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the player's old <see cref="PlayerRoleBase">role</see>.
         /// </summary>
+        [Obsolete("Removed because the method is no longer provide OldRole since version 14.0")]
         public Role OldRole { get; }
     }
 }
