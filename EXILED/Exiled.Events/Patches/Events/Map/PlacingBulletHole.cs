@@ -8,6 +8,8 @@
 namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
@@ -48,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // this.Firearm
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ImpactEffectsModule), nameof(ImpactEffectsModule.Firearm))),
-                    new(OpCodes.Call, Method(typeof(API.Features.Items.Item), nameof(API.Features.Items.Item.Get), new[] { typeof(ItemBase) })),
+                    new(OpCodes.Call, TypeByName("Exiled.API.Features.Items.Item").GetMethods().Where(x => x.Name == "Get").First()),
 
                     // hit
                     new(OpCodes.Ldarg_2),

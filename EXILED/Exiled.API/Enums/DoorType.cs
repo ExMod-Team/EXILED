@@ -156,6 +156,11 @@ namespace Exiled.API.Enums
         /// Represents any heavy containment styled door.
         /// </summary>
         HeavyContainmentDoor,
+        
+        /// <summary>
+        /// Represents any heavy containment styled door.
+        /// </summary>
+        HeavyBulkDoor,
 
         /// <summary>
         /// Represents the HID_CHAMBER door.

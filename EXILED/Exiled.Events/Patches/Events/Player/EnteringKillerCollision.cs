@@ -32,7 +32,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label ret = generator.DefineLabel();
 
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_0);
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_0);
 
             newInstructions.InsertRange(
                 index,
