@@ -60,6 +60,9 @@ namespace Exiled.Events.Patches.Events.Player
                 // Load `rotation` (local variable 3).
                 new CodeInstruction(OpCodes.Ldloc_3),
 
+                // Load `newRole` (argument 1).
+                new CodeInstruction(OpCodes.Ldarg_1), // Load `newRole` from argument 1.
+
                 // Create a new instance of `SpawningEventArgs`.
                 new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
 

@@ -33,11 +33,15 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="rotation">
         /// <inheritdoc cref="HorizontalRotation" />
         /// </param>
-        public SpawningEventArgs(Player player, Vector3 position, float rotation)
+        /// <param name="newRole">
+        /// the spawned player's new <see cref="PlayerRoleBase">role</see>.
+        /// </param>
+        public SpawningEventArgs(Player player, Vector3 position, float rotation, PlayerRoleBase newRole)
         {
             Player = player;
             Position = position;
             HorizontalRotation = rotation;
+            NewRole = Role.Create(newRole);
         }
 
         /// <summary>
@@ -64,7 +68,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the player's old <see cref="PlayerRoleBase">role</see>.
         /// </summary>
-        [Obsolete("Removed because the method is no longer provide OldRole since version 14.0")]
+        [Obsolete("Removed because the method is no longer provide OldRole since version 14.0. Use Player.Role instead")]
         public Role OldRole { get; }
+
+        /// <summary>
+        /// Gets the player's new <see cref="PlayerRoleBase">role</see>.
+        /// </summary>
+        public Role NewRole { get; }
     }
 }
