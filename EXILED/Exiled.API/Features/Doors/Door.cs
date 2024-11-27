@@ -588,9 +588,7 @@ namespace Exiled.API.Features.Doors
         {
             if (Nametag is null)
             {
-                string doorName = GameObject.name.GetBefore(' ');
-                if (GameObject.name.Contains("BulkDoor")) // Since the BulkDoor's first line is HCZ not BulkDoor we require to do this to return the proper DoorType
-                    return DoorType.BulkDoor;
+                string doorName = GameObject.name.GetBefore(' ') == "HCZ" ? GameObject.name.GetBefore('(') : GameObject.name.GetBefore(' ').Replace(" BreakableDoor", string.Empty);
                 return doorName switch
                 {
                     "LCZ" => Room?.Type switch
@@ -599,6 +597,7 @@ namespace Exiled.API.Features.Doors
                         _ => DoorType.LightContainmentDoor,
                     },
                     "HCZ" => DoorType.HeavyContainmentDoor,
+                    "HCZ BulkDoor" => DoorType.BulkDoor,
                     "EZ" => DoorType.EntranceDoor,
                     "Prison" => DoorType.PrisonDoor,
                     "914" => DoorType.Scp914Door,
