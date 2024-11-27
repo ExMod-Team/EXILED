@@ -18,10 +18,10 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using UnityEngine;
 
+    using DestroyedGameRole = PlayerRoles.DestroyedRole;
     using FilmmakerGameRole = PlayerRoles.Filmmaker.FilmmakerRole;
     using HumanGameRole = PlayerRoles.HumanRole;
     using NoneGameRole = PlayerRoles.NoneRole;
-    using DestroyedGameRole = PlayerRoles.DestroyedRole;
     using OverwatchGameRole = PlayerRoles.Spectating.OverwatchRole;
     using Scp049GameRole = PlayerRoles.PlayableScps.Scp049.Scp049Role;
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
