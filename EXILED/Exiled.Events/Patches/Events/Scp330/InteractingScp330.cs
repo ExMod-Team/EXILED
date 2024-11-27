@@ -61,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // num2
-                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldloc_1),
 
                     // InteractingScp330EventArgs ev = new(Player, int)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingScp330EventArgs))[0]),
