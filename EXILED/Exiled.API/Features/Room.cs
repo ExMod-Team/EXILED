@@ -431,7 +431,7 @@ namespace Exiled.API.Features
                 "HCZ_079" => RoomType.Hcz079,
                 "HCZ_TArmory" => RoomType.HczArmory,
                 "HCZ_Testroom" => RoomType.HczTestRoom,
-                "HCZ_Hid" => RoomType.HczHid,
+                "HCZ_MicroHID_New" => RoomType.HczHid,
                 "HCZ_049" => RoomType.Hcz049,
                 "HCZ_Crossing" => RoomType.HczCrossing,
                 "HCZ_106" => RoomType.Hcz106,
@@ -495,13 +495,13 @@ namespace Exiled.API.Features
 
             Zone = FindZone(gameObject);
 #if DEBUG
-            if (Type is RoomType.Unknown)
-                Log.Error($"[ZONETYPE UNKNOWN] {this}");
+            if (Zone is ZoneType.Unspecified)
+                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
 #endif
             Type = FindType(gameObject);
 #if DEBUG
             if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this}");
+                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
 #endif
 
             RoomLightControllersValue.AddRange(gameObject.GetComponentsInChildren<RoomLightController>());
