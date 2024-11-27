@@ -584,7 +584,7 @@ namespace Exiled.API.Features
             get => role ??= Role.Create(RoleManager.CurrentRole);
             internal set
             {
-                PreviousRole = role.Type;
+                PreviousRole = role?.Type ?? RoleTypeId.None;
                 role = value;
             }
         }
