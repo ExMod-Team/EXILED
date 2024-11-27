@@ -35,18 +35,18 @@ namespace Exiled.Events.EventArgs.Server
         /// <param name="maxRespawn">
         /// <inheritdoc cref="MaximumRespawnAmount" />
         /// </param>
-        /// <param name="nextKnownTeam">
-        /// <inheritdoc cref="NextKnownTeam" />
+        /// <param name="respawningTeam">
+        /// <inheritdoc cref="RespawningTeam" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public RespawningTeamEventArgs(List<Player> players, Queue<RoleTypeId> queue, int maxRespawn, SpawnableWaveBase nextKnownTeam, bool isAllowed = true)
+        public RespawningTeamEventArgs(List<Player> players, Queue<RoleTypeId> queue, int maxRespawn, SpawnableWaveBase respawningTeam, bool isAllowed = true)
         {
             Players = players;
             MaximumRespawnAmount = maxRespawn;
             SpawnQueue = queue;
-            NextKnownTeam = nextKnownTeam;
+            RespawningTeam = respawningTeam;
             IsAllowed = isAllowed;
         }
 
@@ -74,9 +74,9 @@ namespace Exiled.Events.EventArgs.Server
         }
 
         /// <summary>
-        /// Gets or sets a value indicating what the next respawnable team is.
+        /// Gets or sets a value indicating what the currently respawning team is.
         /// </summary>
-        public SpawnableWaveBase NextKnownTeam { get; set; }
+        public SpawnableWaveBase RespawningTeam { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the spawn can occur.

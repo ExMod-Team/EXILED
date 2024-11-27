@@ -5,10 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-
 namespace Exiled.Events.Patches.Events.Server
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -28,7 +27,7 @@ namespace Exiled.Events.Patches.Events.Server
 
     using Player = API.Features.Player;
 
-    // This event should be renaned to SpawningWave, might be a good time to do it now since it's a breaking change
+    // This event should be renamed to smth like SpawningWave, might be a good time to do it now since it's a breaking change
 
     /// <summary>
     /// Patch the <see cref="WaveSpawner.SpawnWave" />.
@@ -106,7 +105,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(RefillQueue))),
 
                     // wave = ev.NextKnownTeam;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.NextKnownTeam))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.RespawningTeam))),
                     new(OpCodes.Starg_S, 1),
                 });
 
@@ -129,9 +128,13 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static bool Prefix(SpawnableWaveBase wave)
         {
-            List<ReferenceHub> playerList = ReferenceHub.AllHubs.Where(WaveSpawner.CheckSpawnable).OrderByDescending(hub => WaveSpawner.CalculatePriority(hub, spawningTeam)).ToList<ReferenceHub>();
+            SpawnableTeamType spawningTeam = wave.TargetFaction.GetSpawnableTeam();
+            List<ReferenceHub> playerList = ReferenceHub.AllHubs.Where(WaveSpawner.CheckSpawnable).OrderByDescending(hub => WaveSpawner.CalculatePriority(hub, spawningTeam)).ToList();
 
-            RespawningTeamEventArgs ev = new()
+            RespawningTeamEventArgs ev = new(playerList.Select(Player.Get).ToList(), WaveSpawner.SpawnQueue, wave.MaxWaveSize, wave);
+            Server.OnRespawningTeam(ev);
+
+            return ev.IsAllowed;
         }
     }
 }
