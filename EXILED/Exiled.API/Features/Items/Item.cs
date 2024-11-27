@@ -13,7 +13,6 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
@@ -26,6 +25,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp1344;
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
@@ -202,6 +202,7 @@ namespace Exiled.API.Features.Items
                 KeycardItem keycard => new Keycard(keycard),
                 UsableItem usable => usable switch
                 {
+                    Scp1344Item scp1344Item => new Scp1344(scp1344Item),
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
                     Scp1576Item scp1576 => new Scp1576(scp1576),
@@ -222,7 +223,7 @@ namespace Exiled.API.Features.Items
                     Scp018Projectile => new Scp018(throwable),
                     _ => new Throwable(throwable),
                 },
-                _ => new Item(itemBase),
+                _ => new(itemBase),
             };
         }
 
@@ -297,6 +298,7 @@ namespace Exiled.API.Features.Items
             ItemType.KeycardGuard or ItemType.KeycardJanitor or ItemType.KeycardO5 or ItemType.KeycardScientist or ItemType.KeycardChaosInsurgency or ItemType.KeycardContainmentEngineer or ItemType.KeycardFacilityManager or ItemType.KeycardResearchCoordinator or ItemType.KeycardZoneManager or ItemType.KeycardMTFPrivate or ItemType.KeycardMTFOperative or
             ItemType.KeycardMTFCaptain => new Keycard(type),
             ItemType.ArmorLight or ItemType.ArmorCombat or ItemType.ArmorHeavy => new Armor(type),
+            ItemType.SCP1344 => new Scp1344(),
             ItemType.SCP330 => new Scp330(),
             ItemType.SCP2176 => new Scp2176(owner),
             ItemType.SCP1576 => new Scp1576(),

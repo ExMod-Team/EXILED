@@ -21,7 +21,6 @@ namespace Exiled.API.Features
     using UnityEngine;
 
     using static Interactables.Interobjects.ElevatorChamber;
-    using static Interactables.Interobjects.ElevatorManager;
 
     using Elevator = Interactables.Interobjects.ElevatorDoor;
 

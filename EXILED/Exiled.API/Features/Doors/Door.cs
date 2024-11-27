@@ -14,16 +14,12 @@ namespace Exiled.API.Features.Doors
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
-    using Exiled.API.Features.Hazards;
     using Exiled.API.Interfaces;
-    using global::Hazards;
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
     using MEC;
     using Mirror;
     using UnityEngine;
-
-    using static Interactables.Interobjects.ElevatorManager;
 
     using BaseBreakableDoor = Interactables.Interobjects.BreakableDoor;
     using BaseKeycardPermissions = Interactables.Interobjects.DoorUtils.KeycardPermissions;

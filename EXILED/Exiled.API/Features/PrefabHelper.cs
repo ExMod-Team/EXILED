@@ -67,6 +67,7 @@ namespace Exiled.API.Features
         {
             if (!Stored.TryGetValue(prefabType, out GameObject gameObject))
                 return null;
+
             GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation);
             NetworkServer.Spawn(newGameObject);
             return newGameObject;

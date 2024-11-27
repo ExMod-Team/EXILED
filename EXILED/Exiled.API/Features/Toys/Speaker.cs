@@ -8,9 +8,9 @@
 namespace Exiled.API.Features.Toys
 {
     using AdminToys;
-
     using Enums;
     using Exiled.API.Interfaces;
+    using UnityEngine;
 
     /// <summary>
     /// A wrapper class for <see cref="SpeakerToy"/>.
@@ -23,6 +23,11 @@ namespace Exiled.API.Features.Toys
         /// <param name="speakerToy">The <see cref="SpeakerToy"/> of the toy.</param>
         internal Speaker(SpeakerToy speakerToy)
             : base(speakerToy, AdminToyType.Speaker) => Base = speakerToy;
+
+        /// <summary>
+        /// Gets the prefab.
+        /// </summary>
+        public static SpeakerToy Prefab => PrefabHelper.GetPrefab<SpeakerToy>(PrefabType)
 
         /// <summary>
         /// Gets the base <see cref="SpeakerToy"/>.
@@ -79,6 +84,16 @@ namespace Exiled.API.Features.Toys
         {
             get => Base.NetworkMinDistance;
             set => Base.NetworkMinDistance = value;
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Speaker"/>.
+        /// </summary>
+        /// <returns>The <see cref="Speaker"/>.</returns>
+        public static Speaker Create()
+        {
+            Speaker speaker = new(Object.Instantiate(Prefab));
+            return speaker;
         }
     }
 }
