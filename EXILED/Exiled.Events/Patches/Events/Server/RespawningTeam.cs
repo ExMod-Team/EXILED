@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
+
 namespace Exiled.Events.Patches.Events.Server
 {
     using System.Collections.Generic;
@@ -26,6 +28,8 @@ namespace Exiled.Events.Patches.Events.Server
 
     using Player = API.Features.Player;
 
+    // This event should be renaned to SpawningWave, might be a good time to do it now since it's a breaking change
+
     /// <summary>
     /// Patch the <see cref="WaveSpawner.SpawnWave" />.
     /// Adds the <see cref="Server.RespawningTeam" /> event.
@@ -34,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Server
     [HarmonyPatch(typeof(WaveSpawner), nameof(WaveSpawner.SpawnWave))]
     internal static class RespawningTeam
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        /*private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
@@ -121,6 +125,13 @@ namespace Exiled.Events.Patches.Events.Server
             WaveSpawner.SpawnQueue.Clear();
             foreach (RoleTypeId role in newQueue)
                 WaveSpawner.SpawnQueue.Enqueue(role);
+        }*/
+
+        private static bool Prefix(SpawnableWaveBase wave)
+        {
+            List<ReferenceHub> playerList = ReferenceHub.AllHubs.Where(WaveSpawner.CheckSpawnable).OrderByDescending(hub => WaveSpawner.CalculatePriority(hub, spawningTeam)).ToList<ReferenceHub>();
+
+            RespawningTeamEventArgs ev = new()
         }
     }
 }
