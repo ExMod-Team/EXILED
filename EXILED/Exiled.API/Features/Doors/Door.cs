@@ -61,7 +61,7 @@ namespace Exiled.API.Features.Doors
             Type = GetDoorType();
 #if DEBUG
             if (Type is DoorType.UnknownDoor or DoorType.UnknownGate or DoorType.UnknownElevator)
-                Log.Error($"[DOORTYPE UNKNOWN] {this}");
+                Log.Error($"[DOORTYPE UNKNOWN] {this} BASE = {Base}");
 #endif
         }
 
@@ -557,7 +557,7 @@ namespace Exiled.API.Features.Doors
         /// Returns the Door in a human-readable format.
         /// </summary>
         /// <returns>A string containing Door-related data.</returns>
-        public override string ToString() => $"{Type} ({Zone}) [{Room}] *{DoorLockType}* ={RequiredPermissions.RequiredPermissions}=";
+        public override string ToString() => $"{Type} ({Zone}) [{Room}] *{DoorLockType}* ={RequiredPermissions?.RequiredPermissions}=";
 
         /// <summary>
         /// Creates the door object associated with a specific <see cref="DoorVariant"/>.
@@ -588,50 +588,37 @@ namespace Exiled.API.Features.Doors
         {
             if (Nametag is null)
             {
-                string doorName = GameObject.name.GetBefore(' ');
-                // Log.Error($"What is door type {doorName} versus {GameObject.name}");
-                //Temp, Exiled should not be using a space identifier but I am on vacation
-                if (doorName.Equals("HCZ"))
-                {
-                    doorName = GameObject.name.GetBefore('(');
-                }
-                // Log.Error($"What is door type {doorName} versus {GameObject.name}");
-                // Correct behavior would be to just cut (clone) off the end
-                // If you want, have two item definitions - 1 - HCZ doors group
-                // 2 - HCZ specific door (HCZ - Breakable, Blastdoor, etc)
+                string doorName = GameObject.name.GetBefore('(').TrimEnd();
 
                 return doorName switch
                 {
-                    "LCZ" => Room?.Type switch
-                    {
-                        RoomType.LczAirlock => (Base.GetComponentInParent<Interactables.Interobjects.AirlockController>() != null) ? DoorType.Airlock : DoorType.LightContainmentDoor,
-                        _ => DoorType.LightContainmentDoor,
-                    },
+                    "LCZ PortallessBreakableDoor" => DoorType.Airlock,
+                    "LCZ BreakableDoor" => DoorType.LightContainmentDoor,
                     "HCZ BreakableDoor" => DoorType.HeavyContainmentDoor,
                     "HCZ BulkDoor" => DoorType.HeavyBulkDoor,
-                    "EZ" => DoorType.EntranceDoor,
-                    "Prison" => DoorType.PrisonDoor,
-                    "914" => DoorType.Scp914Door,
-                    "Intercom" => Room?.Type switch
+                    "EZ BreakableDoor" => DoorType.EntranceDoor,
+                    "Prison BreakableDoor" => DoorType.PrisonDoor,
+                    "914 Door" => DoorType.Scp914Door,
+                    "Intercom BreakableDoor" => Room?.Type switch
                     {
                         RoomType.HczEzCheckpointA => DoorType.CheckpointArmoryA,
                         RoomType.HczEzCheckpointB => DoorType.CheckpointArmoryB,
                         _ => DoorType.UnknownDoor,
                     },
-                    "Unsecured" => Room?.Type switch
+                    "Unsecured Pryable GateDoor" => Room?.Type switch
                     {
                         RoomType.EzCheckpointHallway => DoorType.CheckpointGate,
                         RoomType.Hcz049 => Position.y < -805 ? DoorType.Scp049Gate : DoorType.Scp173NewGate,
                         _ => DoorType.UnknownGate,
                     },
-                    "Elevator" => (Base as Interactables.Interobjects.ElevatorDoor)?.Group switch
+                    "Elevator Door" or "Nuke Elevator Door" or "Elevator Door 02" => (Base as Interactables.Interobjects.ElevatorDoor)?.Group switch
                     {
-                        ElevatorGroup.Nuke01 or ElevatorGroup.Nuke02 => DoorType.ElevatorNuke,
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
                         ElevatorGroup.GateA => DoorType.ElevatorGateA,
                         ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => DoorType.ElevatorLczA,
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
+                        ElevatorGroup.Nuke01 or ElevatorGroup.Nuke02 => DoorType.ElevatorNuke,
                         _ => DoorType.UnknownElevator,
                     },
                     _ => DoorType.UnknownDoor,

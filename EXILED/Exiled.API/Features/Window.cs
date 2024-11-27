@@ -40,7 +40,7 @@ namespace Exiled.API.Features
             Type = GetGlassType();
 #if DEBUG
             if (Type is GlassType.Unknown)
-                Log.Error($"[GLASSTYPE UNKNOWN] {this}");
+                Log.Error($"[GLASSTYPE UNKNOWN] {this} BASE = {Base}");
 #endif
         }
 
