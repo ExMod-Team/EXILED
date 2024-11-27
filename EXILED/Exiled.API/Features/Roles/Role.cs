@@ -21,6 +21,7 @@ namespace Exiled.API.Features.Roles
     using FilmmakerGameRole = PlayerRoles.Filmmaker.FilmmakerRole;
     using HumanGameRole = PlayerRoles.HumanRole;
     using NoneGameRole = PlayerRoles.NoneRole;
+    using DestroyedGameRole = PlayerRoles.DestroyedRole;
     using OverwatchGameRole = PlayerRoles.Spectating.OverwatchRole;
     using Scp049GameRole = PlayerRoles.PlayableScps.Scp049.Scp049Role;
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
@@ -228,6 +229,7 @@ namespace Exiled.API.Features.Roles
             HumanGameRole humanRole => new HumanRole(humanRole),
             FilmmakerGameRole filmmakerRole => new FilmMakerRole(filmmakerRole),
             NoneGameRole noneRole => new NoneRole(noneRole),
+            DestroyedGameRole destroyedRole => new DestroyedRole(destroyedRole),
             _ => null,
         };
     }
