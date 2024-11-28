@@ -10,6 +10,7 @@ namespace Exiled.Events.Patches.Events.Server
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
     using API.Features;
+
     using HarmonyLib;
 
     /// <summary>
