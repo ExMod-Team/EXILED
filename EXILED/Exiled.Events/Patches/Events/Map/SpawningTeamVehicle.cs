@@ -35,7 +35,6 @@ namespace Exiled.Events.Patches.Events.Map
             Label retLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(SpawningTeamVehicleEventArgs));
             LocalBuilder msg = generator.DeclareLocal(typeof(WaveUpdateMessage));
 
             int offset = 1;
@@ -47,21 +46,19 @@ namespace Exiled.Events.Patches.Events.Map
 
                 // if (type != RespawnEffectsController.EffectType.Selection)
                 //    goto continueLabel;
-                new(OpCodes.Ldloc_S, msg.LocalIndex),
+                new(OpCodes.Ldloca_S, msg.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(WaveUpdateMessage), nameof(WaveUpdateMessage.IsTrigger))),
                 new(OpCodes.Brfalse_S, continueLabel),
 
-                // team
-                new(OpCodes.Ldarg_1),
+                // wave
+                new(OpCodes.Ldarg_0),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // SpawningTeamVehicleEventArgs ev = new(SpawnableTeamType, bool);
+                // SpawningTeamVehicleEventArgs ev = new(SpawnableWaveBase, bool);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningTeamVehicleEventArgs))[0]),
                 new(OpCodes.Dup),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, ev.LocalIndex),
 
                 // Handlers.Map.OnSpawningTeamVehicle(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnSpawningTeamVehicle))),
@@ -70,11 +67,6 @@ namespace Exiled.Events.Patches.Events.Map
                 //    return;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningTeamVehicleEventArgs), nameof(SpawningTeamVehicleEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
-
-                // team = ev.Team
-                new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningTeamVehicleEventArgs), nameof(SpawningTeamVehicleEventArgs.Team))),
-                new(OpCodes.Starg_S, 1),
 
                 new CodeInstruction(OpCodes.Ldloc_S, msg.LocalIndex).WithLabels(continueLabel),
             });

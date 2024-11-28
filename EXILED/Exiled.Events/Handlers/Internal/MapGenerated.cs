@@ -54,52 +54,7 @@ namespace Exiled.Events.Handlers.Internal
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.OtherAlive] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Tutorial);
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.Dead] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Spectator);
 
-            GenerateAttachments();
-            Timing.CallDelayed(1, GenerateCache);
-        }
-
-        private static void GenerateCache()
-        {
-            Handlers.Map.OnGenerated();
-
-            Timing.CallDelayed(0.1f, Handlers.Server.OnWaitingForPlayers);
-        }
-
-        private static void GenerateAttachments()
-        {
-            foreach (FirearmType firearmType in EnumUtils<FirearmType>.Values)
-            {
-                if (firearmType == FirearmType.None)
-                    continue;
-
-                if (Item.Create(firearmType.GetItemType()) is not Firearm firearm)
-                    continue;
-
-                Firearm.ItemTypeToFirearmInstance.Add(firearmType, firearm);
-
-                List<AttachmentIdentifier> attachmentIdentifiers = ListPool<AttachmentIdentifier>.Pool.Get();
-                HashSet<AttachmentSlot> attachmentsSlots = HashSetPool<AttachmentSlot>.Pool.Get();
-
-                uint code = 1;
-
-                foreach (Attachment attachment in firearm.Attachments)
-                {
-                    attachmentsSlots.Add(attachment.Slot);
-                    attachmentIdentifiers.Add(new(code, attachment.Name, attachment.Slot));
-                    code *= 2U;
-                }
-
-                uint baseCode = 0;
-                attachmentsSlots.ForEach(slot => baseCode += attachmentIdentifiers
-                        .Where(attachment => attachment.Slot == slot)
-                        .Min(slot => slot.Code));
-
-                Firearm.BaseCodesValue.Add(firearmType, baseCode);
-                Firearm.AvailableAttachmentsValue.Add(firearmType, attachmentIdentifiers.ToArray());
-
-                ListPool<AttachmentIdentifier>.Pool.Return(attachmentIdentifiers);
-                HashSetPool<AttachmentSlot>.Pool.Return(attachmentsSlots);
-            }
+            Timing.CallDelayed(1, Handlers.Map.OnGenerated);
         }
     }
 }

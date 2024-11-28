@@ -12,6 +12,7 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Reflection;
     using System.Reflection.Emit;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Server;
@@ -35,7 +36,7 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static MethodInfo TargetMethod()
         {
-            PrivateType = typeof(RoundSummary).GetNestedTypes(all)[5];
+            PrivateType = typeof(RoundSummary).GetNestedTypes(all)[6];
             return Method(PrivateType, "MoveNext");
         }
 
@@ -58,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new CodeInstruction[]
                 {
                     new(OpCodes.Call, PropertyGetter(typeof(Round), nameof(Round.IgnoredPlayers))),
-                    new(OpCodes.Ldloc_S, 10),
+                    new(OpCodes.Ldloc_S, 11),
                     new(OpCodes.Call, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
                     new(OpCodes.Brtrue_S, jmp),
                 });
@@ -67,20 +68,6 @@ namespace Exiled.Events.Patches.Events.Server
             index = newInstructions.FindIndex(x => x.Calls(Method(typeof(PlayerRolesUtils), nameof(PlayerRolesUtils.GetTeam), new Type[] { typeof(ReferenceHub), }))) + offset;
 
             newInstructions[index].labels.Add(jmp);
-
-            // Replace Network_extraTargets == 0 with Network_extraTargets <= 0 // TODO VERIFY THAN this still exist
-            offset = 1;
-            index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(RoundSummary), nameof(RoundSummary.Network_extraTargets)))) + offset;
-            Label label = (Label)newInstructions[index].operand;
-            newInstructions.RemoveAt(index);
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Bgt_S, label),
-                });
 
             offset = -1;
             index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;

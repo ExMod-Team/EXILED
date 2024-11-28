@@ -39,11 +39,7 @@ namespace Exiled.Events.Patches.Events.Player
 #endif
                 Player.UnverifiedPlayers.Add(hub.gameObject, player);
 
-                if (ReferenceHub._hostHub == null)
-                {
-                    Server.Host = player;
-                }
-                else
+                if (ReferenceHub._hostHub != null)
                 {
                     Handlers.Player.OnJoined(new JoinedEventArgs(player));
                 }
