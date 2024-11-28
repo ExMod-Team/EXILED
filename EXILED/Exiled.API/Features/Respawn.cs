@@ -20,6 +20,8 @@ namespace Exiled.API.Features
     using Respawning.Waves.Generic;
     using UnityEngine;
 
+    // TODO: Write docs for everything in this class
+
     /// <summary>
     /// A set of tools to handle team respawns more easily.
     /// </summary>
@@ -302,7 +304,7 @@ namespace Exiled.API.Features
         {
             if (TryGetWaveBases(faction, out IEnumerable<SpawnableWaveBase> waveBases))
             {
-                foreach (ILimitedWave limitedWave in waveBases.Select(x => (ILimitedWave)x))
+                foreach (ILimitedWave limitedWave in waveBases.OfType<ILimitedWave>())
                 {
                     limitedWave.RespawnTokens = Math.Max(0, limitedWave.RespawnTokens - amount);
                 }
@@ -323,7 +325,7 @@ namespace Exiled.API.Features
         {
             if (TryGetWaveBases(faction, out IEnumerable<SpawnableWaveBase> waveBases))
             {
-                foreach (ILimitedWave limitedWave in waveBases.Select(x => (ILimitedWave)x))
+                foreach (ILimitedWave limitedWave in waveBases.OfType<ILimitedWave>())
                 {
                     limitedWave.RespawnTokens = amount;
                 }
@@ -390,6 +392,8 @@ namespace Exiled.API.Features
         {
             WaveManager.Spawn(wave);
         }
+
+        // These two need testing, Beryl said that this was originally intended to work and it still might
 
         /// <summary>
         /// Docs1.
