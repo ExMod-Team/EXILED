@@ -366,7 +366,7 @@ namespace Exiled.API.Features
         /// <param name="isMini">Docs.</param>
         public static void ForceWave(Faction faction, bool isMini = false)
         {
-            if (faction.GetSpawnableFaction(out SpawnableFaction spawnableFaction, isMini))
+            if (faction.TryGetSpawnableFaction(out SpawnableFaction spawnableFaction, isMini))
             {
                 ForceWave(spawnableFaction);
             }

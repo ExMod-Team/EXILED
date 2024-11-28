@@ -222,7 +222,8 @@ namespace Exiled.API.Extensions
             NtfSpawnWave => SpawnableFaction.NtfWave,
             NtfMiniWave => SpawnableFaction.NtfMiniWave,
             ChaosSpawnWave => SpawnableFaction.ChaosWave,
-            _ => SpawnableFaction.ChaosMiniWave
+            ChaosMiniWave => SpawnableFaction.ChaosMiniWave,
+            _ => SpawnableFaction.None
         };
 
         /// <summary>
@@ -256,7 +257,7 @@ namespace Exiled.API.Extensions
         /// <param name="spawnableFaction">Docs5.</param>
         /// <param name="mini">Docs3.</param>
         /// <returns>Docs4.</returns>
-        public static bool GetSpawnableFaction(this Faction faction, out SpawnableFaction spawnableFaction, bool mini = false)
+        public static bool TryGetSpawnableFaction(this Faction faction, out SpawnableFaction spawnableFaction, bool mini = false)
         {
             switch (faction)
             {
