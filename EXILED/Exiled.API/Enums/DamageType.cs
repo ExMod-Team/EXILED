@@ -121,6 +121,11 @@ namespace Exiled.API.Enums
         SeveredHands,
 
         /// <summary>
+        /// Damage caused by severed eyes.
+        /// </summary>
+        SeveredEyes,
+
+        /// <summary>
         /// Damage caused by a custom source.
         /// </summary>
         Custom,
@@ -249,10 +254,5 @@ namespace Exiled.API.Enums
         /// Damage caused by the marshmallow man.
         /// </summary>
         Marshmallow,
-
-        /// <summary>
-        /// Damage caused by <see cref="ItemType.SCP1344"/>.
-        /// </summary>
-        Scp1344,
     }
 }

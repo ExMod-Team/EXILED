@@ -18,6 +18,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using UnityEngine;
 
+    using DestroyedGameRole = PlayerRoles.DestroyedRole;
     using FilmmakerGameRole = PlayerRoles.Filmmaker.FilmmakerRole;
     using HumanGameRole = PlayerRoles.HumanRole;
     using NoneGameRole = PlayerRoles.NoneRole;
@@ -228,6 +229,7 @@ namespace Exiled.API.Features.Roles
             HumanGameRole humanRole => new HumanRole(humanRole),
             FilmmakerGameRole filmmakerRole => new FilmMakerRole(filmmakerRole),
             NoneGameRole noneRole => new NoneRole(noneRole),
+            DestroyedGameRole destroyedRole => new DestroyedRole(destroyedRole),
             _ => null,
         };
     }

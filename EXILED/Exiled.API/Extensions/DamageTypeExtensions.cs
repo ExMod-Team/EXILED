@@ -49,7 +49,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.MicroHID.Id, DamageType.MicroHid },
             { DeathTranslations.Hypothermia.Id, DamageType.Hypothermia },
             { DeathTranslations.MarshmallowMan.Id, DamageType.Marshmallow },
-            { DeathTranslations.Scp1344.Id, DamageType.Scp1344 },
+            { DeathTranslations.Scp1344.Id, DamageType.SeveredEyes },
         };
 
         private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
@@ -81,7 +81,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.MicroHID, DamageType.MicroHid },
             { DeathTranslations.Hypothermia, DamageType.Hypothermia },
             { DeathTranslations.MarshmallowMan, DamageType.Marshmallow },
-            { DeathTranslations.Scp1344, DamageType.Scp1344 },
+            { DeathTranslations.Scp1344, DamageType.SeveredEyes },
         };
 
         private static readonly Dictionary<ItemType, DamageType> ItemConversionInternal = new()

@@ -154,7 +154,7 @@ namespace Exiled.API.Features
             Type = GetCameraType();
 #if DEBUG
             if (Type is CameraType.Unknown)
-                Log.Error($"[CAMERATYPE UNKNOWN] {this}");
+                Log.Error($"[CAMERATYPE UNKNOWN] {this} BASE = {Base}");
 #endif
         }
 
