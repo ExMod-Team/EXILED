@@ -281,7 +281,7 @@ namespace Exiled.API.Features
         {
             if (TryGetWaveBases(faction, out IEnumerable<SpawnableWaveBase> waveBases))
             {
-                foreach (ILimitedWave limitedWave in waveBases.Select(x => (ILimitedWave)x))
+                foreach (ILimitedWave limitedWave in waveBases.OfType<ILimitedWave>())
                 {
                     limitedWave.RespawnTokens += amount;
                 }

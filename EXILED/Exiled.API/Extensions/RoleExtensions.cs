@@ -232,10 +232,9 @@ namespace Exiled.API.Extensions
         /// <returns>Docs2.</returns>
         public static Faction GetFaction(this SpawnableFaction spawnableFaction) => spawnableFaction switch
         {
-            SpawnableFaction.ChaosWave => Faction.FoundationEnemy,
-            SpawnableFaction.ChaosMiniWave => Faction.FoundationEnemy,
-            SpawnableFaction.NtfWave => Faction.FoundationStaff,
-            _ => Faction.FoundationStaff
+            SpawnableFaction.ChaosWave or SpawnableFaction.ChaosMiniWave => Faction.FoundationEnemy,
+            SpawnableFaction.NtfWave or SpawnableFaction.NtfMiniWave => Faction.FoundationStaff,
+            _ => Faction.Unclassified,
         };
 
         /// <summary>
@@ -246,7 +245,8 @@ namespace Exiled.API.Extensions
         public static Faction GetFaction(this SpawnableTeamType spawnableTeamType) => spawnableTeamType switch
         {
             SpawnableTeamType.ChaosInsurgency => Faction.FoundationEnemy,
-            _ => Faction.FoundationStaff
+            SpawnableTeamType.NineTailedFox => Faction.FoundationStaff,
+            _ => Faction.Unclassified,
         };
 
         /// <summary>
