@@ -14,6 +14,7 @@ namespace Exiled.API.Features.Items
     using CameraShaking;
     using Enums;
     using Exiled.API.Features.Pickups;
+    using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
     using Extensions;
@@ -104,23 +105,109 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public new BaseFirearm Base { get; }
 
-        /// <summary>
+                /// <summary>
         /// Gets or sets the amount of ammo in the firearm.
         /// </summary>
         public int Ammo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored = value;
+            get => Base.GetTotalStoredAmmo();
+            set
+            {
+                // Magazines that contain most of the ammo and can be reloaded
+                List<IPrimaryAmmoContainerModule> primaryContainers = ListPool<IPrimaryAmmoContainerModule>.Pool.Get(Base.Modules.OfType<IPrimaryAmmoContainerModule>());
+
+                // Barrels that may contain some ammo in them
+                List<AutomaticActionModule> barrels = ListPool<AutomaticActionModule>.Pool.Get(Base.Modules.OfType<AutomaticActionModule>());
+
+                int currentAmmo = Ammo;
+
+                if (value < 0)
+                    value = 0;
+
+                if (value < currentAmmo)
+                {
+                    var ammoToRemove = currentAmmo - value;
+
+                    // First try to take ammo from magazines.
+                    foreach (IPrimaryAmmoContainerModule primaryAmmoContainer in primaryContainers)
+                    {
+                        var removedAmmo = Math.Min(primaryAmmoContainer.AmmoStored, ammoToRemove);
+                        primaryAmmoContainer.ServerModifyAmmo(-removedAmmo);
+                        ammoToRemove -= removedAmmo;
+
+                        if (ammoToRemove <= 0)
+                            return;
+                    }
+
+                    // Take ammo from barrels only when actual magazines are empty.
+                    foreach (AutomaticActionModule barrel in barrels)
+                    {
+                        var removedAmmo = Math.Min(barrel.AmmoStored, ammoToRemove);
+                        barrel.AmmoStored -= removedAmmo;
+                        ammoToRemove -= removedAmmo;
+
+                        if (ammoToRemove <= 0)
+                            return;
+                    }
+                }
+                else
+                {
+                    var ammoToAdd = value - currentAmmo;
+
+                    // First add ammo to barrels so player can fire.
+                    foreach (AutomaticActionModule barrel in barrels)
+                    {
+                        var addedAmmo = Math.Min(barrel.AmmoMax - barrel.AmmoStored, ammoToAdd);
+                        barrel.AmmoStored += addedAmmo;
+                        ammoToAdd -= addedAmmo;
+
+                        if (ammoToAdd <= 0)
+                            return;
+                    }
+
+                    // Then fill magazines.
+                    foreach (IPrimaryAmmoContainerModule primaryContainer in primaryContainers)
+                    {
+                        var addedAmmo = Math.Min(primaryContainer.AmmoMax - primaryContainer.AmmoStored, ammoToAdd);
+                        primaryContainer.ServerModifyAmmo(addedAmmo);
+                        ammoToAdd -= addedAmmo;
+
+                        if (ammoToAdd <= 0)
+                            return;
+                    }
+
+                    // If there is still ammo to add, add it to the first magazine.
+                    primaryContainers.FirstOrDefault()?.ServerModifyAmmo(ammoToAdd);
+                }
+            }
         }
 
         /// <summary>
         /// Gets or sets the max ammo for this firearm.
         /// </summary>
-        /// <remarks>Disruptor can't be used for MaxAmmo.</remarks>
+        /// <remarks>MaxAmmo can't be modified for <see cref="ParticleDisruptor"/>.</remarks>
         public int MaxAmmo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoMax;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule)._defaultCapacity = value; // Synced?
+            get => Base.GetTotalMaxAmmo();
+            set
+            {
+                var difference = value - MaxAmmo;
+
+                foreach (ModuleBase module in Base.Modules)
+                {
+                    if (module is MagazineModule magazineModule)
+                    {
+                        magazineModule._defaultCapacity += difference;
+                        break;
+                    }
+
+                    if (module is CylinderAmmoModule cylinderAmmoModule)
+                    {
+                        cylinderAmmoModule._defaultCapacity += difference;
+                        break;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -131,12 +218,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="Enums.AmmoType"/> of the firearm.
         /// </summary>
-        public AmmoType AmmoType => (Base.Modules.OfType<MagazineModule>().FirstOrDefault()?.AmmoType ?? ItemType.None).GetAmmoType();
+        public AmmoType AmmoType => Base.TryGetModule(out IPrimaryAmmoContainerModule primaryAmmoContainer) ? primaryAmmoContainer.AmmoType.GetAmmoType() : AmmoType.None;
 
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
         /// </summary>
-        public bool Aiming => Base.Modules.OfType<LinearAdsModule>().FirstOrDefault()?.AdsTarget ?? false;
+        public bool Aiming => Base.TryGetModule(out IAdsModule linearAdsModule) && linearAdsModule.AdsTarget;
 
         /// <summary>
         /// Gets a value indicating whether the firearm's flashlight module is enabled.
@@ -158,7 +245,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether the firearm is automatic.
         /// </summary>
-        public bool IsAutomatic => Array.Exists(Base.Modules, x => x is AutomaticActionModule);
+        public bool IsAutomatic => Base.Modules.Any(m => m is AutomaticActionModule);
 
         /// <summary>
         /// Gets the <see cref="Attachment"/>s of the firearm.
@@ -173,7 +260,7 @@ namespace Exiled.API.Features.Items
             get
             {
                 foreach (Attachment attachment in Attachments.Where(att => att.IsEnabled))
-                    yield return AvailableAttachments[FirearmType].FirstOrDefault(att => att == attachment);
+                    yield return AvailableAttachments[FirearmType].FirstOrDefault(a => a == attachment);
             }
         }
 
@@ -189,12 +276,10 @@ namespace Exiled.API.Features.Items
         /// <seealso cref="IsAutomatic"/>
         public float FireRate
         {
-            get => Base.Modules.OfType<AutomaticActionModule>().FirstOrDefault()?.BaseFireRate ?? 0f;
+            get => Base.TryGetModule(out AutomaticActionModule module) ? module.BaseFireRate : 0f;
             set
             {
-                AutomaticActionModule module = Base.Modules.OfType<AutomaticActionModule>().FirstOrDefault();
-
-                if (module != null)
+                if (Base.TryGetModule(out AutomaticActionModule module))
                     module.BaseFireRate = value;
             }
         }
@@ -206,12 +291,10 @@ namespace Exiled.API.Features.Items
         /// <seealso cref="IsAutomatic"/>
         public RecoilSettings Recoil
         {
-            get => Base.Modules.OfType<RecoilPatternModule>().FirstOrDefault()?.BaseRecoil ?? default;
+            get => Base.TryGetModule(out RecoilPatternModule module) ? module.BaseRecoil : default;
             set
             {
-                RecoilPatternModule module = Base.Modules.OfType<RecoilPatternModule>().FirstOrDefault();
-
-                if (module != null)
+                if (Base.TryGetModule(out RecoilPatternModule module))
                     module.BaseRecoil = value;
             }
         }
@@ -257,9 +340,8 @@ namespace Exiled.API.Features.Items
             }
 
             uint newCode = identifier.Code == 0
-                ? AvailableAttachments[FirearmType].FirstOrDefault(
-                    attId =>
-                        attId.Name == identifier.Name).Code
+                ? AvailableAttachments[FirearmType]
+                    .FirstOrDefault(attId => attId.Name == identifier.Name).Code
                 : identifier.Code;
 
             Base.ApplyAttachmentsCode((Base.GetCurrentAttachmentsCode() & ~toRemove) | newCode, true);
