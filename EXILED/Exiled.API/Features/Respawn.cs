@@ -185,27 +185,15 @@ namespace Exiled.API.Features
         /// Docs.
         /// </summary>
         /// <param name="faction">Docs1.</param>
-        /// <param name="time">Docs2.</param>
-        public static void AdvanceTime(Faction faction, float time) => WaveManager.AdvanceTimer(faction, time);
-
-        /// <summary>
-        /// Docs.
-        /// </summary>
-        /// <param name="wave">Docs1.</param>
-        public static void SpawnWave(SpawnableWaveBase wave) => WaveManager.Spawn(wave);
+        /// <param name="seconds">Docs2.</param>
+        public static void AdvanceTimer(Faction faction, float seconds) => WaveManager.AdvanceTimer(faction, seconds);
 
         /// <summary>
         /// Docs.
         /// </summary>
         /// <param name="faction">Docs1.</param>
-        /// <param name="mini">Docs2.</param>
-        /// <typeparam name="T">Docs3.</typeparam>
-        public static void SpawnWave<T>(Faction faction, bool mini)
-            where T : SpawnableWaveBase
-        {
-            if (TryGetWaveBase(out T wave))
-                SpawnWave(wave);
-        }
+        /// <param name="time">Docs2.</param>
+        public static void AdvanceTimer(Faction faction, TimeSpan time) => AdvanceTimer(faction, (float)time.TotalSeconds);
 
         /// <summary>
         /// Play effects when a certain class spawns.
@@ -239,7 +227,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="team">The <see cref="SpawnableTeamType"/> to grant tickets to.</param>
         /// <param name="amount">The amount of tickets to grant.</param>
-        public static void GrantTickets(Faction team, int amount)
+        /// <param name="mini">Docs3.</param>
+        public static void GrantTickets(Faction team, int amount, bool mini = false)
         {
             if (TryGetWaveBase(team, out SpawnableWaveBase wave) && wave is ILimitedWave limitedWave)
                 limitedWave.RespawnTokens += amount;
@@ -272,7 +261,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="faction"><see cref="SpawnableTeamType"/>'s faction.</param>
         /// <returns>Tickets of team or <c>-1</c> if team doesn't depend on tickets.</returns>
-        public static int GetTickets(SpawnableFaction faction)
+        public static int GetTokens(SpawnableFaction faction)
         {
             if (TryGetWaveBase(faction, out SpawnableWaveBase wave) && wave is ILimitedWave limitedWave)
                 return limitedWave.RespawnTokens;
@@ -283,11 +272,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Forces a spawn of the given <see cref="SpawnableTeamType"/>.
         /// </summary>
-        /// <param name="team">The <see cref="SpawnableTeamType"/> to spawn.</param>
-        public static void ForceWave(Faction team)
+        /// <param name="faction">The <see cref="SpawnableTeamType"/> to spawn.</param>
+        /// <param name="mini">Docs.</param>
+        public static void ForceWave(Faction faction, bool mini = false)
         {
-            if (TryGetWaveBase(team, out SpawnableWaveBase wave))
-                ForceWave(wave);
+            SpawnableWaveBase waveBase = WaveManager.Waves.Find(x => x.TargetFaction == faction && (mini && x is IMiniWave));
+            ForceWave(waveBase);
         }
 
         /// <summary>
