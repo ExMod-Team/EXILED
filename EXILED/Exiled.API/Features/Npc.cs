@@ -15,14 +15,14 @@ namespace Exiled.API.Features
 
     using CentralAuth;
     using CommandSystem;
-    using Exiled.API.Enums;
-    using Exiled.API.Features.Components;
-    using Exiled.API.Features.Roles;
+    using Components;
+    using Enums;
     using Footprinting;
     using GameCore;
     using MEC;
     using Mirror;
     using PlayerRoles;
+    using Roles;
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -133,13 +133,15 @@ namespace Exiled.API.Features
         /// <returns>The NPC associated with the NetworkConnection, or <c>null</c> if not found.</returns>
         public static new Npc? Get(NetworkConnection conn) => Player.Get(conn) as Npc;
 
+        // TODO: Write docs.
+
         /// <summary>
-        /// Docs.
+        /// to be filled.
         /// </summary>
-        /// <param name="name">Docs1.</param>
-        /// <param name="role">Docs2.</param>
-        /// <param name="position">Docs3.</param>
-        /// <returns>Docs4.</returns>
+        /// <param name="name">to be filled..</param>
+        /// <param name="role">to be filled...</param>
+        /// <param name="position">to be filled....</param>
+        /// <returns>to be filled.....</returns>
         public static Npc Create(string name, RoleTypeId role, Vector3 position)
         {
             // TODO: Test this.

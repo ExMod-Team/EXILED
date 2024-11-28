@@ -8,15 +8,14 @@
 namespace Exiled.Events.Patches.Events.Scp049
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection.Emit;
 
     using API.Features;
     using API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp049;
-
     using HarmonyLib;
-
     using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.Subroutines;
 
@@ -30,7 +29,8 @@ namespace Exiled.Events.Patches.Events.Scp049
     [HarmonyPatch(typeof(Scp049ResurrectAbility), nameof(Scp049ResurrectAbility.ServerComplete))]
     internal static class FinishingRecall
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        // TODO: fix
+        /*private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
@@ -78,6 +78,15 @@ namespace Exiled.Events.Patches.Events.Scp049
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }*/
+
+        [SuppressMessage("StyleCop.CSharp.NamingRules", "SA1313:Parameter names should begin with lower-case letter", Justification = "Prefix")]
+        private static bool Prefix(Scp049ResurrectAbility __instance)
+        {
+            FinishingRecallEventArgs ev = new(Player.Get(__instance.CurRagdoll.Info.OwnerHub), Player.Get(__instance.Owner), __instance.CurRagdoll);
+            Handlers.Scp049.OnFinishingRecall(ev);
+
+            return ev.IsAllowed;
         }
     }
 }

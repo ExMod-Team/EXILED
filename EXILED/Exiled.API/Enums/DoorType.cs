@@ -7,7 +7,7 @@
 
 namespace Exiled.API.Enums
 {
-    using Exiled.API.Features.Doors;
+    using Features.Doors;
     using Interactables.Interobjects;
 
     /// <summary>
@@ -273,7 +273,7 @@ namespace Exiled.API.Enums
         ElevatorGateB,
 
         /// <summary>
-        /// Represents the Elevator door for <see cref="ElevatorGroup.Nuke01"/>.
+        /// Represents the Elevator door for <see cref="ElevatorGroup.Nuke01"/> and <see cref="ElevatorGroup.Nuke02"/>.
         /// </summary>
         ElevatorNuke,
 

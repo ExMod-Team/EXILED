@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Server
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
@@ -26,6 +27,8 @@ namespace Exiled.Events.Patches.Events.Server
 
     using Player = API.Features.Player;
 
+    // This event should be renamed to smth like SpawningWave, might be a good time to do it now since it's a breaking change
+
     /// <summary>
     /// Patch the <see cref="WaveSpawner.SpawnWave" />.
     /// Adds the <see cref="Server.RespawningTeam" /> event.
@@ -34,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Server
     [HarmonyPatch(typeof(WaveSpawner), nameof(WaveSpawner.SpawnWave))]
     internal static class RespawningTeam
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        /*private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
@@ -102,7 +105,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(RefillQueue))),
 
                     // wave = ev.NextKnownTeam;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.NextKnownTeam))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.RespawningTeam))),
                     new(OpCodes.Starg_S, 1),
                 });
 
@@ -121,6 +124,17 @@ namespace Exiled.Events.Patches.Events.Server
             WaveSpawner.SpawnQueue.Clear();
             foreach (RoleTypeId role in newQueue)
                 WaveSpawner.SpawnQueue.Enqueue(role);
+        }*/
+
+        private static bool Prefix(SpawnableWaveBase wave)
+        {
+            SpawnableTeamType spawningTeam = wave.TargetFaction.GetSpawnableTeam();
+            List<ReferenceHub> playerList = ReferenceHub.AllHubs.Where(WaveSpawner.CheckSpawnable).OrderByDescending(hub => WaveSpawner.CalculatePriority(hub, spawningTeam)).ToList();
+
+            RespawningTeamEventArgs ev = new(playerList.Select(Player.Get).ToList(), WaveSpawner.SpawnQueue, wave.MaxWaveSize, wave);
+            Server.OnRespawningTeam(ev);
+
+            return ev.IsAllowed;
         }
     }
 }
