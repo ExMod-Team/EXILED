@@ -27,7 +27,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Adds the <see cref="Handlers.Player.Shooting" /> events.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Shooting))]
-    
+
     [HarmonyPatch(typeof(ShotBacktrackData), nameof(ShotBacktrackData.ProcessShot))]
     internal static class Shooting
     {
@@ -56,19 +56,20 @@ namespace Exiled.Events.Patches.Events.Player
             int noTargetIndex = newInstructions.FindIndex(hasTargetIndex, instruction => instruction.IsLdarg(2)) - 1;
             List<Label> noTargetLabels = newInstructions[noTargetIndex].ExtractLabels();
 
-            CodeInstruction[] patchInstructions = {
+            CodeInstruction[] patchInstructions =
+            {
                 // ShootingEventArgs ev = new(firearm, this)
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShootingEventArgs))[0]),
-                
+
                 // Handlers.Player.OnShooting(ev)
                 new(OpCodes.Dup), // Dup to keep ev on the stack
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShooting))),
 
                 // if (!ev.IsAllowed) return
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse_S, returnLabel), 
+                new(OpCodes.Brfalse_S, returnLabel),
             };
 
             newInstructions.InsertRange( // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up

@@ -5,16 +5,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using InventorySystem.Items.Firearms.Modules.Misc;
-
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
-    
     using Exiled.API.Features.Items;
-    
     using Interfaces;
-    
+    using InventorySystem.Items.Firearms.Modules.Misc;
+
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
 
     /// <summary>
@@ -36,7 +33,6 @@ namespace Exiled.Events.EventArgs.Player
             Firearm = (Firearm)Item.Get(firearm);
             Player = Firearm.Owner;
             ShotBacktrackData = shotBacktrackData;
-            // ShotMessage = msg;
         }
 
         /// <summary>
