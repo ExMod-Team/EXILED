@@ -18,8 +18,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     using HarmonyLib;
 
-    using InventorySystem.Items.Firearms.BasicMessages;
-    using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Firearms.Modules.Misc;
 
     using static HarmonyLib.AccessTools;
 
@@ -28,58 +27,59 @@ namespace Exiled.Events.Patches.Events.Player
     /// Adds the <see cref="Handlers.Player.Shooting" /> events.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Shooting))]
-
-    // [HarmonyPatch(typeof(FirearmBasicMessagesHandler), nameof(FirearmBasicMessagesHandler.ServerShotReceived))]
+    
+    [HarmonyPatch(typeof(ShotBacktrackData), nameof(ShotBacktrackData.ProcessShot))]
     internal static class Shooting
     {
-        /*
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label isAllowedLabel = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ShootingEventArgs));
+            /*
+            [] <= Here
+            IL_0078: ldarg.2      // processingMethod (FindIndex here)
+            IL_0079: ldarg.0      // this
+            IL_007a: ldfld        class ReferenceHub InventorySystem.Items.Firearms.Modules.Misc.ShotBacktrackData::PrimaryTargetHub
+            IL_007f: callvirt     instance void class [mscorlib]System.Action`1<class ReferenceHub>::Invoke(!0/*class ReferenceHub* /)
+             */
+            int hasTargetIndex = newInstructions.FindIndex(instruction => instruction.IsLdarg(2)) - 1;
+            List<Label> hasTargetLabels = newInstructions[hasTargetIndex].ExtractLabels();
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(IActionModule), nameof(IActionModule.ServerAuthorizeShot)))) + offset;
+            /*
+            [] <= Here
+            IL_0092: ldarg.2      // processingMethod (FindIndex here)
+            IL_0093: ldnull
+            IL_0094: callvirt     instance void class [mscorlib]System.Action`1<class ReferenceHub>::Invoke(!0/*class ReferenceHub* /)
+             */
+            int noTargetIndex = newInstructions.FindIndex(hasTargetIndex, instruction => instruction.IsLdarg(2)) - 1;
+            List<Label> noTargetLabels = newInstructions[noTargetIndex].ExtractLabels();
+
+            CodeInstruction[] patchInstructions = {
+                // ShootingEventArgs ev = new(firearm, this)
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldarg_1),
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShootingEventArgs))[0]),
+                
+                // Handlers.Player.OnShooting(ev)
+                new(OpCodes.Dup), // Dup to keep ev on the stack
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShooting))),
+
+                // if (!ev.IsAllowed) return
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse_S, returnLabel), 
+            };
+
+            newInstructions.InsertRange( // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up
+                noTargetIndex,
+                patchInstructions);
+            newInstructions[noTargetIndex].WithLabels(noTargetLabels);
 
             newInstructions.InsertRange(
-                index,
-                new[]
-                {
-                    // Player.Get(referenceHub)
-                    new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-
-                    // firearm
-                    new(OpCodes.Ldloc_1),
-
-                    // msg
-                    new(OpCodes.Ldarg_1),
-
-                    // ShootingEventArgs ev = new(Player, firearm, ShotMessage)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShootingEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc, ev.LocalIndex),
-
-                    // Handlers.Player.OnShooting(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShooting))),
-
-                    // if (ev.IsAllowed)
-                    //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, returnLabel),
-
-                    // isAllowedLabel:
-                    // msg = ev.ShotMessage
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(isAllowedLabel),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.ShotMessage))),
-                    new(OpCodes.Starg_S, 1),
-                });
-
+                hasTargetIndex,
+                patchInstructions);
+            newInstructions[hasTargetIndex].WithLabels(hasTargetLabels);
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -87,6 +87,5 @@ namespace Exiled.Events.Patches.Events.Player
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
-        */
     }
 }

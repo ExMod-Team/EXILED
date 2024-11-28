@@ -5,20 +5,16 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using InventorySystem.Items.Firearms.Modules.Misc;
+
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
-
+    
     using Exiled.API.Features.Items;
-
+    
     using Interfaces;
-
-    using InventorySystem.Items.Firearms.BasicMessages;
-
-    using RelativePositioning;
-
-    using UnityEngine;
-
+    
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
 
     /// <summary>
@@ -29,81 +25,42 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="ShootingEventArgs" /> class.
         /// </summary>
-        /// <param name="shooter">
-        /// <inheritdoc cref="Player" />
-        /// </param>
         /// <param name="firearm">
-        /// <inheritdoc cref="Firearm" />
+        /// The <see cref="BaseFirearm"/> that is being fired.
         /// </param>
-        public ShootingEventArgs(Player shooter, BaseFirearm firearm)
+        /// <param name="shotBacktrackData">
+        /// <see cref="ShotBacktrackData"/> sent by the client.
+        /// </param>
+        public ShootingEventArgs(BaseFirearm firearm, ShotBacktrackData shotBacktrackData)
         {
-            Player = shooter;
-            Firearm = Item.Get(firearm).As<Firearm>();
-
+            Firearm = (Firearm)Item.Get(firearm);
+            Player = Firearm.Owner;
+            ShotBacktrackData = shotBacktrackData;
             // ShotMessage = msg;
         }
 
         /// <summary>
-        /// Gets the player who's shooting.
+        /// Gets the player who is shooting.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        /// Gets the target that client claims it hit. This value is controlled by the client and should not be trusted. Can be null.
+        /// </summary>
+        public Player ClaimedTarget => ShotBacktrackData.HasPrimaryTarget ? Player.Get(ShotBacktrackData.PrimaryTargetHub) : null;
+
+        /// <summary>
+        /// Gets the <see cref="ShotBacktrackData" />. This object contains the data sent by the client to the server. Values should not be trusted.
+        /// </summary>
+        public ShotBacktrackData ShotBacktrackData { get; }
 
         /// <summary>
         /// Gets the target <see cref="API.Features.Items.Firearm" />.
         /// </summary>
         public Firearm Firearm { get; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public Item Item => Firearm;
-
-        /*
-        /// <summary>
-        /// Gets or sets the <see cref="ShotMessage" /> for the event.
-        /// </summary>
-        public ShotMessage ShotMessage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the position of the shot.
-        /// </summary>
-        public Vector3 ShotPosition
-        {
-            get => ShotMessage.TargetPosition.Position;
-            set
-            {
-                ShotMessage msg = ShotMessage;
-                ShotMessage = new ShotMessage
-                {
-                    ShooterPosition = msg.ShooterPosition,
-                    ShooterCameraRotation = msg.ShooterCameraRotation,
-                    ShooterWeaponSerial = msg.ShooterWeaponSerial,
-                    TargetPosition = new RelativePosition(value),
-                    TargetRotation = msg.TargetRotation,
-                    TargetNetId = msg.TargetNetId,
-                };
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the netId of the target of the shot.
-        /// </summary>
-        public uint TargetNetId
-        {
-            get => ShotMessage.TargetNetId;
-            set
-            {
-                ShotMessage msg = ShotMessage;
-                ShotMessage = new ShotMessage
-                {
-                    ShooterPosition = msg.ShooterPosition,
-                    ShooterCameraRotation = msg.ShooterCameraRotation,
-                    ShooterWeaponSerial = msg.ShooterWeaponSerial,
-                    TargetPosition = msg.TargetPosition,
-                    TargetRotation = msg.TargetRotation,
-                    TargetNetId = value,
-                };
-            }
-        }
-        */
 
         /// <summary>
         /// Gets or sets a value indicating whether the shot can be fired.
