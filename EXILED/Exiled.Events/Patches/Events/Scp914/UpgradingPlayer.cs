@@ -66,10 +66,10 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Ldarg_2),
 
                     // setting
-                    new(OpCodes.Ldarg_S, 4),
+                    new(OpCodes.Ldarg_S, 3),
 
                     // moveVector
-                    new(OpCodes.Ldarg_3),
+                    new(OpCodes.Ldloc_0),
 
                     // UpgradingPlayerEventArgs ev = new(player, upgradeInventory, heldonly, setting, moveVector);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UpgradingPlayerEventArgs))[0]),
@@ -100,10 +100,10 @@ namespace Exiled.Events.Patches.Events.Scp914
 
                     // setting = ev.KnobSetting
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPlayerEventArgs), nameof(UpgradingPlayerEventArgs.KnobSetting))),
-                    new(OpCodes.Starg_S, 4),
+                    new(OpCodes.Starg_S, 3),
 
                     // curSetting = setting;
-                    new(OpCodes.Ldarg_S, 4),
+                    new(OpCodes.Ldarg_S, 3),
                     new(OpCodes.Stloc_S, curSetting.LocalIndex),
 
                     // ev.Player.Teleport(ev.OutputPosition);
@@ -133,17 +133,17 @@ namespace Exiled.Events.Patches.Events.Scp914
                 {
                     // setting = curSetting
                     new(OpCodes.Ldloc_S, curSetting.LocalIndex),
-                    new(OpCodes.Starg_S, 4),
+                    new(OpCodes.Starg_S, 3),
 
                     // Player.Get(ply)
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // itemBase
-                    new(OpCodes.Ldloc_S, 8),
+                    new(OpCodes.Ldloc_S, 7),
 
                     // setting
-                    new(OpCodes.Ldarg_S, 4),
+                    new(OpCodes.Ldarg_S, 3),
                     new(OpCodes.Ldc_I4_1),
 
                     // UpgradingInventoryItemEventArgs ev = new(player, itemBase, setting)
@@ -163,7 +163,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                     // setting = ev.KnobSetting
                     new(OpCodes.Ldloc_S, ev2.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingInventoryItemEventArgs), nameof(UpgradingInventoryItemEventArgs.KnobSetting))),
-                    new(OpCodes.Starg_S, 4),
+                    new(OpCodes.Starg_S, 3),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
