@@ -1,4 +1,11 @@
-﻿namespace Exiled.API.Features.Items
+﻿// -----------------------------------------------------------------------
+// <copyright file="Scp1344.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Exiled.API.Features.Items
 {
     using Exiled.API.Interfaces;
     using InventorySystem.Items.Usables.Scp1344;
@@ -30,5 +37,24 @@
         /// Gets the <see cref="Scp1344"/> base.
         /// </summary>
         public new Scp1344Item Base { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the item is worn.
+        /// </summary>
+        public bool IsWorn => Base.IsWorn;
+
+        /// <summary>
+        /// Gets or sets the status.
+        /// </summary>
+        public Scp1344Status Status
+        {
+            get => Base.Status;
+            set => Base.Status = value;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether it can be started to use.
+        /// </summary>
+        public bool CanStartUsing => Base.CanStartUsing;
     }
 }
