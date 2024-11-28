@@ -112,9 +112,6 @@ namespace Exiled.Events.Handlers.Internal
                 if (firearmType == FirearmType.None)
                     continue;
 
-                Log.Warn(firearmType.GetItemType());
-                Log.Warn(Server.Host == null);
-
                 if (Item.Create(firearmType.GetItemType()) is not Firearm firearm)
                     continue;
 
