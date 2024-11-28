@@ -434,14 +434,14 @@ namespace Exiled.API.Features
                 "HCZ_MicroHID_New" => RoomType.HczHid,
                 "HCZ_049" => RoomType.Hcz049,
                 "HCZ_Crossing" => RoomType.HczCrossing,
-                "HCZ_106" => RoomType.Hcz106,
+                "HCZ_106_Rework" => RoomType.Hcz106,
                 "HCZ_Nuke" => RoomType.HczNuke,
                 "HCZ_Tesla_Rework" => RoomType.HczTesla,
                 "HCZ_Servers" => RoomType.HczServers,
-                "HCZ_Room3" => RoomType.HczTCross,
-                "HCZ_457" => RoomType.Hcz096,
-                "HCZ_Curve" => RoomType.HczCurve,
-                "HCZ_Straight" => RoomType.HczStraight,
+                "HCZ_Room3" or "HCZ_Intersection_Junk" or "HCZ_Intersection" => RoomType.HczTCross,
+                "HCZ_096" => RoomType.Hcz096,
+                "HCZ_Curve" or "HCZ_Corner_Deep" => RoomType.HczCurve,
+                "HCZ_Straight_C" or "HCZ_Straight" or "HCZ_Straight_PipeRoom" or "HCZ_Straight Variant" => RoomType.HczStraight,
                 "HCZ_Crossroom_Water" => RoomType.HczCrossRoomWater,
                 "EZ_Endoof" => RoomType.EzVent,
                 "EZ_Intercom" => RoomType.EzIntercom,
@@ -451,7 +451,8 @@ namespace Exiled.API.Features
                 "EZ_PCs" => RoomType.EzPcs,
                 "EZ_Crossing" => RoomType.EzCrossing,
                 "EZ_CollapsedTunnel" => RoomType.EzCollapsedTunnel,
-                "EZ_Smallrooms2" => RoomType.EzConference,
+                "EZ_Smallrooms2" or "EZ_Smallrooms1" => RoomType.EzConference,
+                "EZ_Chef" => RoomType.EzChef,
                 "EZ_Straight" => RoomType.EzStraight,
                 "EZ_Cafeteria" => RoomType.EzCafeteria,
                 "EZ_upstairs" => RoomType.EzUpstairsPcs,
@@ -461,14 +462,13 @@ namespace Exiled.API.Features
                 "PocketWorld" => RoomType.Pocket,
                 "Outside" => RoomType.Surface,
                 "HCZ_939" => RoomType.Hcz939,
-                "EZ Part" => RoomType.EzCheckpointHallway,
+                "EZ_HCZ_Checkpoint Part" => RoomType.EzCheckpointHallway,
                 "HCZ_ChkpA" => RoomType.HczElevatorA,
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
-                "HCZ Part" => gameObject.transform.parent.name switch
+                "HCZ_EZ_Checkpoint Part" => gameObject.transform.position.z switch
                 {
-                    "HCZ_EZ_Checkpoint (A)" => RoomType.HczEzCheckpointA,
-                    "HCZ_EZ_Checkpoint (B)" => RoomType.HczEzCheckpointB,
-                    _ => RoomType.Unknown
+                    > 80 => RoomType.HczEzCheckpointA,
+                    _ => RoomType.HczEzCheckpointB
                 },
                 _ => RoomType.Unknown,
             };
@@ -477,6 +477,9 @@ namespace Exiled.API.Features
         private static ZoneType FindZone(GameObject gameObject)
         {
             Transform transform = gameObject.transform;
+
+            if (gameObject.name == "PocketWorld")
+                return ZoneType.Pocket;
 
             return transform.parent?.name.RemoveBracketsOnEndOfName() switch
             {

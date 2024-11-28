@@ -228,6 +228,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Summons the <see cref="Side.ChaosInsurgency"/> van.
         /// </summary>
+        /// <remarks>This will also trigger Music effect.</remarks>
         public static void SummonChaosInsurgencyVan()
         {
             if (TryGetWaveBase(Faction.FoundationEnemy, out SpawnableWaveBase wave))
