@@ -13,6 +13,11 @@ namespace Exiled.API.Enums
     public enum SpawnableFaction
     {
         /// <summary>
+        /// Represents no wave.
+        /// </summary>
+        None,
+
+        /// <summary>
         /// Normal NTF wave.
         /// </summary>
         NtfWave,

@@ -17,6 +17,7 @@ namespace Exiled.API.Extensions
     using InventorySystem.Configs;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using Respawning;
     using Respawning.Waves;
     using UnityEngine;
 
@@ -216,12 +217,61 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="waveBase">A <see cref="SpawnableWaveBase"/> instance.</param>
         /// <returns><see cref="SpawnableFaction"/> associated with the wave.</returns>
-        public static SpawnableFaction GetFaction(this SpawnableWaveBase waveBase) => waveBase switch
+        public static SpawnableFaction GetSpawnableFaction(this SpawnableWaveBase waveBase) => waveBase switch
         {
             NtfSpawnWave => SpawnableFaction.NtfWave,
             NtfMiniWave => SpawnableFaction.NtfMiniWave,
             ChaosSpawnWave => SpawnableFaction.ChaosWave,
             _ => SpawnableFaction.ChaosMiniWave
         };
+
+        /// <summary>
+        /// Docs1.
+        /// </summary>
+        /// <param name="spawnableFaction">Docs1..</param>
+        /// <returns>Docs2.</returns>
+        public static Faction GetFaction(this SpawnableFaction spawnableFaction) => spawnableFaction switch
+        {
+            SpawnableFaction.ChaosWave => Faction.FoundationEnemy,
+            SpawnableFaction.ChaosMiniWave => Faction.FoundationEnemy,
+            SpawnableFaction.NtfWave => Faction.FoundationStaff,
+            _ => Faction.FoundationStaff
+        };
+
+        /// <summary>
+        /// Docs1.
+        /// </summary>
+        /// <param name="spawnableTeamType">Docs2.</param>
+        /// <returns>Docs3.</returns>
+        public static Faction GetFaction(this SpawnableTeamType spawnableTeamType) => spawnableTeamType switch
+        {
+            SpawnableTeamType.ChaosInsurgency => Faction.FoundationEnemy,
+            _ => Faction.FoundationStaff
+        };
+
+        /// <summary>
+        /// Docs1.
+        /// </summary>
+        /// <param name="faction">Docs2.</param>
+        /// <param name="spawnableFaction">Docs5.</param>
+        /// <param name="mini">Docs3.</param>
+        /// <returns>Docs4.</returns>
+        public static bool GetSpawnableFaction(this Faction faction, out SpawnableFaction spawnableFaction, bool mini = false)
+        {
+            switch (faction)
+            {
+                case Faction.FoundationStaff:
+                    spawnableFaction = mini ? SpawnableFaction.NtfMiniWave : SpawnableFaction.NtfWave;
+                    break;
+                case Faction.FoundationEnemy:
+                    spawnableFaction = mini ? SpawnableFaction.ChaosMiniWave : SpawnableFaction.ChaosWave;
+                    break;
+                default:
+                    spawnableFaction = SpawnableFaction.None;
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

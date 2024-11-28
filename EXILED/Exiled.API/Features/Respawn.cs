@@ -9,9 +9,11 @@ namespace Exiled.API.Features
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using CustomPlayerEffects;
     using Enums;
+    using Extensions;
     using PlayerRoles;
     using Respawning;
     using Respawning.Waves;
@@ -25,6 +27,11 @@ namespace Exiled.API.Features
     {
         private static GameObject ntfHelicopterGameObject;
         private static GameObject chaosCarGameObject;
+
+        /// <summary>
+        /// Gets or sets docs1.
+        /// </summary>
+        public static List<SpawnableWaveBase> PausedWaves { get; set; } = new();
 
         /// <summary>
         /// Gets the NTF Helicopter's <see cref="GameObject"/>.
@@ -57,16 +64,16 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets the next known <see cref="Faction"/> that will spawn.
         /// </summary>
-        public static Faction NextKnownFaction
+        public static SpawnableFaction NextKnownSpawnableFaction
         {
-            get => WaveManager._nextWave.TargetFaction;
-            set => WaveManager._nextWave = WaveManager.Waves.Find(x => x.TargetFaction == value);
+            get => WaveManager._nextWave.GetSpawnableFaction();
+            set => WaveManager._nextWave = WaveManager.Waves.Find(x => x.TargetFaction == value.GetFaction());
         }
 
         /// <summary>
         /// Gets the next known <see cref="SpawnableTeamType"/> that will spawn.
         /// </summary>
-        public static SpawnableTeamType NextKnownTeam => NextKnownFaction.GetSpawnableTeam();
+        public static SpawnableTeamType NextKnownTeam => NextKnownSpawnableFaction.GetFaction().GetSpawnableTeam();
 
         /* TODO: Possibly moved to TimedWave
         /// <summary>
@@ -141,44 +148,47 @@ namespace Exiled.API.Features
             where T : SpawnableWaveBase => WaveManager.TryGet(out spawnWave);
 
         /// <summary>
-        /// Tries to get a <see cref="SpawnableWaveBase"/> from a <see cref="Faction"/>.
+        /// Docs1.
         /// </summary>
-        /// <param name="faction">Team's <see cref="Faction"/>.</param>
-        /// <param name="spawnWave">Found <see cref="SpawnableWaveBase"/>.</param>
-        /// <returns><c>true</c> if <paramref name="spawnWave"/> was successfully found. Otherwise, <c>false</c>.</returns>
-        public static bool TryGetWaveBase(Faction faction, out SpawnableWaveBase spawnWave)
-            => WaveManager.TryGet(faction, out spawnWave);
+        /// <param name="spawnableFaction">Docs2.</param>
+        /// <param name="spawnableWaveBase">Docs45.</param>
+        /// <returns>Docs3.</returns>
+        public static bool TryGetWaveBase(SpawnableFaction spawnableFaction, out SpawnableWaveBase spawnableWaveBase)
+        {
+            spawnableWaveBase = WaveManager.Waves.Find(x => x.GetSpawnableFaction() == spawnableFaction);
+            return spawnableWaveBase is not null;
+        }
 
         /// <summary>
-        /// Tries to get a <see cref="SpawnableWaveBase"/> from a <see cref="SpawnableFaction"/>.
+        /// Docs1.
         /// </summary>
-        /// <param name="faction">Team's <see cref="SpawnableFaction"/>.</param>
-        /// <param name="spawnWave">Found <see cref="SpawnableWaveBase"/>.</param>
-        /// <returns><c>true</c> if <paramref name="spawnWave"/> was successfully found. Otherwise, <c>false</c>.</returns>
-        public static bool TryGetWaveBase(SpawnableFaction faction, out SpawnableWaveBase spawnWave)
+        /// <param name="faction">Docs2.</param>
+        /// <param name="spawnableWaveBases">Docs3.</param>
+        /// <returns>Docs4.</returns>
+        public static bool TryGetWaveBases(Faction faction, out IEnumerable<SpawnableWaveBase> spawnableWaveBases)
         {
-            switch (faction)
+            List<SpawnableWaveBase> spawnableWaves = new();
+            spawnableWaves.AddRange(WaveManager.Waves.Where(x => x.TargetFaction == faction));
+
+            if (spawnableWaves.IsEmpty())
             {
-                case SpawnableFaction.NtfWave:
-                    bool result = TryGetWaveBase(out NtfSpawnWave ntfSpawnWave);
-                    spawnWave = ntfSpawnWave;
-                    return result;
-                case SpawnableFaction.NtfMiniWave:
-                    result = TryGetWaveBase(out NtfMiniWave ntfMiniWave);
-                    spawnWave = ntfMiniWave;
-                    return result;
-                case SpawnableFaction.ChaosWave:
-                    result = TryGetWaveBase(out ChaosSpawnWave chaosSpawnWave);
-                    spawnWave = chaosSpawnWave;
-                    return result;
-                case SpawnableFaction.ChaosMiniWave:
-                    result = TryGetWaveBase(out ChaosMiniWave chaosMiniWave);
-                    spawnWave = chaosMiniWave;
-                    return result;
+                spawnableWaveBases = null;
+                return false;
             }
 
-            spawnWave = null;
-            return false;
+            spawnableWaveBases = spawnableWaves;
+            return true;
+        }
+
+        /// <summary>
+        /// Docs1.
+        /// </summary>
+        /// <param name="spawnableTeamType">Docs2.</param>
+        /// <param name="spawnableWaveBases">Docs3.</param>
+        /// <returns>Docs4.</returns>
+        public static bool TryGetWaveBases(SpawnableTeamType spawnableTeamType, out IEnumerable<SpawnableWaveBase> spawnableWaveBases)
+        {
+            return TryGetWaveBases(spawnableTeamType.GetFaction(), out spawnableWaveBases);
         }
 
         /// <summary>
@@ -196,6 +206,44 @@ namespace Exiled.API.Features
         public static void AdvanceTimer(Faction faction, TimeSpan time) => AdvanceTimer(faction, (float)time.TotalSeconds);
 
         /// <summary>
+        /// Docs.
+        /// </summary>
+        /// <param name="spawnableTeamType">Docs1.</param>
+        /// <param name="seconds">Docs2.</param>
+        public static void AdvanceTimer(SpawnableTeamType spawnableTeamType, float seconds) => AdvanceTimer(spawnableTeamType.GetFaction(), seconds);
+
+        /// <summary>
+        /// Docs.
+        /// </summary>
+        /// <param name="spawnableTeamType">Docs1.</param>
+        /// <param name="time">Docs2.</param>
+        public static void AdvanceTimer(SpawnableTeamType spawnableTeamType, TimeSpan time) => AdvanceTimer(spawnableTeamType.GetFaction(), time);
+
+        /// <summary>
+        /// Docs.
+        /// </summary>
+        /// <param name="spawnableFaction">Docs1.</param>
+        /// <param name="seconds">Docs2.</param>
+        public static void AdvanceTimer(SpawnableFaction spawnableFaction, float seconds)
+        {
+            foreach (SpawnableWaveBase spawnableWaveBase in WaveManager.Waves)
+            {
+                TimeBasedWave timeBasedWave = (TimeBasedWave)spawnableWaveBase;
+                if (timeBasedWave.GetSpawnableFaction() == spawnableFaction)
+                {
+                    timeBasedWave.Timer.AddTime(Mathf.Abs(seconds));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Docs.
+        /// </summary>
+        /// <param name="spawnableFaction">Docs1.</param>
+        /// <param name="time">Docs2.</param>
+        public static void AdvanceTimer(SpawnableFaction spawnableFaction, TimeSpan time) => AdvanceTimer(spawnableFaction, (float)time.TotalSeconds);
+
+        /// <summary>
         /// Play effects when a certain class spawns.
         /// </summary>
         /// <param name="wave">The <see cref="SpawnableWaveBase"/> for which effects should be played.</param>
@@ -209,7 +257,7 @@ namespace Exiled.API.Features
         /// </summary>
         public static void SummonNtfChopper()
         {
-            if (TryGetWaveBase(Faction.FoundationStaff, out SpawnableWaveBase wave))
+            if (TryGetWaveBase(SpawnableFaction.NtfWave, out SpawnableWaveBase wave))
                 PlayEffect(wave);
         }
 
@@ -218,42 +266,71 @@ namespace Exiled.API.Features
         /// </summary>
         public static void SummonChaosInsurgencyVan()
         {
-            if (TryGetWaveBase(Faction.FoundationEnemy, out SpawnableWaveBase wave))
+            if (TryGetWaveBase(SpawnableFaction.ChaosWave, out SpawnableWaveBase wave))
                 PlayEffect(wave);
         }
 
         /// <summary>
         /// Grants tickets to a <see cref="SpawnableTeamType"/>.
         /// </summary>
-        /// <param name="team">The <see cref="SpawnableTeamType"/> to grant tickets to.</param>
+        /// <param name="faction">The <see cref="SpawnableTeamType"/> to grant tickets to.</param>
         /// <param name="amount">The amount of tickets to grant.</param>
-        /// <param name="mini">Docs3.</param>
-        public static void GrantTickets(Faction team, int amount, bool mini = false)
+        /// <returns>Success.</returns>
+        public static bool GrantTokens(Faction faction, int amount)
         {
-            if (TryGetWaveBase(team, out SpawnableWaveBase wave) && wave is ILimitedWave limitedWave)
-                limitedWave.RespawnTokens += amount;
+            if (TryGetWaveBases(faction, out IEnumerable<SpawnableWaveBase> waveBases))
+            {
+                foreach (ILimitedWave limitedWave in waveBases.Select(x => (ILimitedWave)x))
+                {
+                    limitedWave.RespawnTokens += amount;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Removes tickets from a <see cref="SpawnableTeamType"/>.
         /// </summary>
-        /// <param name="team">The <see cref="SpawnableTeamType"/> to remove tickets from.</param>
+        /// <param name="faction">The <see cref="SpawnableTeamType"/> to remove tickets from.</param>
         /// <param name="amount">The amount of tickets to remove.</param>
-        public static void RemoveTickets(Faction team, int amount)
+        /// <returns>Success.</returns>
+        public static bool RemoveTokens(Faction faction, int amount)
         {
-            if (TryGetWaveBase(team, out SpawnableWaveBase wave) && wave is ILimitedWave limitedWave)
-                limitedWave.RespawnTokens = Math.Max(0, limitedWave.RespawnTokens - amount);
+            if (TryGetWaveBases(faction, out IEnumerable<SpawnableWaveBase> waveBases))
+            {
+                foreach (ILimitedWave limitedWave in waveBases.Select(x => (ILimitedWave)x))
+                {
+                    limitedWave.RespawnTokens = Math.Max(0, limitedWave.RespawnTokens - amount);
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
         /// Modify tickets from a <see cref="SpawnableTeamType"/>.
         /// </summary>
-        /// <param name="team">The <see cref="SpawnableTeamType"/> to modify tickets from.</param>
+        /// <param name="faction">The <see cref="SpawnableTeamType"/> to modify tickets from.</param>
         /// <param name="amount">The amount of tickets to modify.</param>
-        public static void ModifyTickets(Faction team, int amount)
+        /// <returns>Success.</returns>
+        public static bool ModifyTokens(Faction faction, int amount)
         {
-            if (TryGetWaveBase(team, out SpawnableWaveBase wave) && wave is ILimitedWave limitedWave)
-                limitedWave.RespawnTokens = amount;
+            if (TryGetWaveBases(faction, out IEnumerable<SpawnableWaveBase> waveBases))
+            {
+                foreach (ILimitedWave limitedWave in waveBases.Select(x => (ILimitedWave)x))
+                {
+                    limitedWave.RespawnTokens = amount;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -272,12 +349,36 @@ namespace Exiled.API.Features
         /// <summary>
         /// Forces a spawn of the given <see cref="SpawnableTeamType"/>.
         /// </summary>
-        /// <param name="faction">The <see cref="SpawnableTeamType"/> to spawn.</param>
-        /// <param name="mini">Docs.</param>
-        public static void ForceWave(Faction faction, bool mini = false)
+        /// <param name="spawnableTeamType">The <see cref="SpawnableTeamType"/> to spawn.</param>
+        /// <param name="isMini">Docs.</param>
+        public static void ForceWave(SpawnableTeamType spawnableTeamType, bool isMini = false)
         {
-            SpawnableWaveBase waveBase = WaveManager.Waves.Find(x => x.TargetFaction == faction && (mini && x is IMiniWave));
-            ForceWave(waveBase);
+            ForceWave(spawnableTeamType.GetFaction(), isMini);
+        }
+
+        /// <summary>
+        /// Forces a spawn of the given <see cref="SpawnableTeamType"/>.
+        /// </summary>
+        /// <param name="faction">The <see cref="SpawnableTeamType"/> to spawn.</param>
+        /// <param name="isMini">Docs.</param>
+        public static void ForceWave(Faction faction, bool isMini = false)
+        {
+            if (faction.GetSpawnableFaction(out SpawnableFaction spawnableFaction, isMini))
+            {
+                ForceWave(spawnableFaction);
+            }
+        }
+
+        /// <summary>
+        /// Docs.
+        /// </summary>
+        /// <param name="spawnableFaction">Docs1.</param>
+        public static void ForceWave(SpawnableFaction spawnableFaction)
+        {
+            if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
+            {
+                ForceWave(spawnableWaveBase);
+            }
         }
 
         /// <summary>
@@ -287,6 +388,26 @@ namespace Exiled.API.Features
         public static void ForceWave(SpawnableWaveBase wave)
         {
             WaveManager.Spawn(wave);
+        }
+
+        /// <summary>
+        /// Docs1.
+        /// </summary>
+        public static void PauseWaves()
+        {
+            PausedWaves.Clear();
+            PausedWaves.AddRange(WaveManager.Waves);
+            WaveManager.Waves.Clear();
+        }
+
+        /// <summary>
+        /// Docs1.
+        /// </summary>
+        public static void ResumeWaves()
+        {
+            WaveManager.Waves.Clear();
+            WaveManager.Waves.AddRange(PausedWaves);
+            PausedWaves.Clear();
         }
     }
 }
