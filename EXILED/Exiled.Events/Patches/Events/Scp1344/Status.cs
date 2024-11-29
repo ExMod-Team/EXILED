@@ -28,6 +28,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
         {
             ChangingStatusEventArgs ev = new(Item.Get(__instance), value, __instance._status);
             Handlers.Scp1344.OnChangingStatus(ev);
+            value = ev.Scp1344StatusNew;
             return ev.IsAllowed;
         }
 
