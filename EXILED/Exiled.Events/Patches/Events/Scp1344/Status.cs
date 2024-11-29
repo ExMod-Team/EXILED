@@ -30,7 +30,14 @@ namespace Exiled.Events.Patches.Events.Scp1344
         {
             ChangingStatusEventArgs ev = new(Item.Get(__instance), value, __instance.Status);
             Handlers.Scp1344.OnChangingStatus(ev);
-            return ev.IsAllowed;
+
+            if (ev.IsAllowed)
+            {
+                __instance._status = value;
+                return true;
+            }
+
+            return false;
         }
 
         private static void Postfix(Scp1344Item __instance, ref Scp1344Status value)
