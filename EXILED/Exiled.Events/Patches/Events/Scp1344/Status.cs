@@ -6,16 +6,13 @@
 // -----------------------------------------------------------------------
 
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
-#pragma warning disable SA1402 // File may only contain a single type
 
-namespace Exiled.Events.Patches.Events.Scp1344
+/*namespace Exiled.Events.Patches.Events.Scp1344
 {
     using Exiled.API.Features.Items;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1344;
     using HarmonyLib;
-    using InventorySystem.Items.Usables.Scp1344;
-    using Mirror;
 
     /// <summary>
     /// Patches <see cref="Scp1344Item.Status"/>.
@@ -40,4 +37,4 @@ namespace Exiled.Events.Patches.Events.Scp1344
             Handlers.Scp1344.OnChangedStatus(ev);
         }
     }
-}
+}*/
