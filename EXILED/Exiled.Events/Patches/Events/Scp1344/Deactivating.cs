@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
 
                 if (!ev.IsAllowed)
                 {
-                    __instance.Status = Scp1344Status.Active;
+                    __instance.Status = Scp1344Status.CancelingDeactivation;
                     return false;
                 }
             }
@@ -48,7 +48,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
                 Handlers.Scp1344.OnDeactivating(deactivating);
                 if (!deactivating.IsAllowed)
                 {
-                    __instance.Status = Scp1344Status.Active;
+                    __instance.Status = Scp1344Status.CancelingDeactivation;
                     return false;
                 }
 
