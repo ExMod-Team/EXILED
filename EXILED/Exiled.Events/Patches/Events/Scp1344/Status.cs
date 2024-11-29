@@ -12,6 +12,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
     using Exiled.API.Features.Items;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1344;
+    using InventorySystem.Items.Usables.Scp1344;
     using HarmonyLib;
 
     /// <summary>
