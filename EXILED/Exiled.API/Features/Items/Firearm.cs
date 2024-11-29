@@ -136,7 +136,11 @@ namespace Exiled.API.Features.Items
                         ammoToRemove -= removedAmmo;
 
                         if (ammoToRemove <= 0)
+                        {
+                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
+                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
                             return;
+                        }
                     }
 
                     // Take ammo from barrels only when actual magazines are empty.
@@ -147,7 +151,11 @@ namespace Exiled.API.Features.Items
                         ammoToRemove -= removedAmmo;
 
                         if (ammoToRemove <= 0)
+                        {
+                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
+                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
                             return;
+                        }
                     }
                 }
                 else
@@ -162,7 +170,11 @@ namespace Exiled.API.Features.Items
                         ammoToAdd -= addedAmmo;
 
                         if (ammoToAdd <= 0)
+                        {
+                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
+                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
                             return;
+                        }
                     }
 
                     // Then fill magazines.
@@ -173,7 +185,11 @@ namespace Exiled.API.Features.Items
                         ammoToAdd -= addedAmmo;
 
                         if (ammoToAdd <= 0)
+                        {
+                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
+                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
                             return;
+                        }
                     }
 
                     // If there is still ammo to add, add it to the first magazine.
