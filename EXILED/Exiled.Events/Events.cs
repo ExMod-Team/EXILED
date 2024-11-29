@@ -59,6 +59,7 @@ namespace Exiled.Events
             Log.Info($"{(Config.UseDynamicPatching ? "Non-event" : "All")} patches completed in {watch.Elapsed}");
             PlayerAuthenticationManager.OnInstanceModeChanged -= RoleAssigner.CheckLateJoin;
 
+            CustomNetworkManager.OnClientStarted += Handlers.Internal.ClientStarted.OnClientStarted;
             SceneManager.sceneUnloaded += Handlers.Internal.SceneUnloaded.OnSceneUnloaded;
             MapGeneration.SeedSynchronizer.OnGenerationFinished += Handlers.Internal.MapGenerated.OnMapGenerated;
             UsableItemsController.ServerOnUsingCompleted += Handlers.Internal.Round.OnServerOnUsingCompleted;
@@ -91,6 +92,7 @@ namespace Exiled.Events
 
             Unpatch();
 
+            CustomNetworkManager.OnClientStarted -= Handlers.Internal.ClientStarted.OnClientStarted;
             SceneManager.sceneUnloaded -= Handlers.Internal.SceneUnloaded.OnSceneUnloaded;
             MapGeneration.SeedSynchronizer.OnGenerationFinished -= Handlers.Internal.MapGenerated.OnMapGenerated;
             UsableItemsController.ServerOnUsingCompleted -= Handlers.Internal.Round.OnServerOnUsingCompleted;
