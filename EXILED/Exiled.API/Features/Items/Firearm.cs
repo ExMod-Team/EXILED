@@ -19,6 +19,7 @@ namespace Exiled.API.Features.Items
     using Extensions;
     using InventorySystem;
     using InventorySystem.Items;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
@@ -651,6 +652,8 @@ namespace Exiled.API.Features.Items
         {
             Base.Owner = newOwner.ReferenceHub;
             Base._footprintCacheSet = false;
+            foreach (SubcomponentBase allSubcomponent in Base.AllSubcomponents)
+                allSubcomponent.OnAdded();
         }
 
         /// <inheritdoc/>
