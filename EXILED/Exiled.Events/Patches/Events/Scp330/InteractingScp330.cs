@@ -85,7 +85,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.Candy))),
 
                     // bag
-                    new(OpCodes.Ldloca_S, 3),
+                    new(OpCodes.Ldloca_S, 2),
 
                     // ServerProcessPickup(ReferenceHub, CandyKindID, Scp330Bag)
                     new CodeInstruction(OpCodes.Call, Method(typeof(InteractingScp330), nameof(ServerProcessPickup), new[] { typeof(ReferenceHub), typeof(CandyKindID), typeof(Scp330Bag).MakeByRefType() })),
