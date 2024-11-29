@@ -7,13 +7,14 @@
 
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
-/*namespace Exiled.Events.Patches.Events.Scp1344
+namespace Exiled.Events.Patches.Events.Scp1344
 {
     using Exiled.API.Features.Items;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1344;
     using HarmonyLib;
     using InventorySystem.Items.Usables.Scp1344;
+    using InventorySystem.Items.Usables.Scp244;
     using UnityEngine;
 
     /// <summary>
@@ -26,41 +27,48 @@
     [EventPatch(typeof(Handlers.Scp1344), nameof(Handlers.Scp1344.Deactivating))]
     [EventPatch(typeof(Handlers.Scp1344), nameof(Handlers.Scp1344.Deactivated))]
     [HarmonyPatch(typeof(Scp1344Item), nameof(Scp1344Item.ServerUpdateDeactivating))]
+    [HarmonyPatch(typeof(Scp1344Item), nameof(Scp1344Item.ServerUpdateDeactivating))]
     internal static class Deactivating
     {
         private static bool Prefix(ref Scp1344Item __instance)
         {
             if (__instance._useTime == 0)
             {
-                TryingDeactivatingEventArgs ev = new(Item.Get(__instance));
-                Handlers.Scp1344.OnTryingDeactivating(ev);
+                var ev = new TryingDeactivatingEventArgs(Item.Get(__instance));
+                Exiled.Events.Handlers.Scp1344.OnTryingDeactivating(ev);
 
                 if (!ev.IsAllowed)
                 {
-                    __instance.Status = Scp1344Status.CancelingDeactivation;
-                    return false;
+                    return StopDeactivation(__instance);
                 }
             }
 
-            if (__instance._useTime + Time.deltaTime >= 5.1)
+            if (__instance._useTime + Time.deltaTime >= 5.1f)
             {
-                DeactivatingEventArgs deactivating = new(Item.Get(__instance));
-                Handlers.Scp1344.OnDeactivating(deactivating);
+                var deactivating = new DeactivatingEventArgs(Item.Get(__instance));
+                Exiled.Events.Handlers.Scp1344.OnDeactivating(deactivating);
+
                 if (!deactivating.IsAllowed)
                 {
-                    __instance.Status = Scp1344Status.CancelingDeactivation;
-                    return false;
+                    return StopDeactivation(__instance);
                 }
 
                 __instance.ActivateFinalEffects();
                 __instance.ServerDropItem(__instance);
 
-                DeactivatedEventArgs deactivated = new(Item.Get(__instance));
-                Handlers.Scp1344.OnDeactivated(deactivated);
+                var ev = new DeactivatedEventArgs(Item.Get(__instance));
+                Exiled.Events.Handlers.Scp1344.OnDeactivated(ev);
                 return false;
             }
 
             return true;
         }
+
+        private static bool StopDeactivation(Scp1344Item instance)
+        {
+            instance.Status = Scp1344Status.Active;
+            instance.ServerSetStatus(Scp1344Status.Active);
+            return false;
+        }
     }
-}*/
+}

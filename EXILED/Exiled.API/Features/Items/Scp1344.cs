@@ -76,22 +76,8 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Forcefully activated and stabbing SCP-1344.
-        /// </summary>
-        public void ActivedAndStabbing() => Status = Scp1344Status.Stabbing;
-
-        /// <summary>
         /// Forcefully activated SCP-1344.
         /// </summary>
-        /// <param name="removeCurrentItem">If CurrentItem == Scp1344 removes the item.</param>
-        public void Actived(bool removeCurrentItem = true)
-        {
-            if (removeCurrentItem && Owner?.CurrentItem is Scp1344)
-            {
-                Owner.CurrentItem = null;
-            }
-
-            Status = Scp1344Status.Active;
-        }
+        public void Actived() => Status = Scp1344Status.Stabbing;
     }
 }
