@@ -122,153 +122,135 @@ namespace Exiled.API.Features.Items
                 // Other type of barrels that also contain ammo but don't have AmmoStored setter
                 List<PumpActionModule> pumpActionBarrels = ListPool<PumpActionModule>.Pool.Get(Base.Modules.OfType<PumpActionModule>());
 
-                void Dispose()
+                try
+                {
+                    int currentAmmo = Ammo;
+
+                    if (value < 0)
+                        value = 0;
+
+                    if (value < currentAmmo)
+                    {
+                        var ammoToRemove = currentAmmo - value;
+
+                        // First try to take ammo from magazines.
+                        foreach (IPrimaryAmmoContainerModule primaryAmmoContainer in primaryContainers)
+                        {
+                            var removedAmmo = Math.Min(primaryAmmoContainer.AmmoStored, ammoToRemove);
+                            primaryAmmoContainer.ServerModifyAmmo(-removedAmmo);
+                            ammoToRemove -= removedAmmo;
+
+                            if (ammoToRemove <= 0)
+                            {
+                                return;
+                            }
+                        }
+
+                        // Take cocked ammo from pump-action barrels (it represents ammo that is loaded, but needs to be pumped in the firing chamber)
+                        foreach (PumpActionModule barrel in pumpActionBarrels)
+                        {
+                            var removedAmmo = Math.Min(barrel.SyncCocked, ammoToRemove);
+                            barrel.SyncCocked -= removedAmmo;
+                            ammoToRemove -= removedAmmo;
+
+                            if (ammoToRemove <= 0)
+                            {
+                                return;
+                            }
+                        }
+
+                        // Take ammo from barrels only when actual magazines are empty.
+                        foreach (AutomaticActionModule barrel in barrels)
+                        {
+                            var removedAmmo = Math.Min(barrel.AmmoStored, ammoToRemove);
+                            barrel.AmmoStored -= removedAmmo;
+                            ammoToRemove -= removedAmmo;
+
+                            if (ammoToRemove <= 0)
+                            {
+                                return;
+                            }
+                        }
+
+                        // Tale chambered ammo from pump-action barrels
+                        foreach (PumpActionModule barrel in pumpActionBarrels)
+                        {
+                            var removedAmmo = Math.Min(barrel.SyncChambered, ammoToRemove);
+                            barrel.SyncChambered -= removedAmmo;
+                            ammoToRemove -= removedAmmo;
+
+                            if (ammoToRemove <= 0)
+                                return;
+                        }
+                    }
+                    else
+                    {
+                        var ammoToAdd = value - currentAmmo;
+
+                        // First add ammo to barrels so player can fire.
+                        foreach (AutomaticActionModule barrel in barrels)
+                        {
+                            var addedAmmo = Math.Min(barrel.AmmoMax - barrel.AmmoStored, ammoToAdd);
+                            barrel.AmmoStored += addedAmmo;
+                            ammoToAdd -= addedAmmo;
+
+                            if (ammoToAdd <= 0)
+                                return;
+                        }
+
+                        // Add ammo to pump-action barrel chambers
+                        foreach (PumpActionModule barrel in pumpActionBarrels)
+                        {
+                            var addedAmmo = Math.Min(barrel._numberOfBarrels - barrel.SyncChambered, ammoToAdd);
+                            barrel.SyncChambered += addedAmmo;
+                            ammoToAdd -= addedAmmo;
+
+                            if (ammoToAdd <= 0)
+                                return;
+                        }
+
+                        // Then fill magazines.
+                        foreach (IPrimaryAmmoContainerModule primaryContainer in primaryContainers)
+                        {
+                            var addedAmmo = Math.Min(primaryContainer.AmmoMax - primaryContainer.AmmoStored, ammoToAdd);
+                            primaryContainer.ServerModifyAmmo(addedAmmo);
+                            ammoToAdd -= addedAmmo;
+
+                            if (ammoToAdd <= 0)
+                                return;
+                        }
+
+                        // Last go pump-action barrels
+                        foreach (PumpActionModule barrel in pumpActionBarrels)
+                        {
+                            var addedAmmo = Math.Min(barrel._numberOfBarrels - barrel.SyncCocked, ammoToAdd);
+                            barrel.SyncCocked += addedAmmo;
+                            ammoToAdd -= addedAmmo;
+
+                            if (ammoToAdd <= 0)
+                                return;
+                        }
+
+                        // If there is still ammo to add, add it to the first primary magazine or pump-action barrel
+                        if (ammoToAdd > 0)
+                        {
+                            if (primaryContainers.Count > 0)
+                            {
+                                primaryContainers[0].ServerModifyAmmo(ammoToAdd);
+                            }
+                            else if (pumpActionBarrels.Count > 0)
+                            {
+                                pumpActionBarrels[0].SyncCocked += ammoToAdd;
+                            }
+                        }
+                    }
+                }
+                finally
                 {
                     ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
                     ListPool<AutomaticActionModule>.Pool.Return(barrels);
                     ListPool<PumpActionModule>.Pool.Return(pumpActionBarrels);
                 }
-
-                int currentAmmo = Ammo;
-
-                if (value < 0)
-                    value = 0;
-
-                if (value < currentAmmo)
-                {
-                    var ammoToRemove = currentAmmo - value;
-
-                    // First try to take ammo from magazines.
-                    foreach (IPrimaryAmmoContainerModule primaryAmmoContainer in primaryContainers)
-                    {
-                        var removedAmmo = Math.Min(primaryAmmoContainer.AmmoStored, ammoToRemove);
-                        primaryAmmoContainer.ServerModifyAmmo(-removedAmmo);
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-
-                    // Take cocked ammo from pump-action barrels (it represents ammo that is loaded, but needs to be pumped in the firing chamber)
-                    foreach (PumpActionModule barrel in pumpActionBarrels)
-                    {
-                        var removedAmmo = Math.Min(barrel.SyncCocked, ammoToRemove);
-                        barrel.SyncCocked -= removedAmmo;
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-
-                    // Take ammo from barrels only when actual magazines are empty.
-                    foreach (AutomaticActionModule barrel in barrels)
-                    {
-                        var removedAmmo = Math.Min(barrel.AmmoStored, ammoToRemove);
-                        barrel.AmmoStored -= removedAmmo;
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-
-                    // Tale chambered ammo from pump-action barrels
-                    foreach (PumpActionModule barrel in pumpActionBarrels)
-                    {
-                        var removedAmmo = Math.Min(barrel.SyncChambered, ammoToRemove);
-                        barrel.SyncChambered -= removedAmmo;
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    var ammoToAdd = value - currentAmmo;
-
-                    // First add ammo to barrels so player can fire.
-                    foreach (AutomaticActionModule barrel in barrels)
-                    {
-                        var addedAmmo = Math.Min(barrel.AmmoMax - barrel.AmmoStored, ammoToAdd);
-                        barrel.AmmoStored += addedAmmo;
-                        ammoToAdd -= addedAmmo;
-
-                        if (ammoToAdd <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-
-                    // Add ammo to pump-action barrel chambers
-                    foreach (PumpActionModule barrel in pumpActionBarrels)
-                    {
-                        var addedAmmo = Math.Min(barrel._numberOfBarrels - barrel.SyncChambered, ammoToAdd);
-                        barrel.SyncChambered += addedAmmo;
-                        ammoToAdd -= addedAmmo;
-
-                        if (ammoToAdd <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-
-                    // Then fill magazines.
-                    foreach (IPrimaryAmmoContainerModule primaryContainer in primaryContainers)
-                    {
-                        var addedAmmo = Math.Min(primaryContainer.AmmoMax - primaryContainer.AmmoStored, ammoToAdd);
-                        primaryContainer.ServerModifyAmmo(addedAmmo);
-                        ammoToAdd -= addedAmmo;
-
-                        if (ammoToAdd <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-
-                    // Last go pump-action barrels
-                    foreach (PumpActionModule barrel in pumpActionBarrels)
-                    {
-                        var addedAmmo = Math.Min(barrel._numberOfBarrels - barrel.SyncCocked, ammoToAdd);
-                        barrel.SyncCocked += addedAmmo;
-                        ammoToAdd -= addedAmmo;
-
-                        if (ammoToAdd <= 0)
-                        {
-                            Dispose();
-                            return;
-                        }
-                    }
-
-                    // If there is still ammo to add, add it to the first primary magazine or pump-action barrel
-                    if (ammoToAdd > 0)
-                    {
-                        if (primaryContainers.Count > 0)
-                        {
-                            primaryContainers[0].ServerModifyAmmo(ammoToAdd);
-                        }
-                        else if (pumpActionBarrels.Count > 0)
-                        {
-                            pumpActionBarrels[0].SyncCocked += ammoToAdd;
-                        }
-                    }
-                }
-
-                Dispose();
             }
         }
 
