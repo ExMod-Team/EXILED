@@ -501,7 +501,6 @@ namespace Exiled.API.Features
             WaveManager.Spawn(spawnableWaveBase);
         }
 
-
         /// <summary>
         /// Pauses respawn waves by removing them from <see cref="WaveManager.Waves">WaveManager.Waves</see> and storing them in <see cref="PausedWaves"/>.
         /// </summary>
