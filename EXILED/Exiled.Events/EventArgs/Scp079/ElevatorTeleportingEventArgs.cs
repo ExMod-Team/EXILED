@@ -29,18 +29,18 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="room">
         /// <inheritdoc cref="Room" />
         /// </param>
-        /// <param name="elevatorDoor">
+        /// <param name="elevatorChamber">
         /// <inheritdoc cref="Lift" />
         /// </param>
         /// <param name="auxiliaryPowerCost">
         /// <inheritdoc cref="AuxiliaryPowerCost" />
         /// </param>
-        public ElevatorTeleportingEventArgs(Player player, RoomIdentifier room, ElevatorDoor elevatorDoor, float auxiliaryPowerCost)
+        public ElevatorTeleportingEventArgs(Player player, RoomIdentifier room, ElevatorChamber elevatorChamber, float auxiliaryPowerCost)
         {
             Player = player;
             Scp079 = player.Role.As<Scp079Role>();
             Room = Room.Get(room);
-            Lift = Lift.Get(elevatorDoor.Chamber);
+            Lift = Lift.Get(elevatorChamber);
             AuxiliaryPowerCost = auxiliaryPowerCost;
             IsAllowed = auxiliaryPowerCost <= Scp079.Energy;
         }

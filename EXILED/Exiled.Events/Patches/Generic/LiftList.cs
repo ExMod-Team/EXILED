@@ -7,25 +7,24 @@
 
 namespace Exiled.Events.Patches.Generic
 {
+#pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     using API.Features;
 
     using HarmonyLib;
     using Interactables.Interobjects;
 
     /// <summary>
-    /// Patches <see cref="ElevatorManager.SpawnAllChambers"/>.
+    /// Patches to control <see cref="Lift.List"/>.
     /// </summary>
-    [HarmonyPatch(typeof(ElevatorManager), nameof(ElevatorManager.SpawnAllChambers))]
+    [HarmonyPatch]
     internal class LiftList
     {
-        private static void Postfix()
-        {
-            Lift.ElevatorChamberToLift.Clear();
+        [HarmonyPatch(typeof(ElevatorChamber), nameof(ElevatorChamber.Start))]
+        [HarmonyPostfix]
+        private static void Adding(ElevatorChamber __instance) => _ = new Lift(__instance);
 
-            foreach (ElevatorChamber lift in ElevatorChamber.AllChambers)
-            {
-                _ = new Lift(lift);
-            }
-        }
+        [HarmonyPatch(typeof(ElevatorChamber), nameof(ElevatorChamber.OnDestroy))]
+        [HarmonyPostfix]
+        private static void Removing(ElevatorChamber __instance) => Lift.ElevatorChamberToLift.Remove(__instance);
     }
 }
