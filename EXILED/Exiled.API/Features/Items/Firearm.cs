@@ -119,6 +119,16 @@ namespace Exiled.API.Features.Items
                 // Barrels that may contain some ammo in them
                 List<AutomaticActionModule> barrels = ListPool<AutomaticActionModule>.Pool.Get(Base.Modules.OfType<AutomaticActionModule>());
 
+                // Other type of barrels that also contain ammo but don't have AmmoStored setter
+                List<PumpActionModule> pumpActionBarrels = ListPool<PumpActionModule>.Pool.Get(Base.Modules.OfType<PumpActionModule>());
+
+                void Dispose()
+                {
+                    ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
+                    ListPool<AutomaticActionModule>.Pool.Return(barrels);
+                    ListPool<PumpActionModule>.Pool.Return(pumpActionBarrels);
+                }
+
                 int currentAmmo = Ammo;
 
                 if (value < 0)
@@ -137,8 +147,21 @@ namespace Exiled.API.Features.Items
 
                         if (ammoToRemove <= 0)
                         {
-                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
-                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
+                            Dispose();
+                            return;
+                        }
+                    }
+
+                    // Take cocked ammo from pump-action barrels (it represents ammo that is loaded, but needs to be pumped in the firing chamber)
+                    foreach (PumpActionModule barrel in pumpActionBarrels)
+                    {
+                        var removedAmmo = Math.Min(barrel.SyncCocked, ammoToRemove);
+                        barrel.SyncCocked -= removedAmmo;
+                        ammoToRemove -= removedAmmo;
+
+                        if (ammoToRemove <= 0)
+                        {
+                            Dispose();
                             return;
                         }
                     }
@@ -152,8 +175,21 @@ namespace Exiled.API.Features.Items
 
                         if (ammoToRemove <= 0)
                         {
-                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
-                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
+                            Dispose();
+                            return;
+                        }
+                    }
+
+                    // Tale chambered ammo from pump-action barrels
+                    foreach (PumpActionModule barrel in pumpActionBarrels)
+                    {
+                        var removedAmmo = Math.Min(barrel.SyncChambered, ammoToRemove);
+                        barrel.SyncChambered -= removedAmmo;
+                        ammoToRemove -= removedAmmo;
+
+                        if (ammoToRemove <= 0)
+                        {
+                            Dispose();
                             return;
                         }
                     }
@@ -171,8 +207,21 @@ namespace Exiled.API.Features.Items
 
                         if (ammoToAdd <= 0)
                         {
-                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
-                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
+                            Dispose();
+                            return;
+                        }
+                    }
+
+                    // Add ammo to pump-action barrel chambers
+                    foreach (PumpActionModule barrel in pumpActionBarrels)
+                    {
+                        var addedAmmo = Math.Min(barrel._numberOfBarrels - barrel.SyncChambered, ammoToAdd);
+                        barrel.SyncChambered += addedAmmo;
+                        ammoToAdd -= addedAmmo;
+
+                        if (ammoToAdd <= 0)
+                        {
+                            Dispose();
                             return;
                         }
                     }
@@ -186,18 +235,40 @@ namespace Exiled.API.Features.Items
 
                         if (ammoToAdd <= 0)
                         {
-                            ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
-                            ListPool<AutomaticActionModule>.Pool.Return(barrels);
+                            Dispose();
                             return;
                         }
                     }
 
-                    // If there is still ammo to add, add it to the first magazine.
-                    primaryContainers.FirstOrDefault()?.ServerModifyAmmo(ammoToAdd);
+                    // Last go pump-action barrels
+                    foreach (PumpActionModule barrel in pumpActionBarrels)
+                    {
+                        var addedAmmo = Math.Min(barrel._numberOfBarrels - barrel.SyncCocked, ammoToAdd);
+                        barrel.SyncCocked += addedAmmo;
+                        ammoToAdd -= addedAmmo;
+
+                        if (ammoToAdd <= 0)
+                        {
+                            Dispose();
+                            return;
+                        }
+                    }
+
+                    // If there is still ammo to add, add it to the first primary magazine or pump-action barrel
+                    if (ammoToAdd > 0)
+                    {
+                        if (primaryContainers.Count > 0)
+                        {
+                            primaryContainers[0].ServerModifyAmmo(ammoToAdd);
+                        }
+                        else if (pumpActionBarrels.Count > 0)
+                        {
+                            pumpActionBarrels[0].SyncCocked += ammoToAdd;
+                        }
+                    }
                 }
 
-                ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
-                ListPool<AutomaticActionModule>.Pool.Return(barrels);
+                Dispose();
             }
         }
 
