@@ -136,10 +136,7 @@ namespace Exiled.API.Features.Doors
         /// <summary>
         /// Repair the door.
         /// </summary>
-        public void Repair()
-        {
-            Base.ServerRepair();
-        }
+        public void Repair() => Base.ServerRepair();
 
         /// <summary>
         /// Toggles the state of the doors from <see cref="Subdoors"/>.
