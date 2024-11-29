@@ -53,7 +53,6 @@ namespace Exiled.CustomItems.API.Features
     /// </summary>
     public abstract class CustomItem
     {
-        private static Dictionary<Type, CustomItem?> typeLookupTable = new();
         private static Dictionary<string, CustomItem?> stringLookupTable = new();
         private static Dictionary<uint, CustomItem?> idLookupTable = new();
 
@@ -163,12 +162,7 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         /// <param name="t">The <see cref="System.Type"/> type.</param>
         /// <returns>The <see cref="CustomItem"/> matching the search, <see langwod="null"/> if not registered.</returns>
-        public static CustomItem? Get(Type t)
-        {
-            if (!typeLookupTable.ContainsKey(t))
-                typeLookupTable.Add(t, Registered.FirstOrDefault(i => i.GetType() == t));
-            return typeLookupTable[t];
-        }
+        public static CustomItem? Get(Type t) => Registered.FirstOrDefault(i => i.GetType() == t);
 
         /// <summary>
         /// Tries to get a <see cref="CustomItem"/> with a specific ID.
@@ -770,7 +764,6 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         public virtual void Init()
         {
-            typeLookupTable.Add(GetType(), this);
             stringLookupTable.Add(Name, this);
             idLookupTable.Add(Id, this);
 
@@ -784,7 +777,6 @@ namespace Exiled.CustomItems.API.Features
         {
             UnsubscribeEvents();
 
-            typeLookupTable.Remove(GetType());
             stringLookupTable.Remove(Name);
             idLookupTable.Remove(Id);
         }
