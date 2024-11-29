@@ -29,9 +29,42 @@ namespace Exiled.Events.Handlers
         public static Event<ChangedStatusEventArgs> ChangedStatus { get; set; } = new();
 
         /// <summary>
+        /// Invoked after trying deactivating SCP-1344.
+        /// </summary>
+        public static Event<TryingDeactivatingEventArgs> TryingDeactivating { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before deactivating SCP-1344.
+        /// </summary>
+        public static Event<DeactivatingEventArgs> Deactivating { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after deactivating SCP-1344.
+        /// </summary>
+        public static Event<DeactivatedEventArgs> Deactivated { get; set; } = new();
+
+        /// <summary>
+        /// Called after deactivating SCP-1344.
+        /// </summary>
+        /// <param name="ev">The <see cref="DeactivatingEventArgs"/> instance.</param>
+        public static void OnDeactivated(DeactivatedEventArgs ev) => Deactivated.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before deactivating SCP-1344.
+        /// </summary>
+        /// <param name="ev">The <see cref="DeactivatingEventArgs"/> instance.</param>
+        public static void OnDeactivating(DeactivatingEventArgs ev) => Deactivating.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after trying deactivating SCP-1344.
+        /// </summary>
+        /// <param name="ev">The <see cref="TryingDeactivatingEventArgs"/> instance.</param>
+        public static void OnTryingDeactivating(TryingDeactivatingEventArgs ev) => TryingDeactivating.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before SCP-1344 status changing.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingAmmoEventArgs"/> instance.</param>
+        /// <param name="ev">The <see cref="ChangingStatusEventArgs"/> instance.</param>
         public static void OnChangingStatus(ChangingStatusEventArgs ev) => ChangingStatus.InvokeSafely(ev);
 
         /// <summary>

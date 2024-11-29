@@ -14,7 +14,7 @@ namespace Exiled.Events.EventArgs.Scp1344
     /// <summary>
     /// Contains all information before SCP-1344 status changing.
     /// </summary>
-    public class ChangingStatusEventArgs : IDeniableEvent
+    public class ChangingStatusEventArgs : IPlayerEvent, IScp1344Event, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingStatusEventArgs" /> class.
