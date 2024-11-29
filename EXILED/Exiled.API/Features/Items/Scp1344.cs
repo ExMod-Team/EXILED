@@ -73,10 +73,6 @@ namespace Exiled.API.Features.Items
             {
                 Base.ServerDropItem(true);
             }
-            else
-            {
-                Destroy();
-            }
         }
 
         /// <summary>
