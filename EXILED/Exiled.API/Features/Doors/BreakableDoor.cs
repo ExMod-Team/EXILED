@@ -95,10 +95,7 @@ namespace Exiled.API.Features.Doors
         /// <summary>
         /// Repair the door.
         /// </summary>
-        public void Repair()
-        {
-            Base.ServerRepair();
-        }
+        public void Repair() => Base.ServerRepair();
 
         /// <summary>
         /// Damages the door.
