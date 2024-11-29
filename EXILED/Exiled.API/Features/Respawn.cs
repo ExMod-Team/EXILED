@@ -36,6 +36,11 @@ namespace Exiled.API.Features
         public static List<SpawnableWaveBase> PausedWaves { get; set; } = new();
 
         /// <summary>
+        /// Gets docs1.
+        /// </summary>
+        public static Dictionary<Faction, float> FactionInfluence => FactionInfluenceManager.Influence;
+
+        /// <summary>
         /// Gets the NTF Helicopter's <see cref="GameObject"/>.
         /// </summary>
         public static GameObject NtfHelicopter
@@ -69,7 +74,7 @@ namespace Exiled.API.Features
         public static SpawnableFaction NextKnownSpawnableFaction
         {
             get => WaveManager._nextWave.GetSpawnableFaction();
-            set => WaveManager._nextWave = WaveManager.Waves.Find(x => x.TargetFaction == value.GetFaction());
+            set => WaveManager._nextWave = WaveManager.Waves.Find(x => x.GetSpawnableFaction() == value);
         }
 
         /// <summary>
@@ -414,5 +419,13 @@ namespace Exiled.API.Features
             WaveManager.Waves.AddRange(PausedWaves);
             PausedWaves.Clear();
         }
+
+        /// <summary>
+        /// Docs1.
+        /// </summary>
+        /// <param name="faction">Docs2.</param>
+        /// <param name="influence">Docs3.</param>
+        /// <returns>Docs4.</returns>
+        public static bool TryGetFactionInfluence(Faction faction, out float influence) => FactionInfluence.TryGetValue(faction, out influence);
     }
 }
