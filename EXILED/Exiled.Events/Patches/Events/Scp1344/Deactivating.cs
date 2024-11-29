@@ -7,7 +7,7 @@
 
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
-namespace Exiled.Events.Patches.Events.Scp1344
+/*namespace Exiled.Events.Patches.Events.Scp1344
 {
     using Exiled.API.Features.Items;
     using Exiled.Events.Attributes;
@@ -63,4 +63,4 @@ namespace Exiled.Events.Patches.Events.Scp1344
             return true;
         }
     }
-}
+}*/
