@@ -9,7 +9,6 @@ namespace Exiled.Events.Handlers
 {
 #pragma warning disable SA1623 // Property summary documentation should match accessors
 
-    using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Scp1344;
     using Exiled.Events.Features;
 

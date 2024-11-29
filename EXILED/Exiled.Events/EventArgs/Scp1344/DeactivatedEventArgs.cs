@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="DeactivatedEventsArgs.cs" company="ExMod Team">
+// <copyright file="DeactivatedEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -13,13 +13,13 @@ namespace Exiled.Events.EventArgs.Scp1344
     /// <summary>
     /// Contains all information after deactivating.
     /// </summary>
-    public class DeactivatedEventsArgs : IPlayerEvent, IScp1344Event
+    public class DeactivatedEventArgs : IPlayerEvent, IScp1344Event
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeactivatedEventsArgs" /> class.
+        /// Initializes a new instance of the <see cref="DeactivatedEventArgs" /> class.
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
-        public DeactivatedEventsArgs(Item item)
+        public DeactivatedEventArgs(Item item)
         {
             Item = item;
             Scp1344 = item as Scp1344;
