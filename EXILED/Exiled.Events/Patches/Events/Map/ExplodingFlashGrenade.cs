@@ -12,6 +12,7 @@ namespace Exiled.Events.Patches.Events.Map
 
     using API.Features;
     using API.Features.Pools;
+    using Exiled.API.Extensions;
     using Exiled.Events.EventArgs.Map;
     using Exiled.Events.Patches.Generic;
     using Footprinting;
@@ -63,14 +64,13 @@ namespace Exiled.Events.Patches.Events.Map
         private static void ProcessEvent(FlashbangGrenade instance, float distance)
         {
             List<Player> targetToAffect = ListPool<Player>.Pool.Get();
-            foreach (ReferenceHub referenceHub in ReferenceHub.AllHubs)
+            foreach (Player player in Player.List)
             {
-                Player player = Player.Get(referenceHub);
-                if ((instance.transform.position - referenceHub.transform.position).sqrMagnitude >= distance)
+                if ((instance.transform.position - player.Position).sqrMagnitude >= distance)
                     continue;
-                if (!ExiledEvents.Instance.Config.CanFlashbangsAffectThrower && instance.PreviousOwner.LifeIdentifier != new Footprint(referenceHub).LifeIdentifier)
+                if (!ExiledEvents.Instance.Config.CanFlashbangsAffectThrower && instance.PreviousOwner.CompareLife(player.ReferenceHub))
                     continue;
-                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub) && instance.PreviousOwner.LifeIdentifier != new Footprint(referenceHub).LifeIdentifier)
+                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub) && !instance.PreviousOwner.CompareLife(player.ReferenceHub))
                     continue;
                 if (Physics.Linecast(instance.transform.position, player.CameraTransform.position, instance._blindingMask))
                     continue;
