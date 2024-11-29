@@ -67,7 +67,7 @@ namespace Exiled.API.Features.Items
 
             Base.Owner.DisableWearables(WearableElements.Scp1344Goggles);
             Base.ActivateFinalEffects();
-            Status = Scp1344Status.Dropping;
+            Status = Scp1344Status.Idle;
 
             if (dropItem)
             {
@@ -83,6 +83,15 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Forcefully activated SCP-1344.
         /// </summary>
-        public void Actived() => Status = Scp1344Status.Active;
+        /// <param name="removeCurrentItem">If CurrentItem == Scp1344 removes the item.</param>
+        public void Actived(bool removeCurrentItem = true)
+        {
+            if (removeCurrentItem && Owner?.CurrentItem is Scp1344)
+            {
+                Owner.CurrentItem = null;
+            }
+
+            Status = Scp1344Status.Active;
+        }
     }
 }
