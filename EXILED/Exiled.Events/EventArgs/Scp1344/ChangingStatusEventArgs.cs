@@ -30,6 +30,7 @@ namespace Exiled.Events.EventArgs.Scp1344
             Player = item.Owner;
             Scp1344StatusNew = scp1344StatusNew;
             Scp1344StatusOld = scp1344StatusOld;
+            IsAllowed = isAllowed;
         }
 
         /// <summary>
