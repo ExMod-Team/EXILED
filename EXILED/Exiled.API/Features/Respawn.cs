@@ -73,13 +73,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the next known <see cref="SpawnableFaction"/> that will spawn.
         /// </summary>
-        /// <remarks>This returns <c>SpawnableFaction.None</c> unless a respawn has already started.</remarks>
+        /// <remarks>This returns <see cref="SpawnableFaction.None">SpawnableFaction.None</see> unless a respawn has already started.</remarks>
         public static SpawnableFaction NextKnownSpawnableFaction => WaveManager._nextWave is not null ? WaveManager._nextWave.GetSpawnableFaction() : SpawnableFaction.None;
 
         /// <summary>
         /// Gets the next known <see cref="SpawnableTeamType"/> that will spawn.
         /// </summary>
-        /// <remarks>This returns <c>SpawnableTeamType.None</c> unless a respawn has already started.</remarks>
+        /// <remarks>This returns <see cref="SpawnableFaction.None">SpawnableFaction.None</see> unless a respawn has already started.</remarks>
         public static SpawnableTeamType NextKnownTeam => NextKnownSpawnableFaction.GetFaction().GetSpawnableTeam();
 
         /* TODO: Possibly moved to TimedWave
@@ -506,6 +506,8 @@ namespace Exiled.API.Features
         /// Pauses respawn waves by removing them from <see cref="WaveManager.Waves">WaveManager.Waves</see> and storing them in <see cref="PausedWaves"/>.
         /// </summary>
         /// <!--Beryl said this should work fine but it requires testing-->
+        /// <see cref="ResumeWaves"/>
+        /// <see cref="RestartWaves"/>
         public static void PauseWaves()
         {
             PausedWaves.Clear();
@@ -518,6 +520,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <!--Beryl said this should work fine but it requires testing-->
         /// <remarks>This also clears <see cref="PausedWaves"/>.</remarks>
+        /// <see cref="PauseWaves"/>
+        /// <see cref="RestartWaves"/>
         public static void ResumeWaves()
         {
             WaveManager.Waves.Clear();
@@ -530,6 +534,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <!--Beryl said this should work fine but it requires testing-->
         /// <remarks>This also clears <see cref="PausedWaves"/>.</remarks>
+        /// <see cref="PausedWaves"/>
+        /// <see cref="ResumeWaves"/>
         public static void RestartWaves()
         {
             WaveManager.Waves.Clear();
