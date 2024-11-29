@@ -27,22 +27,11 @@ namespace Exiled.Events.Patches.Events.Scp1344
     [HarmonyPatch(typeof(Scp1344Item), nameof(Scp1344Item.Status), MethodType.Setter)]
     internal static class Status
     {
-        private static void Prefix(Scp1344Item __instance, ref Scp1344Status value)
+        private static bool Prefix(Scp1344Item __instance, ref Scp1344Status value)
         {
-            ChangingStatusEventArgs ev = new(Item.Get(__instance), value, __instance.Status);
+            ChangingStatusEventArgs ev = new(Item.Get(__instance), value, __instance._status);
             Handlers.Scp1344.OnChangingStatus(ev);
-
-            if (!ev.IsAllowed)
-                return;
-
-            if (NetworkServer.active)
-            {
-                __instance.ServerChangeStatus(value);
-            }
-            else
-            {
-                __instance.ClientChangeStatus(value);
-            }
+            return ev.IsAllowed;
         }
 
         private static void Postfix(Scp1344Item __instance, ref Scp1344Status value)
