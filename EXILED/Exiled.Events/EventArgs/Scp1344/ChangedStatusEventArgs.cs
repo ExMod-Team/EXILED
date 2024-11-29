@@ -20,20 +20,20 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// Initializes a new instance of the <see cref="ChangedStatusEventArgs" /> class.
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
-        /// <param name="scp1344Status"><inheritdoc cref="Scp1344Status"/></param>
+        /// <param name="scp1344Status"><inheritdoc cref="InventorySystem.Items.Usables.Scp1344.Scp1344Status"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
         public ChangedStatusEventArgs(Item item, Scp1344Status scp1344Status, bool isAllowed = true)
         {
             Item = item;
             Scp1344 = item as Scp1344;
             Player = item.Owner;
-            Scp1344StatusNew = scp1344Status;
+            Scp1344Status = scp1344Status;
         }
 
         /// <summary>
         /// Gets the new state.
         /// </summary>
-        public Scp1344Status Scp1344StatusNew { get; }
+        public Scp1344Status Scp1344Status { get; }
 
         /// <summary>
         /// Gets the item.
