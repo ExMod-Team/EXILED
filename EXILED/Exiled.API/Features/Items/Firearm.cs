@@ -179,6 +179,9 @@ namespace Exiled.API.Features.Items
                     // If there is still ammo to add, add it to the first magazine.
                     primaryContainers.FirstOrDefault()?.ServerModifyAmmo(ammoToAdd);
                 }
+
+                ListPool<IPrimaryAmmoContainerModule>.Pool.Return(primaryContainers);
+                ListPool<AutomaticActionModule>.Pool.Return(barrels);
             }
         }
 
