@@ -131,11 +131,6 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the door is open.
-        /// </summary>
-        public bool IsVisibleThrough => Base.IsVisibleThrough;
-
-        /// <summary>
         /// Gets a value indicating whether this door is a gate.
         /// </summary>
         public bool IsGate => this is Gate;
