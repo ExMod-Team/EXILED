@@ -41,6 +41,11 @@ namespace Exiled.API.Features.Items
         public new Scp1344Item Base { get; }
 
         /// <summary>
+        /// Gets a value indicating whether it can be started to use.
+        /// </summary>
+        public bool CanStartUsing => Base.CanStartUsing;
+
+        /// <summary>
         /// Gets or sets the status of Scp1344.
         /// </summary>
         public Scp1344Status Status
