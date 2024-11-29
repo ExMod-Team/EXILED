@@ -15,6 +15,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
     using Exiled.Events.EventArgs.Scp1344;
     using HarmonyLib;
     using InventorySystem.Items.Usables.Scp1344;
+    using Mirror;
 
     /// <summary>
     /// Patches <see cref="Scp1344Item.Status"/>.
@@ -26,18 +27,22 @@ namespace Exiled.Events.Patches.Events.Scp1344
     [HarmonyPatch(typeof(Scp1344Item), nameof(Scp1344Item.Status), MethodType.Setter)]
     internal static class Status
     {
-        private static bool Prefix(Scp1344Item __instance, ref Scp1344Status value)
+        private static void Prefix(Scp1344Item __instance, ref Scp1344Status value)
         {
             ChangingStatusEventArgs ev = new(Item.Get(__instance), value, __instance.Status);
             Handlers.Scp1344.OnChangingStatus(ev);
 
-            if (ev.IsAllowed)
-            {
-                __instance._status = value;
-                return true;
-            }
+            if (!ev.IsAllowed)
+                return;
 
-            return false;
+            if (NetworkServer.active)
+            {
+                __instance.ServerChangeStatus(value);
+            }
+            else
+            {
+                __instance.ClientChangeStatus(value);
+            }
         }
 
         private static void Postfix(Scp1344Item __instance, ref Scp1344Status value)
