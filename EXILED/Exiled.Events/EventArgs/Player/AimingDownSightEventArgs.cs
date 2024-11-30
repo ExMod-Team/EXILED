@@ -33,8 +33,6 @@ namespace Exiled.Events.EventArgs.Player
             Firearm = Item.Get<Firearm>(firearm);
             Player = Firearm.Owner;
             AdsIn = adsIn;
-
-            Log.Error(AdsIn);
         }
 
         /// <summary>

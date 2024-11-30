@@ -36,8 +36,6 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label retLabel = generator.DefineLabel();
-
             LocalBuilder ads = generator.DeclareLocal(typeof(bool));
 
             int offset = 0;
@@ -67,10 +65,6 @@ namespace Exiled.Events.Patches.Events.Player
                     // loads AdsIn
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AimingDownSightEventArgs), nameof(AimingDownSightEventArgs.AdsIn))),
                 });
-
-            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
-
-            Exiled.API.Features.Log.Error(newInstructions.ToString(true));
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
