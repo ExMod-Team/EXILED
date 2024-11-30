@@ -27,7 +27,6 @@ namespace Exiled.Events.Patches.Events.Scp1344
     [EventPatch(typeof(Handlers.Scp1344), nameof(Handlers.Scp1344.Deactivating))]
     [EventPatch(typeof(Handlers.Scp1344), nameof(Handlers.Scp1344.Deactivated))]
     [HarmonyPatch(typeof(Scp1344Item), nameof(Scp1344Item.ServerUpdateDeactivating))]
-    [HarmonyPatch(typeof(Scp1344Item), nameof(Scp1344Item.ServerUpdateDeactivating))]
     internal static class Deactivating
     {
         private static bool Prefix(ref Scp1344Item __instance)
