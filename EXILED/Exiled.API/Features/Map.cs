@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features
 {
+#pragma warning disable SA1401
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -43,6 +44,11 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Map
     {
+        /// <summary>
+        /// Gets a list of <see cref="PocketDimensionTeleport"/>s on the map.
+        /// </summary>
+        internal static List<PocketDimensionTeleport> TeleportsValue = new();
+
         private static AmbientSoundPlayer ambientSoundPlayer;
 
         private static SqueakSpawner squeakSpawner;
@@ -113,11 +119,6 @@ namespace Exiled.API.Features
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
         public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
-
-        /// <summary>
-        /// Gets a list of <see cref="PocketDimensionTeleport"/>s on the map.
-        /// </summary>
-        internal static List<PocketDimensionTeleport> TeleportsValue { get; } = new();
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.

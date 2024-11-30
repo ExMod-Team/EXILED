@@ -18,8 +18,10 @@ namespace Exiled.Events.Patches.Events.Player
 
     using HarmonyLib;
 
+    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Firearms.Modules.Misc;
 
     using static HarmonyLib.AccessTools;
 
@@ -29,41 +31,33 @@ namespace Exiled.Events.Patches.Events.Player
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Shooting))]
 
-    // [HarmonyPatch(typeof(FirearmBasicMessagesHandler), nameof(FirearmBasicMessagesHandler.ServerShotReceived))]
+    [HarmonyPatch(typeof(ShotBacktrackData), nameof(ShotBacktrackData.ProcessShot))]
     internal static class Shooting
     {
-        /*
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label isAllowedLabel = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ShootingEventArgs));
-
-            int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(IActionModule), nameof(IActionModule.ServerAuthorizeShot)))) + offset;
+            int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_2) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(referenceHub)
-                    new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[index]),
+                    // Player.Get(firearm.Owner)
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Firearm), nameof(Firearm.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // firearm
-                    new(OpCodes.Ldloc_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
 
-                    // msg
-                    new(OpCodes.Ldarg_1),
-
-                    // ShootingEventArgs ev = new(Player, firearm, ShotMessage)
+                    // ShootingEventArgs ev = new(Player, firearm)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShootingEventArgs))[0]),
                     new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Player.OnShooting(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShooting))),
@@ -72,12 +66,6 @@ namespace Exiled.Events.Patches.Events.Player
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
-
-                    // isAllowedLabel:
-                    // msg = ev.ShotMessage
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(isAllowedLabel),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.ShotMessage))),
-                    new(OpCodes.Starg_S, 1),
                 });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
@@ -87,6 +75,5 @@ namespace Exiled.Events.Patches.Events.Player
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
-        */
     }
 }

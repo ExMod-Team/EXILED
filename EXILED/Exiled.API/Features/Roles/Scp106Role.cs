@@ -168,7 +168,7 @@ namespace Exiled.API.Features.Roles
         public bool SinkholeState
         {
             get => StalkAbility.StalkActive;
-            set => StalkAbility.StalkActive = value;
+            set => StalkAbility.ServerSetStalk(value);
         }
 
         /// <summary>

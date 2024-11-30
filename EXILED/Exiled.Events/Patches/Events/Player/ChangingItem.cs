@@ -41,8 +41,9 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingItemEventArgs));
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Bne_Un_S) + offset;
+            const int offset = 3;
+            int index = newInstructions.FindIndex(
+                instruction => instruction.Calls(PropertyGetter(typeof(ItemBase), nameof(ItemBase.AllowEquip)))) + offset;
 
             newInstructions.InsertRange(
                 index,

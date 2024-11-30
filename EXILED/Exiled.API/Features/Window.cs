@@ -220,7 +220,9 @@ namespace Exiled.API.Features
             RoomType.LczGlassBox => GlassType.GR18,
             RoomType.LczPlants => GlassType.Plants,
             RoomType.Hcz049 => GlassType.Scp049,
-            RoomType.Hcz079 => Recontainer.Base._activatorGlass == Base ? GlassType.Scp079Trigger : GlassType.Scp079,
+
+            // TODO: Recontainer.Base._activatorGlass == Base ? GlassType.Scp079Trigger : GlassType.Scp079
+            RoomType.Hcz079 => GlassType.Scp079,
             RoomType.HczHid => GlassType.MicroHid,
             RoomType.HczTestRoom => GlassType.TestRoom,
             RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,

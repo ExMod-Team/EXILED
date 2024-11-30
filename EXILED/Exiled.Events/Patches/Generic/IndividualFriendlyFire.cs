@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.Patches.Generic
 {
+    using Exiled.API.Extensions;
+
 #pragma warning disable SA1402
     using System;
     using System.Collections.Generic;
@@ -96,8 +98,7 @@ namespace Exiled.Events.Patches.Generic
                 return true;
 
             // Only check friendlyFire if the FootPrint hasn't changed (Fix for Grenade not dealing damage because it's from a dead player)
-            // TODO rework FriendlyFireRule to make it compatible with Footprint
-            if (!attackerFootprint.Equals(new Footprint(attackerFootprint.Hub)))
+            if (!attackerFootprint.CompareLife(new Footprint(attackerFootprint.Hub)))
                 return false;
 
             // Check if attackerFootprint.Hub or victimHub is null and log debug information
@@ -211,7 +212,7 @@ namespace Exiled.Events.Patches.Generic
 
             int offset = -1;
             int index = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.networkIdentity)))) + offset;
+                instruction => instruction.Calls(PropertyGetter(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.Attacker)))) + offset;
 
             LocalBuilder ffMulti = generator.DeclareLocal(typeof(float));
 

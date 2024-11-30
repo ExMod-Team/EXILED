@@ -210,9 +210,14 @@ namespace Exiled.API.Enums
         EzCollapsedTunnel,
 
         /// <summary>
-        /// Entrance Zone's straight hall with Dr.L's locked room.
+        /// Entrance Zone's straight hall with Dr.L's or Dr. Gear's locked room.
         /// </summary>
         EzConference,
+
+        /// <summary>
+        /// Entrance Zone's straight hall with Chef's locked room.
+        /// </summary>
+        EzChef,
 
         /// <summary>
         /// Entrance Zone's straight hall
