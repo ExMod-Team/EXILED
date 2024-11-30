@@ -115,6 +115,11 @@ namespace Exiled.API.Features.Roles
         public bool IsValid => Owner != null && Owner.IsConnected && Base == Owner.RoleManager.CurrentRole;
 
         /// <summary>
+        /// Gets the life identifier for the role.
+        /// </summary>
+        public int LifeIdentifier => Base.UniqueLifeIdentifier;
+
+        /// <summary>
         /// Gets a random spawn position of this role.
         /// </summary>
         /// <returns>The spawn position.</returns>

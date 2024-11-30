@@ -14,16 +14,12 @@ namespace Exiled.API.Features.Doors
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
-    using Exiled.API.Features.Hazards;
     using Exiled.API.Interfaces;
-    using global::Hazards;
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
     using MEC;
     using Mirror;
     using UnityEngine;
-
-    using static Interactables.Interobjects.ElevatorManager;
 
     using BaseBreakableDoor = Interactables.Interobjects.BreakableDoor;
     using BaseKeycardPermissions = Interactables.Interobjects.DoorUtils.KeycardPermissions;
@@ -640,7 +636,6 @@ namespace Exiled.API.Features.Doors
                 "NUKE_ARMORY" => DoorType.NukeArmory,
                 "LCZ_ARMORY" => DoorType.LczArmory,
                 "SURFACE_NUKE" => DoorType.NukeSurface,
-                "HID_CHAMBER" => DoorType.HIDChamber,
                 "HCZ_ARMORY" => DoorType.HczArmory,
                 "096" => DoorType.Scp096,
                 "049_ARMORY" => DoorType.Scp049Armory,
@@ -653,6 +648,7 @@ namespace Exiled.API.Features.Doors
                 "SERVERS_BOTTOM" => DoorType.ServersBottom,
                 "173_CONNECTOR" => DoorType.Scp173Connector,
                 "LCZ_WC" => DoorType.LczWc,
+                "HID_CHAMBER" => DoorType.HIDChamber,
                 "HID_UPPER" => DoorType.HIDUpper,
                 "HID_LOWER" => DoorType.HIDLower,
                 "173_ARMORY" => DoorType.Scp173Armory,

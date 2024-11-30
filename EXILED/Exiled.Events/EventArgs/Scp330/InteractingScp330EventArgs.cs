@@ -34,6 +34,7 @@ namespace Exiled.Events.EventArgs.Scp330
             ShouldSever = usage >= 2;
             ShouldPlaySound = true;
             IsAllowed = Player.IsHuman;
+            Candy = Scp330Candies.GetRandom();
 
             if (Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag))
             {
