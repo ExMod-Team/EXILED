@@ -29,25 +29,19 @@ namespace Exiled.Events.EventArgs.Server
         /// <param name="players">
         /// <inheritdoc cref="Players" />
         /// </param>
-        /// <param name="queue">
-        /// <inheritdoc cref="SpawnQueue" />
-        /// </param>
         /// <param name="maxRespawn">
         /// <inheritdoc cref="MaximumRespawnAmount" />
         /// </param>
-        /// <param name="nextKnownTeam">
+        /// <param name="wave">
         /// <inheritdoc cref="NextKnownTeam" />
         /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public RespawningTeamEventArgs(List<Player> players, Queue<RoleTypeId> queue, int maxRespawn, SpawnableWaveBase nextKnownTeam, bool isAllowed = true)
+        public RespawningTeamEventArgs(List<Player> players, int maxRespawn, SpawnableWaveBase wave)
         {
             Players = players;
             MaximumRespawnAmount = maxRespawn;
-            SpawnQueue = queue;
-            NextKnownTeam = nextKnownTeam;
-            IsAllowed = isAllowed;
+            SpawnQueue = WaveSpawner.SpawnQueue;
+            Wave = wave;
+            IsAllowed = true;
         }
 
         /// <summary>
@@ -74,9 +68,14 @@ namespace Exiled.Events.EventArgs.Server
         }
 
         /// <summary>
-        /// Gets or sets a value indicating what the next respawnable team is.
+        /// Gets or sets a value indicating what the next wave is.
         /// </summary>
-        public SpawnableWaveBase NextKnownTeam { get; set; }
+        public SpawnableWaveBase Wave { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating what the next respawnable team is.
+        /// </summary>
+        public SpawnableTeamType NextKnownTeam => Wave.TargetFaction.GetSpawnableTeam();
 
         /// <summary>
         /// Gets or sets a value indicating whether the spawn can occur.

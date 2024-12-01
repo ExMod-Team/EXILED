@@ -13,6 +13,7 @@ namespace Exiled.API.Extensions
 
     using Enums;
     using Exiled.API.Features.Spawn;
+    using Footprinting;
     using InventorySystem;
     using InventorySystem.Configs;
     using PlayerRoles;
@@ -27,6 +28,22 @@ namespace Exiled.API.Extensions
     /// </summary>
     public static class RoleExtensions
     {
+        /// <summary>
+        /// Compares LifeIdentifier.
+        /// </summary>
+        /// <param name="footprint">The footprint to compare.</param>
+        /// <param name="other">The other footprint.</param>
+        /// <returns>If LifeIdentifier is the same (same role).</returns>
+        public static bool CompareLife(this Footprint footprint, Footprint other) => footprint.LifeIdentifier == other.LifeIdentifier;
+
+        /// <summary>
+        /// Compares LifeIdentifier.
+        /// </summary>
+        /// <param name="footprint">The footprint to compare.</param>
+        /// <param name="other">The hub to compare to.</param>
+        /// <returns>If LifeIdentifier is the same (same role).</returns>
+        public static bool CompareLife(this Footprint footprint, ReferenceHub other) => footprint.LifeIdentifier == other.roleManager.CurrentRole.UniqueLifeIdentifier;
+
         /// <summary>
         /// Gets a <see cref="RoleTypeId">role's</see> <see cref="Color"/>.
         /// </summary>

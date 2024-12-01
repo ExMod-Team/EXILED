@@ -15,7 +15,6 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
-    using Exiled.Events.EventArgs.Server;
     using HarmonyLib;
 
     using PlayerRoles.FirstPersonControl.Spawnpoints;
@@ -39,9 +38,7 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = -1;
 
             // Locate the call to `Transform.position` setter to determine where to insert new instructions.
-            MethodInfo setPositionMethod = PropertySetter(typeof(Transform), nameof(Transform.position));
-            int index = newInstructions.FindIndex(instr =>
-                instr.opcode == OpCodes.Callvirt && instr.operand as MethodInfo == setPositionMethod) + offset;
+            int index = newInstructions.FindIndex(instr => instr.Calls(PropertySetter(typeof(Transform), nameof(Transform.position)))) + offset;
 
             // Declare the `SpawningEventArgs` local variable.
             LocalBuilder ev = generator.DeclareLocal(typeof(SpawningEventArgs));

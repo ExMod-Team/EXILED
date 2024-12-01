@@ -36,27 +36,21 @@ namespace Exiled.Events.Patches.Events.Scp914
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            // Find override position
-            const int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FpcExtensionMethods), nameof(FpcExtensionMethods.TryOverridePosition)))) + offset;
-
             Label returnLabel = generator.DefineLabel();
 
             LocalBuilder curSetting = generator.DeclareLocal(typeof(Scp914KnobSetting));
             LocalBuilder ev = generator.DeclareLocal(typeof(UpgradingPlayerEventArgs));
 
-            // Move labels from override - 3 position (Right after a branch)
-            List<Label> labels = newInstructions[index].labels;
-
-            // Remove TryOverride, and !upgradeInventory
-            newInstructions.RemoveRange(index, 5);
+            // Find override position
+            const int offset = -3;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FpcExtensionMethods), nameof(FpcExtensionMethods.TryOverridePosition)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
                     // Player.Get(ply)
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(labels),
+                    new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // upgradeInventory
@@ -66,9 +60,9 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Ldarg_2),
 
                     // setting
-                    new(OpCodes.Ldarg_S, 3),
+                    new(OpCodes.Ldarg_3),
 
-                    // moveVector
+                    // outputPosition
                     new(OpCodes.Ldloc_0),
 
                     // UpgradingPlayerEventArgs ev = new(player, upgradeInventory, heldonly, setting, moveVector);
@@ -89,6 +83,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
 
                     // upgradeInventory = ev.UpgradeItems
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPlayerEventArgs), nameof(UpgradingPlayerEventArgs.UpgradeItems))),
@@ -102,16 +97,13 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPlayerEventArgs), nameof(UpgradingPlayerEventArgs.KnobSetting))),
                     new(OpCodes.Starg_S, 3),
 
+                    // outputPosition = ev.OutputPosition
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPlayerEventArgs), nameof(UpgradingPlayerEventArgs.OutputPosition))),
+                    new(OpCodes.Stloc_0),
+
                     // curSetting = setting;
                     new(OpCodes.Ldarg_S, 3),
                     new(OpCodes.Stloc_S, curSetting.LocalIndex),
-
-                    // ev.Player.Teleport(ev.OutputPosition);
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPlayerEventArgs), nameof(UpgradingPlayerEventArgs.Player))),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPlayerEventArgs), nameof(UpgradingPlayerEventArgs.OutputPosition))),
-                    new(OpCodes.Callvirt, Method(typeof(Player), nameof(Player.Teleport), new[] { typeof(Vector3) })),
                 });
 
             // Find InventoryUpgrade, and set position there.
@@ -144,6 +136,8 @@ namespace Exiled.Events.Patches.Events.Scp914
 
                     // setting
                     new(OpCodes.Ldarg_S, 3),
+
+                    // true
                     new(OpCodes.Ldc_I4_1),
 
                     // UpgradingInventoryItemEventArgs ev = new(player, itemBase, setting)

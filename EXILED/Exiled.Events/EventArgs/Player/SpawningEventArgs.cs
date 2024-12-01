@@ -8,7 +8,6 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using System;
-    using System.Runtime.CompilerServices;
 
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;

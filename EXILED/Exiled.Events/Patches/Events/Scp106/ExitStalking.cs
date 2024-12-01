@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Scp106
     /// To add the <see cref="Handlers.Scp106.ExitStalking"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Scp106), nameof(Handlers.Scp106.ExitStalking))]
-    [HarmonyPatch(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.StalkActive), MethodType.Setter)]
+    [HarmonyPatch(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.ServerSetStalk))]
     public class ExitStalking
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -36,20 +36,22 @@ namespace Exiled.Events.Patches.Events.Scp106
 
             Label continueLabel = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
-            int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+
+            int offset = -2;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertySetter(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.StalkActive)))) + offset;
+
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
                     // if (value is false) continue;
                     new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Beq_S, continueLabel),
 
                     // Player.Get(this.Owner);
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp106HuntersAtlasAbility), nameof(Scp106HuntersAtlasAbility.Owner))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // true
@@ -58,8 +60,6 @@ namespace Exiled.Events.Patches.Events.Scp106
                     // ExitStalking ev = new(Player, isAllowed)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ExitStalkingEventArgs))[0]),
                     new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Scp106.OnExitStalking(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Scp106), nameof(Handlers.Scp106.OnExitStalking))),
@@ -68,11 +68,9 @@ namespace Exiled.Events.Patches.Events.Scp106
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ExitStalkingEventArgs), nameof(ExitStalkingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
-                });
 
-            offset = -3;
-            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
-            newInstructions[index].labels.Add(continueLabel);
+                    new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
+                });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 

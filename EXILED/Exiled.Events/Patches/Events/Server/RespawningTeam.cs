@@ -7,12 +7,15 @@
 
 namespace Exiled.Events.Patches.Events.Server
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
+    using Exiled.API.Extensions;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
     using Exiled.Events.Handlers;
@@ -50,23 +53,20 @@ namespace Exiled.Events.Patches.Events.Server
                 new[]
                 {
                     // GetPlayers(list);
-                    new CodeInstruction(OpCodes.Ldloc_2).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldloc_S, 2).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(GetPlayers))),
 
                     // maxWaveSize
-                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldloc_3),
 
-                    // this.NextKnownTeam
-                    new(OpCodes.Ldarg_1),
+                    // wave
+                    new(OpCodes.Ldarg_0),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
-
-                    // RespawningTeamEventArgs ev = new(players, num, this.NextKnownTeam)
+                    // RespawningTeamEventArgs ev = new(players, num, wave)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RespawningTeamEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc, ev.LocalIndex),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Server.OnRespawningTeam(ev)
                     new(OpCodes.Call, Method(typeof(Server), nameof(Server.OnRespawningTeam))),
@@ -77,33 +77,29 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Brtrue_S, continueLabel),
 
                     // this.NextKnownTeam == null
-                    //    return;
-                    new(OpCodes.Ldnull),
-                    new(OpCodes.Stsfld, Field(typeof(WaveManager), nameof(WaveManager._nextWave))),
+                    // return;
+                    new(OpCodes.Ldsfld, Field(typeof(WaveSpawner), nameof(WaveSpawner.SpawnQueue))),
+                    new(OpCodes.Callvirt, Method(typeof(Queue<RoleTypeId>), nameof(Queue<RoleTypeId>.Clear))),
+                    new(OpCodes.Newobj, Constructor(typeof(List<ReferenceHub>), new Type[0])),
                     new(OpCodes.Ret),
 
                     // load "ev" four times
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Dup),
 
                     // num = ev.MaximumRespawnAmount
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.MaximumRespawnAmount))),
-                    new(OpCodes.Stloc_S, 4),
+                    new(OpCodes.Stloc_3),
 
                     // list = GetHubs(ev.Players)
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Players))),
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(GetHubs))),
-                    new(OpCodes.Stloc_1),
+                    new(OpCodes.Stloc_S, 2),
 
-                    // queueToFill = ev.SpawnQueue;
-                    new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.SpawnQueue))),
-                    new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(RefillQueue))),
-
-                    // wave = ev.NextKnownTeam;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.NextKnownTeam))),
-                    new(OpCodes.Starg_S, 1),
+                    // wave = ev.Wave;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Wave))),
+                    new(OpCodes.Starg_S, 0),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

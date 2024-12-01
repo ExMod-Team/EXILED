@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Generic
     {
         [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.Awake))]
         [HarmonyPostfix]
-        private static void Adding(PocketDimensionTeleport __instance) => _ = Map.TeleportsValue.AddItem(__instance);
+        private static void Adding(PocketDimensionTeleport __instance) => Map.TeleportsValue.Add(__instance);
 
         [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnDestroy))]
         [HarmonyPostfix]

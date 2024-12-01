@@ -3724,6 +3724,37 @@ namespace Exiled.API.Features
         /// <param name="projectileType">The projectile that will create the effect.</param>
         public void ExplodeEffect(ProjectileType projectileType) => Map.ExplodeEffect(Position, projectileType);
 
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            Player player = obj as Player;
+            return (object)player != null && ReferenceHub == player.ReferenceHub;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return ReferenceHub.GetHashCode();
+        }
+
+        /// <summary>
+        /// Returns whether the two players are the same.
+        /// </summary>
+        /// <param name="player1">The first player instance.</param>
+        /// <param name="player2">The second player instance.</param>
+        /// <returns><see langword="true"/> if the values are equal.</returns>
+#pragma warning disable SA1201
+        public static bool operator ==(Player player1, Player player2) => player1?.Equals(player2) ?? player2 is null;
+
+        /// <summary>
+        /// Returns whether the two players are different.
+        /// </summary>
+        /// <param name="player1">The first player instance.</param>
+        /// <param name="player2">The second player instance.</param>
+        /// <returns><see langword="true"/> if the values are not equal.</returns>
+        public static bool operator !=(Player player1, Player player2) => !(player1 == player2);
+#pragma warning restore SA1201
+
         /// <summary>
         /// Converts the player in a human-readable format.
         /// </summary>

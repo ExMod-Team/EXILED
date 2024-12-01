@@ -26,6 +26,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp1344;
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
@@ -205,6 +206,7 @@ namespace Exiled.API.Features.Items
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
                     Scp1576Item scp1576 => new Scp1576(scp1576),
+                    Scp1344Item scp1344 => new Scp1344(scp1344),
                     BaseConsumable consumable => new Consumable(consumable),
                     _ => new Usable(usable),
                 },
@@ -272,6 +274,7 @@ namespace Exiled.API.Features.Items
         /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
         /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
         /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
         /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
         /// </para>
         /// <para>
@@ -300,6 +303,7 @@ namespace Exiled.API.Features.Items
             ItemType.SCP330 => new Scp330(),
             ItemType.SCP2176 => new Scp2176(owner),
             ItemType.SCP1576 => new Scp1576(),
+            ItemType.SCP1344 => new Scp1344(),
             ItemType.Jailbird => new Jailbird(),
             _ => new Item(type),
         };
@@ -325,6 +329,7 @@ namespace Exiled.API.Features.Items
         /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
         /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
         /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
         /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
         /// </para>
         /// <para>
