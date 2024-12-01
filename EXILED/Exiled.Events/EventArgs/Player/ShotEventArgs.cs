@@ -19,44 +19,30 @@ namespace Exiled.Events.EventArgs.Player
     public class ShotEventArgs : IPlayerEvent, IFirearmEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ShotEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="ShotEventArgs"/> class.
         /// </summary>
-        /// <param name="instance">
-        /// The <see cref="HitscanHitregModuleBase"/> instance.
-        /// </param>
-        /// <param name="firearm">
-        /// <inheritdoc cref="Firearm"/>
-        /// </param>
-        /// <param name="ray">
-        /// <inheritdoc cref="Ray" />
-        /// </param>
-        /// <param name="maxDistance">
-        /// <inheritdoc cref="MaxDistance" />
-        /// </param>
-        public ShotEventArgs(HitscanHitregModuleBase instance, InventorySystem.Items.Firearms.Firearm firearm, Ray ray, float maxDistance)
+        /// <param name="hitregModule">Hitreg module that calculated the shot.</param>
+        /// <param name="hitInfo">Raycast hit info.</param>
+        /// <param name="firearm">The firearm used.</param>
+        /// <param name="destructible">The IDestructible that was hit. Can be null.</param>
+        public ShotEventArgs(HitscanHitregModuleBase hitregModule, RaycastHit hitInfo, InventorySystem.Items.Firearms.Firearm firearm, IDestructible destructible)
         {
             Player = Player.Get(firearm.Owner);
             Firearm = Item.Get<Firearm>(firearm);
-            MaxDistance = maxDistance;
 
-            if (!Physics.Raycast(ray, out RaycastHit hitInfo, maxDistance, HitscanHitregModuleBase.HitregMask))
-                return;
-
-            Distance = hitInfo.distance;
-            Position = hitInfo.point;
-            Damage = hitInfo.collider.TryGetComponent(out IDestructible component) ? instance.DamageAtDistance(hitInfo.distance) : 0f;
+            Damage = hitInfo.collider.TryGetComponent(out IDestructible component) ? hitregModule.DamageAtDistance(hitInfo.distance) : 0f;
             Destructible = component;
             RaycastHit = hitInfo;
 
-            if (component is HitboxIdentity identity)
+            if (Destructible is HitboxIdentity hitboxIdentity)
             {
-                Hitbox = identity;
+                Hitbox = hitboxIdentity;
                 Target = Player.Get(Hitbox.TargetHub);
             }
         }
 
         /// <summary>
-        /// Gets the player who shot.
+        /// Gets the player who fired the shot.
         /// </summary>
         public Player Player { get; }
 
@@ -69,43 +55,43 @@ namespace Exiled.Events.EventArgs.Player
         public Item Item => Firearm;
 
         /// <summary>
-        /// Gets the max distance of the shot.
+        /// Gets the bullet travel distance.
         /// </summary>
-        public float MaxDistance { get;  }
+        public float Distance => RaycastHit.distance;
 
         /// <summary>
-        /// Gets the shot distance. Can be <c>0.0f</c> if the raycast doesn't hit collider.
+        /// Gets the position of the hit.
         /// </summary>
-        public float Distance { get; }
+        public Vector3 Position => RaycastHit.point;
 
         /// <summary>
-        /// Gets the shot position. Can be <see langword="null"/> if the raycast doesn't hit collider.
-        /// </summary>
-        public Vector3 Position { get; }
-
-        /// <summary>
-        /// Gets the <see cref="IDestructible"/> component of the hit collider. Can be <see langword="null"/>.
+        /// Gets the <see cref="IDestructible"/> component of the hit collider. Can be null.
         /// </summary>
         public IDestructible Destructible { get; }
 
         /// <summary>
-        /// Gets the inflicted damage.
+        /// Gets the firearm damage at the hit distance. Actual inflicted damage may vary.
         /// </summary>
         public float Damage { get; }
 
         /// <summary>
-        /// Gets the raycast result.
+        /// Gets the raycast info.
         /// </summary>
         public RaycastHit RaycastHit { get; }
 
         /// <summary>
-        /// Gets the target of the shot. Can be <see langword="null"/>.
+        /// Gets the target player. Can be null.
         /// </summary>
         public Player Target { get; }
 
         /// <summary>
-        /// Gets the <see cref="HitboxIdentity"/> component of the hit collider. Can be <see langword="null"/>.
+        /// Gets the <see cref="HitboxIdentity"/> component of the target player. Can be null.
         /// </summary>
         public HitboxIdentity Hitbox { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the shot can hurt the target.
+        /// </summary>
+        public bool CanHurt { get; set; } = true;
     }
 }
