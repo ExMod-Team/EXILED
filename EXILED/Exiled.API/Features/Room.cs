@@ -201,9 +201,9 @@ namespace Exiled.API.Features
         internal List<Camera> CamerasValue { get; } = new();
 
         /// <summary>
-        /// Gets a <see cref="List{T}"/> containing all known <see cref="RoomLightController"/>s in that <see cref="Room"/>.
+        /// Gets or sets a <see cref="List{T}"/> containing all known <see cref="RoomLightController"/>s in that <see cref="Room"/>.
         /// </summary>
-        internal List<RoomLightController> RoomLightControllersValue { get; } = new();
+        internal List<RoomLightController> RoomLightControllersValue { get; set; } = new();
 
         /// <summary>
         /// Gets a <see cref="List{T}"/> containing all known <see cref="Room"/>s around that <see cref="Room"/>.
@@ -506,6 +506,9 @@ namespace Exiled.API.Features
             if (Type is RoomType.Unknown)
                 Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
 #endif
+
+            if (RoomLightControllersValue.Count == 0)
+                RoomLightControllersValue = new List<RoomLightController>();
 
             RoomLightControllersValue.AddRange(gameObject.GetComponentsInChildren<RoomLightController>());
 
