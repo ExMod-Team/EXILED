@@ -340,27 +340,6 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
-        /// Gives to a specific <see cref="Player"/> a specic <see cref="CustomItem"/>.
-        /// </summary>
-        /// <param name="player">The <see cref="Player"/> to give the item to.</param>
-        /// <param name="t">The <see cref="System.Type"/> of the item to give.</param>
-        /// <param name="displayMessage">Indicates a value whether <see cref="ShowPickedUpMessage"/> will be called when the player receives the <see cref="CustomItem"/> or not.</param>
-        /// <returns>Returns a value indicating if the player was given the <see cref="CustomItem"/> or not.</returns>
-        /// <remarks>
-        /// This method will give the first registered <see cref="CustomItem"/> of the specified type to the player.
-        /// If no items of the specified type are found, the method will return false.
-        /// </remarks>
-        public static bool TryGive(Player player, Type t, bool displayMessage = true)
-        {
-            if (!TryGet(t, out IEnumerable<CustomItem> items))
-                return false;
-
-            items.First().Give(player, displayMessage);
-
-            return true;
-        }
-
-        /// <summary>
         /// Registers all the <see cref="CustomItem"/>'s present in the current assembly.
         /// </summary>
         /// <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
