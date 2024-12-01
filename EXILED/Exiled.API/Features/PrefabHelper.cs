@@ -9,8 +9,6 @@ namespace Exiled.API.Features
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
     using System.Reflection;
 
     using Exiled.API.Enums;
@@ -23,18 +21,21 @@ namespace Exiled.API.Features
     /// </summary>
     public static class PrefabHelper
     {
-        private static readonly Dictionary<PrefabType, GameObject> Stored = new();
+        /// <summary>
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all <see cref="PrefabType"/> and their corresponding <see cref="GameObject"/>.
+        /// </summary>
+        internal static readonly Dictionary<PrefabType, GameObject> Prefabs = new(Enum.GetValues(typeof(PrefabType)).Length);
 
         /// <summary>
-        /// Gets a dictionary of <see cref="PrefabType"/> to <see cref="GameObject"/>.
+        /// Gets a <see cref="IReadOnlyDictionary{TKey,TValue}"/> of <see cref="PrefabType"/> and their corresponding <see cref="GameObject"/>.
         /// </summary>
-        public static ReadOnlyDictionary<PrefabType, GameObject> PrefabToGameObject => new(Stored);
+        public static IReadOnlyDictionary<PrefabType, GameObject> PrefabToGameObject => Prefabs;
 
         /// <summary>
-        /// Gets the prefab attribute of a prefab type.
+        /// Gets the <see cref="PrefabAttribute"/> from a <see cref="PrefabType"/>.
         /// </summary>
-        /// <param name="prefabType">The prefab type.</param>
-        /// <returns>The <see cref="PrefabAttribute" />.</returns>
+        /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
+        /// <returns>The corresponding <see cref="PrefabAttribute"/>.</returns>
         public static PrefabAttribute GetPrefabAttribute(this PrefabType prefabType)
         {
             Type type = prefabType.GetType();
@@ -42,64 +43,75 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the prefab of the specified <see cref="PrefabType"/>.
+        /// Gets the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
         /// </summary>
-        /// <param name="type">The <see cref="PrefabType"/> to get prefab of.</param>
-        /// <typeparam name="T">The <see cref="Component"/> to get.</typeparam>
-        /// <returns>Returns the prefab component as {T}.</returns>
-        public static T GetPrefab<T>(PrefabType type)
-            where T : Component
+        /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
+        /// <returns>Returns the <see cref="GameObject"/>.</returns>
+        public static GameObject GetPrefab(PrefabType prefabType)
         {
-            if (!Stored.TryGetValue(type, out GameObject gameObject) || !gameObject.TryGetComponent(out T component))
-                return null;
+            if (Prefabs.TryGetValue(prefabType, out GameObject prefab))
+                return prefab;
 
-            return component;
+            return null;
         }
 
         /// <summary>
-        /// Spawns a prefab on server.
+        /// Tries to get the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
         /// </summary>
-        /// <param name="prefabType">The prefab type.</param>
-        /// <param name="position">The position to spawn the prefab.</param>
-        /// <param name="rotation">The rotation of the prefab.</param>
-        /// <returns>The <see cref="GameObject"/> instantied.</returns>
+        /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
+        /// <param name="gameObject">The <see cref="GameObject"/> of the .</param>
+        /// <returns>Returns true if the <see cref="GameObject"/> was found.</returns>
+        public static bool TryGetPrefab(PrefabType prefabType, out GameObject gameObject)
+        {
+            gameObject = GetPrefab(prefabType);
+            return gameObject is not null;
+        }
+
+        /// <summary>
+        /// Gets a <see cref="Component"/> from the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
+        /// </summary>
+        /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
+        /// <typeparam name="T">The <see cref="Component"/> type.</typeparam>
+        /// <returns>Returns the <see cref="Component"/>.</returns>
+        public static T GetPrefab<T>(PrefabType prefabType)
+            where T : Component
+        {
+            if (Prefabs.TryGetValue(prefabType, out GameObject prefab) && prefab.TryGetComponent(out T component))
+                return component;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Spawns the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
+        /// </summary>
+        /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
+        /// <param name="position">The <see cref="Vector3"/> position where the <see cref="GameObject"/> will spawn.</param>
+        /// <param name="rotation">The <see cref="Quaternion"/> rotation of the <see cref="GameObject"/>.</param>
+        /// <returns>Returns the <see cref="GameObject"/> instantied.</returns>
         public static GameObject Spawn(PrefabType prefabType, Vector3 position = default, Quaternion rotation = default)
         {
-            if (!Stored.TryGetValue(prefabType, out GameObject gameObject))
+            if (!TryGetPrefab(prefabType, out GameObject gameObject))
                 return null;
+
             GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation);
             NetworkServer.Spawn(newGameObject);
             return newGameObject;
         }
 
         /// <summary>
-        /// Spawns a prefab on server.
+        /// Spawns the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
         /// </summary>
-        /// <param name="prefabType">The prefab type.</param>
-        /// <param name="position">The position to spawn the prefab.</param>
-        /// <param name="rotation">The rotation of the prefab.</param>
+        /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
+        /// <param name="position">The <see cref="Vector3"/> position where the <see cref="GameObject"/> will spawn.</param>
+        /// <param name="rotation">The <see cref="Quaternion"/> rotation of the <see cref="GameObject"/>.</param>
         /// <typeparam name="T">The <see cref="Component"/> type.</typeparam>
-        /// <returns>The <see cref="Component"/> instantied.</returns>
+        /// <returns>Returns the <see cref="Component"/> of the <see cref="GameObject"/>.</returns>
         public static T Spawn<T>(PrefabType prefabType, Vector3 position = default, Quaternion rotation = default)
             where T : Component
         {
-            T obj = UnityEngine.Object.Instantiate(GetPrefab<T>(prefabType), position, rotation);
-            NetworkServer.Spawn(obj.gameObject);
-            return obj;
-        }
-
-        /// <summary>
-        /// Loads all prefabs.
-        /// </summary>
-        internal static void LoadPrefabs()
-        {
-            Stored.Clear();
-
-            foreach (PrefabType prefabType in EnumUtils<PrefabType>.Values)
-            {
-                PrefabAttribute attribute = prefabType.GetPrefabAttribute();
-                Stored.Add(prefabType, NetworkClient.prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.name.Contains(attribute.Name)).Value);
-            }
+            GameObject gameObject = Spawn(prefabType, position, rotation);
+            return gameObject?.GetComponent<T>();
         }
     }
 }

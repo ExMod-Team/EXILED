@@ -36,48 +36,19 @@ namespace Exiled.Events.Patches.Events.Scp106
             LocalBuilder ev = generator.DeclareLocal(typeof(StalkingEventArgs));
 
             Label returnLabel = generator.DefineLabel();
-            int offset = 2;
-            int index = newInstructions.FindIndex(instruction => instruction.operand == (object)PropertyGetter(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.StalkActive))) + offset;
+            int offset = -1;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(Scp106VigorAbilityBase), nameof(Scp106VigorAbilityBase.VigorAmount)))) + offset;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
+                    // Inserted before vigor amount check
                     // Player.Get(this.Owner);
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp106HuntersAtlasAbility), nameof(Scp106HuntersAtlasAbility.Owner))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp106StalkAbility), nameof(Scp106StalkAbility.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
-
-                    // StalkingEventArgs ev = new(Player, isAllowed)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StalkingEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
-
-                    // Handlers.Scp106.OnFinishingRecall(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp106), nameof(Handlers.Scp106.OnStalking))),
-
-                    // if (!ev.IsAllowed)
-                    //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(StalkingEventArgs), nameof(StalkingEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, returnLabel),
-                });
-
-            newInstructions.InsertRange(
-                newInstructions.Count - 1,
-                new CodeInstruction[]
-                {
-                    // Player.Get(this.Owner);
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp106HuntersAtlasAbility), nameof(Scp106HuntersAtlasAbility.Owner))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-
-                    // true
-                    new(OpCodes.Ldc_I4_1),
-
-                    // StalkingEventArgs ev = new(Player, isAllowed)
+                    // StalkingEventArgs ev = new(Player)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(StalkingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -87,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Scp106
                     new(OpCodes.Call, Method(typeof(Handlers.Scp106), nameof(Handlers.Scp106.OnStalking))),
 
                     // if (!ev.IsAllowed)
-                    //    return;
+                    //    return
                     new(OpCodes.Callvirt, PropertyGetter(typeof(StalkingEventArgs), nameof(StalkingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
@@ -106,7 +77,7 @@ namespace Exiled.Events.Patches.Events.Scp106
                     new(OpCodes.Callvirt, PropertyGetter(typeof(StalkingEventArgs), nameof(StalkingEventArgs.MinimumVigor))),
                 });
 
-            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

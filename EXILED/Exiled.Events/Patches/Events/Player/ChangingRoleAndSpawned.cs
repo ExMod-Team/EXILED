@@ -186,7 +186,7 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (!NetworkServer.active || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
+                if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
                 {
                     return;
                 }
