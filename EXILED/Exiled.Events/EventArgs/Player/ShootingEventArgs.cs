@@ -43,17 +43,19 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        /// Gets the target that client claims it hit. This value is controlled by the shooting player and should not be trusted. Can be null.
+        /// Gets the target that client claims it hit.
         /// </summary>
+        /// <remarks>This value is controlled by the shooting player and should not be trusted. Can be null.</remarks>
         public Player ClaimedTarget => ShotBacktrackData.HasPrimaryTarget ? Player.Get(ShotBacktrackData.PrimaryTargetHub) : null;
 
         /// <summary>
-        /// Gets the <see cref="ShotBacktrackData" />. This object contains the data sent by the client to the server. Values should not be trusted.
+        /// Gets the <see cref="ShotBacktrackData" />. This object contains the data sent by the client to the server.
         /// </summary>
+        /// <remarks>Values are controlled by the shooting player and should not be trusted.</remarks>
         public ShotBacktrackData ShotBacktrackData { get; }
 
         /// <summary>
-        /// Gets or sets the exact direction of the shot. This value doesn't account for bullet spread.
+        /// Gets or sets the exact direction of the shot before the bullet spread is applied.
         /// </summary>
         public Vector3 Direction
         {
