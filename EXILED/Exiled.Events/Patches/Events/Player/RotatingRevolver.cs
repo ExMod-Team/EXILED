@@ -53,7 +53,6 @@ namespace Exiled.Events.Patches.Events.Player
                     // RotatingRevolverEventArgs ev = new(firearm, rotations);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RotatingRevolverEventArgs))[0]),
                     new(OpCodes.Dup),
-                    new(OpCodes.Dup),
 
                     // Handlers.Player.OnRotatingRevolver(ev);
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnRotatingRevolver))),
