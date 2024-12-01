@@ -158,11 +158,11 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
-        /// Gets a <see cref="CustomItem"/> with a specific type.
+        /// Retrieves a collection of <see cref="CustomItem"/> instances that match a specified type.
         /// </summary>
         /// <param name="t">The <see cref="System.Type"/> type.</param>
-        /// <returns>The <see cref="CustomItem"/> matching the search, <see langwod="null"/> if not registered.</returns>
-        public static CustomItem? Get(Type t) => Registered.FirstOrDefault(i => i.GetType() == t);
+        /// <returns>An <see cref="IEnumerable{CustomItem}"/> containing all registered <see cref="CustomItem"/> of the specified type.</returns>
+        public static IEnumerable<CustomItem> Get(Type t) => Registered.Where(i => i.GetType() == t);
 
         /// <summary>
         /// Tries to get a <see cref="CustomItem"/> with a specific ID.
@@ -195,16 +195,16 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
-        /// Tries to get a <see cref="CustomItem"/> with a specific type.
+        /// Attempts to retrieve a collection of <see cref="CustomItem"/> instances of a specified type.
         /// </summary>
         /// <param name="t">The <see cref="System.Type"/> of the item to look for.</param>
-        /// <param name="customItem">The found <see cref="CustomItem"/>, <see langword="null"/> if not registered.</param>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found.</returns>
-        public static bool TryGet(Type t, out CustomItem? customItem)
+        /// <param name="customItems">An output parameter that will contain the found <see cref="CustomItem"/> instances, or an empty collection if none are registered.</param>
+        /// <returns>A boolean value indicating whether any <see cref="CustomItem"/> instances of the specified type were found.</returns>
+        public static bool TryGet(Type t, out IEnumerable<CustomItem> customItems)
         {
-            customItem = Get(t);
+            customItems = Get(t);
 
-            return customItem is not null;
+            return customItems.Any();
         }
 
         /// <summary>
@@ -346,12 +346,16 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="t">The <see cref="System.Type"/> of the item to give.</param>
         /// <param name="displayMessage">Indicates a value whether <see cref="ShowPickedUpMessage"/> will be called when the player receives the <see cref="CustomItem"/> or not.</param>
         /// <returns>Returns a value indicating if the player was given the <see cref="CustomItem"/> or not.</returns>
+        /// <remarks>
+        /// This method will give the first registered <see cref="CustomItem"/> of the specified type to the player.
+        /// If no items of the specified type are found, the method will return false.
+        /// </remarks>
         public static bool TryGive(Player player, Type t, bool displayMessage = true)
         {
-            if (!TryGet(t, out CustomItem? item))
+            if (!TryGet(t, out IEnumerable<CustomItem> items))
                 return false;
 
-            item?.Give(player, displayMessage);
+            items.First().Give(player, displayMessage);
 
             return true;
         }
