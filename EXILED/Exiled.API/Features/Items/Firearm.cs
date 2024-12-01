@@ -13,6 +13,10 @@ namespace Exiled.API.Features.Items
 
     using CameraShaking;
     using Enums;
+
+    using Exiled.API.Features.Items.FirearmModules;
+    using Exiled.API.Features.Items.FirearmModules.Barrel;
+    using Exiled.API.Features.Items.FirearmModules.Primary;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
@@ -55,6 +59,20 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
+
+            foreach (ModuleBase module in Base.Modules)
+            {
+                if (module is IPrimaryAmmoContainerModule primaryAmmoModule)
+                {
+                    PrimaryMagazine ??= (PrimaryMagazine)Magazine.Get(primaryAmmoModule);
+                    continue;
+                }
+
+                if (module is IAmmoContainerModule ammoModule)
+                {
+                    BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
+                }
+            }
         }
 
         /// <summary>
@@ -105,12 +123,59 @@ namespace Exiled.API.Features.Items
         public new BaseFirearm Base { get; }
 
         /// <summary>
-        /// Gets or sets the amount of ammo in the firearm.
+        /// Gets a primaty magazine for current firearm.
         /// </summary>
+        public PrimaryMagazine PrimaryMagazine { get; }
+
+        /// <summary>
+        /// Gets a barrel magazine for current firearm.
+        /// </summary>
+        public BarrelMagazine BarrelMagazine { get; }
+
+        /// <summary>
+        /// Gets or sets the amount of ammo in the firearm magazine.
+        /// </summary>
+        public int MagazineAmmo
+        {
+            get => PrimaryMagazine.Ammo;
+            set => PrimaryMagazine.Ammo = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of ammo in the firearm barrel.
+        /// </summary>
+        public int BarrelAmmo
+        {
+            get => BarrelMagazine.Ammo;
+            set => BarrelMagazine.Ammo = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the total amount of ammo in the firearm.
+        /// </summary>
+        /// TODO: rename to TotalAmmo??
         public int Ammo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored = value;
+            get
+            {
+                return Base.GetTotalStoredAmmo();
+            }
+
+            set
+            {
+                int deltaValue = value - Ammo;
+
+                if (deltaValue > 0)
+                {
+                    deltaValue -= BarrelMagazine.ModifyAmmo(deltaValue);
+                    deltaValue -= PrimaryMagazine.ModifyAmmo(deltaValue, false);
+                }
+                else if (deltaValue < 0)
+                {
+                    deltaValue -= PrimaryMagazine.ModifyAmmo(deltaValue);
+                    deltaValue -= BarrelMagazine.ModifyAmmo(deltaValue);
+                }
+            }
         }
 
         /// <summary>
@@ -626,7 +691,6 @@ namespace Exiled.API.Features.Items
         {
             Firearm cloneableItem = new(Type)
             {
-                Ammo = Ammo,
             };
 
             // TODO Not finish
