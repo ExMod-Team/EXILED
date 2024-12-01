@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             /*
             [] <= Here
-            IL_0078: ldarg.2      // processingMethod (FindIndex here)
+            IL_0078: ldarg.2      // processingMethod
             IL_0079: ldarg.0      // this
             IL_007a: ldfld        class ReferenceHub InventorySystem.Items.Firearms.Modules.Misc.ShotBacktrackData::PrimaryTargetHub
             IL_007f: callvirt     instance void class [mscorlib]System.Action`1<class ReferenceHub>::Invoke(!0/*class ReferenceHub* /)
@@ -48,8 +48,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             /*
             [] <= Here
-            IL_0092: ldarg.2      // processingMethod (FindIndex here)
-            IL_0093: ldnull
+            IL_0092: ldarg.2      // processingMethod
+            IL_0093: ldnull       // null
             IL_0094: callvirt     instance void class [mscorlib]System.Action`1<class ReferenceHub>::Invoke(!0/*class ReferenceHub* /)
              */
             int noTargetIndex = newInstructions.FindIndex(hasTargetIndex + 1, instruction => instruction.IsLdarg(2));

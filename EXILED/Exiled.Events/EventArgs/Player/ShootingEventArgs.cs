@@ -11,6 +11,7 @@ namespace Exiled.Events.EventArgs.Player
     using Exiled.API.Features.Items;
     using Interfaces;
     using InventorySystem.Items.Firearms.Modules.Misc;
+    using UnityEngine;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
 
@@ -49,6 +50,15 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the <see cref="ShotBacktrackData" />. This object contains the data sent by the client to the server. Values should not be trusted.
         /// </summary>
         public ShotBacktrackData ShotBacktrackData { get; }
+
+        /// <summary>
+        /// Gets or sets the exact direction of the shot.
+        /// </summary>
+        public Vector3 Direction
+        {
+            get => Player.CameraTransform.forward;
+            set => Player.CameraTransform.forward = value; // It is going to be reset by FpcBacktracker the same frame, so why we can set it freely.
+        }
 
         /// <summary>
         /// Gets the target <see cref="API.Features.Items.Firearm" />.
