@@ -17,6 +17,7 @@ namespace Exiled.Events.EventArgs.Player
 
     /// <summary>
     /// Contains all information before a player fires a weapon.
+    /// ClaimedTarget and Player transform values are modified by <see cref="PlayerRoles.FirstPersonControl.FpcBacktracker"/> according to <see cref="ShotBacktrackData"/> sent by the Player and do not match the actual values.
     /// </summary>
     public class ShootingEventArgs : IPlayerEvent, IDeniableEvent, IFirearmEvent
     {
@@ -42,7 +43,7 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        /// Gets the target that client claims it hit. This value is controlled by the client and should not be trusted. Can be null.
+        /// Gets the target that client claims it hit. This value is controlled by the shooting player and should not be trusted. Can be null.
         /// </summary>
         public Player ClaimedTarget => ShotBacktrackData.HasPrimaryTarget ? Player.Get(ShotBacktrackData.PrimaryTargetHub) : null;
 
@@ -52,7 +53,7 @@ namespace Exiled.Events.EventArgs.Player
         public ShotBacktrackData ShotBacktrackData { get; }
 
         /// <summary>
-        /// Gets or sets the exact direction of the shot.
+        /// Gets or sets the exact direction of the shot. This value doesn't account for bullet spread.
         /// </summary>
         public Vector3 Direction
         {
@@ -61,7 +62,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets the target <see cref="API.Features.Items.Firearm" />.
+        /// Gets the firearm that is being fired.
         /// </summary>
         public Firearm Firearm { get; }
 
