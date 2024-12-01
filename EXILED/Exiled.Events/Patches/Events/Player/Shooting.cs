@@ -8,16 +8,14 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
     using API.Features.Pools;
-
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
-
     using HarmonyLib;
-
     using InventorySystem.Items.Firearms.Modules.Misc;
 
     using static HarmonyLib.AccessTools;
@@ -36,6 +34,7 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             /*
             [] <= Here
@@ -44,7 +43,7 @@ namespace Exiled.Events.Patches.Events.Player
             IL_007a: ldfld        class ReferenceHub InventorySystem.Items.Firearms.Modules.Misc.ShotBacktrackData::PrimaryTargetHub
             IL_007f: callvirt     instance void class [mscorlib]System.Action`1<class ReferenceHub>::Invoke(!0/*class ReferenceHub* /)
              */
-            int hasTargetIndex = newInstructions.FindIndex(instruction => instruction.IsLdarg(2)) - 1;
+            int hasTargetIndex = newInstructions.FindIndex(instruction => instruction.IsLdarg(2));
             List<Label> hasTargetLabels = newInstructions[hasTargetIndex].ExtractLabels();
 
             /*
@@ -53,15 +52,19 @@ namespace Exiled.Events.Patches.Events.Player
             IL_0093: ldnull
             IL_0094: callvirt     instance void class [mscorlib]System.Action`1<class ReferenceHub>::Invoke(!0/*class ReferenceHub* /)
              */
-            int noTargetIndex = newInstructions.FindIndex(hasTargetIndex, instruction => instruction.IsLdarg(2)) - 1;
+            int noTargetIndex = newInstructions.FindIndex(hasTargetIndex + 1, instruction => instruction.IsLdarg(2));
             List<Label> noTargetLabels = newInstructions[noTargetIndex].ExtractLabels();
+
+            ConstructorInfo constructorInfo = Constructor(
+                typeof(ShootingEventArgs),
+                new[] { typeof(InventorySystem.Items.Firearms.Firearm), typeof(ShotBacktrackData).MakeByRefType() });
 
             CodeInstruction[] patchInstructions =
             {
                 // ShootingEventArgs ev = new(firearm, this)
-                new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldarg_1),
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShootingEventArgs))[0]),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Newobj, constructorInfo),
 
                 // Handlers.Player.OnShooting(ev)
                 new(OpCodes.Dup), // Dup to keep ev on the stack
@@ -69,7 +72,10 @@ namespace Exiled.Events.Patches.Events.Player
 
                 // if (!ev.IsAllowed) return
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse_S, returnLabel),
+                new(OpCodes.Brtrue_S, continueLabel),
+                new(OpCodes.Leave_S, returnLabel),
+
+                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             };
 
             newInstructions.InsertRange( // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up
@@ -81,6 +87,7 @@ namespace Exiled.Events.Patches.Events.Player
                 hasTargetIndex,
                 patchInstructions);
             newInstructions[hasTargetIndex].WithLabels(hasTargetLabels);
+
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)

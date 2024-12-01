@@ -28,7 +28,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="shotBacktrackData">
         /// <see cref="ShotBacktrackData"/> sent by the client.
         /// </param>
-        public ShootingEventArgs(BaseFirearm firearm, ShotBacktrackData shotBacktrackData)
+        public ShootingEventArgs(BaseFirearm firearm, ref ShotBacktrackData shotBacktrackData)
         {
             Firearm = (Firearm)Item.Get(firearm);
             Player = Firearm.Owner;
