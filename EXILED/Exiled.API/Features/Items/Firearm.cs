@@ -167,7 +167,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the total amount of ammo in the firearm.
         /// </summary>
-        /// TODO: rename to TotalAmmo??
+        /// TODO: think
         public int Ammo
         {
             get
@@ -195,14 +195,18 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the max ammo for this firearm.
         /// </summary>
-        /// TODO: awwwooo
+        /// TODO: think
         public int MaxAmmo
         {
             get
             {
                 return Base.GetTotalMaxAmmo();
             }
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule)._defaultCapacity = value; // Synced?
+
+            set
+            {
+                PrimaryMagazine.MaxAmmo = value;
+            }
         }
 
         /// <summary>
