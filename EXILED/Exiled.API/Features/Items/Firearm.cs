@@ -130,6 +130,9 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a barrel magazine for current firearm.
         /// </summary>
+        /// <remarks>
+        /// <see langword="null"/> for Revolver and ParticleDisruptor.
+        /// </remarks>
         public BarrelMagazine BarrelMagazine { get; }
 
         /// <summary>
@@ -144,10 +147,21 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the amount of ammo in the firearm barrel.
         /// </summary>
+        /// <remarks>
+        /// not working for Revolver and ParticleDisruptor.
+        /// </remarks>
         public int BarrelAmmo
         {
-            get => BarrelMagazine.Ammo;
-            set => BarrelMagazine.Ammo = value;
+            get
+            {
+                return BarrelMagazine?.Ammo ?? 0;
+            }
+
+            set
+            {
+                if (BarrelMagazine != null)
+                    BarrelMagazine.Ammo = value;
+            }
         }
 
         /// <summary>
@@ -167,13 +181,13 @@ namespace Exiled.API.Features.Items
 
                 if (deltaValue > 0)
                 {
-                    deltaValue -= BarrelMagazine.ModifyAmmo(deltaValue);
+                    deltaValue -= BarrelMagazine?.ModifyAmmo(deltaValue) ?? 0;
                     deltaValue -= PrimaryMagazine.ModifyAmmo(deltaValue, false);
                 }
                 else if (deltaValue < 0)
                 {
                     deltaValue -= PrimaryMagazine.ModifyAmmo(deltaValue);
-                    deltaValue -= BarrelMagazine.ModifyAmmo(deltaValue);
+                    deltaValue -= BarrelMagazine?.ModifyAmmo(deltaValue) ?? 0;
                 }
             }
         }
@@ -181,10 +195,13 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the max ammo for this firearm.
         /// </summary>
-        /// <remarks>Disruptor can't be used for MaxAmmo.</remarks>
+        /// TODO: awwwooo
         public int MaxAmmo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoMax;
+            get
+            {
+                return Base.GetTotalMaxAmmo();
+            }
             set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule)._defaultCapacity = value; // Synced?
         }
 
