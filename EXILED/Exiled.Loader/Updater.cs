@@ -112,9 +112,16 @@ namespace Exiled.Loader
         /// </summary>
         internal void CheckUpdate()
         {
-            using HttpClient client = CreateHttpClient();
-            if (Busy = FindUpdate(client, !File.Exists(Path.Combine(Paths.Dependencies, "Exiled.API.dll")), out NewVersion newVersion))
-                Update(client, newVersion);
+            try
+            {
+                using HttpClient client = CreateHttpClient();
+                if (Busy = FindUpdate(client, !PluginAPI.Loader.AssemblyLoader.Dependencies.Exists(x => x.GetName().Name == "Exiled.API"), out NewVersion newVersion))
+                    Update(client, newVersion);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         /// <summary>
@@ -303,6 +310,8 @@ namespace Exiled.Loader
 
                 if (taggedRelease.Version > smallestVersion.Version || forced)
                 {
+                    Log.Info(taggedRelease.Version > smallestVersion.Version);
+                    Log.Info(forced);
                     release = taggedRelease.Release;
                     return true;
                 }
