@@ -193,10 +193,9 @@ namespace Exiled.Events.Patches.Events.Player
                 }
 
                 Inventory inventory = ev.Player.Inventory;
-                bool flag = InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped;
-                if (flag)
+                if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
-                    List<ItemPickupBase> list = new List<ItemPickupBase>();
+                    List<ItemPickupBase> list = new();
                     if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
                     {
                         bodyArmor.DontRemoveExcessOnDrop = true;
@@ -223,8 +222,7 @@ namespace Exiled.Events.Patches.Events.Player
                     HashSetPool<ushort>.Pool.Return(hashSet);
                     InventoryItemProvider.PreviousInventoryPickups[ev.Player.ReferenceHub] = list;
                 }
-
-                if (!flag)
+                else
                 {
                     while (inventory.UserInventory.Items.Count > 0)
                     {
