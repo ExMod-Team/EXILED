@@ -9,6 +9,7 @@ namespace Exiled.Events.Patches.Events.Server
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -36,8 +37,15 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static MethodInfo TargetMethod()
         {
-            PrivateType = typeof(RoundSummary).GetNestedTypes(all)[6];
-            return Method(PrivateType, "MoveNext");
+            PrivateType = typeof(RoundSummary).GetNestedTypes(all)
+                .FirstOrDefault(currentType => currentType.Name.Contains("_ProcessServerSideCode"));
+            if (PrivateType == null)
+                throw new Exception("State machine type for _ProcessServerSideCode not found.");
+            MethodInfo moveNextMethod = PrivateType.GetMethod("MoveNext", all);
+
+            if (moveNextMethod == null)
+                throw new Exception("MoveNext method not found in the state machine type.");
+            return moveNextMethod;
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -71,7 +79,6 @@ namespace Exiled.Events.Patches.Events.Server
 
             offset = -1;
             index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;
-
             LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
 
             newInstructions.InsertRange(
