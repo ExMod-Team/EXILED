@@ -20,6 +20,7 @@
         <PackageReference Include="StyleCop.Analyzers" Version="$(StyleCopVersion)" IncludeAssets="All" PrivateAssets="All" />
         <PackageReference Include="System.Memory" Version="4.5.5" />
         <PackageReference Include="Lib.Harmony" Version="$(HarmonyVersion)" />
+        <PackageReference Include="YamlDotNet" Version="$(YamlDotNetVersion)" />
     </ItemGroup>
 
     <ItemGroup>
@@ -38,7 +39,6 @@
           <HintPath>$(EXILED_REFERENCES)\UnityEngine.ParticleSystemModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.PhysicsModule" HintPath="$(EXILED_REFERENCES)\UnityEngine.PhysicsModule.dll" Private="false" />
-        <Reference Include="YamlDotNet" HintPath="$(EXILED_REFERENCES)\YamlDotNet.dll" Private="false" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
