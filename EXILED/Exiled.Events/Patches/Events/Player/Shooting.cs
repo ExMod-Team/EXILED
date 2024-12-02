@@ -45,7 +45,6 @@ namespace Exiled.Events.Patches.Events.Player
             IL_007f: callvirt     instance void class [mscorlib]System.Action`1<class ReferenceHub>::Invoke(!0/*class ReferenceHub* /)
              */
             int hasTargetIndex = newInstructions.FindIndex(instruction => instruction.IsLdarg(2));
-            List<Label> hasTargetLabels = newInstructions[hasTargetIndex].ExtractLabels();
 
             /*
             [] <= Here
@@ -91,7 +90,6 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions.InsertRange(
                 hasTargetIndex,
                 patchInstructions2);
-            newInstructions[hasTargetIndex].WithLabels(hasTargetLabels);
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
