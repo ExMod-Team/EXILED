@@ -235,7 +235,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the Gate in the Checkpoint between EZ and HCZ.
         /// </summary>
-        CheckpointGate,
+        CheckpointGateA,
+
+        /// <summary>
+        /// Represents the Gate in the Checkpoint between EZ and HCZ.
+        /// </summary>
+        CheckpointGateB,
 
         /// <summary>
         /// Represents the Gate in the Checkpoint between EZ and HCZ.
