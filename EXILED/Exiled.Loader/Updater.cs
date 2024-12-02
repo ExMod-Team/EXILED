@@ -16,6 +16,7 @@ namespace Exiled.Loader
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Text;
+    using System.Threading;
 
     using Exiled.API.Features;
     using Exiled.Loader.GHApi;
@@ -151,6 +152,7 @@ namespace Exiled.Loader
         {
             try
             {
+                Thread.Sleep(5000); // Wait for the assemblies to load
                 ExiledLib smallestVersion = ExiledLib.Min();
 
                 Log.Info($"Found the smallest version of Exiled - {smallestVersion.Library.GetName().Name}:{smallestVersion.Version}");
@@ -310,8 +312,6 @@ namespace Exiled.Loader
 
                 if (taggedRelease.Version > smallestVersion.Version || forced)
                 {
-                    Log.Info(taggedRelease.Version > smallestVersion.Version);
-                    Log.Info(forced);
                     release = taggedRelease.Release;
                     return true;
                 }
