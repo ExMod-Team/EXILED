@@ -77,35 +77,64 @@ namespace Exiled.Events.Patches.Events.Player
             [] <= Here  // This position is reached whether IDestructible is found or not.
             IL_0045: brfalse.s    IL_005e
              */
-            int destructibleGetIndex = newInstructions.FindIndex(i => i.Calls(Method(typeof(Component), nameof(Component.TryGetComponent))));
+            int destructibleGetIndex = newInstructions.FindIndex(i => i.operand is MethodInfo { Name: nameof(Component.TryGetComponent) }) + 1;
 
             Label continueLabel = generator.DefineLabel();
 
+            LocalBuilder ev = generator.DeclareLocal(typeof(ShotEventArgs));
+
             newInstructions.InsertRange(
-                destructibleGetIndex + 1,
+                destructibleGetIndex,
                 new[]
                 {
-                    // var ev = new ShotEventArgs(this, hit, firearm, component);
+                    // var ev = new ShotEventArgs(this, hitInfo, firearm, component);
                     new(OpCodes.Ldarg_0), // this
-                    new(OpCodes.Ldloc_1), // hit
+                    new(OpCodes.Ldloc_1), // hitInfo
                     new(OpCodes.Ldarg_0), // this.Firearm
-                    new(OpCodes.Ldloc_2), // component
                     new(OpCodes.Callvirt, PropertyGetter(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.Firearm))),
+                    new(OpCodes.Ldloc_2), // component
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShotEventArgs))[0]),
+                    new(OpCodes.Dup), // Leave ShotEventArgs on the stack
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     new(OpCodes.Dup), // Leave ShotEventArgs on the stack
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShot))),
 
-                    // if (!ev.CanHurt) hitInfo.distance = float.MaxValue;
+                    // if (!ev.CanHurt) hitInfo.distance = maxDistance;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ShotEventArgs), nameof(ShotEventArgs.CanHurt))),
                     new(OpCodes.Brtrue, continueLabel),
 
-                    new(OpCodes.Ldloc_1), // hitInfo
-                    new(OpCodes.Ldc_R4, float.MaxValue), // float.MaxValue
-                    new(OpCodes.Stfld, Field(typeof(RaycastHit), nameof(RaycastHit.distance))), // hitInfo.distance = float.MaxValue
+                    new(OpCodes.Ldloca_S, 1), // hitInfo address
+                    new(OpCodes.Ldloc_0), // maxDistance
+                    new(OpCodes.Call, PropertySetter(typeof(RaycastHit), nameof(RaycastHit.distance))), // hitInfo.distance = maxDistance
 
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
+
+            /*
+            [] <= Here
+            IL_0067: ldarg.0      // this
+            IL_0068: call         instance class InventorySystem.Items.Firearms.Firearm InventorySystem.Items.Firearms.FirearmSubcomponentBase::get_Firearm()
+            IL_006d: ldloca.s     module
+            IL_006f: ldc.i4.1
+            IL_0070: call         bool InventorySystem.Items.Firearms.Modules.ModulesUtils::TryGetModule<class InventorySystem.Items.Firearms.Modules.ImpactEffectsModule>(class InventorySystem.Items.Firearms.Firearm, !!0/*class InventorySystem.Items.Firearms.Modules.ImpactEffectsModule* /&, bool)
+            IL_0075: brtrue.s     IL_0079
+             */
+            int impactEffectsIndex = newInstructions.FindIndex(i => i.operand is MethodInfo { Name: nameof(ModulesUtils.TryGetModule) }) - 4;
+            List<Label> impactEffectsLabels = newInstructions[impactEffectsIndex].ExtractLabels();
+            Label returnLabel = generator.DefineLabel();
+
+            newInstructions.InsertRange(
+                impactEffectsIndex,
+                new[]
+                {
+                    // if (!ev.CanSpawnImpactEffects) return;
+                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(impactEffectsLabels),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ShotEventArgs), nameof(ShotEventArgs.CanSpawnImpactEffects))),
+                    new(OpCodes.Brfalse, returnLabel),
+                });
+
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

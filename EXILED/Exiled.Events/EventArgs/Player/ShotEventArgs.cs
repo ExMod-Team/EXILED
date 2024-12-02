@@ -27,12 +27,13 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="destructible">The IDestructible that was hit. Can be null.</param>
         public ShotEventArgs(HitscanHitregModuleBase hitregModule, RaycastHit hitInfo, InventorySystem.Items.Firearms.Firearm firearm, IDestructible destructible)
         {
-            Player = Player.Get(firearm.Owner);
+            HitregModule = hitregModule;
+            RaycastHit = hitInfo;
+            Destructible = destructible;
             Firearm = Item.Get<Firearm>(firearm);
 
-            Damage = hitInfo.collider.TryGetComponent(out IDestructible component) ? hitregModule.DamageAtDistance(hitInfo.distance) : 0f;
-            Destructible = component;
-            RaycastHit = hitInfo;
+            Player = Firearm.Owner;
+            Damage = Destructible is not null ? HitregModule.DamageAtDistance(hitInfo.distance) : 0f;
 
             if (Destructible is HitboxIdentity hitboxIdentity)
             {
@@ -47,12 +48,22 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        /// Gets the firearm used to shoot.
+        /// Gets the firearm used to fire the shot.
         /// </summary>
         public Firearm Firearm { get; }
 
         /// <inheritdoc/>
         public Item Item => Firearm;
+
+        /// <summary>
+        /// Gets the firearm hitreg module responsible for the shot.
+        /// </summary>
+        public HitscanHitregModuleBase HitregModule { get; }
+
+        /// <summary>
+        /// Gets the raycast info.
+        /// </summary>
+        public RaycastHit RaycastHit { get; }
 
         /// <summary>
         /// Gets the bullet travel distance.
@@ -65,19 +76,9 @@ namespace Exiled.Events.EventArgs.Player
         public Vector3 Position => RaycastHit.point;
 
         /// <summary>
-        /// Gets the <see cref="IDestructible"/> component of the hit collider. Can be null.
-        /// </summary>
-        public IDestructible Destructible { get; }
-
-        /// <summary>
-        /// Gets the firearm damage at the hit distance. Actual inflicted damage may vary.
+        /// Gets the firearm base damage at the hit distance. Actual inflicted damage may vary.
         /// </summary>
         public float Damage { get; }
-
-        /// <summary>
-        /// Gets the raycast info.
-        /// </summary>
-        public RaycastHit RaycastHit { get; }
 
         /// <summary>
         /// Gets the target player. Can be null.
@@ -85,13 +86,23 @@ namespace Exiled.Events.EventArgs.Player
         public Player Target { get; }
 
         /// <summary>
-        /// Gets the <see cref="HitboxIdentity"/> component of the target player. Can be null.
+        /// Gets the <see cref="HitboxIdentity"/> component of the target player that was hit. Can be null.
         /// </summary>
         public HitboxIdentity Hitbox { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the shot can hurt the target.
+        /// Gets the <see cref="IDestructible"/> component of the hit collider. Can be null.
+        /// </summary>
+        public IDestructible Destructible { get; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the shot can deal damage.
         /// </summary>
         public bool CanHurt { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the shot can produce impact effects (e.g. bullet holes).
+        /// </summary>
+        public bool CanSpawnImpactEffects { get; set; } = true;
     }
 }
