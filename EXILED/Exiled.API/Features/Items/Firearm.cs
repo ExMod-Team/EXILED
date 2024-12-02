@@ -117,127 +117,44 @@ namespace Exiled.API.Features.Items
                 IPrimaryAmmoContainerModule primaryContainer = Base.TryGetModule(out IPrimaryAmmoContainerModule pacm) ? pacm : null;
 
                 // Barrels that may contain some ammo in them
-                AutomaticActionModule automaticActioBarrel = Base.TryGetModule(out AutomaticActionModule aam) ? aam : null;
+                AutomaticActionModule automaticActionBarrel = Base.TryGetModule(out AutomaticActionModule aam) ? aam : null;
 
                 // Other type of barrels that also contain ammo but don't have AmmoStored setter
                 PumpActionModule pumpActionBarrel = Base.TryGetModule(out PumpActionModule pam) ? pam : null;
 
-                int currentAmmo = Ammo;
+                value = Mathf.Clamp(value, 0, Base is ParticleDisruptor ? 254 : byte.MaxValue);
 
-                if (value < 0)
-                    value = 0;
+                // Set everything to 0
+                primaryContainer?.ServerModifyAmmo(-primaryContainer.AmmoStored);
 
-                if (value < currentAmmo)
+                if (automaticActionBarrel is not null)
                 {
-                    var ammoToRemove = currentAmmo - value;
-
-                    // First try to take ammo from magazines.
-                    if (primaryContainer is not null)
-                    {
-                        var removedAmmo = Math.Min(primaryContainer.AmmoStored, ammoToRemove);
-                        primaryContainer.ServerModifyAmmo(-removedAmmo);
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                            return;
-                    }
-
-                    // Take cocked ammo from pump-action barrels (it represents ammo that is loaded, but needs to be pumped in the firing chamber)
-                    if (pumpActionBarrel is not null)
-                    {
-                        var removedAmmo = Math.Min(pumpActionBarrel.SyncCocked, ammoToRemove);
-                        pumpActionBarrel.SyncCocked -= removedAmmo;
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                            return;
-                    }
-
-                    // Take ammo from barrels only when actual magazines are empty.
-                    if (automaticActioBarrel is not null)
-                    {
-                        var removedAmmo = Math.Min(automaticActioBarrel.AmmoStored, ammoToRemove);
-                        automaticActioBarrel.AmmoStored -= removedAmmo;
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                            return;
-                    }
-
-                    // Tale chambered ammo from pump-action barrels
-                    if (pumpActionBarrel is not null)
-                    {
-                        var removedAmmo = Math.Min(pumpActionBarrel.SyncChambered, ammoToRemove);
-                        pumpActionBarrel.SyncChambered -= removedAmmo;
-                        ammoToRemove -= removedAmmo;
-
-                        if (ammoToRemove <= 0)
-                            return;
-                    }
+                    automaticActionBarrel.AmmoStored = 0;
                 }
-                else
+                else if (pumpActionBarrel is not null)
                 {
-                    var ammoToAdd = value - currentAmmo;
-
-                    Log.Info($"===== Adding {ammoToAdd} ammo to {Base.GetType().Name} with {primaryContainer?.GetType().Name}, {automaticActioBarrel?.GetType().Name} and {pumpActionBarrel?.GetType().Name}");
-
-                    // Add ammo to magazines
-                    if (primaryContainer is not null)
-                    {
-                        var addedAmmo = Mathf.Clamp(primaryContainer.AmmoMax - primaryContainer.AmmoStored, 0, ammoToAdd);
-                        Log.Info($"1 {primaryContainer.GetType().Name} AmmoMax: {primaryContainer.AmmoMax} | AmmoStored: {primaryContainer.AmmoStored} | ammoToAdd: {ammoToAdd} | addedAmmo: {addedAmmo}");
-                        if (addedAmmo > 0)
-                        {
-                            primaryContainer.ServerModifyAmmo(addedAmmo);
-                            ammoToAdd -= addedAmmo;
-
-                            Log.Info($"1 Added {addedAmmo} ammo to {primaryContainer.GetType().Name} (Stored: {primaryContainer.AmmoStored} | Max: {primaryContainer.AmmoMax}). ammoToAdd: {ammoToAdd}");
-                        }
-                    }
-
-                    // Add cocked ammo to pump-action barrels
-                    if (pumpActionBarrel is not null)
-                    {
-                        var addedAmmo = Mathf.Clamp(pumpActionBarrel._numberOfBarrels - pumpActionBarrel.SyncCocked, 0, ammoToAdd);
-                        Log.Info($"2 {pumpActionBarrel.GetType().Name} numOfBarrels: {pumpActionBarrel._numberOfBarrels} | SyncCocked: {pumpActionBarrel.SyncCocked} | ammoToAdd: {ammoToAdd} | addedAmmo: {addedAmmo}");
-                        if (addedAmmo > 0)
-                        {
-                            pumpActionBarrel.SyncCocked += addedAmmo;
-                            ammoToAdd -= addedAmmo;
-
-                            Log.Info($"2 Added {addedAmmo} ammo to {pumpActionBarrel.GetType().Name} (Cocked: {pumpActionBarrel.SyncCocked} | numOfBarrels: {pumpActionBarrel._numberOfBarrels}). ammoToAdd: {ammoToAdd}");
-                        }
-                    }
-
-                    // Cycle barrels so player can fire.
-                    if (automaticActioBarrel is not null)
-                    {
-                        automaticActioBarrel.ServerCycleAction();
-                        Log.Info($"Cycled {automaticActioBarrel.GetType().Name} (Stored: {automaticActioBarrel.AmmoStored} | Max: {automaticActioBarrel.AmmoMax} | ChamberSize: {automaticActioBarrel.ChamberSize})");
-                    }
-
-                    // Pump pump-action barrels
-                    if (pumpActionBarrel is not null)
-                    {
-                        pumpActionBarrel.Pump();
-                        Log.Info($"Pumped {pumpActionBarrel.GetType().Name} (Cocked: {pumpActionBarrel.SyncCocked} | numOfBarrels: {pumpActionBarrel._numberOfBarrels})");
-                    }
-
-                    // If there is still ammo to add, add it to the first primary magazine or pump-action barrel
-                    if (ammoToAdd > 0)
-                    {
-                        if (primaryContainer is not null)
-                        {
-                            primaryContainer.ServerModifyAmmo(ammoToAdd);
-                            Log.Info($"3 Added {ammoToAdd} ammo to {primaryContainer.GetType().Name} (Stored: {primaryContainer.AmmoStored} | Max: {primaryContainer.AmmoMax})");
-                        }
-                        else if (pumpActionBarrel is not null)
-                        {
-                            pumpActionBarrel.SyncCocked += ammoToAdd;
-                            Log.Info($"4 Added {ammoToAdd} ammo to {pumpActionBarrel.GetType().Name} (Cocked: {pumpActionBarrel.SyncCocked} | numOfBarrels: {pumpActionBarrel._numberOfBarrels})");
-                        }
-                    }
+                    pumpActionBarrel.SyncCocked = 0;
+                    pumpActionBarrel.SyncChambered = 0;
                 }
+
+                if (value == 0)
+                    return;
+
+                // Distribute the ammo between containers
+                if (primaryContainer is not null)
+                {
+                    var addedAmmo = Mathf.Clamp(byte.MaxValue - primaryContainer.AmmoStored, 0, value);
+                    primaryContainer.ServerModifyAmmo(addedAmmo);
+                }
+                else if (pumpActionBarrel is not null)
+                {
+                    var addedAmmo = Mathf.Clamp(byte.MaxValue - pumpActionBarrel.SyncChambered, 0, value);
+                    pumpActionBarrel.SyncCocked = addedAmmo;
+                }
+
+                // Reload action modules
+                pumpActionBarrel?.Pump();
+                automaticActionBarrel?.ServerCycleAction();
             }
         }
 
