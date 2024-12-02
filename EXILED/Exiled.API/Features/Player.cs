@@ -19,6 +19,7 @@ namespace Exiled.API.Features
     using DamageHandlers;
     using Enums;
     using Exiled.API.Features.Core.Interfaces;
+    using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Hazards;
     using Exiled.API.Features.Items;
@@ -95,6 +96,7 @@ namespace Exiled.API.Features
 
         private ReferenceHub referenceHub;
         private CustomHealthStat healthStat;
+        private CustomHumeShieldStat humeShieldStat;
         private Role role;
 
         /// <summary>
@@ -176,6 +178,7 @@ namespace Exiled.API.Features
                 CameraTransform = value.PlayerCameraReference;
 
                 value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = healthStat = new CustomHealthStat { Hub = value };
+                value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = humeShieldStat = new CustomHumeShieldStat { Hub = value };
             }
         }
 
@@ -915,6 +918,16 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the <see cref="AhpStat"/> of the Player.
+        /// </summary>
+        public AhpStat AhpStat => ReferenceHub.playerStats.GetModule<AhpStat>();
+
+        /// <summary>
+        /// Gets a <see cref="List{T}"/> of all active Artificial Health processes on the player.
+        /// </summary>
+        public List<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => AhpStat._activeProcesses;
+
+        /// <summary>
         /// Gets or sets the player's Hume Shield.
         /// </summary>
         /// <remarks>This value can bypass the role's hume shield maximum. However, this value will only be visible to the end-player as Hume Shield if <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>. Otherwise, the game will treat the player as though they have the amount of Hume Shield specified, even though they cannot see it.</remarks>
@@ -925,14 +938,27 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
+        /// Gets or sets the players maximum Hume Shield.
         /// </summary>
-        public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
+        public float MaxHumeShield
+        {
+            get => HumeShieldStat.MaxValue;
+            set => HumeShieldStat.CustomMaxValue = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the players multiplier for gaining HumeShield.
+        /// </summary>
+        public float HumeShieldRegenerationMultiplier
+        {
+            get => HumeShieldStat.ShieldRegenerationMultiplier;
+            set => HumeShieldStat.ShieldRegenerationMultiplier = value;
+        }
 
         /// <summary>
         /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
         /// </summary>
-        public HumeShieldStat HumeShieldStat => ReferenceHub.playerStats.GetModule<HumeShieldStat>();
+        public CustomHumeShieldStat HumeShieldStat => humeShieldStat;
 
         /// <summary>
         /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
@@ -3441,10 +3467,7 @@ namespace Exiled.API.Features
         /// <param name="sustain">The number of seconds to delay the start of the decay.</param>
         /// <param name="persistant">Whether the process is removed when the value hits 0.</param>
         public void AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
-        {
-            ReferenceHub.playerStats.GetModule<AhpStat>()
-                .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
-        }
+            => AhpStat.ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
 
         /// <summary>
         /// Reconnects the player to the server. Can be used to redirect them to another server on a different port but same IP.

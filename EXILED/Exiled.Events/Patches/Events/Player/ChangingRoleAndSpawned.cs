@@ -179,6 +179,7 @@ namespace Exiled.Events.Patches.Events.Player
             if (newRole is RoleTypeId.Scp173)
                 Scp173Role.TurnedPlayers.Remove(player);
 
+            player.MaxHumeShield = -1;
             player.MaxHealth = default;
         }
 
