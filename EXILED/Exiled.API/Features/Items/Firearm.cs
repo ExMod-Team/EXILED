@@ -159,30 +159,20 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets the max ammo for this firearm.
+        /// Gets or sets the max ammo for this firearm. Can be modified only for firearms with a <see cref="MagazineModule"/>.
         /// </summary>
-        /// <remarks>MaxAmmo can't be modified for <see cref="ParticleDisruptor"/>.</remarks> //todo (are we sure tho? it has a magazine module)
         public int MaxAmmo
         {
             get => Base.GetTotalMaxAmmo();
             set
             {
-                var difference = value - MaxAmmo;
+                if (!TryGetModule(out MagazineModule magazineModule))
+                    return;
 
-                foreach (ModuleBase module in Base.Modules)
-                {
-                    if (module is MagazineModule magazineModule)
-                    {
-                        magazineModule._defaultCapacity += difference;
-                        break;
-                    }
-
-                    if (module is CylinderAmmoModule cylinderAmmoModule)
-                    {
-                        cylinderAmmoModule._defaultCapacity += difference;
-                        break;
-                    }
-                }
+                int current = MaxAmmo;
+                int storredElserwhere = current - magazineModule.AmmoMax;
+                int difference = value - current - storredElserwhere;
+                magazineModule._defaultCapacity += difference;
             }
         }
 
