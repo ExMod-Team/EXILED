@@ -202,7 +202,6 @@ namespace Exiled.API.Features.Items
                 KeycardItem keycard => new Keycard(keycard),
                 UsableItem usable => usable switch
                 {
-                    Scp1344Item scp1344Item => new Scp1344(scp1344Item),
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
                     Scp1576Item scp1576 => new Scp1576(scp1576),
