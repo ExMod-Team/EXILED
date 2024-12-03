@@ -299,7 +299,6 @@ namespace Exiled.API.Features.Items
             ItemType.KeycardGuard or ItemType.KeycardJanitor or ItemType.KeycardO5 or ItemType.KeycardScientist or ItemType.KeycardChaosInsurgency or ItemType.KeycardContainmentEngineer or ItemType.KeycardFacilityManager or ItemType.KeycardResearchCoordinator or ItemType.KeycardZoneManager or ItemType.KeycardMTFPrivate or ItemType.KeycardMTFOperative or
             ItemType.KeycardMTFCaptain => new Keycard(type),
             ItemType.ArmorLight or ItemType.ArmorCombat or ItemType.ArmorHeavy => new Armor(type),
-            ItemType.SCP1344 => new Scp1344(),
             ItemType.SCP330 => new Scp330(),
             ItemType.SCP2176 => new Scp2176(owner),
             ItemType.SCP1576 => new Scp1576(),
