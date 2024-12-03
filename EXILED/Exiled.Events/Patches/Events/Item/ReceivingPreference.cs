@@ -39,7 +39,8 @@ namespace Exiled.Events.Patches.Events.Item
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
+            int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ReceivingPreferenceEventArgs));
             LocalBuilder curCode = generator.DeclareLocal(typeof(uint));

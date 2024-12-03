@@ -117,7 +117,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the ragdoll has been already cleaned up.
         /// </summary>
-        public bool IsFrozen => Base._frozen;
+        public bool IsFrozen => Base.Frozen;
 
         /// <summary>
         /// Gets or sets a value indicating whether the ragdoll can be cleaned up.

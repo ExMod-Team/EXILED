@@ -210,9 +210,14 @@ namespace Exiled.API.Enums
         EzCollapsedTunnel,
 
         /// <summary>
-        /// Entrance Zone's straight hall with Dr.L's locked room.
+        /// Entrance Zone's straight hall with Dr.L's or Dr. Gear's locked room.
         /// </summary>
         EzConference,
+
+        /// <summary>
+        /// Entrance Zone's straight hall with Chef's locked room.
+        /// </summary>
+        EzChef,
 
         /// <summary>
         /// Entrance Zone's straight hall
@@ -267,7 +272,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Entrance Zone's straight hall before the entrance/heavy checkpoint.
         /// </summary>
-        EzCheckpointHallway,
+        EzCheckpointHallwayA,
+
+        /// <summary>
+        /// Entrance Zone's straight hall before the entrance/heavy checkpoint.
+        /// </summary>
+        EzCheckpointHallwayB,
 
         /// <summary>
         /// Heavy Containment Zone's test room's straight hall.
@@ -283,5 +293,45 @@ namespace Exiled.API.Enums
         /// Heavy Containment Elevator Zone's System B room.
         /// </summary>
         HczElevatorB,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczCrossRoomWater,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczCornerDeep,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczIntersectionJunk,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczIntersection,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczStraightC,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczStraightPipeRoom,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczStraightVariant,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        EzSmallrooms,
     }
 }

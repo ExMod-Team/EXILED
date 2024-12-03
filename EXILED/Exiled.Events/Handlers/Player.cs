@@ -70,12 +70,16 @@ namespace Exiled.Events.Handlers
         public static Event<EarningAchievementEventArgs> EarningAchievement { get; set; } = new();
 
         /// <summary>
-        /// Invoked before using an <see cref="API.Features.Items.Item"/>.
+        /// Invoked before the player starts to use an <see cref="API.Features.Items.Usable"/>. In other words, it is invoked just before the animation starts.
         /// </summary>
+        /// <remarks>
+        /// Will be invoked even if the <see cref="API.Features.Items.Usable"/> is on cooldown.
+        /// Candies are the only <see cref="API.Features.Items.Usable"/> that do not invoke this event.
+        /// </remarks>
         public static Event<UsingItemEventArgs> UsingItem { get; set; } = new();
 
         /// <summary>
-        /// Invoked after a <see cref="API.Features.Player"/> uses an <see cref="API.Features.Items.Usable"/>.
+        /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>. In other words, it is invoked after the animation finishes but before the <see cref="API.Features.Items.Usable"/> is actually used.
         /// </summary>
         public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new ();
 

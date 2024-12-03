@@ -37,16 +37,15 @@ namespace Exiled.API.Features
     using InventorySystem.Disarming;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
-    using InventorySystem.Items.Firearms.BasicMessages;
+    using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
     using MapGeneration.Distributors;
     using MEC;
     using Mirror;
     using Mirror.LiteNetLib4Mirror;
-    using NorthwoodLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
@@ -161,7 +160,7 @@ namespace Exiled.API.Features
         public Dictionary<string, Dictionary<RoleTypeId, float>> CustomRoleFriendlyFireMultiplier { get; set; } = DictionaryPool<string, Dictionary<RoleTypeId, float>>.Pool.Get();
 
         /// <summary>
-        /// Gets or sets a unique custom role that does not adbide to base game for this player. Used in conjunction with <see cref="CustomRoleFriendlyFireMultiplier"/>.
+        /// Gets or sets a unique custom role that does not abide to base game for this player. Used in conjunction with <see cref="CustomRoleFriendlyFireMultiplier"/>.
         /// </summary>
         public string UniqueRole { get; set; } = string.Empty;
 
@@ -266,12 +265,6 @@ namespace Exiled.API.Features
         public string UserId => referenceHub.authManager.UserId;
 
         /// <summary>
-        /// Gets or sets the player's custom user id.
-        /// </summary>
-        [Obsolete("Remove by NW", true)]
-        public string CustomUserId { get; set; }
-
-        /// <summary>
         /// Gets the player's user id without the authentication.
         /// </summary>
         public string RawUserId { get; internal set; }
@@ -364,7 +357,7 @@ namespace Exiled.API.Features
             set
             {
                 // NW Client check.
-                if (value.Contains('<'))
+                if (value.Contains<char>('<'))
                 {
                     foreach (string token in value.Split('<'))
                     {
@@ -596,7 +589,7 @@ namespace Exiled.API.Features
             get => role ??= Role.Create(RoleManager.CurrentRole);
             internal set
             {
-                PreviousRole = role.Type;
+                PreviousRole = role?.Type ?? RoleTypeId.None;
                 role = value;
             }
         }
@@ -627,6 +620,8 @@ namespace Exiled.API.Features
         /// <remarks>Players can be cuffed without another player being the cuffer.</remarks>
         public bool IsCuffed => Inventory.IsDisarmed();
 
+        // TODO NOT FINISH
+        /*
         /// <summary>
         /// Gets a value indicating whether the player is reloading a weapon.
         /// </summary>
@@ -636,6 +631,7 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether the player is aiming with a weapon.
         /// </summary>
         public bool IsAimingDownWeapon => CurrentItem is Firearm firearm && firearm.Aiming;
+        */
 
         /// <summary>
         /// Gets a value indicating whether the player has enabled weapon's flashlight module.
@@ -1358,7 +1354,7 @@ namespace Exiled.API.Features
                         if (!player.IsVerified || player.Nickname is null)
                             continue;
 
-                        if (!player.Nickname.Contains(args, StringComparison.OrdinalIgnoreCase))
+                        if (!player.Nickname.ToLower().Contains(args.ToLower()))
                             continue;
 
                         string secondString = player.Nickname;
@@ -1820,9 +1816,12 @@ namespace Exiled.API.Features
         {
             if (CurrentItem is Firearm firearm)
             {
-                bool result = firearm.Base.AmmoManagerModule.ServerTryReload();
+                // TODO not finish
+                /*
+                bool result = firearm.Base.Ammo.ServerTryReload();
                 Connection.Send(new RequestMessage(firearm.Serial, RequestType.Reload));
                 return result;
+                */
             }
 
             return false;
@@ -2193,7 +2192,7 @@ namespace Exiled.API.Features
         /// <param name="force">The throw force.</param>
         /// <param name="armorPenetration">The armor penetration amount.</param>
         public void Hurt(Player attacker, float damage, Vector3 force = default, int armorPenetration = 0) =>
-            Hurt(new ExplosionDamageHandler(attacker.Footprint, force, damage, armorPenetration));
+            Hurt(new ExplosionDamageHandler(attacker.Footprint, force, damage, armorPenetration, ExplosionType.Grenade));
 
         /// <summary>
         /// Hurts the player.
@@ -2296,7 +2295,7 @@ namespace Exiled.API.Features
             if ((Role.Side != Side.Scp) && !string.IsNullOrEmpty(cassieAnnouncement))
                 Cassie.Message(cassieAnnouncement);
 
-            Kill(new DisruptorDamageHandler(attacker?.Footprint ?? Footprint, -1));
+            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
         }
 
         /// <summary>
@@ -2499,17 +2498,6 @@ namespace Exiled.API.Features
 
         /// <summary>
         /// Gets the maximum amount of ammo the player can hold, given the ammo <see cref="AmmoType"/>.
-        /// </summary>
-        /// <param name="type">The <see cref="AmmoType"/> of the ammo to check.</param>
-        /// <returns>The maximum amount of ammo this player can carry.</returns>
-        [Obsolete("Use Player::GetAmmoLimit(AmmoType, bool) instead.")]
-        public int GetAmmoLimit(AmmoType type)
-        {
-            return (int)InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), referenceHub);
-        }
-
-        /// <summary>
-        /// Gets the maximum amount of ammo the player can hold, given the ammo <see cref="AmmoType"/>.
         /// This limit will scale with the armor the player is wearing.
         /// For armor ammo limits, see <see cref="Armor.AmmoLimits"/>.
         /// </summary>
@@ -2563,15 +2551,6 @@ namespace Exiled.API.Features
         /// <param name="ammoType">The <see cref="AmmoType"/> to check.</param>
         /// <returns>If the player has a custom limit for the specific <see cref="AmmoType"/>.</returns>
         public bool HasCustomAmmoLimit(AmmoType ammoType) => CustomAmmoLimits.ContainsKey(ammoType);
-
-        /// <summary>
-        /// Gets the maximum amount of an <see cref="ItemCategory"/> the player can hold, based on the armor the player is wearing, as well as server configuration.
-        /// </summary>
-        /// <param name="category">The <see cref="ItemCategory"/> to check.</param>
-        /// <returns>The maximum amount of items in the category that the player can hold.</returns>
-        [Obsolete("Use Player::GetCategoryLimit(ItemCategory, bool) instead.")]
-        public int GetCategoryLimit(ItemCategory category) =>
-            InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, referenceHub);
 
         /// <summary>
         /// Gets the maximum amount of an <see cref="ItemCategory"/> the player can hold, based on the armor the player is wearing, as well as server configuration.
@@ -2701,16 +2680,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Adds an item of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
-        /// </summary>
-        /// <param name="itemType">The item to be added.</param>
-        /// <param name="identifiers">The attachments to be added to the item.</param>
-        /// <returns>The <see cref="Item"/> given to the player.</returns>
-        [Obsolete("Use AddItem(ItemType) or AddItem(FirearmType, IEnumerable<AttachmentIdentifier>)", true)]
-        public Item AddItem(ItemType itemType, IEnumerable<AttachmentIdentifier> identifiers = null)
-            => itemType.GetFirearmType() is FirearmType.None ? AddItem(itemType) : AddItem(itemType.GetFirearmType(), identifiers);
-
-        /// <summary>
         /// Adds an firearm of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
         /// <param name="firearmType">The firearm to be added.</param>
@@ -2727,12 +2696,15 @@ namespace Exiled.API.Features
                 else if (Preferences is not null && Preferences.TryGetValue(firearmType, out AttachmentIdentifier[] attachments))
                     firearm.Base.ApplyAttachmentsCode(attachments.GetAttachmentsCode(), true);
 
+                // TODO Not finish
+                /*
                 FirearmStatusFlags flags = FirearmStatusFlags.MagazineInserted;
 
                 if (firearm.Attachments.Any(a => a.Name == AttachmentName.Flashlight))
                     flags |= FirearmStatusFlags.FlashlightEnabled;
 
                 firearm.Base.Status = new FirearmStatus(firearm.MaxAmmo, flags, firearm.Base.GetCurrentAttachmentsCode());
+                */
             }
 
             AddItem(item);
@@ -2757,17 +2729,6 @@ namespace Exiled.API.Features
 
             return items;
         }
-
-        /// <summary>
-        /// Adds the amount of items of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
-        /// </summary>
-        /// <param name="itemType">The item to be added.</param>
-        /// <param name="amount">The amount of items to be added.</param>
-        /// <param name="identifiers">The attachments to be added to the item.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        [Obsolete("Use AddItem(ItemType, int) or AddItem(FirearmType, int, IEnumerable<AttachmentIdentifier>)", true)]
-        public IEnumerable<Item> AddItem(ItemType itemType, int amount, IEnumerable<AttachmentIdentifier> identifiers)
-            => itemType.GetFirearmType() is FirearmType.None ? AddItem(itemType, amount) : AddItem(itemType.GetFirearmType(), amount, identifiers);
 
         /// <summary>
         /// Adds the amount of firearms of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
@@ -2805,22 +2766,6 @@ namespace Exiled.API.Features
                 returnedItems.Add(AddItem(type));
 
             ListPool<ItemType>.Pool.Return(enumeratedItems);
-            return returnedItems;
-        }
-
-        /// <summary>
-        /// Adds the list of items of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
-        /// </summary>
-        /// <param name="items">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to be added.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        [Obsolete("Use AddItem(Dictionary<FirearmType, IEnumerable<AttachmentIdentifier>>) instead of this", true)]
-        public IEnumerable<Item> AddItem(Dictionary<ItemType, IEnumerable<AttachmentIdentifier>> items)
-        {
-            List<Item> returnedItems = new(items.Count);
-
-            foreach (KeyValuePair<ItemType, IEnumerable<AttachmentIdentifier>> item in items)
-                returnedItems.Add(AddItem(item.Key, item.Value));
-
             return returnedItems;
         }
 
@@ -2879,8 +2824,9 @@ namespace Exiled.API.Features
         /// Adds an item to the player's inventory.
         /// </summary>
         /// <param name="pickup">The <see cref="Pickup"/> of the item to be added.</param>
+        /// <param name="addReason">The reason the item was added.</param>
         /// <returns>The <see cref="Item"/> that was added.</returns>
-        public Item AddItem(Pickup pickup) => Item.Get(Inventory.ServerAddItem(pickup.Type, pickup.Serial, pickup.Base));
+        public Item AddItem(Pickup pickup, ItemAddReason addReason = ItemAddReason.Undefined) => Item.Get(Inventory.ServerAddItem(pickup.Type, addReason, pickup.Serial, pickup.Base));
 
         /// <summary>
         /// Adds an item to the player's inventory.
@@ -2890,7 +2836,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(FirearmPickup pickup, IEnumerable<AttachmentIdentifier> identifiers)
         {
-            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, pickup.Serial, pickup.Base));
+            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, ItemAddReason.Undefined, pickup.Serial, pickup.Base));
 
             if (identifiers is not null)
                 firearm.AddAttachment(identifiers);
@@ -2903,12 +2849,14 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="itemBase">The item to be added.</param>
         /// <param name="item">The <see cref="Item"/> object of the item.</param>
+        /// <param name="addReason">The reason the item was added.</param>
         /// <returns>The <see cref="Item"/> that was added.</returns>
-        public Item AddItem(ItemBase itemBase, Item item = null)
+        public Item AddItem(ItemBase itemBase, Item item = null, ItemAddReason addReason = ItemAddReason.AdminCommand)
         {
             try
             {
                 item ??= Item.Get(itemBase);
+                item.AddReason = addReason;
 
                 Inventory.UserInventory.Items[item.Serial] = itemBase;
 
@@ -2931,23 +2879,6 @@ namespace Exiled.API.Features
 
             return null;
         }
-
-        /// <summary>
-        /// Adds the <paramref name="amount"/> of items to the player's inventory.
-        /// </summary>
-        /// <param name="item">The item to be added.</param>
-        /// <param name="amount">The amount of items to be added.</param>
-        [Obsolete("Removed this method can't be functional")]
-        public void AddItem(Item item, int amount) => _ = item;
-
-        /// <summary>
-        /// Adds the <paramref name="amount"/> of items to the player's inventory.
-        /// </summary>
-        /// <param name="firearm">The firearm to be added.</param>
-        /// <param name="amount">The amount of items to be added.</param>
-        /// <param name="identifiers">The attachments to be added to the item.</param>
-        [Obsolete("Removed this method can't be functional")]
-        public void AddItem(Firearm firearm, int amount, IEnumerable<AttachmentIdentifier> identifiers) => _ = firearm;
 
         /// <summary>
         /// Adds the list of items to the player's inventory.
@@ -3392,13 +3323,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Enables a <see cref="IEnumerable{T}"/> of <see cref="Effect"/> on the player.
-        /// </summary>
-        /// <param name="effects">The <see cref="IEnumerable{T}"/> of <see cref="Effect"/> to enable.</param>
-        [Obsolete("Use SyncEffects(IEnumerable<Effect>) instead of this")]
-        public void EnableEffects(IEnumerable<Effect> effects) => SyncEffects(effects);
-
-        /// <summary>
         /// Syncs a <see cref="IEnumerable{T}"/> of <see cref="Effect"/> on the player.
         /// </summary>
         /// <param name="effects">The <see cref="IEnumerable{T}"/> of <see cref="Effect"/> to enable.</param>
@@ -3817,7 +3741,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Explode the player.
         /// </summary>
-        public void Explode() => ExplosionUtils.ServerExplode(ReferenceHub);
+        public void Explode() => ExplosionUtils.ServerExplode(ReferenceHub, ExplosionType.Grenade);
 
         /// <summary>
         /// Explode the player.
@@ -3831,6 +3755,37 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="projectileType">The projectile that will create the effect.</param>
         public void ExplodeEffect(ProjectileType projectileType) => Map.ExplodeEffect(Position, projectileType);
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            Player player = obj as Player;
+            return (object)player != null && ReferenceHub == player.ReferenceHub;
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return ReferenceHub.GetHashCode();
+        }
+
+        /// <summary>
+        /// Returns whether the two players are the same.
+        /// </summary>
+        /// <param name="player1">The first player instance.</param>
+        /// <param name="player2">The second player instance.</param>
+        /// <returns><see langword="true"/> if the values are equal.</returns>
+#pragma warning disable SA1201
+        public static bool operator ==(Player player1, Player player2) => player1?.Equals(player2) ?? player2 is null;
+
+        /// <summary>
+        /// Returns whether the two players are different.
+        /// </summary>
+        /// <param name="player1">The first player instance.</param>
+        /// <param name="player2">The second player instance.</param>
+        /// <returns><see langword="true"/> if the values are not equal.</returns>
+        public static bool operator !=(Player player1, Player player2) => !(player1 == player2);
+#pragma warning restore SA1201
 
         /// <summary>
         /// Converts the player in a human-readable format.

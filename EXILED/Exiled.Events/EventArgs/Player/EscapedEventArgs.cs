@@ -28,13 +28,10 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="escapeScenario"><inheritdoc cref="EscapeScenario"/></param>
         /// <param name="role"><inheritdoc cref="Role"/></param>
-        /// <param name="kvp"><inheritdoc cref="Tickets"/>, <inheritdoc cref="Team"/>.</param>
-        public EscapedEventArgs(Player player, EscapeScenario escapeScenario, Role role, KeyValuePair<SpawnableTeamType, float> kvp)
+        public EscapedEventArgs(Player player, EscapeScenario escapeScenario, Role role)
         {
             Player = player;
             EscapeScenario = escapeScenario;
-            Team = kvp.Key;
-            Tickets = kvp.Value;
             OldRole = role;
             EscapeTime = (int)Math.Ceiling(role.ActiveTime.TotalSeconds);
         }
@@ -46,16 +43,6 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the type of escape.
         /// </summary>
         public EscapeScenario EscapeScenario { get; }
-
-        /// <summary>
-        /// Gets the <see cref="SpawnableTeamType"/> that gained tickets for this escape.
-        /// </summary>
-        public SpawnableTeamType Team { get; }
-
-        /// <summary>
-        /// Gets the amount of tickets gained for this escape.
-        /// </summary>
-        public float Tickets { get; }
 
         /// <summary>
         /// Gets the previous role for this player.

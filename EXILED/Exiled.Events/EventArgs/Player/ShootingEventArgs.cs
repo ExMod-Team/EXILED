@@ -35,14 +35,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="firearm">
         /// <inheritdoc cref="Firearm" />
         /// </param>
-        /// <param name="msg">
-        /// <inheritdoc cref="ShotMessage" />
-        /// </param>
-        public ShootingEventArgs(Player shooter, BaseFirearm firearm, ShotMessage msg)
+        public ShootingEventArgs(Player shooter, BaseFirearm firearm)
         {
             Player = shooter;
             Firearm = Item.Get(firearm).As<Firearm>();
-            ShotMessage = msg;
+
+            // ShotMessage = msg;
         }
 
         /// <summary>
@@ -58,6 +56,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <inheritdoc/>
         public Item Item => Firearm;
 
+        /*
         /// <summary>
         /// Gets or sets the <see cref="ShotMessage" /> for the event.
         /// </summary>
@@ -104,6 +103,7 @@ namespace Exiled.Events.EventArgs.Player
                 };
             }
         }
+        */
 
         /// <summary>
         /// Gets or sets a value indicating whether the shot can be fired.

@@ -128,18 +128,9 @@ namespace Exiled.API.Features.Pickups
         public Room Room => Room.FindParentRoom(GameObject);
 
         /// <summary>
-        /// Gets or sets the pickup's PhysicsModule.
+        /// Gets the pickup's PhysicsModule.
         /// </summary>
-        public PickupStandardPhysics PhysicsModule
-        {
-            get => Base.PhysicsModule as PickupStandardPhysics;
-            [Obsolete("Unsafe.")]
-            set
-            {
-                Base.PhysicsModule.DestroyModule();
-                Base.PhysicsModule = value;
-            }
-        }
+        public PickupStandardPhysics PhysicsModule => Base.PhysicsModule as PickupStandardPhysics;
 
         /// <summary>
         /// Gets or sets the unique serial number for the item.
@@ -556,19 +547,6 @@ namespace Exiled.API.Features.Pickups
         /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion, bool, Player)"/>
         public static Pickup CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null)
             where T : Pickup => CreateAndSpawn(type, position, rotation, previousOwner) as T;
-
-        /// <summary>
-        /// Spawns a <see cref="Pickup"/>.
-        /// </summary>
-        /// <param name="pickup">The <see cref="Pickup"/> too spawn.</param>
-        /// <param name="position">The position to spawn the <see cref="Pickup"/> at.</param>
-        /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
-        /// <param name="previousOwner">An optional previous owner of the item.</param>
-        /// <returns>The <see cref="Pickup"/> Spawn.</returns>
-        /// <seealso cref="Projectile.Spawn(Vector3, Quaternion, bool, Player)"/>
-        [Obsolete("Use pickup.Spawn(Vector3, Quaternion, Player) instead of this", true)]
-        public static Pickup Spawn(Pickup pickup, Vector3 position, Quaternion rotation, Player previousOwner = null)
-            => pickup.Spawn(position, rotation, previousOwner);
 
         /// <summary>
         /// Returns the amount of time it will take for the provided <paramref name="player"/> to pick up this item, based on <see cref="Weight"/> and active status effects.

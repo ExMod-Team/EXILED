@@ -157,7 +157,8 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnShooting(ShootingEventArgs)"/>
         public void OnShooting(ShootingEventArgs ev)
         {
-            Log.Info($"{ev.Player.Nickname} is shooting a {ev.Player.CurrentItem.Type}! Target Pos: {ev.ShotPosition} Target object ID: {ev.TargetNetId} Allowed: {ev.IsAllowed}");
+            // Log.Info($"{ev.Player.Nickname} is shooting a {ev.Player.CurrentItem.Type}! Target Pos: {ev.ShotPosition} Target object ID: {ev.TargetNetId} Allowed: {ev.IsAllowed}");
+            // TODO we need to fix this cuz... we need to fix it
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnReloadingWeapon(ReloadingWeaponEventArgs)"/>

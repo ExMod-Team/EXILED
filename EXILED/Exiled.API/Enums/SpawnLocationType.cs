@@ -147,11 +147,5 @@ namespace Exiled.API.Enums
         /// Just inside the door at the bottom of the server's room.
         /// </summary>
         InsideServersBottom,
-
-        /// <summary>
-        /// Inside a random locker on the map.
-        /// </summary>
-        [Obsolete("Use LockerSpawnPoint instead")]
-        InsideLocker,
     }
 }

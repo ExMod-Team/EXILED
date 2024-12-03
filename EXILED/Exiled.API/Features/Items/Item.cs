@@ -26,6 +26,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp1344;
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
@@ -175,6 +176,15 @@ namespace Exiled.API.Features.Items
         public Player Owner => Player.Get(Base.Owner) ?? Server.Host;
 
         /// <summary>
+        /// Gets or sets a reason for adding this item to the inventory.
+        /// </summary>
+        public ItemAddReason AddReason
+        {
+            get => Base.ServerAddReason;
+            set => Base.ServerAddReason = value;
+        }
+
+        /// <summary>
         /// Gets an existing <see cref="Item"/> or creates a new instance of one.
         /// </summary>
         /// <param name="itemBase">The <see cref="ItemBase"/> to convert into an item.</param>
@@ -196,6 +206,7 @@ namespace Exiled.API.Features.Items
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
                     Scp1576Item scp1576 => new Scp1576(scp1576),
+                    Scp1344Item scp1344 => new Scp1344(scp1344),
                     BaseConsumable consumable => new Consumable(consumable),
                     _ => new Usable(usable),
                 },
@@ -234,6 +245,15 @@ namespace Exiled.API.Features.Items
         public static Item Get(ushort serial) => List.FirstOrDefault(x => x.Serial == serial);
 
         /// <summary>
+        /// Gets the Item belonging to the specified serial.
+        /// </summary>
+        /// <param name="serial">The Item serial.</param>
+        /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
+        /// <returns>Returns the Item found or <see langword="null"/> if not found.</returns>
+        public static T Get<T>(ushort serial)
+            where T : Item => Get(serial) as T;
+
+        /// <summary>
         /// Creates a new <see cref="Item"/> with the proper inherited subclass.
         /// <para>
         /// Based on the <paramref name="type"/>, the returned <see cref="Item"/> can be casted into a subclass to gain more control over the object.
@@ -254,6 +274,7 @@ namespace Exiled.API.Features.Items
         /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
         /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
         /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
         /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
         /// </para>
         /// <para>
@@ -282,6 +303,7 @@ namespace Exiled.API.Features.Items
             ItemType.SCP330 => new Scp330(),
             ItemType.SCP2176 => new Scp2176(owner),
             ItemType.SCP1576 => new Scp1576(),
+            ItemType.SCP1344 => new Scp1344(),
             ItemType.Jailbird => new Jailbird(),
             _ => new Item(type),
         };
@@ -307,6 +329,7 @@ namespace Exiled.API.Features.Items
         /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
         /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
         /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
         /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
         /// </para>
         /// <para>

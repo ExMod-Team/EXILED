@@ -38,9 +38,9 @@ namespace Exiled.API.Features
             Base = window;
             Room = room;
             Type = GetGlassType();
-#if Debug
+#if DEBUG
             if (Type is GlassType.Unknown)
-                Log.Error($"[GLASSTYPE UNKNOWN] {this}");
+                Log.Error($"[GLASSTYPE UNKNOWN] {this} BASE = {Base}");
 #endif
         }
 
@@ -132,10 +132,10 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether this window is broken.
         /// </summary>
-        public BreakableWindow.BreakableWindowStatus SyncStatus
+        public bool SyncStatus
         {
-            get => Base.NetworksyncStatus;
-            set => Base.NetworksyncStatus = value;
+            get => Base.prevStatus;
+            set => Base.prevStatus = value;
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Exiled.API.Features
             RoomType.LczGlassBox => GlassType.GR18,
             RoomType.LczPlants => GlassType.Plants,
             RoomType.Hcz049 => GlassType.Scp049,
-            RoomType.Hcz079 => Recontainer.Base._activatorGlass == Base ? GlassType.Scp079Trigger : GlassType.Scp079,
+            RoomType.Hcz079 => Base._preventScpDamage ? GlassType.Scp079Trigger : GlassType.Scp079,
             RoomType.HczHid => GlassType.MicroHid,
             RoomType.HczTestRoom => GlassType.TestRoom,
             RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,

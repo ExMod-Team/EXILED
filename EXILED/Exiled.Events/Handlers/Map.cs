@@ -26,11 +26,6 @@ namespace Exiled.Events.Handlers
         public static Event<PlacingBulletHoleEventArgs> PlacingBulletHole { get; set; } = new();
 
         /// <summary>
-        /// Invoked before placing blood.
-        /// </summary>
-        public static Event<PlacingBloodEventArgs> PlacingBlood { get; set; } = new();
-
-        /// <summary>
         /// Invoked before announcing the light containment zone decontamination.
         /// </summary>
         public static Event<AnnouncingDecontaminationEventArgs> AnnouncingDecontamination { get; set; } = new();
@@ -120,12 +115,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlacingBulletHoleEventArgs"/> instance.</param>
         public static void OnPlacingBulletHole(PlacingBulletHoleEventArgs ev) => PlacingBulletHole.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before placing bloods.
-        /// </summary>
-        /// <param name="ev">The <see cref="PlacingBloodEventArgs"/> instance.</param>
-        public static void OnPlacingBlood(PlacingBloodEventArgs ev) => PlacingBlood.InvokeSafely(ev);
 
         /// <summary>
         /// Called before announcing the light containment zone decontamination.
