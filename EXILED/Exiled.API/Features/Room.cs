@@ -467,7 +467,7 @@ namespace Exiled.API.Features
                 "EZ_CollapsedTunnel" => RoomType.EzCollapsedTunnel,
                 "EZ_Smallrooms1" => RoomType.EzConference,
                 "EZ_Straight" => RoomType.EzStraight,
-                "EZ_StraightColumn" => RoomType.EzStraight,
+                "EZ_StraightColumn" => RoomType.EzStraightColumn,
                 "EZ_Cafeteria" => RoomType.EzCafeteria,
                 "EZ_Shelter" => RoomType.EzShelter,
                 "EZ_HCZ_Checkpoint Part" => gameObject.transform.position.z switch

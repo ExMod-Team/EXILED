@@ -210,9 +210,14 @@ namespace Exiled.API.Enums
         EzChef,
 
         /// <summary>
-        /// Entrance Zone's straight hall
+        /// Entrance Zone's straight hall.
         /// </summary>
         EzStraight,
+
+        /// <summary>
+        /// Entrance Zone's straight hall with a different placement of seasonal objects.
+        /// </summary>
+        EzStraightColumn,
 
         /// <summary>
         /// Entrance Zone's Cafeteria Room.
