@@ -23,7 +23,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="emotionPresetType"><inheritdoc cref="EmotionPresetType"/></param>
         public ChangedEmotionEventArgs(ReferenceHub hub, EmotionPresetType emotionPresetType)
         {
-            Player = Exiled.API.Features.Player.Get(hub);
+            Player = Player.Get(hub);
             EmotionPresetType = emotionPresetType;
         }
 

@@ -27,18 +27,19 @@ namespace Exiled.Events.Patches.Events.Player
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ChangedEmotion))]
     [HarmonyPatch(typeof(EmotionSync), nameof(EmotionSync.ServerSetEmotionPreset))]
     internal static class Emotion
-{
+    {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label ret = generator.DefineLabel();
+            LocalBuilder ev = generator.DeclareLocal(typeof(ChangingEmotionEventArgs));
 
             int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldsfld);
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // ChangingEmotionEventArgs ev = new(hub, preset, EmotionSync.GetEmotionPreset(hub));
+                // ChangingEmotionEventArgs ev = new(hub, preset, EmotionSync.GetEmotionPreset(hub), true);
                 new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Ldarg_0),
@@ -46,6 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingEmotionEventArgs))[0]),
                 new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, ev),
 
                 // Handlers.Player.OnChangingEmotion(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnChangingEmotion))),
@@ -54,6 +56,11 @@ namespace Exiled.Events.Patches.Events.Player
                 //    return;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingEmotionEventArgs), nameof(ChangingEmotionEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse, ret),
+
+                // preset = ev.EmotionPresetTypeNew
+                new(OpCodes.Ldloc_S, ev),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingEmotionEventArgs), nameof(ChangingEmotionEventArgs.NewEmotionPresetType))),
+                new(OpCodes.Starg_S, 1),
             });
 
             newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]

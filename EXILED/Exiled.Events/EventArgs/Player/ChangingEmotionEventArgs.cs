@@ -20,14 +20,14 @@ namespace Exiled.Events.EventArgs.Player
         /// Initializes a new instance of the <see cref="ChangingEmotionEventArgs"/> class.
         /// </summary>
         /// <param name="hub"><inheritdoc cref="Player"/></param>
-        /// <param name="emotionPresetTypeNew"><inheritdoc cref="EmotionPresetTypeNew"/></param>
-        /// <param name="emotionPresetTypeOld"><inheritdoc cref="EmotionPresetTypeOld"/></param>
+        /// <param name="newEmotionPresetType"><inheritdoc cref="NewEmotionPresetType"/></param>
+        /// <param name="oldEmotionPresetType"><inheritdoc cref="OldEmotionPresetType"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public ChangingEmotionEventArgs(ReferenceHub hub, EmotionPresetType emotionPresetTypeNew, EmotionPresetType emotionPresetTypeOld, bool isAllowed = true)
+        public ChangingEmotionEventArgs(ReferenceHub hub, EmotionPresetType newEmotionPresetType, EmotionPresetType oldEmotionPresetType, bool isAllowed = true)
         {
-            Player = Exiled.API.Features.Player.Get(hub);
-            EmotionPresetTypeNew = emotionPresetTypeNew;
-            EmotionPresetTypeOld = emotionPresetTypeOld;
+            Player = Player.Get(hub);
+            NewEmotionPresetType = newEmotionPresetType;
+            OldEmotionPresetType = oldEmotionPresetType;
             IsAllowed = isAllowed;
         }
 
@@ -37,12 +37,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the old player's emotion.
         /// </summary>
-        public EmotionPresetType EmotionPresetTypeOld { get; }
+        public EmotionPresetType OldEmotionPresetType { get; }
 
         /// <summary>
         /// Gets or sets the new player's emotion.
         /// </summary>
-        public EmotionPresetType EmotionPresetTypeNew { get; set; }
+        public EmotionPresetType NewEmotionPresetType { get; set; }
 
         /// <inheritdoc/>
         public Player Player { get; }
