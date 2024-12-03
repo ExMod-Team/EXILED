@@ -272,7 +272,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Entrance Zone's straight hall before the entrance/heavy checkpoint.
         /// </summary>
-        EzCheckpointHallway,
+        EzCheckpointHallwayA,
+
+        /// <summary>
+        /// Entrance Zone's straight hall before the entrance/heavy checkpoint.
+        /// </summary>
+        EzCheckpointHallwayB,
 
         /// <summary>
         /// Heavy Containment Zone's test room's straight hall.
@@ -293,5 +298,40 @@ namespace Exiled.API.Enums
         /// Lazy TODO.
         /// </summary>
         HczCrossRoomWater,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczCornerDeep,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczIntersectionJunk,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczIntersection,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczStraightC,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczStraightPipeRoom,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczStraightVariant,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        EzSmallrooms,
     }
 }
