@@ -133,11 +133,6 @@ namespace Exiled.API.Enums
         EscapeSecondary,
 
         /// <summary>
-        /// Represents the SERVERS_BOTTOM door.
-        /// </summary>
-        ServersBottom,
-
-        /// <summary>
         /// Represents the GATE_A door.
         /// </summary>
         GateA,
