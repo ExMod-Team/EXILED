@@ -47,6 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingEmotionEventArgs))[0]),
                 new(OpCodes.Dup),
+                new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, ev),
 
                 // Handlers.Player.OnChangingEmotion(ev);
