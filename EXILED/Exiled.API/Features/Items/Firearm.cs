@@ -665,6 +665,27 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Gets stats of the attachments of the firearm.
+        /// </summary>
+        /// <param name="parameter">The <see cref="AttachmentParam"/> to get.</param>
+        /// <returns>The value of the specified parameter.</returns>
+        public float GetAttachmentsValue(AttachmentParam parameter) => Base.AttachmentsValue(parameter);
+
+        /// <summary>
+        /// Checks if the firearm has a specific advantage.
+        /// </summary>
+        /// <param name="flag">The <see cref="AttachmentDescriptiveAdvantages"/> to check.</param>
+        /// <returns>A value indicating whether the firearm has the specified advantage.</returns>
+        public bool HasAdvantage(AttachmentDescriptiveAdvantages flag) => Base.HasAdvantageFlag(flag);
+
+        /// <summary>
+        /// Checks if the firearm has a specific downside.
+        /// </summary>
+        /// <param name="flag">The <see cref="AttachmentDescriptiveDownsides"/> to check.</param>
+        /// <returns>A value indicating whether the firearm has the specified downside.</returns>
+        public bool HasDownside(AttachmentDescriptiveDownsides flag) => Base.HasDownsideFlag(flag);
+
+        /// <summary>
         /// Reloads current <see cref="Firearm"/>.
         /// </summary>
         /// <param name="emptyMagazine">Whether empty magazine should be loaded.</param>
@@ -728,7 +749,7 @@ namespace Exiled.API.Features.Items
 
             if (pickup is FirearmPickup firearmPickup)
             {
-                // TODO If synced
+                // TODO If synced and when they add MaxAmmo to firearmPickup :/
                 // MaxAmmo = firearmPickup.MaxAmmo;
             }
         }
