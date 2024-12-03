@@ -114,13 +114,13 @@ namespace Exiled.API.Features.Items
             set
             {
                 // Magazines that contain most of the ammo and can be reloaded
-                IPrimaryAmmoContainerModule primaryContainer = Base.TryGetModule(out IPrimaryAmmoContainerModule pacm) ? pacm : null;
+                IPrimaryAmmoContainerModule primaryContainer = TryGetModule(out IPrimaryAmmoContainerModule pacm) ? pacm : null;
 
                 // Barrels that may contain some ammo in them
-                AutomaticActionModule automaticActionBarrel = Base.TryGetModule(out AutomaticActionModule aam) ? aam : null;
+                AutomaticActionModule automaticActionBarrel = TryGetModule(out AutomaticActionModule aam) ? aam : null;
 
                 // Other type of barrels that also contain ammo but don't have AmmoStored setter
-                PumpActionModule pumpActionBarrel = Base.TryGetModule(out PumpActionModule pam) ? pam : null;
+                PumpActionModule pumpActionBarrel = TryGetModule(out PumpActionModule pam) ? pam : null;
 
                 value = Mathf.Clamp(value, 0, Base is ParticleDisruptor ? 254 : byte.MaxValue);
 
@@ -194,12 +194,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="Enums.AmmoType"/> of the firearm.
         /// </summary>
-        public AmmoType AmmoType => Base.TryGetModule(out IPrimaryAmmoContainerModule primaryAmmoContainer) ? primaryAmmoContainer.AmmoType.GetAmmoType() : AmmoType.None;
+        public AmmoType AmmoType => TryGetModule(out IPrimaryAmmoContainerModule primaryAmmoContainer) ? primaryAmmoContainer.AmmoType.GetAmmoType() : AmmoType.None;
 
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
         /// </summary>
-        public bool Aiming => Base.TryGetModule(out IAdsModule linearAdsModule) && linearAdsModule.AdsTarget;
+        public bool Aiming => TryGetModule(out IAdsModule adsModule) && adsModule.AdsTarget;
 
         /// <summary>
         /// Gets a value indicating whether the firearm's flashlight module is enabled.
@@ -252,10 +252,10 @@ namespace Exiled.API.Features.Items
         /// <seealso cref="IsAutomatic"/>
         public float FireRate
         {
-            get => Base.TryGetModule(out AutomaticActionModule module) ? module.BaseFireRate : 0f;
+            get => TryGetModule(out AutomaticActionModule module) ? module.BaseFireRate : 0f;
             set
             {
-                if (Base.TryGetModule(out AutomaticActionModule module))
+                if (TryGetModule(out AutomaticActionModule module))
                     module.BaseFireRate = value;
             }
         }
@@ -267,10 +267,10 @@ namespace Exiled.API.Features.Items
         /// <seealso cref="IsAutomatic"/>
         public RecoilSettings Recoil
         {
-            get => Base.TryGetModule(out RecoilPatternModule module) ? module.BaseRecoil : default;
+            get => TryGetModule(out RecoilPatternModule module) ? module.BaseRecoil : default;
             set
             {
-                if (Base.TryGetModule(out RecoilPatternModule module))
+                if (TryGetModule(out RecoilPatternModule module))
                     module.BaseRecoil = value;
             }
         }
@@ -446,6 +446,26 @@ namespace Exiled.API.Features.Items
             foreach (Player player in Player.List)
                 ClearPreferences(player);
         }
+
+        /// <summary>
+        /// Tries to get a specific module of the <see cref="InventorySystem.Items.Firearms.Firearm" />.
+        /// </summary>
+        /// <typeparam name="T">The type of the module to get.</typeparam>
+        /// <param name="module">Module if found, otherwise <see langword="null" />.</param>
+        /// <param name="ignoreSubmodules">Whether to ignore submodules.</param>
+        /// <returns>A value indicating whether the module was found.</returns>
+        /// <remarks>
+        /// Modules are a part of the new firearm system. They define the behaviour of a firearm.
+        /// They are magazines that store ammo, barrels that shoot, and even recoil patterns.
+        /// By altering their settings it is possible to do almost anything with a given weapon.
+        /// </remarks>
+        /// <seealso cref="ModuleBase" />
+        /// <seealso cref="IPrimaryAmmoContainerModule" />
+        /// <seealso cref="IActionModule" />
+        /// <seealso cref="RecoilPatternModule" />
+        /// <seealso cref="LinearAdsModule" />
+        public bool TryGetModule<T>(out T module, bool ignoreSubmodules = true)
+            => Base.TryGetModule(out module, ignoreSubmodules);
 
         /// <summary>
         /// Adds a <see cref="AttachmentIdentifier"/> to the firearm.
