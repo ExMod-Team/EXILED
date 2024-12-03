@@ -77,7 +77,7 @@ namespace Exiled.CustomItems.API.Features
                 firearm.AddAttachment(Attachments);
 
             firearm.MagazineAmmo = ClipSize;
-            firearm.MagazineAmmo = ClipSize;
+            firearm.MaxMagazineAmmo = ClipSize;
 
             Pickup? pickup = firearm.CreatePickup(position);
 
@@ -105,7 +105,7 @@ namespace Exiled.CustomItems.API.Features
                     firearm.AddAttachment(Attachments);
 
                 int ammo = firearm.MagazineAmmo;
-                firearm.MagazineAmmo = ClipSize;
+                firearm.MaxMagazineAmmo = ClipSize;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
                 pickup.Scale = Scale;
