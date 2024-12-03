@@ -27,12 +27,16 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             : base(magazine)
         {
             MagazineModule = magazine;
+            Firearm = (Firearm)Item.Get(MagazineModule.Firearm);
         }
 
         /// <summary>
         /// Gets an original <see cref="MagazineModule"/>.
         /// </summary>
         public MagazineModule MagazineModule { get; }
+
+        /// <inheritdoc/>
+        public override Firearm Firearm { get; }
 
         /// <inheritdoc/>
         public override int MaxAmmo
@@ -70,6 +74,26 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
                 MagazineModule.MagazineInserted = value;
                 Resync();
             }
+        }
+
+        /// <summary>
+        /// Removes magazine from current <see cref="Exiled.API.Features.Items.Firearm"/>.
+        /// </summary>
+        /// <remarks>
+        /// Affects on actual ammo count.
+        /// Removes all ammo from magazine.
+        /// </remarks>
+        public void RemoveMagazine()
+        {
+            MagazineModule.ServerRemoveMagazine();
+        }
+
+        /// <summary>
+        /// Inserts current magazine from current <see cref="Exiled.API.Features.Items.Firearm"/>.
+        /// </summary>
+        public void InsertMagazine()
+        {
+            MagazineModule.ServerInsertEmptyMagazine();
         }
 
         /// <inheritdoc/>

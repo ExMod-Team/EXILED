@@ -46,6 +46,11 @@ namespace Exiled.API.Features.Items.FirearmModules
         public abstract int MaxAmmo { get; set; }
 
         /// <summary>
+        /// Gets target <see cref="Exiled.API.Features.Items.Firearm"/> assotiated with this magazine.
+        /// </summary>
+        public abstract Firearm Firearm { get; }
+
+        /// <summary>
         /// Gets wrapper to an <see cref="IAmmoContainerModule"/>.
         /// </summary>
         /// <param name="module">The target <see cref="IAmmoContainerModule"/>.</param>

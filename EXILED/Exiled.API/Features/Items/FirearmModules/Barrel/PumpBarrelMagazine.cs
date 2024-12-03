@@ -30,12 +30,16 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
             : base(pumpModule)
         {
             PumpBarrel = pumpModule;
+            Firearm = (Firearm)Item.Get(PumpBarrel.Firearm);
         }
 
         /// <summary>
         /// Gets an original <see cref="IAmmoContainerModule"/>.
         /// </summary>
         public PumpActionModule PumpBarrel { get; }
+
+        /// <inheritdoc/>
+        public override Firearm Firearm { get; }
 
         /// <inheritdoc/>
         public override int Ammo

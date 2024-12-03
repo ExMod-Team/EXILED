@@ -165,49 +165,45 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets the total amount of ammo in the firearm.
+        /// Gets the total amount of ammo in the firearm.
         /// </summary>
-        /// TODO: think
-        public int Ammo
-        {
-            get
-            {
-                return Base.GetTotalStoredAmmo();
-            }
-
-            set
-            {
-                int deltaValue = value - Ammo;
-
-                if (deltaValue > 0)
-                {
-                    deltaValue -= BarrelMagazine?.ModifyAmmo(deltaValue) ?? 0;
-                    deltaValue -= PrimaryMagazine.ModifyAmmo(deltaValue, false);
-                }
-                else if (deltaValue < 0)
-                {
-                    deltaValue -= PrimaryMagazine.ModifyAmmo(deltaValue);
-                    deltaValue -= BarrelMagazine?.ModifyAmmo(deltaValue) ?? 0;
-                }
-            }
-        }
+        public int TotalAmmo =>
+            Base.GetTotalStoredAmmo();
 
         /// <summary>
         /// Gets or sets the max ammo for this firearm.
         /// </summary>
-        /// TODO: think
-        public int MaxAmmo
+        public int MaxMagazineAmmo
+        {
+            get => PrimaryMagazine.MaxAmmo;
+            set => PrimaryMagazine.MaxAmmo = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of max ammo in the firearm barrel.
+        /// </summary>
+        /// <remarks>
+        /// not working for Revolver and ParticleDisruptor.
+        /// </remarks>
+        public int MaxBarrelAmmo
         {
             get
             {
-                return Base.GetTotalMaxAmmo();
+                return BarrelMagazine?.MaxAmmo ?? 0;
             }
 
             set
             {
-                PrimaryMagazine.MaxAmmo = value;
+                if (BarrelMagazine != null)
+                    BarrelMagazine.MaxAmmo = value;
             }
         }
+
+        /// <summary>
+        /// Gets the total amount of ammo in the firearm.
+        /// </summary>
+        public int TotalMaxAmmo =>
+            Base.GetTotalStoredAmmo();
 
         /// <summary>
         /// Gets the <see cref="Enums.FirearmType"/> of the firearm.

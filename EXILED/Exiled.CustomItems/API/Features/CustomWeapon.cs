@@ -76,8 +76,8 @@ namespace Exiled.CustomItems.API.Features
             if (!Attachments.IsEmpty())
                 firearm.AddAttachment(Attachments);
 
-            firearm.Ammo = ClipSize;
-            firearm.MaxAmmo = ClipSize;
+            firearm.MagazineAmmo = ClipSize;
+            firearm.MagazineAmmo = ClipSize;
 
             Pickup? pickup = firearm.CreatePickup(position);
 
@@ -104,8 +104,8 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
-                int ammo = firearm.Ammo;
-                firearm.MaxAmmo = ClipSize;
+                int ammo = firearm.MagazineAmmo;
+                firearm.MagazineAmmo = ClipSize;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
                 pickup.Scale = Scale;
@@ -130,8 +130,8 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
-                firearm.Ammo = ClipSize;
-                firearm.MaxAmmo = ClipSize;
+                firearm.MagazineAmmo = ClipSize;
+                firearm.MaxMagazineAmmo = ClipSize;
             }
 
             Log.Debug($"{nameof(Give)}: Adding {item.Serial} to tracker.");
@@ -214,7 +214,7 @@ namespace Exiled.CustomItems.API.Features
             Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Continuing with internal reload..");
             ev.IsAllowed = false;
 
-            int remainingClip = ((Firearm)ev.Player.CurrentItem).Ammo;
+            int remainingClip = ((Firearm)ev.Player.CurrentItem).MagazineAmmo;
 
             if (remainingClip >= ClipSize)
                 return;
@@ -241,9 +241,9 @@ namespace Exiled.CustomItems.API.Features
             ev.Player.Ammo[ammoType.GetItemType()] -= amountToReload;
             ev.Player.Inventory.SendAmmoNextFrame = true;
 
-            ((Firearm)ev.Player.CurrentItem).Ammo = (byte)(((Firearm)ev.Player.CurrentItem).Ammo + amountToReload);
+            ((Firearm)ev.Player.CurrentItem).MagazineAmmo = (byte)(((Firearm)ev.Player.CurrentItem).MagazineAmmo + amountToReload);
 
-            Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] reloaded a {Name} ({Id}) [{Type} ({((Firearm)ev.Player.CurrentItem).Ammo}/{ClipSize})]!");
+            Log.Debug($"{ev.Player.Nickname} ({ev.Player.UserId}) [{ev.Player.Role}] reloaded a {Name} ({Id}) [{Type} ({((Firearm)ev.Player.CurrentItem).MagazineAmmo}/{ClipSize})]!");
         }
 
         private void OnInternalShooting(ShootingEventArgs ev)

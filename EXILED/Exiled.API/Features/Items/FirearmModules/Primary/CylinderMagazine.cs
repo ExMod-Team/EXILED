@@ -30,12 +30,16 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             : base(magazine)
         {
             CylinderModule = magazine;
+            Firearm = (Firearm)Item.Get(CylinderModule.Firearm);
         }
 
         /// <summary>
         /// Gets an original <see cref="IPrimaryAmmoContainerModule"/>.
         /// </summary>
         public CylinderAmmoModule CylinderModule { get; }
+
+        /// <inheritdoc/>
+        public override Firearm Firearm { get; }
 
         /// <inheritdoc/>
         public override int MaxAmmo
@@ -108,8 +112,8 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             /// <summary>
             /// Initializes a new instance of the <see cref="Chamber"/> class.
             /// </summary>
-            /// <param name="baseChamber">basic <see cref="CylinderAmmoModule.Chamber"/> class.</param>
-            public Chamber(CylinderAmmoModule.Chamber baseChamber)
+            /// <param name="baseChamber">Basic <see cref="CylinderAmmoModule.Chamber"/> class.</param>
+            internal Chamber(CylinderAmmoModule.Chamber baseChamber)
             {
                 this.baseChamber = baseChamber;
             }

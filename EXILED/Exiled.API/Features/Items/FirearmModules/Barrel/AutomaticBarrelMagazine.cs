@@ -30,12 +30,16 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
             : base(automaticModule)
         {
             AutomaticBarrel = automaticModule;
+            Firearm = (Firearm)Item.Get(AutomaticBarrel.Firearm);
         }
 
         /// <summary>
         /// Gets an original <see cref="IAmmoContainerModule"/>.
         /// </summary>
         public AutomaticActionModule AutomaticBarrel { get; }
+
+        /// <inheritdoc/>
+        public override Firearm Firearm { get; }
 
         /// <inheritdoc/>
         public override int Ammo
@@ -54,6 +58,9 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         }
 
         /// <inheritdoc/>
+        /// <remarks>
+        /// Will be ranged between <see langword="0"/> and <see langword="16"/> due basegame logic.
+        /// </remarks>
         public override int MaxAmmo
         {
             get
