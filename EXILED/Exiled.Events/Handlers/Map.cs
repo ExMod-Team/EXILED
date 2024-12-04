@@ -116,6 +116,28 @@ namespace Exiled.Events.Handlers
         public static Event<PlacingPickupIntoPocketDimensionEventArgs> PlacingPickupIntoPocketDimension { get; set; } = new();
 
         /// <summary>
+        /// Called before the server transmitted radiomodel message.
+        /// </summary>
+        public static Event<RadioModelTransmittingEventArgs> RadioModelTransmitting { get; set; } = new();
+
+        /// <summary>
+        /// Called after the server transmitted radiomodel message.
+        /// </summary>
+        public static Event<RadioModelTransmittedEventArgs> RadioModelTransmitted { get; set; } = new();
+
+        /// <summary>
+        /// Call after transmitted the radiomodel message.
+        /// </summary>
+        /// <param name="ev">The <see cref="RadioModelTransmittedEventArgs"/> instance.</param>
+        public static void OnRadioModelTransmitted(RadioModelTransmittedEventArgs ev) => RadioModelTransmitted.InvokeSafely(ev);
+
+        /// <summary>
+        /// Call before transmitted the radiomodel message.
+        /// </summary>
+        /// <param name="ev">The <see cref="RadioModelTransmittingEventArgs"/> instance.</param>
+        public static void OnRadioModelTransmitting(RadioModelTransmittingEventArgs ev) => RadioModelTransmitting.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before placing a decal.
         /// </summary>
         /// <param name="ev">The <see cref="PlacingBulletHoleEventArgs"/> instance.</param>
