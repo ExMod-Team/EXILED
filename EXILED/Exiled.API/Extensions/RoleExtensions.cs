@@ -12,7 +12,7 @@ namespace Exiled.API.Extensions
     using System.Linq;
 
     using Enums;
-    using Exiled.API.Features.Spawn;
+    using Features.Spawn;
     using Footprinting;
     using InventorySystem;
     using InventorySystem.Configs;

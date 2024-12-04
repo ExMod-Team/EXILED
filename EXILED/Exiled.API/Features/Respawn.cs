@@ -20,8 +20,6 @@ namespace Exiled.API.Features
     using Respawning.Waves.Generic;
     using UnityEngine;
 
-    // TODO: Write docs for everything in this class
-
     /// <summary>
     /// A set of tools to handle team respawns more easily.
     /// </summary>
