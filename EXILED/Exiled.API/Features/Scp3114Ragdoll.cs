@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp3114Ragdoll.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp3114Ragdoll.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -67,7 +67,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this corpse will trigger animation.
+        /// Gets or sets a value indicating whether this corpse will trigger animation.
         /// </summary>
         public bool IsPlayingAnimation
         {

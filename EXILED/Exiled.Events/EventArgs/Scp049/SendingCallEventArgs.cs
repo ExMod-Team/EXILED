@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SendingCallEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SendingCallEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -43,7 +43,7 @@ namespace Exiled.Events.EventArgs.Scp049
         public float Duration { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the server will send 049 information on the call.
+        /// Gets or sets a value indicating whether the server will send 049 information on the call.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

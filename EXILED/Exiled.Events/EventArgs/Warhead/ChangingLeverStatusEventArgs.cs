@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingLeverStatusEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingLeverStatusEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -41,7 +41,7 @@ namespace Exiled.Events.EventArgs.Warhead
         public bool CurrentState { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the lever status will change.
+        /// Gets or sets a value indicating whether the lever status will change.
         /// </summary>
         public bool IsAllowed { get; set; }
 

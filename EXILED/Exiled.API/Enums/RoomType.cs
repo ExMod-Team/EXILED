@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RoomType.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RoomType.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -210,9 +210,14 @@ namespace Exiled.API.Enums
         EzCollapsedTunnel,
 
         /// <summary>
-        /// Entrance Zone's straight hall with Dr.L's locked room.
+        /// Entrance Zone's straight hall with Dr.L's or Dr. Gear's locked room.
         /// </summary>
         EzConference,
+
+        /// <summary>
+        /// Entrance Zone's straight hall with Chef's locked room.
+        /// </summary>
+        EzChef,
 
         /// <summary>
         /// Entrance Zone's straight hall
@@ -283,5 +288,10 @@ namespace Exiled.API.Enums
         /// Heavy Containment Elevator Zone's System B room.
         /// </summary>
         HczElevatorB,
+
+        /// <summary>
+        /// Lazy TODO.
+        /// </summary>
+        HczCrossRoomWater,
     }
 }

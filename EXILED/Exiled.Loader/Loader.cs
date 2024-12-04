@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Loader.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Loader.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -121,6 +121,7 @@ namespace Exiled.Loader
         public static void LoadPlugins()
         {
             File.Delete(Path.Combine(Paths.Plugins, "Exiled.Updater.dll"));
+            File.Delete(Path.Combine(Paths.Dependencies, "Exiled.API.dll"));
 
             foreach (string assemblyPath in Directory.GetFiles(Paths.Plugins, "*.dll"))
             {

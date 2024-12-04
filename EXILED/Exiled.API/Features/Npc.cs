@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Npc.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Npc.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -19,6 +19,7 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Components;
     using Exiled.API.Features.Roles;
     using Footprinting;
+    using GameCore;
     using MEC;
     using Mirror;
     using PlayerRoles;
@@ -133,6 +134,27 @@ namespace Exiled.API.Features
         public static new Npc? Get(NetworkConnection conn) => Player.Get(conn) as Npc;
 
         /// <summary>
+        /// Docs.
+        /// </summary>
+        /// <param name="name">Docs1.</param>
+        /// <param name="role">Docs2.</param>
+        /// <param name="position">Docs3.</param>
+        /// <returns>Docs4.</returns>
+        public static Npc Create(string name, RoleTypeId role, Vector3 position)
+        {
+            // TODO: Test this.
+            Npc npc = new(DummyUtils.SpawnDummy(name))
+            {
+                IsNPC = true,
+            };
+
+            npc.Role.Set(role);
+            npc.Position = position;
+
+            return npc;
+        }
+
+        /// <summary>
         /// Spawns an NPC based on the given parameters.
         /// </summary>
         /// <param name="name">The name of the NPC.</param>
@@ -141,7 +163,7 @@ namespace Exiled.API.Features
         /// <param name="userId">The userID of the NPC.</param>
         /// <param name="position">The position to spawn the NPC.</param>
         /// <returns>The <see cref="Npc"/> spawned.</returns>
-        [Obsolete("This metod is marked as obsolet due to a bug that make player have the same id. Use Npc.Spawn(string) instead")]
+        [Obsolete("This method is marked as obsolete due to a bug that make player have the same id. Use Npc.Spawn(string) instead", true)]
         public static Npc Spawn(string name, RoleTypeId role, int id = 0, string userId = PlayerAuthenticationManager.DedicatedId, Vector3? position = null)
         {
             GameObject newObject = UnityEngine.Object.Instantiate(Mirror.NetworkManager.singleton.playerPrefab);

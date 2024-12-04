@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ElevatorDoor.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ElevatorDoor.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -12,6 +12,8 @@ namespace Exiled.API.Features.Doors
 
     using Exiled.API.Enums;
     using Interactables.Interobjects;
+    using Interactables.Interobjects.DoorUtils;
+    using UnityEngine;
 
     /// <summary>
     /// Represents an elevator door.
@@ -28,6 +30,8 @@ namespace Exiled.API.Features.Doors
         {
             Base = door;
             Lift = Lift.Get(x => x.Group == Group).FirstOrDefault();
+
+            Panel = Object.FindObjectsOfType<ElevatorPanel>().FirstOrDefault(x => x._door == door);
         }
 
         /// <summary>
@@ -36,28 +40,28 @@ namespace Exiled.API.Features.Doors
         public new Interactables.Interobjects.ElevatorDoor Base { get; }
 
         /// <summary>
-        /// Gets the <see cref="ElevatorManager.ElevatorGroup"/> that this door's <see cref="Lift"/> belongs to.
+        /// Gets the <see cref="ElevatorGroup"/> that this door's <see cref="Lift"/> belongs to.
         /// </summary>
-        public ElevatorManager.ElevatorGroup Group => Base.Group;
+        public ElevatorGroup Group => Base.Group;
+
+        /// <summary>
+        /// Gets the <see cref="ElevatorPanel"/> associated with this lift.
+        /// </summary>
+        public ElevatorPanel Panel { get; }
 
         /// <summary>
         /// Gets the type according to <see cref="Group"/>.
         /// </summary>
         public ElevatorType ElevatorType => Group switch
         {
-            ElevatorManager.ElevatorGroup.Scp049 => ElevatorType.Scp049,
-            ElevatorManager.ElevatorGroup.GateA => ElevatorType.GateA,
-            ElevatorManager.ElevatorGroup.GateB => ElevatorType.GateB,
-            ElevatorManager.ElevatorGroup.LczA01 or ElevatorManager.ElevatorGroup.LczA02 => ElevatorType.LczA,
-            ElevatorManager.ElevatorGroup.LczB01 or ElevatorManager.ElevatorGroup.LczB02 => ElevatorType.LczB,
-            ElevatorManager.ElevatorGroup.Nuke => ElevatorType.Nuke,
+            ElevatorGroup.Scp049 => ElevatorType.Scp049,
+            ElevatorGroup.GateA => ElevatorType.GateA,
+            ElevatorGroup.GateB => ElevatorType.GateB,
+            ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => ElevatorType.LczA,
+            ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => ElevatorType.LczB,
+            ElevatorGroup.Nuke01 or ElevatorGroup.Nuke02 => ElevatorType.Nuke,
             _ => ElevatorType.Unknown,
         };
-
-        /// <summary>
-        /// Gets the target panel for this lift.
-        /// </summary>
-        public ElevatorPanel Panel => Base.TargetPanel;
 
         /// <summary>
         /// Gets the <see cref="Lift"/> associated with this elevator door.

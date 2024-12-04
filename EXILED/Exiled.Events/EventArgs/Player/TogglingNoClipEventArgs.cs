@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="TogglingNoClipEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="TogglingNoClipEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -41,12 +41,12 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the noclip mode will be enabled or not.
+        /// Gets or sets a value indicating whether the noclip mode will be enabled.
         /// </summary>
         public bool IsEnabled { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can toggle noclip.
+        /// Gets or sets a value indicating whether the player can toggle noclip.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

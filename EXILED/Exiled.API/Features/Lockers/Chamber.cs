@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Chamber.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Chamber.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -61,6 +61,16 @@ namespace Exiled.API.Features.Lockers
 
         /// <inheritdoc/>
         public Quaternion Rotation => Base.transform.rotation;
+
+        /// <summary>
+        /// Gets the <see cref="Chamber"/> <see cref="UnityEngine.GameObject"/>.
+        /// </summary>
+        public GameObject GameObject => Base.gameObject;
+
+        /// <summary>
+        /// Gets the <see cref="Chamber"/> <see cref="UnityEngine.Transform"/>.
+        /// </summary>
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets or sets all pickups that should be spawned when the door is initially opened.
@@ -132,7 +142,7 @@ namespace Exiled.API.Features.Lockers
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not items should be spawned as soon as they one chamber is opened.
+        /// Gets or sets a value indicating whether items should be spawned as soon as they one chamber is opened.
         /// </summary>
         public bool InitiallySpawn
         {

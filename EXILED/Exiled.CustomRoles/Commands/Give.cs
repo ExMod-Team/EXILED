@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Give.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Give.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -19,6 +19,7 @@ namespace Exiled.CustomRoles.Commands
     using Exiled.Permissions.Extensions;
 
     using RemoteAdmin;
+    using Utils;
 
     /// <summary>
     /// The command to give a role to player(s).
@@ -96,16 +97,24 @@ namespace Exiled.CustomRoles.Commands
                         ListPool<Player>.Pool.Return(players);
                         return true;
                     default:
-                        if (Player.Get(identifier) is not Player ply)
-                        {
-                            response = $"Unable to find a player: {identifier}";
-                            return false;
-                        }
-
-                        role.AddRole(ply);
-                        response = $"{role.Name} given to {ply.Nickname}.";
-                        return true;
+                        break;
                 }
+
+                IEnumerable<Player> list = Player.GetProcessedData(arguments, 1);
+                if (list.IsEmpty())
+                {
+                    response = "Cannot find player! Try using the player ID!";
+                    return false;
+                }
+
+                foreach (Player player in list)
+                {
+                    role.AddRole(player);
+                }
+
+                response = $"Customrole {role.Name} given to {list.Count()} players!";
+
+                return true;
             }
             catch (Exception e)
             {

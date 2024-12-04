@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RoomSpawnPoint.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RoomSpawnPoint.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -47,6 +47,9 @@ namespace Exiled.API.Features.Spawn
             get
             {
                 Room roomInstance = Features.Room.Get(Room) ?? throw new InvalidOperationException("The room instance could not be found.");
+
+                if (roomInstance.Type == RoomType.Surface)
+                    return Offset != Vector3.zero ? Offset : roomInstance.Position;
 
                 return Offset != Vector3.zero ? roomInstance.transform.TransformPoint(Offset) : roomInstance.Position;
             }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="OwnerEscapingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="OwnerEscapingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -30,20 +30,7 @@ namespace Exiled.CustomItems.API.EventArgs
         /// <param name="item"><inheritdoc cref="Item"/></param>
         /// <param name="ev">The <see cref="EscapingEventArgs"/> instance.</param>
         public OwnerEscapingEventArgs(Item item, EscapingEventArgs ev)
-            : this(item, ev.Player, ev.NewRole, ev.EscapeScenario, ev.RespawnTickets)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OwnerEscapingEventArgs"/> class.
-        /// </summary>
-        /// <param name="item"><inheritdoc cref="Item"/></param>
-        /// <param name="player"><inheritdoc cref="EscapingEventArgs.Player"/></param>
-        /// <param name="newRole"><inheritdoc cref="EscapingEventArgs.NewRole"/></param>
-        /// <param name="escapeScenario"><inheritdoc cref="EscapingEventArgs.EscapeScenario"/></param>
-        /// <param name="respawnTickets"><inheritdoc cref="EscapingEventArgs.RespawnTickets"/></param>
-        public OwnerEscapingEventArgs(Item item, Player player, RoleTypeId newRole, EscapeScenario escapeScenario, KeyValuePair<SpawnableTeamType, float> respawnTickets = default)
-            : base(player, newRole, escapeScenario, respawnTickets)
+            : base(ev.Player, ev.NewRole, ev.EscapeScenario)
         {
             Item = item;
         }

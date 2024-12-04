@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="AnnouncingDecontaminationEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="AnnouncingDecontaminationEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Map
         public PhaseFunction PhaseFunction { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the announcement is going to be global or not.
+        /// Gets a value indicating whether the announcement is going to be global.
         /// </summary>
         public bool IsGlobal { get; }
     }

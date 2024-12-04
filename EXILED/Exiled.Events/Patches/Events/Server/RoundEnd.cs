@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RoundEnd.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RoundEnd.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -9,9 +9,11 @@ namespace Exiled.Events.Patches.Events.Server
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Server;
@@ -20,6 +22,7 @@ namespace Exiled.Events.Patches.Events.Server
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
+    using static RoundSummary;
 
     /// <summary>
     /// Patches <see cref="RoundSummary._ProcessServerSideCode()" />.
@@ -34,8 +37,15 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static MethodInfo TargetMethod()
         {
-            PrivateType = typeof(RoundSummary).GetNestedTypes(all)[5];
-            return Method(PrivateType, "MoveNext");
+            PrivateType = typeof(RoundSummary).GetNestedTypes(all)
+                .FirstOrDefault(currentType => currentType.Name.Contains("_ProcessServerSideCode"));
+            if (PrivateType == null)
+                throw new Exception("State machine type for _ProcessServerSideCode not found.");
+            MethodInfo moveNextMethod = PrivateType.GetMethod("MoveNext", all);
+
+            if (moveNextMethod == null)
+                throw new Exception("MoveNext method not found in the state machine type.");
+            return moveNextMethod;
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -57,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new CodeInstruction[]
                 {
                     new(OpCodes.Call, PropertyGetter(typeof(Round), nameof(Round.IgnoredPlayers))),
-                    new(OpCodes.Ldloc_S, 10),
+                    new(OpCodes.Ldloc_S, 11),
                     new(OpCodes.Call, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
                     new(OpCodes.Brtrue_S, jmp),
                 });
@@ -67,23 +77,8 @@ namespace Exiled.Events.Patches.Events.Server
 
             newInstructions[index].labels.Add(jmp);
 
-            // Replace ChaosTargetCount == 0 with ChaosTargetCount <= 0
-            offset = 1;
-            index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(RoundSummary), nameof(RoundSummary.ChaosTargetCount)))) + offset;
-            Label label = (Label)newInstructions[index].operand;
-            newInstructions.RemoveAt(index);
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Bgt_S, label),
-                });
-
             offset = -1;
             index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;
-
             LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
 
             newInstructions.InsertRange(
@@ -131,6 +126,18 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Stloc_S, 4),
                 });
 
+            // Round.LastClassList = this.newList;
+            offset = 1;
+            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Stfld && x.operand == (object)Field(typeof(SumInfo_ClassList), nameof(SumInfo_ClassList.warhead_kills))) + offset;
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(PrivateType, NewList)),
+                new(OpCodes.Call, PropertySetter(typeof(Round), nameof(Round.LastClassList))),
+            });
+
+            Label skip = generator.DefineLabel();
+
             offset = 7;
             index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldstr && x.operand == (object)"auto_round_restart_time") + offset;
 
@@ -153,6 +160,7 @@ namespace Exiled.Events.Patches.Events.Server
                     // RoundEndedEventArgs evEndedRound = new(RoundSummary.LeadingTeam, RoundSummary.SumInfo_ClassList, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoundEndedEventArgs))[0]),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
 
                     // Handlers.Server.OnRoundEnded(evEndedRound);
                     new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnRoundEnded))),
@@ -160,7 +168,15 @@ namespace Exiled.Events.Patches.Events.Server
                     // timeToRestart = ev.TimeToRestart
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RoundEndedEventArgs), nameof(RoundEndedEventArgs.TimeToRestart))),
                     new(OpCodes.Stloc_S, timeToRestartIndex),
+
+                    // if (!ShowRoundSummary) goto skip;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RoundEndedEventArgs), nameof(RoundEndedEventArgs.ShowRoundSummary))),
+                    new(OpCodes.Brfalse_S, skip),
                 });
+
+            offset = 1;
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Call && x.operand == (object)Method(typeof(RoundSummary), nameof(RoundSummary.RpcShowRoundSummary))) + offset;
+            newInstructions[index].labels.Add(skip);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

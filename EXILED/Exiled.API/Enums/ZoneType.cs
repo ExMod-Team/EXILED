@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ZoneType.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ZoneType.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -52,8 +52,13 @@ namespace Exiled.API.Enums
         Surface = 8,
 
         /// <summary>
+        /// The Pocket Dimension.
+        /// </summary>
+        Pocket = 16,
+
+        /// <summary>
         /// An unknown type of zone.
         /// </summary>
-        Other = 16,
+        Other = 32,
     }
 }

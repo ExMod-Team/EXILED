@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ExitingEnvironmentalHazardEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ExitingEnvironmentalHazardEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace Exiled.Events.EventArgs.Player
         public Hazard Hazard { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player should be affected by the environmental hazard.
+        /// Gets or sets a value indicating whether the player should be affected by the environmental hazard.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

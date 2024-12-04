@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="NWFixDetonationTimer.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="NWFixDetonationTimer.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Fixes
         private static void Postfix()
         {
             AlphaWarheadSyncInfo networkInfo = default;
-            networkInfo.ScenarioId = Array.IndexOf(AlphaWarheadController.Singleton._startScenarios, AlphaWarheadController.Singleton._startScenarios.OrderBy(d => Math.Abs(d.TimeToDetonate - ConfigFile.ServerConfig.GetInt("warhead_tminus_start_duration", 90))).First());
+            networkInfo.ScenarioId = (byte)Array.IndexOf(AlphaWarheadController.Singleton._startScenarios, AlphaWarheadController.Singleton._startScenarios.OrderBy(d => Math.Abs(d.TimeToDetonate - ConfigFile.ServerConfig.GetInt("warhead_tminus_start_duration", 90))).First());
 
             AlphaWarheadController.Singleton.NetworkInfo = networkInfo;
             return;

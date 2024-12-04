@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Light.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Light.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -56,6 +56,33 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets or sets the angle of the light.
+        /// </summary>
+        public float SpotAngle
+        {
+            get => Base.NetworkSpotAngle;
+            set => Base.NetworkSpotAngle = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the inner angle of the light.
+        /// </summary>
+        public float InnerSpotAngle
+        {
+            get => Base.NetworkInnerSpotAngle;
+            set => Base.NetworkInnerSpotAngle = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the shadow strength of the light.
+        /// </summary>
+        public float ShadowStrength
+        {
+            get => Base.NetworkShadowStrength;
+            set => Base.NetworkShadowStrength = value;
+        }
+
+        /// <summary>
         /// Gets or sets the color of the primitive.
         /// </summary>
         public Color Color
@@ -67,10 +94,19 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets or sets a value indicating whether the light should cause shadows from other objects.
         /// </summary>
-        public bool ShadowEmission
+        public LightShape LightShape
         {
-            get => Base.NetworkLightShadows;
-            set => Base.NetworkLightShadows = value;
+            get => Base.NetworkLightShape;
+            set => Base.NetworkLightShape = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the light should cause shadows from other objects.
+        /// </summary>
+        public LightType LightType
+        {
+            get => Base.NetworkLightType;
+            set => Base.NetworkLightType = value;
         }
 
         /// <summary>
@@ -95,11 +131,12 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Light"/>.</returns>
         public static Light Create(Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
         {
-            Light light = new(UnityEngine.Object.Instantiate(ToysHelper.LightBaseObject));
-
-            light.Position = position ?? Vector3.zero;
-            light.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            light.Scale = scale ?? Vector3.one;
+            Light light = new(UnityEngine.Object.Instantiate(ToysHelper.LightBaseObject))
+            {
+                Position = position ?? Vector3.zero,
+                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
+                Scale = scale ?? Vector3.one,
+            };
 
             if (spawn)
                 light.Spawn();

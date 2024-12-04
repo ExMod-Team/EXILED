@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="MirrorExtensions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="MirrorExtensions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -154,7 +154,7 @@ namespace Exiled.API.Extensions
         /// Plays a beep sound that only the target <paramref name="player"/> can hear.
         /// </summary>
         /// <param name="player">Target to play sound to.</param>
-        public static void PlayBeepSound(this Player player) => SendFakeTargetRpc(player, ReferenceHub.HostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
+        public static void PlayBeepSound(this Player player) => SendFakeTargetRpc(player, ReferenceHub._hostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
 
         /// <summary>
         /// Set <see cref="Player.CustomInfo"/> on the <paramref name="target"/> player that only the <paramref name="player"/> can see.
@@ -174,6 +174,8 @@ namespace Exiled.API.Extensions
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
         {
+            // TODO: Not finish
+            /*
             GunAudioMessage message = new()
             {
                 Weapon = itemType,
@@ -183,7 +185,7 @@ namespace Exiled.API.Extensions
                 ShooterPosition = new RelativePosition(position),
             };
 
-            player.Connection.Send(message);
+            player.Connection.Send(message);*/
         }
 
         /// <summary>
@@ -223,17 +225,6 @@ namespace Exiled.API.Extensions
         public static void SetName(this Player target, Player player, string name)
         {
             target.SendFakeSyncVar(player.NetworkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_displayName), name);
-        }
-
-        /// <summary>
-        /// Sets <see cref="Room"/> of a <paramref name="room"/> that only the <paramref name="target"/> player can see.
-        /// </summary>
-        /// <param name="room">Room to modify.</param>
-        /// <param name="target">Only this player can see room color.</param>
-        /// <param name="multiplier">Light intensity multiplier to set.</param>
-        [Obsolete("This features has been remove by NW", true)]
-        public static void SetRoomLightIntensityForTargetOnly(this Room room, Player target, float multiplier)
-        {
         }
 
         /// <summary>

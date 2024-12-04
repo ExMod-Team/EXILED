@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Player.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Player.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -70,12 +70,16 @@ namespace Exiled.Events.Handlers
         public static Event<EarningAchievementEventArgs> EarningAchievement { get; set; } = new();
 
         /// <summary>
-        /// Invoked before using an <see cref="API.Features.Items.Item"/>.
+        /// Invoked before the player starts to use an <see cref="API.Features.Items.Usable"/>. In other words, it is invoked just before the animation starts.
         /// </summary>
+        /// <remarks>
+        /// Will be invoked even if the <see cref="API.Features.Items.Usable"/> is on cooldown.
+        /// Candies are the only <see cref="API.Features.Items.Usable"/> that do not invoke this event.
+        /// </remarks>
         public static Event<UsingItemEventArgs> UsingItem { get; set; } = new();
 
         /// <summary>
-        /// Invoked after a <see cref="API.Features.Player"/> uses an <see cref="API.Features.Items.Usable"/>.
+        /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>. In other words, it is invoked after the animation finishes but before the <see cref="API.Features.Items.Usable"/> is actually used.
         /// </summary>
         public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new ();
 
@@ -243,6 +247,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before a <see cref="API.Features.Player"/> escapes.
         /// </summary>
         public static Event<EscapingEventArgs> Escaping { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> escapes.
+        /// </summary>
+        public static Event<EscapedEventArgs> Escaped { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> begins speaking to the intercom.
@@ -753,6 +762,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="EscapingEventArgs"/> instance.</param>
         public static void OnEscaping(EscapingEventArgs ev) => Escaping.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Player"/> escapes.
+        /// </summary>
+        /// <param name="ev">The <see cref="EscapedEventArgs"/> instance.</param>
+        public static void OnEscaped(EscapedEventArgs ev) => Escaped.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> begins speaking to the intercom.

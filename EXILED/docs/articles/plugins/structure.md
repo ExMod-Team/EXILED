@@ -120,7 +120,7 @@ namespace MyPluginNamespace
     using Exiled.API.Interfaces;
     public class Config : IConfig
     {
-        [Description("Whether or not the plugin is enabled.")]
+        [Description("Whether the plugin is enabled.")]
         public bool IsEnabled { get; set; }
         [Description("Config that must be true or false!")]
         public bool MyBoolConfig { get; set; }
@@ -158,7 +158,7 @@ namespace MyPluginNamespace
     using Exiled.API.Interfaces;
     public class Config : IConfig
     {
-        [Description("Whether or not the plugin is enabled.")]
+        [Description("Whether the plugin is enabled.")]
         public bool IsEnabled { get; set; }
         [Description("Config that must be true or false!")]
         public bool MyBoolConfig { get; set; }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="CameraType.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CameraType.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -124,6 +124,19 @@ namespace Exiled.API.Enums
         Hcz173ContChamber,
         Hcz173Hallway,
         HczCurve,
+        HczJunkMain,
+        HczJunkHallway,
+        HczCornerDeep,
+        HczDSS08,
+        HczMicroHIDStairs,
+        HczPipesHallway,
+        HczWarheadStarboardElevator,
+        HczMicroHIDMain,
+        HczWarheadTopElevators,
+        HczWarheadConnector,
+        HczWarheadPortElevator,
+        HczMicroHIDLab,
+        HczPipesMain,
         #endregion
     }
 }

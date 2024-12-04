@@ -1,16 +1,18 @@
 // -----------------------------------------------------------------------
-// <copyright file="UnbannedEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="UnbannedEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Server
 {
+    using Exiled.Events.EventArgs.Interfaces;
+
     /// <summary>
     /// Contains all information after a player gets unbanned.
     /// </summary>
-    public class UnbannedEventArgs
+    public class UnbannedEventArgs : IExiledEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UnbannedEventArgs"/> class.

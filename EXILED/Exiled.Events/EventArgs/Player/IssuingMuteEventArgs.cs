@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="IssuingMuteEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="IssuingMuteEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -41,12 +41,12 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the player is being intercom muted or not.
+        /// Gets or sets a value indicating whether the player is being intercom muted.
         /// </summary>
         public bool IsIntercom { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can be muted.
+        /// Gets or sets a value indicating whether the player can be muted.
         /// </summary>
         public bool IsAllowed { get; set; }
     }
