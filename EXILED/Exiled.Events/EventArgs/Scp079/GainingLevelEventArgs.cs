@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="GainingLevelEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="GainingLevelEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -42,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public int NewLevel { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the level is successfully granted.
+        /// Gets or sets a value indicating whether the level is successfully granted.
         /// </summary>
         public bool IsAllowed { get; set; }
 

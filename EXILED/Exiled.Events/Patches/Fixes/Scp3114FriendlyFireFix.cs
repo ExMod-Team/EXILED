@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp3114FriendlyFireFix.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp3114FriendlyFireFix.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Fixes
 
             Label skip = newInstructions[index].labels[0];
 
-            offset = -3;
+            offset = -4;
             index += offset;
 
             newInstructions.InsertRange(index, new[]

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Usable.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Usable.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -109,11 +109,11 @@ namespace Exiled.API.Features.Items
         /// <param name="rotation">The rotation of the item.</param>
         /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
         /// <returns>The created <see cref="Pickup"/>.</returns>
-        public override Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        public override Pickup CreatePickup(Vector3 position, Quaternion? rotation = null, bool spawn = true)
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation ?? Quaternion.identity);
 
             Pickup pickup = Pickup.Get(ipb);
 

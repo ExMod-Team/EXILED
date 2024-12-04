@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ShootingTargetToy.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ShootingTargetToy.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -135,7 +135,7 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the target is in sync mode.
+        /// Gets or sets a value indicating whether the target is in sync mode.
         /// </summary>
         public bool IsSynced
         {
@@ -214,7 +214,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="damage">The damage to be dealt.</param>
         /// <param name="damageHandler">The <see cref="DamageHandlerBase"/> dealing the damage.</param>
         /// <param name="exactHit">The exact location of the hit.</param>
-        /// <returns>Whether or not the damage was sent.</returns>
+        /// <returns>Whether the damage was sent.</returns>
         public bool Damage(float damage, DamageHandlerBase damageHandler, Vector3 exactHit) => Base.Damage(damage, damageHandler, exactHit);
     }
 }

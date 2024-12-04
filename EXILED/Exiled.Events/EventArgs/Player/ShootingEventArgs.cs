@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ShootingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ShootingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -35,14 +35,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="firearm">
         /// <inheritdoc cref="Firearm" />
         /// </param>
-        /// <param name="msg">
-        /// <inheritdoc cref="ShotMessage" />
-        /// </param>
-        public ShootingEventArgs(Player shooter, BaseFirearm firearm, ShotMessage msg)
+        public ShootingEventArgs(Player shooter, BaseFirearm firearm)
         {
             Player = shooter;
             Firearm = Item.Get(firearm).As<Firearm>();
-            ShotMessage = msg;
+
+            // ShotMessage = msg;
         }
 
         /// <summary>
@@ -58,6 +56,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <inheritdoc/>
         public Item Item => Firearm;
 
+        /*
         /// <summary>
         /// Gets or sets the <see cref="ShotMessage" /> for the event.
         /// </summary>
@@ -104,9 +103,10 @@ namespace Exiled.Events.EventArgs.Player
                 };
             }
         }
+        */
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the shot can be fired.
+        /// Gets or sets a value indicating whether the shot can be fired.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
     }

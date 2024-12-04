@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ZoneBlackoutEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ZoneBlackoutEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -85,7 +85,7 @@ namespace Exiled.Events.EventArgs.Scp079
         public float Cooldown { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-079 can lockdown a room.
+        /// Gets or sets a value indicating whether SCP-079 can lockdown a room.
         /// </summary>
         public bool IsAllowed { get; set; }
 

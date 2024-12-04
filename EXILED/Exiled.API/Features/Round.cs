@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Round.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Round.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -42,22 +42,22 @@ namespace Exiled.API.Features
         public static DateTime StartedTime => DateTime.Now - ElapsedTime;
 
         /// <summary>
-        /// Gets a value indicating whether the round is started or not.
+        /// Gets a value indicating whether the round is started.
         /// </summary>
-        public static bool IsStarted => ReferenceHub.LocalHub?.characterClassManager.RoundStarted ?? false;
+        public static bool IsStarted => ReferenceHub.TryGetHostHub(out ReferenceHub hub) && hub.characterClassManager.RoundStarted;
 
         /// <summary>
-        /// Gets a value indicating whether the round in progress or not.
+        /// Gets a value indicating whether the round in progress.
         /// </summary>
-        public static bool InProgress => ReferenceHub.LocalHub != null && RoundSummary.RoundInProgress();
+        public static bool InProgress => !IsEnded && RoundSummary.RoundInProgress();
 
         /// <summary>
-        /// Gets a value indicating whether the round is ended or not.
+        /// Gets a value indicating whether the round is ended.
         /// </summary>
-        public static bool IsEnded => RoundSummary.singleton._roundEnded;
+        public static bool IsEnded => RoundSummary._singletonSet && RoundSummary.singleton._roundEnded;
 
         /// <summary>
-        /// Gets a value indicating whether the round is lobby or not.
+        /// Gets a value indicating whether the round is lobby.
         /// </summary>
         public static bool IsLobby => !(IsEnded || IsStarted);
 
@@ -68,16 +68,16 @@ namespace Exiled.API.Features
         public static RoundSummary.SumInfo_ClassList LastClassList { get; internal set; }
 
         /// <summary>
-        /// Gets or sets a value indicating the amount of Chaos Targets remaining.
+        /// Gets or sets a value indicating the amount of Extra Targets remaining.
         /// </summary>
-        public static int ChaosTargetCount
+        public static int ExtraTargetCount
         {
-            get => RoundSummary.singleton.Network_chaosTargetCount;
-            set => RoundSummary.singleton.Network_chaosTargetCount = value;
+            get => RoundSummary.singleton.Network_extraTargets;
+            set => RoundSummary.singleton.Network_extraTargets = value;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the round is locked or not.
+        /// Gets or sets a value indicating whether the round is locked.
         /// </summary>
         public static bool IsLocked
         {
@@ -86,7 +86,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the lobby is locked or not.
+        /// Gets or sets a value indicating whether the lobby is locked.
         /// </summary>
         public static bool IsLobbyLocked
         {
@@ -122,14 +122,9 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the number of surviving SCPs.
+        /// Gets  the number of surviving SCPs.
         /// </summary>
-        public static int SurvivingSCPs
-        {
-            get => RoundSummary.SurvivingSCPs;
-            [Obsolete("This value is rewritten by NW every time it's used", true)]
-            set => RoundSummary.SurvivingSCPs = value;
-        }
+        public static int SurvivingSCPs => RoundSummary.SurvivingSCPs;
 
         /// <summary>
         /// Gets or sets the number of kills made by SCPs.
@@ -194,7 +189,7 @@ namespace Exiled.API.Features
         /// Restarts the round with custom settings.
         /// </summary>
         /// <param name="fastRestart">
-        /// Indicates whether or not it'll be a fast restart.
+        /// Indicates whether it'll be a fast restart.
         /// If it's a fast restart, then players won't be reconnected from
         /// the server; otherwise, they will.
         /// </param>
@@ -234,9 +229,9 @@ namespace Exiled.API.Features
         /// Forces the round to end, regardless of which factions are alive.
         /// </summary>
         /// <param name="forceEnd">
-        /// Indicates whether or not it'll force the restart with no check if it's locked.
+        /// Indicates whether it'll force the restart with no check if it's locked.
         /// </param>
-        /// <returns>A <see cref="bool"/> describing whether or not the round was successfully ended.</returns>
+        /// <returns>A <see cref="bool"/> describing whether the round was successfully ended.</returns>
         public static bool EndRound(bool forceEnd = false)
         {
             if (RoundSummary.singleton.KeepRoundOnOne && Player.Dictionary.Count < 2 && !forceEnd)

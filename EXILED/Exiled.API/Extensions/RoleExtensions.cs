@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RoleExtensions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RoleExtensions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -13,11 +13,12 @@ namespace Exiled.API.Extensions
 
     using Enums;
     using Exiled.API.Features.Spawn;
+    using Footprinting;
     using InventorySystem;
     using InventorySystem.Configs;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
-
+    using Respawning.Waves;
     using UnityEngine;
 
     using Team = PlayerRoles.Team;
@@ -27,6 +28,22 @@ namespace Exiled.API.Extensions
     /// </summary>
     public static class RoleExtensions
     {
+        /// <summary>
+        /// Compares LifeIdentifier.
+        /// </summary>
+        /// <param name="footprint">The footprint to compare.</param>
+        /// <param name="other">The other footprint.</param>
+        /// <returns>If LifeIdentifier is the same (same role).</returns>
+        public static bool CompareLife(this Footprint footprint, Footprint other) => footprint.LifeIdentifier == other.LifeIdentifier;
+
+        /// <summary>
+        /// Compares LifeIdentifier.
+        /// </summary>
+        /// <param name="footprint">The footprint to compare.</param>
+        /// <param name="other">The hub to compare to.</param>
+        /// <returns>If LifeIdentifier is the same (same role).</returns>
+        public static bool CompareLife(this Footprint footprint, ReferenceHub other) => footprint.LifeIdentifier == other.roleManager.CurrentRole.UniqueLifeIdentifier;
+
         /// <summary>
         /// Gets a <see cref="RoleTypeId">role's</see> <see cref="Color"/>.
         /// </summary>
@@ -124,6 +141,48 @@ namespace Exiled.API.Extensions
         public static bool IsFpcRole(this RoleTypeId roleType) => roleType.GetRoleBase() is IFpcRole;
 
         /// <summary>
+        ///  Checks if the role is an SCP role.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>A boolean which is true when the role is an SCP role.</returns>
+        public static bool IsScp(this RoleTypeId roleType) => roleType.GetTeam() == Team.SCPs;
+
+        /// <summary>
+        /// Checks if the role is a dead role.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>A boolean which is true when the role is a dead role.</returns>
+        public static bool IsDead(this RoleTypeId roleType) => roleType.GetTeam() == Team.Dead;
+
+        /// <summary>
+        /// Checks if the role is an NTF role.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>A boolean which is true when the role is an NTF role. Does not include Facility Guards.</returns>
+        public static bool IsNtf(this RoleTypeId roleType) => roleType.GetTeam() == Team.FoundationForces && roleType != RoleTypeId.FacilityGuard;
+
+        /// <summary>
+        /// Checks if the role is a Chaos role.
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>A boolean which is true when the role is a Chaos role.</returns>
+        public static bool IsChaos(this RoleTypeId roleType) => roleType.GetTeam() == Team.ChaosInsurgency;
+
+        /// <summary>
+        /// Checks if the role is a military role (Chaos Insurgency or NTF).
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>A boolean which is true when the role is a military role.</returns>
+        public static bool IsMilitary(this RoleTypeId roleType) => roleType.IsNtf() || roleType.IsChaos() || roleType == RoleTypeId.FacilityGuard;
+
+        /// <summary>
+        /// Checks if the role is a civilian role (Scientists and Class-D).
+        /// </summary>
+        /// <param name="roleType">The <see cref="RoleTypeId"/>.</param>
+        /// <returns>A boolean which is true when the role is a civilian role.</returns>
+        public static bool IsCivilian(this RoleTypeId roleType) => roleType == RoleTypeId.ClassD || roleType == RoleTypeId.Scientist;
+
+        /// <summary>
         /// Gets a random spawn point of a <see cref="RoleTypeId"/>.
         /// </summary>
         /// <param name="roleType">The <see cref="RoleTypeId"/> to get the spawn point from.</param>
@@ -168,5 +227,18 @@ namespace Exiled.API.Extensions
 
             return info.Ammo.ToDictionary(kvp => kvp.Key.GetAmmoType(), kvp => kvp.Value);
         }
+
+        /// <summary>
+        /// Gets the <see cref="SpawnableFaction"/> of a <see cref="SpawnableWaveBase"/>.
+        /// </summary>
+        /// <param name="waveBase">A <see cref="SpawnableWaveBase"/> instance.</param>
+        /// <returns><see cref="SpawnableFaction"/> associated with the wave.</returns>
+        public static SpawnableFaction GetFaction(this SpawnableWaveBase waveBase) => waveBase switch
+        {
+            NtfSpawnWave => SpawnableFaction.NtfWave,
+            NtfMiniWave => SpawnableFaction.NtfMiniWave,
+            ChaosSpawnWave => SpawnableFaction.ChaosWave,
+            _ => SpawnableFaction.ChaosMiniWave
+        };
     }
 }

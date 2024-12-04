@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RespawnedTeamEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RespawnedTeamEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -13,6 +13,7 @@ namespace Exiled.Events.EventArgs.Server
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
     using Respawning;
+    using Respawning.Waves;
 
     /// <summary>
     /// Contains all information after team spawns.
@@ -23,11 +24,11 @@ namespace Exiled.Events.EventArgs.Server
         /// Initializes a new instance of the <see cref="RespawnedTeamEventArgs"/> class.
         /// </summary>
         /// <param name="hubs"><inheritdoc cref="Players"/></param>
-        /// <param name="team"><inheritdoc cref="Team"/></param>
-        public RespawnedTeamEventArgs(SpawnableTeamType team, IEnumerable<ReferenceHub> hubs)
+        /// <param name="wave"><inheritdoc cref="Wave"/></param>
+        public RespawnedTeamEventArgs(SpawnableWaveBase wave, IEnumerable<ReferenceHub> hubs)
         {
             Players = hubs.Select(Player.Get);
-            Team = team;
+            Wave = wave;
         }
 
         /// <summary>
@@ -38,6 +39,6 @@ namespace Exiled.Events.EventArgs.Server
         /// <summary>
         /// Gets the spawned team.
         /// </summary>
-        public SpawnableTeamType Team { get; }
+        public SpawnableWaveBase Wave { get; }
     }
 }

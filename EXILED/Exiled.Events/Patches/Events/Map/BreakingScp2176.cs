@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="BreakingScp2176.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="BreakingScp2176.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------

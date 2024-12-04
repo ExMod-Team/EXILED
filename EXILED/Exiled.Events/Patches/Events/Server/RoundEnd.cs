@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RoundEnd.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RoundEnd.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -9,9 +9,11 @@ namespace Exiled.Events.Patches.Events.Server
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Server;
@@ -35,8 +37,15 @@ namespace Exiled.Events.Patches.Events.Server
 
         private static MethodInfo TargetMethod()
         {
-            PrivateType = typeof(RoundSummary).GetNestedTypes(all)[5];
-            return Method(PrivateType, "MoveNext");
+            PrivateType = typeof(RoundSummary).GetNestedTypes(all)
+                .FirstOrDefault(currentType => currentType.Name.Contains("_ProcessServerSideCode"));
+            if (PrivateType == null)
+                throw new Exception("State machine type for _ProcessServerSideCode not found.");
+            MethodInfo moveNextMethod = PrivateType.GetMethod("MoveNext", all);
+
+            if (moveNextMethod == null)
+                throw new Exception("MoveNext method not found in the state machine type.");
+            return moveNextMethod;
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -58,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new CodeInstruction[]
                 {
                     new(OpCodes.Call, PropertyGetter(typeof(Round), nameof(Round.IgnoredPlayers))),
-                    new(OpCodes.Ldloc_S, 10),
+                    new(OpCodes.Ldloc_S, 11),
                     new(OpCodes.Call, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
                     new(OpCodes.Brtrue_S, jmp),
                 });
@@ -68,23 +77,8 @@ namespace Exiled.Events.Patches.Events.Server
 
             newInstructions[index].labels.Add(jmp);
 
-            // Replace ChaosTargetCount == 0 with ChaosTargetCount <= 0
-            offset = 1;
-            index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(RoundSummary), nameof(RoundSummary.ChaosTargetCount)))) + offset;
-            Label label = (Label)newInstructions[index].operand;
-            newInstructions.RemoveAt(index);
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Bgt_S, label),
-                });
-
             offset = -1;
             index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))) + offset;
-
             LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
 
             newInstructions.InsertRange(

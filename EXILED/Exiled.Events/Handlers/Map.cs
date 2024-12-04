@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Map.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Map.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -24,11 +24,6 @@ namespace Exiled.Events.Handlers
         /// Invoked before placing bullet holes.
         /// </summary>
         public static Event<PlacingBulletHoleEventArgs> PlacingBulletHole { get; set; } = new();
-
-        /// <summary>
-        /// Invoked before placing blood.
-        /// </summary>
-        public static Event<PlacingBloodEventArgs> PlacingBlood { get; set; } = new();
 
         /// <summary>
         /// Invoked before announcing the light containment zone decontamination.
@@ -120,12 +115,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlacingBulletHoleEventArgs"/> instance.</param>
         public static void OnPlacingBulletHole(PlacingBulletHoleEventArgs ev) => PlacingBulletHole.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before placing bloods.
-        /// </summary>
-        /// <param name="ev">The <see cref="PlacingBloodEventArgs"/> instance.</param>
-        public static void OnPlacingBlood(PlacingBloodEventArgs ev) => PlacingBlood.InvokeSafely(ev);
 
         /// <summary>
         /// Called before announcing the light containment zone decontamination.

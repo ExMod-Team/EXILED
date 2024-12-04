@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SelectingRespawnTeam.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SelectingRespawnTeam.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -24,10 +24,11 @@ namespace Exiled.Events.Patches.Events.Server
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="RespawnManager.Update"/> to add the <see cref="Handlers.Server.SelectingRespawnTeam"/> event.
+    /// Patches <see cref="WaveManager"/> to add the <see cref="Handlers.Server.SelectingRespawnTeam"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.SelectingRespawnTeam))]
-    [HarmonyPatch(typeof(RespawnManager), nameof(RespawnManager.Update))]
+
+    // [HarmonyPatch(typeof(WaveManager), nameof(RespawnManager.Update))] TODO Idk which method to patch
     internal static class SelectingRespawnTeam
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

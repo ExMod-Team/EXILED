@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Window.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Window.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -38,9 +38,9 @@ namespace Exiled.API.Features
             Base = window;
             Room = room;
             Type = GetGlassType();
-#if Debug
+#if DEBUG
             if (Type is GlassType.Unknown)
-                Log.Error($"[GLASSTYPE UNKNOWN] {this}");
+                Log.Error($"[GLASSTYPE UNKNOWN] {this} BASE = {Base}");
 #endif
         }
 
@@ -89,12 +89,12 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not this window is breakable.
+        /// Gets a value indicating whether this window is breakable.
         /// </summary>
         public bool IsBreakable => !Base.isBroken;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this window is broken.
+        /// Gets or sets a value indicating whether this window is broken.
         /// </summary>
         public bool IsBroken
         {
@@ -121,7 +121,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this window can be broken by SCP.
+        /// Gets or sets a value indicating whether this window can be broken by SCP.
         /// </summary>
         public bool DisableScpDamage
         {
@@ -130,12 +130,12 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this window is broken.
+        /// Gets or sets a value indicating whether this window is broken.
         /// </summary>
-        public BreakableWindow.BreakableWindowStatus SyncStatus
+        public bool SyncStatus
         {
-            get => Base.NetworksyncStatus;
-            set => Base.NetworksyncStatus = value;
+            get => Base.prevStatus;
+            set => Base.prevStatus = value;
         }
 
         /// <summary>
@@ -159,7 +159,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Window"/> filtered based on a predicate.
         /// </summary>
-        /// <param name="predicate">The condition to satify.</param>
+        /// <param name="predicate">The condition to satisfy.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Window"/> which contains elements that satify the condition.</returns>
         public static IEnumerable<Window> Get(Func<Window, bool> predicate) => List.Where(predicate);
 
@@ -168,7 +168,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="breakableWindow">The <see cref="BreakableWindow"/> instance.</param>
         /// <param name="window">A <see cref="Window"/> or <see langword="null"/> if not found.</param>
-        /// <returns>Whether or not a window was found.</returns>
+        /// <returns>Whether a window was found.</returns>
         public static bool TryGet(BreakableWindow breakableWindow, out Window window)
         {
             window = Get(breakableWindow);
@@ -178,9 +178,9 @@ namespace Exiled.API.Features
         /// <summary>
         /// Try-get a <see cref="IEnumerable{T}"/> of <see cref="Window"/> filtered based on a predicate.
         /// </summary>
-        /// <param name="predicate">The condition to satify.</param>
+        /// <param name="predicate">The condition to satisfy.</param>
         /// <param name="windows">A <see cref="IEnumerable{T}"/> of <see cref="Window"/> which contains elements that satify the condition.</param>
-        /// <returns>Whether or not at least one window was found.</returns>
+        /// <returns>Whether at least one window was found.</returns>
         public static bool TryGet(Func<Window, bool> predicate, out IEnumerable<Window> windows)
         {
             windows = Get(predicate);
@@ -220,7 +220,7 @@ namespace Exiled.API.Features
             RoomType.LczGlassBox => GlassType.GR18,
             RoomType.LczPlants => GlassType.Plants,
             RoomType.Hcz049 => GlassType.Scp049,
-            RoomType.Hcz079 => Recontainer.Base._activatorGlass == Base ? GlassType.Scp079Trigger : GlassType.Scp079,
+            RoomType.Hcz079 => Base._preventScpDamage ? GlassType.Scp079Trigger : GlassType.Scp079,
             RoomType.HczHid => GlassType.MicroHid,
             RoomType.HczTestRoom => GlassType.TestRoom,
             RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,

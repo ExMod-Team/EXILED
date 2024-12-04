@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="LocalReportingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="LocalReportingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace Exiled.Events.EventArgs.Player // TODO: Wrong namespace should be Serv
         public string Reason { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the report can be processed or not.
+        /// Gets or sets a value indicating whether the report can be processed.
         /// </summary>
         public bool IsAllowed { get; set; }
 

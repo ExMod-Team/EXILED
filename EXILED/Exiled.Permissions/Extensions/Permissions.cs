@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Permissions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Permissions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -21,7 +21,7 @@ namespace Exiled.Permissions.Extensions
     using Features;
 
     using Properties;
-
+    using Query;
     using RemoteAdmin;
 
     using YamlDotNet.Core;
@@ -161,7 +161,7 @@ namespace Exiled.Permissions.Extensions
         /// </summary>
         /// <param name="sender">The sender to be checked.</param>
         /// <param name="permission">The permission to be checked.</param>
-        /// <returns>Returns a value indicating whether the user has the permission or not.</returns>
+        /// <returns>Returns a value indicating whether the user has the permission.</returns>
         public static bool CheckPermission(this ICommandSender sender, string permission) => CheckPermission(sender as CommandSender, permission);
 
         /// <summary>
@@ -169,14 +169,14 @@ namespace Exiled.Permissions.Extensions
         /// </summary>
         /// <param name="sender">The sender to be checked.</param>
         /// <param name="permission">The permission to be checked.</param>
-        /// <returns>Returns a value indicating whether the user has the permission or not.</returns>
+        /// <returns>Returns a value indicating whether the user has the permission.</returns>
         public static bool CheckPermission(this CommandSender sender, string permission)
         {
             if (sender.FullPermissions || sender is ServerConsoleSender || sender == Server.Host.Sender)
             {
                 return true;
             }
-            else if (sender is PlayerCommandSender || sender is UserPrint)
+            else if (sender is PlayerCommandSender || sender is QueryCommandSender)
             {
                 if (Player.Get(sender.SenderId) is not Player player)
                     return false;
@@ -285,7 +285,7 @@ namespace Exiled.Permissions.Extensions
         /// </summary>
         /// <param name="player">The player to be checked.</param>
         /// <param name="permissions">The permission for checking.</param>
-        /// <returns>Returns a value indicating whether the user has the permission or not.</returns>
+        /// <returns>Returns a value indicating whether the user has the permission.</returns>
         public static bool CheckPermission(this Player player, params PlayerPermissions[] permissions)
             => permissions.All(permission => CommandProcessor.CheckPermissions(player.Sender, permission));
     }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="AdminToy.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="AdminToy.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -98,7 +98,7 @@ namespace Exiled.API.Features.Toys
             set
             {
                 AdminToyBase.transform.rotation = value;
-                AdminToyBase.NetworkRotation = new LowPrecisionQuaternion(value);
+                AdminToyBase.NetworkRotation = value;
             }
         }
 
@@ -155,6 +155,7 @@ namespace Exiled.API.Features.Toys
                 LightSourceToy lightSourceToy => new Light(lightSourceToy),
                 PrimitiveObjectToy primitiveObjectToy => new Primitive(primitiveObjectToy),
                 ShootingTarget shootingTarget => new ShootingTargetToy(shootingTarget),
+                SpeakerToy speakerToy => new Speaker(speakerToy),
                 _ => throw new System.NotImplementedException()
             };
         }

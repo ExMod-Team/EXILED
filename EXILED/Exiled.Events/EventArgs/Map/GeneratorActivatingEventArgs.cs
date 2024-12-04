@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="GeneratorActivatingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="GeneratorActivatingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -39,7 +39,7 @@ namespace Exiled.Events.EventArgs.Map
         public Generator Generator { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the generator can be activated or not.
+        /// Gets or sets a value indicating whether the generator can be activated.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

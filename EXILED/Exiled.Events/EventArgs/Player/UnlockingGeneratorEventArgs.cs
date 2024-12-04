@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="UnlockingGeneratorEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="UnlockingGeneratorEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the generator can be unlocked.
+        /// Gets or sets a value indicating whether the generator can be unlocked.
         /// </summary>
         public bool IsAllowed { get; set; }
 

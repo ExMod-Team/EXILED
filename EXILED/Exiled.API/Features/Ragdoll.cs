@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Ragdoll.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Ragdoll.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -67,7 +67,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not the clean up event can be executed.
+        /// Gets a value indicating whether the clean-up event can be executed.
         /// </summary>
         public bool AllowCleanUp => NetworkInfo.ExistenceTime < FreezeTime;
 
@@ -115,12 +115,12 @@ namespace Exiled.API.Features
         public DeathAnimation[] DeathAnimations => Base.AllDeathAnimations;
 
         /// <summary>
-        /// Gets a value indicating whether or not the ragdoll has been already cleaned up.
+        /// Gets a value indicating whether the ragdoll has been already cleaned up.
         /// </summary>
-        public bool IsFrozen => Base._frozen;
+        public bool IsFrozen => Base.Frozen;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the ragdoll can be cleaned up.
+        /// Gets or sets a value indicating whether the ragdoll can be cleaned up.
         /// </summary>
         public bool CanBeCleanedUp
         {
@@ -185,13 +185,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not the ragdoll has expired and SCP-049 is unable to revive it if was not being targets.
+        /// Gets a value indicating whether the ragdoll has expired and SCP-049 is unable to revive it if was not being targets.
         /// <seealso cref="Roles.Scp049Role.CanResurrect(Ragdoll)"/>
         /// </summary>
         public bool IsExpired => NetworkInfo.ExistenceTime > PlayerRoles.PlayableScps.Scp049.Scp049ResurrectAbility.HumanCorpseDuration;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this ragdoll has been consumed by an SCP-049-2.
+        /// Gets or sets a value indicating whether this ragdoll has been consumed by an SCP-049-2.
         /// </summary>
         public bool IsConsumed
         {
@@ -358,8 +358,8 @@ namespace Exiled.API.Features
         /// <param name="rotation">The rotation of the ragdoll.</param>
         /// <param name="owner">The optional owner of the ragdoll.</param>
         /// <returns>The ragdoll.</returns>
-        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, DamageHandlerBase damageHandler, Vector3 position, Quaternion rotation, Player owner = null)
-            => CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, position, rotation, name, NetworkTime.time));
+        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, DamageHandlerBase damageHandler, Vector3 position, Quaternion? rotation = null, Player owner = null)
+            => CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, position, rotation ?? Quaternion.identity, name, NetworkTime.time));
 
         /// <summary>
         /// Creates and spawns a new ragdoll.
@@ -371,7 +371,7 @@ namespace Exiled.API.Features
         /// <param name="rotation">The rotation of the ragdoll.</param>
         /// <param name="owner">The optional owner of the ragdoll.</param>
         /// <returns>The ragdoll.</returns>
-        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, string deathReason, Vector3 position, Quaternion rotation, Player owner = null)
+        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, string deathReason, Vector3 position, Quaternion? rotation = null, Player owner = null)
             => CreateAndSpawn(roleType, name, new CustomReasonDamageHandler(deathReason), position, rotation, owner);
 
         /// <summary>

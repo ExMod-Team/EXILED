@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingFocusEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingFocusEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -37,12 +37,12 @@ namespace Exiled.Events.EventArgs.Scp939
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-939 can focus.
+        /// Gets or sets a value indicating whether SCP-939 can focus.
         /// </summary>
         public bool IsAllowed { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-939 is currently focusing or un-focusing.
+        /// Gets a value indicating whether SCP-939 is currently focusing or un-focusing.
         /// </summary>
         public bool State { get; }
 

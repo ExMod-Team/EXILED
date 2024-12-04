@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Pickup.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Pickup.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -128,18 +128,9 @@ namespace Exiled.API.Features.Pickups
         public Room Room => Room.FindParentRoom(GameObject);
 
         /// <summary>
-        /// Gets or sets the pickup's PhysicsModule.
+        /// Gets the pickup's PhysicsModule.
         /// </summary>
-        public PickupStandardPhysics PhysicsModule
-        {
-            get => Base.PhysicsModule as PickupStandardPhysics;
-            [Obsolete("Unsafe.")]
-            set
-            {
-                Base.PhysicsModule.DestroyModule();
-                Base.PhysicsModule = value;
-            }
-        }
+        public PickupStandardPhysics PhysicsModule => Base.PhysicsModule as PickupStandardPhysics;
 
         /// <summary>
         /// Gets or sets the unique serial number for the item.
@@ -246,7 +237,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the previous owner of this item.
         /// </summary>
-        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion, Player)"/>
+        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion?, Player)"/>
         public Player PreviousOwner
         {
             get => Player.Get(Base.PreviousOwner.Hub);
@@ -269,7 +260,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the pickup position.
         /// </summary>
-        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion, Player)"/>
+        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion?, Player)"/>
         public Vector3 Position
         {
             get => Base.Position;
@@ -288,7 +279,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the pickup rotation.
         /// </summary>
-        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion, Player)"/>
+        /// <seealso cref="CreateAndSpawn(ItemType, Vector3, Quaternion?, Player)"/>
         public Quaternion Rotation
         {
             get => Base.Rotation;
@@ -541,8 +532,8 @@ namespace Exiled.API.Features.Pickups
         /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
-        /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion, bool, Player)"/>
-        public static Pickup CreateAndSpawn(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null) => Create(type).Spawn(position, rotation, previousOwner);
+        /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion?, bool, Player)"/>
+        public static Pickup CreateAndSpawn(ItemType type, Vector3 position, Quaternion? rotation = null, Player previousOwner = null) => Create(type).Spawn(position, rotation, previousOwner);
 
         /// <summary>
         /// Creates and spawns a <see cref="Pickup"/>.
@@ -553,22 +544,9 @@ namespace Exiled.API.Features.Pickups
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
         /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
-        /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion, bool, Player)"/>
-        public static Pickup CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion rotation, Player previousOwner = null)
+        /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion?, bool, Player)"/>
+        public static Pickup CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
             where T : Pickup => CreateAndSpawn(type, position, rotation, previousOwner) as T;
-
-        /// <summary>
-        /// Spawns a <see cref="Pickup"/>.
-        /// </summary>
-        /// <param name="pickup">The <see cref="Pickup"/> too spawn.</param>
-        /// <param name="position">The position to spawn the <see cref="Pickup"/> at.</param>
-        /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
-        /// <param name="previousOwner">An optional previous owner of the item.</param>
-        /// <returns>The <see cref="Pickup"/> Spawn.</returns>
-        /// <seealso cref="Projectile.Spawn(Vector3, Quaternion, bool, Player)"/>
-        [Obsolete("Use pickup.Spawn(Vector3, Quaternion, Player) instead of this", true)]
-        public static Pickup Spawn(Pickup pickup, Vector3 position, Quaternion rotation, Player previousOwner = null)
-            => pickup.Spawn(position, rotation, previousOwner);
 
         /// <summary>
         /// Returns the amount of time it will take for the provided <paramref name="player"/> to pick up this item, based on <see cref="Weight"/> and active status effects.
@@ -610,11 +588,11 @@ namespace Exiled.API.Features.Pickups
         /// <param name="rotation">The rotation to spawn the <see cref="Pickup"/>.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <returns>The spawned <see cref="Pickup"/>.</returns>
-        /// <seealso cref="Projectile.Spawn(Vector3, Quaternion, bool, Player)"/>
-        public Pickup Spawn(Vector3 position, Quaternion rotation, Player previousOwner = null)
+        /// <seealso cref="Projectile.Spawn(Vector3, Quaternion?, bool, Player)"/>
+        public Pickup Spawn(Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
         {
             Position = position;
-            Rotation = rotation;
+            Rotation = rotation ?? Quaternion.identity;
             PreviousOwner = previousOwner;
             Spawn();
 

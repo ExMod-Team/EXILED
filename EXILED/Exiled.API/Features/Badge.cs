@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Badge.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Badge.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="text">The badge text.</param>
         /// <param name="color">The badge color.</param>
-        /// <param name="isGlobal">Indicates whether the badge is global or not.</param>
+        /// <param name="isGlobal">Indicates whether the badge is global.</param>
         public Badge(string text, string color, bool isGlobal = false)
         {
             Text = text;
@@ -39,16 +39,16 @@ namespace Exiled.API.Features
         public string Color { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the badge is global or not.
+        /// Gets a value indicating whether the badge is global.
         /// </summary>
         public bool IsGlobal { get; }
 
         /// <summary>
-        /// Gets whether or not the provided hex color code can be used in badges.
+        /// Gets whether the provided hex color code can be used in badges.
         /// </summary>
         /// <param name="hex">The hex color code, including the <c>#</c>.</param>
         /// <param name="colorType">If the method returns <see langword="true"/>, this will be an enum representing the hex code. If the method returns <see langword="false"/>, this will be <see langword="null"/>.</param>
-        /// <returns>Whether or not the provided hex color code can be used in badges.</returns>
+        /// <returns>Whether the provided hex color code can be used in badges.</returns>
         public static bool IsValidColor(string hex, out Misc.PlayerInfoColorTypes? colorType)
         {
             foreach (KeyValuePair<Misc.PlayerInfoColorTypes, string> option in Misc.AllowedColors)

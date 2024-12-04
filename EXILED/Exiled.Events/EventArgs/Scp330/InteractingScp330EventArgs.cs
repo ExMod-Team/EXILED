@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="InteractingScp330EventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="InteractingScp330EventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -12,7 +12,6 @@ namespace Exiled.Events.EventArgs.Scp330
     using Interfaces;
 
     using InventorySystem.Items.Usables.Scp330;
-    using YamlDotNet.Core.Tokens;
 
     /// <summary>
     /// Contains all information before a player interacts with SCP-330.
@@ -35,6 +34,7 @@ namespace Exiled.Events.EventArgs.Scp330
             ShouldSever = usage >= 2;
             ShouldPlaySound = true;
             IsAllowed = Player.IsHuman;
+            Candy = Scp330Candies.GetRandom();
 
             if (Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag))
             {
@@ -46,23 +46,12 @@ namespace Exiled.Events.EventArgs.Scp330
                 Scp330.RemoveAllCandy();
                 player.AddItem(Scp330);
             }
-
-            Scp330.CandyToAdd = Scp330Candies.GetRandom();
         }
 
         /// <summary>
         /// Gets a value indicating how many times this player has interacted with SCP-330.
         /// </summary>
         public int UsageCount { get; }
-
-        /// <summary>
-        /// Gets or sets a value indicating the type of candy that will be received from this interaction.
-        /// </summary>
-        public CandyKindID Candy
-        {
-            get => Scp330.CandyToAdd;
-            set => Scp330.CandyToAdd = value;
-        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player's hands should get severed.
@@ -74,6 +63,11 @@ namespace Exiled.Events.EventArgs.Scp330
         /// </summary>
         /// <remarks>It won't work if <see cref="IsAllowed"/> = <see langword="false"/>.</remarks>
         public bool ShouldPlaySound { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating the type of candy that will be received from this interaction.
+        /// </summary>
+        public CandyKindID Candy { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player is allowed to interact with SCP-330.

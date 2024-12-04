@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="FirearmRequestReceived.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FirearmRequestReceived.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -14,20 +14,18 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features.Pools;
     using Exiled.API.Features.Items;
-
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
-
     using Handlers;
-
     using HarmonyLib;
-
     using InventorySystem.Items;
+    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.BasicMessages;
     using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
+    /* TODO
     /// <summary>
     /// Patches <see cref="FirearmBasicMessagesHandler.ServerRequestReceived" />.
     /// Adds <see cref="Player.ReloadingWeapon" />, <see cref="Player.UnloadingWeapon" />,
@@ -39,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Player
     [EventPatch(typeof(Player), nameof(Player.DryfiringWeapon))]
     [EventPatch(typeof(Player), nameof(Player.AimingDownSight))]
     [EventPatch(typeof(Player), nameof(Player.TogglingWeaponFlashlight))]
-    [HarmonyPatch(typeof(FirearmBasicMessagesHandler), nameof(FirearmBasicMessagesHandler.ServerRequestReceived))]
+    [HarmonyPatch(typeof(FirearmUtils), nameof())]
     internal static class FirearmRequestReceived
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -272,4 +270,5 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
+    */
 }

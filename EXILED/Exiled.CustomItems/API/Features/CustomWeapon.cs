@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="CustomWeapon.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CustomWeapon.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -60,7 +60,7 @@ namespace Exiled.CustomItems.API.Features
         public virtual byte ClipSize { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not to allow friendly fire with this weapon on FF-enabled servers.
+        /// Gets or sets a value indicating whether to allow friendly fire with this weapon on FF-enabled servers.
         /// </summary>
         public virtual bool FriendlyFire { get; set; }
 
@@ -104,7 +104,7 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
-                byte ammo = firearm.Ammo;
+                int ammo = firearm.Ammo;
                 firearm.MaxAmmo = ClipSize;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
@@ -214,7 +214,7 @@ namespace Exiled.CustomItems.API.Features
             Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Continuing with internal reload..");
             ev.IsAllowed = false;
 
-            byte remainingClip = ((Firearm)ev.Player.CurrentItem).Ammo;
+            int remainingClip = ((Firearm)ev.Player.CurrentItem).Ammo;
 
             if (remainingClip >= ClipSize)
                 return;
@@ -229,7 +229,7 @@ namespace Exiled.CustomItems.API.Features
                 return;
             }
 
-            ev.Player.Connection.Send(new RequestMessage(ev.Firearm.Serial, RequestType.Reload));
+            ev.Firearm.Reload(true);
 
             byte amountToReload = (byte)Math.Min(ClipSize - remainingClip, ev.Player.Ammo[ammoType.GetItemType()]);
 
