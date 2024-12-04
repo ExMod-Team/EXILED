@@ -123,7 +123,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <param name="shouldBeActive">Whether the <see cref="Projectile"/> should be in active state after spawn.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <returns>The <see cref="Projectile"/>. See documentation of <see cref="Create"/> for more information on casting.</returns>
-        public static Projectile CreateAndSpawn(ProjectileType type, Vector3 position, Quaternion rotation, bool shouldBeActive = true, Player previousOwner = null) => Create(type).Spawn(position, rotation, shouldBeActive, previousOwner);
+        public static Projectile CreateAndSpawn(ProjectileType type, Vector3 position, Quaternion? rotation = null, bool shouldBeActive = true, Player previousOwner = null) => Create(type).Spawn(position, rotation, shouldBeActive, previousOwner);
 
         /// <summary>
         /// Creates and spawns a <see cref="Projectile"/>.
@@ -135,7 +135,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <typeparam name="T">The specified <see cref="Projectile"/> type.</typeparam>
         /// <returns>The <see cref="Projectile"/>. See documentation of <see cref="Create"/> for more information on casting.</returns>
-        public static Projectile CreateAndSpawn<T>(ProjectileType type, Vector3 position, Quaternion rotation, bool shouldBeActive = true, Player previousOwner = null)
+        public static Projectile CreateAndSpawn<T>(ProjectileType type, Vector3 position, Quaternion? rotation = null, bool shouldBeActive = true, Player previousOwner = null)
             where T : Projectile => CreateAndSpawn(type, position, rotation, shouldBeActive, previousOwner) as T;
 
         /// <summary>
@@ -151,10 +151,10 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <param name="shouldBeActive">Whether the <see cref="Projectile"/> should be in active state after spawn.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <returns>The spawned <see cref="Projectile"/>.</returns>
-        public Projectile Spawn(Vector3 position, Quaternion rotation, bool shouldBeActive = true, Player previousOwner = null)
+        public Projectile Spawn(Vector3 position, Quaternion? rotation = null, bool shouldBeActive = true, Player previousOwner = null)
         {
             Position = position;
-            Rotation = rotation;
+            Rotation = rotation ?? Quaternion.identity;
             PreviousOwner = previousOwner;
             Spawn();
 

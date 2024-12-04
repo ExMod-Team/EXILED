@@ -33,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
         {
             if (__instance._useTime == 0)
             {
-                var ev = new TryingDeactivatingEventArgs(Item.Get(__instance));
+                TryingDeactivatingEventArgs ev = new(Item.Get(__instance));
                 Exiled.Events.Handlers.Scp1344.OnTryingDeactivating(ev);
 
                 if (!ev.IsAllowed)
@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
 
             if (__instance._useTime + Time.deltaTime >= 5.1f)
             {
-                var deactivating = new DeactivatingEventArgs(Item.Get(__instance));
+                DeactivatingEventArgs deactivating = new(Item.Get(__instance));
                 Exiled.Events.Handlers.Scp1344.OnDeactivating(deactivating);
 
                 if (!deactivating.IsAllowed)
@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
                 __instance.ActivateFinalEffects();
                 __instance.ServerDropItem(__instance);
 
-                var ev = new DeactivatedEventArgs(Item.Get(__instance));
+                DeactivatedEventArgs ev = new(Item.Get(__instance));
                 Exiled.Events.Handlers.Scp1344.OnDeactivated(ev);
                 return false;
             }
