@@ -247,7 +247,7 @@ namespace Exiled.API.Extensions
         /// Gets the <see cref="Faction"/> associated with the provided <see cref="SpawnableFaction"/>.
         /// </summary>
         /// <param name="spawnableFaction">A member of the <see cref="SpawnableFaction"/> enum.</param>
-        /// <returns><see cref="Faction"/> associated with the provided <param name="spawnableFaction"/>.</returns>
+        /// <returns><see cref="Faction"/> associated with the provided <paramref name="spawnableFaction"/>.</returns>
         public static Faction GetFaction(this SpawnableFaction spawnableFaction) => spawnableFaction switch
         {
             SpawnableFaction.ChaosWave or SpawnableFaction.ChaosMiniWave => Faction.FoundationEnemy,
@@ -259,7 +259,7 @@ namespace Exiled.API.Extensions
         /// Gets the <see cref="Faction"/> associated with the provided <see cref="SpawnableTeamType"/>.
         /// </summary>
         /// <param name="spawnableTeamType">A member of the <see cref="SpawnableTeamType"/>enum.</param>
-        /// <returns><see cref="Faction"/> associated with the provided <param name="spawnableTeamType"></param>.</returns>
+        /// <returns><see cref="Faction"/> associated with the provided <paramref name="spawnableTeamType"/>.</returns>
         public static Faction GetFaction(this SpawnableTeamType spawnableTeamType) => spawnableTeamType switch
         {
             SpawnableTeamType.ChaosInsurgency => Faction.FoundationEnemy,
@@ -273,7 +273,7 @@ namespace Exiled.API.Extensions
         /// <param name="faction">A member of the <see cref="Faction"/>enum.</param>
         /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> to return.</param>
         /// <param name="mini">A <see cref="bool"/> determining whether to get a normal spawn wave or a mini one.</param>
-        /// <returns><see cref="Faction"/> associated with the provided <param name="faction"></param> influenced by <param name="mini"></param>.</returns>
+        /// <returns><see cref="Faction"/> associated with the provided <paramref name="faction"/> influenced by <paramref name="mini"/>.</returns>
         public static bool TryGetSpawnableFaction(this Faction faction, out SpawnableFaction spawnableFaction, bool mini = false)
         {
             switch (faction)
