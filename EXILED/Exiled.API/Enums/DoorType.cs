@@ -133,11 +133,6 @@ namespace Exiled.API.Enums
         EscapeSecondary,
 
         /// <summary>
-        /// Represents the SERVERS_BOTTOM door.
-        /// </summary>
-        ServersBottom,
-
-        /// <summary>
         /// Represents the GATE_A door.
         /// </summary>
         GateA,
@@ -235,7 +230,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the Gate in the Checkpoint between EZ and HCZ.
         /// </summary>
-        CheckpointGate,
+        CheckpointGateA,
+
+        /// <summary>
+        /// Represents the Gate in the Checkpoint between EZ and HCZ.
+        /// </summary>
+        CheckpointGateB,
 
         /// <summary>
         /// Represents the Gate in the Checkpoint between EZ and HCZ.
