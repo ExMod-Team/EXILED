@@ -10,7 +10,7 @@ namespace Exiled.Events.EventArgs.Map
     using Exiled.Events.EventArgs.Interfaces;
 
     /// <summary>
-    /// Contains all information before the server spawns an item.
+    /// Contains all information before the server transmitted radiomodel message.
     /// </summary>
     public class RadioModelTransmittingEventArgs : IDeniableEvent
     {
@@ -43,17 +43,17 @@ namespace Exiled.Events.EventArgs.Map
         public ushort Serial { get; }
 
         /// <summary>
-        /// Gets or sets whether the player has transmitted.
+        /// Gets or sets a value indicating whether gets or sets whether the player has transmitted.
         /// </summary>
         public bool TransmittingPlayer { get; set; }
 
         /// <summary>
-        /// Gets or sets whether the radiomodel has transmitted a signal.
+        /// Gets or sets a value indicating whether gets or sets whether the radiomodel has transmitted.
         /// </summary>
         public bool TransmittingRadioModel { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the item can be spawned.
+        /// Gets or sets a value indicating whether gets or sets whether to allow the signal to be transmitted.
         /// </summary>
         public bool IsAllowed { get; set; }
     }
