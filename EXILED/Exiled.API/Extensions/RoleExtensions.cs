@@ -244,10 +244,10 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Docs1.
+        /// Gets the <see cref="Faction"/> associated with the provided <see cref="SpawnableFaction"/>.
         /// </summary>
-        /// <param name="spawnableFaction">Docs1..</param>
-        /// <returns>Docs2.</returns>
+        /// <param name="spawnableFaction">A member of the <see cref="SpawnableFaction"/> enum.</param>
+        /// <returns><see cref="Faction"/> associated with the provided <param name="spawnableFaction"/>.</returns>
         public static Faction GetFaction(this SpawnableFaction spawnableFaction) => spawnableFaction switch
         {
             SpawnableFaction.ChaosWave or SpawnableFaction.ChaosMiniWave => Faction.FoundationEnemy,
@@ -256,10 +256,10 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Docs1.
+        /// Gets the <see cref="Faction"/> associated with the provided <see cref="SpawnableTeamType"/>.
         /// </summary>
-        /// <param name="spawnableTeamType">Docs2.</param>
-        /// <returns>Docs3.</returns>
+        /// <param name="spawnableTeamType">A member of the <see cref="SpawnableTeamType"/>enum.</param>
+        /// <returns><see cref="Faction"/> associated with the provided <param name="spawnableTeamType"></param>.</returns>
         public static Faction GetFaction(this SpawnableTeamType spawnableTeamType) => spawnableTeamType switch
         {
             SpawnableTeamType.ChaosInsurgency => Faction.FoundationEnemy,
@@ -268,12 +268,12 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Docs1.
+        /// Tries to get the <see cref="SpawnableFaction"/> associated with the provided <see cref="SpawnableTeamType"/> and <see cref="bool"/>.
         /// </summary>
-        /// <param name="faction">Docs2.</param>
-        /// <param name="spawnableFaction">Docs5.</param>
-        /// <param name="mini">Docs3.</param>
-        /// <returns>Docs4.</returns>
+        /// <param name="faction">A member of the <see cref="Faction"/>enum.</param>
+        /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> to return.</param>
+        /// <param name="mini">A <see cref="bool"/> determining whether to get a normal spawn wave or a mini one.</param>
+        /// <returns><see cref="Faction"/> associated with the provided <param name="faction"></param> influenced by <param name="mini"></param>.</returns>
         public static bool TryGetSpawnableFaction(this Faction faction, out SpawnableFaction spawnableFaction, bool mini = false)
         {
             switch (faction)
