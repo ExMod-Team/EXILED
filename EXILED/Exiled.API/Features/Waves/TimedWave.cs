@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="TimedWave.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -30,10 +30,7 @@ namespace Exiled.API.Features.Waves
         /// <param name="wave">
         /// The <see cref="TimeBasedWave"/> that this class should be based off of.
         /// </param>
-        public TimedWave(TimeBasedWave wave)
-        {
-            timedWave = wave;
-        }
+        public TimedWave(TimeBasedWave wave) => timedWave = wave;
 
         /// <summary>
         /// Gets the name of the wave timer.
@@ -166,10 +163,7 @@ namespace Exiled.API.Features.Waves
         /// <summary>
         /// Destroys this wave.
         /// </summary>
-        public void Destroy()
-        {
-            timedWave.Destroy();
-        }
+        public void Destroy() => timedWave.Destroy();
 
         /// <summary>
         /// Populates this wave with the specified amount of roles.
@@ -180,9 +174,6 @@ namespace Exiled.API.Features.Waves
         /// <param name="amount">
         /// The amount of people to populate.
         /// </param>
-        public void PopulateQueue(Queue<RoleTypeId> queue, int amount)
-        {
-            timedWave.PopulateQueue(queue, amount);
-        }
+        public void PopulateQueue(Queue<RoleTypeId> queue, int amount) => timedWave.PopulateQueue(queue, amount);
     }
 }
