@@ -211,12 +211,6 @@ namespace Exiled.API.Features
         public bool HasHint => CurrentHint != null;
 
         /// <summary>
-        /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
-        /// </summary>
-        [Obsolete("Use IVoiceRole::VoiceModule instead.")]
-        public VoiceModuleBase VoiceModule => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
-
-        /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="PersonalRadioPlayback"/>, can be null.
         /// </summary>
         public PersonalRadioPlayback RadioPlayback => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule is IRadioVoiceModule radioVoiceModule ? radioVoiceModule.RadioPlayback : null : null;
@@ -3209,13 +3203,6 @@ namespace Exiled.API.Features
         /// <returns>return if the effect has been Enable.</returns>
         public bool EnableEffect(EffectType type, byte intensity, float duration = 0f, bool addDurationIfActive = false)
             => TryGetEffect(type, out StatusEffectBase statusEffect) && EnableEffect(statusEffect, intensity, duration, addDurationIfActive);
-
-        /// <summary>
-        /// Enables a <see cref="Effect">status effect</see> on the player.
-        /// </summary>
-        /// <param name="effect">The <see cref="Effect"/> to enable.</param>
-        [Obsolete("Use SyncEffect(Effect) instead of this")]
-        public void EnableEffect(Effect effect) => SyncEffect(effect);
 
         /// <summary>
         /// Syncs the <see cref="Effect">status effect</see> on the player.

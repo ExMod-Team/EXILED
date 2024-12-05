@@ -45,14 +45,9 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets the list of items to be dropped.
+        /// Gets the list of items to be dropped.
         /// </summary>
-        public List<Item> ItemsToDrop
-        {
-            get;
-            [Obsolete("This setter has been deprecated")]
-            set;
-        }
+        public List<Item> ItemsToDrop { get; }
 
         /// <summary>
         /// Gets the dying player.
