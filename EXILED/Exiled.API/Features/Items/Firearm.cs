@@ -166,13 +166,12 @@ namespace Exiled.API.Features.Items
             get => Base.GetTotalMaxAmmo();
             set
             {
-                if (!TryGetModule(out MagazineModule magazineModule))
-                    return;
-
-                int current = MaxAmmo;
-                int storredElserwhere = current - magazineModule.AmmoMax;
-                int difference = value - current - storredElserwhere;
-                magazineModule._defaultCapacity += difference;
+                if (TryGetModule(out MagazineModule magazineModule))
+                {
+                    int difference = value - MaxAmmo;
+                    magazineModule._defaultCapacity += difference;
+                    magazineModule._defaultCapacity = Mathf.Clamp(magazineModule._defaultCapacity, 0, byte.MaxValue);
+                }
             }
         }
 
