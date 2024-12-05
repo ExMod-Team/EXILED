@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Server
 {
-    using System;
-
     using API.Enums;
     using Interfaces;
 
@@ -27,7 +25,7 @@ namespace Exiled.Events.EventArgs.Server
         /// <inheritdoc cref="LeadingTeam" />
         /// </param>
         /// <param name="isAllowed">
-        /// <inheritdoc cref="IsRoundEnded" />
+        /// <inheritdoc cref="IsAllowed" />
         /// </param>
         /// <param name="isForceEnded">
         /// <inheritdoc cref="IsForceEnded" />
@@ -36,7 +34,7 @@ namespace Exiled.Events.EventArgs.Server
         {
             ClassList = classList;
             LeadingTeam = (LeadingTeam)leadingTeam;
-            IsRoundEnded = isAllowed;
+            IsAllowed = isAllowed;
             IsForceEnded = isForceEnded;
         }
 
@@ -51,11 +49,6 @@ namespace Exiled.Events.EventArgs.Server
         public LeadingTeam LeadingTeam { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the round is going to finish.
-        /// </summary>
-        public bool IsRoundEnded { get; set; } // TODO: Obsolete this in Exiled 10
-
-        /// <summary>
         /// Gets or Sets a value indicating whether the round is ended by API call.
         /// </summary>
         public bool IsForceEnded { get; set; }
@@ -63,10 +56,6 @@ namespace Exiled.Events.EventArgs.Server
         /// <summary>
         /// Gets or sets a value indicating whether the event can be executed.
         /// </summary>
-        public bool IsAllowed
-        {
-            get => IsRoundEnded;
-            set => IsRoundEnded = value;
-        }
-}
+        public bool IsAllowed { get; set; }
+    }
 }

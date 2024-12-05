@@ -679,11 +679,16 @@ namespace Exiled.API.Features
         public bool IsDead => Role?.IsDead ?? false;
 
         /// <summary>
+        /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any Foundation Forces.
+        /// Equivalent to checking the player's <see cref="Team"/>.
+        /// </summary>
+        public bool IsFoundationForces => Role?.Team is Team.FoundationForces;
+
+        /// <summary>
         /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any NTF rank.
         /// Equivalent to checking the player's <see cref="Team"/>.
         /// </summary>
-        // TODO: Change logic for FacilityGuard in next major update
-        public bool IsNTF => Role?.Team is Team.FoundationForces;
+        public bool IsNTF => Role?.Team is Team.FoundationForces && Role?.Type is not RoleTypeId.FacilityGuard;
 
         /// <summary>
         /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any Chaos rank.
@@ -1472,16 +1477,6 @@ namespace Exiled.API.Features
         /// <summary>
         /// Adds a player's UserId to the list of reserved slots.
         /// </summary>
-        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
-        /// <param name="userId">The UserId of the player to add.</param>
-        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided UserId already has a reserved slot.</returns>
-        /// <seealso cref="GiveReservedSlot()"/>
-        // TODO: Remove this method
-        public static bool AddReservedSlot(string userId) => ReservedSlot.Users.Add(userId);
-
-        /// <summary>
-        /// Adds a player's UserId to the list of reserved slots.
-        /// </summary>
         /// <param name="userId">The UserId of the player to add.</param>
         /// <param name="isPermanent"> Whether to add a <see langword="userId"/> permanently. It will write a <see langword="userId"/> to UserIDReservedSlots.txt file.</param>
         /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided UserId already has a reserved slot.</returns>
@@ -1530,15 +1525,6 @@ namespace Exiled.API.Features
         /// Reloads the whitelist, clearing all whitelist changes made with add/remove methods and reverting to the whitelist files.
         /// </summary>
         public static void ReloadWhitelist() => WhiteList.Reload();
-
-        /// <summary>
-        /// Adds the player's UserId to the list of reserved slots.
-        /// </summary>
-        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
-        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the player already has a reserved slot.</returns>
-        /// <seealso cref="AddReservedSlot(string)"/>
-        // TODO: Remove this method
-        public bool GiveReservedSlot() => AddReservedSlot(UserId);
 
         /// <summary>
         /// Adds a player's UserId to the list of reserved slots.
