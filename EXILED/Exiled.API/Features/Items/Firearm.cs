@@ -203,7 +203,16 @@ namespace Exiled.API.Features.Items
         /// Gets the total amount of ammo in the firearm.
         /// </summary>
         public int TotalMaxAmmo =>
-            Base.GetTotalStoredAmmo();
+            Base.GetTotalMaxAmmo();
+
+        /// <summary>
+        /// Gets or sets a ammo drain per shoot.
+        /// </summary>
+        /// <remarks>
+        /// Always <see langword="1"/> by default.
+        /// Applied on a high layer nether basegame ammo controllers.
+        /// </remarks>
+        public int AmmoDrain { get; set; } = 2;
 
         /// <summary>
         /// Gets the <see cref="Enums.FirearmType"/> of the firearm.
