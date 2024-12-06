@@ -13,6 +13,10 @@ namespace Exiled.API.Features.Items
 
     using CameraShaking;
     using Enums;
+
+    using Exiled.API.Features.Items.FirearmModules;
+    using Exiled.API.Features.Items.FirearmModules.Barrel;
+    using Exiled.API.Features.Items.FirearmModules.Primary;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
@@ -55,6 +59,20 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
+
+            foreach (ModuleBase module in Base.Modules)
+            {
+                if (module is IPrimaryAmmoContainerModule primaryAmmoModule)
+                {
+                    PrimaryMagazine ??= (PrimaryMagazine)Magazine.Get(primaryAmmoModule);
+                    continue;
+                }
+
+                if (module is IAmmoContainerModule ammoModule)
+                {
+                    BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
+                }
+            }
         }
 
         /// <summary>
@@ -105,23 +123,96 @@ namespace Exiled.API.Features.Items
         public new BaseFirearm Base { get; }
 
         /// <summary>
-        /// Gets or sets the amount of ammo in the firearm.
+        /// Gets a primaty magazine for current firearm.
         /// </summary>
-        public int Ammo
+        public PrimaryMagazine PrimaryMagazine { get; }
+
+        /// <summary>
+        /// Gets a barrel magazine for current firearm.
+        /// </summary>
+        /// <remarks>
+        /// <see langword="null"/> for Revolver and ParticleDisruptor.
+        /// </remarks>
+        public BarrelMagazine BarrelMagazine { get; }
+
+        /// <summary>
+        /// Gets or sets the amount of ammo in the firearm magazine.
+        /// </summary>
+        public int MagazineAmmo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored = value;
+            get => PrimaryMagazine.Ammo;
+            set => PrimaryMagazine.Ammo = value;
         }
+
+        /// <summary>
+        /// Gets or sets the amount of ammo in the firearm barrel.
+        /// </summary>
+        /// <remarks>
+        /// not working for Revolver and ParticleDisruptor.
+        /// </remarks>
+        public int BarrelAmmo
+        {
+            get
+            {
+                return BarrelMagazine?.Ammo ?? 0;
+            }
+
+            set
+            {
+                if (BarrelMagazine != null)
+                    BarrelMagazine.Ammo = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total amount of ammo in the firearm.
+        /// </summary>
+        public int TotalAmmo =>
+            Base.GetTotalStoredAmmo();
 
         /// <summary>
         /// Gets or sets the max ammo for this firearm.
         /// </summary>
-        /// <remarks>Disruptor can't be used for MaxAmmo.</remarks>
-        public int MaxAmmo
+        public int MaxMagazineAmmo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoMax;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule)._defaultCapacity = value; // Synced?
+            get => PrimaryMagazine.MaxAmmo;
+            set => PrimaryMagazine.MaxAmmo = value;
         }
+
+        /// <summary>
+        /// Gets or sets the amount of max ammo in the firearm barrel.
+        /// </summary>
+        /// <remarks>
+        /// not working for Revolver and ParticleDisruptor.
+        /// </remarks>
+        public int MaxBarrelAmmo
+        {
+            get
+            {
+                return BarrelMagazine?.MaxAmmo ?? 0;
+            }
+
+            set
+            {
+                if (BarrelMagazine != null)
+                    BarrelMagazine.MaxAmmo = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total amount of ammo in the firearm.
+        /// </summary>
+        public int TotalMaxAmmo =>
+            Base.GetTotalMaxAmmo();
+
+        /// <summary>
+        /// Gets or sets a ammo drain per shoot.
+        /// </summary>
+        /// <remarks>
+        /// Always <see langword="1"/> by default.
+        /// Applied on a high layer nether basegame ammo controllers.
+        /// </remarks>
+        public int AmmoDrain { get; set; } = 2;
 
         /// <summary>
         /// Gets the <see cref="Enums.FirearmType"/> of the firearm.
@@ -616,7 +707,6 @@ namespace Exiled.API.Features.Items
         {
             Firearm cloneableItem = new(Type)
             {
-                Ammo = Ammo,
             };
 
             // TODO Not finish

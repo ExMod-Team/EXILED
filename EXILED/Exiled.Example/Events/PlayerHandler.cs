@@ -164,7 +164,7 @@ namespace Exiled.Example.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnReloadingWeapon(ReloadingWeaponEventArgs)"/>
         public void OnReloading(ReloadingWeaponEventArgs ev)
         {
-            Log.Info($"{ev.Player.Nickname} is reloading their {ev.Firearm.Type}. They have {ev.Firearm.Ammo} ammo. Using ammo type {ev.Firearm.AmmoType}");
+            Log.Info($"{ev.Player.Nickname} is reloading their {ev.Firearm.Type}. They have {ev.Firearm.MagazineAmmo} ammo. Using ammo type {ev.Firearm.AmmoType}");
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnReceivingEffect(ReceivingEffectEventArgs)"/>
