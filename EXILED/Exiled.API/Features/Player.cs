@@ -679,7 +679,7 @@ namespace Exiled.API.Features
         public bool IsFoundationForces => Role?.Team is Team.FoundationForces;
 
         /// <summary>
-        /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any NTF rank.
+        /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any NTF rank and not a Facility Guard.
         /// Equivalent to checking the player's <see cref="Team"/>.
         /// </summary>
         public bool IsNTF => Role?.Team is Team.FoundationForces && Role?.Type is not RoleTypeId.FacilityGuard;
