@@ -1044,11 +1044,12 @@ namespace Exiled.Events.Handlers
         public static void OnItemRemoved(ReferenceHub referenceHub, InventorySystem.Items.ItemBase itemBase, InventorySystem.Items.Pickups.ItemPickupBase pickupBase)
         {
             ItemRemovedEventArgs ev = new(referenceHub, itemBase, pickupBase);
-            ItemRemoved.InvokeSafely(ev);
 
             ev.Player.ItemsValue.Remove(ev.Item);
 
             API.Features.Items.Item.BaseToItem.Remove(itemBase);
+
+            ItemRemoved.InvokeSafely(ev);
         }
 
         /// <summary>
