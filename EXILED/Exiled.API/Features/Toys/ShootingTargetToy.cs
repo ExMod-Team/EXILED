@@ -200,7 +200,7 @@ namespace Exiled.API.Features.Toys
         public static ShootingTargetToy Get(ShootingTarget shootingTarget)
         {
             AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
-            return adminToy is not null ? adminToy as ShootingTargetToy : new ShootingTargetToy(shootingTarget);
+            return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
         }
 
         /// <summary>

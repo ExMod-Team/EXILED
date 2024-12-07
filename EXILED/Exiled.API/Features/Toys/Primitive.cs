@@ -217,7 +217,7 @@ namespace Exiled.API.Features.Toys
         public static Primitive Get(PrimitiveObjectToy primitiveObjectToy)
         {
             AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == primitiveObjectToy);
-            return adminToy is not null ? adminToy as Primitive : new Primitive(primitiveObjectToy);
+            return adminToy is not null ? adminToy as Primitive : new(primitiveObjectToy);
         }
     }
 }

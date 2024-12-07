@@ -154,7 +154,7 @@ namespace Exiled.API.Features.Toys
         public static Light Get(LightSourceToy lightSourceToy)
         {
             AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
-            return adminToy is not null ? adminToy as Light : new Light(lightSourceToy);
+            return adminToy is not null ? adminToy as Light : new(lightSourceToy);
         }
     }
 }
