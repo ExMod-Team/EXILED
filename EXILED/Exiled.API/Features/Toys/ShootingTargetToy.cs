@@ -47,6 +47,21 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets the prefab for Sport Shooting Target.
+        /// </summary>
+        public static ShootingTarget SportShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.SportTarget);
+
+        /// <summary>
+        /// Gets the prefab for DBoy Shooting Target.
+        /// </summary>
+        public static ShootingTarget DboyShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.DBoyTarget);
+
+        /// <summary>
+        /// Gets the prefab for Binary Shooting Target.
+        /// </summary>
+        public static ShootingTarget BinaryShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.BinaryTarget);
+
+        /// <summary>
         /// Gets the base-game <see cref="ShootingTarget"/> for this target.
         /// </summary>
         public ShootingTarget Base { get; }
@@ -165,19 +180,19 @@ namespace Exiled.API.Features.Toys
             {
                 case ShootingTargetType.ClassD:
                     {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.DboyShootingTargetObject));
+                        shootingTargetToy = new(Object.Instantiate(DboyShootingTargetPrefab));
                         break;
                     }
 
                 case ShootingTargetType.Binary:
                     {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.BinaryShootingTargetObject));
+                        shootingTargetToy = new(Object.Instantiate(BinaryShootingTargetPrefab));
                         break;
                     }
 
                 default:
                     {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.SportShootingTargetObject));
+                        shootingTargetToy = new(Object.Instantiate(SportShootingTargetPrefab));
                         break;
                     }
             }
