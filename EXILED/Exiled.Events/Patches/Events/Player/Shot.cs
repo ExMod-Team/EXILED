@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Player
                 normal = -ray.direction,
             };
 
-            var ev = new ShotEventArgs(hitregModule, hit, hitregModule.Firearm, null);
+            ShotEventArgs ev = new(hitregModule, hit, hitregModule.Firearm, null);
             Handlers.Player.OnShot(ev);
         }
 
