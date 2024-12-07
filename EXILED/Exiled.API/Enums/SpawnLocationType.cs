@@ -142,10 +142,5 @@ namespace Exiled.API.Enums
         /// Just inside the LCZ WC door.
         /// </summary>
         InsideLczWc,
-
-        /// <summary>
-        /// Just inside the door at the bottom of the server's room.
-        /// </summary>
-        InsideServersBottom,
     }
 }
