@@ -83,7 +83,7 @@ namespace Exiled.Events.Patches.Events.Server
             int offset2 = 1;
             int index2 = newInstructions.FindLastIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset2;
             List<CodeInstruction> leadingTeamLogic = newInstructions.GetRange(index, index2 - index);
-            List<Label> moveLabel = newInstructions[index2 + 1].ExtractLabels();
+            List<Label> moveLabel = newInstructions[index2].ExtractLabels();
             newInstructions.RemoveRange(index, index2 - index);
 
             // put the LeadingTeam logic before the event
