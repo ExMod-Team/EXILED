@@ -8,14 +8,11 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using System;
-    using System.Collections.Generic;
 
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
-    using PlayerRoles;
-    using Respawning;
 
     /// <summary>
     /// Contains all information after player has escaped.

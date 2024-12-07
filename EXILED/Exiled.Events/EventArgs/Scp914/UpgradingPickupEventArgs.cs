@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Scp914
 {
-    using System;
-
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Interfaces;
     using global::Scp914;
@@ -43,12 +41,6 @@ namespace Exiled.Events.EventArgs.Scp914
         /// Gets a list of items to be upgraded inside SCP-914.
         /// </summary>
         public Pickup Pickup { get; }
-
-        /// <summary>
-        /// Gets the <see cref="Scp914Controller" /> instance.
-        /// </summary>
-        [Obsolete("Use Scp914::Scp914Controller instead.")]
-        public Scp914Controller Scp914 => API.Features.Scp914.Scp914Controller;
 
         /// <summary>
         /// Gets or sets the position the item will be output to.

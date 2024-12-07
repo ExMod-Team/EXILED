@@ -19,8 +19,6 @@ namespace Exiled.API.Extensions
     using Features;
     using Features.Pools;
 
-    using InventorySystem.Items.Firearms;
-
     using Mirror;
 
     using PlayerRoles;
@@ -450,38 +448,6 @@ namespace Exiled.API.Extensions
             {
                 ply.Connection.Send(objectDestroyMessage, 0);
                 SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, ply.Connection });
-            }
-        }
-
-        /// <summary>
-        /// Send fake values to client's <see cref="SyncVarAttribute"/>.
-        /// </summary>
-        /// <param name="target">Target to send.</param>
-        /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
-        /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
-        /// <param name="propertyName">Property name starting with Network.</param>
-        /// <param name="value">Value of send to target.</param>
-        [Obsolete("Use overload with type-template instead.")]
-        public static void SendFakeSyncVar(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, object value)
-        {
-            if (!target.IsConnected)
-                return;
-
-            NetworkWriterPooled writer = NetworkWriterPool.Get();
-            NetworkWriterPooled writer2 = NetworkWriterPool.Get();
-            MakeCustomSyncWriter(behaviorOwner, targetType, null, CustomSyncVarGenerator, writer, writer2);
-            target.Connection.Send(new EntityStateMessage
-            {
-                netId = behaviorOwner.netId,
-                payload = writer.ToArraySegment(),
-            });
-
-            NetworkWriterPool.Return(writer);
-            NetworkWriterPool.Return(writer2);
-            void CustomSyncVarGenerator(NetworkWriter targetWriter)
-            {
-                targetWriter.WriteULong(SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"]);
-                WriterExtensions[value.GetType()]?.Invoke(null, new object[2] { targetWriter, value });
             }
         }
 

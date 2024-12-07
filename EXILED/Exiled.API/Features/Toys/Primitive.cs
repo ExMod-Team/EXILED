@@ -220,7 +220,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The corresponding <see cref="Primitive"/> instance.</returns>
         public static Primitive Get(PrimitiveObjectToy primitiveObjectToy)
         {
-            AdminToy adminToy = Map.Toys.FirstOrDefault(x => x.AdminToyBase == primitiveObjectToy);
+            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == primitiveObjectToy);
             return adminToy is not null ? adminToy as Primitive : new(primitiveObjectToy);
         }
     }

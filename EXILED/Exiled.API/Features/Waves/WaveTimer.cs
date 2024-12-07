@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="WaveTimer.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -33,10 +33,7 @@ namespace Exiled.API.Features.Waves
         /// Initializes a new instance of the <see cref="WaveTimer"/> class.
         /// </summary>
         /// <param name="wave">The <see cref="Respawning.Waves.WaveTimer"/> that this class should be based off of.</param>
-        public WaveTimer(Respawning.Waves.WaveTimer wave)
-        {
-            waveTimer = wave;
-        }
+        public WaveTimer(Respawning.Waves.WaveTimer wave) => waveTimer = wave;
 
         /// <summary>
         /// Gets the name of the wave timer.
@@ -141,10 +138,7 @@ namespace Exiled.API.Features.Waves
         /// <summary>
         /// Destroys this wave timer.
         /// </summary>
-        public void Destroy()
-        {
-            waveTimer.Destroy();
-        }
+        public void Destroy() => waveTimer.Destroy();
 
         /// <summary>
         /// Pauses this wave timer.
@@ -152,18 +146,12 @@ namespace Exiled.API.Features.Waves
         /// <param name="seconds">
         /// The amount of time to pause this wave timer for.
         /// </param>
-        public void Pause(float seconds)
-        {
-            waveTimer.Pause(seconds);
-        }
+        public void Pause(float seconds) => waveTimer.Pause(seconds);
 
         /// <summary>
         /// Unpauses this wave timer.
         /// </summary>
-        public void Unpause()
-        {
-            waveTimer.Pause(0);
-        }
+        public void Unpause() => waveTimer.Pause(0);
 
         /// <summary>
         /// Resets this wave timer.
@@ -171,18 +159,12 @@ namespace Exiled.API.Features.Waves
         /// <param name="resetInterval">
         /// A value indicating whether the <see cref="SpawnInterval"/> should be reset.
         /// </param>
-        public void Reset(bool resetInterval = true)
-        {
-            waveTimer.Reset(resetInterval);
-        }
+        public void Reset(bool resetInterval = true) => waveTimer.Reset(resetInterval);
 
         /// <summary>
         /// Update the timer.
         /// </summary>
-        public void Update()
-        {
-            waveTimer.Update();
-        }
+        public void Update() => waveTimer.Update();
 
         /// <summary>
         /// Add time to the wave timer.
@@ -190,10 +172,7 @@ namespace Exiled.API.Features.Waves
         /// <param name="seconds">
         /// The amount of time to add in seconds.
         /// </param>
-        public void AddTime(float seconds)
-        {
-            waveTimer.AddTime(seconds);
-        }
+        public void AddTime(float seconds) => waveTimer.AddTime(seconds);
 
         /// <summary>
         /// Set the amount of time before the wave spawns.
@@ -209,9 +188,6 @@ namespace Exiled.API.Features.Waves
         /// <param name="seconds">
         /// The amount of time before the wave spawns, in seconds.
         /// </param>
-        public void SetTime(float seconds)
-        {
-            waveTimer.SetTime(seconds);
-        }
+        public void SetTime(float seconds) => waveTimer.SetTime(seconds);
     }
 }

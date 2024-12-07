@@ -13,29 +13,20 @@ namespace Exiled.API.Features
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    using Decals;
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
-    using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Toys;
-    using global::Hazards;
     using InventorySystem;
-    using InventorySystem.Items.Firearms;
-    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
     using Items;
     using LightContainmentZoneDecontamination;
     using MapGeneration;
-    using MapGeneration.Distributors;
-    using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.Ragdolls;
-    using RelativePositioning;
     using UnityEngine;
     using Utils;
-    using Utils.Networking;
 
     using Object = UnityEngine.Object;
 
@@ -54,16 +45,6 @@ namespace Exiled.API.Features
         private static SqueakSpawner squeakSpawner;
 
         /// <summary>
-        /// Gets the tantrum prefab.
-        /// </summary>
-        public static TantrumEnvironmentalHazard TantrumPrefab => TantrumHazard.TantrumPrefab; // TODO: Remove this.
-
-        /// <summary>
-        /// Gets the amnestic cloud prefab.
-        /// </summary>
-        public static Scp939AmnesticCloudInstance AmnesticCloudPrefab => AmnesticCloudHazard.AmnesticCloudPrefab; // TODO: Remove this.
-
-        /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
         /// </summary>
         public static bool IsLczDecontaminated => DecontaminationController.Singleton.IsDecontaminating;
@@ -79,11 +60,6 @@ namespace Exiled.API.Features
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
         /// </summary>
         public static ReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports { get; } = TeleportsValue.AsReadOnly();
-
-        /// <summary>
-        /// Gets all <see cref="AdminToy"/> objects.
-        /// </summary>
-        public static ReadOnlyCollection<AdminToy> Toys => AdminToy.BaseToAdminToy.Values.ToList().AsReadOnly(); // TODO: Obsolete it and make people use AdminToy.List
 
         /// <summary>
         /// Gets or sets the current seed of the map.
@@ -250,15 +226,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Places a Tantrum (SCP-173's ability) in the indicated position.
-        /// </summary>
-        /// <param name="position">The position where you want to spawn the Tantrum.</param>
-        /// <param name="isActive">Whether the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
-        /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
-        /// <returns>The <see cref="TantrumHazard"/> instance.</returns>
-        public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true) => TantrumHazard.PlaceTantrum(position, isActive); // TODO: Remove this.
-
-        /// <summary>
         /// Destroy all <see cref="ItemPickupBase"/> objects.
         /// </summary>
         public static void CleanAllItems()
@@ -397,9 +364,9 @@ namespace Exiled.API.Features
 
             Ragdoll.BasicRagdollToRagdoll.Clear();
 
-            Items.Firearm.ItemTypeToFirearmInstance.Clear();
-            Items.Firearm.BaseCodesValue.Clear();
-            Items.Firearm.AvailableAttachmentsValue.Clear();
+            Firearm.ItemTypeToFirearmInstance.Clear();
+            Firearm.BaseCodesValue.Clear();
+            Firearm.AvailableAttachmentsValue.Clear();
         }
     }
 }
