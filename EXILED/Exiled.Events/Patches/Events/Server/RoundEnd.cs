@@ -100,13 +100,13 @@ namespace Exiled.Events.Patches.Events.Server
                 index,
                 new CodeInstruction[]
                 {
-                    // this.newList
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(moveLabel),
-                    new(OpCodes.Ldfld, Field(PrivateType, NewList)),
-
                     // this.LeadingTeam
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, LeadingTeam)),
+
+                    // this.newList
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(moveLabel),
+                    new(OpCodes.Ldfld, Field(PrivateType, NewList)),
 
                     // isForceEnd
                     new(OpCodes.Ldloc_1),
