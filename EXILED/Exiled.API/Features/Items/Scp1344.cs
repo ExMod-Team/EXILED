@@ -60,9 +60,10 @@ namespace Exiled.API.Features.Items
             set => Base.Status = value;
         }
 
+        /// <summary>
         /// Forcefully deactivate SCP-1344.
         /// </summary>
-        /// <param name="dropItem">Drop or not the item.</param>
+        /// <param name="dropItem">Whether or not 1344 should be dropped.</param>
         public void Deactivate(bool dropItem = false)
         {
             if (Status is not(Scp1344Status.Active or Scp1344Status.Stabbing or Scp1344Status.Dropping))
