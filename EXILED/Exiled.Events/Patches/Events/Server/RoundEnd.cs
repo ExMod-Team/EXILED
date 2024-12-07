@@ -82,7 +82,6 @@ namespace Exiled.Events.Patches.Events.Server
             index = newInstructions.FindIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset;
             int offset2 = 1;
             int index2 = newInstructions.FindLastIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset2;
-            Log.Error($"Index A {index} Index B {index2} opcode a suprimé {index2 - index}");
             List<CodeInstruction> leadingTeamLogic = newInstructions.GetRange(index, index2 - index);
             List<Label> moveLabel = newInstructions[index2 + 1].ExtractLabels();
             newInstructions.RemoveRange(index, index2 - index);
@@ -90,7 +89,6 @@ namespace Exiled.Events.Patches.Events.Server
             // put the LeadingTeam logic before the event
             offset = -1;
             index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded)))) + offset;
-            Log.Error($"Index {index}");
             newInstructions.InsertRange(index, leadingTeamLogic);
 
             // recorect the index because of the LeadingTeamLogic that got moved
@@ -194,9 +192,6 @@ namespace Exiled.Events.Patches.Events.Server
             offset = 1;
             index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Call && x.operand == (object)Method(typeof(RoundSummary), nameof(RoundSummary.RpcShowRoundSummary))) + offset;
             newInstructions[index].labels.Add(skip);
-
-            for (int z = 0; z < newInstructions.Count; z++)
-                Log.Warn($"[{z}] {newInstructions[z].opcode} : {(newInstructions[z].operand is Label label ? $"Line: {newInstructions.FindIndex(x => x.labels.Contains(label))}" : $"{newInstructions[z].operand}")} {newInstructions[z].labels.Count}");
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
