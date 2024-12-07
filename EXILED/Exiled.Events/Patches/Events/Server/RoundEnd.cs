@@ -101,11 +101,11 @@ namespace Exiled.Events.Patches.Events.Server
                 new CodeInstruction[]
                 {
                     // this.LeadingTeam
-                    new(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(moveLabel),
                     new(OpCodes.Ldfld, Field(PrivateType, LeadingTeam)),
 
                     // this.newList
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(moveLabel),
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, NewList)),
 
                     // isForceEnd
