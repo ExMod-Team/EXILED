@@ -53,7 +53,6 @@ namespace Exiled.CustomItems.API.Features
     /// </summary>
     public abstract class CustomItem
     {
-        private static Dictionary<Type, CustomItem?> typeLookupTable = new();
         private static Dictionary<string, CustomItem?> stringLookupTable = new();
         private static Dictionary<uint, CustomItem?> idLookupTable = new();
 
@@ -159,16 +158,11 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
-        /// Gets a <see cref="CustomItem"/> with a specific type.
+        /// Retrieves a collection of <see cref="CustomItem"/> instances that match a specified type.
         /// </summary>
         /// <param name="t">The <see cref="System.Type"/> type.</param>
-        /// <returns>The <see cref="CustomItem"/> matching the search, <see langwod="null"/> if not registered.</returns>
-        public static CustomItem? Get(Type t)
-        {
-            if (!typeLookupTable.ContainsKey(t))
-                typeLookupTable.Add(t, Registered.FirstOrDefault(i => i.GetType() == t));
-            return typeLookupTable[t];
-        }
+        /// <returns>An <see cref="IEnumerable{CustomItem}"/> containing all registered <see cref="CustomItem"/> of the specified type.</returns>
+        public static IEnumerable<CustomItem> Get(Type t) => Registered.Where(i => i.GetType() == t);
 
         /// <summary>
         /// Tries to get a <see cref="CustomItem"/> with a specific ID.
@@ -201,16 +195,16 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
-        /// Tries to get a <see cref="CustomItem"/> with a specific type.
+        /// Attempts to retrieve a collection of <see cref="CustomItem"/> instances of a specified type.
         /// </summary>
         /// <param name="t">The <see cref="System.Type"/> of the item to look for.</param>
-        /// <param name="customItem">The found <see cref="CustomItem"/>, <see langword="null"/> if not registered.</param>
-        /// <returns>Returns a value indicating whether the <see cref="CustomItem"/> was found.</returns>
-        public static bool TryGet(Type t, out CustomItem? customItem)
+        /// <param name="customItems">An output parameter that will contain the found <see cref="CustomItem"/> instances, or an empty collection if none are registered.</param>
+        /// <returns>A boolean value indicating whether any <see cref="CustomItem"/> instances of the specified type were found.</returns>
+        public static bool TryGet(Type t, out IEnumerable<CustomItem> customItems)
         {
-            customItem = Get(t);
+            customItems = Get(t);
 
-            return customItem is not null;
+            return customItems.Any();
         }
 
         /// <summary>
@@ -338,23 +332,6 @@ namespace Exiled.CustomItems.API.Features
         public static bool TryGive(Player player, uint id, bool displayMessage = true)
         {
             if (!TryGet(id, out CustomItem? item))
-                return false;
-
-            item?.Give(player, displayMessage);
-
-            return true;
-        }
-
-        /// <summary>
-        /// Gives to a specific <see cref="Player"/> a specic <see cref="CustomItem"/>.
-        /// </summary>
-        /// <param name="player">The <see cref="Player"/> to give the item to.</param>
-        /// <param name="t">The <see cref="System.Type"/> of the item to give.</param>
-        /// <param name="displayMessage">Indicates a value whether <see cref="ShowPickedUpMessage"/> will be called when the player receives the <see cref="CustomItem"/> or not.</param>
-        /// <returns>Returns a value indicating if the player was given the <see cref="CustomItem"/> or not.</returns>
-        public static bool TryGive(Player player, Type t, bool displayMessage = true)
-        {
-            if (!TryGet(t, out CustomItem? item))
                 return false;
 
             item?.Give(player, displayMessage);
@@ -619,20 +596,17 @@ namespace Exiled.CustomItems.API.Features
 
                 spawned++;
 
-#pragma warning disable CS0618 // Type or member is obsolete \\ TODO: REMOVE THIS
-                if (spawnPoint is DynamicSpawnPoint dynamicSpawnPoint && dynamicSpawnPoint.Location == SpawnLocationType.InsideLocker)
+                /*if (spawnPoint is DynamicSpawnPoint dynamicSpawnPoint && dynamicSpawnPoint.Location == SpawnLocationType.InsideLocker)
                 {
                     for (int i = 0; i < 50; i++)
                     {
-                        if (Map.Lockers is null)
+                        if (Exiled.API.Features.Lockers.Locker.List is null)
                         {
                             Log.Debug($"{nameof(Spawn)}: Locker list is null.");
                             continue;
                         }
 
-                        Locker locker =
-                            Map.Lockers[
-                                Loader.Random.Next(Map.Lockers.Count)];
+                        Locker locker = Exiled.API.Features.Lockers.Locker.Random();
 
                         if (locker is null)
                         {
@@ -683,8 +657,20 @@ namespace Exiled.CustomItems.API.Features
                     }
 
                     Log.Debug($"Spawned {Name} at {spawnPoint.Position} ({spawnPoint.Name})");
+                }*/
+
+                Pickup? pickup = Spawn(spawnPoint.Position);
+
+                if (pickup == null)
+                    continue;
+
+                if (spawnPoint is LockerSpawnPoint)
+                    pickup.IsLocked = true;
+
+                if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
+                {
+                    // set MaxAmmo if synced TODO
                 }
-#pragma warning restore CS0618 // Type or member is obsolete
             }
 
             return spawned;
@@ -761,7 +747,6 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         public virtual void Init()
         {
-            typeLookupTable.Add(GetType(), this);
             stringLookupTable.Add(Name, this);
             idLookupTable.Add(Id, this);
 
@@ -775,7 +760,6 @@ namespace Exiled.CustomItems.API.Features
         {
             UnsubscribeEvents();
 
-            typeLookupTable.Remove(GetType());
             stringLookupTable.Remove(Name);
             idLookupTable.Remove(Id);
         }
@@ -1002,7 +986,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalOwnerChangingRole(ChangingRoleEventArgs ev)
         {
-            if (ev.Reason == SpawnReason.Escaped)
+            if (ev.Reason is SpawnReason.Escaped or SpawnReason.Destroyed)
                 return;
 
             foreach (Item item in ev.Player.Items.ToList())

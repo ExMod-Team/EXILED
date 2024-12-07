@@ -14,11 +14,8 @@ namespace Exiled.Events.Patches.Events.Scp079
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp079;
     using Exiled.Events.Handlers;
-
     using HarmonyLib;
-
     using Mirror;
-
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
     using PlayerRoles.Subroutines;
@@ -40,71 +37,58 @@ namespace Exiled.Events.Patches.Events.Scp079
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel = generator.DefineLabel();
-
             LocalBuilder ev = generator.DeclareLocal(typeof(ElevatorTeleportingEventArgs));
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloc_3) + offset;
+            int offset = -3;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_2) + offset;
 
-            // ElevatorTeleportingEventArgs ev = new(Player.Get(base.Owner), base.CurrentCamSync.CurrentCamera.Room, elevatorDoor, (float)this._cost);
-            //
-            // Handlers.Scp079.OnElevatorTeleporting(ev);
-            //
-            // if (!ev.IsAllowed)
-            //   return;
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    // Player.Get(base.Owner)
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<Scp079Role>), nameof(StandardSubroutine<Scp079Role>.Owner))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+            newInstructions.InsertRange(index, new[]
+            {
+                // Player.Get(base.Owner)
+                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<Scp079Role>), nameof(StandardSubroutine<Scp079Role>.Owner))),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // base.CurrentCamSync.CurrentCamera.Room
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.CurrentCamSync))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079CurrentCameraSync), nameof(Scp079CurrentCameraSync.CurrentCamera))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079Camera), nameof(Scp079Camera.Room))),
+                // base.CurrentCamSync.CurrentCamera.Room
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Call, PropertyGetter(typeof(Scp079AbilityBase), nameof(Scp079AbilityBase.CurrentCamSync))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079CurrentCameraSync), nameof(Scp079CurrentCameraSync.CurrentCamera))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(Scp079Camera), nameof(Scp079Camera.Room))),
 
-                    // elevatorDoor
-                    new(OpCodes.Ldloc_3),
+                // chamber
+                new(OpCodes.Ldloc_2),
 
-                    // (float)this._cost
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp079ElevatorStateChanger), nameof(Scp079ElevatorStateChanger._cost))),
-                    new(OpCodes.Conv_R4),
+                // (float)this._cost
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(typeof(Scp079ElevatorStateChanger), nameof(Scp079ElevatorStateChanger._cost))),
+                new(OpCodes.Conv_R4),
 
-                    // ElevatorTeleportingEventArgs ev = new(Player, RoomIdentifier, ElevatorDoor, float)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ElevatorTeleportingEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
+                // ElevatorTeleportingEventArgs ev = new(Player, RoomIdentifier, ElevatorChamber, float)
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ElevatorTeleportingEventArgs))[0]),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // Scp079.OnElevatorTeleporting(ev);
-                    new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnElevatorTeleporting))),
+                // Scp079.OnElevatorTeleporting(ev);
+                new(OpCodes.Call, Method(typeof(Scp079), nameof(Scp079.OnElevatorTeleporting))),
 
-                    // if (!ev.IsAllowed)
-                    //   return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ElevatorTeleportingEventArgs), nameof(ElevatorTeleportingEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse, returnLabel),
-                });
+                // if (!ev.IsAllowed)
+                //   return;
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ElevatorTeleportingEventArgs), nameof(ElevatorTeleportingEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse, returnLabel),
+            });
 
-            // Replace "(float)this._cost" with "ev.AuxiliaryPowerCost"
             offset = -1;
-            index = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(Scp079ElevatorStateChanger), nameof(Scp079ElevatorStateChanger._cost)))) + offset;
+            index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(Scp079ElevatorStateChanger), nameof(Scp079ElevatorStateChanger._cost)))) + offset;
 
             newInstructions.RemoveRange(index, 3);
 
-            newInstructions.InsertRange(
-               index,
-               new CodeInstruction[]
-               {
-                    // ev.AuxiliaryPowerCost
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ElevatorTeleportingEventArgs), nameof(ElevatorTeleportingEventArgs.AuxiliaryPowerCost))),
-               });
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // ev.AuxiliaryPowerCost
+                new(OpCodes.Ldloc, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ElevatorTeleportingEventArgs), nameof(ElevatorTeleportingEventArgs.AuxiliaryPowerCost))),
+            });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 

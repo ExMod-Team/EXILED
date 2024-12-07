@@ -24,12 +24,11 @@ namespace Exiled.Events.EventArgs.Scp106
         /// Initializes a new instance of the <see cref="StalkingEventArgs"/> class.
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
-        /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public StalkingEventArgs(Player player, bool isAllowed = true)
+        public StalkingEventArgs(Player player)
         {
             Player = player;
             Scp106 = player.Role.As<Scp106Role>();
-            IsAllowed = isAllowed;
+            IsAllowed = true;
             MinimumVigor = Scp106StalkAbility.MinVigorToSubmerge;
         }
 
@@ -66,6 +65,7 @@ namespace Exiled.Events.EventArgs.Scp106
         /// <summary>
         /// Gets or sets a value indicating whether SCP-106 can stalk.
         /// </summary>
+        /// <remarks>IsAllowed doesn't indicate whether vigor is sufficient for Stalking. <see cref="MinimumVigor"></see> needs to be changed to override the base game check.</remarks>
         public bool IsAllowed { get; set; }
     }
 }

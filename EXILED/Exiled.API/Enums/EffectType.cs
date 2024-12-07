@@ -21,7 +21,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// This EffectType do not exist it's only use when not found or error.
         /// </summary>
-        None = -1, // TODO: remove = -1
+        None,
 
         /// <summary>
         /// The player isn't able to open their inventory or reload a weapon.
@@ -239,5 +239,25 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.Slowness"/>.
         /// </summary>
         Slowness,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Scp1344"/>.
+        /// </summary>
+        Scp1344,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SeveredEyes"/>.
+        /// </summary>
+        SeveredEyes,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.PitDeath"/>.
+        /// </summary>
+        PitDeath,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Blurred"/>.
+        /// </summary>
+        Blurred,
     }
 }

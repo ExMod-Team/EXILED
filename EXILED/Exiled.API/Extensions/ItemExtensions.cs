@@ -18,6 +18,7 @@ namespace Exiled.API.Extensions
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Attachments;
+    using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Pickups;
     using Structs;
 
@@ -123,12 +124,12 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="item">The <see cref="FirearmType">weapon</see> that you want to get maximum of.</param>
         /// <returns>Returns the maximum.</returns>
-        public static byte GetMaxAmmo(this FirearmType item)
+        public static int GetMaxAmmo(this FirearmType item)
         {
             if (!InventoryItemLoader.AvailableItems.TryGetValue(item.GetItemType(), out ItemBase itemBase) || itemBase is not InventorySystem.Items.Firearms.Firearm firearm)
                 return 0;
 
-            return firearm.AmmoManagerModule.MaxAmmo;
+            return (firearm.Modules.FirstOrDefault(x => x is IAmmoContainerModule) as IAmmoContainerModule).AmmoMax;
         }
 
         /// <summary>
@@ -323,5 +324,13 @@ namespace Exiled.API.Extensions
         /// <param name="type">The <see cref="ItemType"/> to check.</param>
         /// <returns><see cref="ItemCategory"/> of the specified <see cref="ItemType"/>.</returns>
         public static ItemCategory GetCategory(this ItemType type) => GetItemBase(type).Category;
+
+        /// <summary>
+        /// Checks if the specified <see cref="Firearm"/> has the specified <see cref="AttachmentName"/>.
+        /// </summary>
+        /// <param name="firearm">Weapon to check.</param>
+        /// <param name="attachment">Attachment to check.</param>
+        /// <returns><c>true</c> if weapon has the specified attachment. Otherwise, <c>false</c>.</returns>
+        public static bool HasAttachment(this Firearm firearm, AttachmentName attachment) => firearm.Attachments.FirstOrDefault(x => x.Name == attachment)?.IsEnabled ?? false;
     }
 }

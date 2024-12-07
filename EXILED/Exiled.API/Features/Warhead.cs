@@ -113,7 +113,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the warhead has already been detonated.
         /// </summary>
-        public static bool IsDetonated => Controller._alreadyDetonated;
+        public static bool IsDetonated => Controller.AlreadyDetonated;
 
         /// <summary>
         /// Gets a value indicating whether the warhead detonation is in progress.

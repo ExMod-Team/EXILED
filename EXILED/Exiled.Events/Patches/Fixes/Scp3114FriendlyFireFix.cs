@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Fixes
 
             Label skip = newInstructions[index].labels[0];
 
-            offset = -3;
+            offset = -4;
             index += offset;
 
             newInstructions.InsertRange(index, new[]
