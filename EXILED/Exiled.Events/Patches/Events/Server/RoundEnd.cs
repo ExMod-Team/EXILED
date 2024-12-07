@@ -70,9 +70,6 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldloc_S, 11),
                     new(OpCodes.Call, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
                     new(OpCodes.Brtrue_S, jmp),
-                    new(OpCodes.Pop),
-                    new(OpCodes.Stfld, Field(PrivateType, LeadingTeam)),
-                    new(OpCodes.Stfld, Field(PrivateType, LeadingTeam)),
                 });
 
             offset = 4;
@@ -81,7 +78,7 @@ namespace Exiled.Events.Patches.Events.Server
             newInstructions[index].labels.Add(jmp);
 
             // Get the whole leadingteam logic
-            offset = -2;
+            offset = -16;
             index = newInstructions.FindIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset;
             int offset2 = 1;
             int index2 = newInstructions.FindLastIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset2;
