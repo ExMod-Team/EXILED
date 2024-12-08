@@ -13,24 +13,18 @@ namespace Exiled.API.Features.Items
 
     using CameraShaking;
     using Enums;
-    using Exiled.API.Features.Pickups;
-    using Exiled.API.Interfaces;
-    using Exiled.API.Structs;
     using Extensions;
-    using InventorySystem;
-    using InventorySystem.Items;
-    using InventorySystem.Items.Firearms;
+    using Interfaces;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
-    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
-    using InventorySystem.Items.Pickups;
     using MEC;
-    using UnityEngine;
+    using Pickups;
+    using Structs;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
     using FirearmPickup = Pickups.FirearmPickup;
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="InventorySystem.Items.Firearms.Firearm"/>.
@@ -47,6 +41,8 @@ namespace Exiled.API.Features.Items
         /// </summary>
         internal static readonly Dictionary<FirearmType, uint> BaseCodesValue = new();
 
+        private readonly IPrimaryAmmoContainerModule ammoModule;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Firearm"/> class.
         /// </summary>
@@ -55,6 +51,11 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
+            foreach (ModuleBase mod in itemBase.Modules)
+            {
+                if (mod is IPrimaryAmmoContainerModule primary)
+                    ammoModule = primary;
+            }
         }
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace Exiled.API.Features.Items
                 IEnumerable<KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>>> playerPreferences =
                     AttachmentsServerHandler.PlayerPreferences.Where(
                         kvp => kvp.Key is not null).Select(
-                        (KeyValuePair<ReferenceHub, Dictionary<ItemType, uint>> keyValuePair) =>
+                        keyValuePair =>
                         {
                             return new KeyValuePair<Player, Dictionary<FirearmType, AttachmentIdentifier[]>>(
                                 Player.Get(keyValuePair.Key),
@@ -109,8 +110,8 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public int Ammo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored = value;
+            get => ammoModule?.AmmoStored ?? 0;
+            set => ammoModule?.ServerModifyAmmo(value);
         }
 
         /// <summary>
@@ -119,8 +120,21 @@ namespace Exiled.API.Features.Items
         /// <remarks>Disruptor can't be used for MaxAmmo.</remarks>
         public int MaxAmmo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoMax;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule)._defaultCapacity = value; // Synced?
+            get => ammoModule?.AmmoMax ?? 0;
+            set
+            {
+                switch (ammoModule)
+                {
+                    case null:
+                        throw new InvalidOperationException("Cannot change max ammo for non-ammo weapons.");
+                    case MagazineModule mag:
+                        mag._defaultCapacity = value;
+                        break;
+                    case CylinderAmmoModule:
+                        CylinderAmmoModule.ServerPrepareNewChambers(Serial, value);
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -131,7 +145,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="Enums.AmmoType"/> of the firearm.
         /// </summary>
-        public AmmoType AmmoType => (Base.Modules.OfType<MagazineModule>().FirstOrDefault()?.AmmoType ?? ItemType.None).GetAmmoType();
+        public AmmoType AmmoType => ammoModule?.AmmoType.GetAmmoType() ?? AmmoType.None;
 
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
@@ -408,7 +422,7 @@ namespace Exiled.API.Features.Items
         {
             firearmAttachment = default;
 
-            if (!Attachments.Any(attachment => attachment.Name == identifier.Name))
+            if (Attachments.All(attachment => attachment.Name != identifier.Name))
                 return false;
 
             firearmAttachment = GetAttachment(identifier);
@@ -560,11 +574,10 @@ namespace Exiled.API.Features.Items
         /// <param name="player">The <see cref="Player"/> of which must be cleared.</param>
         public void ClearPreferences(Player player)
         {
-            if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
-            {
-                foreach (KeyValuePair<ItemType, uint> kvp in dictionary)
-                    dictionary[kvp.Key] = kvp.Key.GetFirearmType().GetBaseCode();
-            }
+            if (!AttachmentsServerHandler.PlayerPreferences.TryGetValue(player.ReferenceHub, out Dictionary<ItemType, uint> dictionary))
+                return;
+            foreach (KeyValuePair<ItemType, uint> kvp in dictionary)
+                dictionary[kvp.Key] = kvp.Key.GetFirearmType().GetBaseCode();
         }
 
         /// <summary>
@@ -592,20 +605,22 @@ namespace Exiled.API.Features.Items
         /// <param name="emptyMagazine">Whether empty magazine should be loaded.</param>
         public void Reload(bool emptyMagazine = false)
         {
-            MagazineModule magazineModule = Base.Modules.OfType<MagazineModule>().FirstOrDefault();
-
-            if (magazineModule == null)
-                return;
-
-            magazineModule.ServerRemoveMagazine();
-
-            Timing.CallDelayed(0.1f, () =>
+            if (ammoModule is MagazineModule magazineModule)
             {
-                if (emptyMagazine)
-                    magazineModule.ServerInsertEmptyMagazine();
-                else
-                    magazineModule.ServerInsertMagazine();
-            });
+                magazineModule.ServerRemoveMagazine();
+
+                Timing.CallDelayed(0.1f, () =>
+                {
+                    if (emptyMagazine)
+                        magazineModule.ServerInsertEmptyMagazine();
+                    else
+                        magazineModule.ServerInsertMagazine();
+                });
+            }
+            else if (Base.TryGetModule(out AnimatorReloaderModuleBase animatorModule))
+            {
+                animatorModule.StartReloading();
+            }
         }
 
         /// <summary>
@@ -641,6 +656,8 @@ namespace Exiled.API.Features.Items
         {
             Base.Owner = newOwner.ReferenceHub;
             Base._footprintCacheSet = false;
+            foreach (SubcomponentBase component in Base.AllSubcomponents)
+                component.OnAdded();
         }
 
         /// <inheritdoc/>
@@ -650,8 +667,7 @@ namespace Exiled.API.Features.Items
 
             if (pickup is FirearmPickup firearmPickup)
             {
-                // TODO If synced
-                // MaxAmmo = firearmPickup.MaxAmmo;
+                Timing.CallDelayed(0.1f, () => Ammo = firearmPickup.Ammo);
             }
         }
     }

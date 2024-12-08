@@ -7,9 +7,13 @@
 
 namespace Exiled.API.Features.Pickups
 {
-    using Exiled.API.Interfaces;
+    using System;
 
+    using Interfaces;
     using InventorySystem.Items.Firearms;
+    using InventorySystem.Items.Firearms.Attachments;
+    using InventorySystem.Items.Firearms.Modules;
+    using UnityEngine;
 
     using BaseFirearm = InventorySystem.Items.Firearms.FirearmPickup;
 
@@ -18,6 +22,8 @@ namespace Exiled.API.Features.Pickups
     /// </summary>
     public class FirearmPickup : Pickup, IWrapper<BaseFirearm>
     {
+        private IPrimaryAmmoContainerModule module;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FirearmPickup"/> class.
         /// </summary>
@@ -26,6 +32,7 @@ namespace Exiled.API.Features.Pickups
             : base(pickupBase)
         {
             Base = pickupBase;
+            module = AttachmentPreview.TryGet(Base.CurId, false, out Firearm firearm) ? firearm.TryGetModule(out CylinderAmmoModule cylinder) ? cylinder : firearm.TryGetModule(out MagazineModule magazine) ? magazine : null : null;
         }
 
         /// <summary>
@@ -36,12 +43,7 @@ namespace Exiled.API.Features.Pickups
             : base(type)
         {
             Base = (BaseFirearm)((Pickup)this).Base;
-            IsDistributed = true;
-
-            // TODO not finish
-            /*
-            if (type is ItemType.ParticleDisruptor && Status.Ammo == 0)
-                Status = new FirearmStatus(5, FirearmStatusFlags.MagazineInserted, 0);*/
+            module = AttachmentPreview.TryGet(Base.CurId, false, out Firearm firearm) ? firearm.TryGetModule(out CylinderAmmoModule cylinder) ? cylinder : firearm.TryGetModule(out MagazineModule magazine) ? magazine : null : null;
         }
 
         /// <summary>
@@ -50,45 +52,19 @@ namespace Exiled.API.Features.Pickups
         public new BaseFirearm Base { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the pickup is already distributed.
-        /// </summary>
-        public bool IsDistributed { get; set; }
-
-        // TODO NOT FINISH
-        /*{
-            get => Base.Distributed;
-            set => Base.Distributed = value;
-        }*/
-
-        // TODO not finish
-
-        /*
-        /// <summary>
-        /// Gets or sets the <see cref="FirearmStatus"/>.
-        /// </summary>
-        public FirearmStatus Status
-        {
-            get => Base.NetworkStatus;
-            set => Base.NetworkStatus = value;
-        }
-        */
-
-        /// <summary>
         /// Gets or sets a value indicating how many ammo have this <see cref="FirearmPickup"/>.
         /// </summary>
         /// <remarks>This will be updated only when item will be picked up.</remarks>
-        public int Ammo { get; set; }
-
-        /*
-        /// <summary>
-        /// Gets or sets the <see cref="FirearmStatusFlags"/>.
-        /// </summary>
-        public FirearmStatusFlags Flags
+        public int Ammo
         {
-            get => Base.NetworkStatus.Flags;
-            set => Base.NetworkStatus = new(Base.NetworkStatus.Ammo, value, Base.NetworkStatus.Attachments);
+            get => module?.AmmoStored ?? 0;
+            set
+            {
+                if (module is null)
+                    throw new InvalidOperationException("Cannot set ammo for non-ammo using weapons.");
+                module.ServerModifyAmmo(value);
+            }
         }
-        */
 
         /// <summary>
         /// Gets or sets a value indicating whether the attachment code have this <see cref="FirearmPickup"/>.
@@ -96,13 +72,40 @@ namespace Exiled.API.Features.Pickups
         public uint Attachments
         {
             get => Base.Worldmodel.AttachmentCode;
-            set => Base.Worldmodel.AttachmentCode = value;
+            set => Base.Worldmodel.Setup(Base.CurId, Base.Worldmodel.WorldmodelType, value);
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the item has been distributed.
+        /// </summary>
+        public bool IsDistributed { get; internal set; }
 
         /// <summary>
         /// Returns the FirearmPickup in a human readable format.
         /// </summary>
         /// <returns>A string containing FirearmPickup related data.</returns>
-        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{IsDistributed}| -{/*Ammo*/0}-";
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* -{/*Ammo*/0}-";
+
+        /// <inheritdoc />
+        public override void Spawn()
+        {
+            base.Spawn();
+            Base.OnDistributed();
+        }
+
+        /// <inheritdoc />
+        public override Pickup Spawn(Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
+        {
+            Pickup pickup = base.Spawn(position, rotation, previousOwner);
+            Base.OnDistributed();
+            return pickup;
+        }
+
+        /// <inheritdoc />
+        public override void UnSpawn()
+        {
+            base.UnSpawn();
+            IsDistributed = false;
+        }
     }
 }

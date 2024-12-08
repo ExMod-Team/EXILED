@@ -7,22 +7,19 @@
 
 namespace Exiled.API.Features.Pickups
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    using Exiled.API.Extensions;
-    using Exiled.API.Features.Core;
-    using Exiled.API.Features.Pickups.Projectiles;
-    using Exiled.API.Interfaces;
-
+    using Core;
+    using Extensions;
+    using Interfaces;
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.Usables.Scp244;
-
     using Mirror;
+    using Projectiles;
     using RelativePositioning;
     using UnityEngine;
 
@@ -37,7 +34,6 @@ namespace Exiled.API.Features.Pickups
     using BaseScp1576Pickup = InventorySystem.Items.Usables.Scp1576.Scp1576Pickup;
     using BaseScp2176Projectile = InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile;
     using BaseScp330Pickup = InventorySystem.Items.Usables.Scp330.Scp330Pickup;
-
     using Object = UnityEngine.Object;
 
     /// <summary>
@@ -564,10 +560,16 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
+        /// Destroys the already spawned pickup.
+        /// </summary>
+        /// <seealso cref="UnSpawn"/>
+        public void Destroy() => Base.DestroySelf();
+
+        /// <summary>
         /// Spawns pickup on a server.
         /// </summary>
         /// <seealso cref="UnSpawn"/>
-        public void Spawn()
+        public virtual void Spawn()
         {
             // condition for projectiles
             if (!GameObject.activeSelf)
@@ -589,7 +591,7 @@ namespace Exiled.API.Features.Pickups
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <returns>The spawned <see cref="Pickup"/>.</returns>
         /// <seealso cref="Projectile.Spawn(Vector3, Quaternion?, bool, Player)"/>
-        public Pickup Spawn(Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
+        public virtual Pickup Spawn(Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
         {
             Position = position;
             Rotation = rotation ?? Quaternion.identity;
@@ -604,19 +606,13 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         /// <seealso cref="Spawn()"/>
         /// <seealso cref="Destroy"/>
-        public void UnSpawn()
+        public virtual void UnSpawn()
         {
             if (IsSpawned)
             {
                 NetworkServer.UnSpawn(GameObject);
             }
         }
-
-        /// <summary>
-        /// Destroys the already spawned pickup.
-        /// </summary>
-        /// <seealso cref="UnSpawn"/>
-        public void Destroy() => Base.DestroySelf();
 
         /// <summary>
         /// Clones the current pickup with a different serial.

@@ -12,7 +12,7 @@ namespace Exiled.API.Features.Toys
     using AdminToys;
 
     using Enums;
-    using Exiled.API.Interfaces;
+    using Interfaces;
 
     using UnityEngine;
 
@@ -30,11 +30,6 @@ namespace Exiled.API.Features.Toys
         {
             Base = lightSourceToy;
         }
-
-        /// <summary>
-        /// Gets the prefab.
-        /// </summary>
-        public static LightSourceToy Prefab => PrefabHelper.GetPrefab<LightSourceToy>(PrefabType.LightSourceToy);
 
         /// <summary>
         /// Gets the base <see cref="LightSourceToy"/>.
@@ -135,7 +130,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Light"/>.</returns>
         public static Light Create(Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
         {
-            Light light = new(UnityEngine.Object.Instantiate(Prefab))
+            Light light = new(Object.Instantiate(PrefabHelper.GetPrefab<LightSourceToy>(PrefabType.LightSourceToy)))
             {
                 Position = position ?? Vector3.zero,
                 Rotation = Quaternion.Euler(rotation ?? Vector3.zero),

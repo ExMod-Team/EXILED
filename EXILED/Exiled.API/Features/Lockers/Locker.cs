@@ -10,20 +10,18 @@ namespace Exiled.API.Features.Lockers
     using System.Collections.Generic;
     using System.Linq;
 
-    using Exiled.API.Enums;
-    using Exiled.API.Extensions;
-    using Exiled.API.Features;
-    using Exiled.API.Features.Pickups;
-    using Exiled.API.Interfaces;
-
+    using Enums;
+    using Extensions;
+    using Features;
+    using Interfaces;
     using InventorySystem.Items.Pickups;
     using MapGeneration.Distributors;
-
     using Mirror;
+    using Pickups;
     using UnityEngine;
 
     using BaseLocker = MapGeneration.Distributors.Locker;
-#nullable enable
+
     /// <summary>
     /// The in-game Locker.
     /// </summary>
@@ -79,7 +77,7 @@ namespace Exiled.API.Features.Lockers
         /// <summary>
         /// Gets the <see cref="Features.Room"/> in which the <see cref="Locker"/> is located.
         /// </summary>
-        public Room? Room => Room.Get(Position);
+        public Room Room => Room.Get(Position);
 
         /// <summary>
         /// Gets the <see cref="ZoneType"/> in which the locker is located.
@@ -126,7 +124,7 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         /// <param name="locker">The <see cref="BaseLocker"/> to get.</param>
         /// <returns>A <see cref="Locker"/> or <see langword="null"/> if not found.</returns>
-        public static Locker? Get(BaseLocker locker) => locker == null ? null :
+        public static Locker Get(BaseLocker locker) => locker == null ? null :
             BaseToExiledLockers.TryGetValue(locker, out Locker supply) ? supply : new Locker(locker);
 
         /// <summary>
@@ -149,7 +147,7 @@ namespace Exiled.API.Features.Lockers
         /// <param name="zone">The <see cref="ZoneType"/> to filter by. If unspecified, all zones are considered.</param>
         /// <param name="lockerType">The <see cref="LockerType"/> to filter by. If unspecified, all locker types are considered.</param>
         /// <returns>A random <see cref="Locker"/> object, or  <see langword="null"/> if no matching locker is found.</returns>
-        public static Locker? Random(ZoneType zone = ZoneType.Unspecified, LockerType lockerType = LockerType.Unknow)
+        public static Locker Random(ZoneType zone = ZoneType.Unspecified, LockerType lockerType = LockerType.Unknow)
         {
             IEnumerable<Locker> filteredLockers = List;
 

@@ -26,20 +26,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="firearm">
         /// <inheritdoc cref="Firearm" />
         /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public UnloadingWeaponEventArgs(Player player, Firearm firearm, bool isAllowed = true)
+        public UnloadingWeaponEventArgs(Player player, Firearm firearm)
         {
             Firearm = firearm;
             Player = player;
-            IsAllowed = isAllowed;
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the weapon can be unloaded.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
 
         /// <summary>
         /// Gets the <see cref="API.Features.Items.Firearm" /> being unloaded.
