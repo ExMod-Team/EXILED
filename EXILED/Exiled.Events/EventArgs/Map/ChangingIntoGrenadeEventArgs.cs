@@ -34,6 +34,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets a value indicating the pickup being changed into a grenade.
         /// </summary>
+        // TODO: Make that GrenadePickup
         public Pickup Pickup { get; }
 
         /// <summary>
