@@ -741,6 +741,10 @@ namespace Exiled.API.Features.Items
         {
             Base.Owner = newOwner.ReferenceHub;
             Base._footprintCacheSet = false;
+            foreach (ModuleBase module in Base.Modules)
+            {
+                module.OnAdded();
+            }
         }
 
         /// <inheritdoc/>
