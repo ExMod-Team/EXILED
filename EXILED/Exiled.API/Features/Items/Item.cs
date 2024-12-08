@@ -13,7 +13,6 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
@@ -224,7 +223,7 @@ namespace Exiled.API.Features.Items
                     Scp018Projectile => new Scp018(throwable),
                     _ => new Throwable(throwable),
                 },
-                _ => new Item(itemBase),
+                _ => new(itemBase),
             };
         }
 

@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Items
 {
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp1344;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
@@ -41,6 +42,11 @@ namespace Exiled.API.Features.Items
         public new Scp1344Item Base { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the item is worn.
+        /// </summary>
+        public bool IsWorn => Base.IsWorn;
+
+        /// <summary>
         /// Gets a value indicating whether it can be started to use.
         /// </summary>
         public bool CanStartUsing => Base.CanStartUsing;
@@ -55,9 +61,9 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Forcefully Deactivate SCP-1344.
+        /// Forcefully deactivate SCP-1344.
         /// </summary>
-        /// <param name="dropItem">Drop or not the item.</param>
+        /// <param name="dropItem">Whether or not 1344 should be dropped.</param>
         public void Deactivate(bool dropItem = false)
         {
             if (Status is not(Scp1344Status.Active or Scp1344Status.Stabbing or Scp1344Status.Dropping))
