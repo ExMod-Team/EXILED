@@ -693,20 +693,10 @@ namespace Exiled.API.Features.Items
         /// <param name="emptyMagazine">Whether empty magazine should be loaded.</param>
         public void Reload(bool emptyMagazine = false)
         {
-            MagazineModule magazineModule = Base.Modules.OfType<MagazineModule>().FirstOrDefault();
-
-            if (magazineModule == null)
-                return;
-
-            magazineModule.ServerRemoveMagazine();
-
-            Timing.CallDelayed(0.1f, () =>
+            if (Base.TryGetModule(out AnimatorReloaderModuleBase module))
             {
-                if (emptyMagazine)
-                    magazineModule.ServerInsertEmptyMagazine();
-                else
-                    magazineModule.ServerInsertMagazine();
-            });
+                module.StartReloading();
+            }
         }
 
         /// <summary>
