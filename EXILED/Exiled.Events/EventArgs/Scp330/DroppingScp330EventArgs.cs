@@ -39,9 +39,9 @@ namespace Exiled.Events.EventArgs.Scp330
         }
 
         /// <summary>
-        /// Gets or sets a value representing the <see cref="API.Features.Items.Item" /> being picked up.
+        /// Gets a value representing the <see cref="API.Features.Items.Item" /> being picked up.
         /// </summary>
-        public Scp330 Scp330 { get; set; } // Todo Remove set
+        public Scp330 Scp330 { get; }
 
         /// <inheritdoc/>
         public Item Item => Scp330;
