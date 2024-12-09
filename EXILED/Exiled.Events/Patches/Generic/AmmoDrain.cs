@@ -71,8 +71,7 @@ namespace Exiled.Events.Patches.Generic
 
             Label cnt = generator.DefineLabel();
 
-            // if (this is Scp079Camera camera)
-            //     Room.RoomIdentifierToRoom[Room].CamerasValue.Add(new Camera(camera));
+            // insert default instructions for getting ammo drain
             newInstructions.InsertRange(
                 0,
                 GetInstructions(firearm, ammoDrain, cnt));
@@ -80,6 +79,8 @@ namespace Exiled.Events.Patches.Generic
             int offset = 1;
             int index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.AmmoStored)))) + offset;
 
+            // divide max ammo by AmmoDrain
+            // we cant cock more ammo than we have in primary magazine, so we limit it due ammo drain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -91,6 +92,7 @@ namespace Exiled.Events.Patches.Generic
             offset = 0;
             index = newInstructions.FindIndex(i => i.Calls(Method(typeof(IPrimaryAmmoContainerModule), nameof(IPrimaryAmmoContainerModule.ServerModifyAmmo)))) + offset;
 
+            // multiply ammo that are removed from primary magazine, actuall logic of ammo drain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -114,6 +116,7 @@ namespace Exiled.Events.Patches.Generic
             LocalBuilder firearm = generator.DeclareLocal(typeof(API.Features.Items.Firearm));
             LocalBuilder ammoDrain = generator.DeclareLocal(typeof(int));
 
+            // insert default instructions for getting ammo drain
             Label cnt = generator.DefineLabel();
             newInstructions.InsertRange(
                 0,
@@ -122,6 +125,8 @@ namespace Exiled.Events.Patches.Generic
             int offset = 1;
             int index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.AmmoStored)))) + offset;
 
+            // divide max ammo by AmmoDrain
+            // we cant cock more ammo than we have in primary magazine, so we limit it due ammo drain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -133,6 +138,7 @@ namespace Exiled.Events.Patches.Generic
             offset = 0;
             index = newInstructions.FindIndex(i => i.Calls(Method(typeof(IPrimaryAmmoContainerModule), nameof(IPrimaryAmmoContainerModule.ServerModifyAmmo)))) + offset;
 
+            // multiply ammo that are removed from primary magazine, actuall logic of ammo drain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -163,6 +169,7 @@ namespace Exiled.Events.Patches.Generic
 
             Label cnt = generator.DefineLabel();
 
+            // insert default instructions for getting ammo drain
             newInstructions.InsertRange(
                 0,
                 AmmoDrainAutomatic.GetInstructions(firearm, ammoDrain, cnt));
@@ -170,6 +177,8 @@ namespace Exiled.Events.Patches.Generic
             int offset = 1;
             int index = newInstructions.FindLastIndex(i => i.Calls(PropertyGetter(typeof(PumpActionModule), nameof(PumpActionModule.AmmoStored)))) + offset;
 
+            // divide max ammo by AmmoDrain
+            // we cant cock more ammo than we have in primary magazine, so we limit it due ammo drain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -181,6 +190,7 @@ namespace Exiled.Events.Patches.Generic
             offset = 0;
             index = newInstructions.FindIndex(i => i.Calls(Method(typeof(IPrimaryAmmoContainerModule), nameof(IPrimaryAmmoContainerModule.ServerModifyAmmo)))) + offset;
 
+            // multiply ammo that are removed from primary magazine, actuall logic of ammo drain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -211,6 +221,7 @@ namespace Exiled.Events.Patches.Generic
 
             Label cnt = generator.DefineLabel();
 
+            // insert default instructions for getting ammo drain
             newInstructions.InsertRange(
                 0,
                 AmmoDrainAutomatic.GetInstructions(firearm, ammoDrain, cnt));
@@ -218,6 +229,9 @@ namespace Exiled.Events.Patches.Generic
             int offset = 1;
             int index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(IAmmoContainerModule), nameof(IAmmoContainerModule.AmmoMax)))) + offset;
 
+            // multiply max ammo by AmmoDrain
+            // there is little different logic for revolver, for other weapons we can patch methods for removing ammo after shooting/pumping, but for revolver we only can patch method for reload
+            // so our actions are inverted, multiply max ammo limit to select more ammo due AmmoDrain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -229,6 +243,7 @@ namespace Exiled.Events.Patches.Generic
             offset = 0;
             index = newInstructions.FindIndex(i => i.Calls(Method(typeof(IPrimaryAmmoContainerModule), nameof(IPrimaryAmmoContainerModule.ServerModifyAmmo)))) + offset;
 
+            // and divide ammo that are inserting in magazine, to implement AmmoDrain
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
