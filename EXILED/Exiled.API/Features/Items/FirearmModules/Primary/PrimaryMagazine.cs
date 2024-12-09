@@ -63,13 +63,5 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         /// Gets or sets an used <see cref="Exiled.API.Enums.AmmoType"/> for this magazine.
         /// </summary>
         public abstract AmmoType AmmoType { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether magazine is inserted.
-        /// </summary>
-        /// <remarks>
-        /// Not editable and always returns true for <see cref="CylinderAmmoModule"/>.
-        /// </remarks>
-        public abstract bool MagazineInserted { get; set; }
     }
 }

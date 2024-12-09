@@ -152,10 +152,7 @@ namespace Exiled.API.Features.Items
         /// </remarks>
         public int BarrelAmmo
         {
-            get
-            {
-                return BarrelMagazine?.Ammo ?? 0;
-            }
+            get => BarrelMagazine?.Ammo ?? 0;
 
             set
             {
@@ -187,10 +184,7 @@ namespace Exiled.API.Features.Items
         /// </remarks>
         public int MaxBarrelAmmo
         {
-            get
-            {
-                return BarrelMagazine?.MaxAmmo ?? 0;
-            }
+            get => BarrelMagazine?.MaxAmmo ?? 0;
 
             set
             {
@@ -202,8 +196,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the total amount of ammo in the firearm.
         /// </summary>
-        public int TotalMaxAmmo =>
-            Base.GetTotalMaxAmmo();
+        public int TotalMaxAmmo => Base.GetTotalMaxAmmo();
 
         /// <summary>
         /// Gets or sets a ammo drain per shoot.
@@ -212,7 +205,7 @@ namespace Exiled.API.Features.Items
         /// Always <see langword="1"/> by default.
         /// Applied on a high layer nether basegame ammo controllers.
         /// </remarks>
-        public int AmmoDrain { get; set; } = 2;
+        public int AmmoDrain { get; set; } = 1;
 
         /// <summary>
         /// Gets the <see cref="Enums.FirearmType"/> of the firearm.

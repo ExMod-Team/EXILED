@@ -101,10 +101,7 @@ namespace Exiled.API.Features.Items.FirearmModules
         /// <summary>
         /// Fills current <see cref="Ammo"/> to <see cref="MaxAmmo"/>.
         /// </summary>
-        public void Fill()
-        {
-            Ammo = MaxAmmo;
-        }
+        public void Fill() => Ammo = MaxAmmo;
 
         /// <summary>
         /// Resyncs a related values with a client.

@@ -57,50 +57,23 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         /// </summary>
         public override AmmoType AmmoType
         {
-            get
-            {
-                return Magazine.AmmoType.GetAmmoType();
-            }
-
-            set
-            {
-                CylinderModule.AmmoType = value.GetItemType();
-            }
-        }
-
-        /// <inheritdoc/>
-        public override bool MagazineInserted
-        {
-            get
-            {
-                return false;
-            }
-
-            set
-            {
-            }
+            get => Magazine.AmmoType.GetAmmoType();
+            set => CylinderModule.AmmoType = value.GetItemType();
         }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of chambers in cylindric magazine.
         /// </summary>
-        public IEnumerable<Chamber> Chambers =>
-            CylinderAmmoModule.GetChambersArrayForSerial(CylinderModule.ItemSerial, MaxAmmo).Select(baseChamber => new Chamber(baseChamber));
+        public IEnumerable<Chamber> Chambers => CylinderAmmoModule.GetChambersArrayForSerial(CylinderModule.ItemSerial, MaxAmmo).Select(baseChamber => new Chamber(baseChamber));
 
         /// <inheritdoc/>
-        public override void Resync()
-        {
-            CylinderModule._needsResyncing = true;
-        }
+        public override void Resync() => CylinderModule._needsResyncing = true;
 
         /// <summary>
         /// Rotates cylindric magazine by fixed rotatins.
         /// </summary>
         /// <param name="rotations">Rotations count.</param>
-        public void Rotate(int rotations)
-        {
-            CylinderModule.RotateCylinder(rotations);
-        }
+        public void Rotate(int rotations) => CylinderModule.RotateCylinder(rotations);
 
         /// <summary>
         /// A basic wrapper for chamber in cylinder magazine.
@@ -123,15 +96,8 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             /// </summary>
             public RevolverChamberState State
             {
-                get
-                {
-                    return (RevolverChamberState)baseChamber.ContextState;
-                }
-
-                set
-                {
-                    baseChamber.ContextState = (CylinderAmmoModule.ChamberState)value;
-                }
+                get => (RevolverChamberState)baseChamber.ContextState;
+                set => baseChamber.ContextState = (CylinderAmmoModule.ChamberState)value;
             }
         }
     }

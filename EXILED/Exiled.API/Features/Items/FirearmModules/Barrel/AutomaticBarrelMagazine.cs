@@ -44,15 +44,11 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         /// <inheritdoc/>
         public override int Ammo
         {
-            get
-            {
-                return AutomaticBarrel.AmmoStored;
-            }
+            get => AutomaticBarrel.AmmoStored;
 
             set
             {
                 AutomaticBarrel.AmmoStored = Mathf.Max(value, 0);
-
                 Resync();
             }
         }
@@ -63,10 +59,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         /// </remarks>
         public override int MaxAmmo
         {
-            get
-            {
-                return AutomaticBarrel.ChamberSize;
-            }
+            get => AutomaticBarrel.ChamberSize;
 
             set
             {
@@ -77,10 +70,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         /// <inheritdoc/>
         public override bool IsCocked
         {
-            get
-            {
-                return AutomaticBarrel.Cocked;
-            }
+            get => AutomaticBarrel.Cocked;
 
             set
             {
@@ -92,18 +82,14 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         /// <summary>
         /// Gets a value indicating whether barrel magazine has open bolt or not.
         /// </summary>
-        public bool IsOpenBolted =>
-            AutomaticBarrel.OpenBolt;
+        public bool IsOpenBolted => AutomaticBarrel.OpenBolt;
 
         /// <summary>
         /// Gets or sets a value indicating whether barrel bolt is currently locked.
         /// </summary>
         public bool BoltLocked
         {
-            get
-            {
-                return AutomaticBarrel.BoltLocked;
-            }
+            get => AutomaticBarrel.BoltLocked;
 
             set
             {
@@ -113,9 +99,6 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         }
 
         /// <inheritdoc/>
-        public override void Resync()
-        {
-            AutomaticBarrel.ServerResync();
-        }
+        public override void Resync() => AutomaticBarrel.ServerResync();
     }
 }

@@ -61,8 +61,10 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             }
         }
 
-        /// <inheritdoc/>
-        public override bool MagazineInserted
+        /// <summary>
+        /// Gets or sets a value indicating whether magazine is inserted.
+        /// </summary>
+        public bool MagazineInserted
         {
             get
             {

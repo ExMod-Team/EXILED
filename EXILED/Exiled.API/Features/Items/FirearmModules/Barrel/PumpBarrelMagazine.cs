@@ -44,15 +44,11 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         /// <inheritdoc/>
         public override int Ammo
         {
-            get
-            {
-                return PumpBarrel.SyncChambered;
-            }
+            get => PumpBarrel.SyncChambered;
 
             set
             {
                 PumpBarrel.SyncChambered = Mathf.Max(value, 0);
-
                 Resync();
             }
         }
@@ -62,15 +58,11 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         /// </summary>
         public int CockedAmmo
         {
-            get
-            {
-                return PumpBarrel.SyncCocked;
-            }
+            get => PumpBarrel.SyncCocked;
 
             set
             {
                 PumpBarrel.SyncCocked = Mathf.Max(value, 0);
-
                 Resync();
             }
         }
@@ -78,24 +70,14 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         /// <inheritdoc/>
         public override int MaxAmmo
         {
-            get
-            {
-                return PumpBarrel._numberOfBarrels;
-            }
-
-            set
-            {
-                PumpBarrel._numberOfBarrels = Mathf.Max(value, 0);
-            }
+            get => PumpBarrel._numberOfBarrels;
+            set => PumpBarrel._numberOfBarrels = Mathf.Max(value, 0);
         }
 
         /// <inheritdoc/>
         public override bool IsCocked
         {
-            get
-            {
-                return PumpBarrel.SyncCocked > 0;
-            }
+            get => PumpBarrel.SyncCocked > 0;
 
             set
             {
@@ -105,9 +87,6 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         }
 
         /// <inheritdoc/>
-        public override void Resync()
-        {
-            PumpBarrel.ServerResync();
-        }
+        public override void Resync() => PumpBarrel.ServerResync();
     }
 }
