@@ -11,6 +11,7 @@ namespace Exiled.Events.Patches.Events.Player
 #pragma warning disable SA1600
 #pragma warning disable SA1649
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
@@ -68,9 +69,7 @@ namespace Exiled.Events.Patches.Events.Player
             offset = -2;
             int index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.Cocked)))) + offset;
 
-            newInstructions.InsertRange(
-                index,
-                GetInstructions(newInstructions[index], ret));
+            newInstructions.InsertRange(index, GetInstructions(newInstructions[index], ret));
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -93,11 +92,43 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label ret = generator.DefineLabel();
 
-            newInstructions.InsertRange(
-                0,
-                DryFireAutomatic.GetInstructions(newInstructions[0], ret));
+            newInstructions.InsertRange(0, DryFireAutomatic.GetInstructions(newInstructions[0], ret));
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+
+    /// <summary>
+    /// Patches <see cref="DoubleActionModule.FireDry()"/>
+    /// to add <see cref="Player.DryfiringWeapon"/> event for double shots.
+    /// </summary>
+    [EventPatch(typeof(Player), nameof(Player.DryfiringWeapon))]
+    [HarmonyPatch(typeof(PumpActionModule), nameof(PumpActionModule.ShootOneBarrel))]
+    internal class DryFirePump
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            Label ret = generator.DefineLabel();
+
+            int offset = -7;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
+
+            // firstly, set `flag` to a false, and then if `IsAllowed == false` we could return without problems 
+            newInstructions.InsertRange(index, new CodeInstruction[]
+                {
+                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Stloc_1),
+                }.Concat(DryFireAutomatic.GetInstructions(newInstructions[0], ret)));
+
+            // place return label to a ldloc instruction, to return `flag` variables
+            newInstructions[newInstructions.Count - 2].labels.Add(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
