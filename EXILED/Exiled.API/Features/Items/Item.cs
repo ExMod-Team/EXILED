@@ -16,6 +16,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.Keycards;
@@ -50,6 +51,10 @@ namespace Exiled.API.Features.Items
         public Item(ItemBase itemBase)
         {
             Base = itemBase;
+
+            if (Base is ModularAutosyncItem modularItem && modularItem.InstantiationStatus is AutosyncInstantiationStatus.Template or AutosyncInstantiationStatus.SimulatedInstance)
+                return;
+
             BaseToItem.Add(itemBase, this);
 
             if (Base.ItemSerial is 0 && itemBase.Owner != null)

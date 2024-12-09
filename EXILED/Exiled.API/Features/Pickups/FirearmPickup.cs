@@ -10,6 +10,9 @@ namespace Exiled.API.Features.Pickups
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items.Firearms;
+    using InventorySystem.Items.Firearms.Attachments;
+
+    using UnityEngine;
 
     using BaseFirearm = InventorySystem.Items.Firearms.FirearmPickup;
 
@@ -36,7 +39,6 @@ namespace Exiled.API.Features.Pickups
             : base(type)
         {
             Base = (BaseFirearm)((Pickup)this).Base;
-            IsDistributed = true;
 
             // TODO not finish
             /*
@@ -50,45 +52,49 @@ namespace Exiled.API.Features.Pickups
         public new BaseFirearm Base { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the pickup is already distributed.
+        /// Gets a value indicating whether the pickup is already distributed.
         /// </summary>
-        public bool IsDistributed { get; set; }
-
-        // TODO NOT FINISH
-        /*{
-            get => Base.Distributed;
-            set => Base.Distributed = value;
-        }*/
-
-        // TODO not finish
-
-        /*
-        /// <summary>
-        /// Gets or sets the <see cref="FirearmStatus"/>.
-        /// </summary>
-        public FirearmStatus Status
-        {
-            get => Base.NetworkStatus;
-            set => Base.NetworkStatus = value;
-        }
-        */
+        public bool IsDistributed { get; internal set; }
 
         /// <summary>
         /// Gets or sets a value indicating how many ammo have this <see cref="FirearmPickup"/>.
         /// </summary>
-        /// <remarks>This will be updated only when item will be picked up.</remarks>
-        public int Ammo { get; set; }
-
-        /*
-        /// <summary>
-        /// Gets or sets the <see cref="FirearmStatusFlags"/>.
-        /// </summary>
-        public FirearmStatusFlags Flags
+        public int Ammo
         {
-            get => Base.NetworkStatus.Flags;
-            set => Base.NetworkStatus = new(Base.NetworkStatus.Ammo, value, Base.NetworkStatus.Attachments);
+            get
+            {
+                if (!AttachmentPreview.TryGetOrAddInstance(Type, out Firearm baseFirearm))
+                    return 0;
+
+                Items.Firearm firearm = Items.Item.Get<Items.Firearm>(baseFirearm);
+
+                ushort oldSerial = firearm.Serial;
+
+                firearm.Serial = Serial;
+
+                int ammo = firearm.PrimaryMagazine.Ammo;
+
+                firearm.Serial = oldSerial;
+
+                return ammo;
+            }
+
+            set
+            {
+                if (!AttachmentPreview.TryGetOrAddInstance(Type, out Firearm baseFirearm))
+                    return;
+
+                Items.Firearm firearm = Items.Item.Get<Items.Firearm>(baseFirearm);
+
+                ushort oldSerial = firearm.Serial;
+
+                firearm.Serial = Serial;
+
+                firearm.PrimaryMagazine.Ammo = value;
+
+                firearm.Serial = oldSerial;
+            }
         }
-        */
 
         /// <summary>
         /// Gets or sets a value indicating whether the attachment code have this <see cref="FirearmPickup"/>.
@@ -96,7 +102,15 @@ namespace Exiled.API.Features.Pickups
         public uint Attachments
         {
             get => Base.Worldmodel.AttachmentCode;
-            set => Base.Worldmodel.AttachmentCode = value;
+            set => Base.Worldmodel.Setup(Base.CurId, Base.Worldmodel.WorldmodelType, value);
+        }
+
+        /// <inheritdoc />
+        public override void Spawn()
+        {
+            base.Spawn();
+            if (!IsDistributed)
+                Base.OnDistributed();
         }
 
         /// <summary>
