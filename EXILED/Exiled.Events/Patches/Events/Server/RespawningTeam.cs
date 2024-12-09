@@ -10,19 +10,15 @@ namespace Exiled.Events.Patches.Events.Server
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
 
-    using Exiled.API.Extensions;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
     using Exiled.Events.Handlers;
     using HarmonyLib;
     using PlayerRoles;
-    using Respawning;
-    using Respawning.NamingRules;
     using Respawning.Waves;
 
     using static HarmonyLib.AccessTools;

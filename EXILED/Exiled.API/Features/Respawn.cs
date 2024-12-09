@@ -78,27 +78,6 @@ namespace Exiled.API.Features
         /// <remarks>This returns <see cref="SpawnableFaction.None">SpawnableFaction.None</see> unless a respawn has already started.</remarks>
         public static SpawnableTeamType NextKnownTeam => NextKnownSpawnableFaction.GetFaction().GetSpawnableTeam();
 
-        /* TODO: Possibly moved to TimedWave
-        /// <summary>
-        /// Gets or sets the amount of seconds before the next respawn phase will occur.
-        /// </summary>
-        public static float TimeUntilNextPhase
-        {
-            get => RespawnManager.Singleton._timeForNextSequence - (float)RespawnManager.Singleton._stopwatch.Elapsed.TotalSeconds
-            set => RespawnManager.Singleton._timeForNextSequence = (float)RespawnManager.Singleton._stopwatch.Elapsed.TotalSeconds + value;
-        }
-
-        /// <summary>
-        /// Gets a <see cref="TimeSpan"/> indicating the amount of time before the next respawn wave will occur.
-        /// </summary>
-        public static TimeSpan TimeUntilSpawnWave => TimeSpan.FromSeconds(TimeUntilNextPhase);
-
-        /// <summary>
-        /// Gets a <see cref="DateTime"/> indicating the moment in UTC time the next respawn wave will occur.
-        /// </summary>
-        public static DateTime NextTeamTime => DateTime.UtcNow.AddSeconds(TimeUntilSpawnWave.TotalSeconds);
-        */
-
         /// <summary>
         /// Gets the current state of the <see cref="WaveManager"/>.
         /// </summary>

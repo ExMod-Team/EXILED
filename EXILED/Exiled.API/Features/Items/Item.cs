@@ -13,7 +13,6 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
@@ -158,7 +157,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether this item is a weapon.
         /// </summary>
-        public bool IsWeapon => this is Firearm;
+        public bool IsWeapon => this is Firearm || Type is ItemType.Jailbird or ItemType.MicroHID;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is a firearm.
+        /// </summary>
+        public bool IsFirearm => this is Firearm;
 
         /// <summary>
         /// Gets a value indicating whether this item emits light.
@@ -224,7 +228,7 @@ namespace Exiled.API.Features.Items
                     Scp018Projectile => new Scp018(throwable),
                     _ => new Throwable(throwable),
                 },
-                _ => new Item(itemBase),
+                _ => new(itemBase),
             };
         }
 
