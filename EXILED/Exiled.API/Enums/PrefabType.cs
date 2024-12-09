@@ -16,10 +16,10 @@ namespace Exiled.API.Enums
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 #pragma warning disable SA1602 // Enumeration items should be documented
-        [Prefab(1883254029, "Player")]
+        [Prefab(3816198336, "Player")]
         Player,
 
-        [Prefab(2295511789, "EZ BreakableDoor")]
+        [Prefab(1883254029, "EZ BreakableDoor")]
         EZBreakableDoor,
 
         [Prefab(2295511789, "HCZ BreakableDoor")]
@@ -27,6 +27,42 @@ namespace Exiled.API.Enums
 
         [Prefab(3038351124, "LCZ BreakableDoor")]
         LCZBreakableDoor,
+
+        [Prefab(400539138, "HCZ OneSided")]
+        HCZOneSided,
+
+        [Prefab(2060920286, "HCZ TwoSided")]
+        HCZTwoSided,
+
+        [Prefab(3343949480, "OpenHallway")]
+        HCZOpenHallway,
+
+        [Prefab(3999209566, "OpenHallway Construct A")]
+        HCZOpenHallway_Construct_A,
+
+        [Prefab(38976586, "OpenHallway Clutter A")]
+        HCZOpenHallway_Clutter_A,
+
+        [Prefab(1687661105, "OpenHallway Clutter B")]
+        HCZOpenHallway_Clutter_B,
+
+        [Prefab(147203050, "OpenHallway Clutter C")]
+        HCZOpenHallway_Clutter_C,
+
+        [Prefab(1102032353, "OpenHallway Clutter D")]
+        HCZOpenHallway_Clutter_D,
+
+        [Prefab(2490430134, "OpenHallway Clutter E")]
+        HCZOpenHallway_Clutter_E,
+
+        [Prefab(2673083832, "OpenHallway Clutter F")]
+        HCZOpenHallway_Clutter_F,
+
+        [Prefab(2536312960, "OpenHallway Clutter G")]
+        HCZOpenHallway_Clutter_G,
+
+        [Prefab(2176035362, "HCZ BulkDoor")]
+        HCZBulkDoor,
 
         [Prefab(1704345398, "sportTargetPrefab")]
         SportTarget,
@@ -46,6 +82,9 @@ namespace Exiled.API.Enums
         [Prefab(3956448839, "LightSourceToy")]
         LightSourceToy,
 
+        [Prefab(712426663, "SpeakerToy")]
+        SpeakerToy,
+
         [Prefab(2672653014, "RegularKeycardPickup")]
         RegularKeycardPickup,
 
@@ -54,6 +93,9 @@ namespace Exiled.API.Enums
 
         [Prefab(248357067, "RadioPickup")]
         RadioPickup,
+
+        [Prefab(1925130715, "FirearmPickup")]
+        FirearmPickup,
 
         [Prefab(1925130715, "Com15Pickup")]
         Com15Pickup,
@@ -181,6 +223,9 @@ namespace Exiled.API.Enums
         [Prefab(3532394942, "LanternPickup")]
         LanternPickup,
 
+        [Prefab(4143962266, "SCP1344Pickup")]
+        Scp1344Pickup,
+
         [Prefab(825024811, "Amnestic Cloud Hazard")]
         AmnesticCloudHazard,
 
@@ -208,8 +253,17 @@ namespace Exiled.API.Enums
         [Prefab(3372339835, "Scp1576PedestalStructure Variant")]
         Scp1576PedestalStructure,
 
+        [Prefab(2399831573, "AntiScp207PedestalStructure Variant")]
+        AntiScp207PedestalStructure,
+
+        [Prefab(1763950070, "Scp1344PedestalStructure Variant")]
+        Scp1344PedestalStructure,
+
         [Prefab(2830750618, "LargeGunLockerStructure")]
         LargeGunLockerStructure,
+
+        [Prefab(2372810204, "Experimental Weapon Locker")]
+        ExperimentalLockerStructure,
 
         [Prefab(3352879624, "RifleRackStructure")]
         RifleRackStructure,
@@ -273,5 +327,14 @@ namespace Exiled.API.Enums
 
         [Prefab(3721192489, "Scp3114_Ragdoll")]
         Scp3114Ragdoll,
+
+        [Prefab(2588580243, "ElevatorChamber")]
+        ElevatorChamber,
+
+        [Prefab(1757973841, "ElevatorChamber_Gates")]
+        ElevatorChamber_Gates,
+
+        [Prefab(912031041, "ElevatorChamberNuke")]
+        ElevatorChamberNuke,
     }
 }

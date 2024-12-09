@@ -93,6 +93,11 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
+        /// Repair the door.
+        /// </summary>
+        public void Repair() => Base.ServerRepair();
+
+        /// <summary>
         /// Damages the door.
         /// </summary>
         /// <param name="amount">Amount to be dealt.</param>

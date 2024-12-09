@@ -16,6 +16,7 @@ namespace Exiled.Loader
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Text;
+    using System.Threading;
 
     using Exiled.API.Features;
     using Exiled.Loader.GHApi;
@@ -112,9 +113,16 @@ namespace Exiled.Loader
         /// </summary>
         internal void CheckUpdate()
         {
-            using HttpClient client = CreateHttpClient();
-            if (Busy = FindUpdate(client, !File.Exists(Path.Combine(Paths.Dependencies, "Exiled.API.dll")), out NewVersion newVersion))
-                Update(client, newVersion);
+            try
+            {
+                using HttpClient client = CreateHttpClient();
+                if (Busy = FindUpdate(client, !PluginAPI.Loader.AssemblyLoader.Dependencies.Exists(x => x.GetName().Name == "Exiled.API"), out NewVersion newVersion))
+                    Update(client, newVersion);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         /// <summary>
@@ -144,6 +152,7 @@ namespace Exiled.Loader
         {
             try
             {
+                Thread.Sleep(5000); // Wait for the assemblies to load
                 ExiledLib smallestVersion = ExiledLib.Min();
 
                 Log.Info($"Found the smallest version of Exiled - {smallestVersion.Library.GetName().Name}:{smallestVersion.Version}");

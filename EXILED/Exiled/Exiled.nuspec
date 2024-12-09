@@ -7,7 +7,7 @@
     <version>$version$</version>
     <authors>ExMod-Team</authors>
     <owners>ExMod-Team</owners>
-    <copyright>Copyright © Exiled Official 2024 - $year$</copyright>
+    <copyright>Copyright © ExMod Team 2024 - $year$</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <repository type="Git" url="https://github.com/ExMod-Team/EXILED" />
     <licenseUrl>https://github.com/ExMod-Team/EXILED/blob/master/LICENSE</licenseUrl>

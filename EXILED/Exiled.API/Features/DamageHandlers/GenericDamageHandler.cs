@@ -10,14 +10,12 @@ namespace Exiled.API.Features.DamageHandlers
     using Enums;
 
     using Footprinting;
-
     using Items;
 
     using PlayerRoles.PlayableScps.Scp096;
     using PlayerRoles.PlayableScps.Scp939;
 
     using PlayerStatsSystem;
-
     using UnityEngine;
 
     /// <summary>
@@ -92,6 +90,9 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.SeveredHands:
                     Base = new UniversalDamageHandler(damage, DeathTranslations.SeveredHands, cassieAnnouncement);
                     break;
+                case DamageType.SeveredEyes:
+                    Base = new UniversalDamageHandler(damage, DeathTranslations.Scp1344, cassieAnnouncement);
+                    break;
                 case DamageType.Warhead:
                     Base = new WarheadDamageHandler();
                     break;
@@ -113,7 +114,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new MicroHidDamageHandler(microHidOwner, damage);
                     break;
                 case DamageType.Explosion:
-                    Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0);
+                    Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);
                     break;
                 case DamageType.Firearm:
                     GenericFirearm(player, attacker, damage, damageType, ItemType.GunAK);
@@ -155,7 +156,7 @@ namespace Exiled.API.Features.DamageHandlers
                     GenericFirearm(player, attacker, damage, damageType, ItemType.GunA7);
                     break;
                 case DamageType.ParticleDisruptor:
-                    Base = new DisruptorDamageHandler(Attacker, damage);
+                    Base = new DisruptorDamageHandler(new (Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, InventorySystem.Items.Firearms.Modules.DisruptorActionModule.FiringState.FiringSingle), Vector3.up, damage);
                     break;
                 case DamageType.Scp096:
                     Scp096Role curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
@@ -259,7 +260,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Owner = attacker.ReferenceHub,
                 },
             };
-            Base = new PlayerStatsSystem.FirearmDamageHandler(firearm.Base, amount);
+            Base = new PlayerStatsSystem.FirearmDamageHandler() { Firearm = firearm.Base, Damage = amount };
         }
     }
 }

@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Scp914
 {
-    using System;
-
     using API.Features;
     using API.Features.Items;
     using global::Scp914;
@@ -42,12 +40,6 @@ namespace Exiled.Events.EventArgs.Scp914
             KnobSetting = knobSetting;
             IsAllowed = isAllowed;
         }
-
-        /// <summary>
-        /// Gets the <see cref="Scp914Controller" /> instance.
-        /// </summary>
-        [Obsolete("Use Scp914::Scp914Controller instead.")]
-        public Scp914Controller Scp914 => API.Features.Scp914.Scp914Controller;
 
         /// <summary>
         /// Gets or sets SCP-914 working knob setting.

@@ -117,7 +117,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the ragdoll has been already cleaned up.
         /// </summary>
-        public bool IsFrozen => Base._frozen;
+        public bool IsFrozen => Base.Frozen;
 
         /// <summary>
         /// Gets or sets a value indicating whether the ragdoll can be cleaned up.
@@ -358,8 +358,8 @@ namespace Exiled.API.Features
         /// <param name="rotation">The rotation of the ragdoll.</param>
         /// <param name="owner">The optional owner of the ragdoll.</param>
         /// <returns>The ragdoll.</returns>
-        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, DamageHandlerBase damageHandler, Vector3 position, Quaternion rotation, Player owner = null)
-            => CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, position, rotation, name, NetworkTime.time));
+        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, DamageHandlerBase damageHandler, Vector3 position, Quaternion? rotation = null, Player owner = null)
+            => CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, position, rotation ?? Quaternion.identity, name, NetworkTime.time));
 
         /// <summary>
         /// Creates and spawns a new ragdoll.
@@ -371,7 +371,7 @@ namespace Exiled.API.Features
         /// <param name="rotation">The rotation of the ragdoll.</param>
         /// <param name="owner">The optional owner of the ragdoll.</param>
         /// <returns>The ragdoll.</returns>
-        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, string deathReason, Vector3 position, Quaternion rotation, Player owner = null)
+        public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, string deathReason, Vector3 position, Quaternion? rotation = null, Player owner = null)
             => CreateAndSpawn(roleType, name, new CustomReasonDamageHandler(deathReason), position, rotation, owner);
 
         /// <summary>

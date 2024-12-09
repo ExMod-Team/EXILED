@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.EventArgs.Player // TODO: Wrong namespace should be Server
+namespace Exiled.Events.EventArgs.Server
 {
     using API.Features;
 

@@ -98,7 +98,7 @@ namespace Exiled.API.Features.Toys
             set
             {
                 AdminToyBase.transform.rotation = value;
-                AdminToyBase.NetworkRotation = new LowPrecisionQuaternion(value);
+                AdminToyBase.NetworkRotation = value;
             }
         }
 
@@ -155,6 +155,7 @@ namespace Exiled.API.Features.Toys
                 LightSourceToy lightSourceToy => new Light(lightSourceToy),
                 PrimitiveObjectToy primitiveObjectToy => new Primitive(primitiveObjectToy),
                 ShootingTarget shootingTarget => new ShootingTargetToy(shootingTarget),
+                SpeakerToy speakerToy => new Speaker(speakerToy),
                 _ => throw new System.NotImplementedException()
             };
         }
