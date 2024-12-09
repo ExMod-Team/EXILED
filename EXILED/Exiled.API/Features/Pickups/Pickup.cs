@@ -567,7 +567,7 @@ namespace Exiled.API.Features.Pickups
         /// Spawns pickup on a server.
         /// </summary>
         /// <seealso cref="UnSpawn"/>
-        public void Spawn()
+        public virtual void Spawn()
         {
             // condition for projectiles
             if (!GameObject.activeSelf)

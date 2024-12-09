@@ -560,6 +560,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangedEmotionEventArgs> ChangedEmotion { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/>'s rotates the revolver.
+        /// </summary>
+        public static Event<RotatingRevolverEventArgs> RotatingRevolver { get; set; } = new();
+
+        /// <summary>
         /// Called before a player's emotion changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingEmotionEventArgs"/> instance.</param>
@@ -570,11 +575,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangedEmotionEventArgs"/> instance.</param>
         public static void OnChangedEmotion(ChangedEmotionEventArgs ev) => ChangedEmotion.InvokeSafely(ev);
-
-        /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/>'s rotates the revolver.
-        /// </summary>
-        public static Event<RotatingRevolverEventArgs> RotatingRevolver { get; set; } = new();
 
         /// <summary>
         /// Called before reserved slot is resolved for a <see cref="API.Features.Player"/>.
