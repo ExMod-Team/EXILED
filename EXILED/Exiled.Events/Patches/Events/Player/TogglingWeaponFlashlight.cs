@@ -46,8 +46,6 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = -1;
             int index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(SubcomponentBase), nameof(SubcomponentBase.ItemSerial)))) + offset;
 
-            Exiled.API.Features.Log.Error(index);
-
             newInstructions.InsertRange(
                 index,
                 new[]
