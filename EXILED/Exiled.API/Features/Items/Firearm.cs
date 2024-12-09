@@ -669,6 +669,9 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Reloads current <see cref="Firearm"/>.
         /// </summary>
+        /// <remarks>
+        /// For specific reloading logic you also can use <see cref="NormalMagazine"/> for avaible weapons.
+        /// </remarks>
         public void Reload()
         {
             if (Base.TryGetModule(out AnimatorReloaderModuleBase module))
