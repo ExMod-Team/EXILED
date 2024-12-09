@@ -28,12 +28,19 @@ namespace Exiled.Events.EventArgs.Player
         public ShotEventArgs(HitscanHitregModuleBase hitregModule, RaycastHit hitInfo, InventorySystem.Items.Firearms.Firearm firearm, IDestructible destructible)
         {
             HitregModule = hitregModule;
+            Firearm = Item.Get<Firearm>(firearm);
+            Player = Firearm.Owner;
+            Distance = hitInfo.distance;
+            Position = hitInfo.point;
             RaycastHit = hitInfo;
             Destructible = destructible;
-            Firearm = Item.Get<Firearm>(firearm);
+            if (Destructible is null)
+            {
+                hitInfo.distance = float.PositiveInfinity;
+                return;
+            }
 
-            Player = Firearm.Owner;
-            Damage = Destructible is not null ? HitregModule.DamageAtDistance(hitInfo.distance) : 0f;
+            Damage = HitregModule.DamageAtDistance(hitInfo.distance);
 
             if (Destructible is HitboxIdentity hitboxIdentity)
             {
@@ -61,19 +68,24 @@ namespace Exiled.Events.EventArgs.Player
         public HitscanHitregModuleBase HitregModule { get; }
 
         /// <summary>
-        /// Gets the raycast info.
+        /// Gets the shot distance. Can be <c>0.0f</c> if the raycast doesn't hit collider.
+        /// </summary>
+        public float Distance { get; }
+
+        /// <summary>
+        /// Gets the shot position. Can be <see langword="null"/> if the raycast doesn't hit collider.
+        /// </summary>
+        public Vector3 Position { get; }
+
+        /// <summary>
+        /// Gets the <see cref="IDestructible"/> component of the hit collider. Can be <see langword="null"/>.
+        /// </summary>
+        public IDestructible Destructible { get; }
+
+        /// <summary>
+        /// Gets the raycast result.
         /// </summary>
         public RaycastHit RaycastHit { get; }
-
-        /// <summary>
-        /// Gets the bullet travel distance.
-        /// </summary>
-        public float Distance => RaycastHit.distance;
-
-        /// <summary>
-        /// Gets the position of the hit.
-        /// </summary>
-        public Vector3 Position => RaycastHit.point;
 
         /// <summary>
         /// Gets the firearm base damage at the hit distance. Actual inflicted damage may vary.
@@ -86,14 +98,9 @@ namespace Exiled.Events.EventArgs.Player
         public Player Target { get; }
 
         /// <summary>
-        /// Gets the <see cref="HitboxIdentity"/> component of the target player that was hit. Can be null.
+        /// Gets the <see cref="HitboxIdentity"/> component of the target player that was hit. Can be <see langword="null"/>.
         /// </summary>
         public HitboxIdentity Hitbox { get; }
-
-        /// <summary>
-        /// Gets the <see cref="IDestructible"/> component of the hit collider. Can be null.
-        /// </summary>
-        public IDestructible Destructible { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the shot can deal damage.

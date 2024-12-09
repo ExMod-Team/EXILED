@@ -21,7 +21,7 @@ namespace Exiled.Installer
         /// </summary>
         public static readonly RootCommand RootCommand = new()
         {
-            new Option<DirectoryInfo?>(
+            new Option<DirectoryInfo>(
                 new[] { "-p", "--path" },
                 (parsed) =>
                 {
@@ -44,7 +44,7 @@ namespace Exiled.Installer
                 "Path to the folder with the SL server")
                 { IsRequired = true },
 
-            new Option<DirectoryInfo?>(
+            new Option<DirectoryInfo>(
                 "--appdata",
                 (parsed) =>
                 {
@@ -67,7 +67,7 @@ namespace Exiled.Installer
                 "Forces the folder to be the AppData folder (useful for containers when pterodactyl runs as root)")
                 { IsRequired = true },
 
-             new Option<DirectoryInfo?>(
+             new Option<DirectoryInfo>(
                 "--exiled",
                 (parsed) =>
                 {
@@ -96,17 +96,17 @@ namespace Exiled.Installer
                 "Includes pre-releases")
                 { IsRequired = false },
 
-            new Option<string?>(
+            new Option<string>(
                 "--target-port",
                 "Target port for ExiledLoader installation")
                 { IsRequired = false },
 
-            new Option<string?>(
+            new Option<string>(
                 "--target-version",
                 "Target version for installation")
                 { IsRequired = false },
 
-            new Option<string?>(
+            new Option<string>(
                 "--github-token",
                 "Uses a token for auth in case the rate limit is exceeded (no permissions required)")
                 { IsRequired = false },
@@ -122,7 +122,6 @@ namespace Exiled.Installer
                 { IsRequired = false },
         };
 
-#nullable disable
         /// <summary>
         /// Gets or sets the directory path.
         /// </summary>
@@ -137,7 +136,7 @@ namespace Exiled.Installer
         /// Gets or sets the Exiled directory path.
         /// </summary>
         public DirectoryInfo Exiled { get; set; }
-#nullable restore
+
         /// <summary>
         /// Gets or sets if it is a prerelease.
         /// </summary>
@@ -146,17 +145,17 @@ namespace Exiled.Installer
         /// <summary>
         /// Gets or sets the target port.
         /// </summary>
-        public string? TargetPort { get; set; }
+        public string TargetPort { get; set; }
 
         /// <summary>
         /// Gets or sets the target version.
         /// </summary>
-        public string? TargetVersion { get; set; }
+        public string TargetVersion { get; set; }
 
         /// <summary>
         /// Gets or sets the GitHub token.
         /// </summary>
-        public string? GitHubToken { get; set; }
+        public string GitHubToken { get; set; }
 
         /// <summary>
         /// Gets or sets the version of Exiled available.

@@ -12,23 +12,21 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Linq;
     using System.Reflection.Emit;
 
+    using API.Enums;
     using API.Features;
     using API.Features.Pools;
     using API.Features.Roles;
+    using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Player;
     using HarmonyLib;
     using InventorySystem;
-    using InventorySystem.Configs;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables.Scp1344;
-    using Mirror;
-
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
-    using static UnityEngine.GraphicsBuffer;
 
     using Player = Handlers.Player;
 
@@ -151,8 +149,18 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // ChangingRole.ChangeInventory(changingRoleEventArgs, oldRoleType);
                     new(OpCodes.Call, Method(typeof(ChangingRoleAndSpawned), nameof(ChangeInventory))),
+                });
 
-                    // invoke OnSpawned
+            newInstructions.InsertRange(
+                newInstructions.Count - 1,
+                new CodeInstruction[]
+                {
+                    // if (this.isLocalPlayer)
+                    //     return;
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.isLocalPlayer))),
+                    new(OpCodes.Brtrue_S, returnLabel),
+
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
@@ -186,71 +194,69 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
-                {
+                if (ev == null || ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
                     return;
-                }
 
                 Inventory inventory = ev.Player.Inventory;
-                bool flag = InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped;
-                if (flag)
+
+                if (ev.Reason == SpawnReason.Escaped && InventoryItemProvider.KeepItemsAfterEscaping)
                 {
-                    List<ItemPickupBase> list = new List<ItemPickupBase>();
+                    List<ItemPickupBase> list = ListPool<ItemPickupBase>.Pool.Get();
                     if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
-                    {
                         bodyArmor.DontRemoveExcessOnDrop = true;
+
+                    foreach (Item item in ev.Player.Items)
+                    {
+                        if (item is Scp1344 scp1344)
+                            scp1344.Status = Scp1344Status.Idle;
                     }
 
-                    HashSet<ushort> hashSet = HashSetPool<ushort>.Pool.Get();
-                    foreach (KeyValuePair<ushort, ItemBase> item2 in inventory.UserInventory.Items)
+                    while (inventory.UserInventory.Items.Count > 0)
                     {
-                        if (item2.Value is Scp1344Item scp1344Item)
-                        {
-                            scp1344Item.Status = Scp1344Status.Idle;
-                        }
+                        int startCount = inventory.UserInventory.Items.Count;
+                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
+                        ItemPickupBase item = inventory.ServerDropItem(key);
+
+                        // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
+                        if (startCount == inventory.UserInventory.Items.Count)
+                            inventory.UserInventory.Items.Remove(key);
                         else
-                        {
-                            hashSet.Add(item2.Key);
-                        }
+                            list.Add(item);
                     }
 
-                    foreach (ushort item3 in hashSet)
-                    {
-                        list.Add(inventory.ServerDropItem(item3));
-                    }
-
-                    HashSetPool<ushort>.Pool.Return(hashSet);
                     InventoryItemProvider.PreviousInventoryPickups[ev.Player.ReferenceHub] = list;
                 }
-
-                if (!flag)
+                else
                 {
                     while (inventory.UserInventory.Items.Count > 0)
                     {
-                        inventory.ServerRemoveItem(inventory.UserInventory.Items.ElementAt(0).Key, null);
+                        int startCount = inventory.UserInventory.Items.Count;
+                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
+                        inventory.ServerRemoveItem(key, null);
+
+                        // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
+                        if (startCount == inventory.UserInventory.Items.Count)
+                            inventory.UserInventory.Items.Remove(key);
                     }
 
                     inventory.UserInventory.ReserveAmmo.Clear();
                     inventory.SendAmmoNextFrame = true;
                 }
 
-                if (!StartingInventories.DefinedInventories.TryGetValue(ev.NewRole, out InventoryRoleInfo value))
+                foreach (ItemType item in ev.Items)
+                    inventory.ServerAddItem(item, ItemAddReason.StartingItem);
+
+                foreach (KeyValuePair<ItemType, ushort> keyValuePair in ev.Ammo)
+                    inventory.ServerAddAmmo(keyValuePair.Key, keyValuePair.Value);
+
+                foreach (Item item in ev.Player.Items)
                 {
-                    return;
+                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, item.Base);
+                    if (item is Firearm firearm)
+                        firearm.Ammo = firearm.MaxAmmo;
                 }
 
-                foreach (KeyValuePair<ItemType, ushort> item in value.Ammo)
-                {
-                    inventory.ServerAddAmmo(item.Key, item.Value);
-                }
-
-                for (int i = 0; i < value.Items.Length; i++)
-                {
-                    ItemBase arg = inventory.ServerAddItem(value.Items[i], ItemAddReason.StartingItem, 0);
-                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, arg);
-                }
-
-                InventoryItemProvider.InventoriesToReplenish.Enqueue(ev.Player.ReferenceHub);
+                InventoryItemProvider.SpawnPreviousInventoryPickups(ev.Player.ReferenceHub);
             }
             catch (Exception exception)
             {
