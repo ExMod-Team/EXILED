@@ -669,8 +669,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Reloads current <see cref="Firearm"/>.
         /// </summary>
-        /// <param name="emptyMagazine">Whether empty magazine should be loaded.</param>
-        public void Reload(bool emptyMagazine = false)
+        public void Reload()
         {
             if (Base.TryGetModule(out AnimatorReloaderModuleBase module))
             {
