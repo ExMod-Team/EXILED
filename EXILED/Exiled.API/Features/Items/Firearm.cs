@@ -227,8 +227,6 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public bool FlashlightEnabled => Base.IsEmittingLight;
 
-        // TODO NOT FINISH
-
         /// <summary>
         /// Gets a value indicating whether the firearm's NightVision is being used.
         /// </summary>
@@ -299,13 +297,6 @@ namespace Exiled.API.Features.Items
                     module.BaseRecoil = value;
             }
         }
-
-        /*
-        /// <summary>
-        /// Gets the firearm's <see cref="FirearmRecoilPattern"/>. Will be <see langword="null"/> for non-automatic weapons.
-        /// </summary>
-        public FirearmRecoilPattern RecoilPattern => Base is AutomaticFirearm auto ? auto._recoilPattern : null;
-        */
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] which contains all available attachments for all firearms.
