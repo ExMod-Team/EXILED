@@ -229,7 +229,7 @@ namespace Exiled.CustomItems.API.Features
                 return;
             }
 
-            ev.Firearm.Reload(true);
+            ev.Firearm.Reload();
 
             byte amountToReload = (byte)Math.Min(ClipSize - remainingClip, ev.Player.Ammo[ammoType.GetItemType()]);
 
