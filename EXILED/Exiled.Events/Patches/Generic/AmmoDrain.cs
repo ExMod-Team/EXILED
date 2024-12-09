@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Generic
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch for adding <see cref="API.Features.Doors.AirlockController"/> to list.
+    /// Patch for adding <see cref="API.Features.Items.Firearm.AmmoDrain"/> support for automatic weapons.
     /// </summary>
     [HarmonyPatch(typeof(AutomaticActionModule))]
     internal class AmmoDrainAutomatic
@@ -149,7 +149,7 @@ namespace Exiled.Events.Patches.Generic
     }
 
     /// <summary>
-    /// Patch for adding <see cref="API.Features.Doors.AirlockController"/> to list.
+    /// Patch for adding <see cref="API.Features.Items.Firearm.AmmoDrain"/> support for shotguns.
     /// </summary>
     [HarmonyPatch(typeof(PumpActionModule), nameof(PumpActionModule.Pump))]
     internal class AmmoDrainPump
@@ -197,7 +197,7 @@ namespace Exiled.Events.Patches.Generic
     }
 
     /// <summary>
-    /// Patch for adding <see cref="API.Features.Doors.AirlockController"/> to list.
+    /// Patch for adding <see cref="API.Features.Items.Firearm.AmmoDrain"/> support for revolvers.
     /// </summary>
     [HarmonyPatch(typeof(RevolverClipReloaderModule), nameof(RevolverClipReloaderModule.InsertAmmoFromClip))]
     internal class AmmoDrainRevolver
