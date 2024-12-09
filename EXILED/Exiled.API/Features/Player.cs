@@ -47,6 +47,7 @@ namespace Exiled.API.Features
     using Mirror.LiteNetLib4Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
@@ -730,6 +731,15 @@ namespace Exiled.API.Features
         {
             get => ReferenceHub.serverRoles.BypassMode;
             set => ReferenceHub.serverRoles.BypassMode = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the player's emotion.
+        /// </summary>
+        public EmotionPresetType Emotion
+        {
+            get => EmotionSync.GetEmotionPreset(ReferenceHub);
+            set => EmotionSync.ServerSetEmotionPreset(ReferenceHub, value);
         }
 
         /// <summary>

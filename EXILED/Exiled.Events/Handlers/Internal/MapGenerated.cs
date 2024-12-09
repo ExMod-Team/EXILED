@@ -7,6 +7,9 @@
 
 namespace Exiled.Events.Handlers.Internal
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using API.Features;
     using Exiled.API.Features.Lockers;
 

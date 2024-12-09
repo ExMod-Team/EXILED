@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Condition="$(BaseProperties) == '' OR $(BaseProperties) == 'true'">
-    <Authors>Exiled Official</Authors>
+    <Authors>ExMod Team</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildProperties) == '' OR $(BuildProperties) == 'true'">

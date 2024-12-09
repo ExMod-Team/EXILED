@@ -550,6 +550,28 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingNicknameEventArgs> ChangingNickname { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a player's emotion changed.
+        /// </summary>
+        public static Event<ChangingEmotionEventArgs> ChangingEmotion { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a player's emotion changed.
+        /// </summary>
+        public static Event<ChangedEmotionEventArgs> ChangedEmotion { get; set; } = new();
+
+        /// <summary>
+        /// Called before a player's emotion changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingEmotionEventArgs"/> instance.</param>
+        public static void OnChangingEmotion(ChangingEmotionEventArgs ev) => ChangingEmotion.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a player's emotion changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangedEmotionEventArgs"/> instance.</param>
+        public static void OnChangedEmotion(ChangedEmotionEventArgs ev) => ChangedEmotion.InvokeSafely(ev);
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/>'s rotates the revolver.
         /// </summary>
         public static Event<RotatingRevolverEventArgs> RotatingRevolver { get; set; } = new();
@@ -1027,11 +1049,12 @@ namespace Exiled.Events.Handlers
         public static void OnItemRemoved(ReferenceHub referenceHub, InventorySystem.Items.ItemBase itemBase, InventorySystem.Items.Pickups.ItemPickupBase pickupBase)
         {
             ItemRemovedEventArgs ev = new(referenceHub, itemBase, pickupBase);
-            ItemRemoved.InvokeSafely(ev);
 
             ev.Player.ItemsValue.Remove(ev.Item);
 
             API.Features.Items.Item.BaseToItem.Remove(itemBase);
+
+            ItemRemoved.InvokeSafely(ev);
         }
 
         /// <summary>
