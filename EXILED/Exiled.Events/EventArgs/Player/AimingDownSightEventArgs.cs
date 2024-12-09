@@ -12,44 +12,33 @@ namespace Exiled.Events.EventArgs.Player
 
     using Interfaces;
 
+    using FirearmBase = InventorySystem.Items.Firearms.Firearm;
+
     /// <summary>
     /// Contains all information when a player aims.
     /// </summary>
-    // TODO: remove stupid AdsIn/AdsOut propetry, and let exists only one
     public class AimingDownSightEventArgs : IPlayerEvent, IFirearmEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AimingDownSightEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        /// <inheritdoc cref="Player" />
-        /// </param>
         /// <param name="firearm">
         /// <inheritdoc cref="Firearm" />
         /// </param>
         /// <param name="adsIn">
         /// <inheritdoc cref="AdsIn" />
         /// </param>
-        /// <param name="adsOut">
-        /// <inheritdoc cref="AdsOut" />
-        /// </param>
-        public AimingDownSightEventArgs(Player player, Firearm firearm, bool adsIn, bool adsOut)
+        public AimingDownSightEventArgs(FirearmBase firearm, bool adsIn)
         {
-            Firearm = firearm;
-            Player = player;
+            Firearm = Item.Get<Firearm>(firearm);
+            Player = Firearm.Owner;
             AdsIn = adsIn;
-            AdsOut = adsOut;
         }
 
         /// <summary>
         /// Gets a value indicating whether the player is aiming down sight in.
         /// </summary>
         public bool AdsIn { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the player is aiming down sight out.
-        /// </summary>
-        public bool AdsOut { get; }
 
         /// <summary>
         /// Gets the <see cref="API.Features.Items.Firearm" /> used to trigger the aim action.
