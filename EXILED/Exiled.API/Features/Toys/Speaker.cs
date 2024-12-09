@@ -85,28 +85,5 @@ namespace Exiled.API.Features.Toys
             get => Base.NetworkMinDistance;
             set => Base.NetworkMinDistance = value;
         }
-
-        /// <summary>
-        /// Creates a new <see cref="Speaker"/>.
-        /// </summary>
-        /// <param name="position">The position of the <see cref="Speaker"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Speaker"/>.</param>
-        /// <param name="scale">The scale of the <see cref="Speaker"/>.</param>
-        /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
-        /// <returns>The new <see cref="Speaker"/>.</returns>
-        public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn)
-        {
-            Speaker speaker = new(UnityEngine.Object.Instantiate(Prefab))
-            {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
-                Scale = scale ?? Vector3.one,
-            };
-
-            if (spawn)
-                speaker.Spawn();
-
-            return speaker;
-        }
     }
 }
