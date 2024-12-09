@@ -76,16 +76,35 @@ namespace Exiled.Events.Patches.Events.Server
 
             newInstructions[index].labels.Add(jmp);
 
+            // Get the whole leadingteam logic
+            offset = -16;
+            index = newInstructions.FindIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset;
+            int offset2 = 1;
+            int index2 = newInstructions.FindLastIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset2;
+            List<CodeInstruction> leadingTeamLogic = newInstructions.GetRange(index, index2 - index);
+            List<Label> moveLabel = newInstructions[index2].ExtractLabels();
+            newInstructions.RemoveRange(index, index2 - index);
+
+            // put the LeadingTeam logic before the event
+            offset = -1;
+            index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded)))) + offset;
+            newInstructions.InsertRange(index, leadingTeamLogic);
+
+            // recorect the index because of the LeadingTeamLogic that got moved
             offset = -1;
             index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded)))) + offset;
             LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
 
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
+                    // this.LeadingTeam
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(moveLabel),
+                    new(OpCodes.Ldfld, Field(PrivateType, LeadingTeam)),
+
                     // this.newList
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, NewList)),
 
                     // isForceEnd
@@ -113,34 +132,13 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
                     new(OpCodes.Stloc_S, 5),
-                });
 
-            // Replace NW logic to LeadingTeam leadingTeam = ev.LeadingTeam
-            offset = 2;
-            index = newInstructions.FindLastIndex(x => x.LoadsField(Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded)))) + offset;
-            int offset2 = 1;
-            int index2 = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Stloc_S && x.operand is LocalBuilder { LocalIndex: 7 }) + offset2;
-
-            newInstructions.RemoveRange(index, index2 - index);
-
-            offset = -1;
-            index = newInstructions.FindIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset;
-
-            newInstructions.RemoveAt(index);
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
+                    // this.LeadingTeam = ev.LeadingTeam
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.LeadingTeam))),
+                    new(OpCodes.Stfld, Field(PrivateType, LeadingTeam)),
                 });
-
-            offset = 1;
-            index = newInstructions.FindIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset;
-            offset2 = 1;
-            index2 = newInstructions.FindLastIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset2;
-
-            newInstructions.RemoveRange(index, index2 - index);
 
             // Round.LastClassList = this.newList;
             offset = 1;
