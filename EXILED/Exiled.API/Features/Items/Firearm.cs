@@ -208,6 +208,11 @@ namespace Exiled.API.Features.Items
         public int AmmoDrain { get; set; } = 1;
 
         /// <summary>
+        /// Gets a value indicating whether the weapon is reloading.
+        /// </summary>
+        public bool IsReloading => Base.TryGetModule(out IReloaderModule module) && module.IsReloading;
+
+        /// <summary>
         /// Gets the <see cref="Enums.FirearmType"/> of the firearm.
         /// </summary>
         public FirearmType FirearmType => Type.GetFirearmType();
