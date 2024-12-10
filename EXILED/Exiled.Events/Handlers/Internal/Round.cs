@@ -18,6 +18,7 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Roles;
+    using Exiled.API.Features.Toys;
     using Exiled.API.Structs;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp049;
@@ -70,6 +71,14 @@ namespace Exiled.Events.Handlers.Internal
             TeslaGate.IgnoredTeams.Clear();
 
             API.Features.Round.IgnoredPlayers.Clear();
+
+            foreach (AdminToy admin in AdminToy.List)
+            {
+                if (admin is Speaker speaker && speaker.IsPlaying)
+                {
+                    speaker.Stop();
+                }
+            }
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRoundStarted" />
