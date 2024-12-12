@@ -831,7 +831,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the player's unit name.
         /// </summary>
-        public string UnitName => Role.Base is PlayerRoles.HumanRole humanRole ? UnitNameMessageHandler.GetReceived(humanRole.AssignedSpawnableTeam, humanRole.UnitNameId) : string.Empty;
+        public string UnitName => Role is HumanRole humanRole ? humanRole.UnitName : string.Empty;
 
         /// <summary>
         /// Gets or sets the player's unit id.

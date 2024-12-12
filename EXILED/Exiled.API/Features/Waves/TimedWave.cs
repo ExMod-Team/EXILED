@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.API.Enums;
+
 namespace Exiled.API.Features.Waves
 {
     using System.Collections.Generic;
@@ -53,9 +55,15 @@ namespace Exiled.API.Features.Waves
         public Faction Faction => timedWave.TargetFaction;
 
         /// <summary>
-        /// Gets the team of this wave.
+        /// Gets the spawnable faction for this wave.
         /// </summary>
-        public SpawnableTeamType Team => timedWave.TargetFaction.GetSpawnableTeam();
+        public SpawnableFaction SpawnableFaction => Faction switch
+        {
+            Faction.FoundationStaff when IsMiniWave => SpawnableFaction.NtfMiniWave,
+            Faction.FoundationStaff => SpawnableFaction.NtfWave,
+            Faction.FoundationEnemy when IsMiniWave => SpawnableFaction.ChaosMiniWave,
+            _ => SpawnableFaction.ChaosWave
+        };
 
         /// <summary>
         /// Gets the maximum amount of people that can spawn in this wave.
@@ -85,31 +93,6 @@ namespace Exiled.API.Features.Waves
 
             waves = spawnableWaveBases.Select(w => new TimedWave((TimeBasedWave)w)).ToList();
             return true;
-        }
-
-        /// <summary>
-        /// Get the timed wave for the specified team.
-        /// </summary>
-        /// <param name="team">
-        /// The team to get the wave for.
-        /// </param>
-        /// <param name="waves">
-        /// The waves if found.
-        /// </param>
-        /// <returns>
-        /// A value indicating whether the wave were found.
-        /// </returns>
-        public static bool TryGetTimedWaves(SpawnableTeamType team, out List<TimedWave> waves)
-        {
-            if (team == SpawnableTeamType.None)
-            {
-                waves = null;
-                return false;
-            }
-
-            Faction faction = team == SpawnableTeamType.NineTailedFox ? Faction.FoundationStaff : Faction.FoundationEnemy;
-
-            return TryGetTimedWaves(faction, out waves);
         }
 
         /// <summary>

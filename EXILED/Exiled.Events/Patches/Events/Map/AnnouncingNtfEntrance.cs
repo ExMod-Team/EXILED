@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Map
     /// Adds the <see cref="Map.AnnouncingNtfEntrance" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.AnnouncingNtfEntrance))]
-    [HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.PlayEntranceAnnouncement))]
+    [HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.TranslateToCassie))]
     internal static class AnnouncingNtfEntrance
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -111,8 +111,8 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Dup),
                     new(OpCodes.Starg_S, 1),
 
-                    // cassieUnitName = this.GetCassieUnitName(unitName);
-                    new(OpCodes.Callvirt, Method(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.GetCassieUnitName))),
+                    // cassieUnitName = this.TranslateToCassie(unitName);
+                    new(OpCodes.Callvirt, Method(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.TranslateToCassie))),
                     new(OpCodes.Stloc_0),
 
                     // scpsLeft = ev.ScpsLeft;
