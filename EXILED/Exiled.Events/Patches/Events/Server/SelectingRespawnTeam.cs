@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SelectingRespawnTeamEventArgs), nameof(SelectingRespawnTeamEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, returnLabel),
 
-                // dominatingTeam = ev.Team;
+                // SpawnableWaveBase = ev.Wave;
                 new(OpCodes.Ldloc_S, ev),
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(SelectingRespawnTeamEventArgs), nameof(SelectingRespawnTeamEventArgs.Wave))),
                 new(OpCodes.Starg_S, 0),
