@@ -39,7 +39,8 @@ namespace Exiled.Events.Patches.Events.Map
 
             Label ret = generator.DefineLabel();
 
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Dup);
+            int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_3) + offset;
 
             // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
             // string unitNameClear = Regex.Replace(unitName, "<[^>]*?>", string.Empty);
@@ -59,9 +60,10 @@ namespace Exiled.Events.Patches.Events.Map
                 new CodeInstruction[]
                 {
                     // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
+                    new(OpCodes.Ldloc_3),
 
                     // string[] unitInformation = unitNameClear.Split('-');
-                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldstr, "<[^>]*?>"),
                     new(OpCodes.Ldsfld, Field(typeof(string), nameof(string.Empty))),
                     new(OpCodes.Call, Method(typeof(Regex), nameof(Regex.Replace), new System.Type[] { typeof(string), typeof(string), typeof(string) })),
@@ -97,7 +99,6 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Brfalse_S, ret),
 
                     // unitName = $"{ev.UnitName}-{ev.UnitNumber};
-                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldstr, "{0}-{1}"),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.UnitName))),
@@ -106,15 +107,17 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Box, typeof(int)),
                     new(OpCodes.Call, Method(typeof(string), nameof(string.Format), new[] { typeof(string), typeof(object), typeof(object) })),
                     new(OpCodes.Dup),
-                    new(OpCodes.Starg_S, 1),
+                    new(OpCodes.Stloc_1),
 
                     // cassieUnitName = this.TranslateToCassie(unitName);
-                    new(OpCodes.Callvirt, Method(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.TranslateToCassie))),
-                    new(OpCodes.Stloc_0),
+                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Callvirt, Method(typeof(UnitNamingRule), nameof(UnitNamingRule.TranslateToCassie))),
+                    new(OpCodes.Stloc_2),
 
                     // scpsLeft = ev.ScpsLeft;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.ScpsLeft))),
+                    new(OpCodes.Stloc_3),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);

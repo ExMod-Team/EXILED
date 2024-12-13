@@ -42,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingChaosEntranceEventArgs))[0]),
                 new(OpCodes.Dup),
 
-                new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.AnnouncingChaosEntrance))),
+                new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnAnnouncingChaosEntrance))),
 
                 new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingChaosEntranceEventArgs), nameof(AnnouncingChaosEntranceEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, returnLabel),
