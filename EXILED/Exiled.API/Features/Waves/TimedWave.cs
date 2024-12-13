@@ -52,6 +52,11 @@ namespace Exiled.API.Features.Waves
         public Faction Faction => timedWave.TargetFaction;
 
         /// <summary>
+        /// Gets the team of this wave.
+        /// </summary>
+        public Team Team => timedWave.TargetFaction.GetSpawnableTeam();
+
+        /// <summary>
         /// Gets the spawnable faction for this wave.
         /// </summary>
         public SpawnableFaction SpawnableFaction => Faction switch
@@ -88,6 +93,25 @@ namespace Exiled.API.Features.Waves
         public static bool TryGetTimedWaves(Faction faction, out List<TimedWave> waves)
         {
             List<SpawnableWaveBase> spawnableWaveBases = WaveManager.Waves.Where(w => w is TimeBasedWave wave && wave.TargetFaction == faction).ToList();
+            if(!spawnableWaveBases.Any())
+            {
+                waves = null;
+                return false;
+            }
+
+            waves = spawnableWaveBases.Select(w => new TimedWave((TimeBasedWave)w)).ToList();
+            return true;
+        }
+
+        /// <summary>
+        /// Get the timed waves for the specified faction.
+        /// </summary>
+        /// <param name="team">The faction to get the waves for.</param>
+        /// <param name="waves">The waves if found.</param>
+        /// <returns>A value indicating whether the wave were found.</returns>
+        public static bool TryGetTimedWaves(Team team, out List<TimedWave> waves)
+        {
+            List<SpawnableWaveBase> spawnableWaveBases = WaveManager.Waves.Where(w => w is TimeBasedWave wave && wave.TargetFaction.GetSpawnableTeam() == team).ToList();
             if(!spawnableWaveBases.Any())
             {
                 waves = null;

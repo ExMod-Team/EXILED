@@ -109,6 +109,24 @@ namespace Exiled.API.Features.Waves
         }
 
         /// <summary>
+        /// Get the wave timers for the specified faction.
+        /// </summary>
+        /// <param name="team">The team.</param>
+        /// <param name="waves">The waves, if any.</param>
+        /// <returns>A bool indicating if waves were found.</returns>
+        public static bool TryGetWaveTimers(Team team, out List<WaveTimer> waves)
+        {
+            if (!TimedWave.TryGetTimedWaves(team, out List<TimedWave> timedWaves))
+            {
+                waves = null;
+                return false;
+            }
+
+            waves = timedWaves.Select(wave => wave.Timer).ToList();
+            return true;
+        }
+
+        /// <summary>
         /// Gets all wave timers.
         /// </summary>
         /// <returns>A list of all wave timers.</returns>
