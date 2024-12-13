@@ -27,7 +27,7 @@ namespace Exiled.Events.EventArgs.Server
         }
 
         /// <summary>
-        /// Gets or sets <see cref="SpawnableFaction"/> that represents the team chosen to spawn.
+        /// Gets <see cref="SpawnableFaction"/> that represents the team chosen to spawn.
         /// </summary>
         public SpawnableFaction Team => Wave.SpawnableFaction;
 

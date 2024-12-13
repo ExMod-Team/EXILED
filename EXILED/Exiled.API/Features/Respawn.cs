@@ -209,7 +209,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Summons the <see cref="SpawnableTeamType.NineTailedFox"/> chopper.
+        /// Summons the NTF chopper.
         /// </summary>
         public static void SummonNtfChopper()
         {
@@ -218,7 +218,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Summons the <see cref="SpawnableTeamType.ChaosInsurgency"/> van.
+        /// Summons the Chaos Insurgency van.
         /// </summary>
         /// <remarks>This will also trigger Music effect.</remarks>
         /// <!--not sure if it actually plays the music, needs to be tested-->

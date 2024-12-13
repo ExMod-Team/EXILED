@@ -5,13 +5,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.API.Features.Waves;
-
 namespace Exiled.Events.EventArgs.Server
 {
     using System.Collections.Generic;
 
     using Exiled.API.Features;
+    using Exiled.API.Features.Waves;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles;
     using Respawning;

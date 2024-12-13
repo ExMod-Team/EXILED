@@ -14,21 +14,20 @@ namespace Exiled.Events.Patches.Events.Map
     using API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Map;
-
     using Handlers;
-
     using HarmonyLib;
-
+    using Respawning.Announcements;
     using Respawning.NamingRules;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch the <see cref="NineTailedFoxNamingRule.PlayEntranceAnnouncement(string)" />.
+    /// Patch the <see cref="NtfWaveAnnouncement.CreateAnnouncementString" /> and <see cref="NtfMiniwaveAnnouncement.CreateAnnouncementString"/>.
     /// Adds the <see cref="Map.AnnouncingNtfEntrance" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.AnnouncingNtfEntrance))]
-    [HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.TranslateToCassie))]
+    [HarmonyPatch(typeof(NtfWaveAnnouncement), nameof(NtfWaveAnnouncement.CreateAnnouncementString))]
+    [HarmonyPatch(typeof(NtfMiniwaveAnnouncement), nameof(NtfMiniwaveAnnouncement.CreateAnnouncementString))]
     internal static class AnnouncingNtfEntrance
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -40,8 +39,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             Label ret = generator.DefineLabel();
 
-            const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_1) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Dup);
 
             // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
             // string unitNameClear = Regex.Replace(unitName, "<[^>]*?>", string.Empty);
@@ -58,10 +56,9 @@ namespace Exiled.Events.Patches.Events.Map
             // scpsLeft = ev.ScpsLeft;
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
                     // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
-                    new CodeInstruction(OpCodes.Ldloc_1),
 
                     // string[] unitInformation = unitNameClear.Split('-');
                     new(OpCodes.Ldarg_1),
@@ -118,7 +115,6 @@ namespace Exiled.Events.Patches.Events.Map
                     // scpsLeft = ev.ScpsLeft;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.ScpsLeft))),
-                    new(OpCodes.Stloc_1),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);

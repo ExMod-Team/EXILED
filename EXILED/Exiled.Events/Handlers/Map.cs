@@ -41,6 +41,11 @@ namespace Exiled.Events.Handlers
         public static Event<AnnouncingNtfEntranceEventArgs> AnnouncingNtfEntrance { get; set; } = new();
 
         /// <summary>
+        /// Invoked before announcing the Chaos entrance.
+        /// </summary>
+        public static Event<AnnouncingChaosEntranceEventArgs> AnnouncingChaosEntrance { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="Scp079Generator"/> has been activated.
         /// </summary>
         public static Event<GeneratorActivatingEventArgs> GeneratorActivating { get; set; } = new();
@@ -133,6 +138,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="AnnouncingNtfEntranceEventArgs"/> instance.</param>
         public static void OnAnnouncingNtfEntrance(AnnouncingNtfEntranceEventArgs ev) => AnnouncingNtfEntrance.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before announcing the Chaos entrance.
+        /// </summary>
+        /// <param name="ev">The <see cref="AnnouncingChaosEntranceEventArgs"/> instance.</param>
+        public static void OnAnnouncingChaosEntrance(AnnouncingChaosEntranceEventArgs ev) => AnnouncingChaosEntrance.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="Scp079Generator"/> has been activated.

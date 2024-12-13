@@ -5,18 +5,15 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.API.Enums;
-
 namespace Exiled.API.Features.Waves
 {
     using System.Collections.Generic;
-
     using System.Linq;
 
+    using Exiled.API.Enums;
     using PlayerRoles;
-
     using Respawning;
-
+    using Respawning.Announcements;
     using Respawning.Waves;
 
     /// <summary>
@@ -69,6 +66,12 @@ namespace Exiled.API.Features.Waves
         /// Gets the maximum amount of people that can spawn in this wave.
         /// </summary>
         public int MaxAmount => timedWave.MaxWaveSize;
+
+        /// <summary>
+        /// Gets the <see cref="WaveAnnouncementBase"/> for this wave.
+        /// </summary>
+        /// <remarks>Wave must implement <see cref="IAnnouncedWave"/>.</remarks>
+        public WaveAnnouncementBase Announcement => timedWave is IAnnouncedWave announcedWave ? announcedWave.Announcement : null;
 
         /// <summary>
         /// Get the timed waves for the specified faction.
@@ -158,5 +161,11 @@ namespace Exiled.API.Features.Waves
         /// The amount of people to populate.
         /// </param>
         public void PopulateQueue(Queue<RoleTypeId> queue, int amount) => timedWave.PopulateQueue(queue, amount);
+
+        /// <summary>
+        /// Plays the announcement for this wave.
+        /// </summary>
+        /// <remarks>Wave must implement <see cref="IAnnouncedWave"/>.</remarks>
+        public void PlayAnnouncement() => Announcement?.PlayAnnouncement();
     }
 }
