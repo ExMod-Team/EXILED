@@ -42,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Server
             newInstructions.InsertRange(index, new[]
             {
                 // SelectingRespawnTeamEventArgs ev = new(dominatingTeam);
-                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsTo(newInstructions[index]),
+                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SelectingRespawnTeamEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
