@@ -13,7 +13,6 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
@@ -26,6 +25,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp1344;
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
@@ -157,7 +157,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether this item is a weapon.
         /// </summary>
-        public bool IsWeapon => this is Firearm;
+        public bool IsWeapon => this is Firearm || Type is ItemType.Jailbird or ItemType.MicroHID;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is a firearm.
+        /// </summary>
+        public bool IsFirearm => this is Firearm;
 
         /// <summary>
         /// Gets a value indicating whether this item emits light.
@@ -205,6 +210,7 @@ namespace Exiled.API.Features.Items
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
                     Scp1576Item scp1576 => new Scp1576(scp1576),
+                    Scp1344Item scp1344 => new Scp1344(scp1344),
                     BaseConsumable consumable => new Consumable(consumable),
                     _ => new Usable(usable),
                 },
@@ -222,7 +228,7 @@ namespace Exiled.API.Features.Items
                     Scp018Projectile => new Scp018(throwable),
                     _ => new Throwable(throwable),
                 },
-                _ => new Item(itemBase),
+                _ => new(itemBase),
             };
         }
 
@@ -272,6 +278,7 @@ namespace Exiled.API.Features.Items
         /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
         /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
         /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
         /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
         /// </para>
         /// <para>
@@ -300,6 +307,7 @@ namespace Exiled.API.Features.Items
             ItemType.SCP330 => new Scp330(),
             ItemType.SCP2176 => new Scp2176(owner),
             ItemType.SCP1576 => new Scp1576(),
+            ItemType.SCP1344 => new Scp1344(),
             ItemType.Jailbird => new Jailbird(),
             _ => new Item(type),
         };
@@ -325,6 +333,7 @@ namespace Exiled.API.Features.Items
         /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
         /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
         /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
         /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
         /// </para>
         /// <para>
@@ -356,11 +365,11 @@ namespace Exiled.API.Features.Items
         /// <param name="rotation">The rotation of the item.</param>
         /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
         /// <returns>The created <see cref="Pickup"/>.</returns>
-        public virtual Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        public virtual Pickup CreatePickup(Vector3 position, Quaternion? rotation = null, bool spawn = true)
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation ?? Quaternion.identity);
 
             Base.OnRemoved(ipb);
 

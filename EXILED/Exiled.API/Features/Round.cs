@@ -49,12 +49,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the round in progress.
         /// </summary>
-        public static bool InProgress => ReferenceHub._localHubSet && RoundSummary.RoundInProgress();
+        public static bool InProgress => !IsEnded && RoundSummary.RoundInProgress();
 
         /// <summary>
         /// Gets a value indicating whether the round is ended.
         /// </summary>
-        public static bool IsEnded => RoundSummary.singleton._roundEnded;
+        public static bool IsEnded => RoundSummary._singletonSet && RoundSummary.singleton._roundEnded;
 
         /// <summary>
         /// Gets a value indicating whether the round is lobby.

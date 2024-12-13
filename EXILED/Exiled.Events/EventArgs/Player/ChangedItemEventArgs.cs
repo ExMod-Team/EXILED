@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using API.Features;
     using API.Features.Items;
 
@@ -41,12 +39,6 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the previous item.
         /// </summary>
         public Item OldItem { get; }
-
-        /// <summary>
-        /// Gets the new item.
-        /// </summary>
-        [Obsolete("Use ev.Item instead of this")]
-        public Item NewItem => Item;
 
         /// <summary>
         /// Gets the new item.

@@ -143,8 +143,6 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public bool FlashlightEnabled => Base.IsEmittingLight;
 
-        // TODO NOT FINISH
-
         /// <summary>
         /// Gets a value indicating whether the firearm's NightVision is being used.
         /// </summary>
@@ -390,16 +388,6 @@ namespace Exiled.API.Features.Items
         /// Removes all attachments from the firearm.
         /// </summary>
         public void ClearAttachments() => Base.ApplyAttachmentsCode(BaseCode, true);
-
-        /// <summary>
-        /// Creates the <see cref="Pickup"/> that based on this <see cref="Item"/>.
-        /// </summary>
-        /// <param name="position">The location to spawn the item.</param>
-        /// <param name="rotation">The rotation of the item.</param>
-        /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
-        /// <returns>The created <see cref="Pickup"/>.</returns>
-        public override Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
-            => base.CreatePickup(position, rotation, spawn); // TODO: Deleted this overide
 
         /// <summary>
         /// Gets a <see cref="Attachment"/> of the specified <see cref="AttachmentIdentifier"/>.
