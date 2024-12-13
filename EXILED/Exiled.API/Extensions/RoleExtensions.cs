@@ -256,7 +256,7 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Tries to get the <see cref="SpawnableFaction"/> associated with the provided <see cref="SpawnableFaction"/> and <see cref="bool"/>.
+        /// Tries to get the <see cref="SpawnableFaction"/> associated with the provided <see cref="Faction"/> and <see cref="bool"/>.
         /// </summary>
         /// <param name="faction">A member of the <see cref="Faction"/>enum.</param>
         /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> to return.</param>
