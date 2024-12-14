@@ -73,20 +73,14 @@ namespace Exiled.API.Features
         public static SpawnableFaction NextKnownSpawnableFaction => WaveManager._nextWave is not null ? WaveManager._nextWave.GetSpawnableFaction() : SpawnableFaction.None;
 
         /// <summary>
-        /// Gets the next known <see cref="SpawnableTeamType"/> that will spawn.
-        /// </summary>
-        /// <remarks>This returns <see cref="SpawnableFaction.None">SpawnableFaction.None</see> unless a respawn has already started.</remarks>
-        public static SpawnableTeamType NextKnownTeam => NextKnownSpawnableFaction.GetFaction().GetSpawnableTeam();
-
-        /// <summary>
         /// Gets the current state of the <see cref="WaveManager"/>.
         /// </summary>
-        public static WaveManager.WaveQueueState CurrentState => WaveManager.State;
+        public static WaveQueueState CurrentState => WaveManager.State;
 
         /// <summary>
         /// Gets a value indicating whether the respawn process for a <see cref="SpawnableWaveBase"/> is currently in progress..
         /// </summary>
-        public static bool IsSpawning => WaveManager.State == WaveManager.WaveQueueState.WaveSpawning;
+        public static bool IsSpawning => WaveManager.State == WaveQueueState.WaveSpawning;
 
         /// <summary>
         /// Gets or sets a value indicating whether spawn protection is enabled.
@@ -166,18 +160,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Tries to get an <see cref="IEnumerable{T}"/> of <see cref="SpawnableWaveBase"/>.
-        /// </summary>
-        /// <param name="spawnableTeamType">A <see cref="SpawnableTeamType"/> determining which waves to search for.</param>
-        /// <param name="spawnableWaveBases">The <see cref="IEnumerable{T}"/> containing found <see cref="SpawnableWaveBase"/>'s if there are any, otherwise <c>null</c>.</param>
-        /// <returns><c>true</c> if <paramref name="spawnableWaveBases"/> was successfully found. Otherwise, <c>false</c>.</returns>
-        /// <seealso cref="TryGetWaveBase{T}"/>
-        public static bool TryGetWaveBases(SpawnableTeamType spawnableTeamType, out IEnumerable<SpawnableWaveBase> spawnableWaveBases)
-        {
-            return TryGetWaveBases(spawnableTeamType.GetFaction(), out spawnableWaveBases);
-        }
-
-        /// <summary>
         /// Advances the respawn timer for <see cref="TimeBasedWave"/>s.
         /// </summary>
         /// <param name="faction">The <see cref="Faction"/> whose <see cref="TimeBasedWave"/>'s timers are to be advanced.</param>
@@ -192,22 +174,6 @@ namespace Exiled.API.Features
         /// <param name="time">A <see cref="TimeSpan"/> representing the amount of time to advance the timers by.</param>
         /// <remarks>This advances the timer for both the normal and mini wave.</remarks>
         public static void AdvanceTimer(Faction faction, TimeSpan time) => AdvanceTimer(faction, (float)time.TotalSeconds);
-
-        /// <summary>
-        /// Advances the respawn timer for <see cref="TimeBasedWave"/>s.
-        /// </summary>
-        /// <param name="spawnableTeamType">The <see cref="SpawnableTeamType"/> whose <see cref="TimeBasedWave"/>'s timers are to be advanced.</param>
-        /// <param name="seconds">Number of seconds to advance the timers by.</param>
-        /// <remarks>This advances the timer for both the normal and mini wave.</remarks>
-        public static void AdvanceTimer(SpawnableTeamType spawnableTeamType, float seconds) => AdvanceTimer(spawnableTeamType.GetFaction(), seconds);
-
-        /// <summary>
-        /// Advances the respawn timer for <see cref="TimeBasedWave"/>s.
-        /// </summary>
-        /// <param name="spawnableTeamType">The <see cref="SpawnableTeamType"/> whose <see cref="TimeBasedWave"/>'s timers are to be advanced.</param>
-        /// <param name="time">A <see cref="TimeSpan"/> representing the amount of time to advance the timers by.</param>
-        /// <remarks>This advances the timer for both the normal and mini wave.</remarks>
-        public static void AdvanceTimer(SpawnableTeamType spawnableTeamType, TimeSpan time) => AdvanceTimer(spawnableTeamType.GetFaction(), time);
 
         /// <summary>
         /// Advances the respawn timer for <see cref="TimeBasedWave"/>s.
@@ -243,7 +209,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Summons the <see cref="SpawnableTeamType.NineTailedFox"/> chopper.
+        /// Summons the NTF chopper.
         /// </summary>
         public static void SummonNtfChopper()
         {
@@ -252,7 +218,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Summons the <see cref="SpawnableTeamType.ChaosInsurgency"/> van.
+        /// Summons the Chaos Insurgency van.
         /// </summary>
         /// <remarks>This will also trigger Music effect.</remarks>
         /// <!--not sure if it actually plays the music, needs to be tested-->
@@ -358,16 +324,6 @@ namespace Exiled.API.Features
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Starts the spawn sequence of the given <see cref="SpawnableTeamType"/>.
-        /// </summary>
-        /// <param name="spawnableTeamType">The <see cref="SpawnableTeamType"/> whose wave to spawn.</param>
-        /// <param name="isMini">Whether the wave should be a mini wave or not.</param>
-        public static void ForceWave(SpawnableTeamType spawnableTeamType, bool isMini = false)
-        {
-            ForceWave(spawnableTeamType.GetFaction(), isMini);
         }
 
         /// <summary>

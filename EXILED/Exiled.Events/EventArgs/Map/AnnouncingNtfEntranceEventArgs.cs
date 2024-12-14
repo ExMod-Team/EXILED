@@ -55,6 +55,6 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets or sets a value indicating whether the NTF spawn will be announced by C.A.S.S.I.E.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } // TODO possibly not working
     }
 }

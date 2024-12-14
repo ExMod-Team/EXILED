@@ -256,19 +256,7 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
-        /// Gets the <see cref="Faction"/> associated with the provided <see cref="SpawnableTeamType"/>.
-        /// </summary>
-        /// <param name="spawnableTeamType">A member of the <see cref="SpawnableTeamType"/>enum.</param>
-        /// <returns><see cref="Faction"/> associated with the provided <paramref name="spawnableTeamType"/>.</returns>
-        public static Faction GetFaction(this SpawnableTeamType spawnableTeamType) => spawnableTeamType switch
-        {
-            SpawnableTeamType.ChaosInsurgency => Faction.FoundationEnemy,
-            SpawnableTeamType.NineTailedFox => Faction.FoundationStaff,
-            _ => Faction.Unclassified,
-        };
-
-        /// <summary>
-        /// Tries to get the <see cref="SpawnableFaction"/> associated with the provided <see cref="SpawnableTeamType"/> and <see cref="bool"/>.
+        /// Tries to get the <see cref="SpawnableFaction"/> associated with the provided <see cref="Faction"/> and <see cref="bool"/>.
         /// </summary>
         /// <param name="faction">A member of the <see cref="Faction"/>enum.</param>
         /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> to return.</param>
