@@ -8,13 +8,8 @@
 namespace Exiled.Events.Patches.Fixes
 {
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
-#pragma warning disable CS0612 // Type or member is obsolete
-#pragma warning disable CS0618 // Type or member is obsolete
 
-    using API.Features;
     using API.Features.DamageHandlers;
-
-    using EventArgs.Player;
 
     using HarmonyLib;
 
@@ -32,20 +27,8 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static void Prefix(PlayerStats __instance, ref DamageHandlerBase handler)
         {
-            if (!DamageHandlers.IdsByTypeHash.ContainsKey(handler.GetType().FullName.GetStableHashCode()))
-            {
-                if (handler is GenericDamageHandler exiledHandler)
-                {
-                    handler = exiledHandler.Base;
-                }
-                else
-                {
-                    KillingPlayerEventArgs ev = new(Player.Get(__instance._hub), ref handler);
-                    Handlers.Player.OnKillPlayer(ev);
-
-                    handler = ev.Handler;
-                }
-            }
+            if (!DamageHandlers.IdsByTypeHash.ContainsKey(handler.GetType().FullName.GetStableHashCode()) && handler is GenericDamageHandler exiledHandler)
+                handler = exiledHandler.Base;
         }
     }
 }

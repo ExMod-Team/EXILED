@@ -10,14 +10,14 @@ namespace Exiled.Events.EventArgs.Server
     using System.Collections.Generic;
 
     using Exiled.API.Features;
+    using Exiled.API.Features.Waves;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles;
     using Respawning;
     using Respawning.Waves;
 
     /// <summary>
-    /// Contains all information before spawning a wave of <see cref="SpawnableTeamType.NineTailedFox" /> or
-    /// <see cref="SpawnableTeamType.ChaosInsurgency" />.
+    /// Contains all information before spawning a wave.
     /// </summary>
     public class RespawningTeamEventArgs : IDeniableEvent
     {
@@ -40,7 +40,7 @@ namespace Exiled.Events.EventArgs.Server
             Players = players;
             MaximumRespawnAmount = maxRespawn;
             SpawnQueue = WaveSpawner.SpawnQueue;
-            Wave = wave;
+            Wave = new TimedWave((TimeBasedWave)wave);
             IsAllowed = true;
         }
 
@@ -70,12 +70,12 @@ namespace Exiled.Events.EventArgs.Server
         /// <summary>
         /// Gets or sets a value indicating what the next wave is.
         /// </summary>
-        public SpawnableWaveBase Wave { get; set; }
+        public TimedWave Wave { get; set; }
 
         /// <summary>
         /// Gets a value indicating what the next respawnable team is.
         /// </summary>
-        public SpawnableTeamType NextKnownTeam => Wave.TargetFaction.GetSpawnableTeam();
+        public Faction NextKnownTeam => Wave.Faction;
 
         /// <summary>
         /// Gets or sets a value indicating whether the spawn can occur.
