@@ -157,7 +157,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether this item is a weapon.
         /// </summary>
-        public bool IsWeapon => this is Firearm;
+        public bool IsWeapon => this is Firearm || Type is ItemType.Jailbird or ItemType.MicroHID;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is a firearm.
+        /// </summary>
+        public bool IsFirearm => this is Firearm;
 
         /// <summary>
         /// Gets a value indicating whether this item emits light.

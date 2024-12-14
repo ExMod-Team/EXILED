@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="TimedWave.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -8,13 +8,12 @@
 namespace Exiled.API.Features.Waves
 {
     using System.Collections.Generic;
-
     using System.Linq;
 
+    using Exiled.API.Enums;
     using PlayerRoles;
-
     using Respawning;
-
+    using Respawning.Announcements;
     using Respawning.Waves;
 
     /// <summary>
@@ -30,10 +29,7 @@ namespace Exiled.API.Features.Waves
         /// <param name="wave">
         /// The <see cref="TimeBasedWave"/> that this class should be based off of.
         /// </param>
-        public TimedWave(TimeBasedWave wave)
-        {
-            timedWave = wave;
-        }
+        public TimedWave(TimeBasedWave wave) => timedWave = wave;
 
         /// <summary>
         /// Gets the name of the wave timer.
@@ -58,12 +54,29 @@ namespace Exiled.API.Features.Waves
         /// <summary>
         /// Gets the team of this wave.
         /// </summary>
-        public SpawnableTeamType Team => timedWave.TargetFaction.GetSpawnableTeam();
+        public Team Team => timedWave.TargetFaction.GetSpawnableTeam();
+
+        /// <summary>
+        /// Gets the spawnable faction for this wave.
+        /// </summary>
+        public SpawnableFaction SpawnableFaction => Faction switch
+        {
+            Faction.FoundationStaff when IsMiniWave => SpawnableFaction.NtfMiniWave,
+            Faction.FoundationStaff => SpawnableFaction.NtfWave,
+            Faction.FoundationEnemy when IsMiniWave => SpawnableFaction.ChaosMiniWave,
+            _ => SpawnableFaction.ChaosWave
+        };
 
         /// <summary>
         /// Gets the maximum amount of people that can spawn in this wave.
         /// </summary>
         public int MaxAmount => timedWave.MaxWaveSize;
+
+        /// <summary>
+        /// Gets the <see cref="WaveAnnouncementBase"/> for this wave.
+        /// </summary>
+        /// <remarks>Wave must implement <see cref="IAnnouncedWave"/>.</remarks>
+        public WaveAnnouncementBase Announcement => timedWave is IAnnouncedWave announcedWave ? announcedWave.Announcement : null;
 
         /// <summary>
         /// Get the timed waves for the specified faction.
@@ -91,28 +104,22 @@ namespace Exiled.API.Features.Waves
         }
 
         /// <summary>
-        /// Get the timed wave for the specified team.
+        /// Get the timed waves for the specified faction.
         /// </summary>
-        /// <param name="team">
-        /// The team to get the wave for.
-        /// </param>
-        /// <param name="waves">
-        /// The waves if found.
-        /// </param>
-        /// <returns>
-        /// A value indicating whether the wave were found.
-        /// </returns>
-        public static bool TryGetTimedWaves(SpawnableTeamType team, out List<TimedWave> waves)
+        /// <param name="team">The faction to get the waves for.</param>
+        /// <param name="waves">The waves if found.</param>
+        /// <returns>A value indicating whether the wave were found.</returns>
+        public static bool TryGetTimedWaves(Team team, out List<TimedWave> waves)
         {
-            if (team == SpawnableTeamType.None)
+            List<SpawnableWaveBase> spawnableWaveBases = WaveManager.Waves.Where(w => w is TimeBasedWave wave && wave.TargetFaction.GetSpawnableTeam() == team).ToList();
+            if(!spawnableWaveBases.Any())
             {
                 waves = null;
                 return false;
             }
 
-            Faction faction = team == SpawnableTeamType.NineTailedFox ? Faction.FoundationStaff : Faction.FoundationEnemy;
-
-            return TryGetTimedWaves(faction, out waves);
+            waves = spawnableWaveBases.Select(w => new TimedWave((TimeBasedWave)w)).ToList();
+            return true;
         }
 
         /// <summary>
@@ -166,10 +173,7 @@ namespace Exiled.API.Features.Waves
         /// <summary>
         /// Destroys this wave.
         /// </summary>
-        public void Destroy()
-        {
-            timedWave.Destroy();
-        }
+        public void Destroy() => timedWave.Destroy();
 
         /// <summary>
         /// Populates this wave with the specified amount of roles.
@@ -180,9 +184,12 @@ namespace Exiled.API.Features.Waves
         /// <param name="amount">
         /// The amount of people to populate.
         /// </param>
-        public void PopulateQueue(Queue<RoleTypeId> queue, int amount)
-        {
-            timedWave.PopulateQueue(queue, amount);
-        }
+        public void PopulateQueue(Queue<RoleTypeId> queue, int amount) => timedWave.PopulateQueue(queue, amount);
+
+        /// <summary>
+        /// Plays the announcement for this wave.
+        /// </summary>
+        /// <remarks>Wave must implement <see cref="IAnnouncedWave"/>.</remarks>
+        public void PlayAnnouncement() => Announcement?.PlayAnnouncement();
     }
 }

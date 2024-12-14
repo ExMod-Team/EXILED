@@ -143,8 +143,6 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public bool FlashlightEnabled => Base.IsEmittingLight;
 
-        // TODO NOT FINISH
-
         /// <summary>
         /// Gets a value indicating whether the firearm's NightVision is being used.
         /// </summary>

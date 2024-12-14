@@ -21,6 +21,7 @@ namespace Exiled.API.Extensions
     using InventorySystem.Configs;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using Respawning;
     using Respawning.Waves;
     using UnityEngine;
 
@@ -262,12 +263,50 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="waveBase">A <see cref="SpawnableWaveBase"/> instance.</param>
         /// <returns><see cref="SpawnableFaction"/> associated with the wave.</returns>
-        public static SpawnableFaction GetFaction(this SpawnableWaveBase waveBase) => waveBase switch
+        public static SpawnableFaction GetSpawnableFaction(this SpawnableWaveBase waveBase) => waveBase switch
         {
             NtfSpawnWave => SpawnableFaction.NtfWave,
             NtfMiniWave => SpawnableFaction.NtfMiniWave,
             ChaosSpawnWave => SpawnableFaction.ChaosWave,
-            _ => SpawnableFaction.ChaosMiniWave
+            ChaosMiniWave => SpawnableFaction.ChaosMiniWave,
+            _ => SpawnableFaction.None
         };
+
+        /// <summary>
+        /// Gets the <see cref="Faction"/> associated with the provided <see cref="SpawnableFaction"/>.
+        /// </summary>
+        /// <param name="spawnableFaction">A member of the <see cref="SpawnableFaction"/> enum.</param>
+        /// <returns><see cref="Faction"/> associated with the provided <paramref name="spawnableFaction"/>.</returns>
+        public static Faction GetFaction(this SpawnableFaction spawnableFaction) => spawnableFaction switch
+        {
+            SpawnableFaction.ChaosWave or SpawnableFaction.ChaosMiniWave => Faction.FoundationEnemy,
+            SpawnableFaction.NtfWave or SpawnableFaction.NtfMiniWave => Faction.FoundationStaff,
+            _ => Faction.Unclassified,
+        };
+
+        /// <summary>
+        /// Tries to get the <see cref="SpawnableFaction"/> associated with the provided <see cref="Faction"/> and <see cref="bool"/>.
+        /// </summary>
+        /// <param name="faction">A member of the <see cref="Faction"/>enum.</param>
+        /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> to return.</param>
+        /// <param name="mini">A <see cref="bool"/> determining whether to get a normal spawn wave or a mini one.</param>
+        /// <returns><see cref="Faction"/> associated with the provided <paramref name="faction"/> influenced by <paramref name="mini"/>.</returns>
+        public static bool TryGetSpawnableFaction(this Faction faction, out SpawnableFaction spawnableFaction, bool mini = false)
+        {
+            switch (faction)
+            {
+                case Faction.FoundationStaff:
+                    spawnableFaction = mini ? SpawnableFaction.NtfMiniWave : SpawnableFaction.NtfWave;
+                    break;
+                case Faction.FoundationEnemy:
+                    spawnableFaction = mini ? SpawnableFaction.ChaosMiniWave : SpawnableFaction.ChaosWave;
+                    break;
+                default:
+                    spawnableFaction = SpawnableFaction.None;
+                    return false;
+            }
+
+            return true;
+        }
     }
 }

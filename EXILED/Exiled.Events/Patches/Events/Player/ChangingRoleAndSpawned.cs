@@ -187,62 +187,44 @@ namespace Exiled.Events.Patches.Events.Player
             try
             {
                 if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
-                {
                     return;
-                }
 
                 Inventory inventory = ev.Player.Inventory;
-                bool flag = InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped;
-                if (flag)
+                if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
                     List<ItemPickupBase> list = new List<ItemPickupBase>();
                     if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
-                    {
                         bodyArmor.DontRemoveExcessOnDrop = true;
-                    }
 
                     HashSet<ushort> hashSet = HashSetPool<ushort>.Pool.Get();
                     foreach (KeyValuePair<ushort, ItemBase> item2 in inventory.UserInventory.Items)
                     {
                         if (item2.Value is Scp1344Item scp1344Item)
-                        {
                             scp1344Item.Status = Scp1344Status.Idle;
-                        }
                         else
-                        {
                             hashSet.Add(item2.Key);
-                        }
                     }
 
-                    foreach (ushort item3 in hashSet)
-                    {
-                        list.Add(inventory.ServerDropItem(item3));
-                    }
+                    foreach (ushort item in hashSet)
+                        list.Add(inventory.ServerDropItem(item));
 
                     HashSetPool<ushort>.Pool.Return(hashSet);
                     InventoryItemProvider.PreviousInventoryPickups[ev.Player.ReferenceHub] = list;
                 }
-
-                if (!flag)
+                else
                 {
                     while (inventory.UserInventory.Items.Count > 0)
-                    {
                         inventory.ServerRemoveItem(inventory.UserInventory.Items.ElementAt(0).Key, null);
-                    }
 
                     inventory.UserInventory.ReserveAmmo.Clear();
                     inventory.SendAmmoNextFrame = true;
                 }
 
                 if (!StartingInventories.DefinedInventories.TryGetValue(ev.NewRole, out InventoryRoleInfo value))
-                {
                     return;
-                }
 
                 foreach (KeyValuePair<ItemType, ushort> item in value.Ammo)
-                {
                     inventory.ServerAddAmmo(item.Key, item.Value);
-                }
 
                 for (int i = 0; i < value.Items.Length; i++)
                 {
