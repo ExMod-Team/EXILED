@@ -108,6 +108,18 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Creates the <see cref="Projectile"/> that based on this <see cref="Item"/>.
+        /// </summary>
+        /// <param name="position">The location to spawn the item.</param>
+        /// <param name="rotation">The rotation of the item.</param>
+        /// <param name="spawn">Whether the <see cref="Projectile"/> should be initially spawned.</param>
+        /// <typeparam name="T">The specified <see cref="Projectile"/> type.</typeparam>
+        /// <returns>The created <see cref="Projectile"/>.</returns>
+        /// <remarks><see cref="Projectile"/> wont be activated, use <see cref="Projectile.Activate"/> to activate spawned <see cref="Projectile"/>.</remarks>
+        public T CreateProjectile<T>(Vector3 position, Quaternion rotation = default, bool spawn = true)
+            where T : Projectile => CreateProjectile(position, rotation, spawn) as T;
+
+        /// <summary>
         /// Clones current <see cref="Throwable"/> object.
         /// </summary>
         /// <returns> New <see cref="Throwable"/> object. </returns>
