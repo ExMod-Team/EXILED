@@ -134,9 +134,6 @@ namespace Exiled.API.Features.Items
             Player oldOwner = Owner;
             owner ??= Owner;
 
-            if (owner is null)
-                throw new System.InvalidOperationException("The Owner of the item cannot be null.");
-
             Base.Owner = owner.ReferenceHub;
             Base.ServerOnUsingCompleted();
 
