@@ -34,7 +34,7 @@ namespace Exiled.Events.EventArgs.Scp939
         public CreatedAmnesticCloudEventArgs(ReferenceHub hub, Scp939AmnesticCloudInstance cloud)
         {
             Player = Player.Get(hub);
-            AmnesticCloud = (AmnesticCloudHazard)Hazard.Get(cloud);
+            AmnesticCloud = Hazard.Get<AmnesticCloudHazard>(cloud);
             Scp939 = Player.Role.As<Scp939Role>();
         }
 

@@ -56,10 +56,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <remarks>Checks value by player <see cref="Role.CheckAppearanceCompatibility(RoleTypeId)"/>.</remarks>
         public RoleTypeId RoleType
         {
-            get
-            {
-                return roleTypeId;
-            }
+            get => roleTypeId;
 
             set
             {

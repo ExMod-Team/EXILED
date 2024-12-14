@@ -77,13 +77,13 @@ namespace Exiled.API.Features.Items
             Log.Debug($"Spawning active grenade: {FuseTime}");
 #endif
 
-            Projectile projectile = CreateProjectile(position, Quaternion.identity);
+            Projectile projectile = CreateProjectile<ExplosionGrenadeProjectile>(position, Quaternion.identity);
 
             projectile.PreviousOwner = owner;
 
             projectile.Activate();
 
-            return (ExplosionGrenadeProjectile)projectile;
+            return projectile;
         }
 
         /// <summary>

@@ -27,15 +27,14 @@ namespace Exiled.Events.EventArgs.Map
             if (pickup is null)
                 Log.Error($"{nameof(ChangingIntoGrenadeEventArgs)}: Pickup is null!");
 
-            Pickup = Pickup.Get(pickup);
+            Pickup = API.Features.Pickups.Pickup.Get<GrenadePickup>(pickup);
             Type = Pickup.Type;
         }
 
         /// <summary>
         /// Gets a value indicating the pickup being changed into a grenade.
         /// </summary>
-        // TODO: Make that GrenadePickup
-        public Pickup Pickup { get; }
+        public GrenadePickup Pickup { get; }
 
         /// <summary>
         /// Gets or sets a value indicating what type of grenade will be spawned.
@@ -46,5 +45,10 @@ namespace Exiled.Events.EventArgs.Map
         /// Gets or sets a value indicating whether the pickup will be changed.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
+
+        /// <summary>
+        /// Gets a value indicating the pickup that changed into a grenade.
+        /// </summary>
+        Pickup IPickupEvent.Pickup => Pickup;
     }
 }

@@ -177,9 +177,6 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// Helper method for saving data between <see cref="Projectile"/>'s and <see cref="Throwable"/>'s.
         /// </summary>
         /// <param name="throwable"><see cref="Throwable"/>-related data to give to the <see cref="Projectile"/>.</param>
-        internal virtual void ReadThrowableItemInfo(Throwable throwable)
-        {
-            Scale = throwable.Scale;
-        }
+        internal virtual void ReadThrowableItemInfo(Throwable throwable) => Scale = throwable.Scale;
     }
 }

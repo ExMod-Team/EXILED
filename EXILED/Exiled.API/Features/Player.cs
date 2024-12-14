@@ -2191,34 +2191,13 @@ namespace Exiled.API.Features
         /// Forces the player to use an item.
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
-        /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        [Obsolete("Use `void UseItem(Usable)`")]
-        public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
+        public void UseItem(ItemType usableItem) => UseItem(Item.Create<Usable>(usableItem));
 
         /// <summary>
         /// Forces the player to use an item.
         /// </summary>
         /// <param name="item">The item to be used.</param>
-        /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        [Obsolete("Use `void UseItem(Usable)`")]
-        public bool UseItem(Item item)
-        {
-            if (item is not Usable usableItem)
-                return false;
-
-            UseItem(usableItem);
-
-            return true;
-        }
-
-        /// <summary>
-        /// Forces the player to use an item.
-        /// </summary>
-        /// <param name="item">The item to be used.</param>
-        public void UseItem(Usable item)
-        {
-            item.Use(this);
-        }
+        public void UseItem(Usable item) => item.Use(this);
 
         /// <summary>
         /// Kills the player.
