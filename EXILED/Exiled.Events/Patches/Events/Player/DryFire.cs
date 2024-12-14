@@ -120,7 +120,7 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = -7;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
 
-            // firstly, set `flag` to a false, and then if `IsAllowed == false` we could return without problems 
+            // firstly, set `flag` to a false, and then if `IsAllowed == false` we could return without problems
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     new CodeInstruction(OpCodes.Ldc_I4_0),
