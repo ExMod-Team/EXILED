@@ -9,24 +9,24 @@ defaults:
 
 jobs:
   set-labels:
+    name: Set Labels
     permissions:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - name: Labeler
-      uses: actions/labeler@v5.0.0
+    - uses: actions/labeler@v5.0.0
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         configuration-path: .github/labeler.yml
         sync-labels: true
   assign-author:
+    name: Assign Author
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
-      - name: Assign Author 
-        uses: toshimaru/auto-author-assign@v2.1.1
+      - uses: toshimaru/auto-author-assign@v2.1.1
   validate-pr-title:
     name: Validate PR title
     runs-on: ubuntu-latest
