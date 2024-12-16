@@ -27,7 +27,6 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             : base(magazine)
         {
             MagazineModule = magazine;
-            Firearm = (Firearm)Item.Get(MagazineModule.Firearm);
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         public MagazineModule MagazineModule { get; }
 
         /// <inheritdoc/>
-        public override Firearm Firearm { get; }
+        public override Firearm Firearm => Item.Get<Firearm>(MagazineModule.Firearm);
 
         /// <inheritdoc/>
         public override int MaxAmmo

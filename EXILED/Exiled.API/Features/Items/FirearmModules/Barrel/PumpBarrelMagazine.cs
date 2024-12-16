@@ -30,7 +30,6 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
             : base(pumpModule)
         {
             PumpBarrel = pumpModule;
-            Firearm = (Firearm)Item.Get(PumpBarrel.Firearm);
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         public PumpActionModule PumpBarrel { get; }
 
         /// <inheritdoc/>
-        public override Firearm Firearm { get; }
+        public override Firearm Firearm => Item.Get<Firearm>(PumpBarrel.Firearm);
 
         /// <inheritdoc/>
         public override int Ammo

@@ -30,7 +30,6 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             : base(magazine)
         {
             CylinderModule = magazine;
-            Firearm = (Firearm)Item.Get(CylinderModule.Firearm);
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         public CylinderAmmoModule CylinderModule { get; }
 
         /// <inheritdoc/>
-        public override Firearm Firearm { get; }
+        public override Firearm Firearm => Item.Get<Firearm>(CylinderModule.Firearm);
 
         /// <inheritdoc/>
         public override int MaxAmmo

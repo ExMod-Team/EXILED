@@ -30,7 +30,6 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
             : base(automaticModule)
         {
             AutomaticBarrel = automaticModule;
-            Firearm = (Firearm)Item.Get(AutomaticBarrel.Firearm);
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         public AutomaticActionModule AutomaticBarrel { get; }
 
         /// <inheritdoc/>
-        public override Firearm Firearm { get; }
+        public override Firearm Firearm => Item.Get<Firearm>(AutomaticBarrel.Firearm);
 
         /// <inheritdoc/>
         public override int Ammo
