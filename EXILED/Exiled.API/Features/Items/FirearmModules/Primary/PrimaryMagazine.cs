@@ -43,6 +43,11 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             }
         }
 
+        /// <summary>
+        /// Gets a max avaible ammo count in magazine without attachments.
+        /// </summary>
+        public abstract int ConstantMaxAmmo { get; }
+
         /// <inheritdoc/>
         public override int Ammo
         {

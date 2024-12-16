@@ -51,6 +51,9 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             }
         }
 
+        /// <inheritdoc/>
+        public override int ConstantMaxAmmo => CylinderModule._defaultCapacity;
+
         /// <summary>
         /// Gets or sets an used <see cref="Exiled.API.Enums.AmmoType"/> for this magazine.
         /// </summary>

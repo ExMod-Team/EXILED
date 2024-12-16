@@ -47,6 +47,9 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         }
 
         /// <inheritdoc/>
+        public override int ConstantMaxAmmo => MagazineModule._defaultCapacity;
+
+        /// <inheritdoc/>
         public override AmmoType AmmoType
         {
             get

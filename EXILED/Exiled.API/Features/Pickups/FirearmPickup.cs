@@ -9,8 +9,10 @@ namespace Exiled.API.Features.Pickups
 {
     using Exiled.API.Interfaces;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
+    using InventorySystem.Items.Firearms.Modules;
 
     using UnityEngine;
 
@@ -57,7 +59,12 @@ namespace Exiled.API.Features.Pickups
         public bool IsDistributed { get; internal set; }
 
         /// <summary>
-        /// Gets or sets a value indicating how many ammo have this <see cref="FirearmPickup"/>.
+        /// Gets or sets a value indicating how much ammo can contain this <see cref="FirearmPickup"/>.
+        /// </summary>
+        public int MaxAmmo { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating how much ammo have this <see cref="FirearmPickup"/>.
         /// </summary>
         public int Ammo
         {
@@ -118,5 +125,26 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         /// <returns>A string containing FirearmPickup related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{IsDistributed}| -{/*Ammo*/0}-";
+
+        /// <inheritdoc/>
+        internal override void ReadItemInfo(Items.Item item)
+        {
+            Items.Firearm firearm = (Items.Firearm)item;
+            MaxAmmo = firearm.PrimaryMagazine.ConstantMaxAmmo;
+            base.ReadItemInfo(item);
+        }
+
+        /// <inheritdoc/>
+        protected override void InitializeProperties(ItemBase itemBase)
+        {
+            base.InitializeProperties(itemBase);
+            if (!(itemBase as Firearm).TryGetModule(out IPrimaryAmmoContainerModule magazine))
+            {
+                Log.Error($"firearm prefab {itemBase.ItemTypeId} doesnt have an primary magazine module(unexpected)");
+                return;
+            }
+
+            MaxAmmo = magazine.AmmoMax;
+        }
     }
 }
