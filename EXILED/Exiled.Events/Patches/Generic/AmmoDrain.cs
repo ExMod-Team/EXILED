@@ -13,6 +13,7 @@ namespace Exiled.Events.Patches.Generic
     using System.Linq;
     using System.Reflection.Emit;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
@@ -60,6 +61,7 @@ namespace Exiled.Events.Patches.Generic
             yield return new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel);
         }
 
+        // that patch for open bolted firearms
         [HarmonyPatch(nameof(AutomaticActionModule.ServerShoot))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> First(IEnumerable<CodeInstruction> codeInstructions, ILGenerator generator)
@@ -77,7 +79,7 @@ namespace Exiled.Events.Patches.Generic
                 GetInstructions(firearm, ammoDrain, cnt));
 
             int offset = 1;
-            int index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.AmmoStored)))) + offset;
+            int index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(IAmmoContainerModule), nameof(IAmmoContainerModule.AmmoStored)))) + offset;
 
             // divide max ammo by AmmoDrain
             // we cant cock more ammo than we have in primary magazine, so we limit it due ammo drain
@@ -107,6 +109,7 @@ namespace Exiled.Events.Patches.Generic
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
 
+        // that patch for non open bolted firearms
         [HarmonyPatch(nameof(AutomaticActionModule.ServerCycleAction))]
         [HarmonyTranspiler]
         private static IEnumerable<CodeInstruction> Second(IEnumerable<CodeInstruction> codeInstructions, ILGenerator generator)
@@ -123,7 +126,7 @@ namespace Exiled.Events.Patches.Generic
                 GetInstructions(firearm, ammoDrain, cnt));
 
             int offset = 1;
-            int index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.AmmoStored)))) + offset;
+            int index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(IAmmoContainerModule), nameof(IAmmoContainerModule.AmmoStored)))) + offset;
 
             // divide max ammo by AmmoDrain
             // we cant cock more ammo than we have in primary magazine, so we limit it due ammo drain
