@@ -104,6 +104,15 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
+        /// Gets or sets a ammo drain per shoot.
+        /// </summary>
+        /// <remarks>
+        /// Always <see langword="1"/> by default.
+        /// Applied on a high layer nether basegame ammo controllers.
+        /// </remarks>
+        public int AmmoDrain { get; set; } = 1;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the attachment code have this <see cref="FirearmPickup"/>.
         /// </summary>
         public uint Attachments
@@ -131,6 +140,7 @@ namespace Exiled.API.Features.Pickups
         {
             Items.Firearm firearm = (Items.Firearm)item;
             MaxAmmo = firearm.PrimaryMagazine.ConstantMaxAmmo;
+            AmmoDrain = firearm.AmmoDrain;
             base.ReadItemInfo(item);
         }
 
