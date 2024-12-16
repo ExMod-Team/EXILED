@@ -220,12 +220,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="Enums.AmmoType"/> of the firearm.
         /// </summary>
-        public AmmoType AmmoType => (Base.Modules.OfType<MagazineModule>().FirstOrDefault()?.AmmoType ?? ItemType.None).GetAmmoType();
+        public AmmoType AmmoType => PrimaryMagazine.AmmoType;
 
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
         /// </summary>
-        public bool Aiming => Base.Modules.OfType<LinearAdsModule>().FirstOrDefault()?.AdsTarget ?? false;
+        public bool Aiming => Base.TryGetModule(out LinearAdsModule module) && module.AdsTarget;
 
         /// <summary>
         /// Gets a value indicating whether the firearm's flashlight module is enabled.
@@ -245,7 +245,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether the firearm is automatic.
         /// </summary>
-        public bool IsAutomatic => Array.Exists(Base.Modules, x => x is AutomaticActionModule);
+        public bool IsAutomatic => BarrelMagazine is AutomaticBarrelMagazine;
 
         /// <summary>
         /// Gets the <see cref="Attachment"/>s of the firearm.
@@ -270,35 +270,16 @@ namespace Exiled.API.Features.Items
         public uint BaseCode => BaseCodesValue[FirearmType];
 
         /// <summary>
-        /// Gets or sets the fire rate of the firearm, if it is an automatic weapon.
-        /// </summary>
-        /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
-        /// <seealso cref="IsAutomatic"/>
-        public float FireRate
-        {
-            get => Base.Modules.OfType<AutomaticActionModule>().FirstOrDefault()?.BaseFireRate ?? 0f;
-            set
-            {
-                AutomaticActionModule module = Base.Modules.OfType<AutomaticActionModule>().FirstOrDefault();
-
-                if (module != null)
-                    module.BaseFireRate = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the recoil settings of the firearm, if it's an automatic weapon.
         /// </summary>
         /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
         /// <seealso cref="IsAutomatic"/>
         public RecoilSettings Recoil
         {
-            get => Base.Modules.OfType<RecoilPatternModule>().FirstOrDefault()?.BaseRecoil ?? default;
+            get => Base.TryGetModule(out RecoilPatternModule module) ? module.BaseRecoil : default;
             set
             {
-                RecoilPatternModule module = Base.Modules.OfType<RecoilPatternModule>().FirstOrDefault();
-
-                if (module != null)
+                if (Base.TryGetModule(out RecoilPatternModule module))
                     module.BaseRecoil = value;
             }
         }
@@ -726,6 +707,7 @@ namespace Exiled.API.Features.Items
             if (pickup is FirearmPickup firearmPickup)
             {
                 PrimaryMagazine.MaxAmmo = firearmPickup.Ammo;
+                AmmoDrain = firearmPickup.AmmoDrain;
             }
         }
     }

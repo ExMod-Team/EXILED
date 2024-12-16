@@ -97,6 +97,11 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
             }
         }
 
+        /// <summary>
+        /// Gets the fire rate of the firearm, if it is an automatic weapon.
+        /// </summary>
+        public float FireRate => AutomaticBarrel.BaseFireRate;
+
         /// <inheritdoc/>
         public override void Resync() => AutomaticBarrel.ServerResync();
     }
