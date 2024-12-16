@@ -46,7 +46,6 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             set
             {
                 CylinderModule._defaultCapacity = value;
-                _ = CylinderAmmoModule.GetChambersArrayForSerial(CylinderModule.ItemSerial, value);
                 Resync();
             }
         }

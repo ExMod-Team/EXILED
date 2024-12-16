@@ -706,7 +706,7 @@ namespace Exiled.API.Features.Items
 
             if (pickup is FirearmPickup firearmPickup)
             {
-                PrimaryMagazine.MaxAmmo = firearmPickup.Ammo;
+                PrimaryMagazine.MaxAmmo = firearmPickup.MaxAmmo;
                 AmmoDrain = firearmPickup.AmmoDrain;
             }
         }
