@@ -36,12 +36,12 @@ namespace Exiled.API.Features.Items.FirearmModules
         public IAmmoContainerModule AmmoContainerModule { get; }
 
         /// <summary>
-        /// Gets or sets an count of current ammo in magazine.
+        /// Gets or sets a count of current ammo in magazine.
         /// </summary>
         public abstract int Ammo { get; set; }
 
         /// <summary>
-        /// Gets or sets an max avaible ammo count in magazine.
+        /// Gets or sets a max avaible ammo count in magazine.
         /// </summary>
         public abstract int MaxAmmo { get; set; }
 
