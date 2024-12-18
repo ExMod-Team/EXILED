@@ -610,18 +610,15 @@ namespace Exiled.API.Features
         /// <remarks>Players can be cuffed without another player being the cuffer.</remarks>
         public bool IsCuffed => Inventory.IsDisarmed();
 
-        // TODO NOT FINISH
-        /*
         /// <summary>
         /// Gets a value indicating whether the player is reloading a weapon.
         /// </summary>
-        public bool IsReloading => CurrentItem is Firearm firearm && !firearm.Base.AmmoManagerModule.Standby;
+        public bool IsReloading => CurrentItem is Firearm firearm && !firearm.IsReloading;
 
         /// <summary>
         /// Gets a value indicating whether the player is aiming with a weapon.
         /// </summary>
         public bool IsAimingDownWeapon => CurrentItem is Firearm firearm && firearm.Aiming;
-        */
 
         /// <summary>
         /// Gets a value indicating whether the player has enabled weapon's flashlight module.
