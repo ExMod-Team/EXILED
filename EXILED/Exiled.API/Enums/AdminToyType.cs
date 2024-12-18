@@ -24,9 +24,19 @@ namespace Exiled.API.Enums
         LightSource,
 
         /// <summary>
-        /// ShootingTarget toy.
+        /// ShootingTarget Radial sport target.
         /// </summary>
-        ShootingTarget,
+        ShootingTargetSport,
+
+        /// <summary>
+        /// ShootingTarget D-Class target.
+        /// </summary>
+        ShootingTargetClassD,
+
+        /// <summary>
+        /// ShootingTarget Binary target.
+        /// </summary>
+        ShootingTargetBinary,
 
         /// <summary>
         /// Speaker toy.
