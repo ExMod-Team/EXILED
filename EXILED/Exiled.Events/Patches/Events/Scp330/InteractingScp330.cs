@@ -7,13 +7,14 @@
 
 namespace Exiled.Events.Patches.Events.Scp330
 {
+    using InventorySystem.Items;
+
 #pragma warning disable SA1402
 #pragma warning disable SA1313
 
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp330;
@@ -60,7 +61,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // num2
-                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldloc_1),
 
                     // InteractingScp330EventArgs ev = new(Player, int)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingScp330EventArgs))[0]),
@@ -84,7 +85,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingScp330EventArgs), nameof(InteractingScp330EventArgs.Candy))),
 
                     // bag
-                    new(OpCodes.Ldloca_S, 3),
+                    new(OpCodes.Ldloca_S, 2),
 
                     // ServerProcessPickup(ReferenceHub, CandyKindID, Scp330Bag)
                     new CodeInstruction(OpCodes.Call, Method(typeof(InteractingScp330), nameof(ServerProcessPickup), new[] { typeof(ReferenceHub), typeof(CandyKindID), typeof(Scp330Bag).MakeByRefType() })),
@@ -125,7 +126,7 @@ namespace Exiled.Events.Patches.Events.Scp330
             // set `notSeverLabel`
             offset = -1;
             index = newInstructions.FindLastIndex(
-                instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._takenCandies)))) + offset;
+                instruction => instruction.LoadsField(Field(typeof(Scp330Interobject), nameof(Scp330Interobject._previousUses)))) + offset;
 
             Label notSeverLabel = newInstructions[index].labels[0];
 
@@ -159,7 +160,7 @@ namespace Exiled.Events.Patches.Events.Scp330
         {
             if (!Scp330Bag.TryGetBag(player, out bag))
             {
-                player.inventory.ServerAddItem(ItemType.SCP330);
+                player.inventory.ServerAddItem(ItemType.SCP330, ItemAddReason.AdminCommand);
 
                 if (!Scp330Bag.TryGetBag(player, out bag))
                     return false;

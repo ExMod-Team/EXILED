@@ -121,6 +121,11 @@ namespace Exiled.API.Enums
         SeveredHands,
 
         /// <summary>
+        /// Damage caused by severed eyes.
+        /// </summary>
+        SeveredEyes,
+
+        /// <summary>
         /// Damage caused by a custom source.
         /// </summary>
         Custom,

@@ -57,9 +57,9 @@ namespace Exiled.Events.Patches.Fixes
                 new CodeInstruction(OpCodes.Ldloc_S, scp106Role.LocalIndex),
                 new CodeInstruction(OpCodes.Brfalse_S, continueLabel),
 
-                // if (!scp106Role.IsSubmerged) goto skip
+                // if (!scp106Role.IsStalking) goto skip
                 new CodeInstruction(OpCodes.Ldloc_S, scp106Role.LocalIndex),
-                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(Scp106Role), nameof(Scp106Role.IsSubmerged))),
+                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(Scp106Role), nameof(Scp106Role.IsStalking))),
                 new CodeInstruction(OpCodes.Brtrue_S, skip),
             });
 

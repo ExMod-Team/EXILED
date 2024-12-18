@@ -13,20 +13,19 @@ namespace Exiled.Events.Patches.Events.Server
     using API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
-
     using HarmonyLib;
-
+    using PlayerRoles;
     using Respawning;
     using Respawning.NamingRules;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="UnitNameMessageHandler.SendNew(SpawnableTeamType, UnitNamingRule)"/>.
+    /// Patches <see cref="NamingRulesManager.ServerGenerateName(Team, UnitNamingRule)"/>.
     /// Adds the <see cref="Handlers.Server.AddingUnitName"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.AddingUnitName))]
-    [HarmonyPatch(typeof(UnitNameMessageHandler), nameof(UnitNameMessageHandler.SendNew))]
+    [HarmonyPatch(typeof(NamingRulesManager), nameof(NamingRulesManager.ServerGenerateName))]
     internal static class AddingUnitName
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

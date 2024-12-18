@@ -18,6 +18,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using UnityEngine;
 
+    using DestroyedGameRole = PlayerRoles.DestroyedRole;
     using FilmmakerGameRole = PlayerRoles.Filmmaker.FilmmakerRole;
     using HumanGameRole = PlayerRoles.HumanRole;
     using NoneGameRole = PlayerRoles.NoneRole;
@@ -112,6 +113,11 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating whether this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
         /// </summary>
         public bool IsValid => Owner != null && Owner.IsConnected && Base == Owner.RoleManager.CurrentRole;
+
+        /// <summary>
+        /// Gets the life identifier for the role.
+        /// </summary>
+        public int LifeIdentifier => Base.UniqueLifeIdentifier;
 
         /// <summary>
         /// Gets a random spawn position of this role.
@@ -228,6 +234,7 @@ namespace Exiled.API.Features.Roles
             HumanGameRole humanRole => new HumanRole(humanRole),
             FilmmakerGameRole filmmakerRole => new FilmMakerRole(filmmakerRole),
             NoneGameRole noneRole => new NoneRole(noneRole),
+            DestroyedGameRole destroyedRole => new DestroyedRole(destroyedRole),
             _ => null,
         };
     }

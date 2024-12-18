@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Item
 {
-    using System;
-
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
@@ -16,7 +14,7 @@ namespace Exiled.Events.EventArgs.Item
     /// <summary>
     /// Contains all information before a player charges a <see cref="Jailbird"/>.
     /// </summary>
-    public class ChargingJailbirdEventArgs : IPlayerEvent, IItemEvent, IDeniableEvent
+    public class ChargingJailbirdEventArgs : IPlayerEvent, IItemEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChargingJailbirdEventArgs"/> class.
@@ -49,13 +47,8 @@ namespace Exiled.Events.EventArgs.Item
         public Item Item => Jailbird;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the Jailbird can be charged.
+        /// Gets a value indicating whether the Jailbird can be charged.
         /// </summary>
-        public bool IsAllowed
-        {
-            get;
-            [Obsolete("This event cannot be denied as it will cause desync.")]
-            set;
-        }
+        public bool IsAllowed { get; }
     }
 }

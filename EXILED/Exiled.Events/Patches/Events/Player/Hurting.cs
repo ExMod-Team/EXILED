@@ -82,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // HurtEventArgs ev = new(player, handler, handleroutput)
                     new CodeInstruction(OpCodes.Ldloc, player.LocalIndex),
                     new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldloc_2),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(HurtEventArgs))[0]),
                     new(OpCodes.Dup),
 

@@ -9,6 +9,7 @@ namespace Exiled.Events.EventArgs.Map
 {
     using Exiled.Events.EventArgs.Interfaces;
     using Respawning;
+    using Respawning.Waves;
 
     /// <summary>
     /// Contains all information before the server spawns a team's respawn vehicle.
@@ -24,7 +25,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public SpawningTeamVehicleEventArgs(SpawnableTeamType team, bool isAllowed = true)
+        public SpawningTeamVehicleEventArgs(SpawnableWaveBase team, bool isAllowed = true)
         {
             Team = team;
             IsAllowed = isAllowed;
@@ -33,7 +34,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets or sets which vehicle should spawn.
         /// </summary>
-        public SpawnableTeamType Team { get; set; }
+        public SpawnableWaveBase Team { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the vehicle can be spawned.

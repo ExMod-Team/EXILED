@@ -71,7 +71,7 @@ namespace Exiled.API.Features.DamageHandlers
                 Base = { Owner = attacker.ReferenceHub },
             };
 
-            CustomBase = new FirearmDamageHandler(firearm, target, new BaseFirearmHandler(firearm.Base, damage));
+            CustomBase = new FirearmDamageHandler(firearm, target, new PlayerStatsSystem.FirearmDamageHandler() { Firearm = firearm.Base, Damage = damage });
         }
 
         /// <summary>

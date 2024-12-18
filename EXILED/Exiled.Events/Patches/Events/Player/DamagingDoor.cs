@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch the <see cref="BreakableDoor.ServerDamage(float, DoorDamageType)" />.
+    /// Patch the <see cref="BreakableDoor.ServerDamage" />.
     /// Adds the <see cref="Player.DamagingDoor" /> event.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.DamagingDoor))]

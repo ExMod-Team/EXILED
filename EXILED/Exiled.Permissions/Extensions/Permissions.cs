@@ -21,7 +21,7 @@ namespace Exiled.Permissions.Extensions
     using Features;
 
     using Properties;
-
+    using Query;
     using RemoteAdmin;
 
     using YamlDotNet.Core;
@@ -176,7 +176,7 @@ namespace Exiled.Permissions.Extensions
             {
                 return true;
             }
-            else if (sender is PlayerCommandSender || sender is UserPrint)
+            else if (sender is PlayerCommandSender || sender is QueryCommandSender)
             {
                 if (Player.Get(sender.SenderId) is not Player player)
                     return false;
