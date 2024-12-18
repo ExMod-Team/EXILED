@@ -151,8 +151,18 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // ChangingRole.ChangeInventory(changingRoleEventArgs, oldRoleType);
                     new(OpCodes.Call, Method(typeof(ChangingRoleAndSpawned), nameof(ChangeInventory))),
+                });
 
-                    // invoke OnSpawned
+            newInstructions.InsertRange(
+                newInstructions.Count - 1,
+                new CodeInstruction[]
+                {
+                    // if (this.isLocalPlayer)
+                    //     return;
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.isLocalPlayer))),
+                    new(OpCodes.Brtrue_S, returnLabel),
+
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
@@ -186,7 +196,7 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
+                if (ev == null || ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
                     return;
 
                 Inventory inventory = ev.Player.Inventory;

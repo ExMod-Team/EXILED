@@ -15,14 +15,10 @@ namespace Exiled.Installer
     using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
-
-    using Exiled.Installer.Properties;
-
     using ICSharpCode.SharpZipLib.GZip;
     using ICSharpCode.SharpZipLib.Tar;
-
     using Octokit;
-
+    using Properties;
     using Version = SemanticVersioning.Version;
 
     internal enum PathResolution
@@ -101,7 +97,7 @@ namespace Exiled.Installer
                 Console.WriteLine(Resources.Program_MainSafe_Release_found_);
                 Console.WriteLine(FormatRelease(targetRelease!));
 
-                ReleaseAsset? exiledAsset = targetRelease!.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
+                ReleaseAsset exiledAsset = targetRelease!.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
                 if (exiledAsset is null)
                 {
                     Console.WriteLine(Resources.Program_MainSafe_____ASSETS____);
@@ -220,7 +216,7 @@ namespace Exiled.Installer
 
             EnsureDirExists(Path.GetDirectoryName(path)!);
 
-            FileStream? fs = null;
+            FileStream fs = null;
             try
             {
                 fs = new FileStream(path, System.IO.FileMode.Create, FileAccess.Write, FileShare.None);
@@ -280,7 +276,7 @@ namespace Exiled.Installer
         private static Release FindRelease(CommandSettings args, IEnumerable<Release> releases)
         {
             Console.WriteLine(Resources.Program_TryFindRelease_Trying_to_find_release__);
-            Version? targetVersion = args.TargetVersion is not null ? new Version(args.TargetVersion) : null;
+            Version targetVersion = args.TargetVersion is not null ? new Version(args.TargetVersion) : null;
 
             List<Release> enumerable = releases.ToList();
 
