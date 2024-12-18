@@ -100,8 +100,13 @@ namespace Exiled.Events.Handlers.Internal
                 SettingBase.SendToPlayer(ev.Player);
 
             // TODO: Remove if this has been fixed for https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/52
-            foreach (Room room in Room.List.Where(current => current.AreLightsOff))
+            foreach (Room room in Room.List)
             {
+                // Null safety check for github issue #206
+                if (room.RoomLightControllers == null)
+                    continue;
+                if (!room.AreLightsOff)
+                    continue;
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), true);
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), false);
             }
