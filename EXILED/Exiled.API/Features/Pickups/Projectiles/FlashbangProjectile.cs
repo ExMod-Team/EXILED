@@ -51,7 +51,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
-        /// Gets or sets the additional duration of the <see cref="EffectType.Blinded"/> effect.
+        /// Gets or sets the additional duration of the <see cref="EffectType.Blurred"/> effect.
         /// </summary>
         public float AdditionalBlindedEffect
         {
