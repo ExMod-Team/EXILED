@@ -53,7 +53,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <summary>
         /// Gets or sets the additional duration of the <see cref="EffectType.Blurred"/> effect.
         /// </summary>
-        public float AdditionalBlindedEffect
+        public float AdditionalBlurredEffect
         {
             get => Base._additionalBlurDuration;
             set => Base._additionalBlurDuration = value;

@@ -44,7 +44,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the additional duration of the <see cref="EffectType.Blurred"/> effect.
         /// </summary>
-        public float AdditionalBlindedEffect { get; set; }
+        public float AdditionalBlurredEffect { get; set; }
 
         /// <summary>
         /// Gets or sets the how mush the flash grenade going to be intensified when explode at <see cref="RoomType.Surface"/>.
@@ -58,7 +58,7 @@ namespace Exiled.API.Features.Pickups
             if (item is FlashGrenade flashGrenadeitem)
             {
                 MinimalDurationEffect = flashGrenadeitem.MinimalDurationEffect;
-                AdditionalBlindedEffect = flashGrenadeitem.AdditionalBlindedEffect;
+                AdditionalBlurredEffect = flashGrenadeitem.AdditionalBlurredEffect;
                 SurfaceDistanceIntensifier = flashGrenadeitem.SurfaceDistanceIntensifier;
                 FuseTime = flashGrenadeitem.FuseTime;
             }
@@ -70,7 +70,7 @@ namespace Exiled.API.Features.Pickups
             if (projectile is FlashbangProjectile flashbangProjectile)
             {
                 flashbangProjectile.MinimalDurationEffect = MinimalDurationEffect;
-                flashbangProjectile.AdditionalBlindedEffect = AdditionalBlindedEffect;
+                flashbangProjectile.AdditionalBlurredEffect = AdditionalBlurredEffect;
                 flashbangProjectile.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
                 flashbangProjectile.FuseTime = FuseTime;
             }
@@ -83,7 +83,7 @@ namespace Exiled.API.Features.Pickups
             if (itemBase is ThrowableItem throwable && throwable.Projectile is FlashbangGrenade flashGrenade)
             {
                 MinimalDurationEffect = flashGrenade._minimalEffectDuration;
-                AdditionalBlindedEffect = flashGrenade._additionalBlurDuration;
+                AdditionalBlurredEffect = flashGrenade._additionalBlurDuration;
                 SurfaceDistanceIntensifier = flashGrenade._surfaceZoneDistanceIntensifier;
             }
         }

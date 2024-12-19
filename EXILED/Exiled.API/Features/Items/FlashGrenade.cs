@@ -61,10 +61,10 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the additional duration of the <see cref="EffectType.Blurred"/> effect.
         /// </summary>
-        public float AdditionalBlindedEffect
+        public float AdditionalBlurredEffect
         {
-            get => Projectile.AdditionalBlindedEffect;
-            set => Projectile.AdditionalBlindedEffect = value;
+            get => Projectile.AdditionalBlurredEffect;
+            set => Projectile.AdditionalBlurredEffect = value;
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Exiled.API.Features.Items
             grenade.Base.gameObject.SetActive(true);
 
             grenade.MinimalDurationEffect = MinimalDurationEffect;
-            grenade.AdditionalBlindedEffect = AdditionalBlindedEffect;
+            grenade.AdditionalBlurredEffect = AdditionalBlurredEffect;
             grenade.SurfaceDistanceIntensifier = SurfaceDistanceIntensifier;
             grenade.FuseTime = FuseTime;
 
@@ -125,7 +125,7 @@ namespace Exiled.API.Features.Items
         public override Item Clone() => new FlashGrenade()
         {
             MinimalDurationEffect = MinimalDurationEffect,
-            AdditionalBlindedEffect = AdditionalBlindedEffect,
+            AdditionalBlurredEffect = AdditionalBlurredEffect,
             SurfaceDistanceIntensifier = SurfaceDistanceIntensifier,
             FuseTime = FuseTime,
             Repickable = Repickable,
@@ -145,7 +145,7 @@ namespace Exiled.API.Features.Items
             if (pickup is FlashGrenadePickup flashGrenadePickup)
             {
                 MinimalDurationEffect = flashGrenadePickup.MinimalDurationEffect;
-                AdditionalBlindedEffect = flashGrenadePickup.AdditionalBlindedEffect;
+                AdditionalBlurredEffect = flashGrenadePickup.AdditionalBlurredEffect;
                 SurfaceDistanceIntensifier = flashGrenadePickup.SurfaceDistanceIntensifier;
                 FuseTime = flashGrenadePickup.FuseTime;
             }
