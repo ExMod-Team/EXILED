@@ -33,7 +33,7 @@ namespace Exiled.API.Extensions
             { EffectType.AmnesiaVision, typeof(AmnesiaVision) },
             { EffectType.Asphyxiated, typeof(Asphyxiated) },
             { EffectType.Bleeding, typeof(Bleeding) },
-            { EffectType.Blinded, typeof(Blindness) },
+            { EffectType.Blindness, typeof(Blindness) },
             { EffectType.BodyshotReduction, typeof(BodyshotReduction) },
             { EffectType.Burned, typeof(Burned) },
             { EffectType.CardiacArrest, typeof(CardiacArrest) },
@@ -159,7 +159,7 @@ namespace Exiled.API.Extensions
         /// <returns>Whether the effect is a negative effect.</returns>
         /// <seealso cref="IsHarmful(EffectType)"/>
         public static bool IsNegative(this EffectType effect) => IsHarmful(effect) || effect is EffectType.AmnesiaItems
-            or EffectType.AmnesiaVision or EffectType.Blinded or EffectType.Burned or EffectType.Concussed or EffectType.Deafened
+            or EffectType.AmnesiaVision or EffectType.Blindness or EffectType.Burned or EffectType.Concussed or EffectType.Deafened
             or EffectType.Disabled or EffectType.Ensnared or EffectType.Exhausted or EffectType.Flashed or EffectType.SinkHole
             or EffectType.Stained or EffectType.InsufficientLighting or EffectType.SoundtrackMute or EffectType.Scanned or EffectType.Slowness;
 
