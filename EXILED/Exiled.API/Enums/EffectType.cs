@@ -44,7 +44,7 @@ namespace Exiled.API.Enums
         Bleeding,
 
         /// <summary>
-        /// Blurs the player's screen.
+        /// Make the player screen darker.
         /// </summary>
         Blindness,
 
