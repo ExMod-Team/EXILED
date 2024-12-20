@@ -554,6 +554,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangedEmotionEventArgs> ChangedEmotion { get; set; } = new();
 
         /// <summary>
+        /// Invoked before disruptor's mode is changed.
+        /// </summary>
+        public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
+
+        /// <summary>
         /// Called before a player's emotion changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingEmotionEventArgs"/> instance.</param>
@@ -1187,6 +1192,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingNicknameEventArgs"/> instance.</param>
         public static void OnChangingNickname(ChangingNicknameEventArgs ev) => ChangingNickname.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before disruptor's mode is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
+        public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
 
         /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
