@@ -34,7 +34,7 @@ namespace Exiled.Events.EventArgs.Player
         public Firearm Firearm { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the current mode is SingleShot mode.
+        /// Gets a new disruptor's fire mode.
         /// </summary>
         public DisruptorMode NewMode { get; }
     }
