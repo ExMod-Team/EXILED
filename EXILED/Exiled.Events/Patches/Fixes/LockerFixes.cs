@@ -48,7 +48,7 @@ namespace Exiled.Events.Patches.Fixes
 
         private static void Hepler(LockerChamber chamber)
         {
-            chamber._content.Clear();
+            chamber.Content.Clear();
 
             if (!chamber._spawnOnFirstChamberOpening)
                 return;

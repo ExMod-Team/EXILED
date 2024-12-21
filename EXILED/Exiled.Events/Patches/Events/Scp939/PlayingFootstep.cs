@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Scp939
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="FootstepRippleTrigger.OnFootstepPlayed(AnimatedCharacterModel, float)" />
+    /// Patches <see cref="FootstepRippleTrigger.OnFootstepPlayed(CharacterModel, float)" />
     /// to add the <see cref="Scp939.PlayingFootstep" /> event.
     /// </summary>
     [EventPatch(typeof(Scp939), nameof(Scp939.PlayingFootstep))]

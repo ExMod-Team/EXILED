@@ -111,7 +111,7 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.MicroHid:
                     InventorySystem.Items.MicroHID.MicroHIDItem microHidOwner = new();
                     microHidOwner.Owner = attacker.ReferenceHub;
-                    Base = new MicroHidDamageHandler(microHidOwner, damage);
+                    Base = new MicroHidDamageHandler(damage, microHidOwner);
                     break;
                 case DamageType.Explosion:
                     Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);

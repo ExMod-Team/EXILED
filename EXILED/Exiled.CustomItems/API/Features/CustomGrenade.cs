@@ -94,7 +94,7 @@ namespace Exiled.CustomItems.API.Features
             NetworkServer.Spawn(thrownProjectile.gameObject);
             thrownProjectile.InfoReceivedHook(default, newInfo);
             if (thrownProjectile.TryGetComponent(out Rigidbody component))
-                throwable.Base.PropelBody(component, throwable.Base.FullThrowSettings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(velocity), force, throwable.Base.FullThrowSettings.UpwardsFactor);
+                throwable.Base.PropelBody(component, throwable.Base.FullThrowSettings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(velocity));
             thrownProjectile.ServerActivate();
 
             return Pickup.Get(thrownProjectile);

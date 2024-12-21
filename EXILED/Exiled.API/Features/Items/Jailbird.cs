@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Items
 
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Jailbird;
     using Mirror;
@@ -152,13 +153,14 @@ namespace Exiled.API.Features.Items
         public void Break()
         {
             WearState = JailbirdWearState.Broken;
-            using (new AutosyncRpc(Base, true, out NetworkWriter networkWriter))
+            ItemIdentifier identifier = new(Base);
+            using (new AutosyncRpc(identifier, out NetworkWriter networkWriter))
             {
                 networkWriter.WriteByte(0);
                 networkWriter.WriteByte((byte)JailbirdWearState.Broken);
             }
 
-            using (new AutosyncRpc(Base, true, out NetworkWriter networkWriter2))
+            using (new AutosyncRpc(identifier, out NetworkWriter networkWriter2))
             {
                 networkWriter2.WriteByte(1);
             }

@@ -7,42 +7,35 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using System;
+
     using API.Features;
     using API.Features.Items;
-
     using Interfaces;
-
     using InventorySystem.Items.MicroHID;
+    using InventorySystem.Items.MicroHID.Modules;
 
     /// <summary>
     /// Contains all information before MicroHID state is changed.
     /// </summary>
-    public class ChangingMicroHIDStateEventArgs : IPlayerEvent, IDeniableEvent
+    public class ChangingMicroHIDStateEventArgs : IDeniableEvent, IItemEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingMicroHIDStateEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        /// <inheritdoc cref="Player" />
-        /// </param>
         /// <param name="microHID">
         /// <inheritdoc cref="MicroHID" />
         /// </param>
-        /// <param name="oldState">
-        /// <inheritdoc cref="OldState" />
-        /// </param>
-        /// <param name="newState">
-        /// <inheritdoc cref="NewState" />
+        /// <param name="newPhase">
+        /// <inheritdoc cref="NewPhase" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ChangingMicroHIDStateEventArgs(Player player, MicroHIDItem microHID, HidState oldState, HidState newState, bool isAllowed = true)
+        public ChangingMicroHIDStateEventArgs(Item microHID, MicroHidPhase newPhase, bool isAllowed = true)
         {
-            Player = player;
-            MicroHID = Item.Get<MicroHid>(microHID);
-            OldState = oldState;
-            NewState = newState;
+            MicroHID = microHID.As<MicroHid>();
+            NewPhase = newPhase;
             IsAllowed = isAllowed;
         }
 
@@ -52,23 +45,16 @@ namespace Exiled.Events.EventArgs.Player
         public MicroHid MicroHID { get; }
 
         /// <summary>
-        /// Gets the old MicroHID state.
-        /// </summary>
-        public HidState OldState { get; }
-
-        /// <summary>
         /// Gets or sets the new MicroHID state.
         /// </summary>
-        public HidState NewState { get; set; }
+        public MicroHidPhase NewPhase { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the MicroHID state can be changed.
         /// </summary>
         public bool IsAllowed { get; set; }
 
-        /// <summary>
-        /// Gets the player who's using the MicroHID.
-        /// </summary>
-        public Player Player { get; }
+        /// <inheritdoc/>
+        public Item Item => MicroHID;
     }
 }
