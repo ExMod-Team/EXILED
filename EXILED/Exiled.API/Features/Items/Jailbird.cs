@@ -5,14 +5,13 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using InventorySystem.Items;
-
 namespace Exiled.API.Features.Items
 {
     using System;
 
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Jailbird;
     using Mirror;

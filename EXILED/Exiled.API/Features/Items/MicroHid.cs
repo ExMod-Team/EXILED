@@ -5,17 +5,17 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System;
-using System.Reflection;
-using Exiled.API.Features.Pickups;
-using InventorySystem.Items.MicroHID.Modules;
-using Random = UnityEngine.Random;
-
 namespace Exiled.API.Features.Items
 {
-    using Exiled.API.Interfaces;
+    using System;
+    using System.Reflection;
 
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Interfaces;
     using InventorySystem.Items.MicroHID;
+    using InventorySystem.Items.MicroHID.Modules;
+
+    using Random = UnityEngine.Random;
 
     /// <summary>
     /// A wrapper class for <see cref="MicroHIDItem"/>.
