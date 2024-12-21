@@ -5,6 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.API.Features.Items;
+using InventorySystem.Items.MicroHID.Modules;
+
 namespace Exiled.API.Features.Pickups
 {
     using Exiled.API.Interfaces;
@@ -41,18 +44,29 @@ namespace Exiled.API.Features.Pickups
         public new BaseMicroHID Base { get; }
 
         /// <summary>
+        /// Gets the <see cref="InventorySystem.Items.MicroHID.Modules.CycleController"/> of this <see cref="MicroHIDPickup"/>.
+        /// </summary>
+        public CycleController CycleController => Base._cycleController;
+
+        /// <summary>
         /// Gets or sets the MicroHID Energy Level.
         /// </summary>
-        public float Energy
-        {
-            get => Base.NetworkEnergy;
-            set => Base.NetworkEnergy = value;
-        }
+        public float Energy { get; set; }
 
         /// <summary>
         /// Returns the MicroHIDPickup in a human readable format.
         /// </summary>
         /// <returns>A string containing MicroHIDPickup related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Energy}|";
+
+        internal override void ReadItemInfo(Item item)
+        {
+            base.ReadItemInfo(item);
+
+            if (item.Is(out MicroHid microHid))
+            {
+                Energy = microHid.Energy;
+            }
+        }
     }
 }

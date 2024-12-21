@@ -14,21 +14,19 @@ namespace Exiled.Events.Patches.Events.Player
     using API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
-
     using HarmonyLib;
-
     using InventorySystem.Items.MicroHID;
-
+    using InventorySystem.Items.MicroHID.Modules;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="MicroHIDItem.ExecuteServerside" />.
+    /// Patches <see cref="EnergyManagerModule.EquipUpdate" />.
     /// Adds the <see cref="Handlers.Player.UsingMicroHIDEnergy" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.UsingMicroHIDEnergy))]
-    [HarmonyPatch(typeof(MicroHIDItem), nameof(MicroHIDItem.ExecuteServerside))]
+    [HarmonyPatch(typeof(EnergyManagerModule), nameof(EnergyManagerModule.EquipUpdate))]
     internal static class UsingMicroHIDEnergy
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -39,50 +37,42 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(UsingMicroHIDEnergyEventArgs));
 
-            const int offset = -7;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Mathf), nameof(Mathf.Clamp01)))) + offset;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_0);
 
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    // Player.Get(base.Owner)
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(MicroHIDItem), nameof(MicroHIDItem.Owner))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // this.MicroHID
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EnergyManagerModule), nameof(EnergyManagerModule.MicroHid))),
 
-                    // this
-                    new(OpCodes.Ldarg_0),
+                // energy
+                new(OpCodes.Ldloc_0),
 
-                    // currentState
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(MicroHIDItem), nameof(MicroHIDItem.State))),
+                // true
+                new(OpCodes.Ldc_I4_1),
 
-                    // num
-                    new(OpCodes.Ldloc_2),
+                // UsingMicroHIDEnergyEventArgs ev = new(this.MicroHID, energy, true);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingMicroHIDEnergyEventArgs))[0]),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
+                // Handlers.Player.OnUsingMicroHIDEnergy(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUsingMicroHIDEnergy))),
 
-                    // UsingMicroHIDEnergyEventArgs ev = new(Player, MicroHIDItem, HidState, float, bool)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingMicroHIDEnergyEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
+                // if (!ev.IsAllowed)
+                //    return;
+                new(OpCodes.Callvirt, PropertyGetter(typeof(UsingMicroHIDEnergyEventArgs), nameof(UsingMicroHIDEnergyEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse_S, returnLabel),
 
-                    // Handlers.Player.UsingMicroHIDEnergy(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUsingMicroHIDEnergy))),
-
-                    // if (!ev.IsAllowed)
-                    //   return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(UsingMicroHIDEnergyEventArgs), nameof(UsingMicroHIDEnergyEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, returnLabel),
-
-                    // num = ev.Drain
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Call, PropertyGetter(typeof(UsingMicroHIDEnergyEventArgs), nameof(UsingMicroHIDEnergyEventArgs.Drain))),
-                    new(OpCodes.Stloc_2),
-                });
+                // energy = this.Energy - ev.Drain;
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EnergyManagerModule), nameof(EnergyManagerModule.Energy))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(UsingMicroHIDEnergyEventArgs), nameof(UsingMicroHIDEnergyEventArgs.Drain))),
+                new(OpCodes.Sub),
+                new(OpCodes.Stloc_0),
+            });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
