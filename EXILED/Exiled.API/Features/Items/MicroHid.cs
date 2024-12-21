@@ -143,8 +143,21 @@ namespace Exiled.API.Features.Items
         /// <param name="firingMode">Fire mode.</param>
         public void Fire(MicroHidFiringMode firingMode = MicroHidFiringMode.PrimaryFire)
         {
-            if (TryGetFireController(firingMode, out PrimaryFireModeModule module))
-                module.GetType().GetMethod("ServerFire", BindingFlags.Public | BindingFlags.DeclaredOnly)!.Invoke(module, Array.Empty<object>());
+            switch (firingMode)
+            {
+                case MicroHidFiringMode.PrimaryFire:
+                    if (TryGetFireController(MicroHidFiringMode.PrimaryFire, out PrimaryFireModeModule primaryFireModeModule))
+                        primaryFireModeModule.ServerFire();
+                    break;
+                case MicroHidFiringMode.ChargeFire:
+                    if (TryGetFireController(MicroHidFiringMode.ChargeFire, out ChargeFireModeModule chargeFireModeModule))
+                        chargeFireModeModule.ServerFire();
+                    break;
+                default:
+                    if (TryGetFireController(MicroHidFiringMode.BrokenFire, out BrokenFireModeModule brokenFireModeModule))
+                        brokenFireModeModule.ServerFire();
+                    break;
+            }
         }
 
         /// <summary>
@@ -207,7 +220,7 @@ namespace Exiled.API.Features.Items
         /// <returns>A string containing MicroHid-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Energy}| -{State}-";
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         internal override void ReadPickupInfo(Pickup pickup)
         {
             base.ReadPickupInfo(pickup);

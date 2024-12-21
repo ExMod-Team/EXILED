@@ -53,6 +53,34 @@ namespace Exiled.API.Features.Pickups
         public float Energy { get; set; }
 
         /// <summary>
+        /// Gets or sets the <see cref="MicroHidPhase"/>.
+        /// </summary>
+        public MicroHidPhase State
+        {
+            get => CycleController.Phase;
+            set => CycleController.Phase = value;
+        }
+
+        /// <summary>
+        /// Gets or sets progress of winging up.
+        /// </summary>
+        /// <value>A value between <c>0</c> and <c>1</c>.</value>
+        public float WindUpProgress
+        {
+            get => CycleController.ServerWindUpProgress;
+            set => CycleController.ServerWindUpProgress = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the last received <see cref="MicroHidFiringMode"/>.
+        /// </summary>
+        public MicroHidFiringMode LastFiringMode
+        {
+            get => CycleController.LastFiringMode;
+            set => CycleController.LastFiringMode = value;
+        }
+
+        /// <summary>
         /// Returns the MicroHIDPickup in a human readable format.
         /// </summary>
         /// <returns>A string containing MicroHIDPickup related data.</returns>
