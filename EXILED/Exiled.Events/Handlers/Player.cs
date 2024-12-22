@@ -558,6 +558,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static Event<RotatingRevolverEventArgs> RotatingRevolver { get; set; } = new();
 
+        /// Invoked before disruptor's mode is changed.
+        /// </summary>
+        public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
+
         /// <summary>
         /// Called before a player's emotion changed.
         /// </summary>
@@ -1198,6 +1202,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="RotatingRevolverEventArgs"/> instance.</param>
         public static void OnRotatingRevolver(RotatingRevolverEventArgs ev) => RotatingRevolver.InvokeSafely(ev);
+
+        /// Called before disruptor's mode is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
+        public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
 
         /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.

@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
+    using System.Text;
+
     using Exiled.API.Features.Waves;
     using Exiled.Events.EventArgs.Interfaces;
     using Respawning.Announcements;
@@ -20,11 +22,11 @@ namespace Exiled.Events.EventArgs.Map
         /// Initializes a new instance of the <see cref="AnnouncingChaosEntranceEventArgs"/> class.
         /// </summary>
         /// <param name="announcement"><inheritdoc cref="Wave"/></param>
-        /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public AnnouncingChaosEntranceEventArgs(WaveAnnouncementBase announcement, bool isAllowed = true)
+        /// <param name="builder"><inheritdoc cref="Words"/></param>
+        public AnnouncingChaosEntranceEventArgs(WaveAnnouncementBase announcement, StringBuilder builder)
         {
             Wave = TimedWave.GetTimedWaves().Find(x => x.Announcement == announcement);
-            IsAllowed = isAllowed;
+            Words = builder;
         }
 
         /// <summary>
@@ -32,7 +34,13 @@ namespace Exiled.Events.EventArgs.Map
         /// </summary>
         public TimedWave Wave { get; }
 
+        /// <summary>
+        /// Gets the <see cref="StringBuilder"/> of the words that C.A.S.S.I.E will say.
+        /// <remarks>It doesn't affect the subtitle part that will be sent to the client.</remarks>
+        /// </summary>
+        public StringBuilder Words { get; }
+
         /// <inheritdoc/>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
     }
 }
