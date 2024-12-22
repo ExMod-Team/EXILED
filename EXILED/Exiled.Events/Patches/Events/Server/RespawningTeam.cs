@@ -10,19 +10,15 @@ namespace Exiled.Events.Patches.Events.Server
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
-
-    using Exiled.API.Extensions;
+    using Exiled.API.Features.Waves;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
     using Exiled.Events.Handlers;
     using HarmonyLib;
     using PlayerRoles;
-    using Respawning;
-    using Respawning.NamingRules;
     using Respawning.Waves;
 
     using static HarmonyLib.AccessTools;
@@ -97,8 +93,9 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(GetHubs))),
                     new(OpCodes.Stloc_S, 2),
 
-                    // wave = ev.Wave;
+                    // wave = ev.Wave.Base;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Wave))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(TimedWave), nameof(TimedWave.Base))),
                     new(OpCodes.Starg_S, 0),
                 });
 

@@ -10,10 +10,7 @@ namespace Exiled.Events.Patches.Events.Player
 #pragma warning disable SA1402 // File may only contain a single type
 #pragma warning disable IDE0060
 
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Enums;
@@ -24,7 +21,6 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.Attributes;
     using HarmonyLib;
     using PlayerRoles.FirstPersonControl;
-    using Respawning;
 
     using static HarmonyLib.AccessTools;
 

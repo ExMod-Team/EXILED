@@ -505,8 +505,8 @@ namespace Exiled.Events.Handlers
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> damage a Window.
-        /// </summary> // TODO: DamagingWindow instead of PlayerDamageWindow
-        public static Event<DamagingWindowEventArgs> PlayerDamageWindow { get; set; } = new();
+        /// </summary>
+        public static Event<DamagingWindowEventArgs> DamagingWindow { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> damage a Door.
@@ -522,12 +522,6 @@ namespace Exiled.Events.Handlers
         /// Invoked after a <see cref="T:Exiled.API.Features.Player" /> has an item removed from their inventory.
         /// </summary>
         public static Event<ItemRemovedEventArgs> ItemRemoved { get; set; } = new();
-
-        /// <summary>
-        /// Invoked before KillPlayer is called.
-        /// </summary>
-        [Obsolete("Use DyingEventArgs")]
-        public static Event<KillingPlayerEventArgs> KillingPlayer { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> enters in an environmental hazard.
@@ -558,6 +552,11 @@ namespace Exiled.Events.Handlers
         /// Invoked after a player's emotion changed.
         /// </summary>
         public static Event<ChangedEmotionEventArgs> ChangedEmotion { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before disruptor's mode is changed.
+        /// </summary>
+        public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
 
         /// <summary>
         /// Called before a player's emotion changed.
@@ -702,8 +701,7 @@ namespace Exiled.Events.Handlers
         /// Called before throwing a grenade.
         /// </summary>
         /// <param name="ev">The <see cref="ThrownProjectileEventArgs"/> instance.</param>
-        // TODO: rename that to OnThrownProjectile
-        public static void OnThrowingProjectile(ThrownProjectileEventArgs ev) => ThrownProjectile.InvokeSafely(ev);
+        public static void OnThrownProjectile(ThrownProjectileEventArgs ev) => ThrownProjectile.InvokeSafely(ev);
 
         /// <summary>
         /// Called before receving a throwing request.
@@ -1012,13 +1010,6 @@ namespace Exiled.Events.Handlers
         public static void OnSendingAdminChatMessage(SendingAdminChatMessageEventsArgs ev) => SendingAdminChatMessage.InvokeSafely(ev);
 
         /// <summary>
-        ///  Called before KillPlayer is called.
-        /// </summary>
-        /// <param name="ev">The <see cref="KillingPlayerEventArgs"/> event handler. </param>
-        [Obsolete("Use DyingEventArgs")]
-        public static void OnKillPlayer(KillingPlayerEventArgs ev) => KillingPlayer.InvokeSafely(ev);
-
-        /// <summary>
         /// Called after a <see cref="T:Exiled.API.Features.Player" /> has an item added to their inventory.
         /// </summary>
         /// <param name="referenceHub">The <see cref="ReferenceHub"/> the item was added to.</param>
@@ -1044,11 +1035,12 @@ namespace Exiled.Events.Handlers
         public static void OnItemRemoved(ReferenceHub referenceHub, InventorySystem.Items.ItemBase itemBase, InventorySystem.Items.Pickups.ItemPickupBase pickupBase)
         {
             ItemRemovedEventArgs ev = new(referenceHub, itemBase, pickupBase);
-            ItemRemoved.InvokeSafely(ev);
 
             ev.Player.ItemsValue.Remove(ev.Item);
 
             API.Features.Items.Item.BaseToItem.Remove(itemBase);
+
+            ItemRemoved.InvokeSafely(ev);
         }
 
         /// <summary>
@@ -1073,7 +1065,7 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> damage a window.
         /// </summary>
         /// <param name="ev">The <see cref="DamagingWindowEventArgs"/> instance. </param>
-        public static void OnPlayerDamageWindow(DamagingWindowEventArgs ev) => PlayerDamageWindow.InvokeSafely(ev);
+        public static void OnDamagingWindow(DamagingWindowEventArgs ev) => DamagingWindow.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> damage a window.
@@ -1200,6 +1192,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingNicknameEventArgs"/> instance.</param>
         public static void OnChangingNickname(ChangingNicknameEventArgs ev) => ChangingNickname.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before disruptor's mode is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
+        public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
 
         /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
