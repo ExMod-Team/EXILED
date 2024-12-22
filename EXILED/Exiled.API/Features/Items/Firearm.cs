@@ -164,8 +164,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the total amount of ammo in the firearm.
         /// </summary>
-        public int TotalAmmo =>
-            Base.GetTotalStoredAmmo();
+        public int TotalAmmo => Base.GetTotalStoredAmmo();
 
         /// <summary>
         /// Gets or sets the max ammo for this firearm.
