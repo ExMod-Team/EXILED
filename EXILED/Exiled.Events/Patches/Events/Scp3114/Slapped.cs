@@ -50,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
 
                 // base.LastAttackResult
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldfld, Field(typeof(ScpAttackAbilityBase<Scp3114Role>), nameof(ScpAttackAbilityBase<Scp3114Role>.LastAttackResult))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ScpAttackAbilityBase<Scp3114Role>), nameof(ScpAttackAbilityBase<Scp3114Role>.LastAttackResult))),
 
                 // Player::Get(primaryTarget)
                 new(OpCodes.Ldloc_1),

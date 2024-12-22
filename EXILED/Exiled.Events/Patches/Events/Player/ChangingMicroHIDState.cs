@@ -45,7 +45,7 @@ namespace Exiled.Events.Patches.Events.Player
                 // Item.Get(this.Serial);
                 new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Ldfld, Field(typeof(CycleController), nameof(CycleController.Serial))),
-                new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).Find(x => !x.IsGenericMethod && x.GetParameters().FirstOrDefault()?.ParameterType == typeof(ushort))),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(Item)).Find(x => !x.IsGenericMethod && x.IsStatic && x.GetParameters().FirstOrDefault()?.ParameterType == typeof(ushort))),
 
                 // value
                 new(OpCodes.Ldarg_1),
@@ -68,6 +68,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Brfalse_S, returnLabel),
 
                 // value = ev.NewPhase;
+                new(OpCodes.Ldarg_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingMicroHIDStateEventArgs), nameof(ChangingMicroHIDStateEventArgs.NewPhase))),
                 new(OpCodes.Starg_S, 1),
             });

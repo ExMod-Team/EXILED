@@ -37,7 +37,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(UsingMicroHIDEnergyEventArgs));
 
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_0);
+            int offset = -1;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_0) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {

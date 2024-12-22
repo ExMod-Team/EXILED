@@ -81,6 +81,65 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
+        /// Starts firing the MicroHID.
+        /// </summary>
+        /// <param name="firingMode">Fire mode.</param>
+        public void Fire(MicroHidFiringMode firingMode = MicroHidFiringMode.PrimaryFire)
+        {
+            switch (firingMode)
+            {
+                case MicroHidFiringMode.PrimaryFire:
+                    if (TryGetFireController(MicroHidFiringMode.PrimaryFire, out PrimaryFireModeModule primaryFireModeModule))
+                        primaryFireModeModule.ServerFire();
+                    break;
+                case MicroHidFiringMode.ChargeFire:
+                    if (TryGetFireController(MicroHidFiringMode.ChargeFire, out ChargeFireModeModule chargeFireModeModule))
+                        chargeFireModeModule.ServerFire();
+                    break;
+                default:
+                    if (TryGetFireController(MicroHidFiringMode.BrokenFire, out BrokenFireModeModule brokenFireModeModule))
+                        brokenFireModeModule.ServerFire();
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Explodes the MicroHID.
+        /// </summary>
+        public void Explode()
+        {
+            if (TryGetFireController(MicroHidFiringMode.ChargeFire, out ChargeFireModeModule module))
+                module.ServerExplode();
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="FiringModeControllerModule"/> assosiated with the specified <see cref="MicroHidFiringMode"/>.
+        /// </summary>
+        /// <param name="firingMode">Target firing mode.</param>
+        /// <param name="module">Found module or <c>null</c>.</param>
+        /// <typeparam name="T">Type of module.</typeparam>
+        /// <returns><c>true</c> if module was found, <c>false</c> otherwise.</returns>
+        public bool TryGetFireController<T>(MicroHidFiringMode firingMode, out T module)
+            where T : FiringModeControllerModule
+        {
+            if (CycleController._firingModeControllers.Count == 0)
+            {
+                module = null;
+                return false;
+            }
+
+            module = (T)CycleController._firingModeControllers.Find(x => x.AssignedMode == firingMode);
+            return module != null;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="FiringModeControllerModule"/> assosiated with the last <see cref="MicroHidFiringMode"/>.
+        /// </summary>
+        /// <param name="module">Found module or <c>null</c>.</param>
+        /// <returns><c>true</c> if module was found, <c>false</c> otherwise.</returns>
+        public bool TryGetLastFireController(out FiringModeControllerModule module) => TryGetFireController(LastFiringMode, out module);
+
+        /// <summary>
         /// Returns the MicroHIDPickup in a human readable format.
         /// </summary>
         /// <returns>A string containing MicroHIDPickup related data.</returns>

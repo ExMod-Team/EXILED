@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Map
             Label returnLabel = generator.DefineLabel();
 
             int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(HashSet<ItemPickupBase>), nameof(HashSet<ItemPickupBase>.Add), new[] { typeof(ItemPickupBase) }))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(List<ItemPickupBase>), nameof(List<ItemPickupBase>.Add), new[] { typeof(ItemPickupBase) }))) + offset;
 
             newInstructions.InsertRange(
                 index,
