@@ -67,9 +67,9 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Brfalse_S, returnLabel),
 
                 // energy = this.Energy - ev.Drain;
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(EnergyManagerModule), nameof(EnergyManagerModule.Energy))),
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(UsingMicroHIDEnergyEventArgs), nameof(UsingMicroHIDEnergyEventArgs.Drain))),
                 new(OpCodes.Sub),
                 new(OpCodes.Stloc_0),

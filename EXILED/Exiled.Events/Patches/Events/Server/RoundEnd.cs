@@ -77,7 +77,7 @@ namespace Exiled.Events.Patches.Events.Server
             newInstructions[index].labels.Add(jmp);
 
             // Get the whole leadingteam logic
-            offset = -16;
+            offset = -20;
             index = newInstructions.FindIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset;
             int offset2 = 1;
             int index2 = newInstructions.FindLastIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset2;
