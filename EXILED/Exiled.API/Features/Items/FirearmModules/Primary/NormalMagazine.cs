@@ -54,10 +54,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         {
             get => Magazine.AmmoType.GetAmmoType();
 
-            set
-            {
-                MagazineModule._ammoType = value.GetItemType();
-            }
+            set => MagazineModule._ammoType = value.GetItemType();
         }
 
         /// <summary>
