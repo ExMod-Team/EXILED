@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -66,32 +67,39 @@ namespace Exiled.Events.Patches.Events.Player
 
         private static void TriggeringTeslaEvent(BaseTeslaGate baseTeslaGate, ref bool inIdleRange, ref bool isTriggerable)
         {
-            TeslaGate teslaGate = TeslaGate.Get(baseTeslaGate);
-
-            foreach (Player player in Player.List)
+            try
             {
-                if (player is null || !teslaGate.CanBeIdle(player))
-                    continue;
+                TeslaGate teslaGate = TeslaGate.Get(baseTeslaGate);
 
-                TriggeringTeslaEventArgs ev = new(player, teslaGate);
-
-                Handlers.Player.OnTriggeringTesla(ev);
-
-                if (ev.DisableTesla)
+                foreach (Player player in Player.List)
                 {
-                    isTriggerable = false;
-                    inIdleRange = false;
-                    break;
+                    if (player is null || !teslaGate.CanBeIdle(player))
+                        continue;
+
+                    TriggeringTeslaEventArgs ev = new(player, teslaGate);
+
+                    Handlers.Player.OnTriggeringTesla(ev);
+
+                    if (ev.DisableTesla)
+                    {
+                        isTriggerable = false;
+                        inIdleRange = false;
+                        break;
+                    }
+
+                    if (!ev.IsAllowed)
+                        continue;
+
+                    if (ev.IsTriggerable && !isTriggerable)
+                        isTriggerable = ev.IsTriggerable;
+
+                    if (ev.IsInIdleRange && !inIdleRange)
+                        inIdleRange = ev.IsInIdleRange;
                 }
-
-                if (!ev.IsAllowed)
-                    continue;
-
-                if (ev.IsTriggerable && !isTriggerable)
-                    isTriggerable = ev.IsTriggerable;
-
-                if (ev.IsInIdleRange && !inIdleRange)
-                    inIdleRange = ev.IsInIdleRange;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
             }
         }
     }
