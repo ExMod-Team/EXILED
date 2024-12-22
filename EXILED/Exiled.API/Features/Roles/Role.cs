@@ -237,7 +237,7 @@ namespace Exiled.API.Features.Roles
             NoneGameRole noneRole => new NoneRole(noneRole),
             DestroyedGameRole destroyedRole => new DestroyedRole(destroyedRole),
             Scp1507GameRole scp1507 => new Scp1507Role(scp1507),
-            _ => null,
+            _ => throw new Exception($"Contact Exiled Support Missing Role ({role?.RoleTypeId}) in Exiled.API::Create"),
         };
     }
 }
