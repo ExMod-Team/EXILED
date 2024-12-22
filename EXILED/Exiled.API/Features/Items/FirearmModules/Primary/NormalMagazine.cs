@@ -40,10 +40,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         /// <inheritdoc/>
         public override int MaxAmmo
         {
-            set
-            {
-                MagazineModule._defaultCapacity = value;
-            }
+            set => MagazineModule._defaultCapacity = value;
         }
 
         /// <inheritdoc/>
@@ -78,23 +75,14 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         /// Affects on actual ammo count.
         /// Removes all ammo from magazine.
         /// </remarks>
-        public void RemoveMagazine()
-        {
-            MagazineModule.ServerRemoveMagazine();
-        }
+        public void RemoveMagazine() => MagazineModule.ServerRemoveMagazine();
 
         /// <summary>
         /// Inserts current magazine from current <see cref="Exiled.API.Features.Items.Firearm"/>.
         /// </summary>
-        public void InsertMagazine()
-        {
-            MagazineModule.ServerInsertEmptyMagazine();
-        }
+        public void InsertMagazine() => MagazineModule.ServerInsertEmptyMagazine();
 
         /// <inheritdoc/>
-        public override void Resync()
-        {
-            MagazineModule.ServerResyncData();
-        }
+        public override void Resync() => MagazineModule.ServerResyncData();
     }
 }

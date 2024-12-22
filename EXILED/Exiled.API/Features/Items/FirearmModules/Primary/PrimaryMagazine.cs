@@ -35,13 +35,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         public IPrimaryAmmoContainerModule Magazine { get; }
 
         /// <inheritdoc/>
-        public override int MaxAmmo
-        {
-            get
-            {
-                return Magazine.AmmoMax;
-            }
-        }
+        public override int MaxAmmo => Magazine.AmmoMax;
 
         /// <summary>
         /// Gets a max avaible ammo count in magazine without attachments.
@@ -51,10 +45,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         /// <inheritdoc/>
         public override int Ammo
         {
-            get
-            {
-                return Magazine.AmmoStored;
-            }
+            get => Magazine.AmmoStored;
 
             set
             {
