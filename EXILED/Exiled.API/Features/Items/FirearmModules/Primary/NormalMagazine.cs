@@ -62,10 +62,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         /// </summary>
         public bool MagazineInserted
         {
-            get
-            {
-                return MagazineModule.MagazineInserted;
-            }
+            get => MagazineModule.MagazineInserted;
 
             set
             {
