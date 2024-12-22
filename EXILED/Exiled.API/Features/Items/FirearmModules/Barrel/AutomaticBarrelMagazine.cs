@@ -60,10 +60,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
         {
             get => AutomaticBarrel.ChamberSize;
 
-            set
-            {
-                AutomaticBarrel.ChamberSize = Mathf.Clamp(value, 0, 16);
-            }
+            set => AutomaticBarrel.ChamberSize = Mathf.Clamp(value, 0, 16);
         }
 
         /// <inheritdoc/>
