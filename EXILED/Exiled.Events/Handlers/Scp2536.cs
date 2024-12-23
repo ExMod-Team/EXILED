@@ -27,6 +27,11 @@ namespace Exiled.Events.Handlers
         public static Event<GrantingGiftEventArgs> GrantingGift { get; set; } = new();
 
         /// <summary>
+        /// Invoked before SCP-2536 is open to a player.
+        /// </summary>
+        public static Event<OpeningGiftEventArgs> OpeningGift { get; set; } = new();
+
+        /// <summary>
         /// Called before SCP-2536 chooses a target.
         /// </summary>
         /// <param name="ev">The <see cref="FindingPositionEventArgs"/> instance.</param>
@@ -37,5 +42,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="GrantingGiftEventArgs"/> instance.</param>
         public static void OnGrantingGift(GrantingGiftEventArgs ev) => GrantingGift.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before SCP-2536 is open to a player.
+        /// </summary>
+        /// <param name="ev">The <see cref="OpeningGiftEventArgs"/> instance.</param>
+        public static void OnOppeningGift(OpeningGiftEventArgs ev) => OpeningGift.InvokeSafely(ev);
     }
 }
