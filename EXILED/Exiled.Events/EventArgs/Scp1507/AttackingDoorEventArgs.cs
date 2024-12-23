@@ -11,6 +11,7 @@ namespace Exiled.Events.EventArgs.Scp1507
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
+    using Interactables.Interobjects.DoorUtils;
 
     /// <summary>
     /// Contains all information before SCP-1507 attacks door.
@@ -21,13 +22,13 @@ namespace Exiled.Events.EventArgs.Scp1507
         /// Initializes a new instance of the <see cref="AttackingDoorEventArgs"/> class.
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
-        /// <param name="door"><inheritdoc cref="Door"/></param>
+        /// <param name="doorVariant"><inheritdoc cref="Door"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public AttackingDoorEventArgs(Player player, Door door, bool isAllowed = true)
+        public AttackingDoorEventArgs(Player player, DoorVariant doorVariant, bool isAllowed = true)
         {
             Player = player;
             Scp1507 = player.Role.As<Scp1507Role>();
-            Door = door;
+            Door = Door.Get(doorVariant);
             IsAllowed = isAllowed;
         }
 

@@ -49,14 +49,13 @@ namespace Exiled.Events.Patches.Events.Scp1507
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp1507AttackAbility), nameof(Scp1507AttackAbility.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // Door.Get(target1);
+                    // target1
                     new(OpCodes.Ldloc_3),
-                    new(OpCodes.Call, Method(typeof(Door), nameof(Door.Get), new[] { typeof(DoorVariant) })),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // AttackingDoorEventArgs ev = new(Player, Door, true);
+                    // AttackingDoorEventArgs ev = new(Player, DoorVariant, true);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AttackingDoorEventArgs))[0]),
                     new(OpCodes.Dup),
 
