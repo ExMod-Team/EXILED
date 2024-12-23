@@ -212,10 +212,10 @@ namespace Exiled.API.Features.Items
                 IPrimaryAmmoContainerModule primaryContainer = PrimaryMagazine.Magazine;
 
                 // Barrels that may contain some ammo in them
-                var automaticActionBarrel = BarrelMagazine.AmmoContainerModule as AutomaticActionModule;
+                var automaticActionBarrel = BarrelMagazine as AutomaticBarrelMagazine;
 
                 // Other type of barrels that also contain ammo but don't have AmmoStored setter
-                var pumpActionBarrel = BarrelMagazine.AmmoContainerModule as PumpActionModule;
+                var pumpActionBarrel = BarrelMagazine as PumpBarrelMagazine;
 
                 value = Mathf.Clamp(value, 0, Base is ParticleDisruptor ? 254 : byte.MaxValue);
 
@@ -224,12 +224,12 @@ namespace Exiled.API.Features.Items
 
                 if (automaticActionBarrel is not null)
                 {
-                    automaticActionBarrel.AmmoStored = 0;
+                    automaticActionBarrel.Ammo = 0;
                 }
                 else if (pumpActionBarrel is not null)
                 {
-                    pumpActionBarrel.SyncCocked = 0;
-                    pumpActionBarrel.SyncChambered = 0;
+                    pumpActionBarrel.CockedAmmo = 0;
+                    pumpActionBarrel.Ammo = 0;
                 }
 
                 if (value == 0)
@@ -243,13 +243,13 @@ namespace Exiled.API.Features.Items
                 }
                 else if (pumpActionBarrel is not null)
                 {
-                    var addedAmmo = Mathf.Clamp(byte.MaxValue - pumpActionBarrel.SyncChambered, 0, value);
-                    pumpActionBarrel.SyncCocked = addedAmmo;
+                    var addedAmmo = Mathf.Clamp(byte.MaxValue - pumpActionBarrel.Ammo, 0, value);
+                    pumpActionBarrel.Ammo = addedAmmo;
                 }
 
                 // Reload action modules
-                pumpActionBarrel?.Pump();
-                automaticActionBarrel?.ServerCycleAction();
+                pumpActionBarrel?.PumpBarrel.Pump();
+                automaticActionBarrel?.AutomaticBarrel.ServerCycleAction();
             }
         }
 
