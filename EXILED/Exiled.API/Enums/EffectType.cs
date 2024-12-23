@@ -259,5 +259,25 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.Blurred"/>.
         /// </summary>
         Blurred,
+
+        /// <summary>
+        /// Makes you a flamingo.
+        /// </summary>
+        BecomingFlamingo,
+
+        /// <summary>
+        /// Makes you a Child after eating Cake.
+        /// </summary>
+        Scp559,
+
+        /// <summary>
+        /// Scp956 found you.
+        /// </summary>
+        Scp956Target,
+
+        /// <summary>
+        /// you are snowed.
+        /// </summary>
+        Snowed,
     }
 }

@@ -78,6 +78,10 @@ namespace Exiled.API.Extensions
             { EffectType.SeveredEyes, typeof(SeveredEyes) },
             { EffectType.PitDeath, typeof(PitDeath) },
             { EffectType.Blurred, typeof(Blurred) },
+            { EffectType.BecomingFlamingo, typeof(BecomingFlamingo) },
+            { EffectType.Scp559, typeof(Scp559Effect) },
+            { EffectType.Scp956Target, typeof(Scp956Target) },
+            { EffectType.Snowed, typeof(Snowed) },
         });
 
         /// <summary>
