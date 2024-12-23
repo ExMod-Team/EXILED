@@ -35,39 +35,40 @@ namespace Exiled.Events.Patches.Events.Scp2536
 
             LocalBuilder ev = generator.DeclareLocal(typeof(GrantingGiftEventArgs));
 
-            newInstructions.InsertRange(
-                0,
-                new CodeInstruction[]
-                {
-                    // Player.Get(hub);
-                    new(OpCodes.Ldarg_2),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+            int offset = -1;
+            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(Scp2536GiftBase), nameof(Scp2536GiftBase.ObtainedBy))) + offset;
 
-                    // gift
-                    new(OpCodes.Ldarg_1),
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // Player.Get(hub);
+                new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
+                // gift
+                new(OpCodes.Ldloc_1),
 
-                    // GrantingGiftEventArgs ev = new(Player, Scp2536GiftBase, true);
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GrantingGiftEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
+                // true
+                new(OpCodes.Ldc_I4_1),
 
-                    // Handlers.Scp2536.OnGrantingGift(ev);
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp2536), nameof(Handlers.Scp2536.OnGrantingGift))),
+                // GrantingGiftEventArgs ev = new(Player, Scp2536GiftBase, true);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GrantingGiftEventArgs))[0]),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // if (!ev.IsAllowed)
-                    //   goto retLabel;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(GrantingGiftEventArgs), nameof(GrantingGiftEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, retLabel),
+                // Handlers.Scp2536.OnGrantingGift(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Scp2536), nameof(Handlers.Scp2536.OnGrantingGift))),
 
-                    // gift = ev.Gift;
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(GrantingGiftEventArgs), nameof(GrantingGiftEventArgs.Gift))),
-                    new(OpCodes.Starg_S, 1),
-                });
+                // if (!ev.IsAllowed)
+                //   goto retLabel;
+                new(OpCodes.Callvirt, PropertyGetter(typeof(GrantingGiftEventArgs), nameof(GrantingGiftEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse_S, retLabel),
+
+                // gift = ev.Gift;
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(GrantingGiftEventArgs), nameof(GrantingGiftEventArgs.Gift))),
+                new(OpCodes.Stloc_1),
+            });
 
             newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
 
