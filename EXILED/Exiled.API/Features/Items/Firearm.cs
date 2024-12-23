@@ -190,6 +190,26 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the maximum amount of ammo in the firearm.
         /// </summary>
+        [Obsolete("Use MaxAmmo instead.")]
+        public int TotalMaxAmmo
+        {
+            get => MaxAmmo;
+            set => MaxAmmo = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of ammo in the firearm.
+        /// </summary>
+        [Obsolete("Use Ammo instead.")]
+        public int TotalAmmo
+        {
+            get => Ammo;
+            set => Ammo = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the maximum amount of ammo in the firearm.
+        /// </summary>
         public int MaxAmmo
         {
             get => Base.GetTotalMaxAmmo();
@@ -352,7 +372,7 @@ namespace Exiled.API.Features.Items
         public static Firearm Create(FirearmType type)
             => type is not FirearmType.None ? (Firearm)Create(type.GetItemType()) : null;
 
-                /// <summary>
+        /// <summary>
         /// Adds or replaces an existing preference to the <see cref="PlayerPreferences"/>.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> of which must be added.</param>
