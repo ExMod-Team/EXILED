@@ -327,6 +327,26 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Grants influence to a given <see cref="Faction"/>'s <see cref="ILimitedWave"/>s.
+        /// </summary>
+        /// <param name="faction">The <see cref="Faction"/> to whose <see cref="ILimitedWave"/>s to grant influence.</param>
+        /// <param name="amount">The amount of influence to grant.</param>
+        public static void GrantInfluence(Faction faction, int amount)
+        {
+            FactionInfluenceManager.Add(faction, amount);
+        }
+
+        /// <summary>
+        /// Removes influence from a given <see cref="Faction"/>'s <see cref="ILimitedWave"/>s.
+        /// </summary>
+        /// <param name="faction">The <see cref="Faction"/> from whose <see cref="ILimitedWave"/>s to remove influence.</param>
+        /// <param name="amount">The amount of influence to remove.</param>
+        public static void RemoveInfluence(Faction faction, int amount)
+        {
+            FactionInfluenceManager.Remove(faction, amount);
+        }
+
+        /// <summary>
         /// Starts the spawn sequence of the given <see cref="Faction"/>.
         /// </summary>
         /// <param name="faction">The <see cref="Faction"/> whose wave to spawn.</param>
