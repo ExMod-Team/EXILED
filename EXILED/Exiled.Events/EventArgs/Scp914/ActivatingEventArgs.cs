@@ -9,6 +9,8 @@ namespace Exiled.Events.EventArgs.Scp914
 {
     using API.Features;
 
+    using global::Scp914;
+
     using Interfaces;
 
     /// <summary>
@@ -40,5 +42,14 @@ namespace Exiled.Events.EventArgs.Scp914
         /// Gets the player who's activating SCP-914.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        /// Gets or sets SCP-914 working knob setting.
+        /// </summary>
+        public Scp914KnobSetting KnobSetting
+        {
+            get => Scp914.KnobStatus;
+            set => Scp914.KnobStatus = value;
+        }
     }
 }
