@@ -30,6 +30,16 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         internal static readonly Dictionary<AdminToyBase, AdminToy> BaseToAdminToy = new(new ComponentsEqualityComparer());
 
+        private static readonly Dictionary<AdminToyType, PrefabType> TypeLookup = new()
+        {
+            { AdminToyType.ShootingTargetSport, PrefabType.SportTarget },
+            { AdminToyType.ShootingTargetClassD, PrefabType.DBoyTarget },
+            { AdminToyType.ShootingTargetBinary, PrefabType.BinaryTarget },
+            { AdminToyType.LightSource, PrefabType.LightSourceToy },
+            { AdminToyType.PrimitiveObject, PrefabType.PrimitiveObjectToy },
+            { AdminToyType.Speaker, PrefabType.SpeakerToy },
+        };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AdminToy"/> class.
         /// </summary>
@@ -161,6 +171,18 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Create the <see cref="AdminToy"/> belonging to the <see cref="AdminToys.AdminToyBase"/>.
+        /// </summary>
+        /// <param name="adminToyType">The <see cref="AdminToyType"/>.</param>
+        /// <returns>The corresponding <see cref="AdminToy"/>.</returns>
+        public static AdminToy Create(AdminToyType adminToyType, ....)
+        {
+            if (!TypeLookup.TryGetValue(adminToyType, out PrefabType prefabType))
+                return null;
+            return PrefabHelper.Spawn<AdminToy>(prefabType, ....);
+        }
+
+        /// <summary>
         /// Gets the <see cref="AdminToy"/> by <see cref="AdminToys.AdminToyBase"/>.
         /// </summary>
         /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> to convert into an admintoy.</param>
@@ -168,6 +190,15 @@ namespace Exiled.API.Features.Toys
         /// <returns>The admintoy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
         public static T Get<T>(AdminToyBase adminToyBase)
             where T : AdminToy => Get(adminToyBase) as T;
+
+        /// <summary>
+        /// Gets the <see cref="AdminToy"/> by <see cref="AdminToys.AdminToyBase"/>.
+        /// </summary>
+        /// <param name="adminToyType">The <see cref="AdminToyType"/> to convert into an admintoy.</param>
+        /// <typeparam name="T">The specified <see cref="AdminToy"/> type.</typeparam>
+        /// <returns>The admintoy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
+        public static T Create<T>(AdminToyType adminToyType, ...)
+            where T : AdminToy => Create(adminToyType, ...) as T;
 
         /// <summary>
         /// Spawns the toy into the game. Use <see cref="UnSpawn"/> to remove it.
