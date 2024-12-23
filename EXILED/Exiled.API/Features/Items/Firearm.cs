@@ -162,11 +162,6 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets the total amount of ammo in the firearm.
-        /// </summary>
-        public int TotalAmmo => Base.GetTotalStoredAmmo();
-
-        /// <summary>
         /// Gets or sets the max ammo for this firearm.
         /// </summary>
         public int MaxMagazineAmmo
@@ -193,12 +188,73 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets the total amount of ammo in the firearm.
+        /// Gets or sets the maximum amount of ammo in the firearm.
         /// </summary>
-        public int TotalMaxAmmo => Base.GetTotalMaxAmmo();
+        public int MaxAmmo
+        {
+            get => Base.GetTotalMaxAmmo();
+            set
+            {
+                int difference = value - MaxAmmo;
+                PrimaryMagazine.MaxAmmo = Mathf.Clamp(PrimaryMagazine.MaxAmmo + difference, 0, byte.MaxValue);
+            }
+        }
 
         /// <summary>
-        /// Gets or sets a ammo drain per shoot.
+        /// Gets or sets the amount of ammo in the firearm.
+        /// </summary>
+        public int Ammo
+        {
+            get => Base.GetTotalStoredAmmo();
+            set
+            {
+                // Magazines that contain most of the ammo and can be reloaded
+                IPrimaryAmmoContainerModule primaryContainer = PrimaryMagazine.Magazine;
+
+                // Barrels that may contain some ammo in them
+                var automaticActionBarrel = BarrelMagazine.AmmoContainerModule as AutomaticActionModule;
+
+                // Other type of barrels that also contain ammo but don't have AmmoStored setter
+                var pumpActionBarrel = BarrelMagazine.AmmoContainerModule as PumpActionModule;
+
+                value = Mathf.Clamp(value, 0, Base is ParticleDisruptor ? 254 : byte.MaxValue);
+
+                // Set everything to 0
+                primaryContainer?.ServerModifyAmmo(-primaryContainer.AmmoStored);
+
+                if (automaticActionBarrel is not null)
+                {
+                    automaticActionBarrel.AmmoStored = 0;
+                }
+                else if (pumpActionBarrel is not null)
+                {
+                    pumpActionBarrel.SyncCocked = 0;
+                    pumpActionBarrel.SyncChambered = 0;
+                }
+
+                if (value == 0)
+                    return;
+
+                // Distribute the ammo between containers
+                if (primaryContainer is not null)
+                {
+                    var addedAmmo = Mathf.Clamp(byte.MaxValue - primaryContainer.AmmoStored, 0, value);
+                    primaryContainer.ServerModifyAmmo(addedAmmo);
+                }
+                else if (pumpActionBarrel is not null)
+                {
+                    var addedAmmo = Mathf.Clamp(byte.MaxValue - pumpActionBarrel.SyncChambered, 0, value);
+                    pumpActionBarrel.SyncCocked = addedAmmo;
+                }
+
+                // Reload action modules
+                pumpActionBarrel?.Pump();
+                automaticActionBarrel?.ServerCycleAction();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the ammo drain per shoot.
         /// </summary>
         /// <remarks>
         /// Always <see langword="1"/> by default.
