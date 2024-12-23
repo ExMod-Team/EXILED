@@ -14,6 +14,7 @@ namespace Exiled.Events.Patches.Events.Scp2536
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
+    using Exiled.Events.EventArgs.Scp244;
     using Exiled.Events.EventArgs.Scp2536;
     using HarmonyLib;
     using UnityEngine;
@@ -32,18 +33,19 @@ namespace Exiled.Events.Patches.Events.Scp2536
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
+            LocalBuilder ev = generator.DeclareLocal(typeof(FindingPositionEventArgs));
 
-            IEnumerable<Label> labels = newInstructions[index].labels;
+            int offset = 0;
+            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_S && x.operand is LocalBuilder { LocalIndex: 5 }) + offset;
 
-            newInstructions.RemoveRange(index, 4);
+            Label continueLabel = (Label)newInstructions[index - 1].operand;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
                     // Player.Get(target);
-                    new CodeInstruction(OpCodes.Ldarg_1).WithLabels(labels),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // foundSpot
@@ -57,17 +59,20 @@ namespace Exiled.Events.Patches.Events.Scp2536
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FindingPositionEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Scp2536.OnFindingPosition(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Scp2536), nameof(Handlers.Scp2536.OnFindingPosition))),
 
+                    // if (!ev.IsAllowed) continue;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(FindingPositionEventArgs), nameof(FindingPositionEventArgs.IsAllowed))),
+                    new(OpCodes.Brfalse_S, continueLabel),
+
                     // foundSpot = ev.Spawnpoint;
                     new(OpCodes.Ldarg_2),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FindingPositionEventArgs), nameof(FindingPositionEventArgs.Spawnpoint))),
                     new(OpCodes.Stind_Ref),
-
-                    // return ev.IsAllowed;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(FindingPositionEventArgs), nameof(FindingPositionEventArgs.IsAllowed))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
