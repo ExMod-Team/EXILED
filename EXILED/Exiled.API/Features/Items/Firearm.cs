@@ -229,7 +229,7 @@ namespace Exiled.API.Features.Items
             set
             {
                 // Magazines that contain most of the ammo and can be reloaded
-                IPrimaryAmmoContainerModule primaryContainer = PrimaryMagazine.Magazine;
+                PrimaryMagazine primaryContainer = PrimaryMagazine;
 
                 // Barrels that may contain some ammo in them
                 var automaticActionBarrel = BarrelMagazine as AutomaticBarrelMagazine;
@@ -240,7 +240,10 @@ namespace Exiled.API.Features.Items
                 value = Mathf.Clamp(value, 0, Base is ParticleDisruptor ? 254 : byte.MaxValue);
 
                 // Set everything to 0
-                primaryContainer?.ServerModifyAmmo(-primaryContainer.AmmoStored);
+                if (primaryContainer is not null)
+                {
+                    primaryContainer.Ammo = 0;
+                }
 
                 if (automaticActionBarrel is not null)
                 {
@@ -258,8 +261,8 @@ namespace Exiled.API.Features.Items
                 // Distribute the ammo between containers
                 if (primaryContainer is not null)
                 {
-                    var addedAmmo = Mathf.Clamp(byte.MaxValue - primaryContainer.AmmoStored, 0, value);
-                    primaryContainer.ServerModifyAmmo(addedAmmo);
+                    var addedAmmo = Mathf.Clamp(byte.MaxValue - primaryContainer.Ammo, 0, value);
+                    primaryContainer.Ammo = addedAmmo;
                 }
                 else if (pumpActionBarrel is not null)
                 {
