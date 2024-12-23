@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="GrantingGift.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// -----------------------------------------------------------------------
+// <copyright file="GrantingGift.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -20,11 +20,11 @@ namespace Exiled.Events.Patches.Events.Scp2536
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Scp2536GiftController.GrantGift"/>
+    /// Patches <see cref="Scp2536GiftController.ServerGrantRandomGift"/>
     /// to add <see cref="Handlers.Scp2536.GrantingGift"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Scp2536), nameof(Handlers.Scp2536.GrantingGift))]
-    [HarmonyPatch(typeof(Scp2536GiftController), nameof(Scp2536GiftController.GrantGift))]
+    [HarmonyPatch(typeof(Scp2536GiftController), nameof(Scp2536GiftController.ServerGrantRandomGift))]
     internal class GrantingGift
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
