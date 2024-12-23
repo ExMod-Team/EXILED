@@ -67,12 +67,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this corpse will trigger animation.
+        /// Gets or sets a value indicating whether or not this corpse will trigger animation.
         /// </summary>
         public bool IsPlayingAnimation
         {
             get => Base._playingAnimation;
             set => Base._playingAnimation = value;
         }
-    }
 }

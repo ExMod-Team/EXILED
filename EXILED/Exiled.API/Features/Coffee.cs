@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="Coffee.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// -----------------------------------------------------------------------
+// <copyright file="Coffee.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -48,7 +48,7 @@ namespace Exiled.API.Features
             {
                 BaseCoffee.BlacklistedPlayers.Clear();
 
-                foreach (var player in value)
+                foreach (Player player in value)
                     BaseCoffee.BlacklistedPlayers.Add(player.ReferenceHub);
             }
         }
