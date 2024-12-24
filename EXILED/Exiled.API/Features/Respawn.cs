@@ -347,6 +347,26 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Get influence to a given <see cref="Faction"/>.
+        /// </summary>
+        /// <param name="faction">The <see cref="Faction"/> to get influence.</param>
+        /// <returns>Get the faction influence..</returns>
+        public static float GetInfluence(Faction faction)
+        {
+            return FactionInfluenceManager.Get(faction);
+        }
+
+        /// <summary>
+        /// Set influence to a given <see cref="Faction"/>.
+        /// </summary>
+        /// <param name="faction">The <see cref="Faction"/> to set influence.</param>
+        /// <param name="influence">The amount of influence to set.</param>
+        public static void SetInfluence(Faction faction, float influence)
+        {
+            FactionInfluenceManager.Set(faction, influence);
+        }
+
+        /// <summary>
         /// Starts the spawn sequence of the given <see cref="Faction"/>.
         /// </summary>
         /// <param name="faction">The <see cref="Faction"/> whose wave to spawn.</param>
