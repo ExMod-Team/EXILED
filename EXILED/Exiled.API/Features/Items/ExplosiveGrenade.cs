@@ -162,9 +162,9 @@ namespace Exiled.API.Features.Items
         };
 
         /// <inheritdoc/>
-        internal override void ReadPickupInfo(Pickup pickup)
+        internal override void ReadPickupInfoAfter(Pickup pickup)
         {
-            base.ReadPickupInfo(pickup);
+            base.ReadPickupInfoAfter(pickup);
             if (pickup is ExplosiveGrenadePickup explosiveGrenadePickup)
             {
                 MaxRadius = explosiveGrenadePickup.MaxRadius;
