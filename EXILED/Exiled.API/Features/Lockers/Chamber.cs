@@ -167,7 +167,7 @@ namespace Exiled.API.Features.Lockers
             get => Base.IsOpen;
             set
             {
-                Base.SetDoor(value, Locker.Base._grantedBeep);
+                Base.SetDoor(value, null);
                 Locker.Base.RefreshOpenedSyncvar();
             }
         }
