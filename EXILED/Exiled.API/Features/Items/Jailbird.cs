@@ -185,9 +185,9 @@ namespace Exiled.API.Features.Items
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}*";
 
         /// <inheritdoc/>
-        internal override void ReadPickupInfo(Pickup pickup)
+        internal override void ReadPickupInfoAfter(Pickup pickup)
         {
-            base.ReadPickupInfo(pickup);
+            base.ReadPickupInfoAfter(pickup);
             if (pickup is JailbirdPickup jailbirdPickup)
             {
                 MeleeDamage = jailbirdPickup.MeleeDamage;

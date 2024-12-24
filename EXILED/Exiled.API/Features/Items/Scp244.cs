@@ -119,9 +119,9 @@ namespace Exiled.API.Features.Items
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* -{Primed}-";
 
         /// <inheritdoc/>
-        internal override void ReadPickupInfo(Pickup pickup)
+        internal override void ReadPickupInfoAfter(Pickup pickup)
         {
-            base.ReadPickupInfo(pickup);
+            base.ReadPickupInfoAfter(pickup);
             if (pickup is Scp244Pickup scp244)
             {
                 Health = scp244.Health;
