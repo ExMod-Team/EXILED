@@ -119,6 +119,8 @@ namespace Exiled.API.Features.DamageHandlers
                         return DamageType.Jailbird;
                     case Scp1507DamageHandler:
                         return DamageType.Scp1507;
+                    case Scp956DamageHandler:
+                        return DamageType.Scp956;
                     case Scp3114DamageHandler scp3114DamageHandler:
                         return scp3114DamageHandler.Subtype switch
                         {

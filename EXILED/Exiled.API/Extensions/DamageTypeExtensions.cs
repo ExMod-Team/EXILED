@@ -183,6 +183,8 @@ namespace Exiled.API.Extensions
                     return DamageType.ParticleDisruptor;
                 case Scp1507DamageHandler:
                     return DamageType.Scp1507;
+                case Scp956DamageHandler:
+                    return DamageType.Scp956;
                 case Scp049DamageHandler scp049DamageHandler:
                     return scp049DamageHandler.DamageSubType switch
                     {
