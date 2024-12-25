@@ -53,7 +53,7 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             Base = settingBase;
 
-            if (OriginalDefinition.Is(out DropdownSetting dropdown))
+            if (OriginalDefinition != null && OriginalDefinition.Is(out DropdownSetting dropdown))
             {
                 Options = dropdown.Options;
             }

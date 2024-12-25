@@ -43,7 +43,7 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             Base = settingBase;
 
-            if (OriginalDefinition.Is(out ButtonSetting setting))
+            if (OriginalDefinition != null && OriginalDefinition.Is(out ButtonSetting setting))
             {
                 Text = setting.Text;
                 HoldTime = setting.HoldTime;
