@@ -136,9 +136,9 @@ namespace Exiled.API.Features.Items
         }
 
         /// <inheritdoc/>
-        internal override void ReadPickupInfoAfter(Pickup pickup)
+        internal override void ReadPickupInfoBefore(Pickup pickup)
         {
-            base.ReadPickupInfoAfter(pickup);
+            base.ReadPickupInfoBefore(pickup);
             if (pickup is UsablePickup usablePickup)
             {
                 UseTime = usablePickup.UseTime;

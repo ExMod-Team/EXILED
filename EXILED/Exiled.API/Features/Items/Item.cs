@@ -436,6 +436,10 @@ namespace Exiled.API.Features.Items
         /// <see cref="ReadPickupInfoAfter"/>
         internal virtual void ReadPickupInfoBefore(Pickup pickup)
         {
+            if (pickup is not null)
+            {
+                Scale = pickup.Scale;
+            }
         }
 
         /// <summary>
@@ -449,10 +453,6 @@ namespace Exiled.API.Features.Items
         /// <see cref="ReadPickupInfoBefore"/>
         internal virtual void ReadPickupInfoAfter(Pickup pickup)
         {
-            if (pickup is not null)
-            {
-                Scale = pickup.Scale;
-            }
         }
     }
 }
