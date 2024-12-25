@@ -789,7 +789,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the player is speaking.
         /// </summary>
-        public bool IsSpeaking => Role is Roles.IVoiceRole voiceRole && voiceRole.VoiceModule.IsSpeaking;
+        public bool IsSpeaking => Role is Roles.IVoiceRole voiceRole && voiceRole.VoiceModule.ServerIsSending;
 
         /// <summary>
         /// Gets the player's voice color.
