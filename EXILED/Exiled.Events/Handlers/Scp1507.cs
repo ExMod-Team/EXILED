@@ -33,6 +33,11 @@ namespace Exiled.Events.Handlers
         public static Event<SpawningFlamingosEventArgs> SpawningFlamingos { get; set; } = new();
 
         /// <summary>
+        /// Invoked before tape is used.
+        /// </summary>
+        public static Event<UsingTapeEventArgs> UsingTape { get; set; } = new();
+
+        /// <summary>
         /// Called before SCP-1507 attacks door.
         /// </summary>
         /// <param name="ev">The <see cref="AttackingDoorEventArgs"/> instance.</param>
@@ -49,5 +54,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="SpawningFlamingosEventArgs"/> instance.</param>
         public static void OnSpawningFlamingos(SpawningFlamingosEventArgs ev) => SpawningFlamingos.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before tape is used.
+        /// </summary>
+        /// <param name="ev">The <see cref="UsingTapeEventArgs"/> instance.</param>
+        public static void OnUsingTape(UsingTapeEventArgs ev) => UsingTape.InvokeSafely(ev);
     }
 }
