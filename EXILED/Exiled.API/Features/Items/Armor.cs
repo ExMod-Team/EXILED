@@ -74,12 +74,12 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether excess ammo should be removed when the armor is dropped.
+        /// Gets a value indicating whether excess ammo should be removed when the armor is dropped.
         /// </summary>
         public bool RemoveExcessOnDrop
         {
             get => !Base.DontRemoveExcessOnDrop;
-            set => Base.DontRemoveExcessOnDrop = !value;
+            internal set => Base.DontRemoveExcessOnDrop = !value;
         }
 
         /// <summary>
@@ -150,7 +150,6 @@ namespace Exiled.API.Features.Items
         {
             Weight = Weight,
             StaminaUseMultiplier = StaminaUseMultiplier,
-            RemoveExcessOnDrop = RemoveExcessOnDrop,
             CategoryLimits = CategoryLimits,
             StaminaRegenMultiplier = StaminaRegenMultiplier,
             AmmoLimits = AmmoLimits,
@@ -166,7 +165,6 @@ namespace Exiled.API.Features.Items
             {
                 HelmetEfficacy = armorPickup.HelmetEfficacy;
                 VestEfficacy = armorPickup.VestEfficacy;
-                RemoveExcessOnDrop = armorPickup.RemoveExcessOnDrop;
                 StaminaUseMultiplier = armorPickup.StaminaUseMultiplier;
                 StaminaRegenMultiplier = armorPickup.StaminaRegenMultiplier;
                 AmmoLimits = armorPickup.AmmoLimits;
