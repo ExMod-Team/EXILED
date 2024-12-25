@@ -254,5 +254,10 @@ namespace Exiled.API.Enums
         /// Damage caused by the marshmallow man.
         /// </summary>
         Marshmallow,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp1507"/>.
+        /// </summary>
+        Scp1507,
     }
 }
