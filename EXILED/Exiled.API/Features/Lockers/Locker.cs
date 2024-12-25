@@ -96,8 +96,8 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         public bool IsOpen
         {
-            get => Chambers.FirstOrDefault().IsOpen;
-            set => Chambers.FirstOrDefault().IsOpen = value;
+            get => Chambers.First().IsOpen;
+            set => Chambers.First().IsOpen = value;
         }
 
         /// <summary>
