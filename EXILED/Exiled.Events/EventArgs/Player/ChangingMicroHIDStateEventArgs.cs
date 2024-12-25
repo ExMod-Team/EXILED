@@ -56,5 +56,8 @@ namespace Exiled.Events.EventArgs.Player
 
         /// <inheritdoc/>
         public Item Item => MicroHID;
+
+        /// <inheritdoc/>
+        public Player Player => MicroHID.Owner;
     }
 }

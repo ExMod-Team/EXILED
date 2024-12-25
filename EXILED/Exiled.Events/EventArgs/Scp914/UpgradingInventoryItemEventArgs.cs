@@ -16,7 +16,7 @@ namespace Exiled.Events.EventArgs.Scp914
     /// <summary>
     /// Contains all information before SCP-914 upgrades an item.
     /// </summary>
-    public class UpgradingInventoryItemEventArgs : IPlayerEvent, IItemEvent, IDeniableEvent
+    public class UpgradingInventoryItemEventArgs : IItemEvent, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UpgradingInventoryItemEventArgs" /> class.
