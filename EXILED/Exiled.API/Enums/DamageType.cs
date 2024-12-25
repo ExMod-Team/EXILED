@@ -264,5 +264,10 @@ namespace Exiled.API.Enums
         /// Damage caused by Scp956 the pinata.
         /// </summary>
         Scp956,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.Snowball"/>.
+        /// </summary>
+        SnowBall,
     }
 }

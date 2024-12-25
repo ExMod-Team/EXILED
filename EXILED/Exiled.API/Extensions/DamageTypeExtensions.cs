@@ -185,6 +185,8 @@ namespace Exiled.API.Extensions
                     return DamageType.Scp1507;
                 case Scp956DamageHandler:
                     return DamageType.Scp956;
+                case SnowballDamageHandler:
+                    return DamageType.SnowBall;
                 case Scp049DamageHandler scp049DamageHandler:
                     return scp049DamageHandler.DamageSubType switch
                     {
