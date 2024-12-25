@@ -13,6 +13,7 @@ namespace Exiled.Events.EventArgs.Scp1507
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles.PlayableScps.Scp1507;
+    using Utils.NonAllocLINQ;
 
     /// <summary>
     /// Contains all information before flamingos get spawned.
@@ -27,7 +28,7 @@ namespace Exiled.Events.EventArgs.Scp1507
         public SpawningFlamingosEventArgs(Player newAlpha, bool isAllowed = true)
         {
             Player = newAlpha;
-            SpawnablePlayers = Player.Get(x => Scp1507Spawner.ValidatePlayer(x.ReferenceHub)).ToHashSet();
+            SpawnablePlayers = ReferenceHub.AllHubs.Where(Scp1507Spawner.ValidatePlayer).Select(x => Player.Get(x)).ToHashSet();
             IsAllowed = isAllowed;
         }
 
