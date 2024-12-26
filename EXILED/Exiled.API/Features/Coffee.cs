@@ -56,6 +56,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the list with all available <see cref="Coffee"/> instanses.
         /// </summary>
+        [Obsolete("This list will be empty")]
         public static IReadOnlyCollection<Coffee> List => BaseToWrapper.Values;
 
         /// <summary>
@@ -107,6 +108,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="predicate">The condition to satisfy.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Coffee"/> matching the condition.</returns>
+        [Obsolete("The respond list will be empty")]
         public static IEnumerable<Coffee> Get(Func<Coffee, bool> predicate) => List.Where(predicate);
 
         /// <summary>

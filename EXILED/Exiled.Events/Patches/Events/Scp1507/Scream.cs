@@ -31,15 +31,9 @@ namespace Exiled.Events.Patches.Events.Scp1507
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldarg_0);
-
             Label retLabel = generator.DefineLabel();
 
-            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
+            newInstructions.InsertRange(0, new CodeInstruction[]
                 {
                     // Player.Get(this.Owner);
                     new(OpCodes.Ldarg_0),
@@ -61,6 +55,8 @@ namespace Exiled.Events.Patches.Events.Scp1507
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ScreamingEventArgs), nameof(ScreamingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, retLabel),
                 });
+
+            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
