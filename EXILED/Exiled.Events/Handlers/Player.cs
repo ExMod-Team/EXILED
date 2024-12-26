@@ -1024,7 +1024,7 @@ namespace Exiled.Events.Handlers
         {
             ItemAddedEventArgs ev = new(referenceHub, itemBase, pickupBase);
 
-            ev.Item.ReadPickupInfo(ev.Pickup);
+            ev.Item.ReadPickupInfoAfter(ev.Pickup);
 
             ev.Player.ItemsValue.Add(ev.Item);
 
