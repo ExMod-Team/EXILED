@@ -32,7 +32,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the weapon can be reloaded.
         /// </summary>
-        public bool IsAllowed { get; set; } = false;
+        public bool IsAllowed { get; set; } = true;
 
         /// <summary>
         /// Gets the <see cref="API.Features.Items.Firearm" /> being reloaded.
