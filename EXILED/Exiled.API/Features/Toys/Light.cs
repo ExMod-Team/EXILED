@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System;
     using System.Linq;
 
     using AdminToys;
@@ -31,6 +30,11 @@ namespace Exiled.API.Features.Toys
         {
             Base = lightSourceToy;
         }
+
+        /// <summary>
+        /// Gets the prefab.
+        /// </summary>
+        public static LightSourceToy Prefab => PrefabHelper.GetPrefab<LightSourceToy>(PrefabType.LightSourceToy);
 
         /// <summary>
         /// Gets the base <see cref="LightSourceToy"/>.
@@ -131,7 +135,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Light"/>.</returns>
         public static Light Create(Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
         {
-            Light light = new(UnityEngine.Object.Instantiate(ToysHelper.LightBaseObject))
+            Light light = new(UnityEngine.Object.Instantiate(Prefab))
             {
                 Position = position ?? Vector3.zero,
                 Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
@@ -153,8 +157,8 @@ namespace Exiled.API.Features.Toys
         /// <returns>The corresponding <see cref="LightSourceToy"/> instance.</returns>
         public static Light Get(LightSourceToy lightSourceToy)
         {
-            AdminToy adminToy = Map.Toys.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
-            return adminToy is not null ? adminToy as Light : new Light(lightSourceToy);
+            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
+            return adminToy is not null ? adminToy as Light : new(lightSourceToy);
         }
     }
 }

@@ -646,7 +646,6 @@ namespace Exiled.API.Features.Doors
                 "079_FIRST" => DoorType.Scp079First,
                 "GATE_B" => DoorType.GateB,
                 "079_SECOND" => DoorType.Scp079Second,
-                "SERVERS_BOTTOM" => DoorType.ServersBottom,
                 "173_CONNECTOR" => DoorType.Scp173Connector,
                 "LCZ_WC" => DoorType.LczWc,
                 "HID_CHAMBER" => DoorType.HIDChamber,

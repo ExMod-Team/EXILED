@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
 
@@ -47,12 +45,6 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the <see cref="Player"/>'s <see cref="VoiceModuleBase" />.
         /// </summary>
         public VoiceModuleBase VoiceModule { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the player is transmitting.
-        /// </summary>
-        [Obsolete("IsTransmitting is always true.")]
-        public bool IsTransmitting => true;
 
         /// <summary>
         /// Gets or sets a value indicating whether the player can transmit.

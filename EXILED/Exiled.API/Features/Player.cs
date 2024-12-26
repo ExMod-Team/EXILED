@@ -48,6 +48,7 @@ namespace Exiled.API.Features
     using Mirror.LiteNetLib4Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
@@ -138,7 +139,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a list of all <see cref="Player"/>'s on the server.
         /// </summary>
-        public static IReadOnlyCollection<Player> List => Dictionary.Values;
+        public static IReadOnlyCollection<Player> List => Dictionary.Values.Where(x => !x.IsNPC).ToList();
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="Player"/> and their user ids.
@@ -214,12 +215,6 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether the player is viewing a hint.
         /// </summary>
         public bool HasHint => CurrentHint != null;
-
-        /// <summary>
-        /// Gets the <see cref="ReferenceHub"/>'s <see cref="VoiceModule"/>, can be null.
-        /// </summary>
-        [Obsolete("Use IVoiceRole::VoiceModule instead.")]
-        public VoiceModuleBase VoiceModule => Role is Roles.IVoiceRole voiceRole ? voiceRole.VoiceModule : null;
 
         /// <summary>
         /// Gets the <see cref="ReferenceHub"/>'s <see cref="PersonalRadioPlayback"/>, can be null.
@@ -306,9 +301,9 @@ namespace Exiled.API.Features
         public bool IsVerified { get; internal set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the player is a NPC.
+        /// Gets a value indicating whether the player is a NPC.
         /// </summary>
-        public bool IsNPC { get; set; }
+        public bool IsNPC => ReferenceHub.IsDummy;
 
         /// <summary>
         /// Gets a value indicating whether the player has an active CustomName.
@@ -684,11 +679,16 @@ namespace Exiled.API.Features
         public bool IsDead => Role?.IsDead ?? false;
 
         /// <summary>
-        /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any NTF rank.
+        /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any Foundation Forces.
         /// Equivalent to checking the player's <see cref="Team"/>.
         /// </summary>
-        // TODO: Change logic for FacilityGuard in next major update
-        public bool IsNTF => Role?.Team is Team.FoundationForces;
+        public bool IsFoundationForces => Role?.Team is Team.FoundationForces;
+
+        /// <summary>
+        /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any NTF rank and not a Facility Guard.
+        /// Equivalent to checking the player's <see cref="Team"/>.
+        /// </summary>
+        public bool IsNTF => Role?.Team is Team.FoundationForces && Role?.Type is not RoleTypeId.FacilityGuard;
 
         /// <summary>
         /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any Chaos rank.
@@ -735,6 +735,15 @@ namespace Exiled.API.Features
         {
             get => ReferenceHub.serverRoles.BypassMode;
             set => ReferenceHub.serverRoles.BypassMode = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the player's emotion.
+        /// </summary>
+        public EmotionPresetType Emotion
+        {
+            get => EmotionSync.GetEmotionPreset(ReferenceHub);
+            set => EmotionSync.ServerSetEmotionPreset(ReferenceHub, value);
         }
 
         /// <summary>
@@ -827,7 +836,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the player's unit name.
         /// </summary>
-        public string UnitName => Role.Base is PlayerRoles.HumanRole humanRole ? UnitNameMessageHandler.GetReceived(humanRole.AssignedSpawnableTeam, humanRole.UnitNameId) : string.Empty;
+        public string UnitName => Role is HumanRole humanRole ? humanRole.UnitName : string.Empty;
 
         /// <summary>
         /// Gets or sets the player's unit id.
@@ -1504,16 +1513,6 @@ namespace Exiled.API.Features
         /// <summary>
         /// Adds a player's UserId to the list of reserved slots.
         /// </summary>
-        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
-        /// <param name="userId">The UserId of the player to add.</param>
-        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided UserId already has a reserved slot.</returns>
-        /// <seealso cref="GiveReservedSlot()"/>
-        // TODO: Remove this method
-        public static bool AddReservedSlot(string userId) => ReservedSlot.Users.Add(userId);
-
-        /// <summary>
-        /// Adds a player's UserId to the list of reserved slots.
-        /// </summary>
         /// <param name="userId">The UserId of the player to add.</param>
         /// <param name="isPermanent"> Whether to add a <see langword="userId"/> permanently. It will write a <see langword="userId"/> to UserIDReservedSlots.txt file.</param>
         /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the provided UserId already has a reserved slot.</returns>
@@ -1562,15 +1561,6 @@ namespace Exiled.API.Features
         /// Reloads the whitelist, clearing all whitelist changes made with add/remove methods and reverting to the whitelist files.
         /// </summary>
         public static void ReloadWhitelist() => WhiteList.Reload();
-
-        /// <summary>
-        /// Adds the player's UserId to the list of reserved slots.
-        /// </summary>
-        /// <remarks>This method does not permanently give a user a reserved slot. The slot will be removed if the reserved slots are reloaded.</remarks>
-        /// <returns><see langword="true"/> if the slot was successfully added, or <see langword="false"/> if the player already has a reserved slot.</returns>
-        /// <seealso cref="AddReservedSlot(string)"/>
-        // TODO: Remove this method
-        public bool GiveReservedSlot() => AddReservedSlot(UserId);
 
         /// <summary>
         /// Adds a player's UserId to the list of reserved slots.
@@ -3255,13 +3245,6 @@ namespace Exiled.API.Features
         /// <returns>return if the effect has been Enable.</returns>
         public bool EnableEffect(EffectType type, byte intensity, float duration = 0f, bool addDurationIfActive = false)
             => TryGetEffect(type, out StatusEffectBase statusEffect) && EnableEffect(statusEffect, intensity, duration, addDurationIfActive);
-
-        /// <summary>
-        /// Enables a <see cref="Effect">status effect</see> on the player.
-        /// </summary>
-        /// <param name="effect">The <see cref="Effect"/> to enable.</param>
-        [Obsolete("Use SyncEffect(Effect) instead of this")]
-        public void EnableEffect(Effect effect) => SyncEffect(effect);
 
         /// <summary>
         /// Syncs the <see cref="Effect">status effect</see> on the player.
