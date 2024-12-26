@@ -88,11 +88,6 @@ namespace Exiled.API.Features.Items
         public CandyKindID ExposedType { get; set; } = CandyKindID.None;
 
         /// <summary>
-        /// Gets or sets the candy that will be added to the bag. Used for events.
-        /// </summary>
-        internal CandyKindID CandyToAdd { get; set; } = CandyKindID.None;
-
-        /// <summary>
         /// Adds a specific candy to the bag.
         /// </summary>
         /// <param name="type">The <see cref="CandyKindID"/> to add.</param>
@@ -245,11 +240,11 @@ namespace Exiled.API.Features.Items
         /// <param name="rotation">The <see cref="Quaternion"/> rotation to give the item.</param>
         /// <param name="spawn">Whether the <see cref="Scp330Pickup"/> should be initially spawned.</param>
         /// <returns>The created <see cref="Pickup"/>.</returns>
-        public override Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        public override Pickup CreatePickup(Vector3 position, Quaternion? rotation = null, bool spawn = true)
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            InventorySystem.Items.Usables.Scp330.Scp330Pickup ipb = (InventorySystem.Items.Usables.Scp330.Scp330Pickup)InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            InventorySystem.Items.Usables.Scp330.Scp330Pickup ipb = (InventorySystem.Items.Usables.Scp330.Scp330Pickup)InventoryExtensions.ServerCreatePickup(Base, info, position, rotation ?? Quaternion.identity);
 
             Base.OnRemoved(ipb);
 

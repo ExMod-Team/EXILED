@@ -40,6 +40,11 @@ namespace Exiled.API.Interfaces
         public DoorDamageType IgnoredDamage { get; set; }
 
         /// <summary>
+        /// Repair the door.
+        /// </summary>
+        public void Repair();
+
+        /// <summary>
         /// Damages the door.
         /// </summary>
         /// <param name="amount">Amount to be dealt.</param>

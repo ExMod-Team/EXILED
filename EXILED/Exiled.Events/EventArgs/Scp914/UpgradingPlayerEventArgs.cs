@@ -31,16 +31,16 @@ namespace Exiled.Events.EventArgs.Scp914
         /// <param name="upgradeItems">
         /// <inheritdoc cref="UpgradeItems" />
         /// </param>
-        /// <param name="moveVector">
-        /// <inheritdoc cref="OutputPosition" />
+        /// <param name="outputPos">
+        /// <inheritdoc cref="OutputPosition"/>
         /// </param>
-        public UpgradingPlayerEventArgs(Player player, bool upgradeItems, bool heldOnly, Scp914KnobSetting setting, Vector3 moveVector)
+        public UpgradingPlayerEventArgs(Player player, bool upgradeItems, bool heldOnly, Scp914KnobSetting setting, Vector3 outputPos)
         {
             Player = player;
             UpgradeItems = upgradeItems;
             HeldOnly = heldOnly;
             KnobSetting = setting;
-            OutputPosition = player.Position + moveVector;
+            OutputPosition = outputPos;
         }
 
         /// <summary>

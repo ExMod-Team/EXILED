@@ -25,28 +25,33 @@ Last Update (13.5.0.1)
 - [Damage Handlers](#damagehandlers)
 - [AchievementName](#achievementname)
 - [ActionCategory](#actioncategory)
-- [ActionModuleResponse](#actionmoduleresponse)
 - [ActionName](#actionname)
 - [Activity](#activity)
 - [AdminFlags](#adminflags)
 - [AlphaPanelOperations](#alphapaneloperations)
+- [AnimItemLayer3p](#animitemlayer3p)
+- [AnimState3p](#animstate3p)
 - [AttachmentDescriptiveAdvantages](#attachmentdescriptiveadvantages)
 - [AttachmentDescriptiveDownsides](#attachmentdescriptivedownsides)
 - [AttachmentEditorsTranslation](#attachmenteditorstranslation)
 - [AttachmentName](#attachmentname)
 - [AttachmentParam](#attachmentparam)
+- [AttachmentParamState](#attachmentparamstate)
 - [AttachmentSlot](#attachmentslot)
+- [AttachmentStatus](#attachmentstatus)
 - [AttackResult](#attackresult)
 - [AttackType](#attacktype)
 - [AttackType](#attacktype)
-- [AudioMixerChannelType](#audiomixerchanneltype)
 - [AuthenticationResponseFlags](#authenticationresponseflags)
+- [Authorization](#authorization)
 - [AutoHideType](#autohidetype)
+- [AutosyncInstantiationStatus](#autosyncinstantiationstatus)
 - [BadgePreferences](#badgepreferences)
 - [BadgeVisibilityPreferences](#badgevisibilitypreferences)
 - [BanType](#bantype)
 - [BlockedInteraction](#blockedinteraction)
 - [BroadcastFlags](#broadcastflags)
+- [BuoyancyMode](#buoyancymode)
 - [CallType](#calltype)
 - [CandyKindID](#candykindid)
 - [CassieAnnouncementType](#cassieannouncementtype)
@@ -54,15 +59,19 @@ Last Update (13.5.0.1)
 - [CentralAuthPreauthFlags](#centralauthpreauthflags)
 - [ChallengeState](#challengestate)
 - [ChallengeType](#challengetype)
+- [ChamberState](#chamberstate)
 - [CheckpointErrorType](#checkpointerrortype)
 - [CheckpointSequenceStage](#checkpointsequencestage)
+- [ClientFlags](#clientflags)
 - [ClientInstanceMode](#clientinstancemode)
+- [ClientReceivedContentType](#clientreceivedcontenttype)
 - [ClientSwitchState](#clientswitchstate)
 - [ClientType](#clienttype)
 - [CloudState](#cloudstate)
 - [CmdTeleportData](#cmdteleportdata)
 - [CollectionDeserializeToBehaviour](#collectiondeserializetobehaviour)
 - [CollisionsDisablingReasons](#collisionsdisablingreasons)
+- [ColorMode](#colormode)
 - [CommandOperationMode](#commandoperationmode)
 - [Condition](#condition)
 - [ConfigShare](#configshare)
@@ -72,7 +81,6 @@ Last Update (13.5.0.1)
 - [ConnectRequestResult](#connectrequestresult)
 - [ConsoleLogType](#consolelogtype)
 - [ConsumeError](#consumeerror)
-- [CurrentAction](#currentaction)
 - [CursorOverrideMode](#cursoroverridemode)
 - [DataType](#datatype)
 - [DebugLevel](#debuglevel)
@@ -91,26 +99,35 @@ Last Update (13.5.0.1)
 - [DoorDamageType](#doordamagetype)
 - [DoorLockMode](#doorlockmode)
 - [DoorLockReason](#doorlockreason)
+- [DropdownEntryType](#dropdownentrytype)
 - [DtoaMode](#dtoamode)
 - [EffectClassification](#effectclassification)
-- [EffectType](#effecttype)
 - [ElevatorGroup](#elevatorgroup)
 - [ElevatorSequence](#elevatorsequence)
+- [EmotionBlendshape](#emotionblendshape)
+- [EmotionPresetType](#emotionpresettype)
 - [EncryptedChannel](#encryptedchannel)
 - [Entry](#entry)
 - [EscapeScenarioType](#escapescenariotype)
 - [EType](#etype)
+- [ExampleId](#exampleid)
+- [ExampleId](#exampleid)
+- [ExampleId](#exampleid)
+- [ExplosionType](#explosiontype)
 - [FacilityZone](#facilityzone)
 - [Faction](#faction)
 - [FailReason](#failreason)
 - [FalloffType](#fallofftype)
 - [FastDtoaMode](#fastdtoamode)
 - [FilmmakerBlendPreset](#filmmakerblendpreset)
-- [FirearmAudioFlags](#firearmaudioflags)
-- [FirearmStatusFlags](#firearmstatusflags)
+- [FirearmAnim](#firearmanim)
+- [FirearmCategory](#firearmcategory)
+- [FirearmWorldmodelType](#firearmworldmodeltype)
+- [FiringState](#firingstate)
 - [Flags](#flags)
 - [Flags](#flags)
 - [FogType](#fogtype)
+- [FoldoutMode](#foldoutmode)
 - [FootstepLoudness](#footsteploudness)
 - [FpcViewMode](#fpcviewmode)
 - [FreezingMode](#freezingmode)
@@ -136,11 +153,15 @@ Last Update (13.5.0.1)
 - [HotkeysTranslation](#hotkeystranslation)
 - [HttpQueryMode](#httpquerymode)
 - [IcomText](#icomtext)
+- [IconType](#icontype)
 - [IndicatorType](#indicatortype)
 - [InputActivationMode](#inputactivationmode)
 - [IntercomState](#intercomstate)
+- [InventoryGuiAction](#inventoryguiaction)
+- [InventoryGuiTranslation](#inventoryguitranslation)
 - [InvisibilityFlags](#invisibilityflags)
 - [IPAddressType](#ipaddresstype)
+- [ItemAddReason](#itemaddreason)
 - [ItemCategory](#itemcategory)
 - [ItemDescriptionType](#itemdescriptiontype)
 - [ItemTierFlags](#itemtierflags)
@@ -155,12 +176,20 @@ Last Update (13.5.0.1)
 - [LocalAddrType](#localaddrtype)
 - [LoggingState](#loggingstate)
 - [MainBoolsSettings](#mainboolssettings)
+- [MapGenerationPhase](#mapgenerationphase)
 - [MappingLifetime](#mappinglifetime)
+- [MessageHeader](#messageheader)
+- [MessageHeader](#messageheader)
 - [MessageImportance](#messageimportance)
+- [MessageType](#messagetype)
+- [MessageType](#messagetype)
 - [MiscControlsSetting](#misccontrolssetting)
 - [MiscPrivacySetting](#miscprivacysetting)
 - [MiscVideoSetting](#miscvideosetting)
+- [MixerChannel](#mixerchannel)
 - [Mode](#mode)
+- [Mode](#mode)
+- [ModifierMode](#modifiermode)
 - [Modules](#modules)
 - [NatAddressType](#nataddresstype)
 - [NetLogLevel](#netloglevel)
@@ -175,6 +204,7 @@ Last Update (13.5.0.1)
 - [OpusCtlGetRequest](#opusctlgetrequest)
 - [OpusCtlSetRequest](#opusctlsetrequest)
 - [OpusStatusCode](#opusstatuscode)
+- [OtherCondition](#othercondition)
 - [OutputCodes](#outputcodes)
 - [PacketProperty](#packetproperty)
 - [ParameterMixingMode](#parametermixingmode)
@@ -188,6 +218,7 @@ Last Update (13.5.0.1)
 - [PlayerMovementState](#playermovementstate)
 - [PlayerPermissions](#playerpermissions)
 - [PlayerSorting](#playersorting)
+- [PopupState](#popupstate)
 - [PortMapper](#portmapper)
 - [PrimitiveFlags](#primitiveflags)
 - [ProcessCreationFlags](#processcreationflags)
@@ -195,19 +226,26 @@ Last Update (13.5.0.1)
 - [RadioCommand](#radiocommand)
 - [RadioRangeLevel](#radiorangelevel)
 - [RejectionReason](#rejectionreason)
+- [RemoteAdminResponseFlags](#remoteadminresponseflags)
+- [RemovalMode](#removalmode)
 - [ReproProjectAssetType](#reproprojectassettype)
 - [RequestType](#requesttype)
-- [RequestType](#requesttype)
-- [RespawnSequencePhase](#respawnsequencephase)
+- [RespawnSetting](#respawnsetting)
 - [ResurrectError](#resurrecterror)
 - [RoleChangeReason](#rolechangereason)
 - [RoleSpawnFlags](#rolespawnflags)
 - [RoleTypeId](#roletypeid)
 - [RoomName](#roomname)
 - [RoomShape](#roomshape)
-- [RoomType](#roomtype)
+- [RootCullablePriority](#rootcullablepriority)
 - [RoundRestartType](#roundrestarttype)
+- [RpcHeader](#rpcheader)
 - [RpcStateMsg](#rpcstatemsg)
+- [RpcType](#rpctype)
+- [RpcType](#rpctype)
+- [RpcType](#rpctype)
+- [RpcType](#rpctype)
+- [RpcType](#rpctype)
 - [RpcType](#rpctype)
 - [RpcType](#rpctype)
 - [RpcType](#rpctype)
@@ -218,6 +256,7 @@ Last Update (13.5.0.1)
 - [Scp096HitResult](#scp096hitresult)
 - [Scp096HudTranslation](#scp096hudtranslation)
 - [Scp096RageState](#scp096ragestate)
+- [Scp1344Status](#scp1344status)
 - [Scp173SoundId](#scp173soundid)
 - [Scp244State](#scp244state)
 - [Scp3114HudTranslation](#scp3114hudtranslation)
@@ -231,25 +270,34 @@ Last Update (13.5.0.1)
 - [SecurityLevel](#securitylevel)
 - [SensitivitySetting](#sensitivitysetting)
 - [ServerLogType](#serverlogtype)
+- [ServerOperativeSystem](#serveroperativesystem)
 - [ServerRateLimit](#serverratelimit)
+- [ServerReceivedContentType](#serverreceivedcontenttype)
 - [ServerShutdownState](#servershutdownstate)
+- [ServerType](#servertype)
 - [SettingType](#settingtype)
 - [ShutdownResult](#shutdownresult)
+- [SpawnableRoomConnectorType](#spawnableroomconnectortype)
 - [SpawnableTeamType](#spawnableteamtype)
 - [SpectatableListElementType](#spectatablelistelementtype)
 - [SpectatorSpawnReason](#spectatorspawnreason)
 - [States](#states)
 - [StatusType](#statustype)
+- [SteamLobbyPrivacy](#steamlobbyprivacy)
+- [StorageLocation](#storagelocation)
 - [StructureType](#structuretype)
 - [SubtitleType](#subtitletype)
+- [SyncDataFlags](#syncdataflags)
 - [SyncMode](#syncmode)
 - [TargetButton](#targetbutton)
 - [Team](#team)
-- [ThirdpersonItemAnimationName](#thirdpersonitemanimationname)
 - [TrackerMessage](#trackermessage)
-- [TriggerState](#triggerstate)
+- [TransitionStatus](#transitionstatus)
+- [TurnStatus](#turnstatus)
 - [UISetting](#uisetting)
 - [UnconnectedMessageType](#unconnectedmessagetype)
+- [UpdateMessageFlags](#updatemessageflags)
+- [UserResponseMode](#userresponsemode)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
@@ -262,6 +310,10 @@ Last Update (13.5.0.1)
 - [VoiceChatSupportMode](#voicechatsupportmode)
 - [VoiceLinesName](#voicelinesname)
 - [VolumeSliderSetting](#volumeslidersetting)
+- [WarheadScenarioType](#warheadscenariotype)
+- [WaveQueueState](#wavequeuestate)
+- [WearableElements](#wearableelements)
+- [WearableSlot](#wearableslot)
 - [WorkstationStatus](#workstationstatus)
 
 ### AchievementName
@@ -302,6 +354,24 @@ Last Update (13.5.0.1)
  [30] = IllPassThanks
  [31] = Overcurrent
  [32] = PropertyOfChaos
+ [33] = Overtime
+ [34] = RuleBreaker
+ [35] = CompleteTheMission
+ [36] = ArmyOfOne
+ [37] = LMGG
+ [38] = OnSpeakingTerms
+ [39] = HatsOffToYou
+ [40] = Hawkeye
+ [41] = AmnesticAmbush
+ [42] = AfterlifeCommunicator
+ [43] = TheEnemyOfMyEnemy
+ [44] = SignalLost
+ [45] = ThinkFast
+ [46] = TrilateralTermination
+ [47] = MutuallyAssuredDestruction
+ [48] = UndeadSpaceProgram
+ [49] = ArizonaRanger
+ [50] = Matador
 ```
 
 </details>
@@ -318,18 +388,6 @@ Last Update (13.5.0.1)
  [5] = System
  [6] = Unbindable
  [7] = Scp079
-```
-
-</details>
-
-### ActionModuleResponse
-
-<details><summary><b>InventorySystem.Items.Firearms.Modules.ActionModuleResponse</b></summary>
-
-```
- [0] = Idle
- [1] = Shoot
- [2] = Dry
 ```
 
 </details>
@@ -360,7 +418,7 @@ Last Update (13.5.0.1)
  [18] = Noclip
  [19] = GameConsole
  [21] = InspectItem
- [22] = RevolverCockHammer
+ [22] = WeaponAlt
  [23] = ThrowItem
  [27] = HideGUI
  [28] = NoClipFogToggle
@@ -413,6 +471,37 @@ Last Update (13.5.0.1)
 
 </details>
 
+### AnimItemLayer3p
+
+<details><summary><b>InventorySystem.Items.Thirdperson.AnimItemLayer3p</b></summary>
+
+```
+ [0] = Left
+ [1] = Right
+ [2] = Middle
+ [3] = Additive
+ [4] = PreMovement
+```
+
+</details>
+
+### AnimState3p
+
+<details><summary><b>InventorySystem.Items.Thirdperson.AnimState3p</b></summary>
+
+```
+ [0] = Override0
+ [1] = Override1
+ [2] = Override2
+ [3] = Additive0
+ [4] = Additive1
+ [5] = Additive2
+ [6] = RunForward
+ [7] = SprintForward
+```
+
+</details>
+
 ### AttachmentDescriptiveAdvantages
 
 <details><summary><b>InventorySystem.Items.Firearms.Attachments.AttachmentDescriptiveAdvantages</b></summary>
@@ -423,6 +512,7 @@ Last Update (13.5.0.1)
  [4] = AmmoCounter
  [8] = FlashSuppression
  [16] = NightVision
+ [32] = ShotgunShells
 ```
 
 </details>
@@ -434,6 +524,7 @@ Last Update (13.5.0.1)
 ```
  [0] = None
  [2] = Laser
+ [4] = NoHeadshots
 ```
 
 </details>
@@ -547,6 +638,21 @@ Last Update (13.5.0.1)
  [19] = AmmoConsumptionMultiplier
  [20] = ReloadSpeedMultiplier
  [21] = PreventReload
+ [22] = RunningInaccuracyMultiplier
+ [23] = DoubleActionSpeedMultiplier
+```
+
+</details>
+
+### AttachmentParamState
+
+<details><summary><b>InventorySystem.Items.Firearms.Attachments.AttachmentParamState</b></summary>
+
+```
+ [0] = Disabled
+ [2] = UserInterface
+ [4] = SilentlyActive
+ [6] = ActiveAndDisplayed
 ```
 
 </details>
@@ -565,6 +671,19 @@ Last Update (13.5.0.1)
  [6] = Stability
  [7] = Body
  [255] = Unassigned
+```
+
+</details>
+
+### AttachmentStatus
+
+<details><summary><b>InventorySystem.Items.Firearms.Extensions.ConditionalEvaluator+AttachmentStatus</b></summary>
+
+```
+ [0] = Disabled
+ [1] = Enabled
+ [2] = EnabledAndReady
+ [3] = EnabledAndNotReady
 ```
 
 </details>
@@ -607,20 +726,6 @@ Last Update (13.5.0.1)
 
 </details>
 
-### AudioMixerChannelType
-
-<details><summary><b>AudioPooling.AudioMixerChannelType</b></summary>
-
-```
- [0] = DefaultSfx
- [1] = Interface
- [2] = Weapons
- [3] = VoiceChat
- [4] = NoDucking
-```
-
-</details>
-
 ### AuthenticationResponseFlags
 
 <details><summary><b>CentralAuth.AuthenticationResponseFunctions+AuthenticationResponseFlags</b></summary>
@@ -634,6 +739,18 @@ Last Update (13.5.0.1)
 
 </details>
 
+### Authorization
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.IReloadUnloadValidatorModule+Authorization</b></summary>
+
+```
+ [0] = Idle
+ [1] = Allowed
+ [2] = Vetoed
+```
+
+</details>
+
 ### AutoHideType
 
 <details><summary><b>StatusBar+AutoHideType</b></summary>
@@ -642,6 +759,19 @@ Last Update (13.5.0.1)
  [0] = WhenFull
  [1] = WhenEmpty
  [2] = AlwaysVisible
+```
+
+</details>
+
+### AutosyncInstantiationStatus
+
+<details><summary><b>InventorySystem.Items.Autosync.AutosyncInstantiationStatus</b></summary>
+
+```
+ [0] = Unspecified
+ [1] = Template
+ [2] = InventoryInstance
+ [3] = SimulatedInstance
 ```
 
 </details>
@@ -693,6 +823,7 @@ Last Update (13.5.0.1)
  [8] = GrabItems
  [16] = ItemPrimaryAction
  [48] = ItemUsage
+ [64] = UndisarmPlayers
  [255] = All
 ```
 
@@ -706,6 +837,21 @@ Last Update (13.5.0.1)
  [0] = Normal
  [1] = Truncated
  [2] = AdminChat
+```
+
+</details>
+
+### BuoyancyMode
+
+<details><summary><b>WaterPhysics.BuoyancyMode</b></summary>
+
+```
+ [0] = SuperHeavy
+ [1] = NonBuoyant
+ [2] = ShortTimeFloaters
+ [3] = LongTimeFloaters
+ [4] = Floater
+ [5] = SuperLight
 ```
 
 </details>
@@ -806,6 +952,18 @@ Last Update (13.5.0.1)
 
 </details>
 
+### ChamberState
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.CylinderAmmoModule+ChamberState</b></summary>
+
+```
+ [0] = Empty
+ [1] = Live
+ [2] = Discharged
+```
+
+</details>
+
 ### CheckpointErrorType
 
 <details><summary><b>Interactables.Interobjects.CheckpointDoor+CheckpointErrorType</b></summary>
@@ -831,6 +989,22 @@ Last Update (13.5.0.1)
 
 </details>
 
+### ClientFlags
+
+<details><summary><b>Query.QueryHandshake+ClientFlags</b></summary>
+
+```
+ [0] = None
+ [1] = SuppressRaResponses
+ [2] = SubscribeServerConsole
+ [4] = SubscribeServerLogs
+ [8] = RemoteAdminMetadata
+ [16] = RestrictPermissions
+ [32] = SpecifyLogUsername
+```
+
+</details>
+
 ### ClientInstanceMode
 
 <details><summary><b>CentralAuth.ClientInstanceMode</b></summary>
@@ -840,6 +1014,22 @@ Last Update (13.5.0.1)
  [1] = ReadyClient
  [2] = Host
  [3] = DedicatedServer
+ [4] = Dummy
+```
+
+</details>
+
+### ClientReceivedContentType
+
+<details><summary><b>Query.QueryMessage+ClientReceivedContentType</b></summary>
+
+```
+ [0] = ConsoleString
+ [1] = CommandException
+ [2] = QueryMessage
+ [3] = RemoteAdminSerializedResponse
+ [4] = RemoteAdminPlaintextResponse
+ [5] = RemoteAdminUnsuccessfulPlaintextResponse
 ```
 
 </details>
@@ -908,6 +1098,18 @@ Last Update (13.5.0.1)
 ```
  [1] = DoorClosing
  [2] = Scp106
+```
+
+</details>
+
+### ColorMode
+
+<details><summary><b>InventorySystem.Drawers.AlertContent+ColorMode</b></summary>
+
+```
+ [0] = White
+ [1] = Role
+ [2] = Accented
 ```
 
 </details>
@@ -1037,18 +1239,6 @@ Last Update (13.5.0.1)
 
 </details>
 
-### CurrentAction
-
-<details><summary><b>InventorySystem.Items.Firearms.Modules.TubularMagazineAmmoManager+CurrentAction</b></summary>
-
-```
- [0] = Idle
- [1] = Reloading
- [2] = Unloading
-```
-
-</details>
-
 ### CursorOverrideMode
 
 <details><summary><b>CursorManagement.CursorOverrideMode</b></summary>
@@ -1122,6 +1312,7 @@ Last Update (13.5.0.1)
  [1] = Bullet
  [2] = Blood
  [3] = Buckshot
+ [4] = GlassCrack
 ```
 
 </details>
@@ -1286,6 +1477,7 @@ Last Update (13.5.0.1)
  [4] = Grenade
  [8] = Weapon
  [16] = Scp096
+ [32] = ParticleDisruptor
 ```
 
 </details>
@@ -1323,6 +1515,20 @@ Last Update (13.5.0.1)
 
 </details>
 
+### DropdownEntryType
+
+<details><summary><b>UserSettings.ServerSpecific.SSDropdownSetting+DropdownEntryType</b></summary>
+
+```
+ [0] = Regular
+ [1] = Scrollable
+ [2] = ScrollableLoop
+ [3] = Hybrid
+ [4] = HybridLoop
+```
+
+</details>
+
 ### DtoaMode
 
 <details><summary><b>Utf8Json.Internal.DoubleConversion.DoubleToStringConverter+DtoaMode</b></summary>
@@ -1346,20 +1552,9 @@ Last Update (13.5.0.1)
 
 </details>
 
-### EffectType
-
-<details><summary><b>Respawning.RespawnEffectsController+EffectType</b></summary>
-
-```
- [0] = Selection
- [1] = UponRespawn
-```
-
-</details>
-
 ### ElevatorGroup
 
-<details><summary><b>Interactables.Interobjects.ElevatorManager+ElevatorGroup</b></summary>
+<details><summary><b>Interactables.Interobjects.ElevatorGroup</b></summary>
 
 ```
  [0] = GateA
@@ -1368,8 +1563,9 @@ Last Update (13.5.0.1)
  [3] = LczA02
  [4] = LczB01
  [5] = LczB02
- [6] = Nuke
+ [6] = Nuke01
  [7] = Scp049
+ [8] = Nuke02
 ```
 
 </details>
@@ -1384,6 +1580,54 @@ Last Update (13.5.0.1)
  [2] = Arriving
  [3] = DoorOpening
  [4] = Ready
+```
+
+</details>
+
+### EmotionBlendshape
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.EmotionBlendshape</b></summary>
+
+```
+ [0] = Undefined
+ [1] = Frown
+ [2] = BrowRaise
+ [3] = EyeTapLeft
+ [4] = EyeTapRight
+ [5] = EyeCloseLeft
+ [6] = EyeCloseRight
+ [7] = EyeOpenLeft
+ [8] = EyeOpenRight
+ [9] = EyesBottom
+ [10] = Worried
+ [11] = MouthOpen
+ [12] = JawDrop
+ [13] = Grin
+ [14] = SmileOpen
+ [15] = Disgusted
+ [16] = Angry
+ [17] = LipsTop
+ [18] = LipsNormalBottom
+ [19] = LipsStretchBottom
+ [20] = Ogre
+ [21] = Chad
+ [22] = MixClosedEyes
+```
+
+</details>
+
+### EmotionPresetType
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.EmotionPresetType</b></summary>
+
+```
+ [0] = Neutral
+ [1] = Happy
+ [2] = AwkwardSmile
+ [3] = Scared
+ [4] = Angry
+ [5] = Chad
+ [6] = Ogre
 ```
 
 </details>
@@ -1439,6 +1683,77 @@ Last Update (13.5.0.1)
  [7] = ConnectionRequest
  [8] = MessageDelivered
  [9] = PeerAddressChanged
+```
+
+</details>
+
+### ExampleId
+
+<details><summary><b>UserSettings.ServerSpecific.Examples.SSAbilitiesExample+ExampleId</b></summary>
+
+```
+ [0] = SpeedBoostKey
+ [1] = SpeedBoostToggle
+ [2] = HealAlly
+```
+
+</details>
+
+### ExampleId
+
+<details><summary><b>UserSettings.ServerSpecific.Examples.SSLightSpawnerExample+ExampleId</b></summary>
+
+```
+ [0] = IntensitySlider
+ [1] = RangeSlider
+ [2] = ColorPresetDropdown
+ [3] = CustomColor
+ [4] = ColorInfo
+ [5] = ShadowType
+ [6] = ShadowStrength
+ [7] = LightType
+ [8] = LightShape
+ [9] = SpotAngle
+ [10] = InnerSpotAngle
+ [11] = ConfirmButton
+ [12] = DestroyAllButton
+```
+
+</details>
+
+### ExampleId
+
+<details><summary><b>UserSettings.ServerSpecific.Examples.SSPrimitiveSpawnerExample+ExampleId</b></summary>
+
+```
+ [0] = ConfirmButton
+ [1] = DestroyAllButton
+ [2] = TypeDropdown
+ [3] = ColorPresetDropdown
+ [4] = ColorField
+ [5] = ColorAlphaSlider
+ [6] = CollisionsToggle
+ [7] = RendererToggle
+ [8] = ColorInfo
+ [9] = ScaleSliderX
+ [10] = ScaleSliderY
+ [11] = ScaleSliderZ
+```
+
+</details>
+
+### ExplosionType
+
+<details><summary><b>ExplosionType</b></summary>
+
+```
+ [0] = Grenade
+ [1] = SCP018
+ [2] = PinkCandy
+ [3] = Cola
+ [4] = Disruptor
+ [5] = Jailbird
+ [6] = Custom
 ```
 
 </details>
@@ -1523,30 +1838,54 @@ Last Update (13.5.0.1)
 
 </details>
 
-### FirearmAudioFlags
+### FirearmAnim
 
-<details><summary><b>InventorySystem.Items.Firearms.FirearmAudioFlags</b></summary>
+<details><summary><b>InventorySystem.Items.Firearms.Thirdperson.FirearmThirdpersonItem+FirearmAnim</b></summary>
 
 ```
- [0] = None
- [2] = ScaleDistance
- [4] = IsGunshot
- [8] = SendToPlayers
- [16] = UseDedicatedAudioChannel
+ [0] = Ads
+ [1] = Hip
+ [2] = Reload
 ```
 
 </details>
 
-### FirearmStatusFlags
+### FirearmCategory
 
-<details><summary><b>InventorySystem.Items.Firearms.FirearmStatusFlags</b></summary>
+<details><summary><b>InventorySystem.Items.Firearms.FirearmCategory</b></summary>
+
+```
+ [0] = Unclassified
+ [1] = Pistol
+ [2] = Revolver
+ [3] = SubmachineGun
+ [4] = Rifle
+ [5] = LightMachineGun
+ [6] = Shotgun
+```
+
+</details>
+
+### FirearmWorldmodelType
+
+<details><summary><b>InventorySystem.Items.Firearms.FirearmWorldmodelType</b></summary>
+
+```
+ [0] = Pickup
+ [1] = Thirdperson
+ [2] = Presentation
+```
+
+</details>
+
+### FiringState
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.DisruptorActionModule+FiringState</b></summary>
 
 ```
  [0] = None
- [2] = Cocked
- [4] = MagazineInserted
- [8] = FlashlightEnabled
- [16] = Chambered
+ [1] = FiringRapid
+ [2] = FiringSingle
 ```
 
 </details>
@@ -1594,6 +1933,20 @@ Last Update (13.5.0.1)
  [4] = Amnesia
  [5] = Nuke
  [6] = Scp244
+```
+
+</details>
+
+### FoldoutMode
+
+<details><summary><b>UserSettings.ServerSpecific.SSTextArea+FoldoutMode</b></summary>
+
+```
+ [0] = NotCollapsable
+ [1] = CollapseOnEntry
+ [2] = ExtendOnEntry
+ [3] = CollapsedByDefault
+ [4] = ExtendedByDefault
 ```
 
 </details>
@@ -1975,6 +2328,20 @@ Last Update (13.5.0.1)
 
 </details>
 
+### IconType
+
+<details><summary><b>InventorySystem.Items.Firearms.Extensions.DisruptorDualCamExtension+IconType</b></summary>
+
+```
+ [0] = None
+ [1] = DesintegratorMode
+ [2] = BurstMode
+ [3] = CriticalWarn
+ [4] = CrashWarn
+```
+
+</details>
+
 ### IndicatorType
 
 <details><summary><b>PlayerRoles.PlayableScps.Scp079.Map.Scp079TeammateIndicators+IndicatorType</b></summary>
@@ -2012,6 +2379,52 @@ Last Update (13.5.0.1)
 
 </details>
 
+### InventoryGuiAction
+
+<details><summary><b>InventorySystem.GUI.InventoryGuiAction</b></summary>
+
+```
+ [0] = None
+ [1] = Drop
+ [2] = Select
+```
+
+</details>
+
+### InventoryGuiTranslation
+
+<details><summary><b>InventorySystem.GUI.InventoryGuiTranslation</b></summary>
+
+```
+ [0] = FirearmAmmo
+ [1] = FirearmDamage
+ [2] = FirearmFireRate
+ [3] = FirearmHipAcc
+ [4] = FirearmAdsAcc
+ [5] = Weight
+ [6] = Length
+ [7] = DropAmmo
+ [8] = ArmorHelmetEfficacy
+ [9] = ArmorVestEfficacy
+ [10] = ArmorStaminaUsage
+ [11] = ArmorMovementSpeed
+ [12] = ArmorItemLimits
+ [13] = ArmorAmmoLimits
+ [14] = ArmorTotal
+ [15] = ArmorPenetration
+ [16] = RunningInaccuracy
+ [17] = MarshmallowCackleHint
+ [18] = RemainingCharge
+ [19] = RemainingAmmo
+ [20] = MicroHidPrimaryHint
+ [21] = MicroHidSecondaryHint
+ [22] = DisruptorToggleModeHint
+ [23] = JailbirdAttackHint
+ [24] = JailbirdChargeHint
+```
+
+</details>
+
 ### InvisibilityFlags
 
 <details><summary><b>PlayerRoles.Visibility.InvisibilityFlags</b></summary>
@@ -2039,6 +2452,21 @@ Last Update (13.5.0.1)
 
 </details>
 
+### ItemAddReason
+
+<details><summary><b>InventorySystem.Items.ItemAddReason</b></summary>
+
+```
+ [0] = Undefined
+ [1] = PickedUp
+ [2] = AdminCommand
+ [3] = StartingItem
+ [4] = Scp914Upgrade
+ [5] = StatusEffect
+```
+
+</details>
+
 ### ItemCategory
 
 <details><summary><b>ItemCategory</b></summary>
@@ -2051,7 +2479,7 @@ Last Update (13.5.0.1)
  [4] = Firearm
  [5] = Grenade
  [6] = SCPItem
- [7] = MicroHID
+ [7] = SpecialWeapon
  [8] = Ammo
  [9] = Armor
 ```
@@ -2146,6 +2574,7 @@ Last Update (13.5.0.1)
  [52] = GunFRMG0
  [53] = GunA7
  [54] = Lantern
+ [55] = SCP1344
  [-1] = None
 ```
 
@@ -2315,6 +2744,21 @@ Last Update (13.5.0.1)
 
 </details>
 
+### MapGenerationPhase
+
+<details><summary><b>MapGeneration.MapGenerationPhase</b></summary>
+
+```
+ [0] = ParentRoomRegistration
+ [1] = RelativePositioningWaypoints
+ [2] = ComplexDecorationsAndClutter
+ [3] = SimpleDecorations
+ [4] = CullingCaching
+ [5] = SpawnableStructures
+```
+
+</details>
+
 ### MappingLifetime
 
 <details><summary><b>LiteNetLib4Mirror.Open.Nat.MappingLifetime</b></summary>
@@ -2328,6 +2772,35 @@ Last Update (13.5.0.1)
 
 </details>
 
+### MessageHeader
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase+MessageHeader</b></summary>
+
+```
+ [0] = Custom
+ [1] = Reload
+ [2] = Unload
+ [3] = Stop
+ [4] = RequestRejected
+```
+
+</details>
+
+### MessageHeader
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.AutomaticActionModule+MessageHeader</b></summary>
+
+```
+ [0] = CmdShoot
+ [1] = RpcPublicSync
+ [2] = RpcResponse
+ [3] = RpcFire
+ [4] = RpcDryFire
+ [5] = RpcNewPlayerSync
+```
+
+</details>
+
 ### MessageImportance
 
 <details><summary><b>MessageImportance</b></summary>
@@ -2337,6 +2810,40 @@ Last Update (13.5.0.1)
  [2] = Normal
  [3] = LessImportant
  [4] = LeastImportant
+```
+
+</details>
+
+### MessageType
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.DisruptorActionModule+MessageType</b></summary>
+
+```
+ [0] = RpcRequireReloadTrue
+ [1] = RpcRequireReloadFalse
+ [2] = RpcRequireReloadFullResync
+ [3] = RpcStartFiring
+ [4] = RpcOnShot
+ [5] = CmdRequestStartFiring
+ [6] = CmdConfirmDischarge
+```
+
+</details>
+
+### MessageType
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.DoubleActionModule+MessageType</b></summary>
+
+```
+ [0] = RpcNewPlayerResync
+ [1] = RpcSetCockedTrue
+ [2] = RpcSetCockedFalse
+ [3] = RpcFire
+ [4] = RpcDryFire
+ [5] = CmdUpdatePulling
+ [6] = CmdShoot
+ [7] = StartPulling
+ [8] = StartCocking
 ```
 
 </details>
@@ -2383,6 +2890,32 @@ Last Update (13.5.0.1)
  [1] = ExplosionShake
  [2] = HeadBobbing
  [3] = FlashbangDarkMode
+ [4] = ShowNeedles
+```
+
+</details>
+
+### MixerChannel
+
+<details><summary><b>AudioPooling.MixerChannel</b></summary>
+
+```
+ [0] = DefaultSfx
+ [1] = Interface
+ [2] = Weapons
+ [3] = VoiceChat
+ [4] = NoDucking
+```
+
+</details>
+
+### Mode
+
+<details><summary><b>InventorySystem.Items.Firearms.Extensions.ViewmodelReloadOnlyLayerExtension+Mode</b></summary>
+
+```
+ [0] = DuringReloadsAndUnloads
+ [1] = OutsideReloadsAndUnloads
 ```
 
 </details>
@@ -2392,9 +2925,22 @@ Last Update (13.5.0.1)
 <details><summary><b>InventorySystem.Items.Autosync.AutosyncRpc+Mode</b></summary>
 
 ```
- [0] = Local
+ [0] = SpecificClient
  [1] = AllClients
  [2] = Conditional
+```
+
+</details>
+
+### ModifierMode
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.Misc.StatModifier+ModifierMode</b></summary>
+
+```
+ [0] = Inactive
+ [1] = Add
+ [2] = Multiply
+ [3] = Override
 ```
 
 </details>
@@ -2409,9 +2955,12 @@ Last Update (13.5.0.1)
  [2] = ClassChange
  [3] = Permissions
  [4] = Administrative
- [5] = Logger
+ [5] = GameLogic
  [6] = DataAccess
  [7] = Detector
+ [8] = Throwable
+ [9] = Door
+ [10] = Elevator
 ```
 
 </details>
@@ -2603,6 +3152,19 @@ Last Update (13.5.0.1)
 
 </details>
 
+### OtherCondition
+
+<details><summary><b>InventorySystem.Items.Firearms.Extensions.ConditionalEvaluator+OtherCondition</b></summary>
+
+```
+ [0] = Equipped
+ [1] = Firstperson
+ [2] = Pickup
+ [3] = Thirdperson
+```
+
+</details>
+
 ### OutputCodes
 
 <details><summary><b>ServerOutput.OutputCodes</b></summary>
@@ -2695,6 +3257,8 @@ Last Update (13.5.0.1)
  [5] = AOQuality
  [6] = BloodDecalsEnabled
  [7] = BulletDecalsEnabled
+ [8] = BloodDecalsLimit
+ [9] = BulletDecalsLimits
 ```
 
 </details>
@@ -2818,6 +3382,7 @@ Last Update (13.5.0.1)
  [67108864] = Effects
  [134217728] = FriendlyFireDetectorImmunity
  [268435456] = FriendlyFireDetectorTempDisable
+ [536870912] = ServerLogLiveFeed
 ```
 
 </details>
@@ -2831,6 +3396,19 @@ Last Update (13.5.0.1)
  [1] = Alphabetical
  [2] = Class
  [3] = Team
+```
+
+</details>
+
+### PopupState
+
+<details><summary><b>Interactables.Interobjects.PopupInterobject+PopupState</b></summary>
+
+```
+ [0] = Off
+ [1] = Enabling
+ [2] = On
+ [3] = Disabling
 ```
 
 </details>
@@ -2953,6 +3531,28 @@ Last Update (13.5.0.1)
 
 </details>
 
+### RemoteAdminResponseFlags
+
+<details><summary><b>RemoteAdminResponse+RemoteAdminResponseFlags</b></summary>
+
+```
+ [1] = Successful
+ [2] = LogInConsole
+```
+
+</details>
+
+### RemovalMode
+
+<details><summary><b>InventorySystem.Items.Firearms.Extensions.WorldmodelMagazineExtension+RemovalMode</b></summary>
+
+```
+ [0] = DeactivateObject
+ [1] = SetScaleZero
+```
+
+</details>
+
 ### ReproProjectAssetType
 
 <details><summary><b>ReproProjectAssetType</b></summary>
@@ -2979,33 +3579,13 @@ Last Update (13.5.0.1)
 
 </details>
 
-### RequestType
+### RespawnSetting
 
-<details><summary><b>InventorySystem.Items.Firearms.BasicMessages.RequestType</b></summary>
-
-```
- [0] = Unload
- [1] = Reload
- [2] = AdsIn
- [3] = AdsOut
- [4] = Dryfire
- [5] = ToggleFlashlight
- [6] = ReloadStop
- [7] = RequestStatuses
- [8] = Inspect
-```
-
-</details>
-
-### RespawnSequencePhase
-
-<details><summary><b>Respawning.RespawnManager+RespawnSequencePhase</b></summary>
+<details><summary><b>Respawning.Graphics.RespawnSetting</b></summary>
 
 ```
- [0] = RespawnCooldown
- [1] = SelectingTeam
- [2] = PlayingEntryAnimations
- [3] = SpawningSelectedTeam
+ [0] = RespawnInterfaceVisible
+ [1] = ObjectiveFeedVisible
 ```
 
 </details>
@@ -3039,6 +3619,7 @@ Last Update (13.5.0.1)
  [6] = Revived
  [7] = RemoteAdmin
  [8] = Destroyed
+ [9] = RespawnMiniwave
 ```
 
 </details>
@@ -3085,6 +3666,7 @@ Last Update (13.5.0.1)
  [21] = Overwatch
  [22] = Filmmaker
  [23] = Scp3114
+ [24] = Destroyed
  [-1] = None
 ```
 
@@ -3152,17 +3734,14 @@ Last Update (13.5.0.1)
 
 </details>
 
-### RoomType
+### RootCullablePriority
 
-<details><summary><b>MapGeneration.ImageGenerator+RoomType</b></summary>
+<details><summary><b>ProgressiveCulling.RootCullablePriority</b></summary>
 
 ```
- [0] = Straight
- [1] = Curve
- [2] = RoomT
- [3] = Cross
- [4] = Endoff
- [5] = Prison
+ [0] = PreCull
+ [1] = Rooms
+ [2] = Dynamic
 ```
 
 </details>
@@ -3175,6 +3754,17 @@ Last Update (13.5.0.1)
  [0] = FullRestart
  [1] = FastRestart
  [2] = RedirectRestart
+```
+
+</details>
+
+### RpcHeader
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.AnimationToggleableReloaderModule+RpcHeader</b></summary>
+
+```
+ [0] = SyncLoadable
+ [1] = Cancel
 ```
 
 </details>
@@ -3218,12 +3808,75 @@ Last Update (13.5.0.1)
 
 ### RpcType
 
+<details><summary><b>PlayerRoles.PlayableScps.Scp106.Scp106StalkAbility+RpcType</b></summary>
+
+```
+ [0] = StalkActive
+ [1] = StalkInactive
+ [2] = NotEnoughVigor
+```
+
+</details>
+
+### RpcType
+
 <details><summary><b>InventorySystem.Items.MarshmallowMan.MarshmallowItem+RpcType</b></summary>
 
 ```
  [0] = AttackStart
  [1] = Hit
  [2] = Holster
+```
+
+</details>
+
+### RpcType
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.EventBasedEquipperModule+RpcType</b></summary>
+
+```
+ [0] = SeedSync
+ [1] = FirstTimeTrue
+ [2] = FirstTimeFalse
+ [3] = ResyncAllFirstTime
+```
+
+</details>
+
+### RpcType
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.ImpactEffectsModule+RpcType</b></summary>
+
+```
+ [0] = ImpactDecal
+ [1] = TracerDefault
+ [2] = TracerOverride
+ [3] = PlayerHit
+```
+
+</details>
+
+### RpcType
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.PumpActionModule+RpcType</b></summary>
+
+```
+ [0] = ResyncOne
+ [1] = ResyncAll
+ [2] = Shoot
+ [3] = SchedulePump
+```
+
+</details>
+
+### RpcType
+
+<details><summary><b>InventorySystem.Items.Firearms.Attachments.FlashlightAttachment+RpcType</b></summary>
+
+```
+ [0] = Enabled
+ [1] = Disabled
+ [2] = FullResync
 ```
 
 </details>
@@ -3408,6 +4061,24 @@ Last Update (13.5.0.1)
  [1] = Distressed
  [2] = Enraged
  [3] = Calming
+```
+
+</details>
+
+### Scp1344Status
+
+<details><summary><b>InventorySystem.Items.Usables.Scp1344.Scp1344Status</b></summary>
+
+```
+ [0] = Idle
+ [1] = Equipping
+ [2] = Activating
+ [3] = Stabbing
+ [4] = Active
+ [5] = Dropping
+ [6] = Deactivating
+ [7] = CancelingDeactivation
+ [8] = Inspecting
 ```
 
 </details>
@@ -3630,10 +4301,22 @@ Last Update (13.5.0.1)
  [3] = KillLog
  [4] = GameEvent
  [5] = InternalMessage
- [6] = RateLimit
+ [6] = AuthRateLimit
  [7] = Teamkill
  [8] = Suicide
  [9] = AdminChat
+ [10] = Query
+```
+
+</details>
+
+### ServerOperativeSystem
+
+<details><summary><b>Steam.ServerOperativeSystem</b></summary>
+
+```
+ [108] = Linux
+ [119] = Windows
 ```
 
 </details>
@@ -3649,6 +4332,16 @@ Last Update (13.5.0.1)
 
 </details>
 
+### ServerReceivedContentType
+
+<details><summary><b>Query.QueryMessage+ServerReceivedContentType</b></summary>
+
+```
+ [0] = Command
+```
+
+</details>
+
 ### ServerShutdownState
 
 <details><summary><b>ServerShutdown+ServerShutdownState</b></summary>
@@ -3658,6 +4351,18 @@ Last Update (13.5.0.1)
  [1] = BroadcastingShutdown
  [2] = ShuttingDown
  [3] = Complete
+```
+
+</details>
+
+### ServerType
+
+<details><summary><b>Steam.ServerType</b></summary>
+
+```
+ [100] = Dedicated
+ [108] = Listen
+ [112] = SourceTV
 ```
 
 </details>
@@ -3682,6 +4387,31 @@ Last Update (13.5.0.1)
  [0] = None
  [1] = Success
  [2] = WasConnected
+```
+
+</details>
+
+### SpawnableRoomConnectorType
+
+<details><summary><b>MapGeneration.RoomConnectors.SpawnableRoomConnectorType</b></summary>
+
+```
+ [0] = None
+ [1] = EzStandardDoor
+ [2] = HczStandardDoor
+ [3] = LczStandardDoor
+ [4] = HczOneSidedWall
+ [5] = HczTwoSidedWall
+ [6] = OpenHallway
+ [7] = OpenHallwayClutterA
+ [8] = OpenHallwayClutterB
+ [9] = OpenHallwayClutterC
+ [10] = OpenHallwayConstructA
+ [11] = HczBulkDoor
+ [12] = OpenHallwayClutterD
+ [13] = OpenHallwayClutterE
+ [14] = OpenHallwayClutterF
+ [15] = OpenHallwayClutterG
 ```
 
 </details>
@@ -3748,6 +4478,30 @@ Last Update (13.5.0.1)
 
 </details>
 
+### SteamLobbyPrivacy
+
+<details><summary><b>UserSettings.OtherSettings.SteamLobbyPrivacy</b></summary>
+
+```
+ [0] = Private
+ [1] = Friends
+ [2] = Public
+```
+
+</details>
+
+### StorageLocation
+
+<details><summary><b>FavoriteAndHistory+StorageLocation</b></summary>
+
+```
+ [0] = History
+ [1] = Favorites
+ [2] = IPHistory
+```
+
+</details>
+
 ### StructureType
 
 <details><summary><b>MapGeneration.Distributors.StructureType</b></summary>
@@ -3759,6 +4513,7 @@ Last Update (13.5.0.1)
  [3] = Scp079Generator
  [4] = SmallWallCabinet
  [5] = Workstation
+ [6] = ExperimentalWeaponLocker
 ```
 
 </details>
@@ -3798,6 +4553,23 @@ Last Update (13.5.0.1)
  [27] = TerminatedByMarshmallowMan
  [254] = Custom
  [255] = None
+```
+
+</details>
+
+### SyncDataFlags
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.AutomaticActionModule+SyncDataFlags</b></summary>
+
+```
+ [0] = None
+ [1] = AmmoChamberedBit0
+ [2] = AmmoChamberedBit1
+ [4] = AmmoChamberedBit2
+ [8] = AmmoChamberedBit3
+ [15] = AmmoChamberedFilter
+ [16] = Cocked
+ [32] = BoltLocked
 ```
 
 </details>
@@ -3846,31 +4618,6 @@ Last Update (13.5.0.1)
 
 </details>
 
-### ThirdpersonItemAnimationName
-
-<details><summary><b>InventorySystem.Items.Thirdperson.ThirdpersonItemAnimationName</b></summary>
-
-```
- [0] = Override0
- [1] = Override1
- [2] = Override2
- [3] = IdlePoseAdditive
- [4] = SprintLeftAdditive
- [5] = SprintRightAdditive
- [6] = SprintStraightAdditive
- [7] = SprintBackAdditive
- [8] = WalkLeftAdditive
- [9] = WalkRightAdditive
- [10] = WalkStraightAdditive
- [11] = WalkBackAdditive
- [12] = PrimaryAdditive
- [13] = SecAdditive0
- [14] = SecAdditive1
- [15] = SecAdditive2
-```
-
-</details>
-
 ### TrackerMessage
 
 <details><summary><b>PlayerRoles.PlayableScps.Scp079.Scp079ScannerSequence+TrackerMessage</b></summary>
@@ -3885,14 +4632,26 @@ Last Update (13.5.0.1)
 
 </details>
 
-### TriggerState
+### TransitionStatus
 
-<details><summary><b>InventorySystem.Items.Firearms.Modules.DoubleAction+TriggerState</b></summary>
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.InventorySubcontroller+TransitionStatus</b></summary>
 
 ```
- [0] = Released
- [1] = Pulling
- [2] = SearLock
+ [0] = RetractingPrevious
+ [1] = EquippingNew
+ [2] = Done
+```
+
+</details>
+
+### TurnStatus
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.IdlePoseRetainerSubcontroller+TurnStatus</b></summary>
+
+```
+ [0] = Idle
+ [1] = TurningRight
+ [2] = TurningLeft
 ```
 
 </details>
@@ -3909,6 +4668,8 @@ Last Update (13.5.0.1)
  [4] = HideIP
  [5] = FlashTaskbar
  [6] = PhotosensitivityDoNotShow
+ [7] = ImperialUnits
+ [8] = InaccuracyAsDispersion
 ```
 
 </details>
@@ -3920,6 +4681,33 @@ Last Update (13.5.0.1)
 ```
  [0] = BasicMessage
  [1] = Broadcast
+```
+
+</details>
+
+### UpdateMessageFlags
+
+<details><summary><b>Respawning.UpdateMessageFlags</b></summary>
+
+```
+ [0] = None
+ [1] = Timer
+ [2] = Pause
+ [4] = Trigger
+ [8] = Tokens
+ [11] = All
+```
+
+</details>
+
+### UserResponseMode
+
+<details><summary><b>UserSettings.ServerSpecific.ServerSpecificSettingBase+UserResponseMode</b></summary>
+
+```
+ [0] = None
+ [1] = ChangeOnly
+ [2] = AcquisitionAndChange
 ```
 
 </details>
@@ -4095,6 +4883,54 @@ Last Update (13.5.0.1)
 
 </details>
 
+### WarheadScenarioType
+
+<details><summary><b>WarheadScenarioType</b></summary>
+
+```
+ [0] = Start
+ [1] = Resume
+ [2] = DeadmanSwitch
+```
+
+</details>
+
+### WaveQueueState
+
+<details><summary><b>Respawning.WaveManager+WaveQueueState</b></summary>
+
+```
+ [0] = Idle
+ [1] = WaveSelected
+ [2] = WaveSpawning
+```
+
+</details>
+
+### WearableElements
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.WearableElements</b></summary>
+
+```
+ [0] = None
+ [1] = Scp268Hat
+ [2] = Scp1344Goggles
+```
+
+</details>
+
+### WearableSlot
+
+<details><summary><b>InventorySystem.Items.WearableSlot</b></summary>
+
+```
+ [0] = Body
+ [1] = Eyes
+ [2] = Hat
+```
+
+</details>
+
 ### WorkstationStatus
 
 <details><summary><b>InventorySystem.Items.Firearms.Attachments.WorkstationController+WorkstationStatus</b></summary>
@@ -4148,6 +4984,7 @@ Last Update (13.5.0.1)
 | 21  | Overwatch      | Dead             | None             | Draw            |
 | 22  | Filmmaker      | Dead             | None             | Draw            |
 | 23  | Scp3114        | SCPs             | Scp              | Anomalies       |
+| 24  | Destroyed      | Dead             | None             | Draw            |
 ```
 
 </details>
