@@ -32,13 +32,12 @@ namespace Exiled.Events.Patches.Events.Scp1507
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_4);
-
             Label retLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(SpawningFlamingosEventArgs));
 
-            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
+            int offset = 0;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_4) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -72,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Scp1507
                     new(OpCodes.Stsfld, Field(typeof(Scp1507Spawner), nameof(Scp1507Spawner._alpha))),
                 });
 
-            index = newInstructions.FindIndex(x => x.Is(OpCodes.Call, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.AllHubs))));
+            index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.AllHubs))));
 
             newInstructions.RemoveAt(index);
 
@@ -85,6 +84,8 @@ namespace Exiled.Events.Patches.Events.Scp1507
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningFlamingosEventArgs), nameof(SpawningFlamingosEventArgs.SpawnablePlayers))),
                     new(OpCodes.Call, Method(typeof(SpawningFlamingos), nameof(ReturnEnumerator))),
                 });
+
+            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
