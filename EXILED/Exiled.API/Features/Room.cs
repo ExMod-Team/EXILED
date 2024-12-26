@@ -517,8 +517,6 @@ namespace Exiled.API.Features
                 Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
 #endif
 
-            RoomLightControllersValue.AddRange(gameObject.GetComponentsInChildren<RoomLightController>());
-
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 
             GetComponentsInChildren<BreakableWindow>().ForEach(component =>
