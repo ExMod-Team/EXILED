@@ -1,14 +1,12 @@
 // -----------------------------------------------------------------------
-// <copyright file="ConsumedCorpseEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ConsumedCorpseEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Scp0492
 {
-    using System;
-
     using API.Features;
     using Exiled.API.Features.Roles;
     using Interfaces;

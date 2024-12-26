@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Permissions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Permissions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -17,6 +17,7 @@ namespace Exiled.Events.Commands.Reload
     /// <summary>
     /// The reload permissions command.
     /// </summary>
+    [CommandHandler(typeof(Reload))]
     public class Permissions : ICommand
     {
         /// <summary>

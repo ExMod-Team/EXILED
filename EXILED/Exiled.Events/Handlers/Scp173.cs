@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp173.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp173.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -38,6 +38,11 @@ namespace Exiled.Events.Handlers
         public static Event<UsingBreakneckSpeedsEventArgs> UsingBreakneckSpeeds { get; set; } = new();
 
         /// <summary>
+        /// Invoked before SCP-173 is observed.
+        /// </summary>
+        public static Event<BeingObservedEventArgs> BeingObserved { get; set; } = new();
+
+        /// <summary>
         /// Called before players near SCP-173 blink.
         /// </summary>
         /// <param name="ev">The <see cref="BlinkingEventArgs" /> instance.</param>
@@ -60,5 +65,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="UsingBreakneckSpeedsEventArgs" /> instance.</param>
         public static void OnUsingBreakneckSpeeds(UsingBreakneckSpeedsEventArgs ev) => UsingBreakneckSpeeds.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before Scp 173 is observed.
+        /// </summary>
+        /// <param name="ev">The <see cref="BeingObservedEventArgs" /> instance.</param>
+        public static void OnBeingObserved(BeingObservedEventArgs ev) => BeingObserved.InvokeSafely(ev);
     }
 }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="AirlockController.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="AirlockController.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Exiled.API.Features.Doors
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BaseController"/>'s and their corresponding <see cref="AirlockController"/>.
         /// </summary>
-        internal static readonly Dictionary<BaseController, AirlockController> BaseToExiledControllers = new();
+        internal static readonly Dictionary<BaseController, AirlockController> BaseToExiledControllers = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AirlockController"/> class.
@@ -54,7 +54,7 @@ namespace Exiled.API.Features.Doors
         public Door DoorB => Door.Get(Base._doorB);
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not both subdoors are locked.
+        /// Gets or sets a value indicating whether both subdoors are locked.
         /// </summary>
         public bool DoorsLocked
         {

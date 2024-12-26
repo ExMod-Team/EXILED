@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ExplodingFragGrenade.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ExplodingFragGrenade.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="ExplosionGrenade.Explode(Footprint, Vector3, ExplosionGrenade)"/>.
+    /// Patches <see cref="ExplosionGrenade.Explode"/>.
     /// Adds the <see cref="Handlers.Map.ExplodingGrenade"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Map), nameof(Handlers.Map.ExplodingGrenade))]

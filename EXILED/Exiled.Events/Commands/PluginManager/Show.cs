@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Show.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Show.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -24,6 +24,7 @@ namespace Exiled.Events.Commands.PluginManager
     /// <summary>
     /// The command to show all plugins.
     /// </summary>
+    [CommandHandler(typeof(PluginManager))]
     public sealed class Show : ICommand
     {
         /// <summary>

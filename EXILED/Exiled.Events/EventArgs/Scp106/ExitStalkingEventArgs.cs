@@ -1,17 +1,14 @@
 // -----------------------------------------------------------------------
-// <copyright file="ExitStalkingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ExitStalkingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Scp106
 {
-    using System;
-
     using API.Features;
     using Interfaces;
-    using PlayerRoles.PlayableScps.Scp106;
 
     using Scp106Role = API.Features.Roles.Scp106Role;
 
@@ -41,7 +38,7 @@ namespace Exiled.Events.EventArgs.Scp106
         public Scp106Role Scp106 { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-106 can stalk.
+        /// Gets or sets a value indicating whether SCP-106 can stalk.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

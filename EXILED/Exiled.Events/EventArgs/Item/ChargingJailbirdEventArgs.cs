@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChargingJailbirdEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChargingJailbirdEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -14,19 +14,21 @@ namespace Exiled.Events.EventArgs.Item
     /// <summary>
     /// Contains all information before a player charges a <see cref="Jailbird"/>.
     /// </summary>
-    public class ChargingJailbirdEventArgs : IPlayerEvent, IItemEvent, IDeniableEvent
+    public class ChargingJailbirdEventArgs : IItemEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChargingJailbirdEventArgs"/> class.
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="swingItem">The item being charged.</param>
-        /// <param name="isAllowed">Whether the item can be charged or not.</param>
+        /// <param name="isAllowed">Whether the item can be charged.</param>
         public ChargingJailbirdEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase swingItem, bool isAllowed = true)
         {
             Player = Player.Get(player);
-            Item = Item.Get(swingItem);
+            Jailbird = (Jailbird)Item.Get(swingItem);
+#pragma warning disable CS0618
             IsAllowed = isAllowed;
+#pragma warning restore CS0618
         }
 
         /// <summary>
@@ -35,13 +37,18 @@ namespace Exiled.Events.EventArgs.Item
         public Player Player { get; }
 
         /// <summary>
-        /// Gets the <see cref="API.Features.Items.Item"/> that is being charged. This will always be a <see cref="Jailbird"/>.
+        /// Gets the <see cref="API.Features.Items.Jailbird"/> that is being charged.
         /// </summary>
-        public Item Item { get; }
+        public Jailbird Jailbird { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the Jailbird can be charged.
+        /// Gets the <see cref="API.Features.Items.Item"/> that is being charged.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public Item Item => Jailbird;
+
+        /// <summary>
+        /// Gets a value indicating whether the Jailbird can be charged.
+        /// </summary>
+        public bool IsAllowed { get; }
     }
 }

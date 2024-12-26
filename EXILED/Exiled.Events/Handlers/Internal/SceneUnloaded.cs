@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SceneUnloaded.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SceneUnloaded.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -8,7 +8,7 @@
 namespace Exiled.Events.Handlers.Internal
 {
     using API.Features;
-
+    using Exiled.API.Features.Toys;
     using UnityEngine.SceneManagement;
 
 #pragma warning disable SA1611 // Element parameters should be documented
@@ -35,7 +35,7 @@ namespace Exiled.Events.Handlers.Internal
         {
             Player.UserIdsCache.Clear();
             Player.Dictionary.Clear();
-            Map.ToysValue.Clear();
+            AdminToy.BaseToAdminToy.Clear();
         }
     }
 }

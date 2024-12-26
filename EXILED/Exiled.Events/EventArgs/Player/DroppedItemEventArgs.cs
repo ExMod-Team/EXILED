@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DroppedItemEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DroppedItemEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Player
     using API.Features;
     using Exiled.API.Features.Pickups;
     using Interfaces;
+    using InventorySystem.Items.Pickups;
 
     /// <summary>
     /// Contains all information after a player drops an item.
@@ -28,15 +29,15 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="wasThrown">
         /// <inheritdoc cref="WasThrown" />
         /// </param>
-        public DroppedItemEventArgs(Player player, Pickup pickup, bool wasThrown)
+        public DroppedItemEventArgs(Player player, ItemPickupBase pickup, bool wasThrown)
         {
             Player = player;
-            Pickup = pickup;
+            Pickup = Pickup.Get(pickup);
             WasThrown = wasThrown;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the pickup was thrown.
+        /// Gets or sets a value indicating whether the pickup was thrown.
         /// </summary>
         public bool WasThrown { get; set; }
 

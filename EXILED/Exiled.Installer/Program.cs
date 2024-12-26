@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Program.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Program.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -42,7 +42,7 @@ namespace Exiled.Installer
 
     internal static class Program
     {
-        private const long RepoID = 828620622;
+        private const long RepoID = 833723500;
         private const string ExiledAssetName = "exiled.tar.gz";
 
         // This is the lowest version the installer will check to install

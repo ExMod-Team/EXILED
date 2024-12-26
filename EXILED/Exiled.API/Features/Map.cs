@@ -1,46 +1,34 @@
 // -----------------------------------------------------------------------
-// <copyright file="Map.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Map.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.API.Features
 {
+#pragma warning disable SA1401
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
 
-    using Decals;
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Toys;
-    using global::Hazards;
     using InventorySystem;
-    using InventorySystem.Items.Firearms;
-    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
     using Items;
     using LightContainmentZoneDecontamination;
     using MapGeneration;
-    using MapGeneration.Distributors;
-    using Mirror;
-    using PlayerRoles;
-    using PlayerRoles.PlayableScps.Scp173;
-    using PlayerRoles.PlayableScps.Scp939;
     using PlayerRoles.Ragdolls;
-    using RelativePositioning;
     using UnityEngine;
     using Utils;
-    using Utils.Networking;
 
     using Object = UnityEngine.Object;
-    using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
-    using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
 
     /// <summary>
     /// A set of tools to easily handle the in-game map.
@@ -48,62 +36,13 @@ namespace Exiled.API.Features
     public static class Map
     {
         /// <summary>
-        /// A list of <see cref="Locker"/>s on the map.
+        /// Gets a list of <see cref="PocketDimensionTeleport"/>s on the map.
         /// </summary>
-        internal static readonly List<Locker> LockersValue = new(35);
-
-        /// <summary>
-        /// A list of <see cref="PocketDimensionTeleport"/>s on the map.
-        /// </summary>
-        internal static readonly List<PocketDimensionTeleport> TeleportsValue = new(8);
-
-        /// <summary>
-        /// A list of <see cref="AdminToy"/>s on the map.
-        /// </summary>
-        internal static readonly List<AdminToy> ToysValue = new();
-
-        private static TantrumEnvironmentalHazard tantrumPrefab;
-        private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
+        internal static List<PocketDimensionTeleport> TeleportsValue = new();
 
         private static AmbientSoundPlayer ambientSoundPlayer;
 
-        /// <summary>
-        /// Gets the tantrum prefab.
-        /// </summary>
-        public static TantrumEnvironmentalHazard TantrumPrefab
-        {
-            get
-            {
-                if (tantrumPrefab == null)
-                {
-                    Scp173GameRole scp173Role = (Scp173GameRole)RoleTypeId.Scp173.GetRoleBase();
-
-                    if (scp173Role.SubroutineModule.TryGetSubroutine(out Scp173TantrumAbility scp173TantrumAbility))
-                        tantrumPrefab = scp173TantrumAbility._tantrumPrefab;
-                }
-
-                return tantrumPrefab;
-            }
-        }
-
-        /// <summary>
-        /// Gets the amnestic cloud prefab.
-        /// </summary>
-        public static Scp939AmnesticCloudInstance AmnesticCloudPrefab
-        {
-            get
-            {
-                if (amnesticCloudPrefab == null)
-                {
-                    Scp939GameRole scp939Role = (Scp939GameRole)RoleTypeId.Scp939.GetRoleBase();
-
-                    if (scp939Role.SubroutineModule.TryGetSubroutine(out Scp939AmnesticCloudAbility ability))
-                        amnesticCloudPrefab = ability._instancePrefab;
-                }
-
-                return amnesticCloudPrefab;
-            }
-        }
+        private static SqueakSpawner squeakSpawner;
 
         /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
@@ -123,16 +62,6 @@ namespace Exiled.API.Features
         public static ReadOnlyCollection<PocketDimensionTeleport> PocketDimensionTeleports { get; } = TeleportsValue.AsReadOnly();
 
         /// <summary>
-        /// Gets all <see cref="Locker"/> objects.
-        /// </summary>
-        public static ReadOnlyCollection<Locker> Lockers { get; } = LockersValue.AsReadOnly();
-
-        /// <summary>
-        /// Gets all <see cref="AdminToy"/> objects.
-        /// </summary>
-        public static ReadOnlyCollection<AdminToy> Toys { get; } = ToysValue.AsReadOnly();
-
-        /// <summary>
         /// Gets or sets the current seed of the map.
         /// </summary>
         public static int Seed
@@ -141,14 +70,31 @@ namespace Exiled.API.Features
             set
             {
                 if (!SeedSynchronizer.MapGenerated)
-                    SeedSynchronizer._singleton.Network_syncSeed = value;
+                    SeedSynchronizer.Seed = value;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether decontamination is enabled.
+        /// </summary>
+        public static bool IsDecontaminationEnabled
+        {
+            get => DecontaminationController.Singleton.NetworkDecontaminationOverride == DecontaminationController.DecontaminationStatus.None;
+            set =>
+                DecontaminationController.Singleton.NetworkDecontaminationOverride = value
+                    ? DecontaminationController.DecontaminationStatus.None
+                    : DecontaminationController.DecontaminationStatus.Disabled;
         }
 
         /// <summary>
         /// Gets the <see cref="global::AmbientSoundPlayer"/>.
         /// </summary>
-        public static AmbientSoundPlayer AmbientSoundPlayer => ambientSoundPlayer ??= ReferenceHub.HostHub.GetComponent<AmbientSoundPlayer>();
+        public static AmbientSoundPlayer AmbientSoundPlayer => ambientSoundPlayer ??= ReferenceHub._hostHub.GetComponent<AmbientSoundPlayer>();
+
+        /// <summary>
+        /// Gets the <see cref="global::SqueakSpawner"/>.
+        /// </summary>
+        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.
@@ -193,9 +139,15 @@ namespace Exiled.API.Features
         public static void ClearBroadcasts() => Server.Broadcast.RpcClearElements();
 
         /// <summary>
-        /// Starts the light containment zone decontamination process.
+        /// Forces the light containment zone decontamination process.
         /// </summary>
         public static void StartDecontamination() => DecontaminationController.Singleton.ForceDecontamination();
+
+        /// <summary>
+        /// Turns on all lights in the facility.
+        /// </summary>
+        /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
+        public static void TurnOnAllLights(IEnumerable<ZoneType> zoneTypes) => TurnOffAllLights(0, zoneTypes);
 
         /// <summary>
         /// Turns off all lights in the facility.
@@ -246,12 +198,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a random <see cref="Locker"/>.
-        /// </summary>
-        /// <returns><see cref="Locker"/> object.</returns>
-        public static Locker GetRandomLocker() => Lockers.GetRandomValue();
-
-        /// <summary>
         /// Gets a random <see cref="Pickup"/>.
         /// </summary>
         /// <param name="type">Filters by <see cref="ItemType"/>.</param>
@@ -277,29 +223,6 @@ namespace Exiled.API.Features
                 throw new IndexOutOfRangeException($"There are only {AmbientSoundPlayer.clips.Length} sounds available.");
 
             AmbientSoundPlayer.RpcPlaySound(AmbientSoundPlayer.clips[id].index);
-        }
-
-        /// <summary>
-        /// Places a Tantrum (SCP-173's ability) in the indicated position.
-        /// </summary>
-        /// <param name="position">The position where you want to spawn the Tantrum.</param>
-        /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
-        /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
-        /// <returns>The <see cref="TantrumHazard"/> instance.</returns>
-        public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true)
-        {
-            TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
-
-            if (!isActive)
-                tantrum.SynchronizedPosition = new RelativePosition(position);
-            else
-                tantrum.SynchronizedPosition = new RelativePosition(position + (Vector3.up * 0.25f));
-
-            tantrum._destroyed = !isActive;
-
-            NetworkServer.Spawn(tantrum.gameObject);
-
-            return Hazard.Get(tantrum).Cast<TantrumHazard>();
         }
 
         /// <summary>
@@ -345,7 +268,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
         /// <param name="direction">The direction of the blood decal.</param>
-        public static void PlaceBlood(Vector3 position, Vector3 direction) => new GunDecalMessage(position, direction, DecalPoolType.Blood).SendToAuthenticated(0);
+        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0; /* new GunDecalMessage(position, direction, DecalPoolType.Blood).SendToAuthenticated(0);*/ // TODO: Not finish
 
         /// <summary>
         /// Gets all the near cameras.
@@ -406,15 +329,30 @@ namespace Exiled.API.Features
         /// <param name="audioClipId">The audio clip ID to play.</param>
         public static void PlayGunSound(Vector3 position, ItemType firearmType, byte maxDistance = 45, byte audioClipId = 0)
         {
+            // TODO: Not finish
+            /*
             GunAudioMessage msg = new()
             {
                 Weapon = firearmType,
                 AudioClipId = audioClipId,
                 MaxDistance = maxDistance,
-                ShooterHub = ReferenceHub.HostHub,
+                ShooterHub = ReferenceHub._hostHub,
                 ShooterPosition = new RelativePosition(position),
             };
-            msg.SendToAuthenticated();
+            msg.SendToAuthenticated();*/
+        }
+
+        /// <summary>
+        /// Spawns mice inside the <see cref="RoomType.EzShelter"/>.
+        /// </summary>
+        /// <param name="mice">The type of mice you want to spawn..</param>
+        public static void SpawnMice(byte mice = 1)
+        {
+            if (mice > SqueakSpawner.mice.Length)
+                throw new ArgumentOutOfRangeException($"Mouse type must be between 1 and {SqueakSpawner.mice.Length}.");
+
+            SqueakSpawner.NetworksyncSpawn = mice;
+            SqueakSpawner.SyncMouseSpawn(0, SqueakSpawner.NetworksyncSpawn);
         }
 
         /// <summary>
@@ -424,13 +362,11 @@ namespace Exiled.API.Features
         {
             Item.BaseToItem.Clear();
 
-            LockersValue.RemoveAll(locker => locker == null);
-
             Ragdoll.BasicRagdollToRagdoll.Clear();
 
-            Items.Firearm.ItemTypeToFirearmInstance.Clear();
-            Items.Firearm.BaseCodesValue.Clear();
-            Items.Firearm.AvailableAttachmentsValue.Clear();
+            Firearm.ItemTypeToFirearmInstance.Clear();
+            Firearm.BaseCodesValue.Clear();
+            Firearm.AvailableAttachmentsValue.Clear();
         }
     }
 }

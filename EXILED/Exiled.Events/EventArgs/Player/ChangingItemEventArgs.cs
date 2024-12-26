@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingItemEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingItemEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -46,7 +46,7 @@ namespace Exiled.Events.EventArgs.Player
             get => newItem;
             set
             {
-                if (!Player.Inventory.UserInventory.Items.TryGetValue(value.Serial, out _))
+                if (value != null && !Player.Inventory.UserInventory.Items.TryGetValue(value.Serial, out _))
                     throw new InvalidOperationException("ev.NewItem cannot be set to an item they do not have.");
 
                 newItem = value;

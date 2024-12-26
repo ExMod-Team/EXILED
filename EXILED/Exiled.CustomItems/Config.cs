@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Config.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Config.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Exiled.CustomItems
     public class Config : IConfig
     {
         /// <inheritdoc/>
-        [Description("Indicates whether this plugin is enabled or not.")]
+        [Description("Indicates whether this plugin is enabled.")]
         public bool IsEnabled { get; set; } = true;
 
         /// <inheritdoc/>

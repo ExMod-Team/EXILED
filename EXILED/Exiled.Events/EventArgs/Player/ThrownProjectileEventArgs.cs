@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ThrownProjectileEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ThrownProjectileEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -18,7 +18,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information after a player throws a grenade.
     /// </summary>
-    public class ThrownProjectileEventArgs : IPlayerEvent, IItemEvent, IPickupEvent
+    public class ThrownProjectileEventArgs : IItemEvent, IPickupEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ThrownProjectileEventArgs"/> class.
@@ -29,8 +29,8 @@ namespace Exiled.Events.EventArgs.Player
         public ThrownProjectileEventArgs(ThrownProjectile projectile, Player player, ThrowableItem item)
         {
             Player = player;
-            Throwable = (Throwable)Item.Get(item);
-            Projectile = (Projectile)Pickup.Get(projectile);
+            Throwable = Item.Get<Throwable>(item);
+            Projectile = Pickup.Get<Projectile>(projectile);
         }
 
         /// <summary>

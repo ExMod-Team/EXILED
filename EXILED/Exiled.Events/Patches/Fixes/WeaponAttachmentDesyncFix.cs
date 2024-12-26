@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="WeaponAttachmentDesyncFix.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="WeaponAttachmentDesyncFix.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -18,8 +18,10 @@ namespace Exiled.Events.Patches.Fixes
 
     using static HarmonyLib.AccessTools;
 
+    // TODO Possibly can be deleted
+    /*
     /// <summary>
-    /// Patches <see cref="AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, InventorySystem.Items.ItemBase)"/>.
+    /// Patches <see cref="AttachmentsServerHandler.ServerApplyPreference(ReferenceHub, ItemType, uint)"/>.
     /// Fixes if a plugin gives you an weapon that you do not have ammo for, your attachments will not correctly appear on said weapon.
     /// </summary>
     [HarmonyPatch(typeof(AttachmentsServerHandler), nameof(AttachmentsServerHandler.SetupProvidedWeapon))]
@@ -98,5 +100,5 @@ namespace Exiled.Events.Patches.Fixes
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
-    }
+    }*/
 }

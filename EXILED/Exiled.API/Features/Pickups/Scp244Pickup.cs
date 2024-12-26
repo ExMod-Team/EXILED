@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp244Pickup.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp244Pickup.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -96,12 +96,12 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not this Scp244 is breakable.
+        /// Gets a value indicating whether this Scp244 is breakable.
         /// </summary>
         public bool IsBreakable => Base.State is Scp244State.Idle or Scp244State.Active;
 
         /// <summary>
-        /// Gets a value indicating whether or not this Scp244 is broken.
+        /// Gets a value indicating whether this Scp244 is broken.
         /// </summary>
         public bool IsBroken => Base.State is Scp244State.Destroyed;
 

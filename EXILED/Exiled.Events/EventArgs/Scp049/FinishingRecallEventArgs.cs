@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="FinishingRecallEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FinishingRecallEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace Exiled.Events.EventArgs.Scp049
             Scp049 = Player.Role.As<Scp049Role>();
             Target = target;
             Ragdoll = Ragdoll.Get(ragdoll);
-            IsAllowed = isAllowed && Target.Role is SpectatorRole spectatorRole && spectatorRole.IsReadyToRespawn;
+            IsAllowed = isAllowed;
         }
 
         /// <inheritdoc/>
@@ -60,7 +60,7 @@ namespace Exiled.Events.EventArgs.Scp049
         public Ragdoll Ragdoll { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can be revived.
+        /// Gets or sets a value indicating whether the player can be revived.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

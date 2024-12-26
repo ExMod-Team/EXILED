@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="BannedEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="BannedEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace Exiled.Events.EventArgs.Player
         public BanHandler.BanType Type { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the ban is forced or not.
+        /// Gets a value indicating whether the ban is forced.
         /// </summary>
         public bool IsForced { get; }
     }

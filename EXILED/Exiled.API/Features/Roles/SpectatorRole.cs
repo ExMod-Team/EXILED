@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpectatorRole.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SpectatorRole.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -10,7 +10,7 @@ namespace Exiled.API.Features.Roles
     using System;
 
     using PlayerRoles;
-
+    using PlayerRoles.Voice;
     using UnityEngine;
 
     using SpectatorGameRole = PlayerRoles.Spectating.SpectatorRole;
@@ -18,7 +18,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents a spectator.
     /// </summary>
-    public class SpectatorRole : Role
+    public class SpectatorRole : Role, IVoiceRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SpectatorRole"/> class.
@@ -49,7 +49,7 @@ namespace Exiled.API.Features.Roles
         public Vector3 DeathPosition => Base.DeathPosition.Position;
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="Player"/> is ready to respawn or not.
+        /// Gets a value indicating whether the <see cref="Player"/> is ready to respawn.
         /// </summary>
         public bool IsReadyToRespawn => Base.ReadyToRespawn;
 
@@ -70,5 +70,8 @@ namespace Exiled.API.Features.Roles
         /// Gets the game <see cref="SpectatorGameRole"/>.
         /// </summary>
         public new SpectatorGameRole Base { get; }
+
+        /// <inheritdoc/>
+        public VoiceModuleBase VoiceModule => Base.VoiceModule;
     }
 }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Merge.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Merge.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -20,6 +20,7 @@ namespace Exiled.Events.Commands.Config
     /// <summary>
     /// The config merge command.
     /// </summary>
+    [CommandHandler(typeof(EConfig))]
     public class Merge : ICommand
     {
         /// <summary>

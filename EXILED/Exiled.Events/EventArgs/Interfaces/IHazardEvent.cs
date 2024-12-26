@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="IHazardEvent.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="IHazardEvent.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -10,7 +10,7 @@ namespace Exiled.Events.EventArgs.Interfaces
     using Exiled.API.Features.Hazards;
 
     /// <summary>
-    /// Event args for all <see cref="Hazard"/> related events.
+    /// Event args for all <see cref="API.Features.Hazards.Hazard"/> related events.
     /// </summary>
     public interface IHazardEvent : IExiledEvent
     {

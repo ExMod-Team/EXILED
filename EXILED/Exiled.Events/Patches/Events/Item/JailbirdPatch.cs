@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="JailbirdPatch.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="JailbirdPatch.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -88,10 +88,7 @@ namespace Exiled.Events.Patches.Events.Item
                     ChargingJailbirdEventArgs ev = new(instance.Owner, instance);
 
                     Item.OnChargingJailbird(ev);
-                    if (ev.IsAllowed)
-                            return true;
-                    instance.SendRpc(JailbirdMessageType.ChargeFailed, null);
-                    return false;
+                    return true;
                 }
 
                 default:

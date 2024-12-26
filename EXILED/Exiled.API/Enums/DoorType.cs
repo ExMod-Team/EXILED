@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DoorType.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DoorType.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -8,8 +8,7 @@
 namespace Exiled.API.Enums
 {
     using Exiled.API.Features.Doors;
-
-    using static Interactables.Interobjects.ElevatorManager;
+    using Interactables.Interobjects;
 
     /// <summary>
     /// Unique identifier for the different types of doors.
@@ -134,11 +133,6 @@ namespace Exiled.API.Enums
         EscapeSecondary,
 
         /// <summary>
-        /// Represents the SERVERS_BOTTOM door.
-        /// </summary>
-        ServersBottom,
-
-        /// <summary>
         /// Represents the GATE_A door.
         /// </summary>
         GateA,
@@ -159,19 +153,24 @@ namespace Exiled.API.Enums
         HeavyContainmentDoor,
 
         /// <summary>
-        /// Represents the HID door.
+        /// Represents any heavy containment styled door.
         /// </summary>
-        HID,
+        HeavyBulkDoor,
 
         /// <summary>
-        /// Represents the HID_LEFT door.
+        /// Represents the HID_CHAMBER door.
         /// </summary>
-        HIDLeft,
+        HIDChamber,
 
         /// <summary>
-        /// Represents the HID_RIGHT door.
+        /// Represents the HID_UPPER door.
         /// </summary>
-        HIDRight,
+        HIDUpper,
+
+        /// <summary>
+        /// Represents the HID_LOWER door.
+        /// </summary>
+        HIDLower,
 
         /// <summary>
         /// Represents the INTERCOM door.
@@ -231,7 +230,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the Gate in the Checkpoint between EZ and HCZ.
         /// </summary>
-        CheckpointGate,
+        CheckpointGateA,
+
+        /// <summary>
+        /// Represents the Gate in the Checkpoint between EZ and HCZ.
+        /// </summary>
+        CheckpointGateB,
 
         /// <summary>
         /// Represents the Gate in the Checkpoint between EZ and HCZ.
@@ -269,7 +273,7 @@ namespace Exiled.API.Enums
         ElevatorGateB,
 
         /// <summary>
-        /// Represents the Elevator door for <see cref="ElevatorGroup.Nuke"/>.
+        /// Represents the Elevator door for <see cref="ElevatorGroup.Nuke01"/>.
         /// </summary>
         ElevatorNuke,
 
@@ -307,5 +311,10 @@ namespace Exiled.API.Enums
         /// Represents the New Gate where Scp173 spawn in the <see cref="RoomType.Hcz049"/>.
         /// </summary>
         Scp173NewGate,
+
+        /// <summary>
+        /// Represents the ESCAPE_FINAL door.
+        /// </summary>
+        EscapeFinal,
     }
 }

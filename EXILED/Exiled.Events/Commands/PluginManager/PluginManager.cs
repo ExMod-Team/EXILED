@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="PluginManager.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="PluginManager.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -18,14 +18,6 @@ namespace Exiled.Events.Commands.PluginManager
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class PluginManager : ParentCommand
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PluginManager"/> class.
-        /// </summary>
-        public PluginManager()
-        {
-            LoadGeneratedCommands();
-        }
-
         /// <inheritdoc/>
         public override string Command { get; } = "pluginmanager";
 
@@ -38,10 +30,6 @@ namespace Exiled.Events.Commands.PluginManager
         /// <inheritdoc/>
         public override void LoadGeneratedCommands()
         {
-            RegisterCommand(Show.Instance);
-            RegisterCommand(Enable.Instance);
-            RegisterCommand(Disable.Instance);
-            RegisterCommand(Patches.Instance);
         }
 
         /// <inheritdoc/>

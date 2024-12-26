@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp939.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp939.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -31,6 +31,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before SCP-939 uses its amnestic cloud ability.
         /// </summary>
         public static Event<PlacingAmnesticCloudEventArgs> PlacingAmnesticCloud { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after SCP-939 used its amnestic cloud ability.
+        /// </summary>
+        public static Event<PlacedAmnesticCloudEventArgs> PlacedAmnesticCloud { get; set; } = new();
 
         /// <summary>
         /// Invoked before SCP-939 plays a stolen voice.
@@ -80,6 +85,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlacingAmnesticCloudEventArgs" /> instance.</param>
         public static void OnPlacingAmnesticCloud(PlacingAmnesticCloudEventArgs ev) => PlacingAmnesticCloud.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after SCP-939 used its amnestic cloud ability.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlacedAmnesticCloudEventArgs" /> instance.</param>
+        public static void OnPlacedAmnesticCloud(PlacedAmnesticCloudEventArgs ev) => PlacedAmnesticCloud.InvokeSafely(ev);
 
         /// <summary>
         /// Called before SCP-939 plays a stolen voice.

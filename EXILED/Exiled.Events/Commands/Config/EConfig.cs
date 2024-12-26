@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="EConfig.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// -----------------------------------------------------------------------
+// <copyright file="EConfig.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -17,14 +17,6 @@ namespace Exiled.Events.Commands.Config
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class EConfig : ParentCommand
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EConfig"/> class.
-        /// </summary>
-        public EConfig()
-        {
-            LoadGeneratedCommands();
-        }
-
         /// <inheritdoc/>
         public override string Command { get; } = "econfig";
 
@@ -37,8 +29,6 @@ namespace Exiled.Events.Commands.Config
         /// <inheritdoc/>
         public override void LoadGeneratedCommands()
         {
-            RegisterCommand(Merge.Instance);
-            RegisterCommand(Split.Instance);
         }
 
         /// <inheritdoc/>

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Armor.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Armor.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -15,7 +15,6 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items.Armor;
-
     using PlayerRoles;
 
     using Structs;
@@ -61,7 +60,7 @@ namespace Exiled.API.Features.Items
         public bool Holsterable => Base.AllowHolster;
 
         /// <summary>
-        /// Gets a value indicating whether or not this is a worn item.
+        /// Gets a value indicating whether this is a worn item.
         /// </summary>
         public bool IsWorn => Base.IsWorn;
 
@@ -75,7 +74,7 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not excess ammo should be removed when the armor is dropped.
+        /// Gets or sets a value indicating whether excess ammo should be removed when the armor is dropped.
         /// </summary>
         public bool RemoveExcessOnDrop
         {
@@ -111,14 +110,14 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets how much the users movement speed should be affected when wearing this armor. (higher values = slower movement).
+        /// Gets or sets the stamina regen multiplier.
         /// </summary>
-        public float MovementSpeedMultiplier
-        {
-            get => Base._movementSpeedMultiplier;
-            [Obsolete("This Setter was causing desync to client", true)]
-            set => _ = value;
-        }
+        public float StaminaRegenMultiplier { get; set; } = 1f;
+
+        /// <summary>
+        /// Gets how much the users movement speed should be affected when wearing this armor. (higher values = slower movement).
+        /// </summary>
+        public float MovementSpeedMultiplier => Base._movementSpeedMultiplier;
 
         /// <summary>
         /// Gets how much worse <see cref="RoleTypeId.ClassD"/> and <see cref="RoleTypeId.Scientist"/>s are affected by wearing this armor.
@@ -153,6 +152,7 @@ namespace Exiled.API.Features.Items
             StaminaUseMultiplier = StaminaUseMultiplier,
             RemoveExcessOnDrop = RemoveExcessOnDrop,
             CategoryLimits = CategoryLimits,
+            StaminaRegenMultiplier = StaminaRegenMultiplier,
             AmmoLimits = AmmoLimits,
             VestEfficacy = VestEfficacy,
             HelmetEfficacy = HelmetEfficacy,
@@ -168,6 +168,7 @@ namespace Exiled.API.Features.Items
                 VestEfficacy = armorPickup.VestEfficacy;
                 RemoveExcessOnDrop = armorPickup.RemoveExcessOnDrop;
                 StaminaUseMultiplier = armorPickup.StaminaUseMultiplier;
+                StaminaRegenMultiplier = armorPickup.StaminaRegenMultiplier;
                 AmmoLimits = armorPickup.AmmoLimits;
                 CategoryLimits = armorPickup.CategoryLimits;
             }

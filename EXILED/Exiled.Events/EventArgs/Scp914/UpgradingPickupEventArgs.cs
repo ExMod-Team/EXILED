@@ -1,14 +1,12 @@
 // -----------------------------------------------------------------------
-// <copyright file="UpgradingPickupEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="UpgradingPickupEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Scp914
 {
-    using System;
-
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Interfaces;
     using global::Scp914;
@@ -45,12 +43,6 @@ namespace Exiled.Events.EventArgs.Scp914
         public Pickup Pickup { get; }
 
         /// <summary>
-        /// Gets the <see cref="Scp914Controller" /> instance.
-        /// </summary>
-        [Obsolete("Use Scp914::Scp914Controller instead.")]
-        public Scp914Controller Scp914 => API.Features.Scp914.Scp914Controller;
-
-        /// <summary>
         /// Gets or sets the position the item will be output to.
         /// </summary>
         public Vector3 OutputPosition { get; set; }
@@ -61,7 +53,7 @@ namespace Exiled.Events.EventArgs.Scp914
         public Scp914KnobSetting KnobSetting { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the upgrade is successful.
+        /// Gets or sets a value indicating whether the upgrade is successful.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
     }

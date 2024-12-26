@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Ammo.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Ammo.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -20,7 +20,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the absolute maximum amount of ammo that may be held at one time, if ammo is forcefully given to the player (regardless of worn armor or server configuration).
         /// <para>
-        /// For accessing the maximum amount of ammo that may be held based on worn armor and server settings, see <see cref="Player.GetAmmoLimit(AmmoType)"/>.
+        /// For accessing the maximum amount of ammo that may be held based on worn armor and server settings, see <see cref="Player.GetAmmoLimit(AmmoType, bool)"/>.
         /// </para>
         /// </summary>
         public const ushort AmmoLimit = ushort.MaxValue;

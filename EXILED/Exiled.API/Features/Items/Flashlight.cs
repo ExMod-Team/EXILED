@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Flashlight.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Flashlight.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -44,14 +44,6 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <remarks>Can be <see cref="FlashlightItem"/> or <see cref="LanternItem"/>.</remarks>
         public new ToggleableLightItemBase Base { get; }
-
-        /// <inheritdoc cref="IsEmittingLight"/>
-        [Obsolete("Use IsEmittingLight instead.")]
-        public bool Active
-        {
-            get => IsEmittingLight;
-            set => IsEmittingLight = value;
-        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the item is emitting light.

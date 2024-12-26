@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="InteractingLocker.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="InteractingLocker.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -32,35 +32,28 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            const int offset = -9;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
                     // Player.Get(ply);
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this
                     new(OpCodes.Ldarg_0),
 
-                    // this.Chambers[colliderId]
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Locker), nameof(Locker.Chambers))),
-                    new(OpCodes.Ldarg_2),
-                    new(OpCodes.Ldelem_Ref),
-
                     // colliderId
                     new(OpCodes.Ldarg_2),
 
                     // !flag
-                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
 
-                    // InteractingLockerEventArgs ev = new(Player, Locker, LockerChamber, byte, bool)
+                    // InteractingLockerEventArgs ev = new(Player, Locker, byte, bool)
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -71,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
-                    new(OpCodes.Stloc_0),
+                    new(OpCodes.Stloc_1),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

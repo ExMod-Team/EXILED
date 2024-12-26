@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="CustomItems.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CustomItems.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -19,7 +19,7 @@ namespace Exiled.CustomItems
     /// </summary>
     public class CustomItems : Plugin<Config>
     {
-        private RoundHandler? roundHandler;
+        private MapHandler? roundHandler;
         private PlayerHandler? playerHandler;
         private Harmony? harmony;
 
@@ -32,10 +32,10 @@ namespace Exiled.CustomItems
         public override void OnEnabled()
         {
             Instance = this;
-            roundHandler = new RoundHandler();
+            roundHandler = new MapHandler();
             playerHandler = new PlayerHandler();
 
-            Exiled.Events.Handlers.Server.RoundStarted += roundHandler.OnRoundStarted;
+            Exiled.Events.Handlers.Server.WaitingForPlayers += roundHandler.OnWaitingForPlayers;
 
             Exiled.Events.Handlers.Player.ChangingItem += playerHandler.OnChangingItem;
 
@@ -50,7 +50,7 @@ namespace Exiled.CustomItems
         /// <inheritdoc />
         public override void OnDisabled()
         {
-            Exiled.Events.Handlers.Server.RoundStarted -= roundHandler!.OnRoundStarted;
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= roundHandler!.OnWaitingForPlayers;
 
             Exiled.Events.Handlers.Player.ChangingItem -= playerHandler!.OnChangingItem;
 

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="MirrorExtensions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="MirrorExtensions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -15,16 +15,16 @@ namespace Exiled.API.Extensions
     using System.Reflection.Emit;
     using System.Text;
 
+    using Exiled.API.Enums;
     using Features;
     using Features.Pools;
-
-    using InventorySystem.Items.Firearms;
 
     using Mirror;
 
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
+    using PlayerRoles.Voice;
     using RelativePositioning;
 
     using Respawning;
@@ -149,7 +149,7 @@ namespace Exiled.API.Extensions
         /// Plays a beep sound that only the target <paramref name="player"/> can hear.
         /// </summary>
         /// <param name="player">Target to play sound to.</param>
-        public static void PlayBeepSound(this Player player) => SendFakeTargetRpc(player, ReferenceHub.HostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
+        public static void PlayBeepSound(this Player player) => SendFakeTargetRpc(player, ReferenceHub._hostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
 
         /// <summary>
         /// Set <see cref="Player.CustomInfo"/> on the <paramref name="target"/> player that only the <paramref name="player"/> can see.
@@ -169,6 +169,8 @@ namespace Exiled.API.Extensions
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
         {
+            // TODO: Not finish
+            /*
             GunAudioMessage message = new()
             {
                 Weapon = itemType,
@@ -178,8 +180,20 @@ namespace Exiled.API.Extensions
                 ShooterPosition = new RelativePosition(position),
             };
 
-            player.Connection.Send(message);
+            player.Connection.Send(message);*/
         }
+
+        /// <summary>
+        /// Sets <see cref="Features.Intercom.DisplayText"/> that only the <paramref name="target"/> player can see.
+        /// </summary>
+        /// <param name="target">Only this player can see Display Text.</param>
+        /// <param name="text">Text displayed to the player.</param>
+        public static void SetIntercomDisplayTextForTargetOnly(this Player target, string text) => target.SendFakeSyncVar(IntercomDisplay._singleton.netIdentity, typeof(IntercomDisplay), nameof(IntercomDisplay.Network_overrideText), text);
+
+        /// <summary>
+        /// Resync <see cref="Features.Intercom.DisplayText"/>.
+        /// </summary>
+        public static void ResetIntercomDisplayText() => ResyncSyncVar(IntercomDisplay._singleton.netIdentity, typeof(IntercomDisplay), nameof(IntercomDisplay.Network_overrideText));
 
         /// <summary>
         /// Sets <see cref="Room.Color"/> of a <paramref name="room"/> that only the <paramref name="target"/> player can see.
@@ -209,23 +223,12 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
-        /// Sets <see cref="Room"/> of a <paramref name="room"/> that only the <paramref name="target"/> player can see.
-        /// </summary>
-        /// <param name="room">Room to modify.</param>
-        /// <param name="target">Only this player can see room color.</param>
-        /// <param name="multiplier">Light intensity multiplier to set.</param>
-        [Obsolete("This features has been remove by NW", true)]
-        public static void SetRoomLightIntensityForTargetOnly(this Room room, Player target, float multiplier)
-        {
-        }
-
-        /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
         /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
         /// </summary>
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
-        /// <param name="skipJump">Whether or not to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
         /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
         public static void ChangeAppearance(this Player player, RoleTypeId type, bool skipJump = false, byte unitId = 0) => ChangeAppearance(player, type, Player.List.Where(x => x != player), skipJump, unitId);
 
@@ -236,7 +239,7 @@ namespace Exiled.API.Extensions
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
         /// <param name="playersToAffect">The players who should see the changed appearance.</param>
-        /// <param name="skipJump">Whether or not to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
         /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
         public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect, bool skipJump = false, byte unitId = 0)
         {
@@ -257,6 +260,15 @@ namespace Exiled.API.Extensions
                 writer.WriteByte(unitId);
             }
 
+            if (roleBase is ZombieRole)
+            {
+                if (player.Role.Base is not ZombieRole)
+                    isRisky = true;
+
+                writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(player.MaxHealth), ushort.MinValue, ushort.MaxValue));
+                writer.WriteBool(true);
+            }
+
             if (roleBase is FpcStandardRoleBase fpc)
             {
                 if (player.Role.Base is not FpcStandardRoleBase playerfpc)
@@ -268,14 +280,6 @@ namespace Exiled.API.Extensions
                 fpc?.FpcModule.MouseLook.GetSyncValues(0, out value, out ushort _);
                 writer.WriteRelativePosition(player.RelativePosition);
                 writer.WriteUShort(value);
-            }
-
-            if (roleBase is ZombieRole)
-            {
-                if (player.Role.Base is not ZombieRole)
-                    isRisky = true;
-
-                writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(player.MaxHealth), ushort.MinValue, ushort.MaxValue));
             }
 
             foreach (Player target in playersToAffect)
@@ -343,14 +347,120 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
+        /// Moves object for the player.
+        /// </summary>
+        /// <param name="player">Target to send.</param>
+        /// <param name="identity">The <see cref="Mirror.NetworkIdentity"/> to move.</param>
+        /// <param name="pos">The position to change.</param>
+        public static void MoveNetworkIdentityObject(this Player player, NetworkIdentity identity, Vector3 pos)
+        {
+            identity.gameObject.transform.position = pos;
+            ObjectDestroyMessage objectDestroyMessage = new()
+            {
+                netId = identity.netId,
+            };
+
+            player.Connection.Send(objectDestroyMessage, 0);
+            SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, player.Connection });
+        }
+
+        /// <summary>
+        /// Sends to the player a Fake Change Scene.
+        /// </summary>
+        /// <param name="player">The player to send the Scene.</param>
+        /// <param name="newSceneName">The new Scene the client will load.</param>
+        public static void SendFakeSceneLoading(this Player player, ScenesType newSceneName)
+        {
+            SceneMessage message = new()
+            {
+                sceneName = newSceneName.ToString(),
+            };
+
+            player.Connection.Send(message);
+        }
+
+        /// <summary>
+        /// Emulation of the method SCP:SL uses to change scene.
+        /// </summary>
+        /// <param name="scene">The new Scene the client will load.</param>
+        public static void ChangeSceneToAllClients(ScenesType scene)
+        {
+            SceneMessage message = new()
+            {
+                sceneName = scene.ToString(),
+            };
+
+            NetworkServer.SendToAll(message);
+        }
+
+        /// <summary>
+        /// Scales an object for the specified player.
+        /// </summary>
+        /// <param name="player">Target to send.</param>
+        /// <param name="identity">The <see cref="Mirror.NetworkIdentity"/> to scale.</param>
+        /// <param name="scale">The scale the object needs to be set to.</param>
+        public static void ScaleNetworkIdentityObject(this Player player, NetworkIdentity identity, Vector3 scale)
+        {
+            identity.gameObject.transform.localScale = scale;
+            ObjectDestroyMessage objectDestroyMessage = new()
+            {
+                netId = identity.netId,
+            };
+
+            player.Connection.Send(objectDestroyMessage, 0);
+            SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, player.Connection });
+        }
+
+        /// <summary>
+        /// Moves object for all the players.
+        /// </summary>
+        /// <param name="identity">The <see cref="NetworkIdentity"/> to move.</param>
+        /// <param name="pos">The position to change.</param>
+        public static void MoveNetworkIdentityObject(this NetworkIdentity identity, Vector3 pos)
+        {
+            identity.gameObject.transform.position = pos;
+            ObjectDestroyMessage objectDestroyMessage = new()
+            {
+                netId = identity.netId,
+            };
+
+            foreach (Player ply in Player.List)
+            {
+                ply.Connection.Send(objectDestroyMessage, 0);
+                SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, ply.Connection });
+            }
+        }
+
+        /// <summary>
+        /// Scales an object for all players.
+        /// </summary>
+        /// <param name="identity">The <see cref="Mirror.NetworkIdentity"/> to scale.</param>
+        /// <param name="scale">The scale the object needs to be set to.</param>
+        public static void ScaleNetworkIdentityObject(this NetworkIdentity identity, Vector3 scale)
+        {
+            identity.gameObject.transform.localScale = scale;
+            ObjectDestroyMessage objectDestroyMessage = new()
+            {
+                netId = identity.netId,
+            };
+
+            foreach (Player ply in Player.List)
+            {
+                ply.Connection.Send(objectDestroyMessage, 0);
+                SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, ply.Connection });
+            }
+        }
+
+        /// <summary>
         /// Send fake values to client's <see cref="SyncVarAttribute"/>.
         /// </summary>
+        /// <typeparam name="T">Target SyncVar property type.</typeparam>
         /// <param name="target">Target to send.</param>
         /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
         /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
         /// <param name="propertyName">Property name starting with Network.</param>
         /// <param name="value">Value of send to target.</param>
-        public static void SendFakeSyncVar(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, object value)
+        public static void SendFakeSyncVar<T>(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, T value)
         {
             if (!target.IsConnected)
                 return;
@@ -369,7 +479,7 @@ namespace Exiled.API.Extensions
             void CustomSyncVarGenerator(NetworkWriter targetWriter)
             {
                 targetWriter.WriteULong(SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"]);
-                WriterExtensions[value.GetType()]?.Invoke(null, new object[2] { targetWriter, value });
+                WriterExtensions[typeof(T)]?.Invoke(null, new object[2] { targetWriter, value });
             }
         }
 
@@ -422,12 +532,11 @@ namespace Exiled.API.Extensions
         /// <example>
         /// EffectOnlySCP207.
         /// <code>
-        ///  MirrorExtensions.SendCustomSync(player, player.ReferenceHub.networkIdentity, typeof(PlayerEffectsController), (writer) => {
-        ///   writer.WriteUInt64(1ul);                                           // DirtyObjectsBit
-        ///   writer.WriteUInt32(1);                                             // DirtyIndexCount
+        ///  MirrorExtensions.SendFakeSyncObject(player, player.NetworkIdentity, typeof(PlayerEffectsController), (writer) => {
+        ///   writer.WriteULong(1ul);                                            // DirtyObjectsBit
+        ///   writer.WriteUInt(1);                                               // DirtyIndexCount
         ///   writer.WriteByte((byte)SyncList&lt;byte&gt;.Operation.OP_SET);     // Operations
-        ///   writer.WriteUInt32(17);                                            // EditIndex
-        ///   writer.WriteByte(1);                                               // Value
+        ///   writer.WriteUInt(17);                                              // EditIndex
         ///  });
         /// </code>
         /// </example>

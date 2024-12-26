@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="InteractingLockerEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="InteractingLockerEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -8,10 +8,8 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
-
+    using Exiled.API.Features.Lockers;
     using Interfaces;
-
-    using MapGeneration.Distributors;
 
     /// <summary>
     /// Contains all information before a player interacts with a locker.
@@ -25,43 +23,34 @@ namespace Exiled.Events.EventArgs.Player
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="locker">
-        /// <inheritdoc cref="Locker" />
+        /// <inheritdoc cref="InteractingLocker" />
         /// </param>
-        /// <param name="lockerChamber">
-        /// <inheritdoc cref="Chamber" />
-        /// </param>
-        /// <param name="chamberId">
-        /// <inheritdoc cref="ChamberId" />
+        /// <param name="colliderId">
+        /// <inheritdoc cref="InteractingChamber" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public InteractingLockerEventArgs(Player player, Locker locker, LockerChamber lockerChamber, byte chamberId, bool isAllowed)
+        public InteractingLockerEventArgs(Player player, MapGeneration.Distributors.Locker locker, byte colliderId, bool isAllowed)
         {
             Player = player;
-            Locker = locker;
-            Chamber = lockerChamber;
-            ChamberId = chamberId;
+            InteractingLocker = Locker.Get(locker);
+            InteractingChamber = Chamber.Get(locker.Chambers[colliderId]);
             IsAllowed = isAllowed;
         }
 
         /// <summary>
-        /// Gets the <see cref="MapGeneration.Distributors.Locker" /> instance.
+        /// Gets the locker which is containing <see cref="InteractingChamber"/>.
         /// </summary>
-        public Locker Locker { get; }
+        public Locker InteractingLocker { get; }
 
         /// <summary>
         /// Gets the interacting chamber.
         /// </summary>
-        public LockerChamber Chamber { get; }
+        public Chamber InteractingChamber { get; }
 
         /// <summary>
-        /// Gets the chamber id.
-        /// </summary>
-        public byte ChamberId { get; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether or not the player can interact with the locker.
+        /// Gets or sets a value indicating whether the player can interact with the locker.
         /// </summary>
         public bool IsAllowed { get; set; }
 

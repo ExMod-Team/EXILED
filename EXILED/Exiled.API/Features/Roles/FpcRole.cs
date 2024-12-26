@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="FpcRole.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FpcRole.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -8,22 +8,26 @@
 namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
+    using System.Reflection;
 
     using Exiled.API.Features.Pools;
-
+    using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
-
+    using PlayerRoles.Ragdolls;
+    using PlayerRoles.Spectating;
+    using PlayerRoles.Visibility;
+    using PlayerRoles.Voice;
     using PlayerStatsSystem;
     using RelativePositioning;
-
     using UnityEngine;
 
     /// <summary>
     /// Defines a role that represents an fpc class.
     /// </summary>
-    public abstract class FpcRole : Role
+    public abstract class FpcRole : Role, IVoiceRole
     {
+        private static FieldInfo enableFallDamageField;
         private bool isUsingStamina = true;
 
         /// <summary>
@@ -47,12 +51,34 @@ namespace Exiled.API.Features.Roles
         public FpcStandardRoleBase FirstPersonController { get; }
 
         /// <summary>
-        /// Gets or sets the player's relative position.
+        /// Gets or sets the player's relative position as perceived by the server.
         /// </summary>
         public RelativePosition RelativePosition
         {
+            get => new(Owner.Position);
+            set => Owner.Position = value.Position;
+        }
+
+        /// <summary>
+        /// Gets or sets the player's relative position as perceived by the client.
+        /// </summary>
+        public RelativePosition ClientRelativePosition
+        {
             get => FirstPersonController.FpcModule.Motor.ReceivedPosition;
             set => FirstPersonController.FpcModule.Motor.ReceivedPosition = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether if the player should get <see cref="Enums.DamageType.Falldown"/> damage.
+        /// </summary>
+        public bool IsFallDamageEnable
+        {
+            get => FirstPersonController.FpcModule.Motor._enableFallDamage;
+            set
+            {
+                enableFallDamageField ??= AccessTools.Field(typeof(FpcMotor), nameof(FpcMotor._enableFallDamage));
+                enableFallDamageField.SetValue(FirstPersonController.FpcModule.Motor, value);
+            }
         }
 
         /// <summary>
@@ -119,17 +145,17 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not the player can send inputs.
+        /// Gets a value indicating whether the player can send inputs.
         /// </summary>
         public bool CanSendInputs => FirstPersonController.FpcModule.LockMovement;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player is invisible.
+        /// Gets or sets a value indicating whether the player is invisible.
         /// </summary>
         public bool IsInvisible { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player should use stamina system. Resets on death.
+        /// Gets or sets a value indicating whether the player should use stamina system. Resets on death.
         /// </summary>
         public bool IsUsingStamina
         {
@@ -167,12 +193,12 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether the <see cref="Player"/> is crouching or not.
+        /// Gets a value indicating whether the <see cref="Player"/> is crouching.
         /// </summary>
         public bool IsCrouching => FirstPersonController.FpcModule.StateProcessor.CrouchPercent > 0;
 
         /// <summary>
-        /// Gets a value indicating whether or not the player is on the ground.
+        /// Gets a value indicating whether the player is on the ground.
         /// </summary>
         public bool IsGrounded => FirstPersonController.FpcModule.IsGrounded;
 
@@ -182,7 +208,7 @@ namespace Exiled.API.Features.Roles
         public virtual float MovementSpeed => FirstPersonController.FpcModule.VelocityForState(MoveState, IsCrouching);
 
         /// <summary>
-        /// Gets a value indicating whether or not the <see cref="Player"/> is in darkness.
+        /// Gets a value indicating whether the <see cref="Player"/> is in darkness.
         /// </summary>
         public bool IsInDarkness => FirstPersonController.InDarkness;
 
@@ -197,17 +223,17 @@ namespace Exiled.API.Features.Roles
         public float HorizontalRotation => FirstPersonController.HorizontalRotation;
 
         /// <summary>
-        /// Gets a value indicating whether or not the <see cref="Player"/> is AFK.
+        /// Gets a value indicating whether the <see cref="Player"/> is AFK.
         /// </summary>
         public bool IsAfk => FirstPersonController.IsAFK;
 
         /// <summary>
-        /// Gets a value indicating whether or not this role is protected by a hume shield.
+        /// Gets a value indicating whether this role is protected by a hume shield.
         /// </summary>
         public bool IsHumeShieldedRole => this is IHumeShieldRole;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player has noclip enabled.
+        /// Gets or sets a value indicating whether the player has noclip enabled.
         /// </summary>
         /// <returns><see cref="bool"/> indicating status.</returns>
         /// <remarks>For permitting a player to enter and exit noclip freely, see <see cref="Player.IsNoclipPermitted"/>.</remarks>
@@ -217,6 +243,30 @@ namespace Exiled.API.Features.Roles
             get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
             set => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
         }
+
+        /// <summary>
+        /// Gets or sets a prefab ragdoll for this role.
+        /// </summary>
+        public BasicRagdoll Ragdoll
+        {
+            get => FirstPersonController.Ragdoll;
+            set => FirstPersonController.Ragdoll = value;
+        }
+
+        /// <summary>
+        /// Gets a voice module for this role.
+        /// </summary>
+        public VoiceModuleBase VoiceModule => FirstPersonController.VoiceModule;
+
+        /// <summary>
+        /// Gets a <see cref="VisibilityController"/> for this role.
+        /// </summary>
+        public VisibilityController VisibilityController => FirstPersonController.VisibilityController;
+
+        /// <summary>
+        /// Gets a <see cref="SpectatableModuleBase"/> for this role.
+        /// </summary>
+        public SpectatableModuleBase SpectatableModuleBase => FirstPersonController.SpectatorModule;
 
         /// <summary>
         /// Resets the <see cref="Player"/>'s stamina.

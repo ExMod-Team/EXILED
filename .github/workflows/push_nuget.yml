@@ -10,7 +10,7 @@ defaults:
     working-directory: ./EXILED
 
 env:
-  EXILED_REFERENCES_URL: https://Exiled-Official.github.io/SL-References/Master.zip
+  EXILED_REFERENCES_URL: https://ExMod-Team.github.io/SL-References/Dev.zip
   EXILED_REFERENCES_PATH: ${{ github.workspace }}/EXILED/References
 
 jobs:
@@ -22,12 +22,12 @@ jobs:
     steps:
 
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1.7.2
+      uses: actions/setup-dotnet@v4.0.1
 
     - name: Setup Nuget
-      uses: iRebbok/setup-nuget@master
+      uses: NuGet/setup-nuget@v2
 
-    - uses: actions/checkout@v2.3.4
+    - uses: actions/checkout@v4.1.7
 
     - name: Get references
       shell: pwsh
@@ -41,9 +41,12 @@ jobs:
       shell: pwsh
       run: |
         ./build.ps1 -BuildNuGet
-        $File = (Get-ChildItem -Path . -Include 'EXILEDOFFICIAL.*.nupkg' -Recurse).Name
+        $File = (Get-ChildItem -Path . -Include 'ExMod.Exiled.*.nupkg' -Recurse).Name
         Out-File -FilePath ${{ github.env }} -InputObject "PackageFile=$File" -Encoding utf-8 -Append
 
     - name: Push NuGet
       shell: pwsh
-      run: nuget push ${{ env.PackageFile }} -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json
+      run: nuget push ${{ env.PackageFile }} -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
+
+    - name: Push generated package to GitHub registry
+      run: dotnet nuget push ${{ env.PackageFile }} -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/ExMod-Team/index.json --skip-duplicate

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp2176.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp2176.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -71,7 +71,7 @@ namespace Exiled.API.Features.Items
 
             ipb.Info = new PickupSyncInfo(Type, Weight, ItemSerialGenerator.GenerateNext());
 
-            Scp2176Projectile grenade = (Scp2176Projectile)Pickup.Get(ipb);
+            Scp2176Projectile grenade = Pickup.Get<Scp2176Projectile>(ipb);
 
             grenade.Base.gameObject.SetActive(true);
 

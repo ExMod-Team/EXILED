@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Item.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Item.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -13,10 +13,10 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.Keycards;
@@ -25,15 +25,14 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Radio;
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
-    using InventorySystem.Items.ToggleableLights.Flashlight;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp1344;
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
     using UnityEngine;
 
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="ItemBase"/>.
@@ -43,7 +42,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// A dictionary of all <see cref="ItemBase"/>'s that have been converted into <see cref="Item"/>.
         /// </summary>
-        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new();
+        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Item"/> class.
@@ -52,6 +51,10 @@ namespace Exiled.API.Features.Items
         public Item(ItemBase itemBase)
         {
             Base = itemBase;
+
+            if (Base is ModularAutosyncItem modularItem && modularItem.InstantiationStatus is AutosyncInstantiationStatus.Template or AutosyncInstantiationStatus.SimulatedInstance)
+                return;
+
             BaseToItem.Add(itemBase, this);
 
             if (Base.ItemSerial is 0 && itemBase.Owner != null)
@@ -127,47 +130,52 @@ namespace Exiled.API.Features.Items
         public float Weight => Base.Weight;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item is ammunition.
+        /// Gets a value indicating whether this item is ammunition.
         /// </summary>
         public bool IsAmmo => this is Ammo;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item is armor.
+        /// Gets a value indicating whether this item is armor.
         /// </summary>
         public bool IsArmor => this is Armor;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item is a keycard.
+        /// Gets a value indicating whether this item is a keycard.
         /// </summary>
         public bool IsKeycard => this is Keycard;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item will be destroy when being used.
+        /// Gets a value indicating whether this item will be destroy when being used.
         /// </summary>
         public bool IsConsumable => this is Consumable;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item is a throwable item.
+        /// Gets a value indicating whether this item is a throwable item.
         /// </summary>
         public bool IsThrowable => this is Throwable;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item can be used by a player.
+        /// Gets a value indicating whether this item can be used by a player.
         /// </summary>
         public bool IsUsable => this is Usable;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item is a weapon.
+        /// Gets a value indicating whether this item is a weapon.
         /// </summary>
-        public bool IsWeapon => this is Firearm;
+        public bool IsWeapon => this is Firearm || Type is ItemType.Jailbird or ItemType.MicroHID;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item emits light.
+        /// Gets a value indicating whether or not this item is a firearm.
+        /// </summary>
+        public bool IsFirearm => this is Firearm;
+
+        /// <summary>
+        /// Gets a value indicating whether this item emits light.
         /// </summary>
         public bool IsLightEmitter => Base is ILightEmittingItem;
 
         /// <summary>
-        /// Gets a value indicating whether or not this item can be used to disarm players.
+        /// Gets a value indicating whether this item can be used to disarm players.
         /// </summary>
         public bool IsDisarmer => Base is IDisarmingItem;
 
@@ -175,6 +183,15 @@ namespace Exiled.API.Features.Items
         /// Gets the <see cref="Player"/> who owns the item.
         /// </summary>
         public Player Owner => Player.Get(Base.Owner) ?? Server.Host;
+
+        /// <summary>
+        /// Gets or sets a reason for adding this item to the inventory.
+        /// </summary>
+        public ItemAddReason AddReason
+        {
+            get => Base.ServerAddReason;
+            set => Base.ServerAddReason = value;
+        }
 
         /// <summary>
         /// Gets an existing <see cref="Item"/> or creates a new instance of one.
@@ -198,6 +215,7 @@ namespace Exiled.API.Features.Items
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
                     Scp244Item scp244Item => new Scp244(scp244Item),
                     Scp1576Item scp1576 => new Scp1576(scp1576),
+                    Scp1344Item scp1344 => new Scp1344(scp1344),
                     BaseConsumable consumable => new Consumable(consumable),
                     _ => new Usable(usable),
                 },
@@ -215,9 +233,18 @@ namespace Exiled.API.Features.Items
                     Scp018Projectile => new Scp018(throwable),
                     _ => new Throwable(throwable),
                 },
-                _ => new Item(itemBase),
+                _ => new(itemBase),
             };
         }
+
+        /// <summary>
+        /// Gets an existing <see cref="Item"/> or creates a new instance of one.
+        /// </summary>
+        /// <param name="itemBase">The <see cref="ItemBase"/> to convert into an item.</param>
+        /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
+        /// <returns>The item wrapper for the given <see cref="ItemBase"/>.</returns>
+        public static T Get<T>(ItemBase itemBase)
+            where T : Item => Get(itemBase) as T;
 
         /// <summary>
         /// Gets the Item belonging to the specified serial.
@@ -225,6 +252,15 @@ namespace Exiled.API.Features.Items
         /// <param name="serial">The Item serial.</param>
         /// <returns>Returns the Item found or <see langword="null"/> if not found.</returns>
         public static Item Get(ushort serial) => List.FirstOrDefault(x => x.Serial == serial);
+
+        /// <summary>
+        /// Gets the Item belonging to the specified serial.
+        /// </summary>
+        /// <param name="serial">The Item serial.</param>
+        /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
+        /// <returns>Returns the Item found or <see langword="null"/> if not found.</returns>
+        public static T Get<T>(ushort serial)
+            where T : Item => Get(serial) as T;
 
         /// <summary>
         /// Creates a new <see cref="Item"/> with the proper inherited subclass.
@@ -247,6 +283,7 @@ namespace Exiled.API.Features.Items
         /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
         /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
         /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
         /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
         /// </para>
         /// <para>
@@ -275,9 +312,45 @@ namespace Exiled.API.Features.Items
             ItemType.SCP330 => new Scp330(),
             ItemType.SCP2176 => new Scp2176(owner),
             ItemType.SCP1576 => new Scp1576(),
+            ItemType.SCP1344 => new Scp1344(),
             ItemType.Jailbird => new Jailbird(),
             _ => new Item(type),
         };
+
+        /// <summary>
+        /// Creates a new <see cref="Item"/> with the proper inherited subclass.
+        /// <para>
+        /// Based on the <paramref name="type"/>, the returned <see cref="Item"/> can be casted into a subclass to gain more control over the object.
+        /// <br />- Usable items (Adrenaline, Medkit, Painkillers, SCP-207, SCP-268, and SCP-500) should be casted to the <see cref="Usable"/> class.
+        /// <br />- All valid ammo should be casted to the <see cref="Ammo"/> class.
+        /// <br />- All valid firearms (not including the Micro HID) should be casted to the <see cref="Firearm"/> class.
+        /// <br />- All valid keycards should be casted to the <see cref="Keycard"/> class.
+        /// <br />- All valid armor should be casted to the <see cref="Armor"/> class.
+        /// <br />- Explosive grenades and SCP-018 should be casted to the <see cref="ExplosiveGrenade"/> class.
+        /// <br />- Flash grenades should be casted to the <see cref="FlashGrenade"/> class.
+        /// </para>
+        /// <para>
+        /// <br />The following have their own respective classes:
+        /// <br />- Flashlights can be casted to <see cref="Flashlight"/>.
+        /// <br />- Radios can be casted to <see cref="Radio"/>.
+        /// <br />- The Micro HID can be casted to <see cref="MicroHid"/>.
+        /// <br />- SCP-244 A and B variants can be casted to <see cref="Scp244"/>.
+        /// <br />- SCP-330 can be casted to <see cref="Scp330"/>.
+        /// <br />- SCP-2176 can be casted to the <see cref="Scp2176"/> class.
+        /// <br />- SCP-1576 can be casted to the <see cref="Scp1576"/> class.
+        /// <br />- SCP-1344 can be casted to the <see cref="Scp1344"/> class.
+        /// <br />- Jailbird can be casted to the <see cref="Jailbird"/> class.
+        /// </para>
+        /// <para>
+        /// Items that are not listed above do not have a subclass, and can only use the base <see cref="Item"/> class.
+        /// </para>
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
+        /// <param name="owner">The <see cref="Player"/> who owns the item by default.</param>
+        /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
+        /// <returns>The <see cref="Item"/> created. This can be cast as a subclass.</returns>
+        public static Item Create<T>(ItemType type, Player owner = null)
+            where T : Item => Create(type, owner) as T;
 
         /// <summary>
         /// Gives this item to a <see cref="Player"/>.
@@ -297,11 +370,11 @@ namespace Exiled.API.Features.Items
         /// <param name="rotation">The rotation of the item.</param>
         /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
         /// <returns>The created <see cref="Pickup"/>.</returns>
-        public virtual Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        public virtual Pickup CreatePickup(Vector3 position, Quaternion? rotation = null, bool spawn = true)
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation ?? Quaternion.identity);
 
             Base.OnRemoved(ipb);
 

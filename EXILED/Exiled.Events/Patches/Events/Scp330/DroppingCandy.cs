@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DroppingCandy.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DroppingCandy.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -56,12 +56,14 @@ namespace Exiled.Events.Patches.Events.Scp330
 
                     // scp330Bag
                     new(OpCodes.Ldloc_1),
-
-                    // scp330Bag.TryRemove(msg.CandyId)
                     new(OpCodes.Dup),
+
+                    // msg.CandyID
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(SelectScp330Message), nameof(SelectScp330Message.CandyID))),
-                    new(OpCodes.Callvirt, Method(typeof(Scp330Bag), nameof(Scp330Bag.TryRemove))),
+
+                    // CandyKindID
+                    new(OpCodes.Call, Method(typeof(DroppingCandy), nameof(DroppingCandy.GetCandyID))),
 
                     // DroppingScp330EventArgs ev = new(Player, Scp330Bag, CandyKindID)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingScp330EventArgs))[0]),
@@ -83,22 +85,16 @@ namespace Exiled.Events.Patches.Events.Scp330
             int jumpOverIndex = newInstructions.FindLastIndex(
                 instruction => instruction.StoresField(Field(typeof(ItemPickupBase), nameof(ItemPickupBase.PreviousOwner)))) + jumpOverOffset;
 
-            // Remove TryRemove candy logic since we did it earlier from current location
-            newInstructions.RemoveRange(jumpOverIndex, 6);
-
             int candyKindIdIndex = 4;
 
             newInstructions.InsertRange(
                 jumpOverIndex,
                 new[]
                 {
-                    // candyKindID = ev.Candy
+                    // candyKindID = ev.Candy, save locally.
                     new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingScp330EventArgs), nameof(DroppingScp330EventArgs.Candy))),
                     new(OpCodes.Stloc, candyKindIdIndex),
-
-                    // candyKindID
-                    new(OpCodes.Ldloc, candyKindIdIndex),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
@@ -107,6 +103,13 @@ namespace Exiled.Events.Patches.Events.Scp330
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static CandyKindID GetCandyID(Scp330Bag scp330Bag, int index)
+        {
+            if (index < 0 || index > scp330Bag.Candies.Count)
+                return CandyKindID.None;
+            return scp330Bag.Candies[index];
         }
     }
 }

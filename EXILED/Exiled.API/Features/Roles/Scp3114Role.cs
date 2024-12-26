@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp3114Role.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp3114Role.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -23,7 +23,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-3114.
     /// </summary>
-    public class Scp3114Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
+    public class Scp3114Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole, ISpawnableScp
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp3114Role"/> class.
@@ -149,24 +149,24 @@ namespace Exiled.API.Features.Roles
             get => Identity.CurIdentity.StolenRole;
             set
             {
-                if (Ragdoll is null)
+                if (IdentityRagdoll is null)
                     return;
 
-                Ragdoll.Role = value;
-                Identity.ServerResendIdentity();
+                IdentityRagdoll.Role = value;
+                UpdateIdentity();
             }
         }
 
         /// <summary>
         /// Gets or sets the SCP-3114's Ragdoll used for it's FakeIdentity.
         /// </summary>
-        public Ragdoll Ragdoll
+        public Ragdoll IdentityRagdoll
         {
-            get => Ragdoll.Get(Identity.CurIdentity.Ragdoll);
+            get => Features.Ragdoll.Get(Identity.CurIdentity.Ragdoll);
             set
             {
                 Identity.CurIdentity.Ragdoll = value?.Base;
-                Identity.ServerResendIdentity();
+                UpdateIdentity();
             }
         }
 
@@ -179,7 +179,7 @@ namespace Exiled.API.Features.Roles
             set
             {
                 Identity.CurIdentity.UnitNameId = value;
-                Identity.ServerResendIdentity();
+                UpdateIdentity();
             }
         }
 
@@ -192,7 +192,7 @@ namespace Exiled.API.Features.Roles
             set
             {
                 Identity.CurIdentity.Status = value;
-                Identity.ServerResendIdentity();
+                UpdateIdentity();
             }
         }
 
@@ -202,7 +202,11 @@ namespace Exiled.API.Features.Roles
         public float DisguiseDuration
         {
             get => Identity._disguiseDurationSeconds;
-            set => Identity._disguiseDurationSeconds = value;
+            set
+            {
+                Identity._disguiseDurationSeconds = value;
+                UpdateIdentity();
+            }
         }
 
         /// <summary>
@@ -220,12 +224,17 @@ namespace Exiled.API.Features.Roles
         internal DanceType DanceType { get; set; } = DanceType.None;
 
         /// <summary>
+        /// Updates the identity of SCP-3114.
+        /// </summary>
+        public void UpdateIdentity() => Identity.ServerResendIdentity();
+
+        /// <summary>
         /// Reset Scp3114 FakeIdentity.
         /// </summary>
         public void ResetIdentity()
         {
             Identity.CurIdentity.Reset();
-            Identity.ServerResendIdentity();
+            UpdateIdentity();
         }
 
         /// <summary>

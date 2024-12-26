@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="StartPryingGateEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="StartPryingGateEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace Exiled.Events.EventArgs.Scp096
         {
             Player = player;
             Scp096 = player.Role.As<Scp096Role>();
-            Gate = Door.Get(gate).As<Gate>();
+            Gate = Door.Get<Gate>(gate);
             IsAllowed = isAllowed;
         }
 
@@ -44,7 +44,7 @@ namespace Exiled.Events.EventArgs.Scp096
         public Scp096Role Scp096 { get; }
 
         /// <summary>
-        /// Gets or Sets a value indicating whether or not the gate can be pried open by SCP-096.
+        /// Gets or Sets a value indicating whether the gate can be pried open by SCP-096.
         /// </summary>
         public bool IsAllowed { get; set; }
 

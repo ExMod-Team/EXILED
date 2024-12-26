@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Updater.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Updater.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -16,6 +16,7 @@ namespace Exiled.Loader
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Text;
+    using System.Threading;
 
     using Exiled.API.Features;
     using Exiled.Loader.GHApi;
@@ -31,7 +32,7 @@ namespace Exiled.Loader
     /// </summary>
     internal sealed class Updater
     {
-        private const long REPOID = 828620622;
+        private const long REPOID = 833723500;
         private const string INSTALLER_ASSET_NAME_LINUX = "Exiled.Installer-Linux";
         private const string INSTALLER_ASSET_NAME_WIN = "Exiled.Installer-Win.exe";
 
@@ -112,13 +113,20 @@ namespace Exiled.Loader
         /// </summary>
         internal void CheckUpdate()
         {
-            using HttpClient client = CreateHttpClient();
-            if (Busy = FindUpdate(client, !File.Exists(Path.Combine(Paths.Dependencies, "Exiled.API.dll")), out NewVersion newVersion))
-                Update(client, newVersion);
+            try
+            {
+                using HttpClient client = CreateHttpClient();
+                if (Busy = FindUpdate(client, !PluginAPI.Loader.AssemblyLoader.Dependencies.Exists(x => x.GetName().Name == "Exiled.API"), out NewVersion newVersion))
+                    Update(client, newVersion);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
         }
 
         /// <summary>
-        /// Creates a HTTP Client, and checks at the Exiled-Official GitHub repository.
+        /// Creates a HTTP Client, and checks at the ExMod-Team GitHub repository.
         /// </summary>
         /// <returns>Client determining if it was successful connecting to the Exiled GitHub repository.</returns>
         private HttpClient CreateHttpClient()
@@ -128,7 +136,7 @@ namespace Exiled.Loader
                 Timeout = TimeSpan.FromSeconds(480),
             };
 
-            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/Exiled-Official/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
+            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/ExMod-Team/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
 
             return client;
         }
@@ -144,6 +152,7 @@ namespace Exiled.Loader
         {
             try
             {
+                Thread.Sleep(5000); // Wait for the assemblies to load
                 ExiledLib smallestVersion = ExiledLib.Min();
 
                 Log.Info($"Found the smallest version of Exiled - {smallestVersion.Library.GetName().Name}:{smallestVersion.Version}");
@@ -171,7 +180,7 @@ namespace Exiled.Loader
             }
             catch (Utf8Json.JsonParsingException)
             {
-                Log.Error("Encountered GitHub ratelimit, unable to check and download the latest version of Exiled.");
+                Log.Warn("Encountered GitHub ratelimit, unable to check and download the latest version of Exiled.");
             }
             catch (Exception ex)
             {

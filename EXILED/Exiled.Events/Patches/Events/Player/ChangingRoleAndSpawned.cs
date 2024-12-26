@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingRoleAndSpawned.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingRoleAndSpawned.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -14,19 +14,21 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features;
     using API.Features.Pools;
-
     using API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
-
     using HarmonyLib;
-
     using InventorySystem;
+    using InventorySystem.Configs;
+    using InventorySystem.Items;
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Pickups;
+    using InventorySystem.Items.Usables.Scp1344;
+    using Mirror;
 
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
+    using static UnityEngine.GraphicsBuffer;
 
     using Player = Handlers.Player;
 
@@ -43,8 +45,6 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
-            Label continueLabel1 = generator.DefineLabel();
-            Label continueLabel2 = generator.DefineLabel();
             Label jmp = generator.DefineLabel();
 
             LocalBuilder changingRoleEventArgs = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
@@ -55,15 +55,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // player = Player.Get(this._hub)
-                    //
-                    // if (player == null)
-                    //    goto continueLabel;
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel),
 
                     // if (Player.IsVerified)
                     //  goto jmp
@@ -133,17 +128,10 @@ namespace Exiled.Events.Patches.Events.Player
             int index = newInstructions.FindIndex(
                 instruction => instruction.Calls(Method(typeof(GameObjectPools.PoolObject), nameof(GameObjectPools.PoolObject.SetupPoolObject)))) + offset;
 
-            newInstructions[index].WithLabels(continueLabel1);
-
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // if (player == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel1),
-
                     // player.Role = Role.Create(roleBase);
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
                     new(OpCodes.Ldloc_2),
@@ -154,40 +142,19 @@ namespace Exiled.Events.Patches.Events.Player
             offset = 1;
             index = newInstructions.FindIndex(i => i.Calls(Method(typeof(PlayerRoleManager.RoleChanged), nameof(PlayerRoleManager.RoleChanged.Invoke)))) + offset;
 
-            newInstructions[index].labels.Add(continueLabel2);
-
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
-                    // if (player == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel2),
-
-                    // if (changingRoleEventArgs == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, changingRoleEventArgs.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel2),
-
                     // changingRoleEventArgs
                     new(OpCodes.Ldloc_S, changingRoleEventArgs.LocalIndex),
 
                     // ChangingRole.ChangeInventory(changingRoleEventArgs, oldRoleType);
                     new(OpCodes.Call, Method(typeof(ChangingRoleAndSpawned), nameof(ChangeInventory))),
-                });
 
-            newInstructions.InsertRange(
-                newInstructions.Count - 1,
-                new[]
-                {
-                    // if (player == null)
-                    //     continue
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, returnLabel),
-
+                    // invoke OnSpawned
                     // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // OldRole
                     new(OpCodes.Ldloc_0),
@@ -219,59 +186,53 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
+                if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
                     return;
 
                 Inventory inventory = ev.Player.Inventory;
-
-                if (ev.Reason == API.Enums.SpawnReason.Escaped)
+                if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
-                    List<ItemPickupBase> list = new();
+                    List<ItemPickupBase> list = new List<ItemPickupBase>();
                     if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
                         bodyArmor.DontRemoveExcessOnDrop = true;
 
-                    while (inventory.UserInventory.Items.Count > 0)
+                    HashSet<ushort> hashSet = HashSetPool<ushort>.Pool.Get();
+                    foreach (KeyValuePair<ushort, ItemBase> item2 in inventory.UserInventory.Items)
                     {
-                        int startCount = inventory.UserInventory.Items.Count;
-                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
-                        ItemPickupBase item = inventory.ServerDropItem(key);
-
-                        // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
-                        if (startCount == inventory.UserInventory.Items.Count)
-                            inventory.UserInventory.Items.Remove(key);
+                        if (item2.Value is Scp1344Item scp1344Item)
+                            scp1344Item.Status = Scp1344Status.Idle;
                         else
-                            list.Add(item);
+                            hashSet.Add(item2.Key);
                     }
 
+                    foreach (ushort item in hashSet)
+                        list.Add(inventory.ServerDropItem(item));
+
+                    HashSetPool<ushort>.Pool.Return(hashSet);
                     InventoryItemProvider.PreviousInventoryPickups[ev.Player.ReferenceHub] = list;
                 }
                 else
                 {
                     while (inventory.UserInventory.Items.Count > 0)
-                    {
-                        int startCount = inventory.UserInventory.Items.Count;
-                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
-                        inventory.ServerRemoveItem(key, null);
-
-                        // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
-                        if (startCount == inventory.UserInventory.Items.Count)
-                            inventory.UserInventory.Items.Remove(key);
-                    }
+                        inventory.ServerRemoveItem(inventory.UserInventory.Items.ElementAt(0).Key, null);
 
                     inventory.UserInventory.ReserveAmmo.Clear();
                     inventory.SendAmmoNextFrame = true;
                 }
 
-                foreach (ItemType item in ev.Items)
-                    inventory.ServerAddItem(item);
+                if (!StartingInventories.DefinedInventories.TryGetValue(ev.NewRole, out InventoryRoleInfo value))
+                    return;
 
-                foreach (KeyValuePair<ItemType, ushort> keyValuePair in ev.Ammo)
-                    inventory.ServerAddAmmo(keyValuePair.Key, keyValuePair.Value);
+                foreach (KeyValuePair<ItemType, ushort> item in value.Ammo)
+                    inventory.ServerAddAmmo(item.Key, item.Value);
 
-                foreach (KeyValuePair<ushort, InventorySystem.Items.ItemBase> item in inventory.UserInventory.Items)
-                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, item.Value);
+                for (int i = 0; i < value.Items.Length; i++)
+                {
+                    ItemBase arg = inventory.ServerAddItem(value.Items[i], ItemAddReason.StartingItem, 0);
+                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, arg);
+                }
 
-                InventoryItemProvider.SpawnPreviousInventoryPickups(ev.Player.ReferenceHub);
+                InventoryItemProvider.InventoriesToReplenish.Enqueue(ev.Player.ReferenceHub);
             }
             catch (Exception exception)
             {

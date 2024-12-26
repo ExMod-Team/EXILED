@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingRadioPresetEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingRadioPresetEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -21,7 +21,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information before radio preset is changed.
     /// </summary>
-    public class ChangingRadioPresetEventArgs : IPlayerEvent, IItemEvent, IDeniableEvent
+    public class ChangingRadioPresetEventArgs : IItemEvent, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingRadioPresetEventArgs" /> class.
@@ -44,7 +44,7 @@ namespace Exiled.Events.EventArgs.Player
         public ChangingRadioPresetEventArgs(Player player, RadioItem item, RadioRangeLevel oldValue, RadioRangeLevel newValue, bool isAllowed = true)
         {
             Player = player;
-            Radio = (Radio)Item.Get(item);
+            Radio = Item.Get<Radio>(item);
             OldValue = (RadioRange)oldValue;
             NewValue = (RadioRange)newValue;
             IsAllowed = isAllowed;
@@ -62,7 +62,7 @@ namespace Exiled.Events.EventArgs.Player
         public RadioRange NewValue { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the radio preset can be changed or not.
+        /// Gets or sets a value indicating whether the radio preset can be changed.
         /// <remarks>Client radio graphics won't sync with <see cref="OldValue" />.</remarks>
         /// </summary>
         public bool IsAllowed { get; set; }

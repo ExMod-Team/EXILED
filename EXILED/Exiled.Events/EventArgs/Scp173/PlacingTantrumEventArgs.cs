@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="PlacingTantrumEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="PlacingTantrumEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -60,7 +60,7 @@ namespace Exiled.Events.EventArgs.Scp173
         public AbilityCooldown Cooldown { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the tantrum can be placed.
+        /// Gets or sets a value indicating whether the tantrum can be placed.
         /// </summary>
         public bool IsAllowed { get; set; }
 

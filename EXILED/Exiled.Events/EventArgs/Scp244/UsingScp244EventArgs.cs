@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="UsingScp244EventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="UsingScp244EventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -33,7 +33,7 @@ namespace Exiled.Events.EventArgs.Scp244
         /// </param>
         public UsingScp244EventArgs(Scp244Item scp244, Player player, bool isAllowed = true)
         {
-            Scp244 = (Scp244)Item.Get(scp244);
+            Scp244 = Item.Get<Scp244>(scp244);
             Player = player;
             IsAllowed = isAllowed;
         }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="LoaderPlugin.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="LoaderPlugin.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -34,7 +34,7 @@ namespace Exiled.Loader
         /// <summary>
         /// Called by PluginAPI when the plugin is enabled.
         /// </summary>
-        [PluginEntryPoint("Exiled Loader", null, "Loads the EXILED Plugin Framework.", "Exiled-Official")]
+        [PluginEntryPoint("Exiled Loader", null, "Loads the EXILED Plugin Framework.", "ExMod-Team")]
         [PluginPriority(byte.MinValue)]
         public void Enable()
         {

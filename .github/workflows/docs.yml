@@ -12,7 +12,7 @@ permissions:
   id-token: write
 
 env:
-  EXILED_REFERENCES_URL: https://Exiled-Official.github.io/SL-References/Dev.zip
+  EXILED_REFERENCES_URL: https://exmod-team.github.io/SL-References/Master.zip
   EXILED_REFERENCES_PATH: ${{ github.workspace }}/EXILED/References
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
@@ -32,20 +32,15 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Dotnet Setup
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 8.x
+      uses: actions/checkout@v4
 
     - run: dotnet tool update -g docfx
 
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v1.7.2
+      uses: actions/setup-dotnet@v4.0.1
 
     - name: Setup Nuget
-      uses: iRebbok/setup-nuget@master
+      uses: nuget/setup-nuget@v2
 
     - name: Get references
       shell: pwsh

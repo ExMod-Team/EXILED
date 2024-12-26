@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="KeycardInteractingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="KeycardInteractingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -29,7 +29,7 @@ namespace Exiled.Events.EventArgs.Item
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
         public KeycardInteractingEventArgs(BaseKeycardPickup pickup, Player player, DoorVariant door, bool isAllowed = true)
         {
-            Pickup = Pickup.Get(pickup);
+            KeycardPickup = Pickup.Get<KeycardPickup>(pickup);
             Player = player;
             Door = Door.Get(door);
             IsAllowed = isAllowed;
@@ -38,7 +38,10 @@ namespace Exiled.Events.EventArgs.Item
         /// <summary>
         /// Gets the item that's interacting with the door.
         /// </summary>
-        public Pickup Pickup { get; }
+        public Pickup Pickup => KeycardPickup;
+
+        /// <inheritdoc cref="Pickup"/>
+        public KeycardPickup KeycardPickup { get; }
 
         /// <summary>
         /// Gets the player who's threw the keycard.
@@ -51,7 +54,7 @@ namespace Exiled.Events.EventArgs.Item
         public Door Door { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the keycard can interact with the door.
+        /// Gets or sets a value indicating whether the keycard can interact with the door.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

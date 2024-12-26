@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DamagingShootingTargetEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DamagingShootingTargetEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -86,7 +86,7 @@ namespace Exiled.Events.EventArgs.Player
         public float Distance { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the target can be damaged.
+        /// Gets or sets a value indicating whether the target can be damaged.
         /// </summary>
         public bool IsAllowed { get; set; }
 

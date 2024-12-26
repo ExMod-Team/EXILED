@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Throwable.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Throwable.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -29,7 +29,7 @@ namespace Exiled.API.Features.Items
         {
             Base = itemBase;
             Base.Projectile.gameObject.SetActive(false);
-            Projectile = (Projectile)Pickup.Get(Object.Instantiate(Base.Projectile));
+            Projectile = Pickup.Get<Projectile>(Object.Instantiate(Base.Projectile));
             Base.Projectile.gameObject.SetActive(true);
             Projectile.Serial = Serial;
         }

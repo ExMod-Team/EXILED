@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingRoleEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingRoleEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -11,11 +11,10 @@ namespace Exiled.Events.EventArgs.Player
 
     using API.Enums;
     using API.Features;
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Pools;
     using Interfaces;
-
-    using InventorySystem.Configs;
-
+    using InventorySystem;
     using PlayerRoles;
 
     /// <summary>
@@ -70,17 +69,16 @@ namespace Exiled.Events.EventArgs.Player
             get => newRole;
             set
             {
-                if (StartingInventories.DefinedInventories.ContainsKey(value))
-                {
-                    Items.Clear();
-                    Ammo.Clear();
+                InventoryRoleInfo inventory = value.GetInventory();
 
-                    foreach (ItemType itemType in StartingInventories.DefinedInventories[value].Items)
-                        Items.Add(itemType);
+                Items.Clear();
+                Ammo.Clear();
 
-                    foreach (KeyValuePair<ItemType, ushort> ammoPair in StartingInventories.DefinedInventories[value].Ammo)
-                        Ammo.Add(ammoPair.Key, ammoPair.Value);
-                }
+                foreach (ItemType itemType in inventory.Items)
+                    Items.Add(itemType);
+
+                foreach (KeyValuePair<ItemType, ushort> ammoPair in inventory.Ammo)
+                    Ammo.Add(ammoPair.Key, ammoPair.Value);
 
                 newRole = value;
             }
@@ -97,12 +95,12 @@ namespace Exiled.Events.EventArgs.Player
         public Dictionary<ItemType, ushort> Ammo { get; } = DictionaryPool<ItemType, ushort>.Pool.Get();
 
         /// <summary>
-        /// Gets or sets a value indicating whether the inventory will be preserved or not.
+        /// Gets or sets a value indicating whether the inventory will be preserved.
         /// </summary>
         public bool ShouldPreserveInventory
         {
             get => !SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory);
-            set => SpawnFlags = value ? (SpawnFlags & ~RoleSpawnFlags.AssignInventory) : (SpawnFlags | RoleSpawnFlags.AssignInventory);
+            set => SpawnFlags = SpawnFlags.ModifyFlags(!value, RoleSpawnFlags.AssignInventory);
         }
 
         /// <summary>

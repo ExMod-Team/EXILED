@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="TogglingFlashlightEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="TogglingFlashlightEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -35,7 +35,7 @@ namespace Exiled.Events.EventArgs.Player
         public TogglingFlashlightEventArgs(ReferenceHub hub, ToggleableLightItemBase flashlight, bool newState)
         {
             Player = Player.Get(hub);
-            Flashlight = (Flashlight)Item.Get(flashlight);
+            Flashlight = Item.Get<Flashlight>(flashlight);
             initialState = newState;
             NewState = newState;
         }
@@ -49,12 +49,12 @@ namespace Exiled.Events.EventArgs.Player
         public Item Item => Flashlight;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the flashlight should be on.
+        /// Gets or sets a value indicating whether the flashlight should be on.
         /// </summary>
         public bool NewState { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the player can toggle the flashlight.
+        /// Gets or sets a value indicating whether the player can toggle the flashlight.
         /// </summary>
         public bool IsAllowed
         {

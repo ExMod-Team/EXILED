@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Cassie.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Cassie.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -35,7 +35,7 @@ namespace Exiled.API.Features
         public static NineTailedFoxAnnouncer Announcer => NineTailedFoxAnnouncer.singleton;
 
         /// <summary>
-        /// Gets a value indicating whether or not C.A.S.S.I.E is currently announcing. Does not include decontamination or Alpha Warhead Messages.
+        /// Gets a value indicating whether C.A.S.S.I.E is currently announcing. Does not include decontamination or Alpha Warhead Messages.
         /// </summary>
         public static bool IsSpeaking => Announcer.queue.Count != 0;
 
@@ -49,7 +49,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="message">The message to be reproduced.</param>
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
-        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises or not during the message.</param>
+        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
         public static void Message(string message, bool isHeld = false, bool isNoisy = true, bool isSubtitles = false) =>
             RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles);
@@ -60,7 +60,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be reproduced.</param>
         /// <param name="translation">The translation should be show in the subtitles.</param>
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
-        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises or not during the message.</param>
+        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
         public static void MessageTranslated(string message, string translation, bool isHeld = false, bool isNoisy = true, bool isSubtitles = true)
         {
@@ -89,7 +89,7 @@ namespace Exiled.API.Features
         /// <param name="message">The message to be reproduced.</param>
         /// <param name="delay">The seconds that have to pass before reproducing the message.</param>
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
-        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises or not during the message.</param>
+        /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
         public static void DelayedMessage(string message, float delay, bool isHeld = false, bool isNoisy = true, bool isSubtitles = false) =>
             Timing.CallDelayed(delay, () => RespawnEffectsController.PlayCassieAnnouncement(message, isHeld, isNoisy, isSubtitles));
@@ -170,14 +170,14 @@ namespace Exiled.API.Features
         public static void Clear() => RespawnEffectsController.ClearQueue();
 
         /// <summary>
-        /// Gets a value indicating whether or not the given word is a valid C.A.S.S.I.E word.
+        /// Gets a value indicating whether the given word is a valid C.A.S.S.I.E word.
         /// </summary>
         /// <param name="word">The word to check.</param>
         /// <returns><see langword="true"/> if the word is valid; otherwise, <see langword="false"/>.</returns>
         public static bool IsValid(string word) => Announcer.voiceLines.Any(line => line.apiName.ToUpper() == word.ToUpper());
 
         /// <summary>
-        /// Gets a value indicating whether or not the given sentence is all valid C.A.S.S.I.E word.
+        /// Gets a value indicating whether the given sentence is all valid C.A.S.S.I.E word.
         /// </summary>
         /// <param name="sentence">The sentence to check.</param>
         /// <returns><see langword="true"/> if the sentence is valid; otherwise, <see langword="false"/>.</returns>

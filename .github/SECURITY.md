@@ -6,7 +6,7 @@ Only the latest version released supports security updates. Some prereleases may
 
 ## Reporting a Vulnerability
 
-Exiled-Official takes the confidentiality and integrity of its user data very seriously.
+ExMod-Team takes the confidentiality and integrity of its user data very seriously.
 
 If you have detected a vulnerability on our codebase please report it to us inmediately.
 

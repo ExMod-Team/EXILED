@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="TogglingRadioEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="TogglingRadioEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace Exiled.Events.EventArgs.Player
         public TogglingRadioEventArgs(Player player, RadioItem radio, bool newState, bool isAllowed = true)
         {
             Player = player;
-            Radio = (Radio)Item.Get(radio);
+            Radio = Item.Get<Radio>(radio);
             NewState = newState;
             IsAllowed = isAllowed;
         }

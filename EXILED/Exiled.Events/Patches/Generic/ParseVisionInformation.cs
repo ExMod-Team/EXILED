@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ParseVisionInformation.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ParseVisionInformation.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Generic
             // otherwise the second check won't be executed
             Label secondCheckPointer = generator.DefineLabel();
 
-            newInstructions[0].WithLabels(continueLabel);
+            newInstructions[0].labels.Add(continueLabel);
 
             // if (referenceHub.roleManager.CurrentRole.RoleTypeId == RoleTypeId.Tutorial && !ExiledEvents.Instance.Config.CanTutorialTriggerScp096
             // || Scp096Role.TurnedPlayers.Contains(Player.Get(referenceHub)))

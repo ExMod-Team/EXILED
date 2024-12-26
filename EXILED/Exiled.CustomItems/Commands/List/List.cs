@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="List.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="List.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -45,7 +45,14 @@ namespace Exiled.CustomItems.Commands.List
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = $"Invalid subcommand! Available: registered, insideinventories";
+            if (arguments.IsEmpty() && TryGetCommand(Registered.Instance.Command, out ICommand command))
+            {
+                command.Execute(arguments, sender, out response);
+                response += $"\nTo view custom items in players' inventories, use the command: {string.Join(" ", arguments.Array)} insideinventories";
+                return true;
+            }
+
+            response = "Invalid subcommand! Available: registered, insideinventories";
             return false;
         }
     }

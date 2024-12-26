@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="FirearmRequestReceived.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FirearmRequestReceived.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -8,25 +8,24 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
     using Exiled.API.Features.Items;
-
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
-
     using Handlers;
-
     using HarmonyLib;
-
     using InventorySystem.Items;
+    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.BasicMessages;
     using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
+    /* TODO
     /// <summary>
     /// Patches <see cref="FirearmBasicMessagesHandler.ServerRequestReceived" />.
     /// Adds <see cref="Player.ReloadingWeapon" />, <see cref="Player.UnloadingWeapon" />,
@@ -38,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Player
     [EventPatch(typeof(Player), nameof(Player.DryfiringWeapon))]
     [EventPatch(typeof(Player), nameof(Player.AimingDownSight))]
     [EventPatch(typeof(Player), nameof(Player.TogglingWeaponFlashlight))]
-    [HarmonyPatch(typeof(FirearmBasicMessagesHandler), nameof(FirearmBasicMessagesHandler.ServerRequestReceived))]
+    [HarmonyPatch(typeof(FirearmUtils), nameof())]
     internal static class FirearmRequestReceived
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -69,7 +68,7 @@ namespace Exiled.Events.Patches.Events.Player
                 // if (Firearm == null)
                 //     return;
                 new CodeInstruction(OpCodes.Ldloc_1),
-                new(OpCodes.Call, Method(typeof(API.Features.Items.Item), nameof(API.Features.Items.Item.Get), new[] { typeof(ItemBase) })),
+                new(OpCodes.Call, GetDeclaredMethods(typeof(API.Features.Items.Item)).First(x => !x.IsGenericMethod && x.Name is nameof(API.Features.Items.Item.Get) && x.GetParameters().Length is 1 && x.GetParameters()[0].ParameterType == typeof(ItemBase))),
                 new(OpCodes.Isinst, typeof(Firearm)),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, firearm.LocalIndex),
@@ -271,4 +270,5 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
+    */
 }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DroppingItem.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DroppingItem.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -11,14 +11,12 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using API.Features.Pools;
-    using Exiled.API.Features.Pickups;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
 
     using InventorySystem;
-    using InventorySystem.Items.Pickups;
 
     using static HarmonyLib.AccessTools;
 
@@ -117,15 +115,14 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingItemEventArgs), nameof(DroppingItemEventArgs.Player))),
 
-                // Pickup::Get(ItemPickupBase)
+                // ItemPickupBase
                 new(OpCodes.Ldloc_1),
-                new(OpCodes.Call, Method(typeof(Pickup), nameof(Pickup.Get), new[] { typeof(ItemPickupBase) })),
 
                 // ev.IsThrown
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingItemEventArgs), nameof(DroppingItemEventArgs.IsThrown))),
 
-                // Player::OnDroppedItem(new DroppedItemEventArgs(ev.Player, Player::Get(ItemPickupBase), ev.IsThrown))
+                // Player::OnDroppedItem(new DroppedItemEventArgs(ev.Player, ItemPickupBase, ev.IsThrown))
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppedItemEventArgs))[0]),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnDroppedItem))),
             });

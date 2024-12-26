@@ -1,12 +1,13 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpawnLocationType.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SpawnLocationType.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
 namespace Exiled.API.Enums
 {
+    using System;
+
     /// <summary>
     /// All of the valid spawn location types.
     /// </summary>
@@ -141,15 +142,5 @@ namespace Exiled.API.Enums
         /// Just inside the LCZ WC door.
         /// </summary>
         InsideLczWc,
-
-        /// <summary>
-        /// Just inside the door at the bottom of the server's room.
-        /// </summary>
-        InsideServersBottom,
-
-        /// <summary>
-        /// Inside a random locker on the map.
-        /// </summary>
-        InsideLocker,
     }
 }

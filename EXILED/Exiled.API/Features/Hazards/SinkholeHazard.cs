@@ -1,12 +1,13 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="SinkholeHazard.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// -----------------------------------------------------------------------
+// <copyright file="SinkholeHazard.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.API.Features.Hazards
 {
+    using Exiled.API.Enums;
     using global::Hazards;
 
     /// <summary>
@@ -28,5 +29,8 @@ namespace Exiled.API.Features.Hazards
         /// Gets the <see cref="SinkholeEnvironmentalHazard"/>.
         /// </summary>
         public new SinkholeEnvironmentalHazard Base { get; }
+
+        /// <inheritdoc />
+        public override HazardType Type => HazardType.Sinkhole;
     }
 }

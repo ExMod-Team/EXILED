@@ -1,17 +1,21 @@
 // -----------------------------------------------------------------------
-// <copyright file="Jailbird.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Jailbird.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.API.Features.Items
 {
+    using System;
+
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Jailbird;
     using Mirror;
+    using UnityEngine;
 
     using JailbirdPickup = Pickups.JailbirdPickup;
 
@@ -114,11 +118,34 @@ namespace Exiled.API.Features.Items
             get => Base._deterioration.WearState;
             set
             {
-                if (JailbirdDeteriorationTracker.ReceivedStates.ContainsKey(Serial))
-                    JailbirdDeteriorationTracker.ReceivedStates[Serial] = value;
+                TotalDamageDealt = GetDamage(value);
+                TotalCharges = GetCharge(value);
                 Base._deterioration.RecheckUsage();
             }
         }
+
+        /// <summary>
+        /// Calculates the damage corresponding to a given <see cref="JailbirdWearState"/>.
+        /// </summary>
+        /// <param name="wearState">The wear state to calculate damage for.</param>
+        /// <returns>The amount of damage associated with the specified wear state.</returns>
+        public float GetDamage(JailbirdWearState wearState)
+        {
+            foreach (Keyframe keyframe in Base._deterioration._damageToWearState.keys)
+            {
+                if (Base._deterioration.FloatToState(keyframe.value) == wearState)
+                    return keyframe.time;
+            }
+
+            throw new Exception("Wear state not found in damage to wear state mapping.");
+        }
+
+        /// <summary>
+        /// Gets the charge needed to reach a specific <see cref="JailbirdWearState"/>.
+        /// </summary>
+        /// <param name="wearState">The desired wear state to calculate the charge for.</param>
+        /// <returns>The charge value required to achieve the specified wear state.</returns>
+        public int GetCharge(JailbirdWearState wearState) => (int)wearState;
 
         /// <summary>
         /// Breaks the Jailbird.
@@ -126,13 +153,14 @@ namespace Exiled.API.Features.Items
         public void Break()
         {
             WearState = JailbirdWearState.Broken;
-            using (new AutosyncRpc(Base, true, out NetworkWriter networkWriter))
+            ItemIdentifier identifier = new(Base);
+            using (new AutosyncRpc(identifier, out NetworkWriter networkWriter))
             {
                 networkWriter.WriteByte(0);
                 networkWriter.WriteByte((byte)JailbirdWearState.Broken);
             }
 
-            using (new AutosyncRpc(Base, true, out NetworkWriter networkWriter2))
+            using (new AutosyncRpc(identifier, out NetworkWriter networkWriter2))
             {
                 networkWriter2.WriteByte(1);
             }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="UpgradingItem.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="UpgradingItem.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Ldloc_1),
 
                     // knobSetting
-                    new(OpCodes.Ldarg_3),
+                    new(OpCodes.Ldarg_2),
 
                     // UpgradingPickupEventArgs ev = new(pickup, outputPos, knobSetting)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UpgradingPickupEventArgs))[0]),
@@ -76,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Scp914
 
                     // setting = ev.KnobSetting
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UpgradingPickupEventArgs), nameof(UpgradingPickupEventArgs.KnobSetting))),
-                    new(OpCodes.Starg_S, 3),
+                    new(OpCodes.Starg_S, 2),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
