@@ -20,19 +20,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="ReloadingWeaponEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        /// <inheritdoc cref="Player" />
-        /// </param>
         /// <param name="firearm">
         /// <inheritdoc cref="Firearm" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ReloadingWeaponEventArgs(Player player, Firearm firearm, bool isAllowed = true)
+        public ReloadingWeaponEventArgs(InventorySystem.Items.Firearms.Firearm firearm, bool isAllowed = true)
         {
-            Firearm = firearm;
-            Player = player;
+            Firearm = Item.Get<Firearm>(firearm);
+            Player = Firearm.Owner;
             IsAllowed = isAllowed;
         }
 
