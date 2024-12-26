@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ElevatorTeleportingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ElevatorTeleportingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -29,18 +29,18 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <param name="room">
         /// <inheritdoc cref="Room" />
         /// </param>
-        /// <param name="elevatorDoor">
+        /// <param name="elevatorChamber">
         /// <inheritdoc cref="Lift" />
         /// </param>
         /// <param name="auxiliaryPowerCost">
         /// <inheritdoc cref="AuxiliaryPowerCost" />
         /// </param>
-        public ElevatorTeleportingEventArgs(Player player, RoomIdentifier room, ElevatorDoor elevatorDoor, float auxiliaryPowerCost)
+        public ElevatorTeleportingEventArgs(Player player, RoomIdentifier room, ElevatorChamber elevatorChamber, float auxiliaryPowerCost)
         {
             Player = player;
             Scp079 = player.Role.As<Scp079Role>();
             Room = Room.Get(room);
-            Lift = Lift.Get(elevatorDoor.TargetPanel.AssignedChamber);
+            Lift = Lift.Get(elevatorChamber);
             AuxiliaryPowerCost = auxiliaryPowerCost;
             IsAllowed = auxiliaryPowerCost <= Scp079.Energy;
         }
@@ -69,8 +69,8 @@ namespace Exiled.Events.EventArgs.Scp079
         public Lift Lift { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-079 can teleport.
-        /// Defaults to a <see cref="bool" /> describing whether or not SCP-079 has enough auxiliary power to teleport.
+        /// Gets or sets a value indicating whether SCP-079 can teleport.
+        /// Defaults to a <see cref="bool" /> describing whether SCP-079 has enough auxiliary power to teleport.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

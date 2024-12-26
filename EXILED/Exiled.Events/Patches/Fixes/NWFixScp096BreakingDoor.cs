@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="NWFixScp096BreakingDoor.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="NWFixScp096BreakingDoor.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -11,6 +11,7 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+    using Footprinting;
     using HarmonyLib;
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
@@ -20,7 +21,7 @@ namespace Exiled.Events.Patches.Fixes
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches the <see cref="Scp096HitHandler.CheckDoorHit(Collider)"/> delegate.
+    /// Patches the <see cref="Scp096HitHandler.CheckDoorHit(Collider,Footprint)"/> delegate.
     /// Fixes open doors getting easily broke.
     /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/198).
     /// </summary>
@@ -32,7 +33,7 @@ namespace Exiled.Events.Patches.Fixes
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label ret = generator.DefineLabel();
-            int offset = -4;
+            int offset = -5;
             int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(IDamageableDoor), nameof(IDamageableDoor.ServerDamage))) + offset;
 
             newInstructions.InsertRange(index, new[]

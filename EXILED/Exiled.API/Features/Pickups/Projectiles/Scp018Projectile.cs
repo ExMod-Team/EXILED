@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp018Projectile.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp018Projectile.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -50,18 +50,9 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new BaseScp018Projectile Base { get; }
 
         /// <summary>
-        /// Gets or sets the pickup's PhysicsModule.
+        /// Gets the pickup's PhysicsModule.
         /// </summary>
-        public new Scp018Physics PhysicsModule
-        {
-            get => Base.PhysicsModule as Scp018Physics;
-            [Obsolete("Unsafe.", true)]
-            set
-            {
-                Base.PhysicsModule.DestroyModule();
-                Base.PhysicsModule = value;
-            }
-        }
+        public new Scp018Physics PhysicsModule => Base.PhysicsModule as Scp018Physics;
 
         /// <summary>
         /// Gets or sets the pickup's max velocity.
@@ -90,7 +81,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-018 can injure teammates.
+        /// Gets a value indicating whether SCP-018 can injure teammates.
         /// </summary>
         public bool IgnoreFriendlyFire => Base.IgnoreFriendlyFire;
 

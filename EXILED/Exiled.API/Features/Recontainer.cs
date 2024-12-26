@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Recontainer.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Recontainer.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -193,7 +193,16 @@ namespace Exiled.API.Features
         /// <summary>
         /// Begins the overcharge procedure.
         /// </summary>
-        public static void BeginOvercharge() => Base.BeginOvercharge();
+        /// <param name="endOvercharge">Make than <see cref="EndOvercharge"/> is call after the <see cref="LockdownDuration"/>.</param>
+        public static void BeginOvercharge(bool endOvercharge = true)
+        {
+            Base.BeginOvercharge();
+            if (endOvercharge)
+            {
+                Base._delayStopwatch.Stop();
+                Base._unlockStopwatch.Start();
+            }
+        }
 
         /// <summary>
         /// Ends the overcharge procedure.

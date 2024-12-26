@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp0492Role.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp0492Role.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -93,12 +93,12 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-049-2 is currently pursuing a target (Bloodlust ability).
+        /// Gets a value indicating whether SCP-049-2 is currently pursuing a target (Bloodlust ability).
         /// </summary>
         public bool BloodlustActive => BloodlustAbility.LookingAtTarget;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-049-2 is consuming a ragdoll.
+        /// Gets a value indicating whether SCP-049-2 is consuming a ragdoll.
         /// </summary>
         public bool IsConsuming => ConsumeAbility.IsInProgress;
 
@@ -113,17 +113,17 @@ namespace Exiled.API.Features.Roles
         public float AttackCooldown => AttackAbility.BaseCooldown;
 
         /// <summary>
-        /// Returns a <see langword="bool"/> indicating whether or not SCP-049-2 is close enough to a ragdoll to consume it.
+        /// Returns a <see langword="bool"/> indicating whether SCP-049-2 is close enough to a ragdoll to consume it.
         /// </summary>
-        /// <remarks>This method only returns whether or not SCP-049-2 is close enough to the body to consume it; the body may have been consumed previously. Make sure to check <see cref="Ragdoll.IsConsumed"/> to ensure the body can be consumed.</remarks>
+        /// <remarks>This method only returns whether SCP-049-2 is close enough to the body to consume it; the body may have been consumed previously. Make sure to check <see cref="Ragdoll.IsConsumed"/> to ensure the body can be consumed.</remarks>
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if close enough to consume the body; otherwise, <see langword="false"/>.</returns>
         public bool IsInConsumeRange(BasicRagdoll ragdoll) => ragdoll != null && ConsumeAbility.IsCloseEnough(Owner.Position, ragdoll.transform.position);
 
         /// <summary>
-        /// Returns a <see langword="bool"/> indicating whether or not SCP-049-2 is close enough to a ragdoll to consume it.
+        /// Returns a <see langword="bool"/> indicating whether SCP-049-2 is close enough to a ragdoll to consume it.
         /// </summary>
-        /// <remarks>This method only returns whether or not SCP-049-2 is close enough to the body to consume it; the body may have been consumed previously. Make sure to check <see cref="Ragdoll.IsConsumed"/> to ensure the body can be consumed.</remarks>
+        /// <remarks>This method only returns whether SCP-049-2 is close enough to the body to consume it; the body may have been consumed previously. Make sure to check <see cref="Ragdoll.IsConsumed"/> to ensure the body can be consumed.</remarks>
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if close enough to consume the body; otherwise, <see langword="false"/>.</returns>
         public bool IsInConsumeRange(Ragdoll ragdoll) => ragdoll is not null && IsInConsumeRange(ragdoll.Base);

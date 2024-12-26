@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpawnExtensions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SpawnExtensions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -23,7 +23,6 @@ namespace Exiled.API.Extensions
         /// </summary>
         public static readonly SpawnLocationType[] ReversedLocations =
         {
-            SpawnLocationType.InsideServersBottom,
             SpawnLocationType.InsideHczArmory,
             SpawnLocationType.Inside079First,
             SpawnLocationType.InsideHidRight,
@@ -103,7 +102,6 @@ namespace Exiled.API.Extensions
             SpawnLocationType.InsideSurfaceNuke => "SURFACE_NUKE",
             SpawnLocationType.Inside079Secondary => "079_SECOND",
             SpawnLocationType.Inside173Connector => "173_CONNECTOR",
-            SpawnLocationType.InsideServersBottom => "SERVERS_BOTTOM",
             SpawnLocationType.InsideEscapePrimary => "ESCAPE_PRIMARY",
             SpawnLocationType.InsideEscapeSecondary => "ESCAPE_SECONDARY",
             _ => default,

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ItemRemovedEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ItemRemovedEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information after removing an item from a player's inventory.
     /// </summary>
-    public class ItemRemovedEventArgs : IPlayerEvent, IItemEvent, IPickupEvent
+    public class ItemRemovedEventArgs : IItemEvent, IPickupEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemRemovedEventArgs"/> class.

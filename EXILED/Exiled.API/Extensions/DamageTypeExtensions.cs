@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DamageTypeExtensions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DamageTypeExtensions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -49,6 +49,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.MicroHID.Id, DamageType.MicroHid },
             { DeathTranslations.Hypothermia.Id, DamageType.Hypothermia },
             { DeathTranslations.MarshmallowMan.Id, DamageType.Marshmallow },
+            { DeathTranslations.Scp1344.Id, DamageType.SeveredEyes },
         };
 
         private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
@@ -80,6 +81,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.MicroHID, DamageType.MicroHid },
             { DeathTranslations.Hypothermia, DamageType.Hypothermia },
             { DeathTranslations.MarshmallowMan, DamageType.Marshmallow },
+            { DeathTranslations.Scp1344, DamageType.SeveredEyes },
         };
 
         private static readonly Dictionary<ItemType, DamageType> ItemConversionInternal = new()
@@ -120,8 +122,8 @@ namespace Exiled.API.Extensions
         /// Check if a <see cref="DamageType">damage type</see> is caused by a weapon.
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
-        /// <param name="checkMicro">Indicates whether or not the MicroHid damage type should be taken into account.</param>
-        /// <returns>Returns whether or not the <see cref="DamageType"/> is caused by weapon.</returns>
+        /// <param name="checkMicro">Indicates whether the MicroHid damage type should be taken into account.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by weapon.</returns>
         public static bool IsWeapon(this DamageType type, bool checkMicro = true) => type switch
         {
             DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 => true,
@@ -133,8 +135,8 @@ namespace Exiled.API.Extensions
         /// Check if a <see cref="DamageType">damage type</see> is caused by a SCP.
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
-        /// <param name="checkItems">Indicates whether or not the SCP-items damage types should be taken into account.</param>
-        /// <returns>Returns whether or not the <see cref="DamageType"/> is caused by SCP.</returns>
+        /// <param name="checkItems">Indicates whether the SCP-items damage types should be taken into account.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
         public static bool IsScp(this DamageType type, bool checkItems = true) => type switch
         {
             DamageType.Scp or DamageType.Scp049 or DamageType.Scp096 or DamageType.Scp106 or DamageType.Scp173 or DamageType.Scp939 or DamageType.Scp0492 or DamageType.Scp3114 => true,
@@ -146,7 +148,7 @@ namespace Exiled.API.Extensions
         /// Check if a <see cref="DamageType">damage type</see> is caused by a status effect.
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
-        /// <returns>Returns whether or not the <see cref="DamageType"/> is caused by status effect.</returns>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by status effect.</returns>
         public static bool IsStatusEffect(this DamageType type) => type switch
         {
             DamageType.Asphyxiation or DamageType.Poison or DamageType.Bleeding or DamageType.Scp207 or DamageType.Hypothermia or DamageType.Strangled => true,

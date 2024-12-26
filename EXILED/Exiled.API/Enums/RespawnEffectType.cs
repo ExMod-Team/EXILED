@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RespawnEffectType.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RespawnEffectType.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -14,23 +14,16 @@ namespace Exiled.API.Enums
     /// <summary>
     /// Layers game respawn effects.
     /// </summary>
-    /// <seealso cref="Respawn.PlayEffect(RespawnEffectType)"/>
-    /// <seealso cref="Respawn.PlayEffects(RespawnEffectType[])"/>
-    public enum RespawnEffectType : byte
+    public enum RespawnEffectType
     {
-        /// <summary>
-        /// Plays the <see cref="Side.ChaosInsurgency"/> music to alive <see cref="RoleTypeId.ClassD"/> and <see cref="Side.ChaosInsurgency"/>.
-        /// </summary>
-        PlayChaosInsurgencyMusic = 0,
-
         /// <summary>
         /// Summons the <see cref="Side.ChaosInsurgency"/> van.
         /// </summary>
-        SummonChaosInsurgencyVan = 128,
+        SummonChaosInsurgencyVan,
 
         /// <summary>
         /// Summons the NTF chopper.
         /// </summary>
-        SummonNtfChopper = 129,
+        SummonNtfChopper,
     }
 }

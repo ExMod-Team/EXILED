@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="FillingLocker.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FillingLocker.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -37,14 +37,14 @@ namespace Exiled.Events.Patches.Events.Map
             Label returnLabel = generator.DefineLabel();
 
             int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(HashSet<ItemPickupBase>), nameof(HashSet<ItemPickupBase>.Add), new[] { typeof(ItemPickupBase) }))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(List<ItemPickupBase>), nameof(List<ItemPickupBase>.Add), new[] { typeof(ItemPickupBase) }))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
                     // FillingLockerEventArgs ev = new(ItemPickupBase, loockerChamber)
-                    new(OpCodes.Ldloc_S, 4),
+                    new(OpCodes.Ldloc_S, 5),
                     new(OpCodes.Ldarg_0),
                     new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(FillingLockerEventArgs))[0]),
                     new(OpCodes.Dup),

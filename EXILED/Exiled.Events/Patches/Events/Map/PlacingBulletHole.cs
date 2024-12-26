@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="PlacingBulletHole.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="PlacingBulletHole.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -8,19 +8,18 @@
 namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
-
+    using Decals;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Map;
-
     using Handlers;
-
     using HarmonyLib;
-
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Modules;
-
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
@@ -28,11 +27,11 @@ namespace Exiled.Events.Patches.Events.Map
     using Player = API.Features.Player;
 
     /// <summary>
-    /// Patches <see cref="StandardHitregBase.PlaceBulletholeDecal" />.
+    /// Patches <see cref="ImpactEffectsModule.ServerSendImpactDecal(RaycastHit, Vector3, DecalPoolType)" />.
     /// Adds the <see cref="Map.PlacingBulletHole" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.PlacingBulletHole))]
-    [HarmonyPatch(typeof(StandardHitregBase), nameof(StandardHitregBase.PlaceBulletholeDecal))]
+    [HarmonyPatch(typeof(ImpactEffectsModule), nameof(ImpactEffectsModule.ServerSendImpactDecal))]
     internal static class PlacingBulletHole
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -48,15 +47,15 @@ namespace Exiled.Events.Patches.Events.Map
                 0,
                 new CodeInstruction[]
                 {
-                    // Player.Get(this.Hub)
+                    // this.Firearm
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SingleBulletHitreg), nameof(SingleBulletHitreg.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ImpactEffectsModule), nameof(ImpactEffectsModule.Firearm))),
+                    new(OpCodes.Call, TypeByName("Exiled.API.Features.Items.Item").GetMethods().Where(x => x.Name == "Get").First()),
 
                     // hit
                     new(OpCodes.Ldarg_2),
 
-                    // PlacingBulletHole ev = new(Player, RaycastHit)
+                    // PlacingBulletHole ev = new(Item, RaycastHit)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlacingBulletHoleEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

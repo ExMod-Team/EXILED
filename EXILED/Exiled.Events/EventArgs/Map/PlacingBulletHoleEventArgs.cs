@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="PlacingBulletHoleEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="PlacingBulletHoleEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -8,7 +8,7 @@
 namespace Exiled.Events.EventArgs.Map
 {
     using API.Features;
-
+    using Exiled.API.Features.Items;
     using Interfaces;
 
     using UnityEngine;
@@ -16,20 +16,21 @@ namespace Exiled.Events.EventArgs.Map
     /// <summary>
     /// Contains all information before placing a bullet hole decal.
     /// </summary>
-    public class PlacingBulletHoleEventArgs : IPlayerEvent, IDeniableEvent
+    public class PlacingBulletHoleEventArgs : IFirearmEvent, IPlayerEvent, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlacingBulletHoleEventArgs" /> class.
         /// </summary>
-        /// <param name="owner">
-        /// <inheritdoc cref="Player" />
+        /// <param name="firearm">
+        /// <inheritdoc cref="Firearm" />
         /// </param>
         /// <param name="hit">
         /// <inheritdoc cref="RaycastHit" />
         /// </param>
-        public PlacingBulletHoleEventArgs(Player owner, RaycastHit hit)
+        public PlacingBulletHoleEventArgs(Item firearm, RaycastHit hit)
         {
-            Player = owner;
+            Firearm = firearm.As<Firearm>();
+            Player = Firearm.Owner;
             Position = hit.point;
             Rotation = Quaternion.LookRotation(hit.normal);
         }
@@ -45,7 +46,7 @@ namespace Exiled.Events.EventArgs.Map
         public Quaternion Rotation { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the decal can be placed.
+        /// Gets or sets a value indicating whether the decal can be placed.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
 
@@ -53,5 +54,11 @@ namespace Exiled.Events.EventArgs.Map
         /// Gets the decal owner.
         /// </summary>
         public Player Player { get; }
+
+        /// <inheritdoc/>
+        public Firearm Firearm { get; }
+
+        /// <inheritdoc/>
+        public Item Item => Firearm;
     }
 }

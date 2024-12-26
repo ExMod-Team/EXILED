@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="FixPickupPreviousOwner.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FixPickupPreviousOwner.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -37,7 +37,7 @@ namespace Exiled.Events.Patches.Fixes
                 index,
                 new CodeInstruction[]
                 {
-                    new(OpCodes.Ldloc_S, 8),
+                    new(OpCodes.Ldloc_S, 7),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Inventory), nameof(Inventory._hub))),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Footprint))[0]),

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Give.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Give.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -18,6 +18,8 @@ namespace Exiled.CustomItems.Commands
     using Exiled.Permissions.Extensions;
 
     using RemoteAdmin;
+    using UnityStandardAssets.Effects;
+    using Utils;
 
     /// <summary>
     /// The command to give a player an item.
@@ -97,22 +99,27 @@ namespace Exiled.CustomItems.Commands
                     response = $"Custom item {item?.Name} given to all players who can receive them ({eligiblePlayers.Count} players)";
                     return true;
                 default:
-                    if (Player.Get(identifier) is not { } player)
-                    {
-                        response = $"Unable to find player: {identifier}.";
-                        return false;
-                    }
-
-                    if (!CheckEligible(player))
-                    {
-                        response = "Player cannot receive custom items!";
-                        return false;
-                    }
-
-                    item?.Give(player);
-                    response = $"{item?.Name} given to {player.Nickname} ({player.UserId})";
-                    return true;
+                    break;
             }
+
+            IEnumerable<Player> list = Player.GetProcessedData(arguments, 1);
+
+            if (list.IsEmpty())
+            {
+                response = "Cannot find player! Try using the player ID!";
+                return false;
+            }
+
+            foreach (Player player in list)
+            {
+                if (CheckEligible(player))
+                {
+                    item?.Give(player);
+                }
+            }
+
+            response = $"{item?.Name} given to {list.Count()} players!";
+            return true;
         }
 
         /// <summary>

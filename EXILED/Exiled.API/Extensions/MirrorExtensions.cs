@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="MirrorExtensions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="MirrorExtensions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -18,8 +18,6 @@ namespace Exiled.API.Extensions
     using Exiled.API.Enums;
     using Features;
     using Features.Pools;
-
-    using InventorySystem.Items.Firearms;
 
     using Mirror;
 
@@ -151,7 +149,7 @@ namespace Exiled.API.Extensions
         /// Plays a beep sound that only the target <paramref name="player"/> can hear.
         /// </summary>
         /// <param name="player">Target to play sound to.</param>
-        public static void PlayBeepSound(this Player player) => SendFakeTargetRpc(player, ReferenceHub.HostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
+        public static void PlayBeepSound(this Player player) => SendFakeTargetRpc(player, ReferenceHub._hostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
 
         /// <summary>
         /// Set <see cref="Player.CustomInfo"/> on the <paramref name="target"/> player that only the <paramref name="player"/> can see.
@@ -171,6 +169,8 @@ namespace Exiled.API.Extensions
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
         {
+            // TODO: Not finish
+            /*
             GunAudioMessage message = new()
             {
                 Weapon = itemType,
@@ -180,7 +180,7 @@ namespace Exiled.API.Extensions
                 ShooterPosition = new RelativePosition(position),
             };
 
-            player.Connection.Send(message);
+            player.Connection.Send(message);*/
         }
 
         /// <summary>
@@ -223,23 +223,12 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
-        /// Sets <see cref="Room"/> of a <paramref name="room"/> that only the <paramref name="target"/> player can see.
-        /// </summary>
-        /// <param name="room">Room to modify.</param>
-        /// <param name="target">Only this player can see room color.</param>
-        /// <param name="multiplier">Light intensity multiplier to set.</param>
-        [Obsolete("This features has been remove by NW", true)]
-        public static void SetRoomLightIntensityForTargetOnly(this Room room, Player target, float multiplier)
-        {
-        }
-
-        /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
         /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
         /// </summary>
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
-        /// <param name="skipJump">Whether or not to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
         /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
         public static void ChangeAppearance(this Player player, RoleTypeId type, bool skipJump = false, byte unitId = 0) => ChangeAppearance(player, type, Player.List.Where(x => x != player), skipJump, unitId);
 
@@ -250,7 +239,7 @@ namespace Exiled.API.Extensions
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
         /// <param name="playersToAffect">The players who should see the changed appearance.</param>
-        /// <param name="skipJump">Whether or not to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
         /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
         public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect, bool skipJump = false, byte unitId = 0)
         {
@@ -459,38 +448,6 @@ namespace Exiled.API.Extensions
             {
                 ply.Connection.Send(objectDestroyMessage, 0);
                 SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, ply.Connection });
-            }
-        }
-
-        /// <summary>
-        /// Send fake values to client's <see cref="SyncVarAttribute"/>.
-        /// </summary>
-        /// <param name="target">Target to send.</param>
-        /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
-        /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
-        /// <param name="propertyName">Property name starting with Network.</param>
-        /// <param name="value">Value of send to target.</param>
-        [Obsolete("Use overload with type-template instead.")]
-        public static void SendFakeSyncVar(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, object value)
-        {
-            if (!target.IsConnected)
-                return;
-
-            NetworkWriterPooled writer = NetworkWriterPool.Get();
-            NetworkWriterPooled writer2 = NetworkWriterPool.Get();
-            MakeCustomSyncWriter(behaviorOwner, targetType, null, CustomSyncVarGenerator, writer, writer2);
-            target.Connection.Send(new EntityStateMessage
-            {
-                netId = behaviorOwner.netId,
-                payload = writer.ToArraySegment(),
-            });
-
-            NetworkWriterPool.Return(writer);
-            NetworkWriterPool.Return(writer2);
-            void CustomSyncVarGenerator(NetworkWriter targetWriter)
-            {
-                targetWriter.WriteULong(SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"]);
-                WriterExtensions[value.GetType()]?.Invoke(null, new object[2] { targetWriter, value });
             }
         }
 

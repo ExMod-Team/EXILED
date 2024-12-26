@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingAmmo.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingAmmo.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -23,13 +23,15 @@ namespace Exiled.Events.Patches.Events.Item
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Firearm.Status" />.
+    /// Patches <see cref="Firearm" />.
     /// Adds the <see cref="Item.ChangingAmmo" /> event.
     /// </summary>
     [EventPatch(typeof(Item), nameof(Item.ChangingAmmo))]
-    [HarmonyPatch(typeof(Firearm), nameof(Firearm.Status), MethodType.Setter)]
+
+    // [HarmonyPatch(typeof(Firearm), nameof(Firearm.Status), MethodType.Setter)]
     internal static class ChangingAmmo
     {
+        /*
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
@@ -137,5 +139,6 @@ namespace Exiled.Events.Patches.Events.Item
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
+        */
     }
 }

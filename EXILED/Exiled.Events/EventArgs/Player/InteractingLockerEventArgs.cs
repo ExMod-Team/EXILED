@@ -1,14 +1,12 @@
 // -----------------------------------------------------------------------
-// <copyright file="InteractingLockerEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="InteractingLockerEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using API.Features;
     using Exiled.API.Features.Lockers;
     using Interfaces;
@@ -36,22 +34,10 @@ namespace Exiled.Events.EventArgs.Player
         public InteractingLockerEventArgs(Player player, MapGeneration.Distributors.Locker locker, byte colliderId, bool isAllowed)
         {
             Player = player;
-            InteractingLocker = API.Features.Lockers.Locker.Get(locker);
-            InteractingChamber = API.Features.Lockers.Chamber.Get(locker.Chambers[colliderId]);
+            InteractingLocker = Locker.Get(locker);
+            InteractingChamber = Chamber.Get(locker.Chambers[colliderId]);
             IsAllowed = isAllowed;
         }
-
-        /// <summary>
-        /// Gets the <see cref="MapGeneration.Distributors.Locker" /> instance.
-        /// </summary>
-        [Obsolete("Use InteractingLocker instead.")]
-        public MapGeneration.Distributors.Locker Locker => InteractingLocker.Base;
-
-        /// <summary>
-        /// Gets the interacting chamber.
-        /// </summary>
-        [Obsolete("Use InteractingChamber instead.")]
-        public MapGeneration.Distributors.LockerChamber Chamber => InteractingChamber.Base;
 
         /// <summary>
         /// Gets the locker which is containing <see cref="InteractingChamber"/>.
@@ -64,13 +50,7 @@ namespace Exiled.Events.EventArgs.Player
         public Chamber InteractingChamber { get; }
 
         /// <summary>
-        /// Gets the chamber id.
-        /// </summary>
-        [Obsolete("Use Chamber::Id instead.")]
-        public byte ChamberId => InteractingChamber.Id;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether or not the player can interact with the locker.
+        /// Gets or sets a value indicating whether the player can interact with the locker.
         /// </summary>
         public bool IsAllowed { get; set; }
 

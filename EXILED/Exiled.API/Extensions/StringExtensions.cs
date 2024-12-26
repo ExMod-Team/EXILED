@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="StringExtensions.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="StringExtensions.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -78,7 +78,7 @@ namespace Exiled.API.Extensions
         /// Converts a <see cref="string"/> to snake_case convention.
         /// </summary>
         /// <param name="str">The string to be converted.</param>
-        /// <param name="shouldReplaceSpecialChars">Indicates whether special chars has to be replaced or not.</param>
+        /// <param name="shouldReplaceSpecialChars">Indicates whether special chars has to be replaced.</param>
         /// <returns>Returns the new snake_case string.</returns>
         public static string ToSnakeCase(this string str, bool shouldReplaceSpecialChars = true)
         {
@@ -92,7 +92,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <typeparam name="T">The type of the IEnumerable.</typeparam>
         /// <param name="enumerable">The instance.</param>
-        /// <param name="showIndex">Indicates whether the enumerator index should be shown or not.</param>
+        /// <param name="showIndex">Indicates whether the enumerator index should be shown.</param>
         /// <returns>Returns the converted <see cref="IEnumerable{T}"/>.</returns>
         public static string ToString<T>(this IEnumerable<T> enumerable, bool showIndex = true)
         {
@@ -119,10 +119,10 @@ namespace Exiled.API.Extensions
         /// <returns>Name without brackets.</returns>
         public static string RemoveBracketsOnEndOfName(this string name)
         {
-            int bracketStart = name.IndexOf('(') - 1;
+            int bracketStart = name.IndexOf('(');
 
             if (bracketStart > 0)
-                name = name.Remove(bracketStart, name.Length - bracketStart);
+                name = name.Remove(bracketStart, name.Length - bracketStart).TrimEnd();
 
             return name;
         }

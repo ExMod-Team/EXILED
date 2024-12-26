@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingRoleAndSpawned.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingRoleAndSpawned.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -14,19 +14,21 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features;
     using API.Features.Pools;
-
     using API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
-
     using HarmonyLib;
-
     using InventorySystem;
+    using InventorySystem.Configs;
+    using InventorySystem.Items;
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Pickups;
+    using InventorySystem.Items.Usables.Scp1344;
+    using Mirror;
 
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
+    using static UnityEngine.GraphicsBuffer;
 
     using Player = Handlers.Player;
 
@@ -149,18 +151,8 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // ChangingRole.ChangeInventory(changingRoleEventArgs, oldRoleType);
                     new(OpCodes.Call, Method(typeof(ChangingRoleAndSpawned), nameof(ChangeInventory))),
-                });
 
-            newInstructions.InsertRange(
-                newInstructions.Count - 1,
-                new CodeInstruction[]
-                {
-                    // if (this.isLocalPlayer)
-                    //     return;
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.isLocalPlayer))),
-                    new(OpCodes.Brtrue_S, returnLabel),
-
+                    // invoke OnSpawned
                     // player
                     new(OpCodes.Ldloc_S, player.LocalIndex),
 
@@ -194,59 +186,53 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
+                if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
                     return;
 
                 Inventory inventory = ev.Player.Inventory;
-
-                if (ev.Reason == API.Enums.SpawnReason.Escaped)
+                if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
-                    List<ItemPickupBase> list = new();
+                    List<ItemPickupBase> list = new List<ItemPickupBase>();
                     if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
                         bodyArmor.DontRemoveExcessOnDrop = true;
 
-                    while (inventory.UserInventory.Items.Count > 0)
+                    HashSet<ushort> hashSet = HashSetPool<ushort>.Pool.Get();
+                    foreach (KeyValuePair<ushort, ItemBase> item2 in inventory.UserInventory.Items)
                     {
-                        int startCount = inventory.UserInventory.Items.Count;
-                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
-                        ItemPickupBase item = inventory.ServerDropItem(key);
-
-                        // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
-                        if (startCount == inventory.UserInventory.Items.Count)
-                            inventory.UserInventory.Items.Remove(key);
+                        if (item2.Value is Scp1344Item scp1344Item)
+                            scp1344Item.Status = Scp1344Status.Idle;
                         else
-                            list.Add(item);
+                            hashSet.Add(item2.Key);
                     }
 
+                    foreach (ushort item in hashSet)
+                        list.Add(inventory.ServerDropItem(item));
+
+                    HashSetPool<ushort>.Pool.Return(hashSet);
                     InventoryItemProvider.PreviousInventoryPickups[ev.Player.ReferenceHub] = list;
                 }
                 else
                 {
                     while (inventory.UserInventory.Items.Count > 0)
-                    {
-                        int startCount = inventory.UserInventory.Items.Count;
-                        ushort key = inventory.UserInventory.Items.ElementAt(0).Key;
-                        inventory.ServerRemoveItem(key, null);
-
-                        // If the list wasn't changed, we need to manually remove the item to avoid a softlock.
-                        if (startCount == inventory.UserInventory.Items.Count)
-                            inventory.UserInventory.Items.Remove(key);
-                    }
+                        inventory.ServerRemoveItem(inventory.UserInventory.Items.ElementAt(0).Key, null);
 
                     inventory.UserInventory.ReserveAmmo.Clear();
                     inventory.SendAmmoNextFrame = true;
                 }
 
-                foreach (ItemType item in ev.Items)
-                    inventory.ServerAddItem(item);
+                if (!StartingInventories.DefinedInventories.TryGetValue(ev.NewRole, out InventoryRoleInfo value))
+                    return;
 
-                foreach (KeyValuePair<ItemType, ushort> keyValuePair in ev.Ammo)
-                    inventory.ServerAddAmmo(keyValuePair.Key, keyValuePair.Value);
+                foreach (KeyValuePair<ItemType, ushort> item in value.Ammo)
+                    inventory.ServerAddAmmo(item.Key, item.Value);
 
-                foreach (KeyValuePair<ushort, InventorySystem.Items.ItemBase> item in inventory.UserInventory.Items)
-                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, item.Value);
+                for (int i = 0; i < value.Items.Length; i++)
+                {
+                    ItemBase arg = inventory.ServerAddItem(value.Items[i], ItemAddReason.StartingItem, 0);
+                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, arg);
+                }
 
-                InventoryItemProvider.SpawnPreviousInventoryPickups(ev.Player.ReferenceHub);
+                InventoryItemProvider.InventoriesToReplenish.Enqueue(ev.Player.ReferenceHub);
             }
             catch (Exception exception)
             {

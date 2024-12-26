@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ThrowingRequestEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ThrowingRequestEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information before receving a throwing request.
     /// </summary>
-    public class ThrowingRequestEventArgs : IPlayerEvent, IItemEvent
+    public class ThrowingRequestEventArgs : IItemEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ThrowingRequestEventArgs"/> class.

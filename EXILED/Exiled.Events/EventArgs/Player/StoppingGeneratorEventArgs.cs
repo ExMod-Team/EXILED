@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="StoppingGeneratorEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="StoppingGeneratorEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -21,7 +21,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="player">The player who's flipping the switch.</param>
         /// <param name="generator">The <see cref="Scp079Generator" /> instance.</param>
-        /// <param name="isAllowed">Indicates whether or not the switch of the generator can be flipped.</param>
+        /// <param name="isAllowed">Indicates whether the switch of the generator can be flipped.</param>
         public StoppingGeneratorEventArgs(Player player, Scp079Generator generator, bool isAllowed = true)
         {
             Player = player;
@@ -30,7 +30,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the switch can be flipped.
+        /// Gets or sets a value indicating whether the switch can be flipped.
         /// </summary>
         public bool IsAllowed { get; set; }
 

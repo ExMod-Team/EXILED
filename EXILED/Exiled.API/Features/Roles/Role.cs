@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Role.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Role.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -18,6 +18,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using UnityEngine;
 
+    using DestroyedGameRole = PlayerRoles.DestroyedRole;
     using FilmmakerGameRole = PlayerRoles.Filmmaker.FilmmakerRole;
     using HumanGameRole = PlayerRoles.HumanRole;
     using NoneGameRole = PlayerRoles.NoneRole;
@@ -99,19 +100,24 @@ namespace Exiled.API.Features.Roles
         public TimeSpan ActiveTime => TimeSpan.FromSeconds(Base.ActiveTime);
 
         /// <summary>
-        /// Gets a value indicating whether or not this role represents a dead role.
+        /// Gets a value indicating whether this role represents a dead role.
         /// </summary>
         public bool IsDead => Team is Team.Dead;
 
         /// <summary>
-        /// Gets a value indicating whether or not this role represents a living role.
+        /// Gets a value indicating whether this role represents a living role.
         /// </summary>
         public bool IsAlive => !IsDead;
 
         /// <summary>
-        /// Gets a value indicating whether or not this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
+        /// Gets a value indicating whether this role is still valid. This will only ever be <see langword="false"/> if the Role is stored and accessed at a later date.
         /// </summary>
         public bool IsValid => Owner != null && Owner.IsConnected && Base == Owner.RoleManager.CurrentRole;
+
+        /// <summary>
+        /// Gets the life identifier for the role.
+        /// </summary>
+        public int LifeIdentifier => Base.UniqueLifeIdentifier;
 
         /// <summary>
         /// Gets a random spawn position of this role.
@@ -126,7 +132,7 @@ namespace Exiled.API.Features.Roles
         public static implicit operator RoleTypeId(Role role) => role?.Type ?? RoleTypeId.None;
 
         /// <summary>
-        /// Returns whether or not 2 roles are the same.
+        /// Returns whether 2 roles are the same.
         /// </summary>
         /// <param name="left">The role.</param>
         /// <param name="right">The other role.</param>
@@ -134,7 +140,7 @@ namespace Exiled.API.Features.Roles
         public static bool operator ==(Role left, Role right) => left?.Equals(right) ?? right is null;
 
         /// <summary>
-        /// Returns whether or not the two roles are different.
+        /// Returns whether the two roles are different.
         /// </summary>
         /// <param name="left">The role.</param>
         /// <param name="right">The other role.</param>
@@ -142,7 +148,7 @@ namespace Exiled.API.Features.Roles
         public static bool operator !=(Role left, Role right) => !(left == right);
 
         /// <summary>
-        /// Returns whether or not the role has the same RoleTypeId as the given <paramref name="typeId"/>.
+        /// Returns whether the role has the same RoleTypeId as the given <paramref name="typeId"/>.
         /// </summary>
         /// <param name="role">The <see cref="Role"/>.</param>
         /// <param name="typeId">The <see cref="RoleTypeId"/>.</param>
@@ -150,7 +156,7 @@ namespace Exiled.API.Features.Roles
         public static bool operator ==(Role role, RoleTypeId typeId) => role?.Type == typeId;
 
         /// <summary>
-        /// Returns whether or not the role has a different RoleTypeId as the given <paramref name="typeId"/>.
+        /// Returns whether the role has a different RoleTypeId as the given <paramref name="typeId"/>.
         /// </summary>
         /// <param name="role">The <see cref="Role"/>.</param>
         /// <param name="typeId">The <see cref="RoleTypeId"/>.</param>
@@ -158,7 +164,7 @@ namespace Exiled.API.Features.Roles
         public static bool operator !=(Role role, RoleTypeId typeId) => !(role == typeId);
 
         /// <summary>
-        /// Returns whether or not the role has the same RoleTypeId as the given <paramref name="type"/>.
+        /// Returns whether the role has the same RoleTypeId as the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The <see cref="RoleTypeId"/>.</param>
         /// <param name="role">The <see cref="Role"/>.</param>
@@ -166,7 +172,7 @@ namespace Exiled.API.Features.Roles
         public static bool operator ==(RoleTypeId type, Role role) => role == type;
 
         /// <summary>
-        /// Returns whether or not the role has a different RoleTypeId as the given <paramref name="type"/>.
+        /// Returns whether the role has a different RoleTypeId as the given <paramref name="type"/>.
         /// </summary>
         /// <param name="type">The <see cref="RoleTypeId"/>.</param>
         /// <param name="role">The <see cref="Role"/>.</param>
@@ -228,6 +234,7 @@ namespace Exiled.API.Features.Roles
             HumanGameRole humanRole => new HumanRole(humanRole),
             FilmmakerGameRole filmmakerRole => new FilmMakerRole(filmmakerRole),
             NoneGameRole noneRole => new NoneRole(noneRole),
+            DestroyedGameRole destroyedRole => new DestroyedRole(destroyedRole),
             _ => null,
         };
     }

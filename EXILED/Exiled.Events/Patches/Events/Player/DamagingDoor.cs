@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DamagingDoor.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DamagingDoor.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch the <see cref="BreakableDoor.ServerDamage(float, DoorDamageType)" />.
+    /// Patch the <see cref="BreakableDoor.ServerDamage" />.
     /// Adds the <see cref="Player.DamagingDoor" /> event.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.DamagingDoor))]
