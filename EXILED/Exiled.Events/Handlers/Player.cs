@@ -569,6 +569,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangedEmotionEventArgs> ChangedEmotion { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/>'s rotates the revolver.
+        /// </summary>
+        public static Event<RotatingRevolverEventArgs> RotatingRevolver { get; set; } = new();
+
+        /// <summary>
         /// Invoked before disruptor's mode is changed.
         /// </summary>
         public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
@@ -1040,7 +1045,7 @@ namespace Exiled.Events.Handlers
         {
             ItemAddedEventArgs ev = new(referenceHub, itemBase, pickupBase);
 
-            ev.Item.ReadPickupInfo(ev.Pickup);
+            ev.Item.ReadPickupInfoAfter(ev.Pickup);
 
             ev.Player.ItemsValue.Add(ev.Item);
 
@@ -1225,6 +1230,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="SendingRoleEventArgs"/> instance.</param>
         public static void OnSendingRole(SendingRoleEventArgs ev) => SendingRole.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/>'s rotates the revolver.
+        /// </summary>
+        /// <param name="ev">The <see cref="RotatingRevolverEventArgs"/> instance.</param>
+        public static void OnRotatingRevolver(RotatingRevolverEventArgs ev) => RotatingRevolver.InvokeSafely(ev);
 
         /// <summary>
         /// Called before disruptor's mode is changed.

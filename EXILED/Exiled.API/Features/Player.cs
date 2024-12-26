@@ -614,18 +614,15 @@ namespace Exiled.API.Features
         /// <remarks>Players can be cuffed without another player being the cuffer.</remarks>
         public bool IsCuffed => Inventory.IsDisarmed();
 
-        // TODO NOT FINISH
-        /*
         /// <summary>
         /// Gets a value indicating whether the player is reloading a weapon.
         /// </summary>
-        public bool IsReloading => CurrentItem is Firearm firearm && !firearm.Base.AmmoManagerModule.Standby;
+        public bool IsReloading => CurrentItem is Firearm firearm && !firearm.IsReloading;
 
         /// <summary>
         /// Gets a value indicating whether the player is aiming with a weapon.
         /// </summary>
         public bool IsAimingDownWeapon => CurrentItem is Firearm firearm && firearm.Aiming;
-        */
 
         /// <summary>
         /// Gets a value indicating whether the player has enabled weapon's flashlight module.
@@ -796,7 +793,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the player is speaking.
         /// </summary>
-        public bool IsSpeaking => Role is Roles.IVoiceRole voiceRole && voiceRole.VoiceModule.IsSpeaking;
+        public bool IsSpeaking => Role is Roles.IVoiceRole voiceRole && voiceRole.VoiceModule.ServerIsSending;
 
         /// <summary>
         /// Gets the player's voice color.
@@ -2772,7 +2769,7 @@ namespace Exiled.API.Features
         /// <param name="pickup">The <see cref="Pickup"/> of the item to be added.</param>
         /// <param name="addReason">The reason the item was added.</param>
         /// <returns>The <see cref="Item"/> that was added.</returns>
-        public Item AddItem(Pickup pickup, ItemAddReason addReason = ItemAddReason.Undefined) => Item.Get(Inventory.ServerAddItem(pickup.Type, addReason, pickup.Serial, pickup.Base));
+        public Item AddItem(Pickup pickup, ItemAddReason addReason = ItemAddReason.AdminCommand) => Item.Get(Inventory.ServerAddItem(pickup.Type, addReason, pickup.Serial, pickup.Base));
 
         /// <summary>
         /// Adds an item to the player's inventory.
@@ -2782,7 +2779,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(FirearmPickup pickup, IEnumerable<AttachmentIdentifier> identifiers)
         {
-            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, ItemAddReason.Undefined, pickup.Serial, pickup.Base));
+            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, ItemAddReason.AdminCommand, pickup.Serial, pickup.Base));
 
             if (identifiers is not null)
                 firearm.AddAttachment(identifiers);
@@ -3705,7 +3702,7 @@ namespace Exiled.API.Features
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            return ReferenceHub.GetHashCode();
+            return base.GetHashCode();
         }
 
         /// <summary>

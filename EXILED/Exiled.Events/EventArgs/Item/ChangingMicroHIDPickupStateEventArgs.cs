@@ -1,29 +1,25 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingMicroHIDStateEventArgs.cs" company="ExMod Team">
+// <copyright file="ChangingMicroHIDPickupStateEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.EventArgs.Player
+namespace Exiled.Events.EventArgs.Item
 {
-    using System;
+    using Exiled.API.Features.Pickups;
 
-    using API.Features;
-    using API.Features.Items;
     using Interfaces;
-
-    using InventorySystem.Items;
-    using InventorySystem.Items.MicroHID;
     using InventorySystem.Items.MicroHID.Modules;
+    using InventorySystem.Items.Pickups;
 
     /// <summary>
-    /// Contains all information before MicroHID state is changed.
+    /// Contains all information before MicroHID pickup state is changed.
     /// </summary>
-    public class ChangingMicroHIDStateEventArgs : IDeniableEvent, IItemEvent
+    public class ChangingMicroHIDPickupStateEventArgs : IDeniableEvent, IPickupEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChangingMicroHIDStateEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="ChangingMicroHIDPickupStateEventArgs" /> class.
         /// </summary>
         /// <param name="microHID">
         /// <inheritdoc cref="MicroHID" />
@@ -34,9 +30,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ChangingMicroHIDStateEventArgs(ItemBase microHID, MicroHidPhase newPhase, bool isAllowed = true)
+        public ChangingMicroHIDPickupStateEventArgs(ItemPickupBase microHID, MicroHidPhase newPhase, bool isAllowed = true)
         {
-            MicroHID = Item.Get<MicroHid>(microHID);
+            MicroHID = Pickup.Get<MicroHIDPickup>(microHID);
             NewPhase = newPhase;
             IsAllowed = isAllowed;
         }
@@ -44,7 +40,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the MicroHID instance.
         /// </summary>
-        public MicroHid MicroHID { get; }
+        public MicroHIDPickup MicroHID { get; }
 
         /// <summary>
         /// Gets or sets the new MicroHID state.
@@ -57,9 +53,6 @@ namespace Exiled.Events.EventArgs.Player
         public bool IsAllowed { get; set; }
 
         /// <inheritdoc/>
-        public Item Item => MicroHID;
-
-        /// <inheritdoc/>
-        public Player Player => MicroHID.Owner;
+        public Pickup Pickup => MicroHID;
     }
 }

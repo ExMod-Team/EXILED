@@ -16,6 +16,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.Keycards;
@@ -50,6 +51,10 @@ namespace Exiled.API.Features.Items
         public Item(ItemBase itemBase)
         {
             Base = itemBase;
+
+            if (Base is ModularAutosyncItem modularItem && modularItem.InstantiationStatus is AutosyncInstantiationStatus.Template or AutosyncInstantiationStatus.SimulatedInstance)
+                return;
+
             BaseToItem.Add(itemBase, this);
 
             if (Base.ItemSerial is 0 && itemBase.Owner != null)
@@ -424,12 +429,30 @@ namespace Exiled.API.Features.Items
         /// Helper method for saving data between items and pickups.
         /// </summary>
         /// <param name="pickup"><see cref="Pickup"/>-related data to give to the <see cref="Item"/>.</param>
-        internal virtual void ReadPickupInfo(Pickup pickup)
+        /// <remarks>
+        /// Analog to <see cref="ReadPickupInfoAfter(Pickup)"/>, but it is called before item initialization.
+        /// <see cref="ItemBase.OnAdded(ItemPickupBase)"/>.
+        /// </remarks>
+        /// <see cref="ReadPickupInfoAfter"/>
+        internal virtual void ReadPickupInfoBefore(Pickup pickup)
         {
             if (pickup is not null)
             {
                 Scale = pickup.Scale;
             }
+        }
+
+        /// <summary>
+        /// Helper method for saving data between items and pickups.
+        /// </summary>
+        /// <param name="pickup"><see cref="Pickup"/>-related data to give to the <see cref="Item"/>.</param>
+        /// <remarks>
+        /// Analog to <see cref="ReadPickupInfoAfter(Pickup)"/>, but it is called after item initialization.
+        /// <see cref="ItemBase.OnAdded(ItemPickupBase)"/>.
+        /// </remarks>
+        /// <see cref="ReadPickupInfoBefore"/>
+        internal virtual void ReadPickupInfoAfter(Pickup pickup)
+        {
         }
     }
 }

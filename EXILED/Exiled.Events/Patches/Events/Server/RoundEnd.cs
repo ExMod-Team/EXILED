@@ -112,7 +112,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
 
                     // baseGameConditionsSatisfied
-                    new(OpCodes.Ldloc_S, 5),
+                    new(OpCodes.Ldloc_S, 6),
 
                     // EndingRoundEventArgs evEndingRound = new(RoundSummary.SumInfo_ClassList, bool, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EndingRoundEventArgs))[0]),
@@ -131,7 +131,7 @@ namespace Exiled.Events.Patches.Events.Server
                     // flag = ev.IsAllowed
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
-                    new(OpCodes.Stloc_S, 5),
+                    new(OpCodes.Stloc_S, 6),
 
                     // this.LeadingTeam = ev.LeadingTeam
                     new(OpCodes.Ldarg_0),
