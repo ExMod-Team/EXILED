@@ -138,9 +138,12 @@ namespace Exiled.API.Features.Pickups
         /// <inheritdoc/>
         internal override void ReadItemInfo(Items.Item item)
         {
-            Items.Firearm firearm = (Items.Firearm)item;
-            MaxAmmo = firearm.PrimaryMagazine.ConstantMaxAmmo;
-            AmmoDrain = firearm.AmmoDrain;
+            if (item is Items.Firearm firearm)
+            {
+                MaxAmmo = firearm.PrimaryMagazine.ConstantMaxAmmo;
+                AmmoDrain = firearm.AmmoDrain;
+            }
+
             base.ReadItemInfo(item);
         }
 
