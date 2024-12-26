@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="InteractingLocker.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="InteractingLocker.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -32,7 +32,7 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_0);
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
 
             newInstructions.InsertRange(
                 index,
@@ -49,7 +49,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_2),
 
                     // !flag
-                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
 
@@ -64,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingLockerEventArgs), nameof(InteractingLockerEventArgs.IsAllowed))),
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
-                    new(OpCodes.Stloc_0),
+                    new(OpCodes.Stloc_1),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

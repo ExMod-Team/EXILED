@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="UpgradingPlayerEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="UpgradingPlayerEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -31,16 +31,16 @@ namespace Exiled.Events.EventArgs.Scp914
         /// <param name="upgradeItems">
         /// <inheritdoc cref="UpgradeItems" />
         /// </param>
-        /// <param name="moveVector">
-        /// <inheritdoc cref="OutputPosition" />
+        /// <param name="outputPos">
+        /// <inheritdoc cref="OutputPosition"/>
         /// </param>
-        public UpgradingPlayerEventArgs(Player player, bool upgradeItems, bool heldOnly, Scp914KnobSetting setting, Vector3 moveVector)
+        public UpgradingPlayerEventArgs(Player player, bool upgradeItems, bool heldOnly, Scp914KnobSetting setting, Vector3 outputPos)
         {
             Player = player;
             UpgradeItems = upgradeItems;
             HeldOnly = heldOnly;
             KnobSetting = setting;
-            OutputPosition = player.Position + moveVector;
+            OutputPosition = outputPos;
         }
 
         /// <summary>
@@ -49,12 +49,12 @@ namespace Exiled.Events.EventArgs.Scp914
         public Vector3 OutputPosition { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not items will be upgraded.
+        /// Gets or sets a value indicating whether items will be upgraded.
         /// </summary>
         public bool UpgradeItems { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not only held items are upgraded.
+        /// Gets or sets a value indicating whether only held items are upgraded.
         /// </summary>
         public bool HeldOnly { get; set; }
 
@@ -64,7 +64,7 @@ namespace Exiled.Events.EventArgs.Scp914
         public Scp914KnobSetting KnobSetting { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the event can continue.
+        /// Gets or sets a value indicating whether the event can continue.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
 

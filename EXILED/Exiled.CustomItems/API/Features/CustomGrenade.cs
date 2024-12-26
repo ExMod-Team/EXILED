@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="CustomGrenade.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CustomGrenade.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -94,7 +94,7 @@ namespace Exiled.CustomItems.API.Features
             NetworkServer.Spawn(thrownProjectile.gameObject);
             thrownProjectile.InfoReceivedHook(default, newInfo);
             if (thrownProjectile.TryGetComponent(out Rigidbody component))
-                throwable.Base.PropelBody(component, throwable.Base.FullThrowSettings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(velocity), force, throwable.Base.FullThrowSettings.UpwardsFactor);
+                throwable.Base.PropelBody(component, throwable.Base.FullThrowSettings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(velocity));
             thrownProjectile.ServerActivate();
 
             return Pickup.Get(thrownProjectile);

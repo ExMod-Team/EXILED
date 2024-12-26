@@ -33,7 +33,7 @@ public class EnragingEventArgs : System.EventArgs
     // Note: Constructor omitted.
     public Scp096 Scp096 { get; } // The SCP-096 instance.
     public Player Player { get; } // The player controlling SCP-096.
-    public bool IsAllowed { get; set; } // Whether or not SCP-096 can be enraged.
+    public bool IsAllowed { get; set; } // Whether SCP-096 can be enraged.
 }
 ```
 Notice the `IsAllowed` property of the event. This property, which defaults to `true`, can be set to `false` to prevent SCP-096 from being enraged. For most events that can be disallowed, `IsAllowed` is set to `true` by default, and plugins can set it to `false` to prevent the event from occurring. However, in some cases, `IsAllowed` defaults to false and plugins can set it to `true` to *allow* the event to occur. An example of this behavior is the `InteractingDoor` event. `IsAllowed` will default to `false` in this event if a player cannot open a door, however plugins may set it to `true` to allow the player to open it regardless.

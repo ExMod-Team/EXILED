@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DamagingWindow.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DamagingWindow.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -25,9 +25,9 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patch the <see cref="BreakableWindow.Damage(float, PlayerStatsSystem.DamageHandlerBase, Vector3)" />.
-    /// Adds the <see cref="Player.PlayerDamageWindow" /> event.
+    /// Adds the <see cref="Player.DamagingWindow" /> event.
     /// </summary>
-    [EventPatch(typeof(Player), nameof(Player.PlayerDamageWindow))]
+    [EventPatch(typeof(Player), nameof(Player.DamagingWindow))]
     [HarmonyPatch(typeof(BreakableWindow), nameof(BreakableWindow.Damage))]
     internal static class DamagingWindow
     {
@@ -62,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Player.OnPlayerDamageWindow(ev);
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnPlayerDamageWindow))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnDamagingWindow))),
 
                     // if (!ev.IsAllowed)
                     //    return;

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="EscapingAndEscaped.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="EscapingAndEscaped.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -10,10 +10,7 @@ namespace Exiled.Events.Patches.Events.Player
 #pragma warning disable SA1402 // File may only contain a single type
 #pragma warning disable IDE0060
 
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Enums;
@@ -24,7 +21,6 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.Attributes;
     using HarmonyLib;
     using PlayerRoles.FirstPersonControl;
-    using Respawning;
 
     using static HarmonyLib.AccessTools;
 
@@ -40,7 +36,6 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            List<Label> labels;
             Label returnLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
@@ -63,14 +58,8 @@ namespace Exiled.Events.Patches.Events.Player
                     // escapeScenario
                     new(OpCodes.Ldloc_1),
 
-                    // teamToGrantTickets
-                    new(OpCodes.Ldloc_2),
-
-                    // ticketsToGrant
-                    new(OpCodes.Ldloc_3),
-
                     // EscapingEventArgs ev = new(Player, RoleTypeId, EscapeScenario, SpawnableTeamType, float)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingEventArgs)).First(cctor => cctor.GetParameters().Any(param => param.ParameterType == typeof(SpawnableTeamType)))),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
@@ -87,20 +76,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.NewRole))),
                     new(OpCodes.Stloc_0),
-                });
-
-            // replace base-game grant token logic
-            offset = -2;
-            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(RespawnTokensManager), nameof(RespawnTokensManager.GrantTokens)))) + offset;
-            labels = newInstructions[index].ExtractLabels();
-            newInstructions.RemoveRange(index, 3);
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    // GrantAllTickets(ev)
-                    new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(labels),
-                    new(OpCodes.Call, Method(typeof(EscapingAndEscaped), nameof(GrantAllTickets))),
                 });
 
             offset = 4;
@@ -127,10 +102,6 @@ namespace Exiled.Events.Patches.Events.Player
                 // role
                 new(OpCodes.Ldloc_S, role.LocalIndex),
 
-                // ev.RespawnTickets.Key
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.RespawnTickets))),
-
                 // EscapedEventArgs ev2 = new(ev.Player, ev.EscapeScenario, role, float, SpawnableTeamType);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapedEventArgs))[0]),
 
@@ -144,12 +115,6 @@ namespace Exiled.Events.Patches.Events.Player
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
-        }
-
-        private static void GrantAllTickets(EscapingEventArgs ev)
-        {
-            if (Enum.IsDefined(typeof(SpawnableTeamType), ev.RespawnTickets.Key) && ev.RespawnTickets.Key != SpawnableTeamType.None)
-                RespawnTokensManager.ModifyTokens(ev.RespawnTickets.Key, ev.RespawnTickets.Value);
         }
     }
 

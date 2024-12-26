@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="PlayingFootstep.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="PlayingFootstep.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Scp939
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="FootstepRippleTrigger.OnFootstepPlayed(AnimatedCharacterModel, float)" />
+    /// Patches <see cref="FootstepRippleTrigger.OnFootstepPlayed(CharacterModel, float)" />
     /// to add the <see cref="Scp939.PlayingFootstep" /> event.
     /// </summary>
     [EventPatch(typeof(Scp939), nameof(Scp939.PlayingFootstep))]

@@ -1,14 +1,12 @@
 // -----------------------------------------------------------------------
-// <copyright file="StalkingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="StalkingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Scp106
 {
-    using System;
-
     using API.Features;
     using Interfaces;
     using PlayerRoles.PlayableScps.Scp106;
@@ -24,30 +22,12 @@ namespace Exiled.Events.EventArgs.Scp106
         /// Initializes a new instance of the <see cref="StalkingEventArgs"/> class.
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
-        /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public StalkingEventArgs(Player player, bool isAllowed = true)
+        public StalkingEventArgs(Player player)
         {
             Player = player;
             Scp106 = player.Role.As<Scp106Role>();
-            IsAllowed = isAllowed;
+            IsAllowed = true;
             MinimumVigor = Scp106StalkAbility.MinVigorToSubmerge;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Scp106StalkAbility"/>.
-        /// </summary>
-        [Obsolete("Use Scp106.StalkAbility instead of this")]
-        public Scp106StalkAbility Scp106StalkAbility => Scp106.StalkAbility;
-
-        /// <summary>
-        /// Gets or sets the current vigor when SCP-106 starts to stalk.
-        /// </summary>
-        public float Vigor
-        {
-            [Obsolete("Use Scp106.Vigor instead of this")]
-            get => Scp106.Vigor;
-            [Obsolete("Use Scp106.Vigor instead of this")]
-            set => Scp106.Vigor = value;
         }
 
         /// <summary>
@@ -64,8 +44,9 @@ namespace Exiled.Events.EventArgs.Scp106
         public Scp106Role Scp106 { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not SCP-106 can stalk.
+        /// Gets or sets a value indicating whether SCP-106 can stalk.
         /// </summary>
+        /// <remarks>IsAllowed doesn't indicate whether vigor is sufficient for Stalking. <see cref="MinimumVigor"></see> needs to be changed to override the base game check.</remarks>
         public bool IsAllowed { get; set; }
     }
 }

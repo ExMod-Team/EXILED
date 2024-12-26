@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="DamageType.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="DamageType.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -119,6 +119,11 @@ namespace Exiled.API.Enums
         /// Damage caused by severed hands.
         /// </summary>
         SeveredHands,
+
+        /// <summary>
+        /// Damage caused by severed eyes.
+        /// </summary>
+        SeveredEyes,
 
         /// <summary>
         /// Damage caused by a custom source.

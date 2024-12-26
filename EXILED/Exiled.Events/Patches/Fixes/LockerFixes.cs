@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="LockerFixes.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="LockerFixes.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -48,7 +48,7 @@ namespace Exiled.Events.Patches.Fixes
 
         private static void Hepler(LockerChamber chamber)
         {
-            chamber._content.Clear();
+            chamber.Content.Clear();
 
             if (!chamber._spawnOnFirstChamberOpening)
                 return;

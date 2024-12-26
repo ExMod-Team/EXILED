@@ -1,6 +1,6 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="TantrumHazard.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// -----------------------------------------------------------------------
+// <copyright file="TantrumHazard.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -53,7 +53,7 @@ namespace Exiled.API.Features.Hazards
         public override HazardType Type => HazardType.Tantrum;
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not sizzle should be played.
+        /// Gets or sets a value indicating whether sizzle should be played.
         /// </summary>
         public bool PlaySizzle
         {
@@ -83,7 +83,7 @@ namespace Exiled.API.Features.Hazards
         /// Places a Tantrum (SCP-173's ability) in the indicated position.
         /// </summary>
         /// <param name="position">The position where you want to spawn the Tantrum.</param>
-        /// <param name="isActive">Whether or not the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
+        /// <param name="isActive">Whether the tantrum will apply the <see cref="EffectType.Stained"/> effect.</param>
         /// <remarks>If <paramref name="isActive"/> is <see langword="true"/>, the tantrum is moved slightly up from its original position. Otherwise, the collision will not be detected and the slowness will not work.</remarks>
         /// <returns>The <see cref="TantrumHazard"/> instance.</returns>
         public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true)

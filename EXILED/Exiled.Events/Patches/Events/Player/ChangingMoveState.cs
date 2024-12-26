@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingMoveState.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingMoveState.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -58,10 +58,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // value
                     new(OpCodes.Ldarg_1),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
-
-                    // ChangingMoveStateEventArgs ev = new(Player, PlayerMovementState, PlayerMovementState, bool)
+                    // ChangingMoveStateEventArgs ev = new(Player, PlayerMovementState, PlayerMovementState)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingMoveStateEventArgs))[0]),
                     new(OpCodes.Dup, ev.LocalIndex),
                     new(OpCodes.Stloc_S, ev.LocalIndex),

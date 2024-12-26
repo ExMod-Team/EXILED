@@ -1,14 +1,12 @@
 // -----------------------------------------------------------------------
-// <copyright file="FillingLockerEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="FillingLockerEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using System;
-
     using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Interfaces;
@@ -41,12 +39,6 @@ namespace Exiled.Events.EventArgs.Map
         public Pickup Pickup { get; }
 
         /// <summary>
-        /// Gets a value indicating the target locker chamber.
-        /// </summary>
-        [Obsolete("Use Chamber instead.")]
-        public LockerChamber LockerChamber => Chamber.Base;
-
-        /// <summary>
         /// Gets a locker which is containing <see cref="Chamber"/>.
         /// </summary>
         public API.Features.Lockers.Locker Locker => Chamber.Locker;
@@ -57,7 +49,7 @@ namespace Exiled.Events.EventArgs.Map
         public Chamber Chamber { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the item can be spawned.
+        /// Gets or sets a value indicating whether the item can be spawned.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
     }

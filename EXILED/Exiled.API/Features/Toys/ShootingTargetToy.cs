@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ShootingTargetToy.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ShootingTargetToy.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -45,6 +45,21 @@ namespace Exiled.API.Features.Toys
             Base = target;
             Type = TypeLookup.TryGetValue(Base.gameObject.name.Substring(0, Base.gameObject.name.Length - 7), out ShootingTargetType type) ? type : ShootingTargetType.Unknown;
         }
+
+        /// <summary>
+        /// Gets the prefab for Sport Shooting Target.
+        /// </summary>
+        public static ShootingTarget SportShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.SportTarget);
+
+        /// <summary>
+        /// Gets the prefab for DBoy Shooting Target.
+        /// </summary>
+        public static ShootingTarget DboyShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.DBoyTarget);
+
+        /// <summary>
+        /// Gets the prefab for Binary Shooting Target.
+        /// </summary>
+        public static ShootingTarget BinaryShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.BinaryTarget);
 
         /// <summary>
         /// Gets the base-game <see cref="ShootingTarget"/> for this target.
@@ -135,7 +150,7 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the target is in sync mode.
+        /// Gets or sets a value indicating whether the target is in sync mode.
         /// </summary>
         public bool IsSynced
         {
@@ -165,19 +180,19 @@ namespace Exiled.API.Features.Toys
             {
                 case ShootingTargetType.ClassD:
                     {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.DboyShootingTargetObject));
+                        shootingTargetToy = new(Object.Instantiate(DboyShootingTargetPrefab));
                         break;
                     }
 
                 case ShootingTargetType.Binary:
                     {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.BinaryShootingTargetObject));
+                        shootingTargetToy = new(Object.Instantiate(BinaryShootingTargetPrefab));
                         break;
                     }
 
                 default:
                     {
-                        shootingTargetToy = new ShootingTargetToy(Object.Instantiate(ToysHelper.SportShootingTargetObject));
+                        shootingTargetToy = new(Object.Instantiate(SportShootingTargetPrefab));
                         break;
                     }
             }
@@ -199,8 +214,8 @@ namespace Exiled.API.Features.Toys
         /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
         public static ShootingTargetToy Get(ShootingTarget shootingTarget)
         {
-            AdminToy adminToy = Map.Toys.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
-            return adminToy is not null ? adminToy as ShootingTargetToy : new ShootingTargetToy(shootingTarget);
+            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
+            return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
         }
 
         /// <summary>
@@ -214,7 +229,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="damage">The damage to be dealt.</param>
         /// <param name="damageHandler">The <see cref="DamageHandlerBase"/> dealing the damage.</param>
         /// <param name="exactHit">The exact location of the hit.</param>
-        /// <returns>Whether or not the damage was sent.</returns>
+        /// <returns>Whether the damage was sent.</returns>
         public bool Damage(float damage, DamageHandlerBase damageHandler, Vector3 exactHit) => Base.Damage(damage, damageHandler, exactHit);
     }
 }

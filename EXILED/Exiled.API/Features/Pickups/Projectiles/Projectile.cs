@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Projectile.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Projectile.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -115,19 +115,6 @@ namespace Exiled.API.Features.Pickups.Projectiles
             where T : Projectile => Create(projectiletype) as T;
 
         /// <summary>
-        /// Spawns a <see cref="Projectile"/>.
-        /// </summary>
-        /// <param name="pickup">The <see cref="Projectile"/> too spawn.</param>
-        /// <param name="position">The position to spawn the <see cref="Projectile"/> at.</param>
-        /// <param name="rotation">The rotation to spawn the <see cref="Projectile"/>.</param>
-        /// <param name="shouldBeActive">Whether the <see cref="Projectile"/> should be in active state after spawn.</param>
-        /// <param name="previousOwner">An optional previous owner of the item.</param>
-        /// <returns>The <see cref="Projectile"/> Spawn.</returns>
-        [Obsolete("Use pickup.Spawn(Vector3, Quaternion, Player) instead of this", true)]
-        public static Projectile Spawn(Projectile pickup, Vector3 position, Quaternion rotation, bool shouldBeActive = true, Player previousOwner = null)
-            => pickup.Spawn(position, rotation, shouldBeActive, previousOwner);
-
-        /// <summary>
         /// Creates and spawns a <see cref="Projectile"/>.
         /// </summary>
         /// <param name="type">The <see cref="ProjectileType"/> of the projectile.</param>
@@ -135,8 +122,8 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <param name="rotation">The rotation to spawn the <see cref="Projectile"/>.</param>
         /// <param name="shouldBeActive">Whether the <see cref="Projectile"/> should be in active state after spawn.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
-        /// <returns>The <see cref="Projectile"/>. See documentation of <see cref="Create(ProjectileType)"/> for more information on casting.</returns>
-        public static Projectile CreateAndSpawn(ProjectileType type, Vector3 position, Quaternion rotation, bool shouldBeActive = true, Player previousOwner = null) => Create(type).Spawn(position, rotation, shouldBeActive, previousOwner);
+        /// <returns>The <see cref="Projectile"/>. See documentation of <see cref="Create"/> for more information on casting.</returns>
+        public static Projectile CreateAndSpawn(ProjectileType type, Vector3 position, Quaternion? rotation = null, bool shouldBeActive = true, Player previousOwner = null) => Create(type).Spawn(position, rotation, shouldBeActive, previousOwner);
 
         /// <summary>
         /// Creates and spawns a <see cref="Projectile"/>.
@@ -147,8 +134,8 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <param name="shouldBeActive">Whether the <see cref="Projectile"/> should be in active state after spawn.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <typeparam name="T">The specified <see cref="Projectile"/> type.</typeparam>
-        /// <returns>The <see cref="Projectile"/>. See documentation of <see cref="Create(ProjectileType)"/> for more information on casting.</returns>
-        public static Projectile CreateAndSpawn<T>(ProjectileType type, Vector3 position, Quaternion rotation, bool shouldBeActive = true, Player previousOwner = null)
+        /// <returns>The <see cref="Projectile"/>. See documentation of <see cref="Create"/> for more information on casting.</returns>
+        public static Projectile CreateAndSpawn<T>(ProjectileType type, Vector3 position, Quaternion? rotation = null, bool shouldBeActive = true, Player previousOwner = null)
             where T : Projectile => CreateAndSpawn(type, position, rotation, shouldBeActive, previousOwner) as T;
 
         /// <summary>
@@ -164,10 +151,10 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// <param name="shouldBeActive">Whether the <see cref="Projectile"/> should be in active state after spawn.</param>
         /// <param name="previousOwner">An optional previous owner of the item.</param>
         /// <returns>The spawned <see cref="Projectile"/>.</returns>
-        public Projectile Spawn(Vector3 position, Quaternion rotation, bool shouldBeActive = true, Player previousOwner = null)
+        public Projectile Spawn(Vector3 position, Quaternion? rotation = null, bool shouldBeActive = true, Player previousOwner = null)
         {
             Position = position;
-            Rotation = rotation;
+            Rotation = rotation ?? Quaternion.identity;
             PreviousOwner = previousOwner;
             Spawn();
 

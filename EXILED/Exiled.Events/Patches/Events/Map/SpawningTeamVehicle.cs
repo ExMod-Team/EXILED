@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpawningTeamVehicle.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SpawningTeamVehicle.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -21,11 +21,11 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType, SpawnableTeamType)"/>.
+    /// Patches <see cref="WaveUpdateMessage.ServerSendUpdate"/>.
     /// Adds the <see cref="Handlers.Map.SpawningTeamVehicle"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Map), nameof(Handlers.Map.SpawningTeamVehicle))]
-    [HarmonyPatch(typeof(RespawnEffectsController), nameof(RespawnEffectsController.ExecuteAllEffects))]
+    [HarmonyPatch(typeof(WaveUpdateMessage), nameof(WaveUpdateMessage.ServerSendUpdate))]
     internal static class SpawningTeamVehicle
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -35,28 +35,30 @@ namespace Exiled.Events.Patches.Events.Map
             Label retLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(SpawningTeamVehicleEventArgs));
+            LocalBuilder msg = generator.DeclareLocal(typeof(WaveUpdateMessage));
 
-            newInstructions.InsertRange(0, new CodeInstruction[]
+            int offset = 1;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Newobj) + offset;
+
+            newInstructions.InsertRange(index, new[]
             {
+                new(OpCodes.Stloc_S, msg.LocalIndex),
+
                 // if (type != RespawnEffectsController.EffectType.Selection)
                 //    goto continueLabel;
-                new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldc_I4_0),
-                new(OpCodes.Ceq),
+                new(OpCodes.Ldloca_S, msg.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(WaveUpdateMessage), nameof(WaveUpdateMessage.IsTrigger))),
                 new(OpCodes.Brfalse_S, continueLabel),
 
-                // team
-                new(OpCodes.Ldarg_1),
+                // wave
+                new(OpCodes.Ldarg_0),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // SpawningTeamVehicleEventArgs ev = new(SpawnableTeamType, bool);
+                // SpawningTeamVehicleEventArgs ev = new(SpawnableWaveBase, bool);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningTeamVehicleEventArgs))[0]),
                 new(OpCodes.Dup),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, ev.LocalIndex),
 
                 // Handlers.Map.OnSpawningTeamVehicle(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnSpawningTeamVehicle))),
@@ -66,12 +68,7 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningTeamVehicleEventArgs), nameof(SpawningTeamVehicleEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
 
-                // team = ev.Team
-                new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningTeamVehicleEventArgs), nameof(SpawningTeamVehicleEventArgs.Team))),
-                new(OpCodes.Starg_S, 1),
-
-                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
+                new CodeInstruction(OpCodes.Ldloc_S, msg.LocalIndex).WithLabels(continueLabel),
             });
 
             newInstructions[newInstructions.Count - 1].WithLabels(retLabel);

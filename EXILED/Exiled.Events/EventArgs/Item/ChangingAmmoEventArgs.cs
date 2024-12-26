@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingAmmoEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ChangingAmmoEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -61,7 +61,7 @@ namespace Exiled.Events.EventArgs.Item
         public byte NewAmmo { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the ammo can be changed.
+        /// Gets or sets a value indicating whether the ammo can be changed.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

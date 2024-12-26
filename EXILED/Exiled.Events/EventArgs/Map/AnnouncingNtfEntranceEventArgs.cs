@@ -1,13 +1,15 @@
 // -----------------------------------------------------------------------
-// <copyright file="AnnouncingNtfEntranceEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="AnnouncingNtfEntranceEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Map
 {
+    using Exiled.API.Features.Waves;
     using Interfaces;
+    using Respawning.Announcements;
 
     /// <summary>
     /// Contains all information before C.A.S.S.I.E announces the NTF entrance.
@@ -17,25 +19,22 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Initializes a new instance of the <see cref="AnnouncingNtfEntranceEventArgs" /> class.
         /// </summary>
-        /// <param name="scpsLeft">
-        /// <inheritdoc cref="ScpsLeft" />
-        /// </param>
-        /// <param name="unitName">
-        /// <inheritdoc cref="UnitName" />
-        /// </param>
-        /// <param name="unitNumber">
-        /// <inheritdoc cref="UnitNumber" />
-        /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public AnnouncingNtfEntranceEventArgs(int scpsLeft, string unitName, int unitNumber, bool isAllowed = true)
+        /// <param name="announcement"><inheritdoc cref="Wave"/></param>
+        /// <param name="scpsLeft"><inheritdoc cref="ScpsLeft"/></param>
+        /// <param name="unitName"><inheritdoc cref="UnitName"/></param>
+        /// <param name="unitNumber"><inheritdoc cref="UnitNumber"/></param>
+        public AnnouncingNtfEntranceEventArgs(WaveAnnouncementBase announcement, int scpsLeft, string unitName, int unitNumber)
         {
+            Wave = TimedWave.GetTimedWaves().Find(x => x.Announcement == announcement);
             ScpsLeft = scpsLeft;
             UnitName = unitName;
             UnitNumber = unitNumber;
-            IsAllowed = isAllowed;
         }
+
+        /// <summary>
+        /// Gets the entering wave.
+        /// </summary>
+        public TimedWave Wave { get; }
 
         /// <summary>
         /// Gets or sets the number of SCPs left.
@@ -53,8 +52,8 @@ namespace Exiled.Events.EventArgs.Map
         public int UnitNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the NTF spawn will be announced by C.A.S.S.I.E.
+        /// Gets or sets a value indicating whether the NTF spawn will be announced by C.A.S.S.I.E.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
     }
 }

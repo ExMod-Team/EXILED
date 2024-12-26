@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="KeycardInteractingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="KeycardInteractingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace Exiled.Events.EventArgs.Item
         public Door Door { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not the keycard can interact with the door.
+        /// Gets or sets a value indicating whether the keycard can interact with the door.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

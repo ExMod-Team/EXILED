@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="UsingRadioBatteryEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="UsingRadioBatteryEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -56,7 +56,7 @@ namespace Exiled.Events.EventArgs.Player
         public float Drain { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the radio battery charge can be changed or not.
+        /// Gets or sets a value indicating whether the radio battery charge can be changed.
         /// </summary>
         public bool IsAllowed { get; set; }
 

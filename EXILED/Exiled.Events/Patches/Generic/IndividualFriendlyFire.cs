@@ -1,12 +1,14 @@
 // -----------------------------------------------------------------------
-// <copyright file="IndividualFriendlyFire.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="IndividualFriendlyFire.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.Patches.Generic
 {
+    using Exiled.API.Extensions;
+
 #pragma warning disable SA1402
     using System;
     using System.Collections.Generic;
@@ -89,17 +91,17 @@ namespace Exiled.Events.Patches.Generic
 
             // Return false, no custom friendly fire allowed, default to NW logic for FF. No point in processing if FF is enabled across the board.
             if (Server.FriendlyFire)
-                return HitboxIdentity.IsEnemy(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
+                return HitboxIdentity.IsDamageable(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
 
-            // always allow damage from Server.Host
+            // Always allow damage from Server.Host
             if (attackerFootprint.Hub == Server.Host.ReferenceHub)
                 return true;
 
             // Only check friendlyFire if the FootPrint hasn't changed (Fix for Grenade not dealing damage because it's from a dead player)
-            // TODO rework FriendlyFireRule to make it compatible with Footprint
-            if (!attackerFootprint.SameLife(new(attackerFootprint.Hub)))
-                return HitboxIdentity.IsEnemy(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
+            if (!attackerFootprint.CompareLife(new Footprint(attackerFootprint.Hub)))
+                return false;
 
+            // Check if attackerFootprint.Hub or victimHub is null and log debug information
             if (attackerFootprint.Hub is null || victimHub is null)
             {
                 Log.Debug($"CheckFriendlyFirePlayerRules, Attacker hub null: {attackerFootprint.Hub is null}, Victim hub null: {victimHub is null}");
@@ -110,6 +112,7 @@ namespace Exiled.Events.Patches.Generic
             {
                 Player attacker = Player.Get(attackerFootprint.Hub);
                 Player victim = Player.Get(victimHub);
+
                 if (attacker is null || victim is null)
                 {
                     Log.Debug($"CheckFriendlyFirePlayerRules, Attacker null: {attacker is null}, Victim null: {victim is null}");
@@ -124,45 +127,27 @@ namespace Exiled.Events.Patches.Generic
 
                 Log.Debug($"CheckFriendlyFirePlayerRules, Attacker role {attacker.Role} and Victim {victim.Role}");
 
-                if (!string.IsNullOrEmpty(victim.UniqueRole))
+                // Check victim's UniqueRole for custom FF multiplier
+                if (!string.IsNullOrEmpty(victim.UniqueRole) &&
+                    victim.CustomRoleFriendlyFireMultiplier.TryGetValue(victim.UniqueRole, out Dictionary<RoleTypeId, float> victimPairedData) &&
+                    victimPairedData.TryGetValue(attacker.Role, out ffMultiplier))
                 {
-                    // If 035 is being shot, then we need to check if we are an 035, then check if the attacker is allowed to attack us
-                    if (victim.CustomRoleFriendlyFireMultiplier.Count > 0)
-                    {
-                        if (victim.CustomRoleFriendlyFireMultiplier.TryGetValue(victim.UniqueRole, out Dictionary<RoleTypeId, float> pairedData))
-                        {
-                            if (pairedData.ContainsKey(attacker.Role))
-                            {
-                                ffMultiplier = pairedData[attacker.Role];
-                                return true;
-                            }
-                        }
-                    }
-                }
-                else if (!string.IsNullOrEmpty(attacker.UniqueRole))
-                {
-                    // If 035 is attacking, whether to allow or disallow based on victim role.
-                    if (attacker.CustomRoleFriendlyFireMultiplier.Count > 0)
-                    {
-                        if (attacker.CustomRoleFriendlyFireMultiplier.TryGetValue(attacker.UniqueRole, out Dictionary<RoleTypeId, float> pairedData))
-                        {
-                            if (pairedData.ContainsKey(victim.Role))
-                            {
-                                ffMultiplier = pairedData[victim.Role];
-                                return true;
-                            }
-                        }
-                    }
+                    return true;
                 }
 
-                // If we're SCP then we need to check if we can attack other SCP, or D-Class, etc. This is default FF logic without unique roles.
-                if (attacker.FriendlyFireMultiplier.Count > 0)
+                // Check attacker's UniqueRole for custom FF multiplier
+                if (!string.IsNullOrEmpty(attacker.UniqueRole) &&
+                    attacker.CustomRoleFriendlyFireMultiplier.TryGetValue(attacker.UniqueRole, out Dictionary<RoleTypeId, float> attackerPairedData) &&
+                    attackerPairedData.TryGetValue(victim.Role, out ffMultiplier))
                 {
-                    if (attacker.FriendlyFireMultiplier.TryGetValue(victim.Role, out float ffMulti))
-                    {
-                        ffMultiplier = ffMulti;
-                        return true;
-                    }
+                    return true;
+                }
+
+                // Default FF logic for SCP or other roles without unique roles
+                if (!attacker.FriendlyFireMultiplier.IsEmpty() &&
+                    attacker.FriendlyFireMultiplier.TryGetValue(victim.Role, out ffMultiplier))
+                {
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -170,7 +155,8 @@ namespace Exiled.Events.Patches.Generic
                 Log.Error($"CheckFriendlyFirePlayerRules failed to handle friendly fire because: {ex}");
             }
 
-            return HitboxIdentity.IsEnemy(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
+            // Default to NW logic
+            return HitboxIdentity.IsDamageable(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
         }
     }
 
@@ -235,7 +221,7 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // Load Attacker (this.Attacker)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
@@ -269,7 +255,7 @@ namespace Exiled.Events.Patches.Generic
             // int ffMultiplierIndex = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ret) + ffMultiplierIndexOffset;
             newInstructions.InsertRange(
                 ffMultiplierIndex,
-                new CodeInstruction[]
+                new[]
                 {
                     // Do not run our custom logic, skip over.
                     new(OpCodes.Br, normalProcessing),

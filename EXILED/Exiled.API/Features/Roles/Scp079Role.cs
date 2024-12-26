@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp079Role.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp079Role.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -217,7 +217,7 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-079 can transmit its voice to a speaker.
+        /// Gets a value indicating whether SCP-079 can transmit its voice to a speaker.
         /// </summary>
         public bool CanTransmit => SpeakerAbility.CanTransmit;
 
@@ -361,7 +361,7 @@ namespace Exiled.API.Features.Roles
         public float RollRotation => Base.RollRotation;
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-079's signal is lost due to SCP-2176.
+        /// Gets a value indicating whether SCP-079's signal is lost due to SCP-2176.
         /// </summary>
         public bool IsLost => LostSignalHandler.Lost;
 
@@ -593,7 +593,7 @@ namespace Exiled.API.Features.Roles
             Scp079Camera cam = CurrentCameraSync.CurrentCamera;
             RewardManager.MarkRoom(cam.Room);
 
-            if (!TeslaGateController.Singleton.TeslaGates.TryGetFirst(x => RoomIdUtils.IsTheSameRoom(cam.Position, x.transform.position), out global::TeslaGate teslaGate))
+            if (!global::TeslaGate.AllGates.TryGetFirst(x => RoomIdUtils.IsTheSameRoom(cam.Position, x.transform.position), out global::TeslaGate teslaGate))
                 return;
 
             if (consumeEnergy)

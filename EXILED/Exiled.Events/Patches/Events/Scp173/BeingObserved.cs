@@ -1,13 +1,12 @@
-﻿// -----------------------------------------------------------------------
-// <copyright file="BeingObserved.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// -----------------------------------------------------------------------
+// <copyright file="BeingObserved.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.Patches.Events.Scp173
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
