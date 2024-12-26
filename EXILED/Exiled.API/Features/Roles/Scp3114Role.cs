@@ -1,13 +1,12 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp3114Role.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp3114Role.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.API.Features.Roles
 {
-    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Enums;
@@ -161,19 +160,9 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets or sets the SCP-3114's Ragdoll used for it's FakeIdentity.
         /// </summary>
-        [Obsolete("Ragdoll in Role now has other meaning. Use IdentityRagdoll instead.")]
-        public new Ragdoll Ragdoll
-        {
-            get => IdentityRagdoll;
-            set => IdentityRagdoll = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the SCP-3114's Ragdoll used for it's FakeIdentity.
-        /// </summary>
         public Ragdoll IdentityRagdoll
         {
-            get => Ragdoll.Get(Identity.CurIdentity.Ragdoll);
+            get => Features.Ragdoll.Get(Identity.CurIdentity.Ragdoll);
             set
             {
                 Identity.CurIdentity.Ragdoll = value?.Base;

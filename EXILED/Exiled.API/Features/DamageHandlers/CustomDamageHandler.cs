@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="CustomDamageHandler.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CustomDamageHandler.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -71,7 +71,7 @@ namespace Exiled.API.Features.DamageHandlers
                 Base = { Owner = attacker.ReferenceHub },
             };
 
-            CustomBase = new FirearmDamageHandler(firearm, target, new BaseFirearmHandler(firearm.Base, damage));
+            CustomBase = new FirearmDamageHandler(firearm, target, new PlayerStatsSystem.FirearmDamageHandler() { Firearm = firearm.Base, Damage = damage });
         }
 
         /// <summary>

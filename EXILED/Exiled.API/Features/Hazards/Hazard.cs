@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Hazard.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Hazard.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -86,7 +86,7 @@ namespace Exiled.API.Features.Hazards
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not hazard is active.
+        /// Gets a value indicating whether hazard is active.
         /// </summary>
         public bool IsActive => Base.IsActive;
 

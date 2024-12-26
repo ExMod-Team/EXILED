@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="RevealedEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="RevealedEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -39,7 +39,7 @@ namespace Exiled.Events.EventArgs.Scp3114
         public Scp3114Role Scp3114 { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the reveal is manual or not.
+        /// Gets a value indicating whether the reveal is manual.
         /// </summary>
         public bool IsManualReveal { get; }
     }

@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Lift.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Lift.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -21,7 +21,6 @@ namespace Exiled.API.Features
     using UnityEngine;
 
     using static Interactables.Interobjects.ElevatorChamber;
-    using static Interactables.Interobjects.ElevatorManager;
 
     using Elevator = Interactables.Interobjects.ElevatorDoor;
 
@@ -33,7 +32,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="ElevatorChamber"/>s and their corresponding <see cref="Lift"/>.
         /// </summary>
-        internal static readonly Dictionary<ElevatorChamber, Lift> ElevatorChamberToLift = new(8, new ComponentsEqualityComparer());
+        internal static readonly Dictionary<ElevatorChamber, Lift> ElevatorChamberToLift = new(9, new ComponentsEqualityComparer());
 
         /// <summary>
         /// Internal list that contains all ElevatorDoor for current group.
@@ -121,8 +120,8 @@ namespace Exiled.API.Features
         /// </summary>
         public ElevatorSequence Status
         {
-            get => Base._curSequence;
-            set => Base._curSequence = value;
+            get => Base.CurSequence;
+            set => Base.CurSequence = value;
         }
 
         /// <summary>
@@ -140,7 +139,7 @@ namespace Exiled.API.Features
             ElevatorGroup.GateB => ElevatorType.GateB,
             ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => ElevatorType.LczA,
             ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => ElevatorType.LczB,
-            ElevatorGroup.Nuke => ElevatorType.Nuke,
+            ElevatorGroup.Nuke01 or ElevatorGroup.Nuke02 => ElevatorType.Nuke,
             _ => ElevatorType.Unknown,
         };
 
@@ -162,7 +161,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the lift is locked.
         /// </summary>
-        public bool IsLocked => Base.ActiveLocks > 0;
+        public bool IsLocked => Base.ActiveLocksAnyDoors > 0 || Base.ActiveLocksAllDoors > 0;
 
         /// <summary>
         /// Gets or sets the <see cref="AnimationTime"/>.
@@ -196,12 +195,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="CurrentLevel"/>.
         /// </summary>
-        public int CurrentLevel => Base.CurrentLevel;
+        public int CurrentLevel => Base.DestinationLevel;
 
         /// <summary>
         /// Gets the <see cref="CurrentDestination"/>.
         /// </summary>
-        public Doors.ElevatorDoor CurrentDestination => Door.Get<Doors.ElevatorDoor>(Base.CurrentDestination);
+        public Doors.ElevatorDoor CurrentDestination => Door.Get<Doors.ElevatorDoor>(Base.DestinationDoor);
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> which contains all the <see cref="Lift"/> instances from the specified <see cref="Status"/>.
@@ -272,9 +271,8 @@ namespace Exiled.API.Features
         /// Tries to start the lift.
         /// </summary>
         /// <param name="level">The destination level.</param>
-        /// <param name="isForced">Indicates whether the start will be forced or not.</param>
-        /// <returns><see langword="true"/> if the lift was started successfully; otherwise, <see langword="false"/>.</returns>
-        public bool TryStart(int level, bool isForced = false) => TrySetDestination(Group, level, isForced);
+        /// <param name="allowQueueing">Allowing queing.</param>
+        public void TryStart(int level, bool allowQueueing = false) => Base.ServerSetDestination(level, allowQueueing);
 
         /// <summary>
         /// Changes lock of the lift.
@@ -295,17 +293,12 @@ namespace Exiled.API.Features
                 else
                 {
                     door.ChangeLock((DoorLockType)lockReason);
-
-                    if (CurrentLevel != 1)
-                        TrySetDestination(Group, 1, true);
                 }
-
-                Base.RefreshLocks(Group, door.Base);
             }
         }
 
         /// <summary>
-        /// Returns whether or not the provided <see cref="Vector3">position</see> is inside the lift.
+        /// Returns whether the provided <see cref="Vector3">position</see> is inside the lift.
         /// </summary>
         /// <param name="point">The position.</param>
         /// <returns><see langword="true"/> if the point is inside the elevator. Otherwise, <see langword="false"/>.</returns>

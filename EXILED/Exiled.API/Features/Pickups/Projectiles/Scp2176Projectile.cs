@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp2176Projectile.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Scp2176Projectile.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -43,7 +43,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new BaseScp2176Projectile Base { get; }
 
         /// <summary>
-        /// Gets a value indicating whether or not SCP-2176 has shattered.
+        /// Gets a value indicating whether SCP-2176 has shattered.
         /// </summary>
         public bool IsAlreadyTriggered => Base._hasTriggered;
 

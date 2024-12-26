@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpawningRagdoll.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SpawningRagdoll.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -45,17 +45,19 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(SpawningRagdollEventArgs));
 
-            int offset = 0;
+            int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertySetter(typeof(BasicRagdoll), nameof(BasicRagdoll.NetworkInfo)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // RagdollInfo loads into stack before il inject
+                // ragdoll.NetworkInfo
+                new(OpCodes.Ldloc_1),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(BasicRagdoll), nameof(BasicRagdoll.NetworkInfo))),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // SpawningRagdollEventArgs ev = new(RagdollInfo, bool)
+                // SpawningRagdollEventArgs ev = new(ragdoll, RagdollInfo, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningRagdollEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
@@ -71,8 +73,9 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRagdollEventArgs), nameof(SpawningRagdollEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, cnt),
 
-                // gameobject loads into stack before il inject
-                new(OpCodes.Pop),
+                // destroy ragdoll and ret null
+                new(OpCodes.Ldloc_1),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(BasicRagdoll), nameof(BasicRagdoll.gameObject))),
                 new(OpCodes.Call, Method(typeof(Object), nameof(Object.Destroy), new[] { typeof(Object) })),
                 new(OpCodes.Ldnull),
                 new(OpCodes.Ret),
@@ -95,10 +98,6 @@ namespace Exiled.Events.Patches.Events.Player
 
                 // ragdoll.gameObject.transform.localScale = targetScale
                 new(OpCodes.Callvirt, PropertySetter(typeof(Transform), nameof(Transform.localScale))),
-
-                // load ragdollInfo into stack*/
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRagdollEventArgs), nameof(SpawningRagdollEventArgs.Info))),
             });
 
             newInstructions.InsertRange(newInstructions.Count - 2, new CodeInstruction[]

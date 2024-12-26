@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="HumanRole.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="HumanRole.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -33,18 +33,9 @@ namespace Exiled.API.Features.Roles
         public override RoleTypeId Type => Base.RoleTypeId;
 
         /// <summary>
-        /// Gets or sets the <see cref="SpawnableTeamType"/>.
-        /// </summary>
-        public SpawnableTeamType SpawnableTeamType
-        {
-            get => Base.AssignedSpawnableTeam;
-            set => Base.AssignedSpawnableTeam = value;
-        }
-
-        /// <summary>
         /// Gets the player's unit name.
         /// </summary>
-        public string UnitName => UnitNameMessageHandler.GetReceived(Base.AssignedSpawnableTeam, Base.UnitNameId);
+        public string UnitName => NamingRulesManager.ClientFetchReceived(Team, UnitNameId);
 
         /// <summary>
         /// Gets or sets the <see cref="UnitNameId"/>.

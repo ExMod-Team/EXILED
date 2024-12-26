@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="Map.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="Map.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -26,11 +26,6 @@ namespace Exiled.Events.Handlers
         public static Event<PlacingBulletHoleEventArgs> PlacingBulletHole { get; set; } = new();
 
         /// <summary>
-        /// Invoked before placing blood.
-        /// </summary>
-        public static Event<PlacingBloodEventArgs> PlacingBlood { get; set; } = new();
-
-        /// <summary>
         /// Invoked before announcing the light containment zone decontamination.
         /// </summary>
         public static Event<AnnouncingDecontaminationEventArgs> AnnouncingDecontamination { get; set; } = new();
@@ -44,6 +39,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before announcing the NTF entrance.
         /// </summary>
         public static Event<AnnouncingNtfEntranceEventArgs> AnnouncingNtfEntrance { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before announcing the Chaos entrance.
+        /// </summary>
+        public static Event<AnnouncingChaosEntranceEventArgs> AnnouncingChaosEntrance { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="Scp079Generator"/> has been activated.
@@ -122,12 +122,6 @@ namespace Exiled.Events.Handlers
         public static void OnPlacingBulletHole(PlacingBulletHoleEventArgs ev) => PlacingBulletHole.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before placing bloods.
-        /// </summary>
-        /// <param name="ev">The <see cref="PlacingBloodEventArgs"/> instance.</param>
-        public static void OnPlacingBlood(PlacingBloodEventArgs ev) => PlacingBlood.InvokeSafely(ev);
-
-        /// <summary>
         /// Called before announcing the light containment zone decontamination.
         /// </summary>
         /// <param name="ev">The <see cref="AnnouncingDecontaminationEventArgs"/> instance.</param>
@@ -144,6 +138,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="AnnouncingNtfEntranceEventArgs"/> instance.</param>
         public static void OnAnnouncingNtfEntrance(AnnouncingNtfEntranceEventArgs ev) => AnnouncingNtfEntrance.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before announcing the Chaos entrance.
+        /// </summary>
+        /// <param name="ev">The <see cref="AnnouncingChaosEntranceEventArgs"/> instance.</param>
+        public static void OnAnnouncingChaosEntrance(AnnouncingChaosEntranceEventArgs ev) => AnnouncingChaosEntrance.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="Scp079Generator"/> has been activated.

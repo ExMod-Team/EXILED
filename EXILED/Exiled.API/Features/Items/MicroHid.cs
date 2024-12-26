@@ -1,15 +1,21 @@
 // -----------------------------------------------------------------------
-// <copyright file="MicroHid.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="MicroHid.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.API.Features.Items
 {
-    using Exiled.API.Interfaces;
+    using System;
+    using System.Reflection;
 
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Interfaces;
     using InventorySystem.Items.MicroHID;
+    using InventorySystem.Items.MicroHID.Modules;
+
+    using Random = UnityEngine.Random;
 
     /// <summary>
     /// A wrapper class for <see cref="MicroHIDItem"/>.
@@ -35,12 +41,33 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Gets the <see cref="EnergyManagerModule"/> of the MicroHID.
+        /// </summary>
+        public EnergyManagerModule EnergyManager => Base.EnergyManager;
+
+        /// <summary>
+        /// Gets the <see cref="BrokenSyncModule"/> of the MicroHID.
+        /// </summary>
+        public BrokenSyncModule BrokenModule => Base.BrokenSync;
+
+        /// <summary>
+        /// Gets the <see cref="InputSyncModule"/> of the MicroHID.
+        /// </summary>
+        public InputSyncModule InputModule => Base.InputSync;
+
+        /// <summary>
+        /// Gets the <see cref="CycleController"/> of the MicroHID.
+        /// </summary>
+        public CycleController CycleController => Base.CycleController;
+
+        /// <summary>
         /// Gets or sets the remaining energy in the MicroHID.
         /// </summary>
+        /// <value>Maximum energy is <c>1</c>. Minimum energy is <c>0</c>.</value>
         public float Energy
         {
-            get => Base.RemainingEnergy;
-            set => Base.RemainingEnergy = value;
+            get => EnergyManager.Energy;
+            set => EnergyManager.ServerSetEnergy(Serial, value);
         }
 
         /// <summary>
@@ -49,23 +76,128 @@ namespace Exiled.API.Features.Items
         public new MicroHIDItem Base { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="HidState"/>.
+        /// Gets or sets a value indicating whether the MicroHID is broken.
         /// </summary>
-        public HidState State
+        public bool IsBroken
         {
-            get => Base.State;
-            set => Base.State = value;
+            get => BrokenModule.Broken;
+            set => BrokenModule.ServerSetBroken(Serial, value);
         }
+
+        /// <summary>
+        /// Gets a time when this <see cref="MicroHid"/> was broken.
+        /// </summary>
+        /// <value>A time when this <see cref="MicroHid"/> was broken, or <c>0</c> if it is not broken.</value>
+        public float BrokeTime => BrokenSyncModule.TryGetBrokenElapsed(Serial, out float time) ? time : 0;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MicroHidPhase"/>.
+        /// </summary>
+        public MicroHidPhase State
+        {
+            get => CycleController.Phase;
+            set => CycleController.Phase = value;
+        }
+
+        /// <summary>
+        /// Gets or sets progress of winging up.
+        /// </summary>
+        /// <value>A value between <c>0</c> and <c>1</c>.</value>
+        public float WindUpProgress
+        {
+            get => CycleController.ServerWindUpProgress;
+            set => CycleController.ServerWindUpProgress = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the last received <see cref="MicroHidFiringMode"/>.
+        /// </summary>
+        public MicroHidFiringMode LastFiringMode
+        {
+            get => CycleController.LastFiringMode;
+            set => CycleController.LastFiringMode = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the last received <see cref="InputSyncModule.SyncData"/>.
+        /// </summary>
+        public InputSyncModule.SyncData LastReceived
+        {
+            get => InputModule._lastReceived;
+            set => InputModule._lastReceived = value;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="LastReceived"/> is <see cref="InputSyncModule.SyncData.Primary"/>.
+        /// </summary>
+        public bool IsPrimary => InputModule.Primary;
 
         /// <summary>
         /// Starts firing the MicroHID.
         /// </summary>
-        public void Fire() => Base.Fire();
+        /// <param name="firingMode">Fire mode.</param>
+        public void Fire(MicroHidFiringMode firingMode = MicroHidFiringMode.PrimaryFire)
+        {
+            switch (firingMode)
+            {
+                case MicroHidFiringMode.PrimaryFire:
+                    if (TryGetFireController(MicroHidFiringMode.PrimaryFire, out PrimaryFireModeModule primaryFireModeModule))
+                        primaryFireModeModule.ServerFire();
+                    break;
+                case MicroHidFiringMode.ChargeFire:
+                    if (TryGetFireController(MicroHidFiringMode.ChargeFire, out ChargeFireModeModule chargeFireModeModule))
+                        chargeFireModeModule.ServerFire();
+                    break;
+                default:
+                    if (TryGetFireController(MicroHidFiringMode.BrokenFire, out BrokenFireModeModule brokenFireModeModule))
+                        brokenFireModeModule.ServerFire();
+                    break;
+            }
+        }
 
         /// <summary>
         /// Recharges the MicroHID.
         /// </summary>
-        public void Recharge() => Base.Recharge();
+        public void Recharge()
+        {
+            if (IsBroken)
+                Energy = Random.value;
+            else
+                Energy = 1;
+        }
+
+        /// <summary>
+        /// Explodes the MicroHID.
+        /// </summary>
+        public void Explode()
+        {
+            if (TryGetFireController(MicroHidFiringMode.ChargeFire, out ChargeFireModeModule module))
+                module.ServerExplode();
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="FiringModeControllerModule"/> assosiated with the specified <see cref="MicroHidFiringMode"/>.
+        /// </summary>
+        /// <param name="firingMode">Target firing mode.</param>
+        /// <param name="module">Found module or <c>null</c>.</param>
+        /// <typeparam name="T">Type of module.</typeparam>
+        /// <returns><c>true</c> if module was found, <c>false</c> otherwise.</returns>
+        public bool TryGetFireController<T>(MicroHidFiringMode firingMode, out T module)
+            where T : FiringModeControllerModule
+        {
+            if (CycleController._firingModeControllers.Count == 0)
+                CycleController.RecacheFiringModes(Base);
+
+            module = (T)CycleController._firingModeControllers.Find(x => x.AssignedMode == firingMode);
+            return module != null;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="FiringModeControllerModule"/> assosiated with the last <see cref="MicroHidFiringMode"/>.
+        /// </summary>
+        /// <param name="module">Found module or <c>null</c>.</param>
+        /// <returns><c>true</c> if module was found, <c>false</c> otherwise.</returns>
+        public bool TryGetLastFireController(out FiringModeControllerModule module) => TryGetFireController(LastFiringMode, out module);
 
         /// <summary>
         /// Clones current <see cref="MicroHid"/> object.

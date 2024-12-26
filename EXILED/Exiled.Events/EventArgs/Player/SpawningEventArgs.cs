@@ -1,17 +1,18 @@
 // -----------------------------------------------------------------------
-// <copyright file="SpawningEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="SpawningEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using System;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
     using PlayerRoles;
-
     using UnityEngine;
 
     /// <summary>
@@ -31,15 +32,15 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="rotation">
         /// <inheritdoc cref="HorizontalRotation" />
         /// </param>
-        /// <param name="oldRole">
-        /// the spawned player's old <see cref="PlayerRoleBase">role</see>.
+        /// <param name="newRole">
+        /// the spawned player's new <see cref="PlayerRoleBase">role</see>.
         /// </param>
-        public SpawningEventArgs(Player player, Vector3 position, float rotation, PlayerRoleBase oldRole)
+        public SpawningEventArgs(Player player, Vector3 position, float rotation, PlayerRoleBase newRole)
         {
             Player = player;
             Position = position;
             HorizontalRotation = rotation;
-            OldRole = Role.Create(oldRole);
+            NewRole = Role.Create(newRole);
         }
 
         /// <summary>
@@ -66,6 +67,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the player's old <see cref="PlayerRoleBase">role</see>.
         /// </summary>
-        public Role OldRole { get; }
+        [Obsolete("Removed because the method is no longer provide OldRole since version 14.0. Use Player.Role instead")]
+        public Role OldRole => Player.Role;
+
+        /// <summary>
+        /// Gets the player's new <see cref="PlayerRoleBase">role</see>.
+        /// </summary>
+        public Role NewRole { get; }
     }
 }

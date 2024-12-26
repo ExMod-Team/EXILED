@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------
-// <copyright file="AttackingEventArgs.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="AttackingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -44,7 +44,7 @@ namespace Exiled.Events.EventArgs.Scp049
         public Player Target { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not target can be attacked.
+        /// Gets or sets a value indicating whether target can be attacked.
         /// </summary>
         public bool IsAllowed { get; set; }
     }
