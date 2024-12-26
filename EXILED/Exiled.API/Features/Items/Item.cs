@@ -13,10 +13,10 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.Keycards;
@@ -51,6 +51,10 @@ namespace Exiled.API.Features.Items
         public Item(ItemBase itemBase)
         {
             Base = itemBase;
+
+            if (Base is ModularAutosyncItem modularItem && modularItem.InstantiationStatus is AutosyncInstantiationStatus.Template or AutosyncInstantiationStatus.SimulatedInstance)
+                return;
+
             BaseToItem.Add(itemBase, this);
 
             if (Base.ItemSerial is 0 && itemBase.Owner != null)
@@ -158,7 +162,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether this item is a weapon.
         /// </summary>
-        public bool IsWeapon => this is Firearm;
+        public bool IsWeapon => this is Firearm || Type is ItemType.Jailbird or ItemType.MicroHID;
+
+        /// <summary>
+        /// Gets a value indicating whether or not this item is a firearm.
+        /// </summary>
+        public bool IsFirearm => this is Firearm;
 
         /// <summary>
         /// Gets a value indicating whether this item emits light.
@@ -224,7 +233,7 @@ namespace Exiled.API.Features.Items
                     Scp018Projectile => new Scp018(throwable),
                     _ => new Throwable(throwable),
                 },
-                _ => new Item(itemBase),
+                _ => new(itemBase),
             };
         }
 
@@ -361,11 +370,11 @@ namespace Exiled.API.Features.Items
         /// <param name="rotation">The rotation of the item.</param>
         /// <param name="spawn">Whether the <see cref="Pickup"/> should be initially spawned.</param>
         /// <returns>The created <see cref="Pickup"/>.</returns>
-        public virtual Pickup CreatePickup(Vector3 position, Quaternion rotation = default, bool spawn = true)
+        public virtual Pickup CreatePickup(Vector3 position, Quaternion? rotation = null, bool spawn = true)
         {
             PickupSyncInfo info = new(Type, Weight, Serial);
 
-            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation);
+            ItemPickupBase ipb = InventoryExtensions.ServerCreatePickup(Base, info, position, rotation ?? Quaternion.identity);
 
             Base.OnRemoved(ipb);
 

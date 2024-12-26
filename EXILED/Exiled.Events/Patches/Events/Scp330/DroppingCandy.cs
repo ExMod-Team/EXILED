@@ -56,15 +56,14 @@ namespace Exiled.Events.Patches.Events.Scp330
 
                     // scp330Bag
                     new(OpCodes.Ldloc_1),
-
-                    // Load candy bag array to get CandyKindID
                     new(OpCodes.Dup),
-                    new(OpCodes.Ldfld, Field(typeof(Scp330Bag), nameof(Scp330Bag.Candies))),
-                    new(OpCodes.Ldarg_1),
 
-                    // Grab candy ID from network message, and pass it to event args.
+                    // msg.CandyID
+                    new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(SelectScp330Message), nameof(SelectScp330Message.CandyID))),
-                    new(OpCodes.Ldelem_U1),
+
+                    // CandyKindID
+                    new(OpCodes.Call, Method(typeof(DroppingCandy), nameof(DroppingCandy.GetCandyID))),
 
                     // DroppingScp330EventArgs ev = new(Player, Scp330Bag, CandyKindID)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingScp330EventArgs))[0]),
@@ -104,6 +103,13 @@ namespace Exiled.Events.Patches.Events.Scp330
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static CandyKindID GetCandyID(Scp330Bag scp330Bag, int index)
+        {
+            if (index < 0 || index > scp330Bag.Candies.Count)
+                return CandyKindID.None;
+            return scp330Bag.Candies[index];
         }
     }
 }

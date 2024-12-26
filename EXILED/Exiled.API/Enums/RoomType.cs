@@ -150,16 +150,6 @@ namespace Exiled.API.Enums
         HczTesla,
 
         /// <summary>
-        /// Heavy Containment Zone's Servers room.
-        /// </summary>
-        HczServers,
-
-        /// <summary>
-        /// Heavy Containment Zone's 3-way intersection.
-        /// </summary>
-        HczTCross,
-
-        /// <summary>
         /// Heavy Containment Zone's cruved hall.
         /// </summary>
         HczCurve,
@@ -220,9 +210,14 @@ namespace Exiled.API.Enums
         EzChef,
 
         /// <summary>
-        /// Entrance Zone's straight hall
+        /// Entrance Zone's straight hall.
         /// </summary>
         EzStraight,
+
+        /// <summary>
+        /// Entrance Zone's straight hall with a different placement of seasonal objects.
+        /// </summary>
+        EzStraightColumn,
 
         /// <summary>
         /// Entrance Zone's Cafeteria Room.
@@ -255,7 +250,7 @@ namespace Exiled.API.Enums
         Surface,
 
         /// <summary>
-        /// Heavy Containment Zone's straight hall.
+        /// Heavy Containment Zone's straight hall with ceiling fan.
         /// </summary>
         HczStraight,
 
@@ -265,7 +260,7 @@ namespace Exiled.API.Enums
         EzTCross,
 
         /// <summary>
-        /// Light Containment ZOne's SCP-330 room.
+        /// Light Containment Zone's SCP-330 room.
         /// </summary>
         Lcz330,
 
@@ -295,42 +290,42 @@ namespace Exiled.API.Enums
         HczElevatorB,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Heavy Containment Zone's cross room with waterfall.
         /// </summary>
         HczCrossRoomWater,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Heavy Containment Zone's corner.
         /// </summary>
         HczCornerDeep,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Heavy Containment Zone's 3-way intersection with storage crates obstructing the passage.
         /// </summary>
         HczIntersectionJunk,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Heavy Containment Zone's 3-way intersection.
         /// </summary>
         HczIntersection,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Heavy Containment Zone's straight hall with pipelines and sanitary door.
         /// </summary>
         HczStraightC,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Heavy Containment Zone's straight hall with pipelines obstructing the passage.
         /// </summary>
         HczStraightPipeRoom,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Heavy Containment Zone's straight hall.
         /// </summary>
         HczStraightVariant,
 
         /// <summary>
-        /// Lazy TODO.
+        /// Entrance Zone's straight hall with Dr.L's and conference room 9b locked room.
         /// </summary>
         EzSmallrooms,
     }
