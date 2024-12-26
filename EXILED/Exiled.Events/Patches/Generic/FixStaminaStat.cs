@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="FixStaminaStat.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,11 +7,16 @@
 
 namespace Exiled.Events.Patches.Generic
 {
+    using System.Collections.Generic;
+    using System.Reflection.Emit;
+
     using Exiled.API.Features.CustomStats;
+    using Exiled.API.Features.Pools;
     using HarmonyLib;
-    using Mirror;
     using PlayerRoles.FirstPersonControl;
-    using UnityEngine;
+    using PlayerStatsSystem;
+
+    using static HarmonyLib.AccessTools;
 
     /// <summary>
     /// Fix for <see cref="CustomStaminaStat"/>.
@@ -19,55 +24,24 @@ namespace Exiled.Events.Patches.Generic
     [HarmonyPatch(typeof(FpcStateProcessor), nameof(FpcStateProcessor.UpdateMovementState))]
     internal static class FixStaminaStat
     {
-#pragma warning disable SA1313
-        private static bool Prefix(FpcStateProcessor __instance, PlayerMovementState state, PlayerMovementState __result)
-#pragma warning restore SA1313
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            if (__instance._stat is not CustomStaminaStat stat)
-                return true;
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            float height = __instance._mod.CharacterControllerSettings.Height;
-            float num1 = height * __instance._mod.CrouchHeightRatio;
+            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R4);
+            newInstructions.RemoveAt(index);
 
-            if (__instance.UpdateCrouching(state == PlayerMovementState.Crouching, num1, height) || __instance._firstUpdate)
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                __instance._firstUpdate = false;
-                float num2 = Mathf.Lerp(0.0f, (float)((height - num1) / 2.0), __instance.CrouchPercent);
-                float num3 = Mathf.Lerp(height, num1, __instance.CrouchPercent);
-                float radius = __instance._mod.CharController.radius;
-                __instance._mod.CharController.height = num3;
-                __instance._mod.CharController.center = Vector3.down * num2;
-                __instance._camPivot.localPosition = Vector3.up * (float)((num3 / 2.0) - num2 - radius + FpcStateProcessor.EyeHeight);
-            }
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(typeof(FpcStateProcessor), nameof(FpcStateProcessor._stat))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(StaminaStat), nameof(StaminaStat.MaxValue))),
+            });
 
-            if (!NetworkServer.active || __instance._useRate == 0.0)
-            {
-                __result = state;
-                return false;
-            }
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
 
-            if (state == PlayerMovementState.Sprinting)
-            {
-                if (stat.CurValue > 0.0 && !__instance.SprintingDisabled)
-                {
-                    stat.CurValue = stat.Clamp(stat.CurValue - (Time.deltaTime * __instance.ServerUseRate));
-                    __instance._regenStopwatch.Restart();
-                    __result = PlayerMovementState.Sprinting;
-                    return false;
-                }
-
-                state = PlayerMovementState.Walking;
-            }
-
-            if (stat.CurValue >= stat.MaxValue)
-            {
-                __result = state;
-                return false;
-            }
-
-            stat.CurValue = stat.Clamp(stat.CurValue + (__instance.ServerRegenRate * Time.deltaTime));
-            __result = state;
-            return false;
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }
