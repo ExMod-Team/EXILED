@@ -32,7 +32,7 @@ namespace Exiled.Events.EventArgs.Item
         /// </param>
         public ChangingMicroHIDPickupStateEventArgs(ItemPickupBase microHID, MicroHidPhase newPhase, bool isAllowed = true)
         {
-            MicroHID = (MicroHIDPickup)Pickup.Get(microHID);
+            MicroHID = Pickup.Get<MicroHIDPickup>(microHID);
             NewPhase = newPhase;
             IsAllowed = isAllowed;
         }
