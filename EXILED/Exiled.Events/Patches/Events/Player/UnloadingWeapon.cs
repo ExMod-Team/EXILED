@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ReloadingWeapon.cs" company="ExMod Team">
+// <copyright file="UnloadingWeapon.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -22,18 +22,18 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patches <see cref="AnimatorReloaderModuleBase.ServerProcessCmd" />.
-    /// Adds the <see cref="Handlers.Player.ReloadingWeapon" /> event.
+    /// Adds the <see cref="Handlers.Player.UnloadingWeapon" /> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReloadingWeapon))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.UnloadingWeapon))]
     [HarmonyPatch(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.ServerProcessCmd))]
-    internal static class ReloadingWeapon
+    internal static class UnloadingWeapon
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             int offset = 2;
-            int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(IReloadUnloadValidatorModule), nameof(IReloadUnloadValidatorModule.ValidateReload)))) + offset;
+            int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(IReloadUnloadValidatorModule), nameof(IReloadUnloadValidatorModule.ValidateUnload)))) + offset;
 
             Label skip = (Label)newInstructions[index - 1].operand;
             newInstructions.InsertRange(
@@ -44,16 +44,16 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.Firearm))),
 
-                    // ReloadingWeaponEventArgs ev = new(firearm)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReloadingWeaponEventArgs))[0]),
+                    // UnloadingWeaponEventArgs ev = new(firearm)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnloadingWeaponEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Player.OnReloadingWeapon(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnReloadingWeapon))),
+                    // Player.OnUnloadingWeapon(ev)
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUnloadingWeapon))),
 
                     // if (!ev.IsAllowed)
                     //    goto skip;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ReloadingWeaponEventArgs), nameof(ReloadingWeaponEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(UnloadingWeaponEventArgs), nameof(UnloadingWeaponEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, skip),
                 });
 
