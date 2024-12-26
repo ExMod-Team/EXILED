@@ -19,7 +19,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information before a player drops an item.
     /// </summary>
-    public class DroppingItemEventArgs : IPlayerEvent, IItemEvent, IDeniableEvent
+    public class DroppingItemEventArgs : IItemEvent, IDeniableEvent
     {
         private bool isAllowed = true;
 
