@@ -34,12 +34,12 @@ namespace Exiled.Events.Patches.Events.Scp2536
             Label retLabel = generator.DefineLabel();
 
             int offset = -3;
-            int index = newInstructions.FindLastIndex(x => x.operand == (object)Method(typeof(Scp2536GiftController), nameof(Scp2536GiftController.RpcSetGiftState))) + offset;
+            int index = newInstructions.FindLastIndex(x => x.Calls(Method(typeof(Scp2536GiftController), nameof(Scp2536GiftController.RpcSetGiftState)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     // Player.Get(hub);
-                    new(OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // true

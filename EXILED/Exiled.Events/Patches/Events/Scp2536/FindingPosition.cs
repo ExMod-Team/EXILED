@@ -73,6 +73,8 @@ namespace Exiled.Events.Patches.Events.Scp2536
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(FindingPositionEventArgs), nameof(FindingPositionEventArgs.Spawnpoint))),
                     new(OpCodes.Stind_Ref),
+
+                    new(OpCodes.Br_S, continueLabel),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

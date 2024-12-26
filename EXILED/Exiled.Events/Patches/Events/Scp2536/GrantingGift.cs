@@ -36,7 +36,7 @@ namespace Exiled.Events.Patches.Events.Scp2536
             LocalBuilder ev = generator.DeclareLocal(typeof(GrantingGiftEventArgs));
 
             int offset = -1;
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldfld && x.operand == (object)Field(typeof(Scp2536GiftBase), nameof(Scp2536GiftBase.ObtainedBy))) + offset;
+            int index = newInstructions.FindLastIndex(x => x.LoadsField(Field(typeof(Scp2536GiftBase), nameof(Scp2536GiftBase.ObtainedBy)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {

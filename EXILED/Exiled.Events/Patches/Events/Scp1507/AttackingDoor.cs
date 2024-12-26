@@ -33,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Scp1507
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 2;
+            int offset = -5;
             int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldloc_S) + offset;
 
             Label continueLabel = generator.DefineLabel();
