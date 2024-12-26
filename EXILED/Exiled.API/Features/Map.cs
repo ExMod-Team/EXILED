@@ -61,10 +61,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <returns>
         /// The remaining time in seconds for the decontamination process.
-        /// Returns -1 if the controller is null or if decontamination is overridden.
-        /// Returns 0 if decontamination has not started yet.
         /// </returns>
-        public static float RemainingDecontaminationTime => DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime;
+        public static float RemainingDecontaminationTime => Mathf.Min(0, (float)(DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime));
 
         /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
