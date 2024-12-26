@@ -13,7 +13,7 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Reflection.Emit;
 
     using API.Features.Pools;
-
+    using Exiled.API.Features.Waves;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
     using Exiled.Events.Handlers;
@@ -93,8 +93,9 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(GetHubs))),
                     new(OpCodes.Stloc_S, 2),
 
-                    // wave = ev.Wave;
+                    // wave = ev.Wave.Base;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Wave))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(TimedWave), nameof(TimedWave.Base))),
                     new(OpCodes.Starg_S, 0),
                 });
 

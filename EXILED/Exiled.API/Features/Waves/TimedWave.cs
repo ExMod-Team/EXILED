@@ -21,40 +21,43 @@ namespace Exiled.API.Features.Waves
     /// </summary>
     public class TimedWave
     {
-        private readonly TimeBasedWave timedWave;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TimedWave"/> class.
         /// </summary>
         /// <param name="wave">
         /// The <see cref="TimeBasedWave"/> that this class should be based off of.
         /// </param>
-        public TimedWave(TimeBasedWave wave) => timedWave = wave;
+        public TimedWave(TimeBasedWave wave) => Base = wave;
+
+        /// <summary>
+        /// Gets the base <see cref="TimeBasedWave"/>.
+        /// </summary>
+        public TimeBasedWave Base { get; }
 
         /// <summary>
         /// Gets the name of the wave timer.
         /// </summary>
-        public string Name => timedWave.GetType().Name;
+        public string Name => Base.GetType().Name;
 
         /// <summary>
         /// Gets a value indicating whether the wave is a mini wave.
         /// </summary>
-        public bool IsMiniWave => timedWave is IMiniWave;
+        public bool IsMiniWave => Base is IMiniWave;
 
         /// <summary>
         /// Gets the wave timer instance.
         /// </summary>
-        public WaveTimer Timer => new(timedWave.Timer);
+        public WaveTimer Timer => new(Base.Timer);
 
         /// <summary>
         /// Gets the faction of this wave.
         /// </summary>
-        public Faction Faction => timedWave.TargetFaction;
+        public Faction Faction => Base.TargetFaction;
 
         /// <summary>
         /// Gets the team of this wave.
         /// </summary>
-        public Team Team => timedWave.TargetFaction.GetSpawnableTeam();
+        public Team Team => Base.TargetFaction.GetSpawnableTeam();
 
         /// <summary>
         /// Gets the spawnable faction for this wave.
@@ -70,13 +73,13 @@ namespace Exiled.API.Features.Waves
         /// <summary>
         /// Gets the maximum amount of people that can spawn in this wave.
         /// </summary>
-        public int MaxAmount => timedWave.MaxWaveSize;
+        public int MaxAmount => Base.MaxWaveSize;
 
         /// <summary>
         /// Gets the <see cref="WaveAnnouncementBase"/> for this wave.
         /// </summary>
         /// <remarks>Wave must implement <see cref="IAnnouncedWave"/>.</remarks>
-        public WaveAnnouncementBase Announcement => timedWave is IAnnouncedWave announcedWave ? announcedWave.Announcement : null;
+        public WaveAnnouncementBase Announcement => Base is IAnnouncedWave announcedWave ? announcedWave.Announcement : null;
 
         /// <summary>
         /// Get the timed waves for the specified faction.
@@ -142,7 +145,7 @@ namespace Exiled.API.Features.Waves
                 if (waveBase is not TimeBasedWave timeWave || timeWave.GetType() != typeof(T))
                     continue;
 
-                wave = new(timeWave);
+                wave = new TimedWave(timeWave);
                 return true;
             }
 
@@ -163,7 +166,7 @@ namespace Exiled.API.Features.Waves
             {
                 if (wave is TimeBasedWave timeBasedWave)
                 {
-                    waves.Add(new (timeBasedWave));
+                    waves.Add(new TimedWave(timeBasedWave));
                 }
             }
 
@@ -173,7 +176,7 @@ namespace Exiled.API.Features.Waves
         /// <summary>
         /// Destroys this wave.
         /// </summary>
-        public void Destroy() => timedWave.Destroy();
+        public void Destroy() => Base.Destroy();
 
         /// <summary>
         /// Populates this wave with the specified amount of roles.
@@ -184,7 +187,7 @@ namespace Exiled.API.Features.Waves
         /// <param name="amount">
         /// The amount of people to populate.
         /// </param>
-        public void PopulateQueue(Queue<RoleTypeId> queue, int amount) => timedWave.PopulateQueue(queue, amount);
+        public void PopulateQueue(Queue<RoleTypeId> queue, int amount) => Base.PopulateQueue(queue, amount);
 
         /// <summary>
         /// Plays the announcement for this wave.

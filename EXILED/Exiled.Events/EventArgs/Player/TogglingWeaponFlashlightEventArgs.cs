@@ -12,6 +12,8 @@ namespace Exiled.Events.EventArgs.Player
 
     using Interfaces;
 
+    using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
+
     /// <summary>
     /// Contains all information before a player toggles the weapon's flashlight.
     /// </summary>
@@ -20,24 +22,17 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="TogglingWeaponFlashlightEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        /// <inheritdoc cref="Player" />
-        /// </param>
         /// <param name="firearm">
         /// <inheritdoc cref="Firearm" />
         /// </param>
-        /// <param name="newState">
+        /// <param name="oldState">
         /// <inheritdoc cref="NewState" />
         /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public TogglingWeaponFlashlightEventArgs(Player player, Firearm firearm, bool newState, bool isAllowed = true)
+        public TogglingWeaponFlashlightEventArgs(BaseFirearm firearm, bool oldState)
         {
-            Firearm = firearm;
-            Player = player;
-            NewState = newState;
-            IsAllowed = isAllowed;
+            Firearm = Item.Get<Firearm>(firearm);
+            Player = Firearm.Owner;
+            NewState = !oldState;
         }
 
         /// <summary>
@@ -48,7 +43,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the weapon's flashlight can be toggled.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
 
         /// <summary>
         /// Gets the <see cref="API.Features.Items.Firearm" /> being held.

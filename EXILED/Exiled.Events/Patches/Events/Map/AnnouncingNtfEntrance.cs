@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
     using System.Text.RegularExpressions;
 
@@ -26,10 +27,15 @@ namespace Exiled.Events.Patches.Events.Map
     /// Adds the <see cref="Map.AnnouncingNtfEntrance" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.AnnouncingNtfEntrance))]
-    [HarmonyPatch(typeof(NtfWaveAnnouncement), nameof(NtfWaveAnnouncement.CreateAnnouncementString))]
-    [HarmonyPatch(typeof(NtfMiniwaveAnnouncement), nameof(NtfMiniwaveAnnouncement.CreateAnnouncementString))]
+    [HarmonyPatch]
     internal static class AnnouncingNtfEntrance
     {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return Method(typeof(NtfWaveAnnouncement), nameof(NtfWaveAnnouncement.CreateAnnouncementString));
+            yield return Method(typeof(NtfMiniwaveAnnouncement), nameof(NtfMiniwaveAnnouncement.CreateAnnouncementString));
+        }
+
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
@@ -42,23 +48,13 @@ namespace Exiled.Events.Patches.Events.Map
             int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_3) + offset;
 
-            // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
-            // string unitNameClear = Regex.Replace(unitName, "<[^>]*?>", string.Empty);
-            // string[] unitInformation = unitNameClear.Split('-');
-            //
-            // AnnouncingNtfEntranceEventArgs ev = new(scpsLeft, unitInformation[0], int.Parse(unitInformation[1]));
-            // Map.OnAnnouncingNtfEntrance(ev);
-            //
-            // if (!ev.IsAllowed)
-            //     return;
-            //
-            // unitName = $"{ev.UnitName}-{ev.UnitNumber};
-            // cassieUnitName = this.GetCassieUnitName(unitName);
-            // scpsLeft = ev.ScpsLeft;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
+                    // WaveAnnouncementBase
+                    new(OpCodes.Ldarg_0),
+
                     // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
                     new(OpCodes.Ldloc_3),
 
@@ -86,7 +82,6 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Ldelem_Ref),
                     new(OpCodes.Call, Method(typeof(int), nameof(int.Parse), new[] { typeof(string) })),
-                    new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingNtfEntranceEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -98,7 +93,9 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
 
-                    // unitName = $"{ev.UnitName}-{ev.UnitNumber};
+                    // lastGeneratedName = $"{ev.UnitName}-{ev.UnitNumber}";
+                    // cassie = rule.TranslateToCassie(lastGeneratedName);
+                    new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldstr, "{0}-{1}"),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.UnitName))),
@@ -108,9 +105,6 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Call, Method(typeof(string), nameof(string.Format), new[] { typeof(string), typeof(object), typeof(object) })),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_1),
-
-                    // cassieUnitName = this.TranslateToCassie(unitName);
-                    new(OpCodes.Ldloc_0),
                     new(OpCodes.Callvirt, Method(typeof(UnitNamingRule), nameof(UnitNamingRule.TranslateToCassie))),
                     new(OpCodes.Stloc_2),
 
