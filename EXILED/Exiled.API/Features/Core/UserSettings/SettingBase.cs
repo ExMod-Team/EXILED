@@ -225,7 +225,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <remarks>This method is used to sync new settings with players.</remarks>
         public static IEnumerable<SettingBase> Register(IEnumerable<SettingBase> settings, Func<Player, bool> predicate = null)
         {
-            List<SettingBase> list = ListPool<SettingBase>.Pool.Get(settings);
+            List<SettingBase> list = ListPool<SettingBase>.Pool.Get(settings.Where(x => x != null));
             List<SettingBase> list2 = new(list.Count);
 
             while (list.Exists(x => x.Header != null))
@@ -311,7 +311,7 @@ namespace Exiled.API.Features.Core.UserSettings
                 ReceivedSettings.Add(player, new() { setting });
 
                 if (setting.Is(out ButtonSetting _))
-                    setting.OriginalDefinition.OnChanged?.Invoke(player, setting);
+                    goto invoke;
 
                 return;
             }
@@ -322,12 +322,14 @@ namespace Exiled.API.Features.Core.UserSettings
                 list.Add(setting);
 
                 if (setting.Is(out ButtonSetting _))
-                    setting.OriginalDefinition.OnChanged?.Invoke(player, setting);
+                    goto invoke;
 
                 return;
             }
 
             setting = list.Find(x => x.Id == settingBase.SettingId);
+
+            invoke:
 
             if (setting.OriginalDefinition == null)
             {

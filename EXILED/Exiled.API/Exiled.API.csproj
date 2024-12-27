@@ -37,6 +37,7 @@
         <Reference Include="UnityEngine.CoreModule" HintPath="$(EXILED_REFERENCES)\UnityEngine.CoreModule.dll" Private="false" />
         <Reference Include="UnityEngine.ParticleSystemModule" HintPath="$(EXILED_REFERENCES)\UnityEngine.ParticleSystemModule.dll" Private="false" />
         <Reference Include="UnityEngine.PhysicsModule" HintPath="$(EXILED_REFERENCES)\UnityEngine.PhysicsModule.dll" Private="false" />
+        <Reference Include="UnityEngine.AudioModule" HintPath="$(EXILED_REFERENCES)\UnityEngine.AudioModule.dll" Private="false" />
         <Reference Include="YamlDotNet" HintPath="$(EXILED_REFERENCES)\YamlDotNet.dll" Private="false" />
     </ItemGroup>
 
