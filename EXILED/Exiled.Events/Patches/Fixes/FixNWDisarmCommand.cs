@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Fixes
 
     /// <summary>
     /// Patches the <see cref="JustResourcesHandler.HandleDisarmed(ReferenceHub, ReferenceHub)"/> delegate.
-    /// Changes <see cref="ushort.MaxValue"/> to <see cref="ushort.MinValue"/>.
+    /// Fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/528.
     /// </summary>
     [HarmonyPatch(typeof(JustResourcesHandler), nameof(JustResourcesHandler.HandleDisarmed), new Type[] { typeof(ReferenceHub), typeof(ReferenceHub), })]
     internal class FixNWDisarmCommand
