@@ -401,10 +401,46 @@ namespace Exiled.API.Features
         /// Factory method to create and add a <see cref="Room"/> component to a Transform.
         /// We can add parameters to be set privately here.
         /// </summary>
-        /// <param name="roomGameObject">The Game Object to attach the Room component to.</param>
-        internal static void CreateComponent(GameObject roomGameObject)
+        /// <param name="roomIdentifier">The Game Object to attach the Room component to.</param>
+        internal static void CreateComponent(RoomIdentifier roomIdentifier) => roomIdentifier.gameObject.AddComponent<Room>();
+
+        /// <summary>
+        /// Factory method to complete all element inside a Room.
+        /// </summary>
+        internal void InternalCreate()
         {
-            roomGameObject.AddComponent<Room>().InternalCreate();
+            Identifier = gameObject.GetComponent<RoomIdentifier>();
+            RoomIdentifierToRoom.Add(Identifier, this);
+
+            Zone = FindZone(gameObject);
+#if DEBUG
+            if (Zone is ZoneType.Unspecified)
+                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
+#endif
+            Type = FindType(gameObject);
+#if DEBUG
+            if (Type is RoomType.Unknown)
+                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
+#endif
+
+            RoomLightControllers = RoomLightControllersValue.AsReadOnly();
+
+            GetComponentsInChildren<BreakableWindow>().ForEach(component =>
+            {
+                Window window = new(component, this);
+                window.Room.WindowsValue.Add(window);
+            });
+
+            if (GetComponentInChildren<global::TeslaGate>() is global::TeslaGate tesla)
+            {
+                TeslaGate = new TeslaGate(tesla, this);
+            }
+
+            Windows = WindowsValue.AsReadOnly();
+            Doors = DoorsValue.AsReadOnly();
+            NearestRooms = NearestRoomsValue.AsReadOnly();
+            Speakers = SpeakersValue.AsReadOnly();
+            Cameras = CamerasValue.AsReadOnly();
         }
 
         private static RoomType FindType(GameObject gameObject)
@@ -499,42 +535,6 @@ namespace Exiled.API.Features
                 "HCZ_EZ_Checkpoint" => ZoneType.HeavyContainment | ZoneType.Entrance,
                 _ => transform.position.y > 900 ? ZoneType.Surface : ZoneType.Unspecified,
             };
-        }
-
-        private void InternalCreate()
-        {
-            Identifier = gameObject.GetComponent<RoomIdentifier>();
-            RoomIdentifierToRoom.Add(Identifier, this);
-
-            Zone = FindZone(gameObject);
-#if DEBUG
-            if (Zone is ZoneType.Unspecified)
-                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
-#endif
-            Type = FindType(gameObject);
-#if DEBUG
-            if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
-#endif
-
-            RoomLightControllers = RoomLightControllersValue.AsReadOnly();
-
-            GetComponentsInChildren<BreakableWindow>().ForEach(component =>
-            {
-                Window window = new(component, this);
-                window.Room.WindowsValue.Add(window);
-            });
-
-            if (GetComponentInChildren<global::TeslaGate>() is global::TeslaGate tesla)
-            {
-                TeslaGate = new TeslaGate(tesla, this);
-            }
-
-            Windows = WindowsValue.AsReadOnly();
-            Doors = DoorsValue.AsReadOnly();
-            NearestRooms = NearestRoomsValue.AsReadOnly();
-            Speakers = SpeakersValue.AsReadOnly();
-            Cameras = CamerasValue.AsReadOnly();
         }
     }
 }
