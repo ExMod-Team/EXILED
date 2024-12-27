@@ -92,15 +92,6 @@ namespace Exiled.API.Features.Lockers
         public IReadOnlyCollection<Chamber> Chambers { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the locker is currently open.
-        /// </summary>
-        public bool IsOpen
-        {
-            get => Chambers.First().IsOpen;
-            set => Chambers.First().IsOpen = value;
-        }
-
-        /// <summary>
         /// Gets or sets an id for manipulating opened chambers.
         /// </summary>
         public ushort OpenedChambers
