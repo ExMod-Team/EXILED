@@ -62,6 +62,8 @@ namespace Exiled.API.Features.Items
                 ushort serial = ItemSerialGenerator.GenerateNext();
                 Serial = serial;
                 itemBase.OnAdded(null);
+                if (Base is ModularAutosyncItem syncItem)
+                    syncItem.InstantiationStatus = AutosyncInstantiationStatus.SimulatedInstance;
 #if DEBUG
                 Log.Debug($"{nameof(Item)}.ctor: Generating new serial number. Serial should now be: {serial}. // {Serial}");
 #endif
