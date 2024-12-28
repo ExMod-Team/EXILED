@@ -2081,9 +2081,6 @@ namespace Exiled.API.Features
         {
             Vector3 currentScale = Scale;
 
-            if (fakeScale == currentScale)
-                return;
-
             try
             {
                 ReferenceHub.transform.localScale = fakeScale;
