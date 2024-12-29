@@ -474,23 +474,34 @@ namespace Exiled.API.Features.Pickups
         /// <param name="type">The <see cref="ItemType"/> of the pickup.</param>
         /// <returns>The created <see cref="Pickup"/>.</returns>
         /// <seealso cref="Projectile.Create(Enums.ProjectileType)"/>
-        public static Pickup Create(ItemType type) => type switch
+        public static Pickup Create(ItemType type) => type.GetTemplate().PickupDropModel switch
         {
-            ItemType.SCP244a or ItemType.SCP244b => new Scp244Pickup(type),
-            ItemType.Ammo9x19 or ItemType.Ammo12gauge or ItemType.Ammo44cal or ItemType.Ammo556x45 or ItemType.Ammo762x39 => new AmmoPickup(type),
-            ItemType.Radio => new RadioPickup(),
-            ItemType.MicroHID => new MicroHIDPickup(),
-            ItemType.GrenadeFlash => new FlashGrenadePickup(),
-            ItemType.GrenadeHE => new ExplosiveGrenadePickup(),
-            ItemType.GunCrossvec or ItemType.GunLogicer or ItemType.GunRevolver or ItemType.GunShotgun or ItemType.GunAK or ItemType.GunCOM15 or ItemType.GunCOM18 or ItemType.GunE11SR or ItemType.GunFSP9 or ItemType.ParticleDisruptor or ItemType.GunA7 or ItemType.GunFRMG0 => new FirearmPickup(type),
-            ItemType.KeycardGuard or ItemType.KeycardJanitor or ItemType.KeycardO5 or ItemType.KeycardScientist or ItemType.KeycardContainmentEngineer or ItemType.KeycardFacilityManager or ItemType.KeycardResearchCoordinator or ItemType.KeycardZoneManager or ItemType.KeycardMTFCaptain or ItemType.KeycardMTFOperative or ItemType.KeycardMTFPrivate => new KeycardPickup(type),
-            ItemType.ArmorLight or ItemType.ArmorCombat or ItemType.ArmorHeavy => new BodyArmorPickup(type),
-            ItemType.SCP330 => new Scp330Pickup(),
-            ItemType.SCP500 or ItemType.SCP268 or ItemType.SCP207 or ItemType.SCP1853 or ItemType.Painkillers or ItemType.Medkit or ItemType.Adrenaline or ItemType.AntiSCP207 => new UsablePickup(type),
-            ItemType.Jailbird => new JailbirdPickup(),
-            ItemType.SCP1576 => new Scp1576Pickup(),
-            ItemType.SCP2176 => new Projectiles.Scp2176Projectile(),
-            ItemType.SCP018 => new Projectiles.Scp018Projectile(),
+            Scp244DeployablePickup => new Scp244Pickup(type),
+            BaseAmmoPickup => new AmmoPickup(type),
+            BaseRadioPickup => new RadioPickup(),
+            BaseMicroHIDPickup => new MicroHIDPickup(),
+            TimedGrenadePickup timeGrenade => timeGrenade.NetworkInfo.ItemId switch
+            {
+                ItemType.GrenadeHE => new ExplosiveGrenadePickup(),
+                ItemType.GrenadeFlash => new FlashGrenadePickup(),
+                _ => new GrenadePickup(type),
+            },
+            BaseFirearmPickup => new FirearmPickup(type),
+            BaseKeycardPickup => new KeycardPickup(type),
+            BaseBodyArmorPickup => new BodyArmorPickup(type),
+            BaseScp330Pickup => new Scp330Pickup(),
+            BaseScp1576Pickup => new Scp1576Pickup(),
+            BaseJailbirdPickup => new JailbirdPickup(),
+            ThrownProjectile thrownProjectile => thrownProjectile switch
+            {
+                BaseScp018Projectile => new Projectiles.Scp018Projectile(),
+                ExplosionGrenade explosionGrenade => new ExplosionGrenadeProjectile(explosionGrenade),
+                FlashbangGrenade => new FlashbangProjectile(),
+                BaseScp2176Projectile => new Projectiles.Scp2176Projectile(),
+                EffectGrenade => new EffectGrenadeProjectile(type),
+                TimeGrenade => new TimeGrenadeProjectile(type),
+                _ => new Projectile(thrownProjectile),
+            },
             _ => new Pickup(type),
         };
 
