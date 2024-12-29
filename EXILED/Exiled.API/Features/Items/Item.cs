@@ -314,6 +314,7 @@ namespace Exiled.API.Features.Items
             ItemType.SCP1576 => new Scp1576(),
             ItemType.SCP1344 => new Scp1344(),
             ItemType.Jailbird => new Jailbird(),
+            ItemType.Snowball => new Throwable(ItemType.Snowball),
             _ => new Item(type),
         };
 
