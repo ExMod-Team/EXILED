@@ -564,6 +564,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
 
         /// <summary>
+        /// Invoked before player interacts with coffee cup.
+        /// </summary>
+        public static Event<DrinkingCoffeeEventArgs> DrinkingCoffee { get; set; } = new();
+
+        /// <summary>
         /// Called before a player's emotion changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingEmotionEventArgs"/> instance.</param>
@@ -1209,6 +1214,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
         public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before player interacts with coffee cup.
+        /// </summary>
+        /// <param name="ev">The <see cref="DrinkingCoffeeEventArgs"/> instance.</param>
+        public static void OnDrinkingCoffee(DrinkingCoffeeEventArgs ev) => DrinkingCoffee.InvokeSafely(ev);
 
         /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
