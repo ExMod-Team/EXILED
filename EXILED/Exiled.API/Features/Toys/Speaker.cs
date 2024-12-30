@@ -102,7 +102,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets or sets the controller ID of the SpeakerToy.
         /// </summary>
-        public byte ControllerID
+        public byte ControllerId
         {
             get => Base.NetworkControllerId;
             set => Base.NetworkControllerId = value;
