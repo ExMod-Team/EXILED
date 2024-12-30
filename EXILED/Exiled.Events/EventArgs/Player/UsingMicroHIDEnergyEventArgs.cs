@@ -55,5 +55,8 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets a value indicating whether the MicroHID energy can be changed.
         /// </summary>
         public bool IsAllowed { get; set; }
+
+        /// <inheritdoc/>
+        public Player Player => MicroHID.Owner;
     }
 }

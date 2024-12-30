@@ -177,7 +177,7 @@ namespace Exiled.API.Features.Lockers
                 : chamber.Spawnpoint;
 
             // If the chamber is open, immediately set the item's parent and spawn it.
-            if (chamber.Base.IsOpen)
+            if (chamber.IsOpen)
             {
                 item.Transform.SetParent(parentTransform);
                 item.Spawn();
