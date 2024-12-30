@@ -37,20 +37,33 @@ namespace Exiled.Events.Patches.Generic
             int offset = -3;
             int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(RoomIdUtils), nameof(RoomIdUtils.PositionToCoords)))) + offset;
 
-            // Room.CreateComponent(gameObject);
+            // Room.Get(gameObject).InternalCreate();
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Component), nameof(Component.gameObject))),
-                    new(OpCodes.Call, Method(typeof(Room), nameof(Room.CreateComponent))),
+                    new(OpCodes.Callvirt, Method(typeof(Room), nameof(Room.FindParentRoom), new System.Type[] { typeof(GameObject) })),
+                    new(OpCodes.Callvirt, Method(typeof(Room), nameof(Room.InternalCreate))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+
+    /// <summary>
+    /// Patches <see cref="RoomIdentifier.Awake"/>.
+    /// </summary>
+    [HarmonyPatch(typeof(RoomIdentifier), nameof(RoomIdentifier.Awake))]
+    internal class RoomListAdd
+    {
+        private static void Postfix(RoomIdentifier __instance)
+        {
+            Room.CreateComponent(__instance);
         }
     }
 

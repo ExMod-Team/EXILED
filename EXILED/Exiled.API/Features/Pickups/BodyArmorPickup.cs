@@ -73,6 +73,7 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets a value indicating whether excess ammo should be removed when the armor is dropped.
         /// </summary>
+        [Obsolete("Propetry is internal, and controls armor remove logic for clearing inventory")]
         public bool RemoveExcessOnDrop { get; set; }
 
         /// <summary>
@@ -132,7 +133,6 @@ namespace Exiled.API.Features.Pickups
             {
                 helmetEfficacy = armoritem.HelmetEfficacy;
                 vestEfficacy = armoritem.VestEfficacy;
-                RemoveExcessOnDrop = armoritem.RemoveExcessOnDrop;
                 StaminaUseMultiplier = armoritem.StaminaUseMultiplier;
                 StaminaRegenMultiplier = armoritem.StaminaRegenMultiplier;
                 AmmoLimits = armoritem.AmmoLimits;
@@ -148,7 +148,6 @@ namespace Exiled.API.Features.Pickups
             {
                 helmetEfficacy = armoritem.HelmetEfficacy;
                 vestEfficacy = armoritem.VestEfficacy;
-                RemoveExcessOnDrop = !armoritem.DontRemoveExcessOnDrop;
                 StaminaUseMultiplier = armoritem._staminaUseMultiplier;
                 StaminaRegenMultiplier = armoritem.StaminaRegenMultiplier;
                 AmmoLimits = armoritem.AmmoLimits.Select(limit => (ArmorAmmoLimit)limit);

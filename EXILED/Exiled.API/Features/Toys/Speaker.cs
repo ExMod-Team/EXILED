@@ -18,7 +18,6 @@ namespace Exiled.API.Features.Toys
     using MEC;
     using NVorbis;
     using UnityEngine;
-    using Utils.Networking;
     using VoiceChat.Codec;
     using VoiceChat.Networking;
 
@@ -58,7 +57,7 @@ namespace Exiled.API.Features.Toys
         public float Volume
         {
             get => Base.NetworkVolume;
-            set => Base.NetworkVolume = value;
+            set => Base.NetworkVolume = Mathf.Clamp01(value);
         }
 
         /// <summary>
@@ -152,6 +151,25 @@ namespace Exiled.API.Features.Toys
             AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == speakerToy);
             return adminToy is not null ? adminToy as Speaker : new(speakerToy);
         }
+
+        /// <summary>
+        /// Plays audio through this speaker.
+        /// </summary>
+        /// <param name="message">An <see cref="AudioMessage"/> instance.</param>
+        /// <param name="targets">Targets who will hear the audio. If <c>null</c>, audio will be sent to all players.</param>
+        public static void Play(AudioMessage message, IEnumerable<Player> targets = null)
+        {
+            foreach (Player target in targets ?? Player.List)
+                target.Connection.Send(message);
+        }
+
+        /// <summary>
+        /// Plays audio through this speaker.
+        /// </summary>
+        /// <param name="samples">Audio samples.</param>
+        /// <param name="length">The length of the samples array.</param>
+        /// <param name="targets">Targets who will hear the audio. If <c>null</c>, audio will be sent to all players.</param>
+        public void Play(byte[] samples, int? length = null, IEnumerable<Player> targets = null) => Play(new AudioMessage(ControllerID, samples, length ?? samples.Length), targets);
 
         /// <summary>
         /// Plays a single audio file through the speaker system. (No Arguments given (assuming you already preset those)).
