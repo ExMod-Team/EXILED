@@ -186,7 +186,10 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
+                if (ev is null)
+                    return;
+
+                if (ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
                     return;
 
                 Inventory inventory = ev.Player.Inventory;
@@ -220,16 +223,13 @@ namespace Exiled.Events.Patches.Events.Player
                     inventory.SendAmmoNextFrame = true;
                 }
 
-                if (!StartingInventories.DefinedInventories.TryGetValue(ev.NewRole, out InventoryRoleInfo value))
-                    return;
+                foreach (KeyValuePair<ItemType, ushort> ammo in ev.Ammo)
+                    inventory.ServerAddAmmo(ammo.Key, ammo.Value);
 
-                foreach (KeyValuePair<ItemType, ushort> item in value.Ammo)
-                    inventory.ServerAddAmmo(item.Key, item.Value);
-
-                for (int i = 0; i < value.Items.Length; i++)
+                foreach (ItemType item in ev.Items)
                 {
-                    ItemBase arg = inventory.ServerAddItem(value.Items[i], ItemAddReason.StartingItem, 0);
-                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, arg);
+                    ItemBase itemBase = inventory.ServerAddItem(item, ItemAddReason.StartingItem);
+                    InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, itemBase);
                 }
 
                 InventoryItemProvider.InventoriesToReplenish.Enqueue(ev.Player.ReferenceHub);

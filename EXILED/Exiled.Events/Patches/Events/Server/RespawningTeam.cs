@@ -19,6 +19,7 @@ namespace Exiled.Events.Patches.Events.Server
     using Exiled.Events.Handlers;
     using HarmonyLib;
     using PlayerRoles;
+    using Respawning.NamingRules;
     using Respawning.Waves;
 
     using static HarmonyLib.AccessTools;
@@ -37,8 +38,8 @@ namespace Exiled.Events.Patches.Events.Server
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(SpawnableWaveBase), nameof(SpawnableWaveBase.PopulateQueue)))) + offset;
+            int offset = -2;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(NamingRulesManager), nameof(NamingRulesManager.TryGetNamingRule)))) + offset;
 
             LocalBuilder ev = generator.DeclareLocal(typeof(RespawningTeamEventArgs));
 

@@ -38,72 +38,50 @@ namespace Exiled.Events.Patches.Events.Item
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            const int offset = -3;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldc_I4_1) + offset;
-
             LocalBuilder ev = generator.DeclareLocal(typeof(ChangingAttachmentsEventArgs));
-            LocalBuilder curCode = generator.DeclareLocal(typeof(uint));
 
-            Label ret = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
+
+            /*
+            [] <= Here, right after msg validation.
+            IL_0039: ldloc.1      // curInstance
+            IL_003a: ldarg.1      // msg
+            IL_003b: ldfld        unsigned int32 InventorySystem.Items.Firearms.Attachments.AttachmentsChangeRequest::AttachmentsCode
+            IL_0040: ldc.i4.1
+            IL_0041: call         void InventorySystem.Items.Firearms.Attachments.AttachmentsUtils::ApplyAttachmentsCode(class InventorySystem.Items.Firearms.Firearm, unsigned int32, bool)
+             */
+            int index = newInstructions.FindIndex(i => i.IsLdarg(1)) - 1;
+            List<Label> jumpLabels = newInstructions[index].ExtractLabels();
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // curCode = Firearm::GetCurrentAttachmentsCode
-                    new(OpCodes.Ldloc_1),
-                    new(OpCodes.Call, Method(typeof(AttachmentsUtils), nameof(AttachmentsUtils.GetCurrentAttachmentsCode))),
-                    new(OpCodes.Stloc_S, curCode.LocalIndex),
-
-                    // If the Firearm::GetCurrentAttachmentsCode isn't changed, prevents the method from being executed
+                    // ev = new ChangingAttachmentsEventArgs(msg);
                     new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldfld, Field(typeof(AttachmentsChangeRequest), nameof(AttachmentsChangeRequest.AttachmentsCode))),
-                    new(OpCodes.Ldloc_S, curCode.LocalIndex),
-                    new(OpCodes.Ceq),
-                    new(OpCodes.Brtrue_S, ret),
-
-                    // API::Features::Player::Get(NetworkConnection::identity::netId)
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(NetworkConnection), nameof(NetworkConnection.identity))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(NetworkIdentity), nameof(NetworkIdentity.netId))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(uint) })),
-
-                    // firearm
-                    new(OpCodes.Ldloc_1),
-
-                    // AttachmentsChangeRequest::AttachmentsCode
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldfld, Field(typeof(AttachmentsChangeRequest), nameof(AttachmentsChangeRequest.AttachmentsCode))),
-
-                    // true
-                    new(OpCodes.Ldc_I4_1),
-
-                    // ChangingAttachmentsEventArgs ev = new ChangingAttachmentsEventArgs(Player, Firearm, uint, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingAttachmentsEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
+                    new(OpCodes.Stloc, ev),
 
-                    // Handlers::Item::OnChangingAttachments(ev)
+                    // Handlers.Item.OnChangingAttachments(ev);
+                    new(OpCodes.Ldloc, ev),
                     new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnChangingAttachments))),
 
-                    // ev.IsAllowed
+                    // if (!ev.IsAllowed) return;
+                    new(OpCodes.Ldloc, ev),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAttachmentsEventArgs), nameof(ChangingAttachmentsEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, ret),
+                    new(OpCodes.Brfalse_S, returnLabel),
 
-                    // **AttachmentsChangeRequest = ev::NewCode + curCode - ev::CurrentCode
-                    new(OpCodes.Ldarga_S, 1),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    // msg.AttachmentsCode = ev.NewCode;
+                    new(OpCodes.Ldarga, 1),
+                    new(OpCodes.Ldloc, ev),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAttachmentsEventArgs), nameof(ChangingAttachmentsEventArgs.NewCode))),
-                    new(OpCodes.Ldloc_S, curCode.LocalIndex),
-                    new(OpCodes.Add),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAttachmentsEventArgs), nameof(ChangingAttachmentsEventArgs.CurrentCode))),
-                    new(OpCodes.Sub),
                     new(OpCodes.Stfld, Field(typeof(AttachmentsChangeRequest), nameof(AttachmentsChangeRequest.AttachmentsCode))),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(ret);
+            // Prevent if expression from branching over inserted instructions
+            newInstructions[index].WithLabels(jumpLabels);
+
+            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
