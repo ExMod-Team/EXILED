@@ -395,115 +395,33 @@ namespace Exiled.API.Features
         /// Returns the Room in a human-readable format.
         /// </summary>
         /// <returns>A string containing Room-related data.</returns>
-        public override string ToString() => $"{Type} ({Zone}) [{Doors.Count}] *{Cameras.Count}* |{TeslaGate != null}|";
+        public override string ToString() => $"{Type} ({Zone}) [{Doors?.Count}] *{Cameras?.Count}* |{TeslaGate != null}|";
 
         /// <summary>
         /// Factory method to create and add a <see cref="Room"/> component to a Transform.
         /// We can add parameters to be set privately here.
         /// </summary>
-        /// <param name="roomGameObject">The Game Object to attach the Room component to.</param>
-        internal static void CreateComponent(GameObject roomGameObject)
-        {
-            roomGameObject.AddComponent<Room>().InternalCreate();
-        }
+        /// <param name="roomIdentifier">The Game Object to attach the Room component to.</param>
+        internal static void CreateComponent(RoomIdentifier roomIdentifier) => roomIdentifier.gameObject.AddComponent<Room>();
 
-        private static RoomType FindType(GameObject gameObject)
-        {
-            // Try to remove brackets if they exist.
-            return gameObject.name.RemoveBracketsOnEndOfName() switch
-            {
-                "LCZ_Armory" => RoomType.LczArmory,
-                "LCZ_Curve" => RoomType.LczCurve,
-                "LCZ_Straight" => RoomType.LczStraight,
-                "LCZ_330" => RoomType.Lcz330,
-                "LCZ_914" => RoomType.Lcz914,
-                "LCZ_Crossing" => RoomType.LczCrossing,
-                "LCZ_TCross" => RoomType.LczTCross,
-                "LCZ_Cafe" => RoomType.LczCafe,
-                "LCZ_Plants" => RoomType.LczPlants,
-                "LCZ_Toilets" => RoomType.LczToilets,
-                "LCZ_Airlock" => RoomType.LczAirlock,
-                "LCZ_173" => RoomType.Lcz173,
-                "LCZ_ClassDSpawn" => RoomType.LczClassDSpawn,
-                "LCZ_ChkpB" => RoomType.LczCheckpointB,
-                "LCZ_372" => RoomType.LczGlassBox,
-                "LCZ_ChkpA" => RoomType.LczCheckpointA,
-                "HCZ_079" => RoomType.Hcz079,
-                "HCZ_Room3ar" => RoomType.HczArmory,
-                "HCZ_Testroom" => RoomType.HczTestRoom,
-                "HCZ_Hid" => RoomType.HczHid,
-                "HCZ_049" => RoomType.Hcz049,
-                "HCZ_Crossing" => RoomType.HczCrossing,
-                "HCZ_106" => RoomType.Hcz106,
-                "HCZ_Nuke" => RoomType.HczNuke,
-                "HCZ_Tesla" => RoomType.HczTesla,
-                "HCZ_Servers" => RoomType.HczServers,
-                "HCZ_Room3" => RoomType.HczTCross,
-                "HCZ_457" => RoomType.Hcz096,
-                "HCZ_Curve" => RoomType.HczCurve,
-                "HCZ_Straight" => RoomType.HczStraight,
-                "EZ_Endoof" => RoomType.EzVent,
-                "EZ_Intercom" => RoomType.EzIntercom,
-                "EZ_GateA" => RoomType.EzGateA,
-                "EZ_PCs_small" => RoomType.EzDownstairsPcs,
-                "EZ_Curve" => RoomType.EzCurve,
-                "EZ_PCs" => RoomType.EzPcs,
-                "EZ_Crossing" => RoomType.EzCrossing,
-                "EZ_CollapsedTunnel" => RoomType.EzCollapsedTunnel,
-                "EZ_Smallrooms2" => RoomType.EzConference,
-                "EZ_Straight" => RoomType.EzStraight,
-                "EZ_Cafeteria" => RoomType.EzCafeteria,
-                "EZ_upstairs" => RoomType.EzUpstairsPcs,
-                "EZ_GateB" => RoomType.EzGateB,
-                "EZ_Shelter" => RoomType.EzShelter,
-                "EZ_ThreeWay" => RoomType.EzTCross,
-                "PocketWorld" => RoomType.Pocket,
-                "Outside" => RoomType.Surface,
-                "HCZ_939" => RoomType.Hcz939,
-                "EZ Part" => RoomType.EzCheckpointHallway,
-                "HCZ_ChkpA" => RoomType.HczElevatorA,
-                "HCZ_ChkpB" => RoomType.HczElevatorB,
-                "HCZ Part" => gameObject.transform.parent.name switch
-                {
-                    "HCZ_EZ_Checkpoint (A)" => RoomType.HczEzCheckpointA,
-                    "HCZ_EZ_Checkpoint (B)" => RoomType.HczEzCheckpointB,
-                    _ => RoomType.Unknown
-                },
-                _ => RoomType.Unknown,
-            };
-        }
-
-        private static ZoneType FindZone(GameObject gameObject)
-        {
-            Transform transform = gameObject.transform;
-
-            return transform.parent?.name.RemoveBracketsOnEndOfName() switch
-            {
-                "HeavyRooms" => ZoneType.HeavyContainment,
-                "LightRooms" => ZoneType.LightContainment,
-                "EntranceRooms" => ZoneType.Entrance,
-                "HCZ_EZ_Checkpoint" => ZoneType.HeavyContainment | ZoneType.Entrance,
-                _ => transform.position.y > 900 ? ZoneType.Surface : ZoneType.Unspecified,
-            };
-        }
-
-        private void InternalCreate()
+        /// <summary>
+        /// Factory method to complete all element inside a Room.
+        /// </summary>
+        internal void InternalCreate()
         {
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             RoomIdentifierToRoom.Add(Identifier, this);
 
             Zone = FindZone(gameObject);
-#if Debug
-            if (Type is RoomType.Unknown)
-                Log.Error($"[ZONETYPE UNKNOWN] {this}");
+#if DEBUG
+            if (Zone is ZoneType.Unspecified)
+                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
 #endif
             Type = FindType(gameObject);
-#if Debug
+#if DEBUG
             if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this}");
+                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
 #endif
-
-            RoomLightControllersValue.AddRange(gameObject.GetComponentsInChildren<RoomLightController>());
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 
@@ -523,6 +441,100 @@ namespace Exiled.API.Features
             NearestRooms = NearestRoomsValue.AsReadOnly();
             Speakers = SpeakersValue.AsReadOnly();
             Cameras = CamerasValue.AsReadOnly();
+        }
+
+        private static RoomType FindType(GameObject gameObject)
+        {
+            // Try to remove brackets if they exist.
+            return gameObject.name.RemoveBracketsOnEndOfName() switch
+            {
+                "PocketWorld" => RoomType.Pocket,
+                "Outside" => RoomType.Surface,
+                "LCZ_Cafe" => RoomType.LczCafe,
+                "LCZ_Toilets" => RoomType.LczToilets,
+                "LCZ_TCross" => RoomType.LczTCross,
+                "LCZ_Airlock" => RoomType.LczAirlock,
+                "LCZ_ChkpA" => RoomType.LczCheckpointA,
+                "LCZ_ChkpB" => RoomType.LczCheckpointB,
+                "LCZ_Plants" => RoomType.LczPlants,
+                "LCZ_Straight" => RoomType.LczStraight,
+                "LCZ_Armory" => RoomType.LczArmory,
+                "LCZ_Crossing" => RoomType.LczCrossing,
+                "LCZ_Curve" => RoomType.LczCurve,
+                "LCZ_173" => RoomType.Lcz173,
+                "LCZ_330" => RoomType.Lcz330,
+                "LCZ_372" => RoomType.LczGlassBox,
+                "LCZ_914" => RoomType.Lcz914,
+                "LCZ_ClassDSpawn" => RoomType.LczClassDSpawn,
+                "HCZ_Nuke" => RoomType.HczNuke,
+                "HCZ_TArmory" => RoomType.HczArmory,
+                "HCZ_MicroHID_New" => RoomType.HczHid,
+                "HCZ_Crossroom_Water" => RoomType.HczCrossRoomWater,
+                "HCZ_Testroom" => RoomType.HczTestRoom,
+                "HCZ_049" => RoomType.Hcz049,
+                "HCZ_079" => RoomType.Hcz079,
+                "HCZ_096" => RoomType.Hcz096,
+                "HCZ_106_Rework" => RoomType.Hcz106,
+                "HCZ_939" => RoomType.Hcz939,
+                "HCZ_Tesla_Rework" => RoomType.HczTesla,
+                "HCZ_Curve" => RoomType.HczCurve,
+                "HCZ_Crossing" => RoomType.HczCrossing,
+                "HCZ_Intersection" => RoomType.HczIntersection,
+                "HCZ_Intersection_Junk" => RoomType.HczIntersectionJunk,
+                "HCZ_Corner_Deep" => RoomType.HczCornerDeep,
+                "HCZ_Straight" => RoomType.HczStraight,
+                "HCZ_Straight_C" => RoomType.HczStraightC,
+                "HCZ_Straight_PipeRoom"=> RoomType.HczStraightPipeRoom,
+                "HCZ_Straight Variant" => RoomType.HczStraightVariant,
+                "HCZ_ChkpA" => RoomType.HczElevatorA,
+                "HCZ_ChkpB" => RoomType.HczElevatorB,
+                "EZ_GateA" => RoomType.EzGateA,
+                "EZ_GateB" => RoomType.EzGateB,
+                "EZ_ThreeWay" => RoomType.EzTCross,
+                "EZ_Crossing" => RoomType.EzCrossing,
+                "EZ_Curve" => RoomType.EzCurve,
+                "EZ_PCs" => RoomType.EzPcs,
+                "EZ_upstairs" => RoomType.EzUpstairsPcs,
+                "EZ_Intercom" => RoomType.EzIntercom,
+                "EZ_Smallrooms2" => RoomType.EzSmallrooms,
+                "EZ_PCs_small" => RoomType.EzDownstairsPcs,
+                "EZ_Chef" => RoomType.EzChef,
+                "EZ_Endoof" => RoomType.EzVent,
+                "EZ_CollapsedTunnel" => RoomType.EzCollapsedTunnel,
+                "EZ_Smallrooms1" => RoomType.EzConference,
+                "EZ_Straight" => RoomType.EzStraight,
+                "EZ_StraightColumn" => RoomType.EzStraightColumn,
+                "EZ_Cafeteria" => RoomType.EzCafeteria,
+                "EZ_Shelter" => RoomType.EzShelter,
+                "EZ_HCZ_Checkpoint Part" => gameObject.transform.position.z switch
+                {
+                    > 80 => RoomType.EzCheckpointHallwayA,
+                    _ => RoomType.EzCheckpointHallwayB,
+                },
+                "HCZ_EZ_Checkpoint Part" => gameObject.transform.position.z switch
+                {
+                    > 80 => RoomType.HczEzCheckpointA,
+                    _ => RoomType.HczEzCheckpointB
+                },
+                _ => RoomType.Unknown,
+            };
+        }
+
+        private static ZoneType FindZone(GameObject gameObject)
+        {
+            Transform transform = gameObject.transform;
+
+            if (gameObject.name == "PocketWorld")
+                return ZoneType.Pocket;
+
+            return transform.parent?.name.RemoveBracketsOnEndOfName() switch
+            {
+                "HeavyRooms" => ZoneType.HeavyContainment,
+                "LightRooms" => ZoneType.LightContainment,
+                "EntranceRooms" => ZoneType.Entrance,
+                "HCZ_EZ_Checkpoint" => ZoneType.HeavyContainment | ZoneType.Entrance,
+                _ => transform.position.y > 900 ? ZoneType.Surface : ZoneType.Unspecified,
+            };
         }
     }
 }

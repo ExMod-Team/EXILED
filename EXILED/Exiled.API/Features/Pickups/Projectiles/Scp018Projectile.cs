@@ -50,18 +50,9 @@ namespace Exiled.API.Features.Pickups.Projectiles
         public new BaseScp018Projectile Base { get; }
 
         /// <summary>
-        /// Gets or sets the pickup's PhysicsModule.
+        /// Gets the pickup's PhysicsModule.
         /// </summary>
-        public new Scp018Physics PhysicsModule
-        {
-            get => Base.PhysicsModule as Scp018Physics;
-            [Obsolete("Unsafe.", true)]
-            set
-            {
-                Base.PhysicsModule.DestroyModule();
-                Base.PhysicsModule = value;
-            }
-        }
+        public new Scp018Physics PhysicsModule => Base.PhysicsModule as Scp018Physics;
 
         /// <summary>
         /// Gets or sets the pickup's max velocity.

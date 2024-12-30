@@ -77,7 +77,7 @@ namespace Exiled.Events.Patches.Events.Player
                 // msg
                 new(OpCodes.Ldarg_1),
 
-                // voiceModule.
+                // voiceModule
                 new(OpCodes.Ldloc_S, player.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
                 new(OpCodes.Isinst, typeof(API.Features.Roles.IVoiceRole)),
@@ -102,10 +102,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceChattingEventArgs), nameof(VoiceChattingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
 
-                // ev.VoiceMessage = msg;
+                // msg = ev.VoiceMessage;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceChattingEventArgs), nameof(VoiceChattingEventArgs.VoiceMessage))),
-                new(OpCodes.Stloc_1),
+                new(OpCodes.Starg_S, 1),
 
                 // if(voiceModule.CurrentChannel != VoiceChatChannel.Radio)
                 //     goto skipLabel;

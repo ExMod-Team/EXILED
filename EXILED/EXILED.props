@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup Condition="$(BaseProperties) == '' OR $(BaseProperties) == 'true'">
-    <Authors>Exiled Official</Authors>
+    <Authors>ExMod Team</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(BuildProperties) == '' OR $(BuildProperties) == 'true'">
@@ -15,7 +15,7 @@
 
   <PropertyGroup>
     <!-- This is the global version and is used for all projects that don't have a version -->
-    <Version Condition="$(Version) == ''">8.14.1</Version>
+    <Version Condition="$(Version) == ''">9.0.0</Version>
     <!-- Enables public beta warning via the PUBLIC_BETA constant -->
     <PublicBeta>false</PublicBeta>
 

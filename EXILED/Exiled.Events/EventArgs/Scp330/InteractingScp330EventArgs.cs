@@ -12,7 +12,6 @@ namespace Exiled.Events.EventArgs.Scp330
     using Interfaces;
 
     using InventorySystem.Items.Usables.Scp330;
-    using YamlDotNet.Core.Tokens;
 
     /// <summary>
     /// Contains all information before a player interacts with SCP-330.
@@ -35,6 +34,7 @@ namespace Exiled.Events.EventArgs.Scp330
             ShouldSever = usage >= 2;
             ShouldPlaySound = true;
             IsAllowed = Player.IsHuman;
+            Candy = Scp330Candies.GetRandom();
 
             if (Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag))
             {

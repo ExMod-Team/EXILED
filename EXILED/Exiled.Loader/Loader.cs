@@ -46,6 +46,7 @@ namespace Exiled.Loader
             Log.Warn("You are running a public beta build. It is not compatible with another version of the game.");
 #endif
 
+            Log.SendRaw($"Exiled.API - Version {PluginAPI.Loader.AssemblyLoader.Dependencies.FirstOrDefault(x => x.GetName().Name == "Exiled.API").GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}", ConsoleColor.DarkRed);
             Log.SendRaw($"{Assembly.GetExecutingAssembly().GetName().Name} - Version {Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}", ConsoleColor.DarkRed);
 
             if (MultiAdminFeatures.MultiAdminUsed)
@@ -121,6 +122,7 @@ namespace Exiled.Loader
         public static void LoadPlugins()
         {
             File.Delete(Path.Combine(Paths.Plugins, "Exiled.Updater.dll"));
+            File.Delete(Path.Combine(Paths.Dependencies, "Exiled.API.dll"));
 
             foreach (string assemblyPath in Directory.GetFiles(Paths.Plugins, "*.dll"))
             {
@@ -144,8 +146,7 @@ namespace Exiled.Loader
 
                 AssemblyInformationalVersionAttribute attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
 
-                Log.Info($"Loaded plugin {plugin.Name}@{(plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : attribute is not null ? attribute.InformationalVersion : string.Empty)}");
-
+                Log.Info($"Loaded plugin {plugin.Name}@{(attribute is not null ? attribute.InformationalVersion : plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : string.Empty)}");
                 Server.PluginAssemblies.Add(assembly, plugin);
                 Plugins.Add(plugin);
             }

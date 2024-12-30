@@ -134,6 +134,11 @@ namespace Exiled.API.Features.Doors
         internal List<BreakableDoor> SubDoorsValue { get; } = new();
 
         /// <summary>
+        /// Repair the door.
+        /// </summary>
+        public void Repair() => Base.ServerRepair();
+
+        /// <summary>
         /// Toggles the state of the doors from <see cref="Subdoors"/>.
         /// </summary>
         /// <param name="newState">New state for the subdoors.</param>

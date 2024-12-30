@@ -48,9 +48,9 @@ namespace Exiled.Events.Patches.Events.Scp3114
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp3114Slap), nameof(Scp3114Slap.Owner))),
                 new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // base._syncAttack
+                // base.LastAttackResult
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldfld, Field(typeof(ScpAttackAbilityBase<Scp3114Role>), nameof(ScpAttackAbilityBase<Scp3114Role>._syncAttack))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ScpAttackAbilityBase<Scp3114Role>), nameof(ScpAttackAbilityBase<Scp3114Role>.LastAttackResult))),
 
                 // Player::Get(primaryTarget)
                 new(OpCodes.Ldloc_1),

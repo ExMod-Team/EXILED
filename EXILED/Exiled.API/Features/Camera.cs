@@ -77,9 +77,6 @@ namespace Exiled.API.Features
             ["HCZ ELEV SYS B"] = CameraType.HczElevSysB,
             ["HCZ HALLWAY"] = CameraType.HczHallway,
             ["HCZ THREE-WAY"] = CameraType.HczThreeWay,
-            ["SERVERS BOTTOM"] = CameraType.HczServersBottom,
-            ["SERVERS STAIRS"] = CameraType.HczServersStairs,
-            ["SERVERS TOP"] = CameraType.HczServersTop,
             ["TESLA GATE"] = CameraType.HczTeslaGate,
             ["TESTROOM BRIDGE"] = CameraType.HczTestroomBridge,
             ["TESTROOM MAIN"] = CameraType.HczTestroomMain,
@@ -124,6 +121,21 @@ namespace Exiled.API.Features
             ["SURFACE AIRLOCK"] = CameraType.SurfaceAirlock,
             ["SURFACE BRIDGE"] = CameraType.SurfaceBridge,
             ["TUNNEL ENTRANCE"] = CameraType.TunnelEntrance,
+
+            // new
+            ["JUNK MAIN"] = CameraType.HczJunkMain,
+            ["JUNK HALLWAY"] = CameraType.HczJunkHallway,
+            ["CORNER DEEP"] = CameraType.HczCornerDeep,
+            ["DSS-08"] = CameraType.HczDSS08,
+            ["MICROHID STAIRS"] = CameraType.HczMicroHIDStairs,
+            ["PIPES HALLWAY"] = CameraType.HczPipesHallway,
+            ["PIPES MAIN"] = CameraType.HczPipesMain,
+            ["WARHEAD STARBOARD ELEVATOR"] = CameraType.HczWarheadStarboardElevator,
+            ["MICROHID MAIN"] = CameraType.HczMicroHIDMain,
+            ["MICROHID LAB"] = CameraType.HczMicroHIDLab,
+            ["WARHEAD TOP ELEVATORS"] = CameraType.HczWarheadTopElevators,
+            ["WARHEAD CONNECTOR"] = CameraType.HczWarheadConnector,
+            ["WARHEAD PORT ELEVATOR"] = CameraType.HczWarheadPortElevator,
         };
 
         private Room room;
@@ -137,9 +149,9 @@ namespace Exiled.API.Features
             Base = camera079;
             Camera079ToCamera.Add(camera079, this);
             Type = GetCameraType();
-#if Debug
+#if DEBUG
             if (Type is CameraType.Unknown)
-                Log.Error($"[CAMERATYPE UNKNOWN] {this}");
+                Log.Error($"[CAMERATYPE UNKNOWN] {this} BASE = {Base}");
 #endif
         }
 

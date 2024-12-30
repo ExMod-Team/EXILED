@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-    using System.Linq;
     using System.Reflection;
 
     using API.Features;
@@ -76,14 +74,9 @@ namespace Exiled.Events.EventArgs.Player
         public string Reason { get; set; }
 
         /// <summary>
-        /// Gets or sets the full kick message.
+        /// Gets the full kick message.
         /// </summary>
-        public string FullMessage
-        {
-            get => startkickmessage + Reason;
-            [Obsolete("this will be remove use Reason instead of FullMessage")]
-            set => Reason = value.StartsWith(startkickmessage) ? value.Remove(0, startkickmessage.Count()) : value;
-        }
+        public string FullMessage => startkickmessage + Reason;
 
         /// <summary>
         /// Gets or sets a value indicating whether action is taken against the target.

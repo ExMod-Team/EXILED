@@ -115,14 +115,9 @@ namespace Exiled.API.Features.Items
         public float StaminaRegenMultiplier { get; set; } = 1f;
 
         /// <summary>
-        /// Gets or sets how much the users movement speed should be affected when wearing this armor. (higher values = slower movement).
+        /// Gets how much the users movement speed should be affected when wearing this armor. (higher values = slower movement).
         /// </summary>
-        public float MovementSpeedMultiplier
-        {
-            get => Base._movementSpeedMultiplier;
-            [Obsolete("This Setter was causing desync to client", true)]
-            set => _ = value;
-        }
+        public float MovementSpeedMultiplier => Base._movementSpeedMultiplier;
 
         /// <summary>
         /// Gets how much worse <see cref="RoleTypeId.ClassD"/> and <see cref="RoleTypeId.Scientist"/>s are affected by wearing this armor.
@@ -155,7 +150,6 @@ namespace Exiled.API.Features.Items
         {
             Weight = Weight,
             StaminaUseMultiplier = StaminaUseMultiplier,
-            RemoveExcessOnDrop = RemoveExcessOnDrop,
             CategoryLimits = CategoryLimits,
             StaminaRegenMultiplier = StaminaRegenMultiplier,
             AmmoLimits = AmmoLimits,
@@ -164,14 +158,13 @@ namespace Exiled.API.Features.Items
         };
 
         /// <inheritdoc/>
-        internal override void ReadPickupInfo(Pickup pickup)
+        internal override void ReadPickupInfoBefore(Pickup pickup)
         {
-            base.ReadPickupInfo(pickup);
+            base.ReadPickupInfoBefore(pickup);
             if (pickup is Pickups.BodyArmorPickup armorPickup)
             {
                 HelmetEfficacy = armorPickup.HelmetEfficacy;
                 VestEfficacy = armorPickup.VestEfficacy;
-                RemoveExcessOnDrop = armorPickup.RemoveExcessOnDrop;
                 StaminaUseMultiplier = armorPickup.StaminaUseMultiplier;
                 StaminaRegenMultiplier = armorPickup.StaminaRegenMultiplier;
                 AmmoLimits = armorPickup.AmmoLimits;
