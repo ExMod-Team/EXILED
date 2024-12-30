@@ -169,7 +169,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="samples">Audio samples.</param>
         /// <param name="length">The length of the samples array.</param>
         /// <param name="targets">Targets who will hear the audio. If <c>null</c>, audio will be sent to all players.</param>
-        public void Play(byte[] samples, int? length = null, IEnumerable<Player> targets = null) => Play(new AudioMessage(ControllerID, samples, length ?? samples.Length), targets);
+        public void Play(byte[] samples, int? length = null, IEnumerable<Player> targets = null) => Play(new AudioMessage(ControllerId, samples, length ?? samples.Length), targets);
 
         /// <summary>
         /// Plays a single audio file through the speaker system. (No Arguments given (assuming you already preset those)).
@@ -276,7 +276,7 @@ namespace Exiled.API.Features.Toys
                         sendBuffer[i] = streamBuffer.Dequeue();
 
                     int dataLen = encoder.Encode(sendBuffer, encodedBuffer);
-                    AudioMessage audioMessage = new(ControllerID, encodedBuffer, dataLen);
+                    AudioMessage audioMessage = new(ControllerId, encodedBuffer, dataLen);
 
                     foreach (Player p in BroadcastTo ?? Player.List)
                         p.ReferenceHub.connectionToClient.Send(audioMessage);
