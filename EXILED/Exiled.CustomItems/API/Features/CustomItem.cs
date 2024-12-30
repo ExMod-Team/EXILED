@@ -652,7 +652,7 @@ namespace Exiled.CustomItems.API.Features
                     continue;
 
                 if (spawnPoint is LockerSpawnPoint)
-                    pickup.IsLocked = true;
+                    pickup.IsLocked = false;
 
                 if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
                 {
