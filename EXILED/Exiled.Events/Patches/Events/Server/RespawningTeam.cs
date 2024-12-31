@@ -84,6 +84,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
 
                     // num = ev.MaximumRespawnAmount
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.MaximumRespawnAmount))),
@@ -98,6 +99,10 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Wave))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TimedWave), nameof(TimedWave.Base))),
                     new(OpCodes.Starg_S, 0),
+
+                    // WaveSpawner.SpawnQueue = ev.SpawnQueue;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.SpawnQueue))),
+                    new(OpCodes.Stfld, Field(typeof(WaveSpawner), nameof(WaveSpawner.SpawnQueue))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

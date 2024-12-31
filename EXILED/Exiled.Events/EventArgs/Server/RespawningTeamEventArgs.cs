@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Server
 {
+    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Features;
@@ -39,7 +40,7 @@ namespace Exiled.Events.EventArgs.Server
         {
             Players = players;
             MaximumRespawnAmount = maxRespawn;
-            SpawnQueue = WaveSpawner.SpawnQueue;
+            Wave.PopulateQueue(SpawnQueue, MaximumRespawnAmount);
             Wave = new TimedWave((TimeBasedWave)wave);
             IsAllowed = true;
         }
