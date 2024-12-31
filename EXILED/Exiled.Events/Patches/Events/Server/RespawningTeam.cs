@@ -102,7 +102,7 @@ namespace Exiled.Events.Patches.Events.Server
 
                     // WaveSpawner.SpawnQueue = ev.SpawnQueue;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.SpawnQueue))),
-                    new(OpCodes.Stfld, Field(typeof(WaveSpawner), nameof(WaveSpawner.SpawnQueue))),
+                    new(OpCodes.Stsfld, Field(typeof(WaveSpawner), nameof(WaveSpawner.SpawnQueue))),
                 });
 
             // remove "wave.PopulateQueue(WaveSpawner.SpawnQueue, num);"
