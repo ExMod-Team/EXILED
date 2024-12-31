@@ -12,7 +12,7 @@ namespace Exiled.Events.EventArgs.Player
     using Interfaces;
 
     using LiteNetLib;
-
+    using LiteNetLib.Utils;
     using PluginAPI.Events;
 
 #pragma warning disable SA1600 //TODO:
@@ -27,8 +27,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class PreAuthenticatingEventArgs : IExiledEvent
     {
-        private PreauthCancellationData cachedPreauthData = PreauthCancellationData.Accept();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PreAuthenticatingEventArgs"/> class.
         /// </summary>
@@ -106,70 +104,6 @@ namespace Exiled.Events.EventArgs.Player
         public bool IsAllowed { get; private set; } = true;
 
         /// <summary>
-        /// Gets or sets the cached <see cref="CachedPreauthData"/> that is returned back to the NwPluginAPI.
-        /// </summary>
-        internal PreauthCancellationData CachedPreauthData
-        {
-            get => cachedPreauthData;
-            set
-            {
-                cachedPreauthData = value;
-                IsAllowed = false;
-            }
-        }
-
-        /// <summary>
-        /// Delays a pre-authentincating player.
-        /// </summary>
-        /// <param name="seconds">The seconds of delay.</param>
-        /// <param name="isForced">Indicates whether the delay is forced.</param>
-        public void Delay(byte seconds, bool isForced) =>
-            CachedPreauthData = PreauthCancellationData.RejectDelay(seconds, isForced);
-
-        /// <summary>
-        /// Redirects a pre-authentincating player.
-        /// </summary>
-        /// <param name="port">The redirection port.</param>
-        /// <param name="isForced">Indicates whether the redirection is forced.</param>
-        public void Redirect(ushort port, bool isForced) =>
-            CachedPreauthData = PreauthCancellationData.RejectRedirect(port, isForced);
-
-        /// <summary>
-        /// Rejects a pre-authentincating banned player.
-        /// </summary>
-        /// <param name="banReason">The ban reason.</param>>
-        /// <param name="expiration">The ban <see cref="DateTime"/> expiration.</param>
-        /// <param name="isForced">Indicates whether the rejection is forced.</param>
-        public void RejectBanned(string banReason, DateTime expiration, bool isForced) =>
-            CachedPreauthData = PreauthCancellationData.RejectBanned(banReason, expiration, isForced);
-
-        /// <summary>
-        /// Rejects a pre-authentincating banned player.
-        /// </summary>
-        /// <param name="banReason">The ban reason.</param>
-        /// <param name="expiration">The ban expiration.</param>
-        /// <param name="isForced">Indicates whether the rejection is forced.</param>
-        public void RejectBanned(string banReason, long expiration, bool isForced) =>
-            CachedPreauthData = PreauthCancellationData.RejectBanned(banReason, expiration, isForced);
-
-        /// <summary>
-        /// Rejects a pre-authentincating player.
-        /// </summary>
-        /// <param name="customReason">The rejection custom reason.</param>
-        /// <param name="isForced">Indicates whether the rejection is forced.</param>
-        public void Reject(string customReason, bool isForced) =>
-            CachedPreauthData = PreauthCancellationData.Reject(customReason, isForced);
-
-        /// <summary>
-        /// Rejects a pre-authentincating player.
-        /// </summary>
-        /// <param name="reason">The <see cref="RejectionReason"/>.</param>
-        /// <param name="isForced">Indicates whether the rejection is forced.</param>
-        public void Reject(RejectionReason reason, bool isForced) =>
-            CachedPreauthData = PreauthCancellationData.Reject(reason, isForced);
-
-        /*
-        /// <summary>
         /// Delays the connection.
         /// </summary>
         /// <param name="seconds">The delay in seconds.</param>
@@ -233,6 +167,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Rejects a player who's trying to authenticate.
         /// </summary>
+        public void ForceReject() => Reject(RejectionReason.Custom, true, "Rejected By A Plugin");
+
+        /// <summary>
+        /// Rejects a player who's trying to authenticate.
+        /// </summary>
         /// <param name="rejectionReason">The rejection reason.</param>
         /// <param name="isForced">Indicates whether the player has to be rejected forcefully.</param>
         /// <param name="customReason">The custom rejection reason (Banned and Custom reasons only).</param>
@@ -278,12 +217,5 @@ namespace Exiled.Events.EventArgs.Player
             else
                 Request.Reject(rejectData);
         }
-
-        /// <summary>
-        /// Disallows the connection without sending any reason. Should only be used when the connection has already been
-        /// terminated by the plugin itself.
-        /// </summary>
-        public void Disallow() => IsAllowed = false;
-        */
     }
 }
