@@ -247,7 +247,7 @@ namespace Exiled.Events.Patches.Generic
             offset = 0;
             index = newInstructions.FindIndex(i => i.Calls(Method(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerAddAmmo)))) + offset;
 
-            // and divide ammo that are inserting in magazine, to implement AmmoDrain
+            // and multiply ammo that are inserting in magazine, to implement AmmoDrain
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     new(OpCodes.Ldloc_S, ammoDrain.LocalIndex),
