@@ -121,9 +121,7 @@ namespace Exiled.Events.Patches.Events.Map
                 // ChangedIntoGrenadeEventArgs ev = new(timedGrenadePickup, thrownProjectile);
                 // Map.OnChangingIntoGrenade(ev);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangedIntoGrenadeEventArgs))[0]),
-                new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnChangedIntoGrenade))),
-                new(OpCodes.Stloc_S, changedIntoGrenade.LocalIndex),
             });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

@@ -9,15 +9,19 @@ namespace Exiled.API.Features
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
     using Core;
+
     using CustomPlayerEffects;
     using CustomPlayerEffects.Danger;
     using DamageHandlers;
+
     using Enums;
+
     using Exiled.API.Features.Core.Interfaces;
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Hazards;
@@ -2181,29 +2185,13 @@ namespace Exiled.API.Features
         /// Forces the player to use an item.
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
-        /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
+        public void UseItem(ItemType usableItem) => UseItem(Item.Create<Usable>(usableItem));
 
         /// <summary>
         /// Forces the player to use an item.
         /// </summary>
         /// <param name="item">The item to be used.</param>
-        /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        public bool UseItem(Item item)
-        {
-            if (item is not Usable usableItem)
-                return false;
-
-            usableItem.Base.Owner = referenceHub;
-            usableItem.Base.ServerOnUsingCompleted();
-
-            typeof(UsableItemsController).InvokeStaticEvent(nameof(UsableItemsController.ServerOnUsingCompleted), new object[] { referenceHub, usableItem.Base });
-
-            if (usableItem.Base is not null)
-                usableItem.Destroy();
-
-            return true;
-        }
+        public void UseItem(Usable item) => item.Use(this);
 
         /// <summary>
         /// Kills the player.
