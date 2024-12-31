@@ -544,6 +544,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingNicknameEventArgs> ChangingNickname { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> sends valid RA command.
+        /// </summary>
+        public static Event<SendingValidRACommandEventArgs> SendingValidRACommand { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a player's emotion changed.
         /// </summary>
         public static Event<ChangingEmotionEventArgs> ChangingEmotion { get; set; } = new();
@@ -1197,6 +1202,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingNicknameEventArgs"/> instance.</param>
         public static void OnChangingNickname(ChangingNicknameEventArgs ev) => ChangingNickname.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="Player"/> sends valid RA command.
+        /// </summary>
+        /// <param name="ev">The <see cref="SendingValidRACommandEventArgs"/> instance.</param>
+        public static void OnSendingValidRACommand(SendingValidRACommandEventArgs ev) => SendingValidRACommand.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/>'s rotates the revolver.
