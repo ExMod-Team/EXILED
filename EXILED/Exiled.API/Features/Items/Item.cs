@@ -311,7 +311,7 @@ namespace Exiled.API.Features.Items
             BodyArmor => new Armor(type),
             AmmoItem => new Ammo(type),
             ToggleableLightItemBase => new Flashlight(type),
-            JailbirdItem jailbird => new Jailbird(jailbird),
+            JailbirdItem => new Jailbird(),
             ThrowableItem throwable => throwable.Projectile switch
             {
                 FlashbangGrenade => new FlashGrenade(owner),
