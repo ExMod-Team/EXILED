@@ -11,14 +11,14 @@ namespace Exiled.Loader
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
 
     using API.Enums;
     using API.Extensions;
     using API.Interfaces;
-
     using Exiled.API.Features;
+    using Exiled.API.Features.Attributes.Config;
     using Exiled.API.Features.Pools;
-
     using YamlDotNet.Core;
 
     /// <summary>
@@ -100,6 +100,7 @@ namespace Exiled.Loader
             {
                 string rawConfigString = Loader.Serializer.Serialize(rawDeserializedConfig);
                 config = (IConfig)Loader.Deserializer.Deserialize(rawConfigString, plugin.Config.GetType());
+                ValidateConfig(config, plugin);
                 plugin.Config.CopyProperties(config);
             }
             catch (YamlException yamlException)
@@ -109,6 +110,35 @@ namespace Exiled.Loader
             }
 
             return config;
+        }
+
+        /// <summary>
+        /// Validates config of a plugin.
+        /// </summary>
+        /// <param name="config">Config to check.</param>
+        /// <param name="plugin">Plugin which config will be checked.</param>
+        public static void ValidateConfig(IConfig config, IPlugin<IConfig> plugin)
+        {
+            int success = 0;
+
+            foreach (PropertyInfo property in config.GetType().GetProperties())
+            {
+                IEnumerable<CustomValidatorAttribute> attributes = property.GetCustomAttributes<CustomValidatorAttribute>();
+
+                foreach (CustomValidatorAttribute attribute in attributes)
+                {
+                    if (!attribute.Validate(property.GetValue(config)))
+                    {
+                        Log.Error($"Config validation failed for {property.Name} from plugin {plugin.Name} ({property.GetValue(config)}). Default value will be used instead.");
+                        property.SetValue(config, property.GetValue(plugin.Config));
+                        continue;
+                    }
+
+                    success++;
+                }
+            }
+
+            Log.Debug($"{plugin.Name}'s configs have successfully passed {success} validations.");
         }
 
         /// <summary>

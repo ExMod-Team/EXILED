@@ -14,6 +14,7 @@ namespace Exiled.API.Extensions
     using System.Text;
     using System.Text.RegularExpressions;
 
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
 
     /// <summary>
@@ -72,6 +73,21 @@ namespace Exiled.API.Extensions
             string[] extractedArguments = commandLine.Split(' ');
 
             return (extractedArguments[0].ToLower(), extractedArguments.Skip(1).ToArray());
+        }
+
+        /// <summary>
+        /// Parse players from a <see cref="string"/>.
+        /// </summary>
+        /// <param name="query">Query to be parsed.</param>
+        /// <param name="separator">Separator to be used in the query.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Player"/> if any found, otherwise an empty <see cref="IEnumerable{T}"/>.</returns>
+        public static IEnumerable<Player> ParsePlayers(this string query, char separator = '.')
+        {
+            foreach (string str in query.Split(separator))
+            {
+                if (Player.TryGet(str, out Player player))
+                    yield return player;
+            }
         }
 
         /// <summary>
