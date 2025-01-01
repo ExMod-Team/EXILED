@@ -20,6 +20,7 @@ namespace Exiled.Events.Patches.Generic
 
     using HarmonyLib;
 
+    using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
@@ -66,6 +67,22 @@ namespace Exiled.Events.Patches.Generic
             yield return new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel);
         }
 
+        /// <summary>
+        /// Calculates modified ammo limit.
+        /// </summary>
+        /// <param name="ammoLimit">Current ammo limit for reloading.</param>
+        /// <param name="ammoDrain">Target <see cref="API.Features.Items.Firearm.AmmoDrain"/>.</param>
+        /// <returns>Modified ammo limit for reloading.</returns>
+        internal static int GetAmmoDrainLimit(int ammoLimit, int ammoDrain)
+        {
+            if (ammoDrain == 0)
+            {
+                return int.MaxValue;
+            }
+
+            return ammoLimit / ammoDrain;
+        }
+
         // that patch for open bolted firearms
         [HarmonyPatch(nameof(AutomaticActionModule.ServerShoot))]
         [HarmonyTranspiler]
@@ -89,7 +106,7 @@ namespace Exiled.Events.Patches.Generic
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     new(OpCodes.Ldloc_S, ammoDrain.LocalIndex),
-                    new(OpCodes.Div),
+                    new(OpCodes.Call, Method(typeof(AmmoDrainAutomatic), nameof(AmmoDrainAutomatic.GetAmmoDrainLimit))),
                 });
 
             offset = 0;
@@ -131,7 +148,7 @@ namespace Exiled.Events.Patches.Generic
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     new(OpCodes.Ldloc_S, ammoDrain.LocalIndex),
-                    new(OpCodes.Div),
+                    new(OpCodes.Call, Method(typeof(AmmoDrainAutomatic), nameof(AmmoDrainAutomatic.GetAmmoDrainLimit))),
                 });
 
             offset = 0;
@@ -177,7 +194,7 @@ namespace Exiled.Events.Patches.Generic
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     new(OpCodes.Ldloc_S, ammoDrain.LocalIndex),
-                    new(OpCodes.Div),
+                    new(OpCodes.Call, Method(typeof(AmmoDrainAutomatic), nameof(AmmoDrainAutomatic.GetAmmoDrainLimit))),
                 });
 
             offset = 0;
@@ -200,7 +217,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patch for adding <see cref="API.Features.Items.Firearm.AmmoDrain"/> support for revolvers.
     /// </summary>
-    [HarmonyPatch(typeof(RevolverClipReloaderModule), nameof(RevolverClipReloaderModule.InsertAmmoFromClip))]
+    [HarmonyPatch(typeof(RevolverClipReloaderModule), nameof(RevolverClipReloaderModule.ServerWithholdAmmo))]
     internal class AmmoDrainRevolver
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions, ILGenerator generator)
@@ -224,17 +241,17 @@ namespace Exiled.Events.Patches.Generic
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     new(OpCodes.Ldloc_S, ammoDrain.LocalIndex),
-                    new(OpCodes.Mul),
+                    new(OpCodes.Call, Method(typeof(AmmoDrainAutomatic), nameof(AmmoDrainAutomatic.GetAmmoDrainLimit))),
                 });
 
             offset = 0;
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(IPrimaryAmmoContainerModule), nameof(IPrimaryAmmoContainerModule.ServerModifyAmmo)))) + offset;
+            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerAddAmmo)))) + offset;
 
-            // and divide ammo that are inserting in magazine, to implement AmmoDrain
+            // and multiply ammo that are inserting in magazine, to implement AmmoDrain
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
                     new(OpCodes.Ldloc_S, ammoDrain.LocalIndex),
-                    new(OpCodes.Div),
+                    new(OpCodes.Mul),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

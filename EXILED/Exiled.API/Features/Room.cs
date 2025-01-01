@@ -401,8 +401,8 @@ namespace Exiled.API.Features
         /// Factory method to create and add a <see cref="Room"/> component to a Transform.
         /// We can add parameters to be set privately here.
         /// </summary>
-        /// <param name="roomIdentifier">The Game Object to attach the Room component to.</param>
-        internal static void CreateComponent(RoomIdentifier roomIdentifier) => roomIdentifier.gameObject.AddComponent<Room>();
+        /// <param name="baseRoom">The Game Object to attach the Room component to.</param>
+        internal static void CreateComponent(GameObject baseRoom) => baseRoom.AddComponent<Room>().InternalCreate();
 
         /// <summary>
         /// Factory method to complete all element inside a Room.

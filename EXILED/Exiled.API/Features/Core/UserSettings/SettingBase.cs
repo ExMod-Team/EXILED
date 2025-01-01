@@ -225,9 +225,12 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <remarks>This method is used to sync new settings with players.</remarks>
         public static IEnumerable<SettingBase> Register(IEnumerable<SettingBase> settings, Func<Player, bool> predicate = null)
         {
-            IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
+            IList<SettingBase> list = settings as IList<SettingBase> ?? settings.ToArray();
 
             List<SettingBase> result = new();
+            result.AddRange(list.Where(x => x.Header == null));
+
+            IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = list.Where(s => s != null && s.Header != null).GroupBy(s => s.Header);
 
             // Group settings by headers
             foreach (IGrouping<HeaderSetting, SettingBase> grouping in grouped)

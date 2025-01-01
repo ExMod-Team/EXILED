@@ -219,6 +219,11 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets the next bound dance.
+        /// </summary>
+        public DanceType? NextDanceType { get; set; }
+
+        /// <summary>
         /// Gets or sets the bound dance.
         /// </summary>
         internal DanceType DanceType { get; set; } = DanceType.None;

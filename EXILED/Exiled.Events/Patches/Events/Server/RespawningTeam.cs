@@ -84,6 +84,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
 
                     // num = ev.MaximumRespawnAmount
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.MaximumRespawnAmount))),
@@ -98,7 +99,18 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Wave))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TimedWave), nameof(TimedWave.Base))),
                     new(OpCodes.Starg_S, 0),
+
+                    // WaveSpawner.SpawnQueue = ev.SpawnQueue;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.SpawnQueue))),
+                    new(OpCodes.Stsfld, Field(typeof(WaveSpawner), nameof(WaveSpawner.SpawnQueue))),
                 });
+
+            // remove "wave.PopulateQueue(WaveSpawner.SpawnQueue, num);"
+            offset = -3;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(SpawnableWaveBase), nameof(SpawnableWaveBase.PopulateQueue)))) + offset;
+            List<Label> extractLabels = newInstructions[index].ExtractLabels();
+            newInstructions.RemoveRange(index, 4);
+            newInstructions[index].WithLabels(extractLabels);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -109,12 +121,5 @@ namespace Exiled.Events.Patches.Events.Server
         private static List<Player> GetPlayers(List<ReferenceHub> hubs) => hubs.Select(Player.Get).ToList();
 
         private static List<ReferenceHub> GetHubs(List<Player> players) => players.Select(player => player.ReferenceHub).ToList();
-
-        private static void RefillQueue(Queue<RoleTypeId> newQueue)
-        {
-            WaveSpawner.SpawnQueue.Clear();
-            foreach (RoleTypeId role in newQueue)
-                WaveSpawner.SpawnQueue.Enqueue(role);
-        }
     }
 }

@@ -62,6 +62,8 @@ namespace Exiled.API.Features.Items
                 ushort serial = ItemSerialGenerator.GenerateNext();
                 Serial = serial;
                 itemBase.OnAdded(null);
+                if (Base is ModularAutosyncItem syncItem)
+                    syncItem.InstantiationStatus = AutosyncInstantiationStatus.SimulatedInstance;
 #if DEBUG
                 Log.Debug($"{nameof(Item)}.ctor: Generating new serial number. Serial should now be: {serial}. // {Serial}");
 #endif
@@ -311,7 +313,7 @@ namespace Exiled.API.Features.Items
             BodyArmor => new Armor(type),
             AmmoItem => new Ammo(type),
             ToggleableLightItemBase => new Flashlight(type),
-            JailbirdItem jailbird => new Jailbird(jailbird),
+            JailbirdItem => new Jailbird(),
             ThrowableItem throwable => throwable.Projectile switch
             {
                 FlashbangGrenade => new FlashGrenade(owner),

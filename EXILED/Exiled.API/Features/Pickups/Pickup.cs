@@ -495,12 +495,12 @@ namespace Exiled.API.Features.Pickups
             ThrownProjectile thrownProjectile => thrownProjectile switch
             {
                 BaseScp018Projectile => new Projectiles.Scp018Projectile(),
-                ExplosionGrenade explosionGrenade => new ExplosionGrenadeProjectile(explosionGrenade),
+                ExplosionGrenade explosionGrenade => new ExplosionGrenadeProjectile(type),
                 FlashbangGrenade => new FlashbangProjectile(),
                 BaseScp2176Projectile => new Projectiles.Scp2176Projectile(),
                 EffectGrenade => new EffectGrenadeProjectile(type),
                 TimeGrenade => new TimeGrenadeProjectile(type),
-                _ => new Projectile(thrownProjectile),
+                _ => new Projectile(type),
             },
             _ => new Pickup(type),
         };

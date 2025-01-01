@@ -9,7 +9,6 @@ namespace Exiled.Events.Patches.Generic
 {
     using Exiled.API.Features;
 #pragma warning disable SA1313
-#pragma warning disable SA1402
 
     using HarmonyLib;
 
