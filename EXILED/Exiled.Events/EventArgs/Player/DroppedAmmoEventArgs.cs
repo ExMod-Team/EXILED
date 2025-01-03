@@ -50,7 +50,6 @@ namespace Exiled.Events.EventArgs.Player
 
         /// <summary>
         /// Gets the type of dropped item instead of <inheritdoc cref="AmmoType"/>.
-        /// For example, if the plugin gives the player one of the items instead of ammo.
         /// </summary>
         public ItemType ItemType { get; }
 
