@@ -27,6 +27,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
+        /// <param name="itemType">
+        /// <inheritdoc cref="ItemType"/>
+        /// </param>
         /// <param name="ammoType">
         /// <inheritdoc cref="AmmoType" />
         /// </param>
@@ -36,13 +39,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="ammoPickups">
         /// <inheritdoc cref="AmmoPickups" />
         /// </param>
-        public DroppedAmmoEventArgs(Player player, AmmoType ammoType, ushort amount, List<InventorySystem.Items.Firearms.Ammo.AmmoPickup> ammoPickups)
+        public DroppedAmmoEventArgs(Player player, ItemType itemType, AmmoType ammoType, ushort amount, List<InventorySystem.Items.Firearms.Ammo.AmmoPickup> ammoPickups)
         {
             Player = player;
+            ItemType = itemType;
             AmmoType = ammoType;
             Amount = amount;
             AmmoPickups = Pickup.Get<AmmoPickup>(ammoPickups);
         }
+
+        /// <summary>
+        /// Gets the type of dropped item instead of <inheritdoc cref="AmmoType"/>.
+        /// For example, if the plugin gives the player one of the items instead of ammo.
+        /// </summary>
+        public ItemType ItemType { get; }
 
         /// <summary>
         /// Gets the type of dropped ammo.
