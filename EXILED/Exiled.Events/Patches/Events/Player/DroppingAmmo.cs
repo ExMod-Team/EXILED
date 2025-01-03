@@ -50,6 +50,9 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldfld, Field(typeof(Inventory), nameof(Inventory._hub))),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
+                // itemType
+                new(OpCodes.Ldarg_1),
+
                 // ammoType
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Call, Method(typeof(API.Extensions.ItemExtensions), nameof(API.Extensions.ItemExtensions.GetAmmoType))),
@@ -60,7 +63,7 @@ namespace Exiled.Events.Patches.Events.Player
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // DroppingAmmoEventArgs ev = new(Player, AmmoType, ushort, bool)
+                // DroppingAmmoEventArgs ev = new(Player, ItemType, AmmoType, ushort, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingAmmoEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
@@ -83,6 +86,10 @@ namespace Exiled.Events.Patches.Events.Player
                 // ev.Player
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingAmmoEventArgs), nameof(DroppingAmmoEventArgs.Player))),
+
+                // ev.ItemType
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingAmmoEventArgs), nameof(DroppingAmmoEventArgs.ItemType))),
 
                 // ev.AmmoType
                 new(OpCodes.Ldloc_S, ev.LocalIndex),

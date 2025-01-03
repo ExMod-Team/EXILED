@@ -27,6 +27,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
+        /// <param name="itemType">
+        /// <inheritdoc cref="ItemType"/>
+        /// </param>
         /// <param name="ammoType">
         /// <inheritdoc cref="AmmoType" />
         /// </param>
@@ -36,13 +39,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public DroppingAmmoEventArgs(Player player, AmmoType ammoType, ushort amount, bool isAllowed = true)
+        public DroppingAmmoEventArgs(Player player, byte itemType, AmmoType ammoType, ushort amount, bool isAllowed = true)
         {
             Player = player;
+            ItemType = (ItemType)itemType;
             AmmoType = ammoType;
             Amount = amount;
             IsAllowed = isAllowed;
         }
+
+        /// <summary>
+        /// Gets the type of item being dropped instead of <inheritdoc cref="AmmoType"/>.
+        /// For example, if the plugin gives the player one of the items instead of ammo.
+        /// </summary>
+        public ItemType ItemType { get; }
 
         /// <summary>
         /// Gets the type of ammo being dropped.

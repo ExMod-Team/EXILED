@@ -26,16 +26,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="door">
         /// <inheritdoc cref="Door" />
         /// </param>
+        /// <param name="colliderId">
+        /// <inheritdoc cref="ColliderId"/>
+        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
         /// <param name="canInteract">
         /// <inheritdoc cref="CanInteract" />
         /// </param>
-        public InteractingDoorEventArgs(Player player, DoorVariant door, bool isAllowed = true, bool canInteract = true)
+        public InteractingDoorEventArgs(Player player, DoorVariant door, byte colliderId, bool isAllowed = true, bool canInteract = true)
         {
             Player = player;
             Door = Door.Get(door);
+            ColliderId = colliderId;
             IsAllowed = isAllowed;
             CanInteract = canInteract;
         }
@@ -54,6 +58,11 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets the <see cref="API.Features.Doors.Door" /> instance.
         /// </summary>
         public Door Door { get; set; }
+
+        /// <summary>
+        /// Gets the ColliderId that the player interacted with.
+        /// </summary>
+        public byte ColliderId { get; }
 
         /// <summary>
         /// Gets the player who's interacting with the door.
