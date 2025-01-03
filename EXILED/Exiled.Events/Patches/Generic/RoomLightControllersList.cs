@@ -9,7 +9,6 @@ namespace Exiled.Events.Patches.Generic
 {
     using Exiled.API.Features;
 #pragma warning disable SA1313
-#pragma warning disable SA1402
 
     using HarmonyLib;
 
@@ -22,18 +21,6 @@ namespace Exiled.Events.Patches.Generic
         private static void Postfix(RoomLightController __instance)
         {
             Room.Get(__instance.Room).RoomLightControllersValue.Add(__instance);
-        }
-    }
-
-    /// <summary>
-    /// Patch for removing <see cref="RoomLightController"/> to list.
-    /// </summary>
-    [HarmonyPatch(typeof(RoomLightController), nameof(RoomLightController.OnDestroy))]
-    internal class RoomLightControllersList2
-    {
-        private static void Postfix(RoomLightController __instance)
-        {
-            Room.Get(__instance.Room).RoomLightControllersValue.Remove(__instance);
         }
     }
 }

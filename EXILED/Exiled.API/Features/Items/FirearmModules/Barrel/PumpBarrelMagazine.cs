@@ -80,7 +80,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Barrel
 
             set
             {
-                PumpBarrel.SyncCocked = MaxAmmo;
+                PumpBarrel.SyncCocked = value ? MaxAmmo : 0;
                 Resync();
             }
         }
