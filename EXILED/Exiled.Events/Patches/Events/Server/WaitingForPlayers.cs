@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="WaitingForPlayers.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,26 +7,39 @@
 
 namespace Exiled.Events.Patches.Events.Server
 {
-#pragma warning disable SA1313 // Parameter names should begin with lower-case letter
+    using System.Collections.Generic;
+    using System.Reflection.Emit;
 
     using API.Features;
-
+    using Exiled.API.Features.Pools;
     using HarmonyLib;
+
+    using static HarmonyLib.AccessTools;
 
     /// <summary>
     ///     Patches <see cref="CharacterClassManager.Start" />.
     ///     Adds the <see cref="Handlers.Server.WaitingForPlayers" /> event.
     /// </summary>
-    [HarmonyPatch(typeof(ReferenceHub), nameof(ReferenceHub.Start))]
+    [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.Start))]
     internal static class WaitingForPlayers
     {
-        private static void Postfix(ReferenceHub __instance)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            if (!__instance.isLocalPlayer)
-                return;
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Server.Host = new Player(__instance);
-            Handlers.Server.OnWaitingForPlayers();
+            int offset = 1;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Stsfld) + offset;
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // Handlers.Server.OnWaitingForPlayers();
+                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnWaitingForPlayers))),
+            });
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }
