@@ -261,7 +261,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to check.</param>
         /// <returns><see langword="true"/> if the given <see cref="Player"/> is in the hurt range of the tesla gate; otherwise, <see langword="false"/>.</returns>
-        public bool IsPlayerInHurtRange(Player player) => player is not null && Vector3.Distance(Position, player.Position) <= Base.sizeOfTrigger * 2.2f;
+        public bool IsPlayerInHurtRange(Player player) => player is not null && Base.killers.Any(x => new Bounds(x.transform.position, Base.sizeOfKiller).Contains(player.Position));
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="Player"/> is in the idle range of a specific tesla gate.

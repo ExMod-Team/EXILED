@@ -90,7 +90,7 @@ Localized READMEs
   <div>
     <img src="https://flagsapi.com/DE/flat/64.png" height=30>
     <br>
-    <a href="documentation/localization/README-DE.md">German</a>
+    <a href="documentation/localization/README-DE.md">Deutsch</a>
   </div>
   <br>
   <div>

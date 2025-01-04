@@ -160,9 +160,17 @@ namespace Exiled.API.Features.Lockers
         }
 
         /// <summary>
-        /// Gets a value indicating whether the chamber is currently open.
+        /// Gets or sets a value indicating whether the chamber is currently open.
         /// </summary>
-        public bool IsOpen => Base.IsOpen;
+        public bool IsOpen
+        {
+            get => Base.IsOpen;
+            set
+            {
+                Base.SetDoor(value, null);
+                Locker.Base.RefreshOpenedSyncvar();
+            }
+        }
 
         /// <summary>
         /// Gets the id of this chamber in <see cref="Locker"/>.

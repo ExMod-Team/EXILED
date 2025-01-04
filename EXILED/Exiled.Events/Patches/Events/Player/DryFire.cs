@@ -67,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label ret = newInstructions[newInstructions.Count - 1 + offset].labels[0];
 
             offset = -2;
-            int index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.Cocked)))) + offset;
+            int index = newInstructions.FindLastIndex(x => x.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.Cocked)))) + offset;
 
             newInstructions.InsertRange(index, GetInstructions(newInstructions[index], ret));
 
