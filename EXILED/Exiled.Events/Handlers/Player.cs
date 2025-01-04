@@ -546,7 +546,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> sends valid RA command.
         /// </summary>
-        public static Event<SendingValidRACommandEventArgs> SendingValidRACommand { get; set; } = new();
+        public static Event<SendingValidCommandEventArgs> SendingValidCommand { get; set; } = new();
 
         /// <summary>
         /// Invoked before a player's emotion changed.
@@ -1206,8 +1206,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a <see cref="Player"/> sends valid RA command.
         /// </summary>
-        /// <param name="ev">The <see cref="SendingValidRACommandEventArgs"/> instance.</param>
-        public static void OnSendingValidRACommand(SendingValidRACommandEventArgs ev) => SendingValidRACommand.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="SendingValidCommandEventArgs"/> instance.</param>
+        public static void OnSendingValidCommand(SendingValidCommandEventArgs ev) => SendingValidCommand.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/>'s rotates the revolver.

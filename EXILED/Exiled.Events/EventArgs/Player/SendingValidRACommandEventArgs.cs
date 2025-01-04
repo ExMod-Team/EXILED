@@ -11,13 +11,13 @@ namespace Exiled.Events.EventArgs.Player
     using Exiled.API.Features;
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Interfaces;
-
+    using PluginAPI.Enums;
     using RemoteAdmin;
 
     /// <summary>
     /// Contains all information before a player sends a command.
     /// </summary>
-    public class SendingValidRACommandEventArgs : IPlayerEvent, IDeniableEvent
+    public class SendingValidCommandEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingValidRACommandEventArgs" /> class.
@@ -28,16 +28,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="command">
         /// <inheritdoc cref="Command" />
         /// </param>
+        /// <param name="commandType">
+        /// <inheritdoc cref="Type" />
+        /// </param>
         /// <param name="query">
         /// <inheritdoc cref="Query" />
         /// </param>
         /// <param name="response">
         /// <inheritdoc cref="Response" />
         /// </param>
-        public SendingValidRACommandEventArgs(Player player, ICommand command, string query, string response)
+        public SendingValidCommandEventArgs(Player player, ICommand command,CommandType commandType, string query, string response)
         {
             Player = player;
             Command = command;
+            Type = commandType;
             Query = query;
             Response = response;
         }
@@ -61,6 +65,11 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the command query.
         /// </summary>
         public string Query { get; }
+
+        /// <summary>
+        /// Gets the command type.
+        /// </summary>
+        public CommandType Type { get; }
 
         /// <summary>
         /// Gets the command interface.
