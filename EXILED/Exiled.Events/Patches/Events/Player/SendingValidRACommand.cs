@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patches <see cref="CommandProcessor.ProcessQuery(string, CommandSender)" />.
-    /// Adds the <see cref="Handlers.Player.SendingValidRACommand" /> event.
+    /// Adds the <see cref="Handlers.Player.SendingValidCommand" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingValidCommand))]
     [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]

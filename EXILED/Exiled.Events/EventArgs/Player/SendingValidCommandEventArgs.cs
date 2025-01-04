@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="SendingValidRACommandEventArgs.cs" company="ExMod Team">
+// <copyright file="SendingValidCommandEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -20,7 +20,7 @@ namespace Exiled.Events.EventArgs.Player
     public class SendingValidCommandEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SendingValidRACommandEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="SendingValidCommandEventArgs" /> class.
         /// </summary>
         /// <param name="player">
         /// <inheritdoc cref="Player" />
@@ -37,7 +37,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="response">
         /// <inheritdoc cref="Response" />
         /// </param>
-        public SendingValidCommandEventArgs(Player player, ICommand command,CommandType commandType, string query, string response)
+        public SendingValidCommandEventArgs(Player player, ICommand command, CommandType commandType, string query, string response)
         {
             Player = player;
             Command = command;

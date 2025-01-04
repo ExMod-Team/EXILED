@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label contlabel = generator.DefineLabel();
 
             offset = -6;
-            int sendreplyidx = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldstr && instruction.operand == "magenta") + offset;
+            int sendreplyidx = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldstr && (string)instruction.operand == "magenta") + offset;
             Label sendreply = generator.DefineLabel();
             newInstructions[sendreplyidx].WithLabels(sendreply);
 
@@ -63,13 +63,13 @@ namespace Exiled.Events.Patches.Events.Player
                    // this._hub
                    new CodeInstruction(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
 
-                   // Player.Get(Hub) 
-                   new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub)})),
+                   // Player.Get(Hub)
+                   new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub) })),
 
                    // command
                    new CodeInstruction(OpCodes.Ldloc_1),
 
-                   //commandtype RA
+                   // commandtype RA
                    new CodeInstruction(OpCodes.Ldc_I4_2),
 
                    // query
@@ -112,7 +112,7 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             offset = -3;
-            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldstr && instruction.operand == "magenta") + offset;
+            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldstr && (string)instruction.operand == "magenta") + offset;
             Label skip = generator.DefineLabel();
             newInstructions[index].WithLabels(skip);
             newInstructions.InsertRange(
