@@ -124,19 +124,19 @@ namespace Exiled.API.Enums
         InsideHczArmory,
 
         /// <summary>
-        /// Inside the Micro-HID room.
+        /// Inside the chamber that contains the Micro-HID in Micro-HID room.
         /// </summary>
-        InsideHid,
+        InsideHidChamber,
 
         /// <summary>
-        /// Just inside the left door next to Micro-HID room.
+        /// Inside the lower door that leads to the stairs in Micro-HID room.
         /// </summary>
-        InsideHidLeft,
+        InsideHidLower,
 
         /// <summary>
-        /// Just inside the right door next to Micro-HID room.
+        /// Inside the upper door that leads into the Micro-HID room just after the stairs.
         /// </summary>
-        InsideHidRight,
+        InsideHidUpper,
 
         /// <summary>
         /// Just inside the LCZ WC door.
