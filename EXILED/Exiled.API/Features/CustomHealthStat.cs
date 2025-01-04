@@ -11,6 +11,7 @@ namespace Exiled.API.Features
 
     /// <summary>
     /// A custom version of <see cref="HealthStat"/> which allows the player's max amount of health to be changed.
+    /// TODO: Move to Features.CustomStats.
     /// </summary>
     public class CustomHealthStat : HealthStat
     {
