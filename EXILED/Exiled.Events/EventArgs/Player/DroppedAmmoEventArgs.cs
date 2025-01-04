@@ -11,6 +11,7 @@ namespace Exiled.Events.EventArgs.Player
 
     using API.Enums;
     using API.Features;
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Pickups;
     using Interfaces;
 
@@ -30,20 +31,17 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="itemType">
         /// <inheritdoc cref="ItemType"/>
         /// </param>
-        /// <param name="ammoType">
-        /// <inheritdoc cref="AmmoType" />
-        /// </param>
         /// <param name="amount">
         /// <inheritdoc cref="Amount" />
         /// </param>
         /// <param name="ammoPickups">
         /// <inheritdoc cref="AmmoPickups" />
         /// </param>
-        public DroppedAmmoEventArgs(Player player, ItemType itemType, AmmoType ammoType, ushort amount, List<InventorySystem.Items.Firearms.Ammo.AmmoPickup> ammoPickups)
+        public DroppedAmmoEventArgs(Player player, ItemType itemType, ushort amount, List<InventorySystem.Items.Firearms.Ammo.AmmoPickup> ammoPickups)
         {
             Player = player;
             ItemType = itemType;
-            AmmoType = ammoType;
+            AmmoType = ItemExtensions.GetAmmoType(itemType);
             Amount = amount;
             AmmoPickups = Pickup.Get<AmmoPickup>(ammoPickups);
         }

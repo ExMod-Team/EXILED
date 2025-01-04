@@ -9,7 +9,7 @@ namespace Exiled.Events.EventArgs.Player
 {
     using API.Enums;
     using API.Features;
-
+    using Exiled.API.Extensions;
     using Interfaces;
 
     using PlayerRoles;
@@ -30,20 +30,17 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="itemType">
         /// <inheritdoc cref="ItemType"/>
         /// </param>
-        /// <param name="ammoType">
-        /// <inheritdoc cref="AmmoType" />
-        /// </param>
         /// <param name="amount">
         /// <inheritdoc cref="int" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public DroppingAmmoEventArgs(Player player, byte itemType, AmmoType ammoType, ushort amount, bool isAllowed = true)
+        public DroppingAmmoEventArgs(Player player, byte itemType, ushort amount, bool isAllowed = true)
         {
             Player = player;
             ItemType = (ItemType)itemType;
-            AmmoType = ammoType;
+            AmmoType = ItemExtensions.GetAmmoType(ItemType);
             Amount = amount;
             IsAllowed = isAllowed;
         }

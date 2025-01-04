@@ -53,17 +53,13 @@ namespace Exiled.Events.Patches.Events.Player
                 // itemType
                 new(OpCodes.Ldarg_1),
 
-                // ammoType
-                new(OpCodes.Ldarg_1),
-                new(OpCodes.Call, Method(typeof(API.Extensions.ItemExtensions), nameof(API.Extensions.ItemExtensions.GetAmmoType))),
-
                 // amount
                 new(OpCodes.Ldarg_2),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // DroppingAmmoEventArgs ev = new(Player, ItemType, AmmoType, ushort, bool)
+                // DroppingAmmoEventArgs ev = new(Player, ItemType, ushort, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppingAmmoEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
@@ -91,10 +87,6 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingAmmoEventArgs), nameof(DroppingAmmoEventArgs.ItemType))),
 
-                // ev.AmmoType
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingAmmoEventArgs), nameof(DroppingAmmoEventArgs.AmmoType))),
-
                 // ev.Amount
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingAmmoEventArgs), nameof(DroppingAmmoEventArgs.Amount))),
@@ -102,9 +94,9 @@ namespace Exiled.Events.Patches.Events.Player
                 // ammoPickups
                 new(OpCodes.Ldloc_S, ammoPickups.LocalIndex),
 
-                // Handlers::Player::OnDroppedItem(new DroppedAmmoEventArgs(ev.Player, ev.AmmoType, ev.Amount, ammoPickups))
+                // Handlers::Player::OnDroppedAmmo(new DroppedAmmoEventArgs(ev.Player, ev.ItemType, ev.Amount, ammoPickups))
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppedAmmoEventArgs))[0]),
-                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnDroppedItem))),
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnDroppedAmmo))),
             });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
