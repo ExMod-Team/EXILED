@@ -98,7 +98,6 @@ namespace Exiled.API.Features
         private ReferenceHub referenceHub;
         private CustomHealthStat healthStat;
         private CustomHumeShieldStat humeShieldStat;
-        private CustomStaminaStat staminaStat;
         private Role role;
 
         /// <summary>
@@ -181,7 +180,6 @@ namespace Exiled.API.Features
 
                 value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = healthStat = new CustomHealthStat { Hub = value };
                 value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = humeShieldStat = new CustomHumeShieldStat { Hub = value };
-                value.playerStats._dictionarizedTypes[typeof(StaminaStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(StaminaStat))] = staminaStat = new CustomStaminaStat { Hub = value };
             }
         }
 
@@ -993,9 +991,8 @@ namespace Exiled.API.Features
 
         /// <summary>
         /// Gets the <see cref="StaminaStat"/> class.
-        /// TODO: Change to <see cref="CustomStaminaStat"/>.
         /// </summary>
-        public StaminaStat StaminaStat => staminaStat;
+        public StaminaStat StaminaStat => ReferenceHub.playerStats.GetModule<StaminaStat>();
 
         /// <summary>
         /// Gets or sets the amount of stamina the player has.
@@ -1005,15 +1002,6 @@ namespace Exiled.API.Features
         {
             get => StaminaStat.CurValue;
             set => StaminaStat.CurValue = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the players maximum stamina.
-        /// </summary>
-        public float MaxStamina
-        {
-            get => staminaStat.MaxValue;
-            set => staminaStat.CustomMaxValue = value;
         }
 
         /// <summary>
