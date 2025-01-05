@@ -42,7 +42,7 @@ namespace Exiled.Events.Handlers.Internal
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.OtherAlive] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Tutorial);
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.Dead] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Spectator);
 
-            Timing.CallDelayed(1, Handlers.Map.OnGenerated);
+            Handlers.Map.OnGenerated();
         }
     }
 }
