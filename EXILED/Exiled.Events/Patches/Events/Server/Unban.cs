@@ -86,7 +86,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnUnbanned))),
             });
 
-            for (var z = 0; z < newInstructions.Count; z++)
+            for (int z = 0; z < newInstructions.Count; z++)
             {
                 yield return newInstructions[z];
             }
@@ -143,7 +143,7 @@ namespace Exiled.Events.Patches.Events.Server
             // Add label to ldloc.1
             addToUnbannedListInstruction.WithLabels(continueLabel);
 
-            for (var z = 0; z < newInstructions.Count; z++)
+            for (int z = 0; z < newInstructions.Count; z++)
             {
                 yield return newInstructions[z];
             }
