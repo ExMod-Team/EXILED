@@ -95,9 +95,9 @@ namespace Exiled.Events.Patches.Events.Player
                 // ammoPickups
                 new(OpCodes.Ldloc_S, ammoPickups.LocalIndex),
 
-                // Handlers::Player::OnDroppedItem(new DroppedAmmoEventArgs(ev.Player, ev.AmmoType, ev.Amount, ammoPickups))
+                // Handlers::Player::OnDroppedAmmo(new DroppedAmmoEventArgs(ev.Player, ev.AmmoType, ev.Amount, ammoPickups))
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DroppedAmmoEventArgs))[0]),
-                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnDroppedItem))),
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnDroppedAmmo))),
             });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);

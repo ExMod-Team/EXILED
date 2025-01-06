@@ -28,31 +28,20 @@ namespace Exiled.Events.EventArgs.Item
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingAttachmentsEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        /// <inheritdoc cref="Player" />
+        /// <param name="request">
+        /// The request received from client.
         /// </param>
-        /// <param name="firearm">
-        /// <inheritdoc cref="Firearm" />
-        /// </param>
-        /// <param name="code">The attachments code.</param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public ChangingAttachmentsEventArgs(Player player, InventorySystem.Items.Firearms.Firearm firearm, uint code, bool isAllowed = true)
+        public ChangingAttachmentsEventArgs(AttachmentsChangeRequest request)
         {
-            Player = player;
-            Firearm = Item.Get<Firearm>(firearm);
-            CurrentAttachmentIdentifiers = Firearm.AttachmentIdentifiers;
-            NewAttachmentIdentifiers = Firearm.FirearmType.GetAttachmentIdentifiers(code).ToList();
-            CurrentCode = firearm.GetCurrentAttachmentsCode();
-            NewCode = code;
-            IsAllowed = isAllowed;
+            Firearm = Item.Get<Firearm>(request.WeaponSerial);
+            Player = Firearm.Owner;
+            NewAttachmentIdentifiers = Firearm.FirearmType.GetAttachmentIdentifiers(request.AttachmentsCode).ToList();
         }
 
         /// <summary>
         /// Gets the old <see cref="AttachmentIdentifier" />.
         /// </summary>
-        public IEnumerable<AttachmentIdentifier> CurrentAttachmentIdentifiers { get; }
+        public IEnumerable<AttachmentIdentifier> CurrentAttachmentIdentifiers => Firearm.AttachmentIdentifiers;
 
         /// <summary>
         /// Gets or sets the new <see cref="AttachmentIdentifier" />.
@@ -62,17 +51,17 @@ namespace Exiled.Events.EventArgs.Item
         /// <summary>
         /// Gets the <see cref="CurrentAttachmentIdentifiers" /> code.
         /// </summary>
-        public uint CurrentCode { get; }
+        public uint CurrentCode => Firearm.Base.GetCurrentAttachmentsCode();
 
         /// <summary>
         /// Gets the <see cref="NewAttachmentIdentifiers" /> code.
         /// </summary>
-        public uint NewCode { get; }
+        public uint NewCode => NewAttachmentIdentifiers.GetAttachmentsCode();
 
         /// <summary>
         /// Gets or sets a value indicating whether the attachments can be changed.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
 
         /// <summary>
         /// Gets the <see cref="API.Features.Items.Firearm" /> which is being modified.

@@ -12,17 +12,15 @@ namespace Exiled.Events.Patches.Events.Player
 #pragma warning disable SA1649
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
-    using Exiled.API.Extensions;
-    using Exiled.API.Features.Pools;
+    using Attributes;
 
-    using Exiled.Events.Attributes;
+    using Exiled.API.Features.Pools;
 
     using Exiled.Events.EventArgs.Player;
 
-    using Exiled.Events.Handlers;
+    using Handlers;
 
     using HarmonyLib;
 
@@ -67,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label ret = newInstructions[newInstructions.Count - 1 + offset].labels[0];
 
             offset = -2;
-            int index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.Cocked)))) + offset;
+            int index = newInstructions.FindLastIndex(x => x.Calls(PropertySetter(typeof(AutomaticActionModule), nameof(AutomaticActionModule.Cocked)))) + offset;
 
             newInstructions.InsertRange(index, GetInstructions(newInstructions[index], ret));
 
@@ -78,6 +76,7 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 
+    /* ------------> Commented out, because it is never called (nw moment). Calls 2 PumpActionModule.ShootOneBarrel(bool) instead.
     /// <summary>
     /// Patches <see cref="DoubleActionModule.FireDry()"/>
     /// to add <see cref="Player.DryfiringWeapon"/> event for double shots.
@@ -102,10 +101,11 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
+    */
 
     /// <summary>
-    /// Patches <see cref="DoubleActionModule.FireDry()"/>
-    /// to add <see cref="Player.DryfiringWeapon"/> event for double shots.
+    /// Patches <see cref="PumpActionModule.ShootOneBarrel(bool)"/>
+    /// to add <see cref="Player.DryfiringWeapon"/> event for pump shots.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.DryfiringWeapon))]
     [HarmonyPatch(typeof(PumpActionModule), nameof(PumpActionModule.ShootOneBarrel))]
