@@ -29,7 +29,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="name">The name to check.</param>
         /// <returns>The corresponding <see cref="LockerType"/>.</returns>
-        public static LockerType GetLockerTypeByName(this string name) => name.Split('(')[0] switch
+        public static LockerType GetLockerTypeByName(this string name) => name.Split('(')[0].Trim() switch
         {
             "Scp500PedestalStructure Variant" => LockerType.Scp500Pedestal,
             "AntiScp207PedestalStructure Variant" => LockerType.AntiScp207Pedestal,
