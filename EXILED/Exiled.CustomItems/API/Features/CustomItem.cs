@@ -907,7 +907,7 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
-        /// Handles tracking custom ammo if <see cref="AmmoType.None"/> when player requests their drop.
+        /// Handles tracking when player requests drop of item which <see cref="ItemType"/> equals to the <see cref="ItemType"/> specified by <see cref="CustomItem"/>.
         /// </summary>
         /// <param name="ev"><see cref="DroppingAmmoEventArgs"/>.</param>
         protected virtual void OnDroppingAmmo(DroppingAmmoEventArgs ev)
@@ -1081,7 +1081,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalDroppingAmmo(DroppingAmmoEventArgs ev)
         {
-            if (ev.AmmoType != AmmoType.None)
+            if (Type != ev.ItemType)
                 return;
 
             OnDroppingAmmo(ev);

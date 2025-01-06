@@ -47,7 +47,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets the type of dropped item instead of <inheritdoc cref="AmmoType"/>.
+        /// Gets the type of dropped item instead of <see cref="API.Enums.AmmoType"/>.
         /// </summary>
         public ItemType ItemType { get; }
 
