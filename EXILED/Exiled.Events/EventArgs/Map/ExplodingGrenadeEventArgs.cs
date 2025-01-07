@@ -34,12 +34,14 @@ namespace Exiled.Events.EventArgs.Map
         /// <param name="position"><inheritdoc cref="Position"/></param>
         /// <param name="grenade"><inheritdoc cref="Projectile"/></param>
         /// <param name="targets"><inheritdoc cref="TargetsToAffect"/></param>
-        public ExplodingGrenadeEventArgs(Footprint thrower, Vector3 position, ExplosionGrenade grenade, Collider[] targets)
+        /// <param name="explosionType"><inheritdoc cref="ExplosionType"/></param>
+        public ExplodingGrenadeEventArgs(Footprint thrower, Vector3 position, ExplosionGrenade grenade, Collider[] targets, ExplosionType explosionType)
         {
             Player = Player.Get(thrower.Hub);
             Projectile = Pickup.Get<EffectGrenadeProjectile>(grenade);
             Position = position;
             TargetsToAffect = HashSetPool<Player>.Pool.Get();
+            ExplosionType = explosionType;
 
             if (Projectile.Base is not ExplosionGrenade)
                 return;
@@ -97,6 +99,7 @@ namespace Exiled.Events.EventArgs.Map
             Player = thrower ?? Server.Host;
             Projectile = Pickup.Get<EffectGrenadeProjectile>(grenade);
             Position = Projectile.Position;
+            ExplosionType = ExplosionType.Custom;
             TargetsToAffect = HashSetPool<Player>.Pool.Get(targetsToAffect ?? new HashSet<Player>());
             IsAllowed = isAllowed;
         }
@@ -113,6 +116,12 @@ namespace Exiled.Events.EventArgs.Map
         /// Gets the position where the grenade is exploding.
         /// </summary>
         public Vector3 Position { get; }
+
+        /// <summary>
+        /// Gets or sets the Explosion type.
+        /// </summary>
+        /// <remarks>Unkown explosion will use <see cref="ExplosionType.Custom"/>.</remarks>
+        public ExplosionType ExplosionType { get; set; }
 
         /// <summary>
         /// Gets the players who could be affected by the grenade, if any, and the damage that be dealt.
