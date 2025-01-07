@@ -907,6 +907,15 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
+        /// Handles tracking items when they are dropped by a player.
+        /// </summary>
+        /// <param name="ev"><see cref="DroppingItemEventArgs"/>.</param>
+        [Obsolete("Use OnDroppingItem instead.", false)]
+        protected virtual void OnDropping(DroppingItemEventArgs ev)
+        {
+        }
+
+        /// <summary>
         /// Handles tracking when player requests drop of item which <see cref="ItemType"/> equals to the <see cref="ItemType"/> specified by <see cref="CustomItem"/>.
         /// </summary>
         /// <param name="ev"><see cref="DroppingAmmoEventArgs"/>.</param>
@@ -1077,6 +1086,9 @@ namespace Exiled.CustomItems.API.Features
                 return;
 
             OnDroppingItem(ev);
+
+            // Don't forget to remove this with next update
+            OnDropping(ev);
         }
 
         private void OnInternalDroppingAmmo(DroppingAmmoEventArgs ev)
