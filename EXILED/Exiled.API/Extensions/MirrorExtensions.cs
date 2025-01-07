@@ -15,19 +15,20 @@ namespace Exiled.API.Extensions
     using System.Reflection.Emit;
     using System.Text;
 
-    using AudioPooling;
     using Exiled.API.Enums;
     using Features;
     using Features.Pools;
-    using InventorySystem.Items.Firearms;
-    using InventorySystem.Items.Firearms.Modules;
+
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.Voice;
     using RelativePositioning;
+
     using Respawning;
+
     using UnityEngine;
 
     /// <summary>
@@ -166,56 +167,20 @@ namespace Exiled.API.Extensions
         /// <param name="itemType">Weapon' sound to play.</param>
         /// <param name="volume">Sound's volume to set.</param>
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
-        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, ItemType, float, int, bool) overload instead.")]
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
         {
-        }
-
-        /// <summary>
-        /// Plays a gun sound that only the <paramref name="player"/> can hear.
-        /// </summary>
-        /// <param name="player">Target to play.</param>
-        /// <param name="position">Position to play on.</param>
-        /// <param name="itemType">Weapon' sound to play.</param>
-        /// <param name="pitch">Speed of sound.</param>
-        /// <param name="clipIndex">Index of clip.</param>
-        /// <param name="isDryFire">Indicates whether a dry fire should be used.</param>
-        public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, float pitch = 1, int clipIndex = 0, bool isDryFire = false)
-        {
-            Firearm firearm = itemType.GetItemBase<Firearm>();
-
-            if (!firearm.TryGetModule(out AudioModule audioModule))
-                return;
-
-            IActionModule actionModule = firearm.Modules.OfType<IActionModule>().FirstOrDefault();
-            AudioClip clip;
-
-            switch (actionModule)
+            // TODO: Not finish
+            /*
+            GunAudioMessage message = new()
             {
-                case AutomaticActionModule automaticActionModule:
-                    if (isDryFire)
-                    {
-                        clip = automaticActionModule._dryfireSound;
-                    }
-                    else
-                    {
-                        AudioClip[] clips = automaticActionModule._gunshotSounds.SelectMany(x => x.RandomSounds).ToArray();
-                        clip = clips[Mathf.Clamp(clipIndex, 0, clips.Length)];
-                    }
+                Weapon = itemType,
+                AudioClipId = audioClipId,
+                MaxDistance = volume,
+                ShooterHub = player.ReferenceHub,
+                ShooterPosition = new RelativePosition(position),
+            };
 
-                    break;
-                case PumpActionModule pumpActionModule:
-                    clip = isDryFire ? pumpActionModule._dryFireClip : pumpActionModule._shotClipPerBarrelIndex[Mathf.Clamp(clipIndex, 0, pumpActionModule._shotClipPerBarrelIndex.Length)];
-                    break;
-                case DoubleActionModule doubleActionModule:
-                    clip = isDryFire ? doubleActionModule._dryFireClip : doubleActionModule._fireClips[Mathf.Clamp(clipIndex, 0, doubleActionModule._fireClips.Length)];
-                    break;
-                default:
-                    return;
-            }
-
-            audioModule.SendRpc(player.ReferenceHub, writer =>
-                audioModule.ServerSend(writer, audioModule._clipToIndex[clip], pitch, isDryFire ? MixerChannel.DefaultSfx : MixerChannel.Weapons, float.MaxValue, position, false));
+            player.Connection.Send(message);*/
         }
 
         /// <summary>
