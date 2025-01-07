@@ -61,6 +61,11 @@ namespace Exiled.Events.Handlers
         public static Event<ElevatorArrivedEventArgs> ElevatorArrived { get; set; } = new();
 
         /// <summary>
+        /// Invoked after an elevator sequence is updated.
+        /// </summary>
+        public static Event<ElevatorSequencesUpdatedEventArgs> ElevatorSequencesUpdated { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a grenade explodes.
         /// </summary>
         public static Event<ExplodingGrenadeEventArgs> ExplodingGrenade { get; set; } = new();
@@ -167,6 +172,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ElevatorArrivedEventArgs"/> instance.</param>
         public static void OnElevatorArrived(ElevatorArrivedEventArgs ev) => ElevatorArrived.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after an elevator sequence is updated.
+        /// </summary>
+        /// <param name="ev">The <see cref="ElevatorSequencesUpdatedEventArgs"/> instance.</param>
+        public static void OnElevatorSequencesUpdated(ElevatorSequencesUpdatedEventArgs ev) => ElevatorSequencesUpdated.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a grenade explodes.
