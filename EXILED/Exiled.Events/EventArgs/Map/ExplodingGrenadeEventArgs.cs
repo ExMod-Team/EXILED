@@ -27,6 +27,8 @@ namespace Exiled.Events.EventArgs.Map
     /// </summary>
     public class ExplodingGrenadeEventArgs : IPlayerEvent, IDeniableEvent
     {
+        private ExplosionType explosionType;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExplodingGrenadeEventArgs"/> class.
         /// </summary>
@@ -120,8 +122,12 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets or sets the Explosion type.
         /// </summary>
-        /// <remarks>Unkown explosion will use <see cref="ExplosionType.Custom"/>.</remarks>
-        public ExplosionType ExplosionType { get; set; }
+        /// <remarks>Explosion that are not from <see cref="ExplosionGrenadeProjectile"/> will return <see cref="ExplosionType.Custom"/> and can't be modified.</remarks>
+        public ExplosionType ExplosionType
+        {
+            get => explosionType;
+            set => explosionType = Projectile is ExplosionGrenadeProjectile ? value : ExplosionType.Custom;
+        }
 
         /// <summary>
         /// Gets the players who could be affected by the grenade, if any, and the damage that be dealt.
