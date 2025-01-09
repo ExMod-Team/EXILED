@@ -225,39 +225,28 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <remarks>This method is used to sync new settings with players.</remarks>
         public static IEnumerable<SettingBase> Register(IEnumerable<SettingBase> settings, Func<Player, bool> predicate = null)
         {
-            List<SettingBase> list = ListPool<SettingBase>.Pool.Get(settings);
-            List<SettingBase> list2 = new(list.Count);
+            IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
 
-            while (list.Exists(x => x.Header != null))
+            List<SettingBase> result = new();
+
+            // Group settings by headers
+            foreach (IGrouping<HeaderSetting, SettingBase> grouping in grouped)
             {
-                SettingBase setting = list.Find(x => x.Header != null);
-                SettingBase header = list.Find(x => x == setting.Header);
-                List<SettingBase> range = list.FindAll(x => x.Header?.Id == setting.Header.Id);
+                if (grouping.Key != null)
+                    result.Add(grouping.Key);
 
-                list2.Add(header);
-                list2.AddRange(range);
-
-                list.Remove(header);
-                list.RemoveAll(x => x.Header?.Id == setting.Header.Id);
+                result.AddRange(grouping);
             }
 
-            list2.AddRange(list);
-
-            List<ServerSpecificSettingBase> list3 = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>());
-            list3.AddRange(list2.Select(x => x.Base));
-
-            ServerSpecificSettingsSync.DefinedSettings = list3.ToArray();
-            Settings.AddRange(list2);
+            ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(result.Select(s => s.Base)).ToArray();
+            Settings.AddRange(result);
 
             if (predicate == null)
                 SendToAll();
             else
                 SendToAll(predicate);
 
-            ListPool<ServerSpecificSettingBase>.Pool.Return(list3);
-            ListPool<SettingBase>.Pool.Return(list);
-
-            return list2;
+            return result;
         }
 
         /// <summary>
@@ -311,7 +300,7 @@ namespace Exiled.API.Features.Core.UserSettings
                 ReceivedSettings.Add(player, new() { setting });
 
                 if (setting.Is(out ButtonSetting _))
-                    setting.OriginalDefinition.OnChanged?.Invoke(player, setting);
+                    goto invoke;
 
                 return;
             }
@@ -322,12 +311,14 @@ namespace Exiled.API.Features.Core.UserSettings
                 list.Add(setting);
 
                 if (setting.Is(out ButtonSetting _))
-                    setting.OriginalDefinition.OnChanged?.Invoke(player, setting);
+                    goto invoke;
 
                 return;
             }
 
             setting = list.Find(x => x.Id == settingBase.SettingId);
+
+            invoke:
 
             if (setting.OriginalDefinition == null)
             {

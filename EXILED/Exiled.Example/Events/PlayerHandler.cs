@@ -7,10 +7,13 @@
 
 namespace Exiled.Example.Events
 {
+    using System;
+    using System.Collections.Generic;
+
     using CameraShaking;
 
     using CustomPlayerEffects;
-
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Player;
@@ -20,8 +23,6 @@ namespace Exiled.Example.Events
     using MEC;
 
     using PlayerRoles;
-
-    using UnityEngine;
 
     using static Example;
 
@@ -109,6 +110,7 @@ namespace Exiled.Example.Events
 
             Log.Info($"{ev.Player.Nickname} has authenticated! Their Player ID is {ev.Player.Id} and UserId is {ev.Player.UserId}");
             ev.Player.Broadcast(Instance.Config.JoinedBroadcast.Duration, Instance.Config.JoinedBroadcast.Content, Instance.Config.JoinedBroadcast.Type, false);
+            ev.Player.Role.Set(RoleTypeId.Scientist);
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.UnlockingGenerator"/>
@@ -193,15 +195,13 @@ namespace Exiled.Example.Events
                 ev.IsAllowed = false;
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnSpawning(SpawningEventArgs)"/>
-        public void OnSpawning(SpawningEventArgs ev)
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnSpawned(SpawnedEventArgs)"/>
+        public void OnSpawned(SpawnedEventArgs ev)
         {
             if (ev.Player.Role.Type == RoleTypeId.Scientist)
             {
-                ev.Position = new Vector3(53f, 1020f, -44f);
-
-                Timing.CallDelayed(1f, () => ev.Player.CurrentItem = Item.Create(ItemType.GunCrossvec));
-                Timing.CallDelayed(1f, () => ev.Player.AddItem(ItemType.GunLogicer));
+                ev.Player.Position = RoleTypeId.Tutorial.GetRandomSpawnLocation().Position;
+                ev.Player.ResetInventory(new ItemType[] { ItemType.Snowball, ItemType.Jailbird, ItemType.Snowball, ItemType.Snowball, ItemType.Snowball, ItemType.Radio, ItemType.Jailbird });
             }
         }
 

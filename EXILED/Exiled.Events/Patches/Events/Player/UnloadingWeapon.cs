@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // player
+                    // this.Firearm
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.Firearm))),
 

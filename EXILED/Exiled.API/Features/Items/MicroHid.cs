@@ -12,6 +12,9 @@ namespace Exiled.API.Features.Items
 
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
+    using InventorySystem.Items.Autosync;
+    using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.MicroHID;
     using InventorySystem.Items.MicroHID.Modules;
 
@@ -214,5 +217,18 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <returns>A string containing MicroHid-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Energy}| -{State}-";
+
+        /// <inheritdoc/>
+        internal override void ChangeOwner(Player oldOwner, Player newOwner)
+        {
+            Base.Owner = newOwner.ReferenceHub;
+
+            for (int i = 0; i < Base.AllSubcomponents.Length; i++)
+            {
+                Base.AllSubcomponents[i].OnAdded();
+            }
+
+            Base.InstantiationStatus = newOwner == Server.Host ? AutosyncInstantiationStatus.SimulatedInstance : AutosyncInstantiationStatus.InventoryInstance;
+        }
     }
 }
