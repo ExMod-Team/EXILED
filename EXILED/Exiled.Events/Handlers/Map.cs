@@ -56,11 +56,6 @@ namespace Exiled.Events.Handlers
         public static Event<DecontaminatingEventArgs> Decontaminating { get; set; } = new();
 
         /// <summary>
-        /// Invoked after an elevator arrives at its destination.
-        /// </summary>
-        public static Event<ElevatorArrivedEventArgs> ElevatorArrived { get; set; } = new();
-
-        /// <summary>
         /// Invoked after an elevator sequence is updated.
         /// </summary>
         public static Event<ElevatorSequencesUpdatedEventArgs> ElevatorSequencesUpdated { get; set; } = new();
@@ -166,12 +161,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="DecontaminatingEventArgs"/> instance.</param>
         public static void OnDecontaminating(DecontaminatingEventArgs ev) => Decontaminating.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called after an elevator arrives at its destination.
-        /// </summary>
-        /// <param name="ev">The <see cref="ElevatorArrivedEventArgs"/> instance.</param>
-        public static void OnElevatorArrived(ElevatorArrivedEventArgs ev) => ElevatorArrived.InvokeSafely(ev);
 
         /// <summary>
         /// Called after an elevator sequence is updated.

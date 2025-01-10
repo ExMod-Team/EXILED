@@ -8,12 +8,13 @@
 namespace Exiled.Events.EventArgs.Map
 {
     using Exiled.API.Features;
+    using Exiled.Events.EventArgs.Interfaces;
     using Interactables.Interobjects;
 
     /// <summary>
     /// Contains all information after an elevator sequence is updated.
     /// </summary>
-    public class ElevatorSequencesUpdatedEventArgs
+    public class ElevatorSequencesUpdatedEventArgs : IExiledEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ElevatorSequencesUpdatedEventArgs"/> class.
