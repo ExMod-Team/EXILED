@@ -185,6 +185,9 @@ namespace Exiled.API.Extensions
         /// <param name="clipIndex">Index of clip.</param>
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, float pitch = 1, int clipIndex = 0)
         {
+            if (!itemType.IsWeapon(false) || itemType == ItemType.ParticleDisruptor)
+                return;
+
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
                 writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
