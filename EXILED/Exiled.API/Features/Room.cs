@@ -508,12 +508,12 @@ namespace Exiled.API.Features
                 "EZ_Shelter" => RoomType.EzShelter,
                 "EZ_HCZ_Checkpoint Part" => gameObject.transform.position.z switch
                 {
-                    > 80 => RoomType.EzCheckpointHallwayA,
+                    > 95 => RoomType.EzCheckpointHallwayA,
                     _ => RoomType.EzCheckpointHallwayB,
                 },
                 "HCZ_EZ_Checkpoint Part" => gameObject.transform.position.z switch
                 {
-                    > 80 => RoomType.HczEzCheckpointA,
+                    > 95 => RoomType.HczEzCheckpointA,
                     _ => RoomType.HczEzCheckpointB
                 },
                 _ => RoomType.Unknown,
