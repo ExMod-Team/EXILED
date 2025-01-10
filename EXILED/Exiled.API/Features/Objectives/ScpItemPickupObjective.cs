@@ -25,7 +25,7 @@ namespace Exiled.API.Features.Objectives
         /// Initializes a new instance of the <see cref="ScpItemPickupObjective"/> class.
         /// </summary>
         /// <param name="objectiveFootprintBase">A <see cref="BaseObjective"/> instance.</param>
-        public ScpItemPickupObjective(BaseObjective objectiveFootprintBase)
+        internal ScpItemPickupObjective(BaseObjective objectiveFootprintBase)
             : base(objectiveFootprintBase)
         {
             Base = objectiveFootprintBase;

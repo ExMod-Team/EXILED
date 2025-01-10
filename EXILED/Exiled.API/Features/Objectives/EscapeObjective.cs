@@ -40,19 +40,6 @@ namespace Exiled.API.Features.Objectives
         /// </summary>
         /// <param name="player">Target that has escaped.</param>
         /// <param name="newRole">Role that target will get after escaping.</param>
-        public void Escape(Player player, RoleTypeId newRole = RoleTypeId.None)
-        {
-            if (newRole == RoleTypeId.None)
-            {
-                if (player.Role == RoleTypeId.ClassD)
-                    newRole = RoleTypeId.ChaosConscript;
-                else if (player.Role == RoleTypeId.Scientist)
-                    newRole = RoleTypeId.NtfSpecialist;
-                else
-                    newRole = player.Role;
-            }
-
-            Base.OnServerRoleSet(player.ReferenceHub, newRole, RoleChangeReason.Escaped);
-        }
+        public void Escape(Player player, RoleTypeId newRole) => Base.OnServerRoleSet(player.ReferenceHub, newRole, RoleChangeReason.Escaped);
     }
 }

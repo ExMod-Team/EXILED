@@ -22,7 +22,7 @@ namespace Exiled.API.Features.Objectives
         /// Initializes a new instance of the <see cref="GeneratorActivatedObjective"/> class.
         /// </summary>
         /// <param name="objectiveFootprintBase">A <see cref="BaseObjective"/> instance.</param>
-        public GeneratorActivatedObjective(BaseObjective objectiveFootprintBase)
+        internal GeneratorActivatedObjective(BaseObjective objectiveFootprintBase)
             : base(objectiveFootprintBase)
         {
             Base = objectiveFootprintBase;

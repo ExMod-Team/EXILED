@@ -38,7 +38,7 @@ namespace Exiled.API.Features.Objectives
         /// Initializes a new instance of the <see cref="Objective"/> class.
         /// </summary>
         /// <param name="objectiveFootprintBase"><inheritdoc cref="Base"/></param>
-        public Objective(FactionObjectiveBase objectiveFootprintBase)
+        internal Objective(FactionObjectiveBase objectiveFootprintBase)
         {
             Base = objectiveFootprintBase;
             Objectives.Add(Base, this);
