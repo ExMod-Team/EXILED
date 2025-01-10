@@ -210,7 +210,7 @@ namespace Exiled.API.Extensions
                 player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
                 firearm.Destroy();
 
-                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub));
+                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.Spectator, player.ReferenceHub));
             });
         }
 
