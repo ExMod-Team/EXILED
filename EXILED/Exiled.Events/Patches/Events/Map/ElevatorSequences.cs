@@ -21,7 +21,6 @@ namespace Exiled.Events.Patches.Events.Map
     [HarmonyPatch(typeof(ElevatorChamber), nameof(ElevatorChamber.CurSequence), MethodType.Setter)]
     internal class ElevatorSequences
     {
-        // ReSharper disable once InconsistentNaming
 #pragma warning disable SA1313
         private static void Postfix(ElevatorChamber __instance)
 #pragma warning restore SA1313
