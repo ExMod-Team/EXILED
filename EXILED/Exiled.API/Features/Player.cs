@@ -3444,9 +3444,9 @@ namespace Exiled.API.Features
         {
         }
 
-        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, float, int, bool)"/>
-        public void PlayGunSound(ItemType itemType, float pitch = 1, int clipIndex = 0, bool isDryFire = false) =>
-            this.PlayGunSound(Position, itemType, pitch, clipIndex, isDryFire);
+        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, float, int)"/>
+        public void PlayGunSound(ItemType itemType, float pitch = 1, int clipIndex = 0) =>
+            this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);

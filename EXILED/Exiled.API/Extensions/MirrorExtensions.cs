@@ -17,10 +17,14 @@ namespace Exiled.API.Extensions
 
     using AudioPooling;
     using Exiled.API.Enums;
+    using Exiled.API.Features.Items;
     using Features;
     using Features.Pools;
+    using InventorySystem;
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
+    using MEC;
     using Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
@@ -179,43 +183,35 @@ namespace Exiled.API.Extensions
         /// <param name="itemType">Weapon' sound to play.</param>
         /// <param name="pitch">Speed of sound.</param>
         /// <param name="clipIndex">Index of clip.</param>
-        /// <param name="isDryFire">Indicates whether a dry fire should be used.</param>
-        public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, float pitch = 1, int clipIndex = 0, bool isDryFire = false)
+        public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, float pitch = 1, int clipIndex = 0)
         {
-            Firearm firearm = itemType.GetItemBase<Firearm>();
-
-            if (!firearm.TryGetModule(out AudioModule audioModule))
-                return;
-
-            IActionModule actionModule = firearm.Modules.OfType<IActionModule>().FirstOrDefault();
-            AudioClip clip;
-
-            switch (actionModule)
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
-                case AutomaticActionModule automaticActionModule:
-                    if (isDryFire)
-                    {
-                        clip = automaticActionModule._dryfireSound;
-                    }
-                    else
-                    {
-                        AudioClip[] clips = automaticActionModule._gunshotSounds.SelectMany(x => x.RandomSounds).ToArray();
-                        clip = clips[Mathf.Clamp(clipIndex, 0, clips.Length)];
-                    }
-
-                    break;
-                case PumpActionModule pumpActionModule:
-                    clip = isDryFire ? pumpActionModule._dryFireClip : pumpActionModule._shotClipPerBarrelIndex[Mathf.Clamp(clipIndex, 0, pumpActionModule._shotClipPerBarrelIndex.Length)];
-                    break;
-                case DoubleActionModule doubleActionModule:
-                    clip = isDryFire ? doubleActionModule._dryFireClip : doubleActionModule._fireClips[Mathf.Clamp(clipIndex, 0, doubleActionModule._fireClips.Length)];
-                    break;
-                default:
-                    return;
+                writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
+                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub).Write(writer);
+                writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
+                writer.WriteUShort(0);
+                player.Connection.Send(writer);
             }
 
-            audioModule.SendRpc(player.ReferenceHub, writer =>
-                audioModule.ServerSend(writer, audioModule._clipToIndex[clip], pitch, isDryFire ? MixerChannel.DefaultSfx : MixerChannel.Weapons, float.MaxValue, position, false));
+            Features.Items.Firearm firearm = Item.Get<Features.Items.Firearm>(Server.Host.Inventory.ServerAddItem(itemType, ItemAddReason.AdminCommand));
+            firearm.BarrelAmmo = 1;
+            firearm.BarrelMagazine.IsCocked = true;
+            player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
+
+            if (!firearm.Base.TryGetModule(out AudioModule audioModule))
+                return;
+
+            Timing.CallDelayed(0.1f, () => // Seems like without this delay firearm is not 'ready'
+            {
+                audioModule.SendRpc(player.ReferenceHub, writer =>
+                    audioModule.ServerSend(writer, clipIndex, pitch, MixerChannel.Weapons, 12f, position, false));
+
+                player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
+                firearm.Destroy();
+
+                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub));
+            });
         }
 
         /// <summary>

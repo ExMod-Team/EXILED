@@ -196,6 +196,11 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Gets the <see cref="ItemIdentifier"/> for this item.
+        /// </summary>
+        public ItemIdentifier Identifier => Base.ItemId;
+
+        /// <summary>
         /// Gets an existing <see cref="Item"/> or creates a new instance of one.
         /// </summary>
         /// <param name="itemBase">The <see cref="ItemBase"/> to convert into an item.</param>
