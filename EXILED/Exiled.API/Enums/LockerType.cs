@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Enums
 {
+    using System;
+
     /// <summary>
     /// Unique identifier for different types of <see cref="Features.Lockers.Locker"/>s.
     /// </summary>
@@ -15,6 +17,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The pedestal used by SCP items.
         /// </summary>
+        [Obsolete("This value is not used.")]
         Pedestal,
 
         /// <summary>
@@ -46,5 +49,65 @@ namespace Exiled.API.Enums
         /// Unknow type of locker.
         /// </summary>
         Unknow,
+
+        /// <summary>
+        /// MircoHid pedestal.
+        /// </summary>
+        MicroHid,
+
+        /// <summary>
+        /// Experimental weapon locker.
+        /// </summary>
+        ExperimentalWeapon,
+
+        /// <summary>
+        /// SCP-500 pedestal.
+        /// </summary>
+        Scp500Pedestal,
+
+        /// <summary>
+        /// SCP-207? (Anti SCP-207) pedestal.
+        /// </summary>
+        AntiScp207Pedestal,
+
+        /// <summary>
+        /// SCP-207 pedestal.
+        /// </summary>
+        Scp207Pedestal,
+
+        /// <summary>
+        /// SCP-268 pedestal.
+        /// </summary>
+        Scp268Pedestal,
+
+        /// <summary>
+        /// SCP-1344 pedestal.
+        /// </summary>
+        Scp1344Pedestal,
+
+        /// <summary>
+        /// SCP-018 pedestal.
+        /// </summary>
+        Scp018Pedestal,
+
+        /// <summary>
+        /// SCP-1576 pedestal.
+        /// </summary>
+        Scp1576Pedestal,
+
+        /// <summary>
+        /// SCP-244 pedestal.
+        /// </summary>
+        Scp244Pedestal,
+
+        /// <summary>
+        /// SCP-2176 pedestal.
+        /// </summary>
+        Scp2176Pedestal,
+
+        /// <summary>
+        /// SCP-1853 pedestal.
+        /// </summary>
+        Scp1853Pedestal,
     }
 }
