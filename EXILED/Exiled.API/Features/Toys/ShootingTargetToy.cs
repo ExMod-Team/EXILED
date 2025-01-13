@@ -37,13 +37,18 @@ namespace Exiled.API.Features.Toys
             : base(target, adminToyType)
         {
             Base = target;
-            Type = Base.CommandNametoType;
+            Type = adminToyType;
         }
 
         /// <summary>
         /// Gets the base-game <see cref="ShootingTarget"/> for this target.
         /// </summary>
         public ShootingTarget Base { get; }
+
+        /// <summary>
+        /// Gets the <see cref="AdminToyType"/> for this target.
+        /// </summary>
+        public AdminToyType Type { get; }
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the target.

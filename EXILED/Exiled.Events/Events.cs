@@ -13,6 +13,7 @@ namespace Exiled.Events
     using API.Enums;
     using API.Features;
     using CentralAuth;
+    using Exiled.API.Features.Core.UserSettings;
     using Exiled.Events.Features;
     using HarmonyLib;
     using InventorySystem.Items.Pickups;
@@ -22,6 +23,7 @@ namespace Exiled.Events
     using PluginAPI.Events;
     using Respawning;
     using UnityEngine.SceneManagement;
+    using UserSettings.ServerSpecific;
 
     /// <summary>
     /// Patch and unpatch events into the game.
@@ -81,6 +83,8 @@ namespace Exiled.Events
             ItemPickupBase.OnPickupDestroyed += Handlers.Internal.PickupEvent.OnRemovedPickup;
             ServerConsole.ReloadServerName();
 
+            ServerSpecificSettingsSync.ServerOnSettingValueReceived += SettingBase.OnSettingUpdated;
+
             EventManager.RegisterEvents<Handlers.Player>(this);
         }
 
@@ -112,6 +116,8 @@ namespace Exiled.Events
             RagdollManager.OnRagdollRemoved -= Handlers.Internal.RagdollList.OnRemovedRagdoll;
             ItemPickupBase.OnPickupAdded -= Handlers.Internal.PickupEvent.OnSpawnedPickup;
             ItemPickupBase.OnPickupDestroyed -= Handlers.Internal.PickupEvent.OnRemovedPickup;
+
+            ServerSpecificSettingsSync.ServerOnSettingValueReceived -= SettingBase.OnSettingUpdated;
 
             EventManager.UnregisterEvents<Handlers.Player>(this);
         }

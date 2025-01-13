@@ -37,6 +37,6 @@ namespace Exiled.Events.EventArgs.Server
         public TimedWave Wave { get; set; }
 
         /// <inheritdoc/>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
     }
 }

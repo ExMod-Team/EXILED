@@ -28,14 +28,18 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="elevator">
         /// <inheritdoc cref="Elevator" />
         /// </param>
+        /// <param name="isCalledFromInside">
+        /// <inheritdoc cref="IsCalledFromInside" />
+        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public InteractingElevatorEventArgs(Player player, ElevatorChamber elevator, bool isAllowed = true)
+        public InteractingElevatorEventArgs(Player player, ElevatorChamber elevator, bool isCalledFromInside, bool isAllowed = true)
         {
             Player = player;
             Lift = Lift.Get(elevator);
             Elevator = elevator;
+            IsCalledFromInside = isCalledFromInside;
             IsAllowed = isAllowed;
         }
 
@@ -53,6 +57,11 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets a value indicating whether the player can interact with the elevator.
         /// </summary>
         public bool IsAllowed { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the player as interact with the elevator from the inside.
+        /// </summary>
+        public bool IsCalledFromInside { get; }
 
         /// <summary>
         /// Gets the player who's interacting with the elevator.

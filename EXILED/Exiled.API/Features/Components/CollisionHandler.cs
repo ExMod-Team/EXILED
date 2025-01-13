@@ -56,7 +56,7 @@ namespace Exiled.API.Features.Components
                     Log.Error("Grenade is null!");
                 if (collision is null)
                     Log.Error("wat");
-                if (collision.collider)
+                if (!collision.collider)
                     Log.Error("water");
                 if (collision.collider.gameObject == null)
                     Log.Error("pepehm");

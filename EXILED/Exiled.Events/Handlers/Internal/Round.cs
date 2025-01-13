@@ -11,10 +11,10 @@ namespace Exiled.Events.Handlers.Internal
     using System.Linq;
 
     using CentralAuth;
-
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features;
+    using Exiled.API.Features.Core.UserSettings;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Roles;
@@ -29,7 +29,6 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Usables;
     using PlayerRoles;
     using PlayerRoles.RoleAssign;
-
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -97,6 +96,9 @@ namespace Exiled.Events.Handlers.Internal
         {
             RoleAssigner.CheckLateJoin(ev.Player.ReferenceHub, ClientInstanceMode.ReadyClient);
 
+            if (SettingBase.SyncOnJoin != null && SettingBase.SyncOnJoin(ev.Player))
+                SettingBase.SendToPlayer(ev.Player);
+
             // TODO: Remove if this has been fixed for https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/52
             foreach (Room room in Room.List.Where(current => current.AreLightsOff))
             {
@@ -115,7 +117,7 @@ namespace Exiled.Events.Handlers.Internal
                 if (Item.Create(firearmType.GetItemType()) is not Firearm firearm)
                     continue;
 
-                Firearm.ItemTypeToFirearmInstance.Add(firearmType, firearm);
+                Firearm.ItemTypeToFirearmInstance[firearmType] = firearm;
 
                 List<AttachmentIdentifier> attachmentIdentifiers = ListPool<AttachmentIdentifier>.Pool.Get();
                 HashSet<AttachmentSlot> attachmentsSlots = HashSetPool<AttachmentSlot>.Pool.Get();
@@ -134,8 +136,8 @@ namespace Exiled.Events.Handlers.Internal
                         .Where(attachment => attachment.Slot == slot)
                         .Min(slot => slot.Code));
 
-                Firearm.BaseCodesValue.Add(firearmType, baseCode);
-                Firearm.AvailableAttachmentsValue.Add(firearmType, attachmentIdentifiers.ToArray());
+                Firearm.BaseCodesValue[firearmType] = baseCode;
+                Firearm.AvailableAttachmentsValue[firearmType] = attachmentIdentifiers.ToArray();
 
                 ListPool<AttachmentIdentifier>.Pool.Return(attachmentIdentifiers);
                 HashSetPool<AttachmentSlot>.Pool.Return(attachmentsSlots);

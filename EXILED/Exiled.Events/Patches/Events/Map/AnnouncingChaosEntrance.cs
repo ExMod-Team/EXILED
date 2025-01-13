@@ -8,7 +8,9 @@
 namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
+    using System.Text;
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
@@ -23,32 +25,55 @@ namespace Exiled.Events.Patches.Events.Map
     /// to add <see cref="Handlers.Map.AnnouncingChaosEntrance"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Map), nameof(Handlers.Map.AnnouncingChaosEntrance))]
-    [HarmonyPatch(typeof(ChaosWaveAnnouncement), nameof(ChaosWaveAnnouncement.CreateAnnouncementString))]
-    [HarmonyPatch(typeof(ChaosMiniwaveAnnouncement), nameof(ChaosMiniwaveAnnouncement.CreateAnnouncementString))]
+    [HarmonyPatch]
     internal static class AnnouncingChaosEntrance
     {
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            yield return Method(typeof(ChaosWaveAnnouncement), nameof(ChaosWaveAnnouncement.CreateAnnouncementString));
+            yield return Method(typeof(ChaosMiniwaveAnnouncement), nameof(ChaosMiniwaveAnnouncement.CreateAnnouncementString));
+        }
+
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instruction, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instruction);
 
-            Label returnLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
-            newInstructions.InsertRange(0, new CodeInstruction[]
+            LocalBuilder ev = generator.DeclareLocal(typeof(AnnouncingChaosEntranceEventArgs));
+
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloca_S);
+
+            newInstructions.InsertRange(index, new[]
             {
+                // WaveAnnouncementBase
                 new(OpCodes.Ldarg_0),
 
-                new(OpCodes.Ldc_I4_1),
+                // builder
+                new(OpCodes.Ldarg_1),
 
+                // new AnnouncingChaosEntranceEventArgs(WaveAnnouncementBase, StringBuilder)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingChaosEntranceEventArgs))[0]),
                 new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
 
+                // Map.OnAnnouncingChaosEntrance(ev)
                 new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnAnnouncingChaosEntrance))),
 
+                // if (!ev.IsAllowed)
+                //     builder.Clear();
+                //     return;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingChaosEntranceEventArgs), nameof(AnnouncingChaosEntranceEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse_S, returnLabel),
-            });
+                new(OpCodes.Brtrue_S, continueLabel),
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+                new(OpCodes.Ldarg_1),
+                new(OpCodes.Callvirt, Method(typeof(StringBuilder), nameof(StringBuilder.Clear))),
+                new(OpCodes.Pop),
+                new(OpCodes.Ret),
+
+                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
+            });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

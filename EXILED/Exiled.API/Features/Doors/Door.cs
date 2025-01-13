@@ -627,7 +627,13 @@ namespace Exiled.API.Features.Doors
                 // Doors contains the DoorNameTagExtension component
                 "CHECKPOINT_LCZ_A" => DoorType.CheckpointLczA,
                 "CHECKPOINT_LCZ_B" => DoorType.CheckpointLczB,
-                "CHECKPOINT_EZ_HCZ_A" => DoorType.CheckpointEzHczA,
+
+                // TODO: Remove when it's fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/782
+                "CHECKPOINT_EZ_HCZ_A" => Room?.Type switch
+                {
+                    RoomType.HczEzCheckpointA => DoorType.CheckpointEzHczA,
+                    _ => DoorType.CheckpointEzHczB,
+                },
                 "CHECKPOINT_EZ_HCZ_B" => DoorType.CheckpointEzHczB,
                 "106_PRIMARY" => DoorType.Scp106Primary,
                 "106_SECONDARY" => DoorType.Scp106Secondary,

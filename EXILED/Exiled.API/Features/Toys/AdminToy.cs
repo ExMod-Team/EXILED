@@ -162,11 +162,17 @@ namespace Exiled.API.Features.Toys
 
             return adminToyBase switch
             {
-                LightSourceToy lightSourceToy => new Light(lightSourceToy),
                 PrimitiveObjectToy primitiveObjectToy => new Primitive(primitiveObjectToy),
-                ShootingTarget shootingTarget => new ShootingTargetToy(shootingTarget),
+                LightSourceToy lightSourceToy => new Light(lightSourceToy),
                 SpeakerToy speakerToy => new Speaker(speakerToy),
-                _ => throw new System.NotImplementedException()
+                ShootingTarget shootingTarget => shootingTarget.gameObject.name switch
+                {
+                    "TargetBinary" => new ShootingTargetToy(shootingTarget, AdminToyType.ShootingTargetBinary),
+                    "TargetClassD" => new ShootingTargetToy(shootingTarget, AdminToyType.ShootingTargetClassD),
+                    "TargetSport" => new ShootingTargetToy(shootingTarget, AdminToyType.ShootingTargetSport),
+                    _ => throw new System.NotImplementedException($"ShootingTarget Name: {shootingTarget.gameObject.name}"),
+                },
+                _ => throw new System.NotImplementedException($"AdminToyBase Name: {adminToyBase.gameObject.name}")
             };
         }
 
@@ -174,12 +180,14 @@ namespace Exiled.API.Features.Toys
         /// Create the <see cref="AdminToy"/> belonging to the <see cref="AdminToys.AdminToyBase"/>.
         /// </summary>
         /// <param name="adminToyType">The <see cref="AdminToyType"/>.</param>
+        /// <param name="position">The <see cref="Vector3"/> position where the <see cref="AdminToy"/> will spawn.</param>
+        /// <param name="rotation">The <see cref="Quaternion"/> rotation of the <see cref="AdminToy"/>.</param>
         /// <returns>The corresponding <see cref="AdminToy"/>.</returns>
-        public static AdminToy Create(AdminToyType adminToyType, ....)
+        public static AdminToy Create(AdminToyType adminToyType, Vector3 position = default, Quaternion? rotation = null)
         {
             if (!TypeLookup.TryGetValue(adminToyType, out PrefabType prefabType))
-                return null;
-            return PrefabHelper.Spawn<AdminToy>(prefabType, ....);
+                throw new System.NotImplementedException($"AdminToy::Create(AdminToyType, Vector3, Quaternion?) AdminToyType: {adminToyType}");
+            return Get(PrefabHelper.Spawn<AdminToyBase>(prefabType, position, rotation));
         }
 
         /// <summary>
@@ -195,10 +203,12 @@ namespace Exiled.API.Features.Toys
         /// Gets the <see cref="AdminToy"/> by <see cref="AdminToys.AdminToyBase"/>.
         /// </summary>
         /// <param name="adminToyType">The <see cref="AdminToyType"/> to convert into an admintoy.</param>
+        /// <param name="position">The <see cref="Vector3"/> position where the <see cref="AdminToy"/> will spawn.</param>
+        /// <param name="rotation">The <see cref="Quaternion"/> rotation of the <see cref="AdminToy"/>.</param>
         /// <typeparam name="T">The specified <see cref="AdminToy"/> type.</typeparam>
         /// <returns>The admintoy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
-        public static T Create<T>(AdminToyType adminToyType, ...)
-            where T : AdminToy => Create(adminToyType, ...) as T;
+        public static T Create<T>(AdminToyType adminToyType, Vector3 position = default, Quaternion? rotation = null)
+            where T : AdminToy => Create(adminToyType, position, rotation) as T;
 
         /// <summary>
         /// Spawns the toy into the game. Use <see cref="UnSpawn"/> to remove it.

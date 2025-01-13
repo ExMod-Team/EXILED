@@ -7,18 +7,14 @@
 
 namespace Exiled.Events.Patches.Events.Server
 {
-    using System;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
-    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
+    using Exiled.API.Features.Waves;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
-
     using HarmonyLib;
-
     using Respawning;
 
     using static HarmonyLib.AccessTools;
@@ -56,9 +52,10 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SelectingRespawnTeamEventArgs), nameof(SelectingRespawnTeamEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, returnLabel),
 
-                // SpawnableWaveBase = ev.Wave;
+                // SpawnableWaveBase = ev.Wave.Base;
                 new(OpCodes.Ldloc_S, ev),
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(SelectingRespawnTeamEventArgs), nameof(SelectingRespawnTeamEventArgs.Wave))),
+                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(TimedWave), nameof(TimedWave.Base))),
                 new(OpCodes.Starg_S, 0),
             });
 
