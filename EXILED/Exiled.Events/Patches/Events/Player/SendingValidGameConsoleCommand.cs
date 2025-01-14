@@ -161,10 +161,10 @@ namespace Exiled.Events.Patches.Events.Player
                     // result
                     new (OpCodes.Ldloc_S, 2),
 
-                    // new SentCommandEventArgs
+                    // new SentValidCommandEventArgs
                     new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SentValidCommandEventArgs))[0]),
 
-                    // OnSentdCommand(ev)
+                    // OnSentValidCommand(ev)
                     new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSentValidCommand))),
                 });
 
