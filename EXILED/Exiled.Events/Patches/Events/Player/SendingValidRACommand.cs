@@ -28,6 +28,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Adds the <see cref="Handlers.Player.SendingValidCommand" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingValidCommand))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SentValidCommand))]
     [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
     internal static class SendingValidRACommand
     {
@@ -153,10 +154,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new (OpCodes.Ldloc_S, 5),
 
                     // new SendedCommandEventArgs
-                    new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SendedValidCommandEventArgs))[0]),
+                    new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SentValidCommandEventArgs))[0]),
 
                     // OnSendedCommad(ev)
-                    new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendedValidCommand))),
+                    new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSentValidCommand))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

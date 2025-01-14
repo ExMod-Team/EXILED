@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="SendedValidCommandEventArgs.cs" company="ExMod Team">
+// <copyright file="SentValidCommandEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -17,10 +17,10 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information after a player sends a command.
     /// </summary>
-    public class SendedValidCommandEventArgs : IPlayerEvent
+    public class SentValidCommandEventArgs : IPlayerEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SendedValidCommandEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="SentValidCommandEventArgs" /> class.
         /// </summary>
         /// <param name="player">
         /// <inheritdoc cref="Player" />
@@ -40,7 +40,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="result">
         /// <inheritdoc cref="Result" />
         /// </param>
-        public SendedValidCommandEventArgs(Player player, ICommand command, CommandType commandType, string query, string response, bool result)
+        public SentValidCommandEventArgs(Player player, ICommand command, CommandType commandType, string query, string response, bool result)
         {
             Player = player;
             Command = command;
