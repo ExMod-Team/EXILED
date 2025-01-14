@@ -1218,7 +1218,7 @@ namespace Exiled.Events.Handlers
         /// Called after a <see cref="Player"/> sends valid RA command.
         /// </summary>
         /// <param name="ev">The <see cref="SentValidCommandEventArgs"/> instance.</param>
-        public static void OnSentValidCommand(SentValidCommandEventArgs ev) => SendedValidCommand.InvokeSafely(ev);
+        public static void OnSentValidCommand(SentValidCommandEventArgs ev) => SentValidCommand.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/>'s rotates the revolver.
