@@ -117,7 +117,7 @@ namespace Exiled.Events.Handlers.Internal
                 if (Item.Create(firearmType.GetItemType()) is not Firearm firearm)
                     continue;
 
-                Firearm.ItemTypeToFirearmInstance.Add(firearmType, firearm);
+                Firearm.ItemTypeToFirearmInstance[firearmType] = firearm;
 
                 List<AttachmentIdentifier> attachmentIdentifiers = ListPool<AttachmentIdentifier>.Pool.Get();
                 HashSet<AttachmentSlot> attachmentsSlots = HashSetPool<AttachmentSlot>.Pool.Get();
@@ -136,8 +136,8 @@ namespace Exiled.Events.Handlers.Internal
                         .Where(attachment => attachment.Slot == slot)
                         .Min(slot => slot.Code));
 
-                Firearm.BaseCodesValue.Add(firearmType, baseCode);
-                Firearm.AvailableAttachmentsValue.Add(firearmType, attachmentIdentifiers.ToArray());
+                Firearm.BaseCodesValue[firearmType] = baseCode;
+                Firearm.AvailableAttachmentsValue[firearmType] = attachmentIdentifiers.ToArray();
 
                 ListPool<AttachmentIdentifier>.Pool.Return(attachmentIdentifiers);
                 HashSetPool<AttachmentSlot>.Pool.Return(attachmentsSlots);

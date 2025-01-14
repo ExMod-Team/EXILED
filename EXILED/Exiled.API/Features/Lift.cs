@@ -224,6 +224,13 @@ namespace Exiled.API.Features
         public static Lift Get(ElevatorType type) => Get(lift => lift.Type == type).FirstOrDefault();
 
         /// <summary>
+        /// Gets the <see cref="Lift"/> corresponding to the specified <see cref="ElevatorGroup"/>, if any.
+        /// </summary>
+        /// <param name="type">The <see cref="ElevatorGroup"/>.</param>
+        /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
+        public static Lift Get(ElevatorGroup type) => Get(lift => lift.Group == type).FirstOrDefault();
+
+        /// <summary>
         /// Gets the <see cref="Lift"/> corresponding to the specified name, if any.
         /// </summary>
         /// <param name="name">The lift's name.</param>
