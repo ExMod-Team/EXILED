@@ -125,6 +125,40 @@ namespace Exiled.Events.Patches.Events.Player
                    new (OpCodes.Stloc_S, 6),
                 });
 
+            offset = 0;
+            index = newInstructions.FindIndex(instrction => instrction.Calls(Method(typeof(CommandSender), nameof(CommandSender.RaReply)))) + offset;
+            newInstructions.InsertRange(
+                index,
+                new CodeInstruction[]
+                {
+                    // sender
+                    new (OpCodes.Ldarg_1),
+
+                    // Player.get(sender)
+                    new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(CommandSender) })),
+
+                    // command
+                    new (OpCodes.Ldloc_1),
+
+                    // commandtype
+                    new (OpCodes.Ldc_I4_4),
+
+                    // query
+                    new (OpCodes.Ldarg_0),
+
+                    // response
+                    new (OpCodes.Ldloc_S, 6),
+
+                    // result
+                    new (OpCodes.Ldloc_S, 5),
+
+                    // new SendedCommandEventArgs
+                    new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SendedValidCommandEventArgs))[0]),
+
+                    // OnSendedCommad(ev)
+                    new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendedValidCommand))),
+                });
+
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 

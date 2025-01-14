@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new CodeInstruction[]
                 {
-                    // this
+                   // this
                    new CodeInstruction(OpCodes.Ldarg_0),
 
                    // this._hub
@@ -67,9 +67,9 @@ namespace Exiled.Events.Patches.Events.Player
                    new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub) })),
 
                    // command
-                   new CodeInstruction(OpCodes.Ldloc_1),
+                   new (OpCodes.Ldloc_S, 1),
 
-                   // commandtype RA
+                   // commandtype client
                    new CodeInstruction(OpCodes.Ldc_I4_2),
 
                    // query
@@ -129,6 +129,42 @@ namespace Exiled.Events.Patches.Events.Player
                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
                    new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
                    new CodeInstruction(OpCodes.Stloc_S, 3),
+                });
+            offset = 0;
+            index = newInstructions.FindIndex(instrction => instrction.Calls(Method(typeof(GameConsoleTransmission), nameof(GameConsoleTransmission.SendToClient)))) + offset;
+            newInstructions.InsertRange(
+                index,
+                new CodeInstruction[]
+                {
+                    // this
+                    new CodeInstruction(OpCodes.Ldarg_0),
+
+                    // this._hub
+                    new CodeInstruction(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
+
+                    // Player.Get(Hub)
+                    new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub) })),
+
+                    // command
+                    new CodeInstruction(OpCodes.Ldloc_1),
+
+                    // commandtype CLIENT
+                    new CodeInstruction(OpCodes.Ldc_I4_2),
+
+                    // query
+                    new CodeInstruction(OpCodes.Ldarg_1),
+
+                    // response
+                    new CodeInstruction(OpCodes.Ldloc_S, 3),
+
+                    // result
+                    new (OpCodes.Ldloc_S, 2),
+
+                    // new SendedCommandEventArgs
+                    new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SendedValidCommandEventArgs))[0]),
+
+                    // OnSendedCommad(ev)
+                    new (OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendedValidCommand))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
