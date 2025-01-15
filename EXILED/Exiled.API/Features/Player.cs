@@ -19,6 +19,7 @@ namespace Exiled.API.Features
     using DamageHandlers;
     using Enums;
     using Exiled.API.Features.Core.Interfaces;
+    using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Hazards;
     using Exiled.API.Features.Items;
@@ -96,6 +97,7 @@ namespace Exiled.API.Features
 
         private ReferenceHub referenceHub;
         private CustomHealthStat healthStat;
+        private CustomHumeShieldStat humeShieldStat;
         private Role role;
 
         /// <summary>
@@ -177,6 +179,7 @@ namespace Exiled.API.Features
                 CameraTransform = value.PlayerCameraReference;
 
                 value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = healthStat = new CustomHealthStat { Hub = value };
+                value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = humeShieldStat = new CustomHumeShieldStat { Hub = value };
             }
         }
 
@@ -931,14 +934,33 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the players maximum Hume Shield.
+        /// </summary>
+        public float MaxHumeShield
+        {
+            get => humeShieldStat.MaxValue;
+            set => humeShieldStat.CustomMaxValue = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the players multiplier for gaining HumeShield.
+        /// </summary>
+        public float HumeShieldRegenerationMultiplier
+        {
+            get => humeShieldStat.ShieldRegenerationMultiplier;
+            set => humeShieldStat.ShieldRegenerationMultiplier = value;
+        }
+
+        /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
         /// </summary>
         public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
 
         /// <summary>
         /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
+        /// TODO: Change to <see cref="CustomHumeShieldStat"/>.
         /// </summary>
-        public HumeShieldStat HumeShieldStat => ReferenceHub.playerStats.GetModule<HumeShieldStat>();
+        public HumeShieldStat HumeShieldStat => humeShieldStat;
 
         /// <summary>
         /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.

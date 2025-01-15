@@ -276,7 +276,7 @@ namespace Exiled.API.Features
 
             Timing.CallDelayed(0.5f, () =>
             {
-                npc.Role.Set(role, SpawnReason.RoundStart, position is null ? RoleSpawnFlags.All : RoleSpawnFlags.AssignInventory);
+                npc.Role.Set(role, SpawnReason.ForceClass, position is null ? RoleSpawnFlags.All : RoleSpawnFlags.AssignInventory);
 
                 if (position is not null)
                     npc.Position = position.Value;

@@ -96,7 +96,7 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the light should cause shadows from other objects.
+        /// Gets or sets the shape that the Light emits.
         /// </summary>
         public LightShape LightShape
         {
@@ -105,12 +105,21 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the light should cause shadows from other objects.
+        /// Gets or sets the type of light the Light emits.
         /// </summary>
         public LightType LightType
         {
             get => Base.NetworkLightType;
             set => Base.NetworkLightType = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the type of shadows the light casts.
+        /// </summary>
+        public LightShadows ShadowType
+        {
+            get => Base.NetworkShadowType;
+            set => Base.NetworkShadowType = value;
         }
 
         /// <summary>

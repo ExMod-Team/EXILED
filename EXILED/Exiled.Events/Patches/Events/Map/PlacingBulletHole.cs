@@ -9,22 +9,18 @@ namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+    using Attributes;
     using Decals;
-    using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Map;
     using Handlers;
     using HarmonyLib;
-    using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Modules;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
-
-    using Player = API.Features.Player;
 
     /// <summary>
     /// Patches <see cref="ImpactEffectsModule.ServerSendImpactDecal(RaycastHit, Vector3, DecalPoolType)" />.
@@ -50,10 +46,10 @@ namespace Exiled.Events.Patches.Events.Map
                     // this.Firearm
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ImpactEffectsModule), nameof(ImpactEffectsModule.Firearm))),
-                    new(OpCodes.Call, TypeByName("Exiled.API.Features.Items.Item").GetMethods().Where(x => x.Name == "Get").First()),
+                    new(OpCodes.Call, typeof(Exiled.API.Features.Items.Item).GetMethods().Where(x => x.Name == "Get").First()),
 
                     // hit
-                    new(OpCodes.Ldarg_2),
+                    new(OpCodes.Ldarg_1),
 
                     // PlacingBulletHole ev = new(Item, RaycastHit)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlacingBulletHoleEventArgs))[0]),
@@ -70,13 +66,13 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Brfalse, returnLabel),
 
                     // hit.info = ev.Position
-                    new(OpCodes.Ldarga_S, 2),
+                    new(OpCodes.Ldarga_S, 1),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PlacingBulletHoleEventArgs), nameof(PlacingBulletHoleEventArgs.Position))),
                     new(OpCodes.Callvirt, PropertySetter(typeof(RaycastHit), nameof(RaycastHit.point))),
 
                     // hit.normal = ev.Rotation
-                    new(OpCodes.Ldarga_S, 2),
+                    new(OpCodes.Ldarga_S, 1),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PlacingBulletHoleEventArgs), nameof(PlacingBulletHoleEventArgs.Rotation))),
                     new(OpCodes.Stloc_S, rotation),
