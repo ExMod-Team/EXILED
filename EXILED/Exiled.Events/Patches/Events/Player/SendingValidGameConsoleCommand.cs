@@ -79,12 +79,12 @@ namespace Exiled.Events.Patches.Events.Player
                    // response
                    new CodeInstruction(OpCodes.Ldloc_S, 3),
 
-                   // new SendingCommandEventArgs
+                   // new SendingValidCommandEventArgs
                    new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingValidCommandEventArgs))[0]),
                    new CodeInstruction(OpCodes.Dup),
                    new CodeInstruction(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // OnSendingCommad(ev)
+                    // OnSendingValidCommad(ev)
                    new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingValidCommand))),
 
                     // if ev.IsAllowed cont
