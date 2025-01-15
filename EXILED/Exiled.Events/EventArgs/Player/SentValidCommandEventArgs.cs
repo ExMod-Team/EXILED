@@ -15,7 +15,7 @@ namespace Exiled.Events.EventArgs.Player
     using RemoteAdmin;
 
     /// <summary>
-    /// Contains all information after a player sends a command.
+    /// Contains all information after a player sends the command.
     /// </summary>
     public class SentValidCommandEventArgs : IPlayerEvent
     {
