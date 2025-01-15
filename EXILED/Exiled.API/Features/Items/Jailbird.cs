@@ -9,6 +9,7 @@ namespace Exiled.API.Features.Items
 {
     using System;
 
+    using Exiled.API.Features.Core;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using InventorySystem.Items;
@@ -24,6 +25,8 @@ namespace Exiled.API.Features.Items
     /// </summary>
     public class Jailbird : Item, IWrapper<JailbirdItem>
     {
+        private readonly ConstProperty<double> chargeTime = new(0.4000000059604645, typeof(Jailbird));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Jailbird"/> class.
         /// </summary>
@@ -122,6 +125,15 @@ namespace Exiled.API.Features.Items
                 TotalCharges = GetCharge(value);
                 Base._deterioration.RecheckUsage();
             }
+        }
+
+        /// <summary>
+        /// Gets or sets charge time.
+        /// </summary>
+        public double ChargeTolerance
+        {
+            get => chargeTime.Value;
+            set => chargeTime.Value = value;
         }
 
         /// <summary>

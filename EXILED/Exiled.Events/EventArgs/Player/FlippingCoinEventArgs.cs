@@ -29,7 +29,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isTails">
         /// <inheritdoc cref="IsTails" />
         /// </param>
-        public FlippingCoinEventArgs(Player player, Coin coin, bool isTails)
+        public FlippingCoinEventArgs(Player player, InventorySystem.Items.Coin.Coin coin, bool isTails)
         {
             Player = player;
             Item = Item.Get(coin);

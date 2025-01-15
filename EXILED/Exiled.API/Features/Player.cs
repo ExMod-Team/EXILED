@@ -160,6 +160,12 @@ namespace Exiled.API.Features
         public Dictionary<string, Dictionary<RoleTypeId, float>> CustomRoleFriendlyFireMultiplier { get; set; } = DictionaryPool<string, Dictionary<RoleTypeId, float>>.Pool.Get();
 
         /// <summary>
+        /// Gets or sets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="RoleTypeId"/> and their FF multiplier. This is for Custom Unit.
+        /// </summary>
+        /// <remarks>Mat be <c>null</c> if player is not a part of Custom Unit.</remarks>
+        public Dictionary<RoleTypeId, float> CustomUnitFriendlyFireMultiplier { get; set; } = null;
+
+        /// <summary>
         /// Gets or sets a unique custom role that does not abide to base game for this player. Used in conjunction with <see cref="CustomRoleFriendlyFireMultiplier"/>.
         /// </summary>
         public string UniqueRole { get; set; } = string.Empty;

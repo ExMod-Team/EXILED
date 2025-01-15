@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="CustomUnit.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="CustomUnit.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -26,6 +26,7 @@ namespace Exiled.CustomUnits.API.Features
     using MEC;
     using PlayerRoles;
     using Respawning;
+    using Respawning.Waves;
     using YamlDotNet.Serialization;
 
     /// <summary>
@@ -33,7 +34,6 @@ namespace Exiled.CustomUnits.API.Features
     /// </summary>
     public abstract class CustomUnit
     {
-        private static Dictionary<Type, CustomUnit?> typeLookupTable = new();
         private static Dictionary<string, CustomUnit?> stringLookupTable = new();
         private static Dictionary<uint, CustomUnit?> idLookupTable = new();
 
@@ -71,7 +71,7 @@ namespace Exiled.CustomUnits.API.Features
         /// Gets all of the players currently set to this unit.
         /// </summary>
         [YamlIgnore]
-        public HashSet<Player> TrackedPlayers { get; } = new();
+        public Dictionary<Player, UnitRole> TrackedPlayers { get; } = new();
 
         /// <summary>
         /// Gets or sets the amount of current tickets.
@@ -134,7 +134,7 @@ namespace Exiled.CustomUnits.API.Features
         /// <summary>
         /// Gets or sets a <see cref="Dictionary{TKey, TValue}"/> containing custom friendly fire multipliers for every role type.
         /// </summary>
-        public virtual Dictionary<RoleTypeId, float> CustomUnitFFMultiplier { get; set; } = new();
+        public virtual Dictionary<RoleTypeId, float> FriendlyFireMultiplier { get; set; } = new();
 
         /// <summary>
         /// Gets or sets a <see cref="List{T}"/> of <see cref="Team"/>, <see cref="RoleTypeId"/> or <see cref="CustomUnit.Id"/> that couldn't be damaged by this unit.
@@ -159,20 +159,8 @@ namespace Exiled.CustomUnits.API.Features
         public static CustomUnit? Get(uint id)
         {
             if (!idLookupTable.ContainsKey(id))
-                idLookupTable.Add(id, Registered?.FirstOrDefault(r => r.Id == id));
+                idLookupTable.Add(id, Registered.FirstOrDefault(r => r.Id == id));
             return idLookupTable[id];
-        }
-
-        /// <summary>
-        /// Gets a <see cref="CustomUnit"/> by type.
-        /// </summary>
-        /// <param name="t">The <see cref="Type"/> to get.</param>
-        /// <returns>The unit, or <see langword="null"/> if it doesn't exist.</returns>
-        public static CustomUnit? Get(Type t)
-        {
-            if (!typeLookupTable.ContainsKey(t))
-                typeLookupTable.Add(t, Registered?.FirstOrDefault(r => r.GetType() == t));
-            return typeLookupTable[t];
         }
 
         /// <summary>
@@ -183,7 +171,7 @@ namespace Exiled.CustomUnits.API.Features
         public static CustomUnit? Get(string name)
         {
             if (!stringLookupTable.ContainsKey(name))
-                stringLookupTable.Add(name, Registered?.FirstOrDefault(r => r.Name == name));
+                stringLookupTable.Add(name, Registered.FirstOrDefault(r => r.Name == name));
             return stringLookupTable[name];
         }
 
@@ -218,20 +206,6 @@ namespace Exiled.CustomUnits.API.Features
         }
 
         /// <summary>
-        /// Tries to get a <see cref="CustomUnit"/> by name.
-        /// </summary>
-        /// <param name="t">The <see cref="Type"/> of the unit to get.</param>
-        /// <param name="customUnit">The custom unit.</param>
-        /// <returns>True if the unit exists.</returns>
-        /// <exception cref="ArgumentNullException">If the name is <see langword="null"/> or an empty string.</exception>
-        public static bool TryGet(Type t, out CustomUnit? customUnit)
-        {
-            customUnit = Get(t);
-
-            return customUnit is not null;
-        }
-
-        /// <summary>
         /// Register all custom units present in the assembly.
         /// </summary>
         /// <param name="targetTypes">Types that will be registered if inheriting <see cref="CustomUnit"/>.</param>
@@ -244,6 +218,7 @@ namespace Exiled.CustomUnits.API.Features
         {
             assembly ??= Assembly.GetCallingAssembly();
             targetTypes ??= assembly.GetTypes();
+            List<CustomUnit> units = new();
 
             foreach (Type type in targetTypes)
             {
@@ -267,9 +242,19 @@ namespace Exiled.CustomUnits.API.Features
                 customUnit ??= (CustomUnit)Activator.CreateInstance(type);
 
                 if (customUnit.TryRegister())
-                    yield return customUnit;
+                    units.Add(customUnit);
             }
+
+            return units;
         }
+
+        /// <summary>
+        /// Unregisters custom units.
+        /// </summary>
+        /// <param name="units">Units to unregister. <see cref="Registered"/> by default.</param>
+        /// <returns>A collection of all unregistered custom units.</returns>
+        public static IEnumerable<CustomUnit> UnregisterUnits(IEnumerable<CustomUnit>? units = null)
+            => (units ?? Registered).Where(unit => unit.TryUnregister());
 
         /// <summary>
         /// Forces a <see cref="CustomUnit"/> to spawn.
@@ -277,7 +262,7 @@ namespace Exiled.CustomUnits.API.Features
         /// <param name="players">Players that will be spawned.</param>
         public void Spawn(IEnumerable<Player>? players = null)
         {
-            IList<Player> playerToSpawn = (players ?? Player.List.Where(x => RespawnManager.Singleton.CheckSpawnable(x.ReferenceHub))).ToArray();
+            IList<Player> playerToSpawn = (players ?? Player.List.Where(x => WaveSpawner.CanBeSpawned(x.ReferenceHub))).ToArray();
 
             if (playerToSpawn.Count < MinimumToSpawn)
                 return;
@@ -299,7 +284,7 @@ namespace Exiled.CustomUnits.API.Features
                 GrantRole(playerToSpawn[i], unit);
                 units.Remove(unit);
 
-                TrackedPlayers.Add(playerToSpawn[i]);
+                TrackedPlayers.Add(playerToSpawn[i], unit);
             }
 
             if (CassieAnnouncement != null)
@@ -354,17 +339,54 @@ namespace Exiled.CustomUnits.API.Features
                     }
                 }
 
-                player.FriendlyFireMultiplier = CustomUnitFFMultiplier;
+                player.CustomUnitFriendlyFireMultiplier = FriendlyFireMultiplier;
 
                 OnGrantedRole(player, unit);
             });
         }
 
         /// <summary>
+        /// Removes <see cref="UnitRole"/> from player.
+        /// </summary>
+        /// <param name="player">Target player.</param>
+        public void RemoveRole(Player player)
+        {
+            if (TrackedPlayers.TryGetValue(player, out UnitRole role) || role == null)
+                return;
+
+            if (role.CustomRole != null)
+                role.CustomRole.RemoveRole(player);
+            else if (role.RoleTypeId != RoleTypeId.None)
+                player.Role.Set(RoleTypeId.Spectator);
+
+            TrackedPlayers.Remove(player);
+            OnRemovedRole(player, role);
+        }
+
+        /// <summary>
+        /// Checks if <see cref="Player"/> is tracked by <see cref="CustomUnit"/>.
+        /// </summary>
+        /// <param name="player">Target to check.</param>
+        /// <returns><c>true</c> if tracked, <c>false</c> otherwise.</returns>
+        public bool Check(Player player) => TrackedPlayers.ContainsKey(player);
+
+        /// <summary>
+        /// Grants specified amount of tickets to unit.
+        /// </summary>
+        /// <param name="amount">Amount of tickets to grant.</param>
+        public void GrantTickets(float amount)
+        {
+            if (SpawnType != SpawnType.Ticket)
+                return;
+
+            CurrentTickets += amount;
+        }
+
+        /// <summary>
         /// Tries to register a <see cref="CustomUnit"/>.
         /// </summary>
         /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
-        public bool TryRegister()
+        internal bool TryRegister()
         {
             if (!CustomRoles.CustomRoles.Instance.Config.IsEnabled)
                 return false;
@@ -392,22 +414,26 @@ namespace Exiled.CustomUnits.API.Features
         }
 
         /// <summary>
-        /// Checks if <see cref="Player"/> is tracked by <see cref="CustomUnit"/>.
+        /// Tries to register a <see cref="CustomUnit"/>.
         /// </summary>
-        /// <param name="player">Target to check.</param>
-        /// <returns><c>true</c> if tracked, <c>false</c> otherwise.</returns>
-        public bool Check(Player player) => TrackedPlayers.Contains(player);
-
-        /// <summary>
-        /// Grants specified amount of tickets to unit.
-        /// </summary>
-        /// <param name="amount">Amount of tickets to grant.</param>
-        public void GrantTickets(float amount)
+        /// <returns><c>true</c> if successful, <c>false</c> otherwise.</returns>
+        internal bool TryUnregister()
         {
-            if (SpawnType != SpawnType.Ticket)
-                return;
+            if (!CustomRoles.CustomRoles.Instance.Config.IsEnabled)
+                return false;
 
-            CurrentTickets += amount;
+            if (Registered.Contains(this))
+            {
+                Registered.Remove(this);
+                Destroy();
+
+                Log.Debug($"{Name} ({Id}) has been successfully unregistered.");
+                return true;
+            }
+
+            Log.Warn($"Couldn't unregister {Name} ({Id}) as it doesn't exist.");
+
+            return false;
         }
 
         /// <summary>
@@ -419,7 +445,6 @@ namespace Exiled.CustomUnits.API.Features
 
             SubscribeEvents();
 
-            typeLookupTable[GetType()] = this;
             idLookupTable[Id] = this;
             stringLookupTable[Name] = this;
         }
@@ -431,7 +456,6 @@ namespace Exiled.CustomUnits.API.Features
         {
             UnsubscribeEvents();
 
-            typeLookupTable.Remove(GetType());
             idLookupTable.Remove(Id);
             stringLookupTable.Remove(Name);
         }
@@ -466,6 +490,15 @@ namespace Exiled.CustomUnits.API.Features
         }
 
         /// <summary>
+        /// Fired when <see cref="GrantRole"/> method is finished.
+        /// </summary>
+        /// <param name="player">Player that received the unit.</param>
+        /// <param name="unit">Role that was granted.</param>
+        protected virtual void OnRemovedRole(Player player, UnitRole unit)
+        {
+        }
+
+        /// <summary>
         /// Fired when unit operative is shooting.
         /// </summary>
         /// <param name="ev"><see cref="ShotEventArgs"/> instance.</param>
@@ -478,7 +511,8 @@ namespace Exiled.CustomUnits.API.Features
         /// Fired when unit is respawning.
         /// </summary>
         /// <param name="players">Players that will be respawned.</param>
-        protected virtual void OnRespawning(IEnumerable<Player> players)
+        /// <param name="isAllowed">Whether the spawn can be performed.</param>
+        protected virtual void OnRespawning(IEnumerable<Player> players, ref bool isAllowed)
         {
         }
 
@@ -488,15 +522,12 @@ namespace Exiled.CustomUnits.API.Features
                 return;
 
             bool canDamage = !(Friends.Contains(ev.Target.Role.Type.ToString()) || Friends.Contains(ev.Target.Role.Team.ToString()));
-            CustomUnit[] targetUnits = ev.Target.GetCustomUnits().ToArray();
 
-            if (targetUnits.Length > 0 && Friends.Exists(x => Array.Exists(targetUnits, y => y.Id.ToString() == x)))
+            if (Friends.Exists(x => x == ev.Target.GetCustomUnit()?.Id.ToString()))
                 canDamage = false;
 
             OnShot(ev, canDamage);
-
-            if (!canDamage)
-                ev.Damage = 0;
+            ev.CanHurt = canDamage;
         }
 
         private void OnInternalRespawningTeam(RespawningTeamEventArgs ev)
@@ -504,26 +535,36 @@ namespace Exiled.CustomUnits.API.Features
             if (SpawnType == SpawnType.None)
                 return;
 
+            bool isAllowed = true;
+
             if (SpawnType == SpawnType.Ticket && CurrentTickets >= MinimumTickets)
             {
+                OnRespawning(ev.Players, ref isAllowed);
+
+                if (!isAllowed)
+                    return;
+
                 CurrentTickets = Math.Max(0, CurrentTickets - ReduceAmount);
                 Spawn(ev.Players);
-                OnRespawning(ev.Players);
             }
 
             if (SpawnType == SpawnType.Chance && UnityEngine.Random.value * 100 <= SpawnChance)
             {
+                OnRespawning(ev.Players, ref isAllowed);
+
+                if (!isAllowed)
+                    return;
+
                 Spawn(ev.Players);
-                OnRespawning(ev.Players);
             }
         }
 
         private void OnInternalChangingRole(ChangingRoleEventArgs ev)
         {
-            if (Check(ev.Player))
+            if (TrackedPlayers.TryGetValue(ev.Player, out UnitRole unitRole))
             {
+                unitRole.CustomRole?.RemoveRole(ev.Player);
                 TrackedPlayers.Remove(ev.Player);
-                Destroy();
             }
         }
     }

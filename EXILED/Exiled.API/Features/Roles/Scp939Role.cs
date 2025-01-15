@@ -10,8 +10,8 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using Exiled.API.Enums;
+    using Exiled.API.Features.Core;
     using Exiled.API.Features.Pools;
-
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.HumeShield;
@@ -19,9 +19,7 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp939.Mimicry;
     using PlayerRoles.PlayableScps.Scp939.Ripples;
     using PlayerRoles.Subroutines;
-
     using RelativePositioning;
-
     using UnityEngine;
 
     using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
@@ -31,6 +29,9 @@ namespace Exiled.API.Features.Roles
     /// </summary>
     public class Scp939Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole, ISpawnableScp
     {
+        private readonly ConstProperty<float> baseDamage = new(Scp939ClawAbility.BaseDamage, typeof(Scp939ClawAbility));
+        private readonly ConstProperty<float> lungeDamage = new(Scp939LungeAbility.LungeDamage, typeof(Scp939ClawAbility));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp939Role"/> class.
         /// </summary>
@@ -235,6 +236,24 @@ namespace Exiled.API.Features.Roles
         /// Gets the <see cref="Scp939GameRole"/> instance.
         /// </summary>
         public new Scp939GameRole Base { get; }
+
+        /// <summary>
+        /// Gets or sets the base damage of SCP-939.
+        /// </summary>
+        public float BaseDamage
+        {
+            get => baseDamage.Value;
+            set => baseDamage.Value = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the lunge damage of SCP-939.
+        /// </summary>
+        public float LungeDamage
+        {
+            get => lungeDamage.Value;
+            set => lungeDamage.Value = value;
+        }
 
         /// <summary>
         /// Removes all recordings of player voices. Provide an optional target to remove all the recordings of a single player.

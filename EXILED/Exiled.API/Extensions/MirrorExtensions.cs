@@ -18,17 +18,14 @@ namespace Exiled.API.Extensions
     using Exiled.API.Enums;
     using Features;
     using Features.Pools;
-
+    using InventorySystem.Items.Usables.Scp1344;
     using Mirror;
-
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.Voice;
     using RelativePositioning;
-
     using Respawning;
-
     using UnityEngine;
 
     /// <summary>
@@ -182,6 +179,12 @@ namespace Exiled.API.Extensions
 
             player.Connection.Send(message);*/
         }
+
+        /// <summary>
+        /// Plays a SCP-1344 detection sound for target.
+        /// </summary>
+        /// <param name="target">Target to play sound to.</param>
+        public static void PlayScp1344DetectionSound(this Player target) => target.Connection.Send(new Scp1344DetectionMessage(target.NetId));
 
         /// <summary>
         /// Sets <see cref="Features.Intercom.DisplayText"/> that only the <paramref name="target"/> player can see.

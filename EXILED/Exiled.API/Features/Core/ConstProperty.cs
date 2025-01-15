@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ConstProperty.cs" company="Exiled Team">
-// Copyright (c) Exiled Team. All rights reserved.
+// <copyright file="ConstProperty.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -137,19 +137,19 @@ namespace Exiled.API.Features.Core
         {
             AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(Path.Combine(Paths.ManagedAssemblies, "Assembly-CSharp.dll"));
 
-            foreach (MethodInfo method in type.GetProperties().Where(x => x.DeclaringType == type && x.GetMethod != null && !skipMethods.Contains(x.GetMethod)).Select(x => x.GetMethod))
+            foreach (MethodInfo method in type.GetProperties(AccessTools.all).Where(x => x.DeclaringType == type && x.GetMethod != null && !skipMethods.Contains(x.GetMethod)).Select(x => x.GetMethod))
             {
                 if (assembly.MainModule.ImportReference(method).Resolve().Body.Instructions.Any(x => x.Operand is T obj && obj.Equals(DefaultValue)))
                     yield return method;
             }
 
-            foreach (MethodInfo method in type.GetProperties().Where(x => x.DeclaringType == type && x.SetMethod != null && !skipMethods.Contains(x.SetMethod)).Select(x => x.SetMethod))
+            foreach (MethodInfo method in type.GetProperties(AccessTools.all).Where(x => x.DeclaringType == type && x.SetMethod != null && !skipMethods.Contains(x.SetMethod)).Select(x => x.SetMethod))
             {
                 if (assembly.MainModule.ImportReference(method).Resolve().Body.Instructions.Any(x => x.Operand is T obj && obj.Equals(DefaultValue)))
                     yield return method;
             }
 
-            foreach (MethodInfo method in type.GetMethods().Where(x => x.DeclaringType == type && !skipMethods.Contains(x)))
+            foreach (MethodInfo method in type.GetMethods(AccessTools.all).Where(x => x.DeclaringType == type && !skipMethods.Contains(x)))
             {
                 if (assembly.MainModule.ImportReference(method).Resolve().Body.Instructions.Any(x => x.Operand is T obj && obj.Equals(DefaultValue)))
                     yield return method;
@@ -193,9 +193,23 @@ namespace Exiled.API.Features.Core
                 }
 
                 if (typeof(T) == typeof(float))
+                {
                     yield return new(OpCodes.Ldc_R4, obj);
+                }
                 else
-                    yield return new(instruction.opcode, obj);
+                {
+                    object value = Convert.ChangeType(property.Value, Type.GetTypeCode(instruction.operand.GetType()));
+
+                    if (value == null)
+                    {
+                        Log.Warn($"Converted to {instruction.operand.GetType().Name} to {typeof(T).Name} was unsuccessful.");
+
+                        yield return instruction;
+                        continue;
+                    }
+
+                    yield return new(instruction.opcode, value);
+                }
             }
         }
     }

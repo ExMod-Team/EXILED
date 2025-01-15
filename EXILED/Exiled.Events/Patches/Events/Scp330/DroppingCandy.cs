@@ -61,6 +61,7 @@ namespace Exiled.Events.Patches.Events.Scp330
                     // msg.CandyID
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(SelectScp330Message), nameof(SelectScp330Message.CandyID))),
+                    new(OpCodes.Dup),
 
                     // CandyKindID
                     new(OpCodes.Call, Method(typeof(DroppingCandy), nameof(DroppingCandy.GetCandyID))),

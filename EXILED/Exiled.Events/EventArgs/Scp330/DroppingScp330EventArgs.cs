@@ -28,14 +28,18 @@ namespace Exiled.Events.EventArgs.Scp330
         /// <param name="scp330">
         /// <inheritdoc cref="Scp330" />
         /// </param>
+        /// <param name="index">
+        /// <inheritdoc cref="Index" />
+        /// </param>
         /// <param name="candy">
         /// <inheritdoc cref="Candy" />
         /// </param>
-        public DroppingScp330EventArgs(Player player, Scp330Bag scp330, CandyKindID candy)
+        public DroppingScp330EventArgs(Player player, Scp330Bag scp330, int index, CandyKindID candy)
         {
             Player = player;
             Scp330 = Item.Get<Scp330>(scp330);
             Candy = candy;
+            Index = index;
         }
 
         /// <summary>
@@ -50,6 +54,11 @@ namespace Exiled.Events.EventArgs.Scp330
         /// Gets or sets a value indicating whether the type of candy drop.
         /// </summary>
         public CandyKindID Candy { get; set; }
+
+        /// <summary>
+        /// Gets the index of selected candy.
+        /// </summary>
+        public int Index { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player can interact with SCP-330.

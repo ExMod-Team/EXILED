@@ -159,6 +159,7 @@ namespace Exiled.Loader
             try
             {
                 config = (IConfig)Loader.Deserializer.Deserialize(File.ReadAllText(plugin.ConfigPath), plugin.Config.GetType());
+                ValidateConfig(config, plugin);
                 plugin.Config.CopyProperties(config);
             }
             catch (YamlException yamlException)
