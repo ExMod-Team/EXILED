@@ -45,7 +45,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether DeadmanSwitch detonation is enabled.
         /// </summary>
-        public static bool DisableDeadmanSwitch { get; set; }
+        public static bool DeadmanSwitchEnabled { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether automatic detonation is enabled.
