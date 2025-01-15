@@ -47,7 +47,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the player can send a command.
+        /// Gets or sets a value indicating whether the player can send the command.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
 
