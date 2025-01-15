@@ -29,6 +29,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-1507.
     /// </summary>
+    /// <remarks>Only availaible for Christmas and AprilFools.</remarks>
     public class Scp1507Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole, ISpawnableScp
     {
         /// <summary>

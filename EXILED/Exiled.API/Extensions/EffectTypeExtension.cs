@@ -104,7 +104,7 @@ namespace Exiled.API.Extensions
         /// <param name="type">The type found with the corresponding EffecType.</param>
         /// <returns>Whether the effectType has been found.</returns>
         public static bool TryGetType(this EffectType effect, out Type type)
-            => EffectTypeToType.TryGetValue(effect, out type);
+            => EffectTypeToType.TryGetValue(effect, out type) && effect.IsAvailableHoliday();
 
         /// <summary>
         /// Gets the <see cref="EffectType"/> of the specified <see cref="StatusEffectBase"/>.
@@ -128,7 +128,7 @@ namespace Exiled.API.Extensions
                 return false;
             }
 
-            return true;
+            return effect.IsAvailableHoliday();
         }
 
         /// <summary>
@@ -190,6 +190,13 @@ namespace Exiled.API.Extensions
         /// <param name="effect">The <see cref="EffectType"/>.</param>
         /// <returns>Whether the effect is displayed to spectators as text.</returns>
         public static bool IsDisplayed(this EffectType effect) => effect.TryGetType(out Type type) && typeof(ISpectatorDataPlayerEffect).IsAssignableFrom(type);
+
+        /// <summary>
+        /// Returns whether the provided <paramref name="effect"/> is displayed to spectators as text.
+        /// </summary>
+        /// <param name="effect">The <see cref="EffectType"/>.</param>
+        /// <returns>Whether the effect is displayed to spectators as text.</returns>
+        public static bool IsAvailableHoliday(this EffectType effect) => effect.TryGetType(out Type type) && type is IHolidayEffect holiday && holiday.IsAvailable;
 
         /// <summary>
         /// Returns the <see cref="EffectCategory"/> of the given <paramref name="effect"/>.

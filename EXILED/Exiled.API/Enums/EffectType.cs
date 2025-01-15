@@ -263,21 +263,25 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Makes you a flamingo.
         /// </summary>
+        /// <remarks>Only availaible for Christmas and AprilFools.</remarks>
         BecomingFlamingo,
 
         /// <summary>
         /// Makes you a Child after eating Cake.
         /// </summary>
+        /// <remarks>Only availaible for Christmas and AprilFools.</remarks>
         Scp559,
 
         /// <summary>
         /// Scp956 found you.
         /// </summary>
+        /// <remarks>Only availaible for Christmas and AprilFools.</remarks>
         Scp956Target,
 
         /// <summary>
         /// you are snowed.
         /// </summary>
+        /// <remarks>Only availaible for Christmas and AprilFools.</remarks>
         Snowed,
     }
 }
