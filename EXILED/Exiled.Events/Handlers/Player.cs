@@ -544,6 +544,16 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingNicknameEventArgs> ChangingNickname { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> sends valid command.
+        /// </summary>
+        public static Event<SendingValidCommandEventArgs> SendingValidCommand { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> sends valid command.
+        /// </summary>
+        public static Event<SentValidCommandEventArgs> SentValidCommand { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a player's emotion changed.
         /// </summary>
         public static Event<ChangingEmotionEventArgs> ChangingEmotion { get; set; } = new();
@@ -1197,6 +1207,18 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingNicknameEventArgs"/> instance.</param>
         public static void OnChangingNickname(ChangingNicknameEventArgs ev) => ChangingNickname.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="Player"/> sends valid command.
+        /// </summary>
+        /// <param name="ev">The <see cref="SendingValidCommandEventArgs"/> instance.</param>
+        public static void OnSendingValidCommand(SendingValidCommandEventArgs ev) => SendingValidCommand.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="Player"/> sends valid command.
+        /// </summary>
+        /// <param name="ev">The <see cref="SentValidCommandEventArgs"/> instance.</param>
+        public static void OnSentValidCommand(SentValidCommandEventArgs ev) => SentValidCommand.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/>'s rotates the revolver.
