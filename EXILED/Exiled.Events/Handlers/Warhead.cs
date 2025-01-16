@@ -40,7 +40,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before the DeadmanSwitch is Initiated.
         /// </summary>
-        public static Event DeadmanSwitchInitiating { get; set; } = new();
+        public static Event<DeadmanSwitchInitiatingEventArgs> DeadmanSwitchInitiating { get; set; } = new();
 
         /// <summary>
         /// Invoked before detonating the warhead.
@@ -73,7 +73,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called after the warhead has been detonated.
         /// </summary>
-        public static void OnDeadmanSwitchInitiating() => DeadmanSwitchInitiating.InvokeSafely();
+        /// <param name="ev">The <see cref="DeadmanSwitchInitiatingEventArgs"/> instance.</param>
+        public static void OnDeadmanSwitchInitiating(DeadmanSwitchInitiatingEventArgs ev) => DeadmanSwitchInitiating.InvokeSafely(ev);
 
         /// <summary>
         /// Called before detonating the warhead.
