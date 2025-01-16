@@ -104,7 +104,7 @@ namespace Exiled.API.Extensions
         /// <param name="type">The type found with the corresponding EffecType.</param>
         /// <returns>Whether the effectType has been found.</returns>
         public static bool TryGetType(this EffectType effect, out Type type)
-            => EffectTypeToType.TryGetValue(effect, out type) && effect.IsAvailableHoliday();
+            => EffectTypeToType.TryGetValue(effect, out type);
 
         /// <summary>
         /// Gets the <see cref="EffectType"/> of the specified <see cref="StatusEffectBase"/>.
@@ -128,7 +128,7 @@ namespace Exiled.API.Extensions
                 return false;
             }
 
-            return effect.IsAvailableHoliday();
+            return true;
         }
 
         /// <summary>
