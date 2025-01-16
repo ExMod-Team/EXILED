@@ -27,6 +27,7 @@ namespace Exiled.API.Features.Roles
     using Scp079GameRole = PlayerRoles.PlayableScps.Scp079.Scp079Role;
     using Scp096GameRole = PlayerRoles.PlayableScps.Scp096.Scp096Role;
     using Scp106GameRole = PlayerRoles.PlayableScps.Scp106.Scp106Role;
+    using Scp1507GameRole = PlayerRoles.PlayableScps.Scp1507.Scp1507Role;
     using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;
     using Scp3114GameRole = PlayerRoles.PlayableScps.Scp3114.Scp3114Role;
     using Scp939GameRole = PlayerRoles.PlayableScps.Scp939.Scp939Role;
@@ -235,7 +236,10 @@ namespace Exiled.API.Features.Roles
             FilmmakerGameRole filmmakerRole => new FilmMakerRole(filmmakerRole),
             NoneGameRole noneRole => new NoneRole(noneRole),
             DestroyedGameRole destroyedRole => new DestroyedRole(destroyedRole),
-            _ => null,
+#pragma warning disable CS0618
+            Scp1507GameRole scp1507 => new Scp1507Role(scp1507),
+#pragma warning restore CS0618
+            _ => throw new Exception($"Missing role found in Exiled.API.Features.Roles.Role::Create ({role?.RoleTypeId}). Please contact an Exiled developer."),
         };
     }
 }
