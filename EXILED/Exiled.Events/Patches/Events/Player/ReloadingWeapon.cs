@@ -82,7 +82,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UnloadingWeaponEventArgs), nameof(UnloadingWeaponEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, skip),
                 });
-            Exiled.API.Features.Log.Info("5");
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
