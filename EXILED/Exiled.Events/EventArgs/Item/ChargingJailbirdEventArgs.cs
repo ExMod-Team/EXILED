@@ -26,9 +26,7 @@ namespace Exiled.Events.EventArgs.Item
         {
             Player = Player.Get(player);
             Jailbird = (Jailbird)Item.Get(swingItem);
-#pragma warning disable CS0618
             IsAllowed = isAllowed;
-#pragma warning restore CS0618
         }
 
         /// <summary>
@@ -47,8 +45,8 @@ namespace Exiled.Events.EventArgs.Item
         public Item Item => Jailbird;
 
         /// <summary>
-        /// Gets a value indicating whether the Jailbird can be charged.
+        /// Gets or sets a value indicating whether the Jailbird can be charged.
         /// </summary>
-        public bool IsAllowed { get; }
+        public bool IsAllowed { get; set; }
     }
 }

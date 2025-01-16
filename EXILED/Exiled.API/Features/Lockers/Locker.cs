@@ -110,7 +110,7 @@ namespace Exiled.API.Features.Lockers
                 Chamber randomChamber = Chambers.GetRandomValue();
 
                 // Determine if the chamber uses multiple spawn points and has at least one available spawn point.
-                if (randomChamber.UseMultipleSpawnpoints && randomChamber.Spawnpoints.Count() > 0)
+                if (randomChamber.UseMultipleSpawnpoints && randomChamber.Spawnpoints.Any())
                 {
                     // Return the position of a random spawn point within the chamber.
                     return randomChamber.Spawnpoints.GetRandomValue().position;
@@ -137,10 +137,17 @@ namespace Exiled.API.Features.Lockers
         public static IEnumerable<Locker> Get(ZoneType zoneType) => Get(room => room.Zone.HasFlag(zoneType));
 
         /// <summary>
+        /// Gets an <see cref="IEnumerable{T}"/> of <see cref="Locker"/> given the specified <see cref="LockerType"/>.
+        /// </summary>
+        /// <param name="lockerType">The <see cref="LockerType"/> to search for.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Locker"/> which contains elements that satisfy the condition.</returns>
+        public static IEnumerable<Locker> Get(LockerType lockerType) => Get(x => x.Type == lockerType);
+
+        /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Locker"/> filtered based on a predicate.
         /// </summary>
         /// <param name="predicate">The condition to satify.</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Locker"/> which contains elements that satify the condition.</returns>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Locker"/> which contains elements that satisfy the condition.</returns>
         public static IEnumerable<Locker> Get(Func<Locker, bool> predicate) => List.Where(predicate);
 
         /// <summary>
