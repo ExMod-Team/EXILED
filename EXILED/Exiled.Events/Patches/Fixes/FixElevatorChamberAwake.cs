@@ -13,7 +13,7 @@ namespace Exiled.Events.Patches.Fixes
 
     /// <summary>
     /// Patches <see cref="ElevatorChamber.Awake" />'s setter.
-    /// Fix for the <see cref="Handlers.Map.ElevatorSequencesUpdated" /> event having its value being null.
+    /// Fix for the <see cref="Handlers.Map.ElevatorSequencesUpdated" /> event having its Lift value being null.
     /// </summary>
     [HarmonyPatch(typeof(ElevatorChamber), nameof(ElevatorChamber.Awake))]
     internal class FixElevatorChamberAwake
