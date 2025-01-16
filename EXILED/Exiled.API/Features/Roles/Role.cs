@@ -236,7 +236,9 @@ namespace Exiled.API.Features.Roles
             FilmmakerGameRole filmmakerRole => new FilmMakerRole(filmmakerRole),
             NoneGameRole noneRole => new NoneRole(noneRole),
             DestroyedGameRole destroyedRole => new DestroyedRole(destroyedRole),
+#pragma warning disable CS0618
             Scp1507GameRole scp1507 => new Scp1507Role(scp1507),
+#pragma warning restore CS0618
             _ => throw new Exception($"Missing role found in Exiled.API.Features.Roles.Role::Create ({role?.RoleTypeId}). Please contact an Exiled developer."),
         };
     }

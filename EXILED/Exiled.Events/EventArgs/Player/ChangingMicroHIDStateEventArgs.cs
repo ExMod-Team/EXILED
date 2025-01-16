@@ -12,6 +12,8 @@ namespace Exiled.Events.EventArgs.Player
     using API.Features;
     using API.Features.Items;
     using Interfaces;
+
+    using InventorySystem.Items;
     using InventorySystem.Items.MicroHID;
     using InventorySystem.Items.MicroHID.Modules;
 
@@ -32,9 +34,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ChangingMicroHIDStateEventArgs(Item microHID, MicroHidPhase newPhase, bool isAllowed = true)
+        public ChangingMicroHIDStateEventArgs(ItemBase microHID, MicroHidPhase newPhase, bool isAllowed = true)
         {
-            MicroHID = microHID.As<MicroHid>();
+            MicroHID = Item.Get<MicroHid>(microHID);
             NewPhase = newPhase;
             IsAllowed = isAllowed;
         }
@@ -56,5 +58,8 @@ namespace Exiled.Events.EventArgs.Player
 
         /// <inheritdoc/>
         public Item Item => MicroHID;
+
+        /// <inheritdoc/>
+        public Player Player => MicroHID.Owner;
     }
 }

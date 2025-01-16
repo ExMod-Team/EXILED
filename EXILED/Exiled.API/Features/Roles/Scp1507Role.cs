@@ -7,28 +7,20 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System;
     using System.Collections.Generic;
-
-    using Exiled.API.Enums;
-    using Exiled.API.Features.Pools;
 
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.HumeShield;
-    using PlayerRoles.PlayableScps.Scp939;
-    using PlayerRoles.PlayableScps.Scp939.Mimicry;
-    using PlayerRoles.PlayableScps.Scp939.Ripples;
     using PlayerRoles.Subroutines;
-
-    using RelativePositioning;
-
-    using UnityEngine;
 
     using Scp1507GameRole = PlayerRoles.PlayableScps.Scp1507.Scp1507Role;
 
     /// <summary>
     /// Defines a role that represents SCP-1507.
     /// </summary>
+    [Obsolete("Only availaible for Christmas and AprilFools.")]
     public class Scp1507Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole, ISpawnableScp
     {
         /// <summary>

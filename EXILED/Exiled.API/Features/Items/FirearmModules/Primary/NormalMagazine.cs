@@ -44,6 +44,16 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         }
 
         /// <inheritdoc/>
+        public override int Ammo
+        {
+            set
+            {
+                MagazineModule.SyncData[MagazineModule.ItemSerial] = Math.Max(value, 0) + 1;
+                Resync();
+            }
+        }
+
+        /// <inheritdoc/>
         public override int ConstantMaxAmmo => MagazineModule._defaultCapacity;
 
         /// <inheritdoc/>

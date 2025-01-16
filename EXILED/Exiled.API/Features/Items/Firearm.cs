@@ -23,6 +23,7 @@ namespace Exiled.API.Features.Items
     using Extensions;
     using InventorySystem;
     using InventorySystem.Items;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
@@ -808,6 +809,7 @@ namespace Exiled.API.Features.Items
         /// <param name="newOwner">new <see cref="Firearm"/> owner.</param>
         internal override void ChangeOwner(Player oldOwner, Player newOwner)
         {
+            Base.InstantiationStatus = newOwner == Server.Host ? AutosyncInstantiationStatus.SimulatedInstance : AutosyncInstantiationStatus.InventoryInstance;
             Base.Owner = newOwner.ReferenceHub;
             Base._footprintCacheSet = false;
             foreach (ModuleBase module in Base.Modules)
@@ -817,9 +819,9 @@ namespace Exiled.API.Features.Items
         }
 
         /// <inheritdoc/>
-        internal override void ReadPickupInfo(Pickup pickup)
+        internal override void ReadPickupInfoBefore(Pickup pickup)
         {
-            base.ReadPickupInfo(pickup);
+            base.ReadPickupInfoBefore(pickup);
 
             if (pickup is FirearmPickup firearmPickup)
             {
