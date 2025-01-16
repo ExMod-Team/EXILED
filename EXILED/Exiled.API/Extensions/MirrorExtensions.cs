@@ -180,12 +180,17 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">Target to play.</param>
         /// <param name="position">Position to play on.</param>
-        /// <param name="itemType">Weapon' sound to play.</param>
+        /// <param name="itemType">Weapon's sound to play.</param>
         /// <param name="pitch">Speed of sound.</param>
         /// <param name="clipIndex">Index of clip.</param>
-        public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, float pitch = 1, int clipIndex = 0)
+        public static void PlayGunSound(this Player player, Vector3 position, FirearmType itemType, float pitch = 1, int clipIndex = 0)
         {
-            if (!itemType.IsWeapon(false) || itemType == ItemType.ParticleDisruptor)
+            if (itemType is FirearmType.ParticleDisruptor or FirearmType.None)
+                return;
+
+            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[itemType];
+
+            if (firearm == null)
                 return;
 
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
@@ -197,7 +202,6 @@ namespace Exiled.API.Extensions
                 player.Connection.Send(writer);
             }
 
-            Features.Items.Firearm firearm = Item.Get<Features.Items.Firearm>(Server.Host.Inventory.ServerAddItem(itemType, ItemAddReason.AdminCommand));
             firearm.BarrelAmmo = 1;
             firearm.BarrelMagazine.IsCocked = true;
             player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
@@ -205,13 +209,12 @@ namespace Exiled.API.Extensions
             if (!firearm.Base.TryGetModule(out AudioModule audioModule))
                 return;
 
-            Timing.CallDelayed(0.1f, () => // Seems like without this delay firearm is not 'ready'
+            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
             {
                 audioModule.SendRpc(player.ReferenceHub, writer =>
                     audioModule.ServerSend(writer, clipIndex, pitch, MixerChannel.Weapons, 12f, position, false));
 
                 player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
-                firearm.Destroy();
 
                 player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.None, player.ReferenceHub));
             });
