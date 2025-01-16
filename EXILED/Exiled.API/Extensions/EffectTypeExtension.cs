@@ -192,13 +192,6 @@ namespace Exiled.API.Extensions
         public static bool IsDisplayed(this EffectType effect) => effect.TryGetType(out Type type) && typeof(ISpectatorDataPlayerEffect).IsAssignableFrom(type);
 
         /// <summary>
-        /// Returns whether the provided <paramref name="effect"/> is displayed to spectators as text.
-        /// </summary>
-        /// <param name="effect">The <see cref="EffectType"/>.</param>
-        /// <returns>Whether the effect is displayed to spectators as text.</returns>
-        public static bool IsAvailableHoliday(this EffectType effect) => effect.TryGetType(out Type type) && type is IHolidayEffect holiday && holiday.IsAvailable;
-
-        /// <summary>
         /// Returns the <see cref="EffectCategory"/> of the given <paramref name="effect"/>.
         /// </summary>
         /// <param name="effect">The <see cref="EffectType"/>.</param>
