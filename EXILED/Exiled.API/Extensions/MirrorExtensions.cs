@@ -216,7 +216,7 @@ namespace Exiled.API.Extensions
 
                 player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
 
-                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.None, player.ReferenceHub));
+                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub));
             });
         }
 
