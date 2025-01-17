@@ -36,7 +36,7 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = -2;
             int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(IReloadUnloadValidatorModule), nameof(IReloadUnloadValidatorModule.ValidateReload)))) + offset;
 
-            Label skip = (Label)newInstructions[index + 4].operand;
+            Label skip = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
@@ -82,6 +82,11 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UnloadingWeaponEventArgs), nameof(UnloadingWeaponEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, skip),
                 });
+
+            offset = 2;
+            index = newInstructions.FindIndex(x => x.operand == (object)PropertyGetter(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.IsUnloading))) + offset;
+
+            newInstructions[index].labels.Add(skip);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
