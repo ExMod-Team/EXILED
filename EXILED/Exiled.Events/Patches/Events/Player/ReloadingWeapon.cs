@@ -22,9 +22,10 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patches <see cref="AnimatorReloaderModuleBase.ServerProcessCmd" />.
-    /// Adds the <see cref="Handlers.Player.ReloadingWeapon" /> event.
+    /// Adds the <see cref="Handlers.Player.ReloadingWeapon" /> and <see cref="Handlers.Player.UnloadingWeapon" />event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReloadingWeapon))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.UnloadingWeapon))]
     [HarmonyPatch(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.ServerProcessCmd))]
     internal static class ReloadingWeapon
     {
@@ -35,12 +36,13 @@ namespace Exiled.Events.Patches.Events.Player
             int offset = 2;
             int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(IReloadUnloadValidatorModule), nameof(IReloadUnloadValidatorModule.ValidateReload)))) + offset;
 
-            Label skip = (Label)newInstructions[index - 1].operand;
+            Label skip = (Label)newInstructions[index].operand;
+
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // player
+                    // this.Firearm
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.Firearm))),
 
@@ -54,6 +56,30 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (!ev.IsAllowed)
                     //    goto skip;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReloadingWeaponEventArgs), nameof(ReloadingWeaponEventArgs.IsAllowed))),
+                    new(OpCodes.Brfalse, skip),
+                });
+
+            offset = 2;
+            index = newInstructions.FindIndex(x => x.Calls(Method(typeof(IReloadUnloadValidatorModule), nameof(IReloadUnloadValidatorModule.ValidateUnload)))) + offset;
+
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    // this.Firearm
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.Firearm))),
+
+                    // UnloadingWeaponEventArgs ev = new(firearm)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UnloadingWeaponEventArgs))[0]),
+                    new(OpCodes.Dup),
+
+                    // Player.OnUnloadingWeapon(ev)
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUnloadingWeapon))),
+
+                    // if (!ev.IsAllowed)
+                    //    goto skip;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(UnloadingWeaponEventArgs), nameof(UnloadingWeaponEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, skip),
                 });
 

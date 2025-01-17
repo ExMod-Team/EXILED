@@ -375,6 +375,12 @@ namespace Exiled.API.Features
             Firearm.ItemTypeToFirearmInstance.Clear();
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
+
+#pragma warning disable CS0618
+            Scp559.CakeToWrapper.Clear();
+#pragma warning restore CS0618
+
+            Coffee.BaseToWrapper.Clear();
         }
     }
 }

@@ -26,10 +26,7 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.Events.EventArgs.Scp914;
     using Exiled.Loader;
 
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Pickups;
-
-    using MapGeneration.Distributors;
 
     using MEC;
 
@@ -651,8 +648,11 @@ namespace Exiled.CustomItems.API.Features
                 if (pickup == null)
                     continue;
 
-                if (spawnPoint is LockerSpawnPoint)
-                    pickup.IsLocked = true;
+                if (spawnPoint is LockerSpawnPoint { UseChamber: true } lockerSpawnPoint)
+                {
+                    Exiled.API.Features.Lockers.Locker? foundLocker = Exiled.API.Features.Lockers.Locker.Random(lockerSpawnPoint.Zone, lockerSpawnPoint.Type);
+                    foundLocker?.AddItem(pickup);
+                }
 
                 if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
                 {
