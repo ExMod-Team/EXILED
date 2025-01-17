@@ -33,17 +33,17 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 2;
+            int offset = -2;
             int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(IReloadUnloadValidatorModule), nameof(IReloadUnloadValidatorModule.ValidateReload)))) + offset;
 
-            Label skip = (Label)newInstructions[index].operand;
+            Label skip = (Label)newInstructions[index + 4].operand;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
                     // this.Firearm
-                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.Firearm))),
 
                     // ReloadingWeaponEventArgs ev = new(firearm)
@@ -67,7 +67,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // this.Firearm
-                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnimatorReloaderModuleBase), nameof(AnimatorReloaderModuleBase.Firearm))),
 
                     // UnloadingWeaponEventArgs ev = new(firearm)
