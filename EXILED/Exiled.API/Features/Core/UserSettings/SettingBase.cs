@@ -239,7 +239,7 @@ namespace Exiled.API.Features.Core.UserSettings
                 newSettings.AddRange(grouping);
             }
 
-            foreach (IGrouping<HeaderSetting, SettingBase> grouped2 in newSettings.GroupBy(s => s.Header))
+            foreach (IGrouping<HeaderSetting, SettingBase> grouped2 in newSettings.Concat(Settings).GroupBy(s => s.Header))
             {
                 if (grouped2.Key != null)
                     result.Add(grouped2.Key);
