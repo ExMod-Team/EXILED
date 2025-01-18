@@ -73,6 +73,11 @@ namespace Exiled.API.Features.Items
                 {
                     BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
                 }
+
+                if (module is HitscanHitregModuleBase hitregModule)
+                {
+                    HitscanHitregModule = hitregModule;
+                }
             }
         }
 
@@ -137,6 +142,11 @@ namespace Exiled.API.Features.Items
         public BarrelMagazine BarrelMagazine { get; }
 
         /// <summary>
+        /// Gets a primaty magazine for current firearm.
+        /// </summary>
+        public HitscanHitregModuleBase HitscanHitregModule { get; }
+
+        /// <summary>
         /// Gets or sets the amount of ammo in the firearm magazine.
         /// </summary>
         public int MagazineAmmo
@@ -175,6 +185,57 @@ namespace Exiled.API.Features.Items
             get => PrimaryMagazine.MaxAmmo;
             set => PrimaryMagazine.MaxAmmo = value;
         }
+
+        /// <summary>
+        /// Gets or sets the damage for this firearm.
+        /// </summary>
+        public float Damage
+        {
+            get => HitscanHitregModule.BaseDamage;
+            set => HitscanHitregModule.BaseDamage = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the inaccuracy for this firearm.
+        /// </summary>
+        public float Inaccuracy
+        {
+            get => HitscanHitregModule.BaseBulletInaccuracy;
+            set => HitscanHitregModule.BaseBulletInaccuracy = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the penetration for this firearm.
+        /// </summary>
+        public float Penetration
+        {
+            get => HitscanHitregModule.BasePenetration;
+            set => HitscanHitregModule.BasePenetration = value;
+        }
+
+        /// <summary>
+        /// Gets or sets how much fast the value drop over the distance.
+        /// </summary>
+        public float DamageFalloffDistance
+        {
+            get => HitscanHitregModule.DamageFalloffDistance;
+            set => HitscanHitregModule.DamageFalloffDistance = value;
+        }
+
+        /// <summary>
+        /// Gets the damage for this firearm with attachement modifier.
+        /// </summary>
+        public float EffectiveDamage => HitscanHitregModule.EffectiveDamage;
+
+        /// <summary>
+        /// Gets the inaccuracy for this firearm with attachement modifier.
+        /// </summary>
+        public float EffectiveInaccuracy => HitscanHitregModule.CurrentInaccuracy;
+
+        /// <summary>
+        /// Gets the penetration for this firearm with attachement modifier.
+        /// </summary>
+        public float EffectivePenetration => HitscanHitregModule.DisplayPenetration;
 
         /// <summary>
         /// Gets or sets the amount of max ammo in the firearm barrel.
