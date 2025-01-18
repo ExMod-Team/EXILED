@@ -220,7 +220,7 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            int ammodrop = ClipSize - ev.Firearm.MagazineAmmo;
+            int ammodrop = -(ClipSize - ev.Firearm.MagazineAmmo);
             ev.Firearm.MagazineAmmo = ClipSize;
             ev.Player.AddAmmo(ev.Firearm.AmmoType, (ushort)Mathf.Clamp(ammodrop, ushort.MinValue, ushort.MaxValue));
             OnReloaded(ev);
