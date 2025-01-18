@@ -62,7 +62,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse, stopMessage),
                 });
 
-            offset = 2;
+            offset = -2;
             index = newInstructions.FindIndex(x => x.Calls(Method(typeof(IReloadUnloadValidatorModule), nameof(IReloadUnloadValidatorModule.ValidateUnload)))) + offset;
 
             newInstructions.InsertRange(
