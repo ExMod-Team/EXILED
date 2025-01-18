@@ -227,26 +227,35 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
 
+            List<SettingBase> newSettings = new();
             List<SettingBase> result = new();
 
             // Group settings by headers
             foreach (IGrouping<HeaderSetting, SettingBase> grouping in grouped)
             {
                 if (grouping.Key != null)
-                    result.Add(grouping.Key);
+                    newSettings.Add(grouping.Key);
 
-                result.AddRange(grouping);
+                newSettings.AddRange(grouping);
             }
 
-            ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(result.Select(s => s.Base)).ToArray();
-            Settings.AddRange(result);
+            foreach (IGrouping<HeaderSetting, SettingBase> grouped2 in newSettings.GroupBy(s => s.Header))
+            {
+                if (grouped2.Key != null)
+                    result.Add(grouped2.Key);
+
+                result.AddRange(grouped2);
+            }
+
+            ServerSpecificSettingsSync.DefinedSettings = result.Select(s => s.Base).ToArray();
+            Settings.AddRange(newSettings);
 
             if (predicate == null)
                 SendToAll();
             else
                 SendToAll(predicate);
 
-            return result;
+            return newSettings;
         }
 
         /// <summary>
