@@ -8,6 +8,7 @@
 namespace Exiled.CustomItems.API.Features
 {
     using System;
+    using System.Linq;
 
     using Exiled.API.Extensions;
     using Exiled.API.Features;
@@ -18,7 +19,7 @@ namespace Exiled.CustomItems.API.Features
 
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
-
+    using InventorySystem.Items.Firearms.Modules;
     using UnityEngine;
 
     using Firearm = Exiled.API.Features.Items.Firearm;
@@ -207,17 +208,13 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Reloading weapon. Calling external reload event..");
-            OnReloading(ev);
-
-            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: External event ended. {ev.IsAllowed}");
-            if (!ev.IsAllowed)
+            if (ev.Firearm.Base.GetTotalStoredAmmo() >= ClipSize)
             {
-                Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: External event turned is allowed to false, returning.");
+                ev.IsAllowed = false;
                 return;
             }
 
-            Log.Debug($"{nameof(Name)}.{nameof(OnInternalReloading)}: Continuing with scp:sl reload..");
+            OnReloading(ev);
         }
 
         private void OnInternalReloaded(ReloadedWeaponEventArgs ev)
@@ -225,8 +222,9 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            int ammodrop = -(ClipSize - ev.Firearm.MagazineAmmo);
-            ev.Firearm.MagazineAmmo = ClipSize;
+            int ammoChambered = ((AutomaticActionModule)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
+            int ammodrop = -(ClipSize - ev.Firearm.MagazineAmmo) - ammoChambered;
+            ev.Firearm.MagazineAmmo = ClipSize - ammoChambered;
             ev.Player.AddAmmo(ev.Firearm.AmmoType, (ushort)Mathf.Clamp(ammodrop, ushort.MinValue, ushort.MaxValue));
             OnReloaded(ev);
         }
