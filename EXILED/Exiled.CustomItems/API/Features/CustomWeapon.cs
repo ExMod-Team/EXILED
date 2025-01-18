@@ -82,6 +82,8 @@ namespace Exiled.CustomItems.API.Features
                 return null;
             }
 
+            firearm.MagazineAmmo = ClipSize;
+
             pickup.Weight = Weight;
             pickup.Scale = Scale;
             if (previousOwner is not null)
@@ -99,6 +101,7 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
+                firearm.MagazineAmmo = ClipSize;
                 int ammo = firearm.MagazineAmmo;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
@@ -123,6 +126,8 @@ namespace Exiled.CustomItems.API.Features
             {
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
+
+                firearm.MagazineAmmo = ClipSize;
             }
 
             Log.Debug($"{nameof(Give)}: Adding {item.Serial} to tracker.");
