@@ -56,6 +56,8 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Gets or sets a value indicating how big of a clip the weapon will have.
         /// </summary>
+        /// <remarks>Warning for <see cref="ItemType.GunShotgun"/> and <see cref="ItemType.GunRevolver"/>.
+        /// They are not fully compatible with this features.</remarks>
         public virtual byte ClipSize { get; set; }
 
         /// <summary>
