@@ -225,7 +225,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
         /// </summary>
-        public bool Aiming => Base.TryGetModule(out LinearAdsModule module) && module.AdsTarget;
+        public bool Aiming => Base.TryGetModule(out IAdsModule module) && module.AdsTarget;
 
         /// <summary>
         /// Gets a value indicating whether the firearm's flashlight module is enabled.

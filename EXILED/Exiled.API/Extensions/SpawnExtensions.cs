@@ -97,7 +97,6 @@ namespace Exiled.API.Extensions
             SpawnLocationType.Inside173Bottom => "173_BOTTOM",
             SpawnLocationType.InsideLczArmory => "LCZ_ARMORY",
             SpawnLocationType.InsideHczArmory => "HCZ_ARMORY",
-            SpawnLocationType.InsideNukeArmory => "NUKE_ARMORY",
             SpawnLocationType.InsideSurfaceNuke => "SURFACE_NUKE",
             SpawnLocationType.Inside079Secondary => "079_SECOND",
             SpawnLocationType.Inside173Connector => "173_CONNECTOR",
