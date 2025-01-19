@@ -544,6 +544,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingNicknameEventArgs> ChangingNickname { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/>'s role is sent to a client.
+        /// </summary>
+        public static Event<SendingRoleEventArgs> SendingRole { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> sends valid command.
         /// </summary>
         public static Event<SendingValidCommandEventArgs> SendingValidCommand { get; set; } = new();
@@ -1212,6 +1217,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingNicknameEventArgs"/> instance.</param>
         public static void OnChangingNickname(ChangingNicknameEventArgs ev) => ChangingNickname.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/>'s role is sent to a client.
+        /// </summary>
+        /// <param name="ev">The <see cref="SendingRoleEventArgs"/> instance.</param>
+        public static void OnSendingRole(SendingRoleEventArgs ev) => SendingRole.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="Player"/> sends valid command.
