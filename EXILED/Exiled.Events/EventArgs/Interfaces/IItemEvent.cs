@@ -12,7 +12,7 @@ namespace Exiled.Events.EventArgs.Interfaces
     /// <summary>
     /// Event args used for all <see cref="API.Features.Items.Item" /> related events.
     /// </summary>
-    public interface IItemEvent : IExiledEvent
+    public interface IItemEvent : IPlayerEvent
     {
         /// <summary>
         /// Gets the <see cref="API.Features.Items.Item" /> triggering the event.

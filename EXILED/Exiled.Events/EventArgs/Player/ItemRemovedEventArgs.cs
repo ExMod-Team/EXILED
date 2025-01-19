@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information after removing an item from a player's inventory.
     /// </summary>
-    public class ItemRemovedEventArgs : IPlayerEvent, IItemEvent, IPickupEvent
+    public class ItemRemovedEventArgs : IItemEvent, IPickupEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ItemRemovedEventArgs"/> class.

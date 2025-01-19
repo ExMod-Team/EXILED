@@ -39,8 +39,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(SendingAdminChatMessageEventsArgs));
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloca_S) + offset;
+            int offset = 3;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Misc), nameof(Misc.SanitizeRichText)))) + offset;
 
             newInstructions.InsertRange(
                 index,

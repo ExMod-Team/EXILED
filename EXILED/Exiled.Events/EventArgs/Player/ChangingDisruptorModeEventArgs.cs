@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ChangingDisruptorModeEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -8,6 +8,7 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using Exiled.API.Enums;
+    using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
 
@@ -37,5 +38,8 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets a new disruptor's fire mode.
         /// </summary>
         public DisruptorMode NewMode { get; }
+
+        /// <inheritdoc />
+        public Player Player => Item.Owner;
     }
 }

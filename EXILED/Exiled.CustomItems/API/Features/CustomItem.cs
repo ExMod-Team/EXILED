@@ -26,10 +26,7 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.Events.EventArgs.Scp914;
     using Exiled.Loader;
 
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Pickups;
-
-    using MapGeneration.Distributors;
 
     using MEC;
 
@@ -651,8 +648,11 @@ namespace Exiled.CustomItems.API.Features
                 if (pickup == null)
                     continue;
 
-                if (spawnPoint is LockerSpawnPoint)
-                    pickup.IsLocked = true;
+                if (spawnPoint is LockerSpawnPoint { UseChamber: true } lockerSpawnPoint)
+                {
+                    Exiled.API.Features.Lockers.Locker? foundLocker = Exiled.API.Features.Lockers.Locker.Random(lockerSpawnPoint.Zone, lockerSpawnPoint.Type);
+                    foundLocker?.AddItem(pickup);
+                }
 
                 if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
                 {
@@ -698,7 +698,7 @@ namespace Exiled.CustomItems.API.Features
         {
             try
             {
-                Log.Debug($"{Name}.{nameof(Give)}: Item Serial: {item.Serial} Ammo: {(item is Firearm firearm ? firearm.Ammo : -1)}");
+                Log.Debug($"{Name}.{nameof(Give)}: Item Serial: {item.Serial} Ammo: {(item is Firearm firearm ? firearm.MagazineAmmo : -1)}");
 
                 player.AddItem(item);
 
@@ -834,7 +834,8 @@ namespace Exiled.CustomItems.API.Features
         protected virtual void SubscribeEvents()
         {
             Exiled.Events.Handlers.Player.Dying += OnInternalOwnerDying;
-            Exiled.Events.Handlers.Player.DroppingItem += OnInternalDropping;
+            Exiled.Events.Handlers.Player.DroppingItem += OnInternalDroppingItem;
+            Exiled.Events.Handlers.Player.DroppingAmmo += OnInternalDroppingAmmo;
             Exiled.Events.Handlers.Player.ChangingItem += OnInternalChanging;
             Exiled.Events.Handlers.Player.Escaping += OnInternalOwnerEscaping;
             Exiled.Events.Handlers.Player.PickingUpItem += OnInternalPickingUp;
@@ -852,7 +853,8 @@ namespace Exiled.CustomItems.API.Features
         protected virtual void UnsubscribeEvents()
         {
             Exiled.Events.Handlers.Player.Dying -= OnInternalOwnerDying;
-            Exiled.Events.Handlers.Player.DroppingItem -= OnInternalDropping;
+            Exiled.Events.Handlers.Player.DroppingItem -= OnInternalDroppingItem;
+            Exiled.Events.Handlers.Player.DroppingAmmo -= OnInternalDroppingAmmo;
             Exiled.Events.Handlers.Player.ChangingItem -= OnInternalChanging;
             Exiled.Events.Handlers.Player.Escaping -= OnInternalOwnerEscaping;
             Exiled.Events.Handlers.Player.PickingUpItem -= OnInternalPickingUp;
@@ -900,7 +902,24 @@ namespace Exiled.CustomItems.API.Features
         /// Handles tracking items when they are dropped by a player.
         /// </summary>
         /// <param name="ev"><see cref="DroppingItemEventArgs"/>.</param>
+        protected virtual void OnDroppingItem(DroppingItemEventArgs ev)
+        {
+        }
+
+        /// <summary>
+        /// Handles tracking items when they are dropped by a player.
+        /// </summary>
+        /// <param name="ev"><see cref="DroppingItemEventArgs"/>.</param>
+        [Obsolete("Use OnDroppingItem instead.", false)]
         protected virtual void OnDropping(DroppingItemEventArgs ev)
+        {
+        }
+
+        /// <summary>
+        /// Handles tracking when player requests drop of item which <see cref="ItemType"/> equals to the <see cref="ItemType"/> specified by <see cref="CustomItem"/>.
+        /// </summary>
+        /// <param name="ev"><see cref="DroppingAmmoEventArgs"/>.</param>
+        protected virtual void OnDroppingAmmo(DroppingAmmoEventArgs ev)
         {
         }
 
@@ -1061,12 +1080,25 @@ namespace Exiled.CustomItems.API.Features
             }
         }
 
-        private void OnInternalDropping(DroppingItemEventArgs ev)
+        private void OnInternalDroppingItem(DroppingItemEventArgs ev)
         {
             if (!Check(ev.Item))
                 return;
 
+            OnDroppingItem(ev);
+
+            // TODO: Don't forget to remove this with next update
+#pragma warning disable CS0618
             OnDropping(ev);
+#pragma warning restore CS0618
+        }
+
+        private void OnInternalDroppingAmmo(DroppingAmmoEventArgs ev)
+        {
+            if (Type != ev.ItemType)
+                return;
+
+            OnDroppingAmmo(ev);
         }
 
         private void OnInternalPickingUp(PickingUpItemEventArgs ev)

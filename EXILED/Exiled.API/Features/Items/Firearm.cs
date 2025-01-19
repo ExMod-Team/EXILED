@@ -13,12 +13,17 @@ namespace Exiled.API.Features.Items
 
     using CameraShaking;
     using Enums;
+
+    using Exiled.API.Features.Items.FirearmModules;
+    using Exiled.API.Features.Items.FirearmModules.Barrel;
+    using Exiled.API.Features.Items.FirearmModules.Primary;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
     using Extensions;
     using InventorySystem;
     using InventorySystem.Items;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
@@ -55,6 +60,20 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
+
+            foreach (ModuleBase module in Base.Modules)
+            {
+                if (module is IPrimaryAmmoContainerModule primaryAmmoModule)
+                {
+                    PrimaryMagazine ??= (PrimaryMagazine)Magazine.Get(primaryAmmoModule);
+                    continue;
+                }
+
+                if (module is IAmmoContainerModule ammoModule)
+                {
+                    BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
+                }
+            }
         }
 
         /// <summary>
@@ -105,23 +124,93 @@ namespace Exiled.API.Features.Items
         public new BaseFirearm Base { get; }
 
         /// <summary>
-        /// Gets or sets the amount of ammo in the firearm.
+        /// Gets a primaty magazine for current firearm.
         /// </summary>
-        public int Ammo
+        public PrimaryMagazine PrimaryMagazine { get; }
+
+        /// <summary>
+        /// Gets a barrel magazine for current firearm.
+        /// </summary>
+        /// <remarks>
+        /// <see langword="null"/> for Revolver and ParticleDisruptor.
+        /// </remarks>
+        public BarrelMagazine BarrelMagazine { get; }
+
+        /// <summary>
+        /// Gets or sets the amount of ammo in the firearm magazine.
+        /// </summary>
+        public int MagazineAmmo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoStored = value;
+            get => PrimaryMagazine.Ammo;
+            set => PrimaryMagazine.Ammo = value;
         }
+
+        /// <summary>
+        /// Gets or sets the amount of ammo in the firearm barrel.
+        /// </summary>
+        /// <remarks>
+        /// not working for Revolver and ParticleDisruptor.
+        /// </remarks>
+        public int BarrelAmmo
+        {
+            get => BarrelMagazine?.Ammo ?? 0;
+
+            set
+            {
+                if (BarrelMagazine != null)
+                    BarrelMagazine.Ammo = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total amount of ammo in the firearm.
+        /// </summary>
+        public int TotalAmmo => Base.GetTotalStoredAmmo();
 
         /// <summary>
         /// Gets or sets the max ammo for this firearm.
         /// </summary>
-        /// <remarks>Disruptor can't be used for MaxAmmo.</remarks>
-        public int MaxAmmo
+        public int MaxMagazineAmmo
         {
-            get => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule).AmmoMax;
-            set => (Base.Modules[Array.IndexOf(Base.Modules, typeof(MagazineModule))] as MagazineModule)._defaultCapacity = value; // Synced?
+            get => PrimaryMagazine.MaxAmmo;
+            set => PrimaryMagazine.MaxAmmo = value;
         }
+
+        /// <summary>
+        /// Gets or sets the amount of max ammo in the firearm barrel.
+        /// </summary>
+        /// <remarks>
+        /// not working for Revolver and ParticleDisruptor.
+        /// </remarks>
+        public int MaxBarrelAmmo
+        {
+            get => BarrelMagazine?.MaxAmmo ?? 0;
+
+            set
+            {
+                if (BarrelMagazine != null)
+                    BarrelMagazine.MaxAmmo = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total amount of ammo in the firearm.
+        /// </summary>
+        public int TotalMaxAmmo => Base.GetTotalMaxAmmo();
+
+        /// <summary>
+        /// Gets or sets a ammo drain per shoot.
+        /// </summary>
+        /// <remarks>
+        /// Always <see langword="1"/> by default.
+        /// Applied on a high layer nether basegame ammo controllers.
+        /// </remarks>
+        public int AmmoDrain { get; set; } = 1;
+
+        /// <summary>
+        /// Gets a value indicating whether the weapon is reloading.
+        /// </summary>
+        public bool IsReloading => Base.TryGetModule(out IReloaderModule module) && module.IsReloading;
 
         /// <summary>
         /// Gets the <see cref="Enums.FirearmType"/> of the firearm.
@@ -131,12 +220,12 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets the <see cref="Enums.AmmoType"/> of the firearm.
         /// </summary>
-        public AmmoType AmmoType => (Base.Modules.OfType<MagazineModule>().FirstOrDefault()?.AmmoType ?? ItemType.None).GetAmmoType();
+        public AmmoType AmmoType => PrimaryMagazine.AmmoType;
 
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
         /// </summary>
-        public bool Aiming => Base.Modules.OfType<LinearAdsModule>().FirstOrDefault()?.AdsTarget ?? false;
+        public bool Aiming => Base.TryGetModule(out LinearAdsModule module) && module.AdsTarget;
 
         /// <summary>
         /// Gets a value indicating whether the firearm's flashlight module is enabled.
@@ -156,7 +245,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether the firearm is automatic.
         /// </summary>
-        public bool IsAutomatic => Array.Exists(Base.Modules, x => x is AutomaticActionModule);
+        public bool IsAutomatic => BarrelMagazine is AutomaticBarrelMagazine;
 
         /// <summary>
         /// Gets the <see cref="Attachment"/>s of the firearm.
@@ -181,45 +270,19 @@ namespace Exiled.API.Features.Items
         public uint BaseCode => BaseCodesValue[FirearmType];
 
         /// <summary>
-        /// Gets or sets the fire rate of the firearm, if it is an automatic weapon.
-        /// </summary>
-        /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
-        /// <seealso cref="IsAutomatic"/>
-        public float FireRate
-        {
-            get => Base.Modules.OfType<AutomaticActionModule>().FirstOrDefault()?.BaseFireRate ?? 0f;
-            set
-            {
-                AutomaticActionModule module = Base.Modules.OfType<AutomaticActionModule>().FirstOrDefault();
-
-                if (module != null)
-                    module.BaseFireRate = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the recoil settings of the firearm, if it's an automatic weapon.
         /// </summary>
         /// <remarks>This property will not do anything if the firearm is not an automatic weapon.</remarks>
         /// <seealso cref="IsAutomatic"/>
         public RecoilSettings Recoil
         {
-            get => Base.Modules.OfType<RecoilPatternModule>().FirstOrDefault()?.BaseRecoil ?? default;
+            get => Base.TryGetModule(out RecoilPatternModule module) ? module.BaseRecoil : default;
             set
             {
-                RecoilPatternModule module = Base.Modules.OfType<RecoilPatternModule>().FirstOrDefault();
-
-                if (module != null)
+                if (Base.TryGetModule(out RecoilPatternModule module))
                     module.BaseRecoil = value;
             }
         }
-
-        /*
-        /// <summary>
-        /// Gets the firearm's <see cref="FirearmRecoilPattern"/>. Will be <see langword="null"/> for non-automatic weapons.
-        /// </summary>
-        public FirearmRecoilPattern RecoilPattern => Base is AutomaticFirearm auto ? auto._recoilPattern : null;
-        */
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="AttachmentIdentifier"/>[] which contains all available attachments for all firearms.
@@ -587,23 +650,15 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Reloads current <see cref="Firearm"/>.
         /// </summary>
-        /// <param name="emptyMagazine">Whether empty magazine should be loaded.</param>
-        public void Reload(bool emptyMagazine = false)
+        /// <remarks>
+        /// For specific reloading logic you also can use <see cref="NormalMagazine"/> for avaible weapons.
+        /// </remarks>
+        public void Reload()
         {
-            MagazineModule magazineModule = Base.Modules.OfType<MagazineModule>().FirstOrDefault();
-
-            if (magazineModule == null)
-                return;
-
-            magazineModule.ServerRemoveMagazine();
-
-            Timing.CallDelayed(0.1f, () =>
+            if (Base.TryGetModule(out AnimatorReloaderModuleBase module))
             {
-                if (emptyMagazine)
-                    magazineModule.ServerInsertEmptyMagazine();
-                else
-                    magazineModule.ServerInsertMagazine();
-            });
+                module.StartReloading();
+            }
         }
 
         /// <summary>
@@ -614,7 +669,6 @@ namespace Exiled.API.Features.Items
         {
             Firearm cloneableItem = new(Type)
             {
-                Ammo = Ammo,
             };
 
             // TODO Not finish
@@ -637,19 +691,24 @@ namespace Exiled.API.Features.Items
         /// <param name="newOwner">new <see cref="Firearm"/> owner.</param>
         internal override void ChangeOwner(Player oldOwner, Player newOwner)
         {
+            Base.InstantiationStatus = newOwner == Server.Host ? AutosyncInstantiationStatus.SimulatedInstance : AutosyncInstantiationStatus.InventoryInstance;
             Base.Owner = newOwner.ReferenceHub;
             Base._footprintCacheSet = false;
+            foreach (ModuleBase module in Base.Modules)
+            {
+                module.OnAdded();
+            }
         }
 
         /// <inheritdoc/>
-        internal override void ReadPickupInfo(Pickup pickup)
+        internal override void ReadPickupInfoBefore(Pickup pickup)
         {
-            base.ReadPickupInfo(pickup);
+            base.ReadPickupInfoBefore(pickup);
 
             if (pickup is FirearmPickup firearmPickup)
             {
-                // TODO If synced
-                // MaxAmmo = firearmPickup.MaxAmmo;
+                PrimaryMagazine.MaxAmmo = firearmPickup.MaxAmmo;
+                AmmoDrain = firearmPickup.AmmoDrain;
             }
         }
     }

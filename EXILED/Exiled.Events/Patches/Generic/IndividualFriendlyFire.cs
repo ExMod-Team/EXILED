@@ -99,7 +99,7 @@ namespace Exiled.Events.Patches.Generic
 
             // Only check friendlyFire if the FootPrint hasn't changed (Fix for Grenade not dealing damage because it's from a dead player)
             if (!attackerFootprint.CompareLife(new Footprint(attackerFootprint.Hub)))
-                return false;
+                return HitboxIdentity.IsDamageable(attackerFootprint.Role, victimHub.roleManager.CurrentRole.RoleTypeId);
 
             // Check if attackerFootprint.Hub or victimHub is null and log debug information
             if (attackerFootprint.Hub is null || victimHub is null)

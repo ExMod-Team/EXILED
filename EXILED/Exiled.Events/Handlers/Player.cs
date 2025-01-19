@@ -559,6 +559,16 @@ namespace Exiled.Events.Handlers
         public static Event<SendingRoleEventArgs> SendingRole { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> sends valid command.
+        /// </summary>
+        public static Event<SendingValidCommandEventArgs> SendingValidCommand { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> sends valid command.
+        /// </summary>
+        public static Event<SentValidCommandEventArgs> SentValidCommand { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a player's emotion changed.
         /// </summary>
         public static Event<ChangingEmotionEventArgs> ChangingEmotion { get; set; } = new();
@@ -569,9 +579,19 @@ namespace Exiled.Events.Handlers
         public static Event<ChangedEmotionEventArgs> ChangedEmotion { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/>'s rotates the revolver.
+        /// </summary>
+        public static Event<RotatingRevolverEventArgs> RotatingRevolver { get; set; } = new();
+
+        /// <summary>
         /// Invoked before disruptor's mode is changed.
         /// </summary>
         public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before player interacts with coffee cup.
+        /// </summary>
+        public static Event<DrinkingCoffeeEventArgs> DrinkingCoffee { get; set; } = new();
 
         /// <summary>
         /// Called before a player's emotion changed.
@@ -1040,7 +1060,7 @@ namespace Exiled.Events.Handlers
         {
             ItemAddedEventArgs ev = new(referenceHub, itemBase, pickupBase);
 
-            ev.Item.ReadPickupInfo(ev.Pickup);
+            ev.Item.ReadPickupInfoAfter(ev.Pickup);
 
             ev.Player.ItemsValue.Add(ev.Item);
 
@@ -1227,38 +1247,39 @@ namespace Exiled.Events.Handlers
         public static void OnSendingRole(SendingRoleEventArgs ev) => SendingRole.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before a <see cref="Player"/> sends valid command.
+        /// </summary>
+        /// <param name="ev">The <see cref="SendingValidCommandEventArgs"/> instance.</param>
+        public static void OnSendingValidCommand(SendingValidCommandEventArgs ev) => SendingValidCommand.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="Player"/> sends valid command.
+        /// </summary>
+        /// <param name="ev">The <see cref="SentValidCommandEventArgs"/> instance.</param>
+        public static void OnSentValidCommand(SentValidCommandEventArgs ev) => SentValidCommand.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/>'s rotates the revolver.
+        /// </summary>
+        /// <param name="ev">The <see cref="RotatingRevolverEventArgs"/> instance.</param>
+        public static void OnRotatingRevolver(RotatingRevolverEventArgs ev) => RotatingRevolver.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before disruptor's mode is changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
         public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before player interacts with coffee cup.
+        /// </summary>
+        /// <param name="ev">The <see cref="DrinkingCoffeeEventArgs"/> instance.</param>
+        public static void OnDrinkingCoffee(DrinkingCoffeeEventArgs ev) => DrinkingCoffee.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before pre-authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
-        /// <param name="userId"><inheritdoc cref="PreAuthenticatingEventArgs.UserId"/></param>
-        /// <param name="ipAddress"><inheritdoc cref="PreAuthenticatingEventArgs.IpAddress"/></param>
-        /// <param name="expiration"><inheritdoc cref="PreAuthenticatingEventArgs.Expiration"/></param>
-        /// <param name="flags"><inheritdoc cref="PreAuthenticatingEventArgs.Flags"/></param>
-        /// <param name="country"><inheritdoc cref="PreAuthenticatingEventArgs.Country"/></param>
-        /// <param name="signature"><inheritdoc cref="PreAuthenticatingEventArgs.Signature"/></param>
-        /// <param name="request"><inheritdoc cref="PreAuthenticatingEventArgs.Request"/></param>
-        /// <param name="readerStartPosition"><inheritdoc cref="PreAuthenticatingEventArgs.ReaderStartPosition"/></param>
-        /// <returns>Returns the <see cref="PreauthCancellationData"/> instance.</returns>
-        [PluginEvent(ServerEventType.PlayerPreauth)]
-        public PreauthCancellationData OnPreAuthenticating(
-            string userId,
-            string ipAddress,
-            long expiration,
-            CentralAuthPreauthFlags flags,
-            string country,
-            byte[] signature,
-            LiteNetLib.ConnectionRequest request,
-            int readerStartPosition)
-        {
-            PreAuthenticatingEventArgs ev = new(userId, ipAddress, expiration, flags, country, signature, request, readerStartPosition);
-            PreAuthenticating.InvokeSafely(ev);
-
-            return ev.CachedPreauthData;
-        }
+        /// <param name="ev"><The cref="PreAuthenticatingEventArgs"/> instance.</param>
+        public static void OnPreAuthenticating(PreAuthenticatingEventArgs ev) => PreAuthenticating.InvokeSafely(ev);
     }
 }
