@@ -10,8 +10,12 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
     using System.Reflection;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Pools;
     using HarmonyLib;
+
+    using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.Ragdolls;
@@ -281,6 +285,24 @@ namespace Exiled.API.Features.Roles
 
             StaminaUsageMultiplier = 1f;
             StaminaRegenMultiplier = 1f;
+        }
+
+        /// <inheritdoc/>
+        internal override bool CheckAppearanceCompatibility(RoleTypeId newAppearance)
+        {
+            if (!RoleExtensions.TryGetRoleBase(newAppearance, out PlayerRoleBase roleBase))
+                return false;
+
+            return roleBase is FpcStandardRoleBase;
+        }
+
+        /// <inheritdoc/>
+        internal override void SendAppearanceSpawnMessage(NetworkWriter writer, PlayerRoleBase basicRole)
+        {
+            FpcStandardRoleBase fpcRole = (FpcStandardRoleBase)basicRole;
+            fpcRole.FpcModule.MouseLook.GetSyncValues(0, out ushort syncH, out ushort _);
+            writer.WriteRelativePosition(new RelativePosition(fpcRole._hubTransform.position));
+            writer.WriteUShort(syncH);
         }
     }
 }
