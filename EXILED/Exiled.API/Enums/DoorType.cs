@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Enums
 {
+    using System;
+
     using Exiled.API.Features.Doors;
     using Interactables.Interobjects;
 
@@ -200,6 +202,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the NUKE_ARMORY door.
         /// </summary>
+        [Obsolete("This Door has been removed from the game.")]
         NukeArmory,
 
         /// <summary>
