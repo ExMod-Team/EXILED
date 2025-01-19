@@ -85,7 +85,8 @@ namespace Exiled.CustomItems.API.Features
                 return null;
             }
 
-            firearm.MagazineAmmo = ClipSize;
+            if (ClipSize > 0)
+                firearm.MagazineAmmo = ClipSize;
 
             pickup.Weight = Weight;
             pickup.Scale = Scale;
@@ -104,7 +105,8 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
-                firearm.MagazineAmmo = ClipSize;
+                if (ClipSize > 0)
+                    firearm.MagazineAmmo = ClipSize;
                 int ammo = firearm.MagazineAmmo;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
@@ -130,7 +132,8 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
-                firearm.MagazineAmmo = ClipSize;
+                if (ClipSize > 0)
+                    firearm.MagazineAmmo = ClipSize;
             }
 
             Log.Debug($"{nameof(Give)}: Adding {item.Serial} to tracker.");
@@ -210,7 +213,7 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            if (ev.Firearm.Base.GetTotalStoredAmmo() >= ClipSize)
+            if (ClipSize > 0 && ev.Firearm.Base.GetTotalStoredAmmo() >= ClipSize)
             {
                 ev.IsAllowed = false;
                 return;
@@ -224,10 +227,14 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            int ammoChambered = ((AutomaticActionModule)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
-            int ammodrop = -(ClipSize - ev.Firearm.MagazineAmmo) - ammoChambered;
-            ev.Firearm.MagazineAmmo = ClipSize - ammoChambered;
-            ev.Player.AddAmmo(ev.Firearm.AmmoType, (ushort)Mathf.Clamp(ammodrop, ushort.MinValue, ushort.MaxValue));
+            if (ClipSize > 0)
+            {
+                int ammoChambered = ((AutomaticActionModule)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
+                int ammodrop = -(ClipSize - ev.Firearm.MagazineAmmo) - ammoChambered;
+                ev.Firearm.MagazineAmmo = ClipSize - ammoChambered;
+                ev.Player.AddAmmo(ev.Firearm.AmmoType, (ushort)Mathf.Clamp(ammodrop, ushort.MinValue, ushort.MaxValue));
+            }
+
             OnReloaded(ev);
         }
 
