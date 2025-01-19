@@ -28,43 +28,27 @@ namespace Exiled.API.Features.Toys
     /// </summary>
     public class ShootingTargetToy : AdminToy, IWrapper<ShootingTarget>
     {
-        private static readonly Dictionary<string, ShootingTargetType> TypeLookup = new()
-        {
-            { "sportTargetPrefab", ShootingTargetType.Sport },
-            { "dboyTargetPrefab", ShootingTargetType.ClassD },
-            { "binaryTargetPrefab", ShootingTargetType.Binary },
-        };
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ShootingTargetToy"/> class.
         /// </summary>
         /// <param name="target">The base <see cref="ShootingTarget"/> class.</param>
-        internal ShootingTargetToy(ShootingTarget target)
-            : base(target, AdminToyType.ShootingTarget)
+        /// <param name="adminToyType">The base <see cref="AdminToyType"/> class.</param>
+        internal ShootingTargetToy(ShootingTarget target, AdminToyType adminToyType)
+            : base(target, adminToyType)
         {
             Base = target;
-            Type = TypeLookup.TryGetValue(Base.gameObject.name.Substring(0, Base.gameObject.name.Length - 7), out ShootingTargetType type) ? type : ShootingTargetType.Unknown;
+            Type = adminToyType;
         }
-
-        /// <summary>
-        /// Gets the prefab for Sport Shooting Target.
-        /// </summary>
-        public static ShootingTarget SportShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.SportTarget);
-
-        /// <summary>
-        /// Gets the prefab for DBoy Shooting Target.
-        /// </summary>
-        public static ShootingTarget DboyShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.DBoyTarget);
-
-        /// <summary>
-        /// Gets the prefab for Binary Shooting Target.
-        /// </summary>
-        public static ShootingTarget BinaryShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.BinaryTarget);
 
         /// <summary>
         /// Gets the base-game <see cref="ShootingTarget"/> for this target.
         /// </summary>
         public ShootingTarget Base { get; }
+
+        /// <summary>
+        /// Gets the <see cref="AdminToyType"/> for this target.
+        /// </summary>
+        public AdminToyType Type { get; }
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the target.
@@ -156,66 +140,6 @@ namespace Exiled.API.Features.Toys
         {
             get => Base.Network_syncMode;
             set => Base.Network_syncMode = value;
-        }
-
-        /// <summary>
-        /// Gets the type of the target.
-        /// </summary>
-        public ShootingTargetType Type { get; }
-
-        /// <summary>
-        /// Creates a new <see cref="ShootingTargetToy"/>.
-        /// </summary>
-        /// <param name="type">The <see cref="ShootingTargetType"/> of the <see cref="ShootingTargetToy"/>.</param>
-        /// <param name="position">The position of the <see cref="ShootingTargetToy"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="ShootingTargetToy"/>.</param>
-        /// <param name="scale">The scale of the <see cref="ShootingTargetToy"/>.</param>
-        /// <param name="spawn">Whether the <see cref="ShootingTargetToy"/> should be initially spawned.</param>
-        /// <returns>The new <see cref="ShootingTargetToy"/>.</returns>
-        public static ShootingTargetToy Create(ShootingTargetType type, Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool spawn = true)
-        {
-            ShootingTargetToy shootingTargetToy;
-
-            switch (type)
-            {
-                case ShootingTargetType.ClassD:
-                    {
-                        shootingTargetToy = new(Object.Instantiate(DboyShootingTargetPrefab));
-                        break;
-                    }
-
-                case ShootingTargetType.Binary:
-                    {
-                        shootingTargetToy = new(Object.Instantiate(BinaryShootingTargetPrefab));
-                        break;
-                    }
-
-                default:
-                    {
-                        shootingTargetToy = new(Object.Instantiate(SportShootingTargetPrefab));
-                        break;
-                    }
-            }
-
-            shootingTargetToy.Position = position ?? Vector3.zero;
-            shootingTargetToy.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            shootingTargetToy.Scale = scale ?? Vector3.one;
-
-            if (spawn)
-                shootingTargetToy.Spawn();
-
-            return shootingTargetToy;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ShootingTargetToy"/> belonging to the <see cref="ShootingTarget"/>.
-        /// </summary>
-        /// <param name="shootingTarget">The <see cref="ShootingTarget"/> instance.</param>
-        /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
-        public static ShootingTargetToy Get(ShootingTarget shootingTarget)
-        {
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
-            return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
         }
 
         /// <summary>
