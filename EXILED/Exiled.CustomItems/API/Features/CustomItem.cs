@@ -19,6 +19,7 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features.Attributes;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pools;
+    using Exiled.API.Features.Roles;
     using Exiled.API.Features.Spawn;
     using Exiled.API.Interfaces;
     using Exiled.CustomItems.API.EventArgs;
@@ -1001,12 +1002,6 @@ namespace Exiled.CustomItems.API.Features
                     continue;
 
                 OnOwnerChangingRole(new OwnerChangingRoleEventArgs(item.Base, ev));
-
-                TrackedSerials.Remove(item.Serial);
-
-                ev.Player.RemoveItem(item);
-
-                Spawn(ev.Player, item, ev.Player);
             }
 
             MirrorExtensions.ResyncSyncVar(ev.Player.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_myNickSync));
@@ -1023,12 +1018,6 @@ namespace Exiled.CustomItems.API.Features
 
                 if (!ev.IsAllowed)
                     continue;
-
-                ev.Player.RemoveItem(item);
-
-                TrackedSerials.Remove(item.Serial);
-
-                Spawn(ev.Player, item, ev.Player);
 
                 MirrorExtensions.ResyncSyncVar(ev.Player.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_myNickSync));
             }
@@ -1048,12 +1037,6 @@ namespace Exiled.CustomItems.API.Features
                 if (!ev.IsAllowed)
                     continue;
 
-                ev.Player.RemoveItem(item);
-
-                TrackedSerials.Remove(item.Serial);
-
-                Timing.CallDelayed(1.5f, () => Spawn(ev.Player.Position, item, null));
-
                 MirrorExtensions.ResyncSyncVar(ev.Player.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_myNickSync));
             }
 
@@ -1071,12 +1054,6 @@ namespace Exiled.CustomItems.API.Features
 
                 if (!ev.IsAllowed)
                     continue;
-
-                ev.Target.RemoveItem(item);
-
-                TrackedSerials.Remove(item.Serial);
-
-                Spawn(ev.Target, item, ev.Target);
             }
         }
 
@@ -1130,7 +1107,7 @@ namespace Exiled.CustomItems.API.Features
 
             if (ShouldMessageOnGban)
             {
-                foreach (Player player in Player.Get(RoleTypeId.Spectator))
+                foreach (Player player in Player.Get(x => x.Role is SpectatorRole))
                     Timing.CallDelayed(0.5f, () => player.SendFakeSyncVar(ev.Player.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_displayName), $"{ev.Player.Nickname} (CustomItem: {Name})"));
             }
 
