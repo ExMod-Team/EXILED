@@ -44,5 +44,23 @@ namespace Exiled.API.Enums
         /// Used by <see cref="ItemType.SCP2176"/>.
         /// </summary>
         Scp2176,
+
+        /// <summary>
+        /// Coal.
+        /// Used by <see cref="ItemType.Coal"/>.
+        /// </summary>
+        Coal,
+
+        /// <summary>
+        /// SpecialCoal.
+        /// Used by <see cref="ItemType.SpecialCoal"/>.
+        /// </summary>
+        SpecialCoal,
+
+        /// <summary>
+        /// Snowball.
+        /// Used by <see cref="ItemType.Snowball"/>.
+        /// </summary>
+        Snowball,
     }
 }
