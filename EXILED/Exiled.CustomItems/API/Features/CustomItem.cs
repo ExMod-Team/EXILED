@@ -593,11 +593,6 @@ namespace Exiled.CustomItems.API.Features
                     Exiled.API.Features.Lockers.Locker? foundLocker = Exiled.API.Features.Lockers.Locker.Random(lockerSpawnPoint.Zone, lockerSpawnPoint.Type);
                     foundLocker?.AddItem(pickup);
                 }
-
-                if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
-                {
-                    // set MaxAmmo if synced TODO
-                }
             }
 
             return spawned;
