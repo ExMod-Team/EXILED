@@ -10,9 +10,9 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features;
     using Exiled.API.Features.Pools;
     using HarmonyLib;
+    using MEC;
 
     using static HarmonyLib.AccessTools;
 
@@ -32,8 +32,8 @@ namespace Exiled.Events.Patches.Events.Server
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // Handlers.Server.OnWaitingForPlayers();
-                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnWaitingForPlayers))),
+                // WaitingForPlayers.HelpMethod();
+                new(OpCodes.Call, Method(typeof(WaitingForPlayers), nameof(WaitingForPlayers.HelpMethod))),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -41,5 +41,7 @@ namespace Exiled.Events.Patches.Events.Server
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
+
+        private static void HelpMethod() => Timing.CallDelayed(Timing.WaitForOneFrame, Handlers.Server.OnWaitingForPlayers);
     }
 }
