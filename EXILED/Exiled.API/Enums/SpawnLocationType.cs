@@ -81,6 +81,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Inside the Nuke armory.
         /// </summary>
+        [Obsolete("This Location has been removed from the game.")]
         InsideNukeArmory,
 
         /// <summary>

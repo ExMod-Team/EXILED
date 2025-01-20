@@ -254,5 +254,20 @@ namespace Exiled.API.Enums
         /// Damage caused by the marshmallow man.
         /// </summary>
         Marshmallow,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Flamingo"/> ,<see cref="RoleTypeId.AlphaFlamingo"/> or <see cref="RoleTypeId.ZombieFlamingo"/>.
+        /// </summary>
+        Scp1507,
+
+        /// <summary>
+        /// Damage caused by Scp956 the pinata.
+        /// </summary>
+        Scp956,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.Snowball"/>.
+        /// </summary>
+        SnowBall,
     }
 }

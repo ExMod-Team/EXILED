@@ -114,6 +114,15 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets or sets the type of shadows the light casts.
+        /// </summary>
+        public LightShadows ShadowType
+        {
+            get => Base.NetworkShadowType;
+            set => Base.NetworkShadowType = value;
+        }
+
+        /// <summary>
         /// Creates a new <see cref="Light"/>.
         /// </summary>
         /// <param name="position">The position of the <see cref="Light"/>.</param>
