@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="CreatedAmnesticCloudEventArgs.cs" company="ExMod Team">
+// <copyright file="UpdatedCloudStateEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -18,20 +18,23 @@ namespace Exiled.Events.EventArgs.Scp939
     using Scp939Role = API.Features.Roles.Scp939Role;
 
     /// <summary>
-    /// Contains all information after SCP-939 fully created target <see cref="PlacedAmnesticCloudEventArgs"/>.
+    /// Contains all information after <see cref="PlacedAmnesticCloudEventArgs"/> got updated state.
     /// </summary>
-    public class CreatedAmnesticCloudEventArgs : IScp939Event, IHazardEvent
+    public class UpdatedCloudStateEventArgs : IScp939Event, IHazardEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreatedAmnesticCloudEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="UpdatedCloudStateEventArgs" /> class.
         /// </summary>
         /// <param name="hub">
         /// <inheritdoc cref="ReferenceHub" />
         /// </param>
-        /// <param name="cloud">
-        /// <inheritdoc cref="PlayerRoles.PlayableScps.Scp939.Scp939AmnesticCloudInstance" />
+        /// <param name="cloudState">
+        /// <inheritdoc cref="Scp939AmnesticCloudInstance.CloudState" />
         /// </param>
-        public CreatedAmnesticCloudEventArgs(ReferenceHub hub, Scp939AmnesticCloudInstance cloud)
+        /// <param name="cloud">
+        /// <inheritdoc cref="Scp939AmnesticCloudInstance" />
+        /// </param>
+        public UpdatedCloudStateEventArgs(ReferenceHub hub, Scp939AmnesticCloudInstance.CloudState cloudState, Scp939AmnesticCloudInstance cloud)
         {
             Player = Player.Get(hub);
             AmnesticCloud = Hazard.Get<AmnesticCloudHazard>(cloud);
@@ -45,6 +48,11 @@ namespace Exiled.Events.EventArgs.Scp939
         /// Gets the <see cref="AmnesticCloudHazard"/> instance.
         /// </summary>
         public AmnesticCloudHazard AmnesticCloud { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp939AmnesticCloudInstance.CloudState"/>.
+        /// </summary>
+        public Scp939AmnesticCloudInstance.CloudState NewState { get; }
 
         /// <inheritdoc/>
         public Scp939Role Scp939 { get; }
