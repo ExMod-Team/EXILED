@@ -234,9 +234,11 @@ namespace Exiled.API.Extensions
             ItemType.GrenadeHE => ProjectileType.FragGrenade,
             ItemType.SCP018 => ProjectileType.Scp018,
             ItemType.SCP2176 => ProjectileType.Scp2176,
+#pragma warning disable CS0618
             ItemType.Coal => ProjectileType.Coal,
             ItemType.SpecialCoal => ProjectileType.SpecialCoal,
             ItemType.Snowball => ProjectileType.Snowball,
+#pragma warning restore CS0618
             _ => ProjectileType.None,
         };
 
@@ -251,9 +253,11 @@ namespace Exiled.API.Extensions
             ProjectileType.Scp018 => ItemType.SCP018,
             ProjectileType.FragGrenade => ItemType.GrenadeHE,
             ProjectileType.Scp2176 => ItemType.SCP2176,
+#pragma warning disable CS0618
             ProjectileType.Coal => ItemType.Coal,
             ProjectileType.SpecialCoal => ItemType.SpecialCoal,
             ProjectileType.Snowball => ItemType.Snowball,
+#pragma warning restore CS0618
             _ => ItemType.None,
         };
 

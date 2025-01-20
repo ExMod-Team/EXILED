@@ -20,6 +20,7 @@ namespace Exiled.API.Features
     /// <summary>
     /// A wrapper for coffee cup.
     /// </summary>
+    [Obsolete("Never available (for now).")]
     public class Coffee : IWrapper<BaseCoffee>
     {
         /// <summary>
