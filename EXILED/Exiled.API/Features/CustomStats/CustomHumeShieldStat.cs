@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="CustomHumeShieldStat.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -45,7 +45,7 @@ namespace Exiled.API.Features.CustomStats
             if (!NetworkServer.active)
                 return;
 
-            if (_valueDirty)
+            if (ValueDirty)
             {
                 new SyncedStatMessages.StatMessage()
                 {
@@ -53,7 +53,7 @@ namespace Exiled.API.Features.CustomStats
                     SyncedValue = CurValue,
                 }.SendToHubsConditionally(CanReceive);
                 _lastSent = CurValue;
-                _valueDirty = false;
+                ValueDirty = false;
             }
 
             if (ShieldRegeneration == 0)

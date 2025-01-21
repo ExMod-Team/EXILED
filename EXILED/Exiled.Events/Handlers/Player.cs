@@ -17,10 +17,6 @@ namespace Exiled.Events.Handlers
 
     using Exiled.Events.Features;
 
-    using PluginAPI.Core.Attributes;
-    using PluginAPI.Enums;
-    using PluginAPI.Events;
-
     /// <summary>
     /// Player related events.
     /// </summary>

@@ -17,12 +17,11 @@ namespace Exiled.Events.Patches.Events.Player
     using Handlers;
 
     using HarmonyLib;
-    using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="ReservedSlot.HasReservedSlot(string, out bool)" />.
+    /// Patches <see cref="ReservedSlot.HasReservedSlot(string)" />.
     /// Adds the <see cref="Player.ReservedSlot" /> event.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.ReservedSlot))]
@@ -106,7 +105,7 @@ namespace Exiled.Events.Patches.Events.Player
 
         private static void CallNwEvent(string userId, bool hasReservedSlot)
         {
-            EventManager.ExecuteEvent(new PlayerCheckReservedSlotEvent(userId, hasReservedSlot));
+            // EventManager.ExecuteEvent(new PlayerCheckReservedSlotEvent(userId, hasReservedSlot));
         }
     }
 }

@@ -22,7 +22,6 @@ namespace Exiled.Events.Patches.Events.Scp330
     using Interactables.Interobjects;
     using InventorySystem;
     using InventorySystem.Items.Usables.Scp330;
-    using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
@@ -106,7 +105,7 @@ namespace Exiled.Events.Patches.Events.Scp330
              */
             offset = 1;
             index = newInstructions.FindLastIndex(
-                instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.PlaySound)))) + offset;
+                instruction => instruction.Calls(PropertyGetter(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingScp330EventArgs), nameof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingScp330EventArgs.PlaySound)))) + offset;
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -132,7 +131,7 @@ namespace Exiled.Events.Patches.Events.Scp330
 
             offset = 2;
             index = newInstructions.FindLastIndex(
-                instruction => instruction.Calls(PropertyGetter(typeof(PlayerInteractScp330Event), nameof(PlayerInteractScp330Event.AllowPunishment)))) + offset;
+                instruction => instruction.Calls(PropertyGetter(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingScp330EventArgs), nameof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingScp330EventArgs.AllowPunishment)))) + offset;
 
             // remove `uses >= 2` check, to override that by ev.ShouldSever
             newInstructions.RemoveRange(index, 3);

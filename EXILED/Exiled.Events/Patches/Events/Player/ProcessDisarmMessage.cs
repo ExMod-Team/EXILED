@@ -21,8 +21,6 @@ namespace Exiled.Events.Patches.Events.Player
 
     using InventorySystem.Disarming;
 
-    using PluginAPI.Events;
-
     using static HarmonyLib.AccessTools;
 
     /// <summary>
@@ -42,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             int offset = -3;
             int index = newInstructions.FindIndex(
-                instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerRemoveHandcuffsEvent))[0]) + offset;
+                instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerCuffingEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -98,7 +96,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             offset = -3;
             index = newInstructions.FindLastIndex(
-                instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerHandcuffEvent))[0]) + offset;
+                instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerCuffingEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,

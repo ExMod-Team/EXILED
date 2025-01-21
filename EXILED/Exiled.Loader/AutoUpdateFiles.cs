@@ -18,5 +18,10 @@ namespace Exiled.Loader
         /// Gets which SCP: SL version generated Exiled.
         /// </summary>
         public static readonly Version RequiredSCPSLVersion = new(14, 0, 0, 2);
+
+        /// <summary>
+        /// Gets which Lab API version generated Exiled.
+        /// </summary>
+        public static readonly Version RequiredLabAPIVersion = new(0, 0, 0, 0);
     }
 }

@@ -44,8 +44,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public Interactables.Interobjects.CheckpointDoor.CheckpointSequenceStage CurrentStage
         {
-            get => Base._currentSequence;
-            set => Base._currentSequence = value;
+            get => Base.CurrentSequence;
+            set => Base.CurrentSequence = value;
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public float MainTimer
         {
-            get => Base._mainTimer;
-            set => Base._mainTimer = value;
+            get => Base.MainTimer;
+            set => Base.MainTimer = value;
         }
 
         /// <summary>
@@ -62,8 +62,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public float WaitTime
         {
-            get => Base._waitTime;
-            set => Base._waitTime = value;
+            get => Base.WaitTime;
+            set => Base.WaitTime = value;
         }
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public float WarningTime
         {
-            get => Base._warningTime;
-            set => Base._warningTime = value;
+            get => Base.WarningTime;
+            set => Base.WarningTime = value;
         }
 
         /// <inheritdoc/>

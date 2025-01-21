@@ -216,8 +216,8 @@ namespace Exiled.API.Features
         /// </summary>
         public Quaternion Rotation
         {
-            get => Base._cameraAnchor.rotation;
-            set => Base._cameraAnchor.rotation = value;
+            get => Base.CameraAnchor.rotation;
+            set => Base.CameraAnchor.rotation = value;
         }
 
         /// <summary>

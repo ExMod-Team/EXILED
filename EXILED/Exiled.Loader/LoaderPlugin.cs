@@ -11,32 +11,55 @@ namespace Exiled.Loader
     using System.IO;
     using System.Reflection;
 
-    using MEC;
+    using LabApi.Loader.Features.Plugins;
 
-    using PluginAPI.Core.Attributes;
+    using MEC;
 
     using Log = API.Features.Log;
     using Paths = API.Features.Paths;
 
     /// <summary>
-    /// The Northwood PluginAPI Plugin class for the EXILED Loader.
+    /// The Northwood LabAPI Plugin class for the EXILED Loader.
     /// </summary>
-    public class LoaderPlugin
+    public class LoaderPlugin : Plugin<Config>
     {
 #pragma warning disable SA1401
         /// <summary>
         /// The config for the EXILED Loader.
         /// </summary>
-        [PluginConfig]
-        public static Config Config;
+        public static new Config Config;
 #pragma warning restore SA1401
 
         /// <summary>
-        /// Called by PluginAPI when the plugin is enabled.
+        /// Gets the Name of the EXILED Loader.
         /// </summary>
-        [PluginEntryPoint("Exiled Loader", null, "Loads the EXILED Plugin Framework.", "ExMod-Team")]
-        [PluginPriority(byte.MinValue)]
-        public void Enable()
+        public override string Name => "Exiled Loader";
+
+        /// <summary>
+        /// Gets the Description of the EXILED Loader.
+        /// </summary>
+        public override string Description => "Loads the EXILED Plugin Framework.";
+
+        /// <summary>
+        /// Gets the Author of the EXILED Loader.
+        /// </summary>
+        public override string Author => "ExMod-Team";
+
+        /// <summary>
+        /// Gets the RequiredApiVersion of the EXILED Loader.
+        /// </summary>
+        public override Version RequiredApiVersion => AutoUpdateFiles.RequiredLabAPIVersion;
+
+        /// <summary>
+        /// Gets the Exiled Version.
+        /// </summary>
+        public override Version Version { get; } = new Version(0, 0, 0);
+#pragma warning restore SA1401
+
+        /// <summary>
+        /// Called by LabAPI when the plugin is enabled.
+        /// </summary>
+        public override void Enable()
         {
             if (Config == null)
             {
@@ -62,6 +85,14 @@ namespace Exiled.Loader
             Directory.CreateDirectory(Paths.Dependencies);
 
             Timing.RunCoroutine(new Loader().Run());
+        }
+
+        /// <summary>
+        /// Called by LabAPI when the plugin is Disable.
+        /// </summary>
+        public override void Disable()
+        {
+            // Plugin will not be disable
         }
     }
 }

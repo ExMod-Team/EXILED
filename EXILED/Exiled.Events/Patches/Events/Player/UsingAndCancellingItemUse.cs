@@ -20,8 +20,6 @@ namespace Exiled.Events.Patches.Events.Player
 
     using InventorySystem.Items.Usables;
 
-    using PluginAPI.Events;
-
     using static HarmonyLib.AccessTools;
 
     /// <summary>
@@ -84,7 +82,7 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             offset = -16;
-            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerCancelUsingItemEvent))[0]) + offset;
+            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerCancellingUsingItemEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,

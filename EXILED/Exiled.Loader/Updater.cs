@@ -69,7 +69,7 @@ namespace Exiled.Loader
             name != Assembly.GetExecutingAssembly().GetName().Name
             select new ExiledLib(a);
 
-        private string Folder => File.Exists($"{PluginAPI.Helpers.Paths.GlobalPlugins.Plugins}/Exiled.Loader.dll") ? "global" : Server.Port.ToString();
+        private string Folder => File.Exists($"{LabApi.Loader.Features.Paths.PathManager.Plugins}/Exiled.Loader.dll") ? "global" : Server.Port.ToString();
 
         private string InstallerName
         {
@@ -116,7 +116,7 @@ namespace Exiled.Loader
             try
             {
                 using HttpClient client = CreateHttpClient();
-                if (Busy = FindUpdate(client, !PluginAPI.Loader.AssemblyLoader.Dependencies.Exists(x => x.GetName().Name == "Exiled.API"), out NewVersion newVersion))
+                if (Busy = FindUpdate(client, !LabApi.Loader.PluginLoader.Dependencies.Any(x => x.GetName().Name == "Exiled.API"), out NewVersion newVersion))
                     Update(client, newVersion);
             }
             catch (Exception e)

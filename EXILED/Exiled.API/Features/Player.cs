@@ -53,7 +53,6 @@ namespace Exiled.API.Features
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
     using PlayerStatsSystem;
-    using PluginAPI.Core;
     using RelativePositioning;
     using RemoteAdmin;
     using Respawning.NamingRules;
@@ -422,7 +421,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <seealso cref="GiveReservedSlot(bool)"/>
         /// <seealso cref="AddReservedSlot(string, bool)"/>
-        public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId, out _);
+        public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId);
 
         /// <summary>
         /// Gets a value indicating whether the player is in whitelist.
@@ -509,7 +508,7 @@ namespace Exiled.API.Features
         public virtual Vector3 Position
         {
             get => Transform.position;
-            set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
+            set => ReferenceHub.TryOverridePosition(value);
         }
 
         /// <summary>
@@ -529,7 +528,7 @@ namespace Exiled.API.Features
         public Quaternion Rotation
         {
             get => Transform.rotation;
-            set => ReferenceHub.TryOverridePosition(Position, value.eulerAngles);
+            set => ReferenceHub.TryOverrideRotation(value.eulerAngles);
         }
 
         /// <summary>
@@ -1014,8 +1013,8 @@ namespace Exiled.API.Features
         /// </summary>
         public string GroupName
         {
-            get => ServerStatic.PermissionsHandler._members.TryGetValue(UserId, out string groupName) ? groupName : null;
-            set => ServerStatic.PermissionsHandler._members[UserId] = value;
+            get => ServerStatic.PermissionsHandler.Members.TryGetValue(UserId, out string groupName) ? groupName : null;
+            set => ServerStatic.PermissionsHandler.Members[UserId] = value;
         }
 
         /// <summary>
@@ -1182,11 +1181,18 @@ namespace Exiled.API.Features
         internal static ConditionalWeakTable<GameObject, Player> UnverifiedPlayers { get; } = new();
 
         /// <summary>
-        /// Converts NwPluginAPI player to EXILED player.
+        /// Converts LabApi player to EXILED player.
         /// </summary>
-        /// <param name="player">The NwPluginAPI player.</param>
+        /// <param name="player">The LabApi player.</param>
         /// <returns>EXILED player.</returns>
-        public static implicit operator Player(PluginAPI.Core.Player player) => Get(player);
+        public static implicit operator Player(LabApi.Features.Wrappers.Player player) => Get(player);
+
+        /// <summary>
+        /// Converts LabApi player to EXILED player.
+        /// </summary>
+        /// <param name="player">The LabApi player.</param>
+        /// <returns>EXILED player.</returns>
+        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player.ReferenceHub);
 
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> filtered by side. Can be empty.
@@ -1377,11 +1383,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the <see cref="Player"/> from NwPluginAPI class.
+        /// Gets the <see cref="Player"/> from LabApi class.
         /// </summary>
-        /// <param name="apiPlayer">The <see cref="PluginAPI.Core.Player"/> class.</param>
+        /// <param name="apiPlayer">The <see cref="LabApi.Features.Wrappers.Player"/> class.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(PluginAPI.Core.Player apiPlayer) => Get(apiPlayer.ReferenceHub);
+        public static Player Get(LabApi.Features.Wrappers.Player apiPlayer) => Get(apiPlayer.ReferenceHub);
 
         /// <summary>
         /// Try-get a player given a <see cref="CommandSystem.ICommandSender"/>.
@@ -1464,12 +1470,12 @@ namespace Exiled.API.Features
         public static bool TryGet(string args, out Player player) => (player = Get(args)) is not null;
 
         /// <summary>
-        /// Try-get the <see cref="Player"/> from NwPluginAPI class.
+        /// Try-get the <see cref="Player"/> from LabApi class.
         /// </summary>
-        /// <param name="apiPlayer">The <see cref="PluginAPI.Core.Player"/> class.</param>
+        /// <param name="apiPlayer">The <see cref="LabApi.Features.Wrappers.Player"/> class.</param>
         /// <param name="player">The player found or <see langword="null"/> if not found.</param>
         /// <returns>A boolean indicating whether a player was found.</returns>
-        public static bool TryGet(PluginAPI.Core.Player apiPlayer, out Player player) => (player = Get(apiPlayer)) is not null;
+        public static bool TryGet(LabApi.Features.Wrappers.Player apiPlayer, out Player player) => (player = Get(apiPlayer)) is not null;
 
         /// <summary>
         /// Try-get player by <see cref="Collider"/>.
@@ -1508,10 +1514,10 @@ namespace Exiled.API.Features
         {
             if (isPermanent)
             {
-                if (ReservedSlots.HasReservedSlot(userId))
+                if (LabApi.Features.Wrappers.ReservedSlots.HasReservedSlot(userId))
                     return false;
 
-                ReservedSlots.Add(userId);
+                LabApi.Features.Wrappers.ReservedSlots.Add(userId);
                 return true;
             }
 
@@ -1532,7 +1538,7 @@ namespace Exiled.API.Features
                 if (WhiteList.IsOnWhitelist(userId))
                     return false;
 
-                Whitelist.Add(userId);
+                LabApi.Features.Wrappers.Whitelist.Add(userId);
                 return true;
             }
 
@@ -1824,7 +1830,7 @@ namespace Exiled.API.Features
         /// <param name="group">The group to be set.</param>
         public void SetRank(string name, UserGroup group)
         {
-            if (ServerStatic.GetPermissionsHandler()._groups.TryGetValue(name, out UserGroup userGroup))
+            if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
             {
                 userGroup.BadgeColor = group.BadgeColor;
                 userGroup.BadgeText = name;
@@ -1835,15 +1841,15 @@ namespace Exiled.API.Features
             }
             else
             {
-                ServerStatic.GetPermissionsHandler()._groups.Add(name, group);
+                ServerStatic.PermissionsHandler.Groups.Add(name, group);
 
                 ReferenceHub.serverRoles.SetGroup(group, false, false);
             }
 
-            if (ServerStatic.GetPermissionsHandler()._members.ContainsKey(UserId))
-                ServerStatic.GetPermissionsHandler()._members[UserId] = name;
+            if (ServerStatic.PermissionsHandler.Members.ContainsKey(UserId))
+                ServerStatic.PermissionsHandler.Members[UserId] = name;
             else
-                ServerStatic.GetPermissionsHandler()._members.Add(UserId, name);
+                ServerStatic.PermissionsHandler.Members.Add(UserId, name);
         }
 
         /// <summary>

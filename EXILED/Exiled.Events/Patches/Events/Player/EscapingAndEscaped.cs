@@ -117,42 +117,4 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
-
-    /// <summary>
-    /// Patches <see cref="Escape.ServerGetScenario(ReferenceHub)"/> for <see cref="Handlers.Player.Escaping"/>.
-    /// Replaces last returned <see cref="EscapeScenario.None"/> to <see cref="EscapeScenario.CustomEscape"/>.
-    /// </summary>
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaping))]
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Escaped))]
-    [HarmonyPatch(typeof(Escape), nameof(Escape.ServerGetScenario))]
-    internal static class GetScenario
-    {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-            LocalBuilder fpcRole = generator.DeclareLocal(typeof(FpcStandardRoleBase));
-
-            // replace HumanRole to FpcStandardRoleBase
-            newInstructions.Find(x => x.opcode == OpCodes.Isinst).operand = typeof(FpcStandardRoleBase);
-
-            // after this index all invalid exit are considered Custom
-            int customExit = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
-            for (int i = 0; i < newInstructions.Count; i++)
-            {
-                OpCode opcode = newInstructions[i].opcode;
-                if (opcode == OpCodes.Stloc_0)
-                    newInstructions[i] = new CodeInstruction(OpCodes.Stloc_S, fpcRole.LocalIndex).WithLabels(newInstructions[i].labels);
-                else if (opcode == OpCodes.Ldloc_0)
-                    newInstructions[i] = new CodeInstruction(OpCodes.Ldloc_S, fpcRole.LocalIndex).WithLabels(newInstructions[i].labels);
-                else if (opcode == OpCodes.Ldc_I4_0 && i > customExit)
-                    newInstructions[i].opcode = OpCodes.Ldc_I4_5;
-            }
-
-            for (int z = 0; z < newInstructions.Count; z++)
-                yield return newInstructions[z];
-
-            ListPool<CodeInstruction>.Pool.Return(newInstructions);
-        }
-    }
 }
