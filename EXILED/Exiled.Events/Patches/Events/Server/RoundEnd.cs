@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Server
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            const string LeadingTeam = "<leadingTeam>5__9";
+            const string LeadingTeam = "<leadingTeam>5__4";
             const string NewList = "<newList>5__3";
 
             int offset = -1;
@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Server
                 new CodeInstruction[]
                 {
                     new(OpCodes.Call, PropertyGetter(typeof(Round), nameof(Round.IgnoredPlayers))),
-                    new(OpCodes.Ldloc_S, 13),
+                    new(OpCodes.Ldloc_S, 19),
                     new(OpCodes.Call, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
                     new(OpCodes.Brtrue_S, jmp),
                 });
@@ -112,7 +112,10 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
 
                     // baseGameConditionsSatisfied
-                    new(OpCodes.Ldloc_S, 6),
+                    // new(OpCodes.Ldloc_S, 6),
+                    // isforceEnd in waiting of NW adding something to get if the round end
+                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
 
                     // EndingRoundEventArgs evEndingRound = new(RoundSummary.SumInfo_ClassList, bool, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EndingRoundEventArgs))[0]),
@@ -129,9 +132,10 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Stfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
 
                     // flag = ev.IsAllowed
+                    /*
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
-                    new(OpCodes.Stloc_S, 6),
+                    new(OpCodes.Stloc_S, 6), Round can't be ended because of NW build*/
 
                     // this.LeadingTeam = ev.LeadingTeam
                     new(OpCodes.Ldarg_0),

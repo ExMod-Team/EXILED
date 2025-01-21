@@ -29,7 +29,7 @@ namespace Exiled.Events.Patches.Fixes
     /// Fix Throwing a ghostlight with Scp in the room stun 079.
     /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/55).
     /// </summary>
-    [HarmonyPatch(typeof(Scp2176Projectile), nameof(Scp2176Projectile.ServerShatter))]
+    // [HarmonyPatch(typeof(Scp2176Projectile), nameof(Scp2176Projectile.ServerShatter))]
     internal class Scp3114FriendlyFireFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

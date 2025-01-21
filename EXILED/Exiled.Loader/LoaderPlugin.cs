@@ -61,6 +61,8 @@ namespace Exiled.Loader
         /// </summary>
         public override void Enable()
         {
+            Config = base.Config;
+
             if (Config == null)
             {
                 Log.Error("Detected null config, EXILED will not be loaded.");

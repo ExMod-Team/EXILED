@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label checkLabel = newInstructions[index].ExtractLabels()[0];
 
             // Remove the base-game FpcNoclip.IsPermitted(hub) call, as we will be using that for our default value for ev.IsAllowed
-            newInstructions.RemoveRange(index, 4);
+            newInstructions.RemoveRange(index, 3);
 
             newInstructions.InsertRange(
                 index,
