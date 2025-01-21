@@ -231,7 +231,10 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
-        public static void ChangeAppearance(this Player player, RoleTypeId type) => ChangeAppearance(player, type, Player.List.Where(x => x != player));
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
+        [Obsolete("Use this Method instead ChangeAppearance(this Player, RoleTypeId)")]
+        public static void ChangeAppearance(this Player player, RoleTypeId type, bool skipJump, byte unitId) => ChangeAppearance(player, type, Player.List.Where(x => x != player));
 
         /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
@@ -240,7 +243,29 @@ namespace Exiled.API.Extensions
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
         /// <param name="playersToAffect">The players who should see the changed appearance.</param>
-        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect)
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
+        [Obsolete("Use this Method instead ChangeAppearance(this Player, RoleTypeId, IEnumerable<Player>)")]
+        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect, bool skipJump, byte unitId) => ChangeAppearance(player, type, playersToAffect);
+
+        /// <summary>
+        /// Change <see cref="Player"/> character model for appearance.
+        /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
+        /// </summary>
+        /// <param name="player">Player to change.</param>
+        /// <param name="type">Model type.</param>
+        /// <param name="objects">Custom value that will be used to modify slightly the Appearance depending of Role selected.</param>
+        public static void ChangeAppearance(this Player player, RoleTypeId type, object[] objects = null) => ChangeAppearance(player, type, Player.List.Where(x => x != player), objects);
+
+        /// <summary>
+        /// Change <see cref="Player"/> character model for appearance.
+        /// It will continue until <see cref="Player"/>'s <see cref="RoleTypeId"/> changes.
+        /// </summary>
+        /// <param name="player">Player to change.</param>
+        /// <param name="type">Model type.</param>
+        /// <param name="playersToAffect">The players who should see the changed appearance.</param>
+        /// <param name="objects">Custom value that will be used to modify slightly the Appearance depending of Role selected.</param>
+        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect, object[] objects = null)
         {
             if (!player.IsConnected)
                 return;
@@ -253,7 +278,7 @@ namespace Exiled.API.Extensions
 
             foreach (Player target in playersToAffect)
             {
-                player.Role.TrySetIndividualAppearance(target, type, false);
+                player.Role.TrySetIndividualAppearance(target, type, objects, false);
             }
 
             player.Role.UpdateAppearance();

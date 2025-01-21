@@ -303,9 +303,10 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         /// <param name="player">Target <see cref="Player"/>.</param>
         /// <param name="newAppearance">New individual <see cref="RoleTypeId"/> appearance.</param>
+        /// <param name="objects">Custom value that will be used to modify slightly the Appearance depending of Role selected.</param>
         /// <param name="update">Whether or not the change-role requect should sent imidiately.</param>
         /// <returns>A boolean indicating whether or not a target <see cref="RoleTypeId"/> will be used as new appearance.</returns>
-        public bool TrySetIndividualAppearance(Player player, RoleTypeId newAppearance, bool update = true)
+        public bool TrySetIndividualAppearance(Player player, RoleTypeId newAppearance, object[] objects = null, bool update = true)
         {
             if (!CheckAppearanceCompatibility(newAppearance))
             {
@@ -317,7 +318,7 @@ namespace Exiled.API.Features.Roles
 
             if (update)
             {
-                UpdateAppearanceFor(player);
+                UpdateAppearanceFor(player, objects);
             }
 
             return true;
@@ -395,7 +396,8 @@ namespace Exiled.API.Features.Roles
         /// Updates current player visibility, for target <see cref="Player"/>.
         /// </summary>
         /// <param name="player">Target <see cref="Player"/>.</param>
-        public void UpdateAppearanceFor(Player player)
+        /// <param name="objects">Custom value that will be used to modify slightly the Appearance depending of Role selected.</param>
+        public void UpdateAppearanceFor(Player player, object[] objects = null)
         {
             RoleTypeId roleTypeId = Type;
             if (Base is IObfuscatedRole obfuscatedRole)
