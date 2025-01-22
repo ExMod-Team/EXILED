@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using System;
+
     using API.Features;
 
     using Interfaces;
@@ -22,22 +24,19 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="teleporter">
-        /// <inheritdoc cref="Teleporter" />
-        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public FailingEscapePocketDimensionEventArgs(Player player, PocketDimensionTeleport teleporter, bool isAllowed = true)
+        public FailingEscapePocketDimensionEventArgs(Player player, bool isAllowed = true)
         {
             Player = player;
-            Teleporter = teleporter;
             IsAllowed = isAllowed;
         }
 
         /// <summary>
         /// Gets the PocketDimensionTeleport the player walked into.
         /// </summary>
+        [Obsolete("can't be used")]
         public PocketDimensionTeleport Teleporter { get; }
 
         /// <summary>
