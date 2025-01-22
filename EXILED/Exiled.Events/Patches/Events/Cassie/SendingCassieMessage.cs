@@ -35,13 +35,13 @@ namespace Exiled.Events.Patches.Events.Cassie
 
             Label returnLabel = generator.DefineLabel();
 
-            // SendingCassieMessageEventArgs ev = new SendingCassieMessageEventArgs(words, makeHold, makeNoise, true);
+            // SendingCassieMessageEventArgs ev = new SendingCassieMessageEventArgs(words, makeHold, makeNoise, customSubtitles, true);
             // Cassie.OnSendingCassieMessage(ev);
             //
             // words = ev.Words;
             // makeHold = ev.MakeHold;
             // makeNoise = ev.MakeNoise;
-            //
+            // customSubtitles = ev.customSubtitles;
             // if (!ev.IsAllowed)
             //     return;
             newInstructions.InsertRange(
@@ -51,8 +51,10 @@ namespace Exiled.Events.Patches.Events.Cassie
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldarg_2),
+                    new(OpCodes.Ldarg_3),
                     new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingCassieMessageEventArgs))[0]),
+                    new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -63,6 +65,8 @@ namespace Exiled.Events.Patches.Events.Cassie
                     new(OpCodes.Call, PropertyGetter(typeof(SendingCassieMessageEventArgs), nameof(SendingCassieMessageEventArgs.MakeHold))),
                     new(OpCodes.Starg_S, 1),
                     new(OpCodes.Call, PropertyGetter(typeof(SendingCassieMessageEventArgs), nameof(SendingCassieMessageEventArgs.MakeNoise))),
+                    new(OpCodes.Starg_S, 3),
+                    new(OpCodes.Call, PropertyGetter(typeof(SendingCassieMessageEventArgs), nameof(SendingCassieMessageEventArgs.CustomSubtitles))),
                     new(OpCodes.Starg_S, 2),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SendingCassieMessageEventArgs), nameof(SendingCassieMessageEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
