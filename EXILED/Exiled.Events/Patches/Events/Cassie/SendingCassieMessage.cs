@@ -52,6 +52,7 @@ namespace Exiled.Events.Patches.Events.Cassie
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldarg_2),
                     new(OpCodes.Ldarg_3),
+                    new(OpCodes.Ldarg_S, 4),
                     new(OpCodes.Ldc_I4_1),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingCassieMessageEventArgs))[0]),
                     new(OpCodes.Dup),
