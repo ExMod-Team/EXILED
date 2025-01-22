@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -29,7 +30,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Adds the <see cref="Handlers.Player.EscapingPocketDimension"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.EscapingPocketDimension))]
-    [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
+    [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.Exit))]
     internal static class EscapingPocketDimension
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -40,21 +41,14 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label ret = generator.DefineLabel();
 
-            const int offset = -5;
-            const int labelOffset = -2;
-            int index = newInstructions.FindLastIndex(
-                instruction => instruction.Calls(Method(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.ServerOverridePosition)))) + offset;
-
-            // Replaces "ServerOverridePosition" with our logic
-            newInstructions.RemoveRange(index, 6);
-
+            int offset = 1;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ret) + offset;
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(referenceHub)
-                    new CodeInstruction(OpCodes.Ldloc_1).WithLabels((Label)newInstructions[index + labelOffset].operand),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    // referenceHub
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
 
                     // Scp106PocketExitFinder.GetBestExitPosition(fpcRole)
                     new(OpCodes.Ldloc_2),
@@ -73,15 +67,20 @@ namespace Exiled.Events.Patches.Events.Player
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingPocketDimensionEventArgs), nameof(EscapingPocketDimensionEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
-
-                    // ev.Player.Teleport(ev.TeleportPosition)
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingPocketDimensionEventArgs), nameof(EscapingPocketDimensionEventArgs.Player))),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingPocketDimensionEventArgs), nameof(EscapingPocketDimensionEventArgs.TeleportPosition))),
-                    new(OpCodes.Callvirt, Method(typeof(Player), nameof(Player.Teleport), new[] { typeof(Vector3) })),
                 });
 
+            offset = -2;
+            index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(Method(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.ServerOverridePosition)))) + offset;
+
+            // Replaces "fpcRole.FpcModule.ServerOverridePosition(Scp106PocketExitFinder.GetBestExitPosition(fpcRole))"
+            // with "fpcRole.FpcModule.ServerOverridePosition(ev.TeleportPosition)"
+            newInstructions.RemoveRange(index, 2);
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingPocketDimensionEventArgs), nameof(EscapingPocketDimensionEventArgs.TeleportPosition))),
+            });
             newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
