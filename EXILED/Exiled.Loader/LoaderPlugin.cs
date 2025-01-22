@@ -12,6 +12,7 @@ namespace Exiled.Loader
     using System.Reflection;
 
     using LabApi.Loader.Features.Plugins;
+    using LabApi.Loader.Features.Plugins.Enums;
 
     using MEC;
 
@@ -54,7 +55,11 @@ namespace Exiled.Loader
         /// Gets the Exiled Version.
         /// </summary>
         public override Version Version { get; } = new Version(0, 0, 0);
-#pragma warning restore SA1401
+
+        /// <summary>
+        /// Gets the Exiled Priority load.
+        /// </summary>
+        public override LoadPriority Priority { get; } = (LoadPriority)byte.MaxValue;
 
         /// <summary>
         /// Called by LabAPI when the plugin is enabled.

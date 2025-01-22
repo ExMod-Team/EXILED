@@ -24,17 +24,13 @@ namespace Exiled.Events.EventArgs.Server
         /// <param name="classList">
         /// <inheritdoc cref="RoundSummary.SumInfo_ClassList" />
         /// </param>
-        /// <param name="isForceEnded">
-        /// <inheritdoc cref="IsForceEnded" />
-        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public EndingRoundEventArgs(LeadingTeam leadingTeam, RoundSummary.SumInfo_ClassList classList, bool isForceEnded, bool isAllowed)
+        public EndingRoundEventArgs(LeadingTeam leadingTeam, RoundSummary.SumInfo_ClassList classList, bool isAllowed)
         {
             LeadingTeam = leadingTeam;
             ClassList = classList;
-            IsForceEnded = isForceEnded;
             IsAllowed = isAllowed;
         }
 
@@ -51,7 +47,11 @@ namespace Exiled.Events.EventArgs.Server
         /// <summary>
         /// Gets or sets a value indicating whether the round is ended by API call.
         /// </summary>
-        public bool IsForceEnded { get; set; }
+        public bool IsForceEnded
+        {
+            get => RoundSummary.singleton._roundEnded;
+            set => RoundSummary.singleton._roundEnded = value;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the round is going to finish or not.

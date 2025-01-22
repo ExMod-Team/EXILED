@@ -87,12 +87,12 @@ namespace Exiled.Events.Patches.Events.Server
 
             // put the LeadingTeam logic before the event
             offset = -1;
-            index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded)))) + offset;
+            index = newInstructions.FindLastIndex(x => x.operand is LocalBuilder { LocalIndex: 10 }) + offset;
             newInstructions.InsertRange(index, leadingTeamLogic);
 
             // recorect the index because of the LeadingTeamLogic that got moved
             offset = -1;
-            index = newInstructions.FindIndex(x => x.LoadsField(Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded)))) + offset;
+            index = newInstructions.FindLastIndex(x => x.operand is LocalBuilder { LocalIndex: 10 }) + offset;
             LocalBuilder evEndingRound = generator.DeclareLocal(typeof(EndingRoundEventArgs));
 
             newInstructions.InsertRange(
@@ -107,17 +107,10 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, NewList)),
 
-                    // isForceEnd
-                    new(OpCodes.Ldloc_1),
-                    new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
-
                     // baseGameConditionsSatisfied
-                    // new(OpCodes.Ldloc_S, 6),
-                    // isforceEnd in waiting of NW adding something to get if the round end
-                    new(OpCodes.Ldloc_1),
-                    new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
+                    new(OpCodes.Ldloc_S, 10),
 
-                    // EndingRoundEventArgs evEndingRound = new(RoundSummary.SumInfo_ClassList, bool, bool);
+                    // EndingRoundEventArgs evEndingRound = new(LeadingTeam, RoundSummary.SumInfo_ClassList, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EndingRoundEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -125,17 +118,10 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnEndingRound))),
                     new(OpCodes.Stloc_S, evEndingRound.LocalIndex),
 
-                    // this._roundEnded = ev.IsForceEnded
-                    new(OpCodes.Ldloc_1),
-                    new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsForceEnded))),
-                    new(OpCodes.Stfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
-
                     // flag = ev.IsAllowed
-                    /*
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
-                    new(OpCodes.Stloc_S, 6), Round can't be ended because of NW build*/
+                    new(OpCodes.Stloc_S, 10),
 
                     // this.LeadingTeam = ev.LeadingTeam
                     new(OpCodes.Ldarg_0),
