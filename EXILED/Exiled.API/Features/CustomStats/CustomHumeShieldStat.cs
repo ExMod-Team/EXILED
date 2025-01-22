@@ -28,7 +28,7 @@ namespace Exiled.API.Features.CustomStats
         /// <inheritdoc/>
         public override void Update()
         {
-            if (MaxValue == -1 && ShieldRegenerationMultiplier is 1)
+            if (ShieldRegenerationMultiplier is 1)
             {
                 base.Update();
                 return;
