@@ -35,14 +35,10 @@ namespace Exiled.Events.Patches.Events.Scp173
 
             Label continueLabel = generator.DefineLabel();
 
-            const int offset = -4;
+            int offset = 1;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brtrue_S) + offset;
 
-            // MethodInfo scp173ExecuteEvent = typeof(EventManager).GetMethods(BindingFlags.Public | BindingFlags.Static).FirstOrDefault(m => m.Name == nameof(EventManager.ExecuteEvent)&& !m.IsGenericMethod);
-            int index = 0 + offset; // newInstructions.FindLastIndex(i => i.Calls(scp173ExecuteEvent)) + offset;
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Player.Get(target)
                 new(OpCodes.Ldarg_1),
