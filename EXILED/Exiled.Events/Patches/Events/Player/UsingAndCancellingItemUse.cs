@@ -13,12 +13,14 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features;
     using API.Features.Pools;
+    using CustomPlayerEffects;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
 
     using InventorySystem.Items.Usables;
+    using Utils.Networking;
 
     using static HarmonyLib.AccessTools;
 
@@ -43,16 +45,16 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder evUsingItemEventArgs = generator.DeclareLocal(typeof(UsingItemEventArgs));
             LocalBuilder evCancellingItemUseEventArgs = generator.DeclareLocal(typeof(CancellingItemUseEventArgs));
 
-            int offset = 2;
+            int offset = 3;
             int index = newInstructions.FindIndex(
-                instruction => instruction.Calls(Method(typeof(UsableItemsController), nameof(UsableItemsController.GetCooldown)))) + offset;
+                instruction => instruction.Calls(Method(typeof(UsableItemModifierEffectExtensions), nameof(UsableItemModifierEffectExtensions.GetSpeedMultiplier)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
                     // Player.Get(referenceHub)
-                    new(OpCodes.Ldloc_0),
+                    new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // usableItem
@@ -81,7 +83,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, 4),
                 });
 
-            offset = -16;
+            offset = -2;
             index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerCancellingUsingItemEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
@@ -112,8 +114,9 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            offset = -1;
-            index = newInstructions.Count + offset;
+            offset = 3;
+            index = newInstructions.FindLastIndex(
+                instruction => instruction.Calls(Method(typeof(NetworkUtils), nameof(NetworkUtils.SendToAuthenticated)))) + offset;
 
             newInstructions.InsertRange(
                 index,
