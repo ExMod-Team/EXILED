@@ -174,10 +174,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // save the value of IsAllowed
-                    new(OpCodes.Stloc_S, isAllowedUnlocking.LocalIndex),
+                    new CodeInstruction(OpCodes.Stloc_S, isAllowedUnlocking.LocalIndex).MoveLabelsFrom(newInstructions[index]),
 
                     // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // this
                     new(OpCodes.Ldarg_0),
