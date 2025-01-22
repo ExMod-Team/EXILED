@@ -41,24 +41,23 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
             LocalBuilder role = generator.DeclareLocal(typeof(Role));
 
-            int offset = -2;
+            int offset = -3;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(hub)
+                    // hub
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // roleTypeId
-                    new(OpCodes.Ldloc_0),
-
-                    // escapeScenario
                     new(OpCodes.Ldloc_1),
 
-                    // EscapingEventArgs ev = new(Player, RoleTypeId, EscapeScenario, SpawnableTeamType, float)
+                    // escapeScenario
+                    new(OpCodes.Ldloc_2),
+
+                    // EscapingEventArgs ev = new(Player, RoleTypeId, EscapeScenario)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -75,7 +74,12 @@ namespace Exiled.Events.Patches.Events.Player
                     // roleTypeId = ev.NewRole
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.NewRole))),
-                    new(OpCodes.Stloc_0),
+                    new(OpCodes.Stloc_1),
+
+                    // escapeScenario = ev.EscapeScenario
+                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.EscapeScenario))),
+                    new(OpCodes.Stloc_2),
                 });
 
             offset = 4;
@@ -97,12 +101,12 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Player))),
 
                 // escapeScenario
-                new(OpCodes.Ldloc_1),
+                new(OpCodes.Ldloc_2),
 
                 // role
                 new(OpCodes.Ldloc_S, role.LocalIndex),
 
-                // EscapedEventArgs ev2 = new(ev.Player, ev.EscapeScenario, role, float, SpawnableTeamType);
+                // EscapedEventArgs ev2 = new(ev.Player, ev.EscapeScenario, role);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapedEventArgs))[0]),
 
                 // Handlers.Player.OnEscaped(ev);
