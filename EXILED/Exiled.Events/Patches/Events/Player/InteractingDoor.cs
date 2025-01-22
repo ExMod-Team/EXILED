@@ -7,12 +7,6 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
-#pragma warning disable SA1313
-#pragma warning disable SA1005
-#pragma warning disable SA1515
-#pragma warning disable SA1513
-#pragma warning disable SA1512
-
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -23,10 +17,6 @@ namespace Exiled.Events.Patches.Events.Player
     using HarmonyLib;
 
     using Interactables.Interobjects.DoorUtils;
-    using LabApi.Events.Arguments.PlayerEvents;
-    using LabApi.Events.Handlers;
-    using PlayerRoles;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
