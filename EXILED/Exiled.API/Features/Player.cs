@@ -95,7 +95,7 @@ namespace Exiled.API.Features
         private readonly HashSet<EActor> componentsInChildren = new();
 
         private ReferenceHub referenceHub;
-        private CustomHealthStat healthStat;
+        private HealthStat healthStat;
         private CustomHumeShieldStat humeShieldStat;
         private Role role;
 
@@ -177,7 +177,7 @@ namespace Exiled.API.Features
                 Inventory = value.inventory;
                 CameraTransform = value.PlayerCameraReference;
 
-                value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = healthStat = new CustomHealthStat { Hub = value };
+                healthStat = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] as HealthStat;
                 value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = humeShieldStat = new CustomHumeShieldStat { Hub = value };
             }
         }
@@ -882,7 +882,7 @@ namespace Exiled.API.Features
         public float MaxHealth
         {
             get => healthStat.MaxValue;
-            set => healthStat.CustomMaxValue = value;
+            set => healthStat.MaxValue = value;
         }
 
         /// <summary>
@@ -938,7 +938,7 @@ namespace Exiled.API.Features
         public float MaxHumeShield
         {
             get => humeShieldStat.MaxValue;
-            set => humeShieldStat.CustomMaxValue = value;
+            set => humeShieldStat.MaxValue = value;
         }
 
         /// <summary>

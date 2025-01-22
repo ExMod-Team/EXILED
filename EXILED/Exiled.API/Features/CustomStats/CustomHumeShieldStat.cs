@@ -18,18 +18,10 @@ namespace Exiled.API.Features.CustomStats
     /// </summary>
     public class CustomHumeShieldStat : HumeShieldStat
     {
-        /// <inheritdoc />
-        public override float MaxValue => CustomMaxValue == -1 ? base.MaxValue : CustomMaxValue;
-
         /// <summary>
         /// Gets or sets the multiplier for gaining HumeShield.
         /// </summary>
         public float ShieldRegenerationMultiplier { get; set; } = 1;
-
-        /// <summary>
-        /// Gets or sets the maximum amount of HumeShield the player can have.
-        /// </summary>
-        public float CustomMaxValue { get; set; } = -1;
 
         private float ShieldRegeneration => TryGetHsModule(out HumeShieldModuleBase controller) ? controller.HsRegeneration * ShieldRegenerationMultiplier : 0;
 
