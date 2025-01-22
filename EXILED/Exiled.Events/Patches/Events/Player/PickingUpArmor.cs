@@ -41,10 +41,9 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new CodeInstruction[]
                 {
-                    // Player.Get(this.Hub)
+                    // this.Hub
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this.TargetPickup
                     new(OpCodes.Ldarg_0),
@@ -53,11 +52,11 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // PickingUpArmorEventArgs ev = new(Player, ItemPickupBase, bool)
+                    // PickingUpArmorEventArgs ev = new(ReferenceHub, ItemPickupBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Handlers.Player.OnPickingUpArmor(ev)
+                    // Handlers.Player.OnPickingUpItem(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)

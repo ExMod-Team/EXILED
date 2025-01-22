@@ -43,10 +43,9 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // Player.Get(this.Hub)
+                    // this.Hub
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Ldfld, Field(typeof(Scp244SearchCompletor), nameof(Scp244SearchCompletor.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // scp244DeployablePickup
                     new(OpCodes.Ldloc_0),
@@ -54,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // PickingUpScp244EventArgs ev = new(Player, Scp244DeployablePickup, true)
+                    // PickingUpScp244EventArgs ev = new(ReferenceHub, Scp244DeployablePickup, true)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
 

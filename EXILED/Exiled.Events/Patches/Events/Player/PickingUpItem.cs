@@ -48,10 +48,9 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new CodeInstruction[]
                 {
-                    // Player.Get(this.Hub)
+                    // this.Hub
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this.TargetPickup
                     new(OpCodes.Ldarg_0),
@@ -60,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // PickingUpItemEventArgs ev = new(Player, ItemPickupBase, bool)
+                    // PickingUpItemEventArgs ev = new(ReferenceHub, ItemPickupBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
