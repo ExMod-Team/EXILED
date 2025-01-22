@@ -167,22 +167,17 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.RemoveRange(index, 7);
 
-            // TODO:
-            // offset = -2;
-            // int index2 = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(null))[0]) + offset;
+            offset = -3;
+            int index2 = newInstructions.FindLastIndex(x => x.operand == (object)Field(typeof(Scp079Generator), nameof(Scp079Generator._unlockCooldownTime))) + offset;
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // isAllowed var set
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Br_S, skip2),
-
-                    // new CodeInstruction(OpCodes.Ldc_I4_1).MoveLabelsFrom(newInstructions[index2]), TODO:
-                    new CodeInstruction(OpCodes.Stloc_S, isAllowedUnlocking.LocalIndex).WithLabels(skip2),
+                    // save the value of IsAllowed
+                    new(OpCodes.Stloc_S, isAllowedUnlocking.LocalIndex),
 
                     // player
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).MoveLabelsFrom(newInstructions[index]),
 
                     // this
                     new(OpCodes.Ldarg_0),
@@ -200,7 +195,6 @@ namespace Exiled.Events.Patches.Events.Player
                     // if (!ev.IsAllowed)
                     //    goto notAllowed;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UnlockingGeneratorEventArgs), nameof(UnlockingGeneratorEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, notAllowed),
                 });
 
             offset = -5;

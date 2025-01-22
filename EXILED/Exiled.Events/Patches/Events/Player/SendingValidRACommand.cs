@@ -28,9 +28,9 @@ namespace Exiled.Events.Patches.Events.Player
     /// Adds the <see cref="Handlers.Player.SendingValidCommand" /> and
     /// the <see cref="Handlers.Player.SentValidCommand" /> events.
     /// </summary>
-    // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingValidCommand))]
-    // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SentValidCommand))]
-    // [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))] TODO
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingValidCommand))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SentValidCommand))]
+    [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
     internal static class SendingValidRACommand
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
