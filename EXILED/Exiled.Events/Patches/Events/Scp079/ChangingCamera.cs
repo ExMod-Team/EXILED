@@ -38,8 +38,8 @@ namespace Exiled.Events.Patches.Events.Scp079
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldloca_S) + offset;
+            int offset = 6;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && x.operand == (object)(sbyte)Scp079HudTranslation.SignalLost) + offset;
 
             Label returnLabel = generator.DefineLabel();
 
@@ -55,14 +55,14 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this._switchTarget
-                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Scp079CurrentCameraSync), nameof(Scp079CurrentCameraSync._switchTarget))),
 
                     // num (cost)
                     new(OpCodes.Ldloc_0),
 
                     // ChangingCameraEventArgs ev = new(Player, Scp079Camera, float)
-                    new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingCameraEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangingCameraEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
@@ -88,8 +88,8 @@ namespace Exiled.Events.Patches.Events.Scp079
                 });
 
             // return as the same way than NW does
-            offset = 1;
-            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brtrue_S) + offset;
+            offset = -1;
+            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && x.operand == (object)(sbyte)Scp079HudTranslation.SignalLost) + offset;
             newInstructions[index].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
