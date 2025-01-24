@@ -168,7 +168,7 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions.RemoveRange(index, 7);
 
             offset = -3;
-            int index2 = newInstructions.FindLastIndex(x => x.operand == (object)Field(typeof(Scp079Generator), nameof(Scp079Generator._unlockCooldownTime))) + offset;
+            index = newInstructions.FindLastIndex(x => x.operand == (object)Field(typeof(Scp079Generator), nameof(Scp079Generator._unlockCooldownTime))) + offset;
             newInstructions.InsertRange(
                 index,
                 new[]
