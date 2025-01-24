@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Scp079
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             int offset = 6;
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && x.operand == (object)(sbyte)Scp079HudTranslation.SignalLost) + offset;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && (sbyte)x.operand == (sbyte)Scp079HudTranslation.SignalLost) + offset;
 
             Label returnLabel = generator.DefineLabel();
 
@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             // return as the same way than NW does
             offset = -1;
-            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && x.operand == (object)(sbyte)Scp079HudTranslation.SignalLost) + offset;
+            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && (sbyte)x.operand == (sbyte)Scp079HudTranslation.SignalLost) + offset;
             newInstructions[index].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
