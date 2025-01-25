@@ -16,78 +16,75 @@ namespace Exiled.API.Features.Core.UserSettings
     /// <summary>
     /// Represents a text input setting.
     /// </summary>
-    public class TextInputSetting : SettingBase, IWrapper<SSTextArea>
+    public class TextInputSetting : SettingBase, IWrapper<SSPlaintextSetting>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TextInputSetting"/> class.
         /// </summary>
         /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
         /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
-        /// <param name="foldoutMode"><inheritdoc cref="FoldoutMode"/></param>
-        /// <param name="alignment"><inheritdoc cref="Alignment"/></param>
-        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
-        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public TextInputSetting(
-            int id,
-            string label,
-            SSTextArea.FoldoutMode foldoutMode = SSTextArea.FoldoutMode.NotCollapsable,
-            TextAlignmentOptions alignment = TextAlignmentOptions.TopLeft,
-            string hintDescription = null,
-            HeaderSetting header = null,
-            Action<Player, SettingBase> onChanged = null)
-            : base(new SSTextArea(id, label, foldoutMode, hintDescription, alignment), header, onChanged)
+        /// <param name="placeHolder"><inheritdoc cref="PlaceHolder"/></param>
+        /// <param name="characterLimit"><inheritdoc cref="CharacterLimit"/></param>
+        /// <param name="contentType"><inheritdoc cref="ContentType"/></param>
+        /// /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        public TextInputSetting(int id, string label, string placeHolder = "", int characterLimit = 64, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, string hintDescription = null)
+            : this(new SSPlaintextSetting(id, label, placeHolder, characterLimit, contentType, hintDescription))
         {
-            Base = (SSTextArea)base.Base;
+            Base = (SSPlaintextSetting)base.Base;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextInputSetting"/> class.
         /// </summary>
-        /// <param name="settingBase">A <see cref="SSTextArea"/> instance.</param>
-        internal TextInputSetting(SSTextArea settingBase)
+        /// <param name="settingBase">A <see cref="SSGroupHeader"/> instance.</param>
+        internal TextInputSetting(SSPlaintextSetting settingBase)
             : base(settingBase)
         {
             Base = settingBase;
         }
 
         /// <inheritdoc/>
-        public new SSTextArea Base { get; }
+        public new SSPlaintextSetting Base { get; }
 
         /// <summary>
-        /// Gets or sets the text for the setting.
+        /// Gets a value indicating whether the key is pressed.
         /// </summary>
-        public new string Label
+        public string Text => Base.SyncInputText;
+
+        /// <summary>
+        /// Gets or sets a value indicating the placeholder shown within the PlainTextSetting.
+        /// </summary>
+        public string PlaceHolder
         {
-            get => Base.Label;
-            set => Base.SendTextUpdate(value);
+            get => Base.Placeholder;
+            set => Base.Placeholder = value;
         }
 
         /// <summary>
-        /// Gets or sets the foldout mode.
+        /// Gets or sets a value indicating the type of content within the PlainTextSetting.
         /// </summary>
-        public SSTextArea.FoldoutMode FoldoutMode
+        public TMP_InputField.ContentType ContentType
         {
-            get => Base.Foldout;
-            set => Base.Foldout = value;
+            get => Base.ContentType;
+            set => Base.ContentType = value;
         }
 
         /// <summary>
-        /// Gets or sets the text alignment options.
+        /// Gets or sets a value indicating the max number of characters in the PlainTextSetting.
         /// </summary>
-        public TextAlignmentOptions Alignment
+        public int CharacterLimit
         {
-            get => Base.AlignmentOptions;
-            set => Base.AlignmentOptions = value;
+            get => Base.CharacterLimit;
+            set => Base.CharacterLimit = value;
         }
 
         /// <summary>
-        /// Returns a representation of this <see cref="TextInputSetting"/>.
+        /// Returns a representation of this <see cref="HeaderSetting"/>.
         /// </summary>
         /// <returns>A string in human-readable format.</returns>
         public override string ToString()
         {
-            return base.ToString() + $" /{FoldoutMode}/ *{Alignment}*";
+            return base.ToString() + $" /{Text}/ *{ContentType}* +{CharacterLimit}+";
         }
     }
 }
