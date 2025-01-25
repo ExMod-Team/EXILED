@@ -35,12 +35,17 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the cached <see cref="AlphaWarheadOutsitePanel"/> component.
         /// </summary>
-        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>());
+        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>());
 
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the warhead lever.
         /// </summary>
         public static GameObject Lever => SitePanel.lever.gameObject;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether DeadmanSwitch detonation is enabled.
+        /// </summary>
+        public static bool DeadmanSwitchEnabled { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether automatic detonation is enabled.
