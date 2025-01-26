@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SliderInputSetting.cs" company="ExMod Team">
+// <copyright file="SliderSetting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -13,12 +13,12 @@ namespace Exiled.API.Features.Core.UserSettings
     using global::UserSettings.ServerSpecific;
 
     /// <summary>
-    /// Represents a text input setting.
+    /// Represents a slider setting.
     /// </summary>
-    public class SliderInputSetting : SettingBase, IWrapper<SSSliderSetting>
+    public class SliderSetting : SettingBase, IWrapper<SSSliderSetting>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SliderInputSetting"/> class.
+        /// Initializes a new instance of the <see cref="SliderSetting"/> class.
         /// </summary>
         /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
         /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
@@ -28,18 +28,18 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="isInteger"><inheritdoc cref="IsInteger"/></param>
         /// <param name="stringFormat"><inheritdoc cref="StringFormat"/></param>
         /// <param name="displayFormat"><inheritdoc cref="DisplayFormat"/></param>
-        /// /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        public SliderInputSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger = false, string stringFormat = "0.##", string displayFormat = "{0}", string hintDescription = null)
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        public SliderSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger = false, string stringFormat = "0.##", string displayFormat = "{0}", string hintDescription = null)
             : this(new SSSliderSetting(id, label, minValue, maxValue, defaultValue, isInteger, stringFormat, displayFormat, hintDescription))
         {
             Base = (SSSliderSetting)base.Base;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SliderInputSetting"/> class.
+        /// Initializes a new instance of the <see cref="SliderSetting"/> class.
         /// </summary>
-        /// <param name="settingBase">A <see cref="SSGroupHeader"/> instance.</param>
-        internal SliderInputSetting(SSSliderSetting settingBase)
+        /// <param name="settingBase">A <see cref="SSSliderSetting"/> instance.</param>
+        internal SliderSetting(SSSliderSetting settingBase)
             : base(settingBase)
         {
             Base = settingBase;
@@ -73,7 +73,7 @@ namespace Exiled.API.Features.Core.UserSettings
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the slider uses integers.
+        /// Gets or sets a value indicating whether the slider displays integers.
         /// </summary>
         public bool IsInteger
         {
@@ -113,7 +113,7 @@ namespace Exiled.API.Features.Core.UserSettings
         public new SSSliderSetting Base { get; }
 
         /// <summary>
-        /// Returns a representation of this <see cref="HeaderSetting"/>.
+        /// Returns a representation of this <see cref="SliderSetting"/>.
         /// </summary>
         /// <returns>A string in human-readable format.</returns>
         public override string ToString()

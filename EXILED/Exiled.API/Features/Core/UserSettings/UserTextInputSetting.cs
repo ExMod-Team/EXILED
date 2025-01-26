@@ -14,7 +14,7 @@ namespace Exiled.API.Features.Core.UserSettings
     using TMPro;
 
     /// <summary>
-    /// Represents a text input setting.
+    /// Represents a user text input setting.
     /// </summary>
     public class UserTextInputSetting : SettingBase, IWrapper<SSPlaintextSetting>
     {
@@ -36,7 +36,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <summary>
         /// Initializes a new instance of the <see cref="UserTextInputSetting"/> class.
         /// </summary>
-        /// <param name="settingBase">A <see cref="SSGroupHeader"/> instance.</param>
+        /// <param name="settingBase">A <see cref="SSPlaintextSetting"/> instance.</param>
         internal UserTextInputSetting(SSPlaintextSetting settingBase)
             : base(settingBase)
         {
@@ -47,13 +47,9 @@ namespace Exiled.API.Features.Core.UserSettings
         public new SSPlaintextSetting Base { get; }
 
         /// <summary>
-        /// Gets or sets the value of the text shown to a client (currently testing).
+        /// Gets the value of the text entered by a  client.
         /// </summary>
-        public string Text
-        {
-            get => Base.SyncInputText;
-            set => Base.SyncInputText = value;
-        }
+        public string Text => Base.SyncInputText;
 
         /// <summary>
         /// Gets or sets a value indicating the placeholder shown within the PlainTextSetting.
@@ -83,7 +79,7 @@ namespace Exiled.API.Features.Core.UserSettings
         }
 
         /// <summary>
-        /// Returns a representation of this <see cref="HeaderSetting"/>.
+        /// Returns a representation of this <see cref="UserTextInputSetting"/>.
         /// </summary>
         /// <returns>A string in human-readable format.</returns>
         public override string ToString()
