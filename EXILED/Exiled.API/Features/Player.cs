@@ -3439,7 +3439,8 @@ namespace Exiled.API.Features
         /// <param name="efficacy">Percent of incoming damage absorbed by this stat.</param>
         /// <param name="sustain">The number of seconds to delay the start of the decay.</param>
         /// <param name="persistant">Whether the process is removed when the value hits 0.</param>
-        public void AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
+        /// <returns>The <see cref="AhpStat.AhpProcess"/> instance..</returns>
+        public AhpStat.AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
         {
             ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
