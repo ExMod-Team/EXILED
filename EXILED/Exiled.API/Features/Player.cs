@@ -3442,7 +3442,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="AhpStat.AhpProcess"/> instance..</returns>
         public AhpStat.AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
         {
-            ReferenceHub.playerStats.GetModule<AhpStat>()
+            return ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
         }
 
