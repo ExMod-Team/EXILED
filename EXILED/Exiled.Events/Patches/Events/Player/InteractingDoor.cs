@@ -62,13 +62,13 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingDoor))),
                 new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                // if (!ev.IsAllowed) return;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
+                // if (!ev.CanInteract) return;
+                new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.CanInteract))),
                 new(OpCodes.Brfalse_S, retLabel),
 
-                // CanInteract = ev.CanInteract
+                // CanInteract = ev.IsAllowed (Reminder this is done on purpose because we prefer than IDeniableEvent when cancel use CanInteract and not Interacting)
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.CanInteract))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
                 new(OpCodes.Stloc_1),
             };
 

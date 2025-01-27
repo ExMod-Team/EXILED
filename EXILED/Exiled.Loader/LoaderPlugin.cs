@@ -54,7 +54,7 @@ namespace Exiled.Loader
         /// <summary>
         /// Gets the Exiled Version.
         /// </summary>
-        public override Version Version => Exiled.Loader.Loader.Version;
+        public override Version Version => Loader.Version;
 
         /// <summary>
         /// Gets the Exiled Priority load.
