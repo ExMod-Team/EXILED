@@ -49,12 +49,12 @@ namespace Exiled.Loader
         /// <summary>
         /// Gets the RequiredApiVersion of the EXILED Loader.
         /// </summary>
-        public override Version RequiredApiVersion => AutoUpdateFiles.RequiredLabAPIVersion;
+        public override Version RequiredApiVersion { get; } = Assembly.GetAssembly(typeof(LabApi.Loader.PluginLoader)).GetReferencedAssemblies()[0].Version; // TODO Not finish
 
         /// <summary>
         /// Gets the Exiled Version.
         /// </summary>
-        public override Version Version { get; } = new Version(0, 0, 0);
+        public override Version Version => Exiled.Loader.Loader.Version;
 
         /// <summary>
         /// Gets the Exiled Priority load.
