@@ -1070,6 +1070,15 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the player's gravity.
+        /// </summary>
+        public Vector3 Gravity
+        {
+            get => FpcGravityController.AllSyncedGravities.TryGetValue(ReferenceHub, out Vector3 value) ? value : FpcGravityController.DefaultGravity;
+            set => FpcGravityController.AllSyncedGravities[ReferenceHub] = value;
+        }
+
+        /// <summary>
         /// Gets the global badge of the player. Value will be <see langword="null"/> if the player does not have a global badge.
         /// </summary>
         public Badge? GlobalBadge
