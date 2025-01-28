@@ -73,6 +73,15 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets the player's gravity.
+        /// </summary>
+        public Vector3 Gravity
+        {
+            get => FirstPersonController.FpcModule.Motor.GravityController.Gravity;
+            set => FirstPersonController.FpcModule.Motor.GravityController.Gravity = value;
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether if the player should get <see cref="Enums.DamageType.Falldown"/> damage.
         /// </summary>
         public bool IsFallDamageEnable
