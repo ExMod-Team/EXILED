@@ -168,6 +168,15 @@ namespace Exiled.API.Features
         public static void CloseBlastDoors()
         {
             foreach (BlastDoor door in BlastDoors)
+                door.SetDoorState(true, false);
+        }
+
+        /// <summary>
+        /// Open the surface blast doors.
+        /// </summary>
+        public static void OpenBlastDoors()
+        {
+            foreach (BlastDoor door in BlastDoors)
                 door.SetDoorState(false, true);
         }
 
