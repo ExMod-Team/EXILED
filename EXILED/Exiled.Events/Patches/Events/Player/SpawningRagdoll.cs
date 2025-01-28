@@ -72,32 +72,6 @@ namespace Exiled.Events.Patches.Events.Player
                 // }
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRagdollEventArgs), nameof(SpawningRagdollEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, cnt),
-
-                // destroy ragdoll and ret null
-                new(OpCodes.Ldloc_1),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(BasicRagdoll), nameof(BasicRagdoll.gameObject))),
-                new(OpCodes.Call, Method(typeof(Object), nameof(Object.Destroy), new[] { typeof(Object) })),
-                new(OpCodes.Ldnull),
-                new(OpCodes.Ret),
-
-                // ragdoll transform
-                new CodeInstruction(OpCodes.Ldloc_1).WithLabels(cnt),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(BasicRagdoll), nameof(BasicRagdoll.gameObject))),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GameObject), nameof(GameObject.transform))),
-
-                // ragdoll localScale
-                new(OpCodes.Dup),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Transform), nameof(Transform.localScale))),
-
-                // ev.Scale
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRagdollEventArgs), nameof(SpawningRagdollEventArgs.Scale))),
-
-                // newScale = Vector3.Scale(ragdollScale, ev.Scale);
-                new(OpCodes.Call, Method(typeof(Vector3), nameof(Vector3.Scale), new[] { typeof(Vector3), typeof(Vector3) })),
-
-                // ragdoll.gameObject.transform.localScale = targetScale
-                new(OpCodes.Callvirt, PropertySetter(typeof(Transform), nameof(Transform.localScale))),
             });
 
             newInstructions.InsertRange(newInstructions.Count - 2, new CodeInstruction[]
