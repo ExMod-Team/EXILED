@@ -237,13 +237,7 @@ namespace Exiled.CustomItems.API.Features
                 int firearmAmmo = ev.Firearm.MagazineAmmo;
                 int ammoDrop = -(ClipSize - firearmAmmo - ammoChambered);
 
-                ushort playerAmmo = 0;
-                if (ev.Player.Ammo.TryGetValue(ammoType.GetItemType(), out ushort ammo))
-                {
-                    playerAmmo = ammo;
-                }
-
-                int ammoInInventory = playerAmmo + firearmAmmo;
+                int ammoInInventory = ev.Player.GetAmmo(ammoType) + firearmAmmo;
                 if (ammoToGive < ammoInInventory)
                 {
                     ev.Firearm.MagazineAmmo = ammoToGive;
