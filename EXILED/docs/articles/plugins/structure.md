@@ -93,6 +93,7 @@ namespace MyPluginNamespace
     public class Config : IConfig
     {
         public bool IsEnabled { get; set; }
+        public bool Debug { get; set; }
     }
 }
 ```
@@ -106,6 +107,7 @@ namespace MyPluginNamespace
     public class Config : IConfig
     {
         public bool IsEnabled { get; set; }
+        public bool Debug { get; set; }
         public bool MyBoolConfig { get; set; }
         public string MyStringConfig { get; set; }
         public int MyIntConfig { get; set; } = 5; // Set to 5 by default.
@@ -122,6 +124,8 @@ namespace MyPluginNamespace
     {
         [Description("Whether the plugin is enabled.")]
         public bool IsEnabled { get; set; }
+        [Description("Whether debug messages should be shown in the console.")]
+        bool Debug { get; set; }
         [Description("Config that must be true or false!")]
         public bool MyBoolConfig { get; set; }
         [Description("Config that must be a string!")]
@@ -160,6 +164,8 @@ namespace MyPluginNamespace
     {
         [Description("Whether the plugin is enabled.")]
         public bool IsEnabled { get; set; }
+        [Description("Whether debug messages should be shown in the console.")]
+        bool Debug { get; set; }
         [Description("Config that must be true or false!")]
         public bool MyBoolConfig { get; set; }
         [Description("Config that must be a string!")]

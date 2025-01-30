@@ -23,7 +23,7 @@ Installation af EXILED er ganske enkel. Den indlæser sig selv gennem NW Plugin 
 Hvis du vælger at bruge installationsprogrammet, vil det, hvis det køres korrekt, sørge for at installere alle EXILED-funktioner.
 
 # Windows
-### Automatisk installation ([mere information](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatisk installation ([mere information](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **Note**: Sørg for, at du er på den bruger, der kører serveren, eller at du har administratorrettigheder, før du kører installationsprogrammet.
 
   - Download **`Exiled.Installer-Win.exe` [herfra](https://github.com/ExMod-Team/EXILED/releases)** (klik på Assets -> klik på Installer)  - Placer den i din servermappe (download den dedikerede server, hvis du ikke har gjort det).
@@ -46,7 +46,7 @@ Det var det, EXILED skulle nu være installeret og aktiv, næste gang du starter
   - Download et plugin fra [*deres* udgivelsesside](https://i.imgur.com/u34wgPD.jpg) (**det SKAL være en `.dll`!**)  - Flyt det til: ``C:\Users\(Your_User)\AppData\Roaming\EXILED\Plugins`` (flyt den hertil ved at trykke Win + R, og skriv derefter `%appdata%`)
 
 # Linux
-### Automatisk installation ([mere information](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatisk installation ([mere information](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **Bemærk:** Hvis du installerer EXILED på en fjernserver, skal du sørge for at køre installationsprogrammet som den samme bruger, der kører dine SCP:SL-servere (eller root).
 

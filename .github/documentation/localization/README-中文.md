@@ -25,7 +25,7 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 如果你选择使用一键安装器，在运行正常的情况下它会帮你安装好所有EXILED的功能。
 
 # Windows
-### 全自动安装 ([更多消息](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### 全自动安装 ([更多消息](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **备注**: 在运行安装包前请确保你所使用的用户有管理员权限。
 
   - 下载 **[Exiled.Installer-Win.exe](https://github.com/ExMod-Team/EXILED/releases)** (点击 Assets -> 下载安装包)
@@ -43,7 +43,7 @@ EXILED的安装十分简单。因为是用NW插件API来将自身载入，你会
 
 
 # Linux
-### 全自动安装 ([更多信息](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### 全自动安装 ([更多信息](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **备注:** 如果你正在一个远程服务器上安装EXILED，请确保你运行的.exe的用户和你运行SCP:SL服务器的一致
 
