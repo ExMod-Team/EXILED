@@ -187,7 +187,7 @@ namespace Exiled.API.Features
         /// It is not used now, wait for a new VSR update.
         /// </remarks>
         /// </summary>
-        public static bool TransparentlyModded
+        public static bool IsTransparentlyModded
         {
             get => ServerConsole.TransparentlyModdedServerConfig;
             set => ServerConsole.TransparentlyModdedServerConfig = value;
