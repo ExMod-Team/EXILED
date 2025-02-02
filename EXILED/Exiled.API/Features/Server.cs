@@ -184,7 +184,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether the server is marked as Transparently Modded.
         /// <remarks>
-        /// Is not in used for now wait for a new VSR update.
+        /// It is not used now, wait for a new VSR update.
         /// </remarks>
         /// </summary>
         public static bool TransparentlyModded
