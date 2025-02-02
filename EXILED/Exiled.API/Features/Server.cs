@@ -174,7 +174,7 @@ namespace Exiled.API.Features
         /// Read the VSR for more info about its usage.
         /// </remarks>
         /// </summary>
-        [Obsolete("This field has been deleted it's was using TransparentlyModded as a wrong usage")]
+        [Obsolete("This field has been deleted because it used the wrong field (TransparentlyModded)")]
         public static bool IsHeavilyModded
         {
             get => false;
