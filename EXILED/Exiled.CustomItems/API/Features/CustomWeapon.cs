@@ -225,7 +225,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalReloaded(ReloadedWeaponEventArgs ev)
         {
-            if (!Check(ev.Player.CurrentItem))
+            if (!Check(ev.Item))
                 return;
 
             if (ClipSize > 0)
