@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using System;
     using System.Collections.Generic;
 
+    using Mirror;
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.HumeShield;
@@ -55,5 +56,13 @@ namespace Exiled.API.Features.Roles
         /// <param name="alreadySpawned">The List of Roles already spawned.</param>
         /// <returns>The Spawn Chance.</returns>
         public float GetSpawnChance(List<RoleTypeId> alreadySpawned) => Base is ISpawnableScp spawnableScp ? spawnableScp.GetSpawnChance(alreadySpawned) : 0;
+
+        /// <inheritdoc/>
+        internal override void SendAppearanceSpawnMessage(NetworkWriter writer, PlayerRoleBase basicRole)
+        {
+            writer.WriteByte((byte)basicRole.ServerSpawnReason);
+
+            base.SendAppearanceSpawnMessage(writer, basicRole);
+        }
     }
 }
