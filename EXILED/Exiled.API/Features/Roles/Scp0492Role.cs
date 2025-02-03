@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using Exiled.API.Features.Core;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp049;
@@ -19,6 +20,8 @@ namespace Exiled.API.Features.Roles
     /// </summary>
     public class Scp0492Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole
     {
+        private readonly ConstProperty<float> consumeHeal = new(ZombieConsumeAbility.ConsumeHeal, typeof(ZombieConsumeAbility));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp0492Role"/> class.
         /// </summary>
@@ -111,6 +114,15 @@ namespace Exiled.API.Features.Roles
         /// Gets the amount of time in between SCP-049-2 attacks.
         /// </summary>
         public float AttackCooldown => AttackAbility.BaseCooldown;
+
+        /// <summary>
+        /// Gets or sets the amount of hp that will be healed after ragdoll consuming.
+        /// </summary>
+        public float ConsumeHeal
+        {
+            get => consumeHeal.Value;
+            set => consumeHeal.Value = value;
+        }
 
         /// <summary>
         /// Returns a <see langword="bool"/> indicating whether SCP-049-2 is close enough to a ragdoll to consume it.
