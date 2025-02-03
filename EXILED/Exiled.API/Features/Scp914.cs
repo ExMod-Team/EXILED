@@ -95,6 +95,30 @@ namespace Exiled.API.Features
         public static IReadOnlyCollection<Door> Doors => Scp914Controller._doors.Select(Door.Get).ToList();
 
         /// <summary>
+        /// Gets the list with <see cref="Pickup"/> which the SCP-914 has in the Booth.
+        /// </summary>
+        public static List<Pickup> PickupsInBooth
+        {
+            get
+            {
+                Scp914InputObject(out _, out IEnumerable<Pickup> pickups);
+                return pickups.ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets the list with <see cref="Player"/> which the SCP-914 has in the Booth.
+        /// </summary>
+        public static List<Player> PlayersInBooth
+        {
+            get
+            {
+                Scp914InputObject(out IEnumerable<Player> players, out _);
+                return players.ToList();
+            }
+        }
+
+        /// <summary>
         /// Filters all GameObjects inside SCP-914's intake chamber into players and items.
         /// </summary>
         /// <param name="playersret">The <see cref="List{Player}"/> to return.</param>
