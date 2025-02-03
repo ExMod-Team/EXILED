@@ -44,7 +44,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             MethodInfo executeEventMethod = typeof(EventManager)
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .First(m => m.Name == "ExecuteEvent"
+                .First(m => m.Name == nameof(EventManager.ExecuteEvent)
                         && m.GetParameters().Length == 1
                         && m.ReturnType == typeof(bool));
 
@@ -94,7 +94,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             MethodInfo executeEventMethod = typeof(EventManager)
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .First(m => m.Name == "ExecuteEvent"
+                .First(m => m.Name == nameof(EventManager.ExecuteEvent)
                         && m.GetParameters().Length == 1
                         && m.ReturnType == typeof(bool));
 
