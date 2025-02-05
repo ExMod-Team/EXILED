@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Pickups
 {
+    using System;
+
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items;
@@ -52,6 +54,12 @@ namespace Exiled.API.Features.Pickups
         /// Gets the <see cref="BaseFirearm"/> that this class is encapsulating.
         /// </summary>
         public new BaseFirearm Base { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the pickup is already distributed.
+        /// </summary>
+        [Obsolete("Feature deprecated")]
+        public bool IsDistributed { get; }
 
         /// <summary>
         /// Gets or sets a value indicating how much ammo can contain this <see cref="FirearmPickup"/>.
