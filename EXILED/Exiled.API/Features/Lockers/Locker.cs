@@ -179,7 +179,7 @@ namespace Exiled.API.Features.Lockers
             Chamber chamber = Chambers.GetRandomValue();
 
             // Determine the parent transform where the item will be placed.
-            Transform parentTransform = chamber.UseMultipleSpawnpoints && chamber.Spawnpoints.Count() > 0
+            Transform parentTransform = chamber.UseMultipleSpawnpoints && chamber.Spawnpoints.Any()
                 ? chamber.Spawnpoints.GetRandomValue()
                 : chamber.Spawnpoint;
 
@@ -187,13 +187,15 @@ namespace Exiled.API.Features.Lockers
             if (chamber.IsOpen)
             {
                 item.Transform.SetParent(parentTransform);
-                item.Spawn();
+
+                if(!item.IsSpawned)
+                    item.Spawn();
             }
             else
             {
                 // If the item is already spawned on the network, unspawn it before proceeding.
-                if (NetworkServer.spawned.ContainsKey(item.Base.netId))
-                    NetworkServer.UnSpawn(item.GameObject);
+                if (item.IsSpawned)
+                    item.UnSpawn();
 
                 // Set the item's parent transform.
                 item.Transform.SetParent(parentTransform);

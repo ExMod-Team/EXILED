@@ -532,7 +532,7 @@ namespace Exiled.API.Features.Pickups
         /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
         /// <returns>The created <see cref="Pickup"/>.</returns>
         /// <seealso cref="Projectile.Create(Enums.ProjectileType)"/>
-        public static Pickup Create<T>(ItemType type)
+        public static Pickup Create<T>(ItemType type) // TODO modify return type to "T"
             where T : Pickup => Create(type) as T;
 
         /// <summary>

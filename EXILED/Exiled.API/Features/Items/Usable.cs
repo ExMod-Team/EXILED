@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Items
 {
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
 
@@ -126,13 +127,23 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Uses the item.
         /// </summary>
-        /// <exception cref="System.InvalidOperationException">The <see cref="Item.Owner"/> of the item cannot be <see langword="null"/>.</exception>
-        public virtual void Use()
-        {
-            if (Owner is null)
-                throw new System.InvalidOperationException("The Owner of the item cannot be null.");
+        public virtual void Use() => Use(Owner);
 
-            Owner.UseItem(this);
+        /// <summary>
+        /// Uses the item.
+        /// </summary>
+        /// <param name="owner">Target <see cref="Player"/> to use an <see cref="Usable"/>.</param>
+        public virtual void Use(Player owner = null)
+        {
+            Player oldOwner = Owner;
+            owner ??= Owner;
+
+            Base.Owner = owner.ReferenceHub;
+            Base.ServerOnUsingCompleted();
+
+            typeof(UsableItemsController).InvokeStaticEvent(nameof(UsableItemsController.ServerOnUsingCompleted), new object[] { owner.ReferenceHub, Base });
+
+            Base.Owner = oldOwner.ReferenceHub;
         }
 
         /// <inheritdoc/>
