@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Scp939
     /// <summary>
     /// Contains all information after SCP-939 used its amnestic cloud ability.
     /// </summary>
-    public class PlacedAmnesticCloudEventArgs : IScp939Event
+    public class PlacedAmnesticCloudEventArgs : IScp939Event, IHazardEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlacedAmnesticCloudEventArgs" /> class.
@@ -26,12 +26,12 @@ namespace Exiled.Events.EventArgs.Scp939
         /// <inheritdoc cref="ReferenceHub" />
         /// </param>
         /// <param name="cloud">
-        /// <inheritdoc cref="PlayerRoles.PlayableScps.Scp939.Scp939AmnesticCloudInstance" />
+        /// <inheritdoc cref="Scp939AmnesticCloudInstance" />
         /// </param>
         public PlacedAmnesticCloudEventArgs(ReferenceHub hub, Scp939AmnesticCloudInstance cloud)
         {
             Player = Player.Get(hub);
-            AmnesticCloud = new AmnesticCloudHazard(cloud);
+            AmnesticCloud = Hazard.Get<AmnesticCloudHazard>(cloud);
             Scp939 = Player.Role.As<Scp939Role>();
         }
 
@@ -47,5 +47,8 @@ namespace Exiled.Events.EventArgs.Scp939
 
         /// <inheritdoc/>
         public Scp939Role Scp939 { get; }
+
+        /// <inheritdoc/>
+        public Hazard Hazard => AmnesticCloud;
     }
 }

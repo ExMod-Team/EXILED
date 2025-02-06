@@ -214,6 +214,9 @@ namespace Exiled.API.Features.Toys
         /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
         public static ShootingTargetToy Get(ShootingTarget shootingTarget)
         {
+            if (shootingTarget == null)
+                return null;
+
             AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
             return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
         }

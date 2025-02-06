@@ -8,6 +8,7 @@
 namespace Exiled.Events.Handlers
 {
 #pragma warning disable SA1623 // Property summary documentation should match accessors
+    using Exiled.API.Features.Hazards;
 
     using Exiled.Events.EventArgs.Scp939;
     using Exiled.Events.Features;
@@ -36,6 +37,11 @@ namespace Exiled.Events.Handlers
         /// Invoked after SCP-939 used its amnestic cloud ability.
         /// </summary>
         public static Event<PlacedAmnesticCloudEventArgs> PlacedAmnesticCloud { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after SCP-939 <see cref="AmnesticCloudHazard"/> is state updated.
+        /// </summary>
+        public static Event<UpdatedCloudStateEventArgs> UpdatedCloudState { get; set; } = new();
 
         /// <summary>
         /// Invoked before SCP-939 plays a stolen voice.
@@ -91,6 +97,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlacedAmnesticCloudEventArgs" /> instance.</param>
         public static void OnPlacedAmnesticCloud(PlacedAmnesticCloudEventArgs ev) => PlacedAmnesticCloud.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after <see cref="AmnesticCloudHazard"/> is state updated.
+        /// </summary>
+        /// <param name="ev">The <see cref="UpdatedCloudStateEventArgs" /> instance.</param>
+        public static void OnUpdatedCloudState(UpdatedCloudStateEventArgs ev) => UpdatedCloudState.InvokeSafely(ev);
 
         /// <summary>
         /// Called before SCP-939 plays a stolen voice.

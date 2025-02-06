@@ -24,7 +24,7 @@ Jak wymieniono wyżej, większość EXILED'a jest zawarta poza plikiem Asembly-C
 Jeżeli zdecydujecie się na skorzystanie z instalatora, ten - jeżeli użyty poprawnie, zajmie się instalacją EXILED'a ze wszystkimi jego funkcjami.
 
 # Windows
-### Automatyczna instalacja ([więcej informacji](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatyczna instalacja ([więcej informacji](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **UWAGA**: Przed uruchomieniem instalatora upewnijcie się, że jesteście zalogowani jako użytkownik, który będzie uruchamiał serwer albo ma uprawnienia Administratora.
 
   - Pobierzcie **`Exiled.Installer-Win.exe` kilkając [tutaj](https://github.com/ExMod-Team/EXILED/releases)** (Naciśnijcie na zasoby (Assets) -> naciśnijcie na instalatora)
@@ -49,7 +49,7 @@ To tyle, EXILED powinien być juz zainstalowany i aktywowany podczas następnego
   - Przenieść go do folderu: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (aby się tutaj dostać wystarczy wcisnąć Win + R i wpisać `%appdata%`)
 
 # Linux
-### Automatyczna instalacja ([więcej informacji](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatyczna instalacja ([więcej informacji](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **UWAGA:** Jeżeli instalujecie EXILED'a na serwerze zdalnym, upewnijcie się, że uruchamiacie instalator jako ten sam użytkownik, który będzie uruchamiał serwer (albo jako root).
 
