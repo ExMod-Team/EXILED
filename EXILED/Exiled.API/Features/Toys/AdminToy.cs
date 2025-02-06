@@ -116,6 +116,16 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets the <see cref="GameObject"/> of the toy.
+        /// </summary>
+        public GameObject GameObject => AdminToyBase.gameObject;
+
+        /// <summary>
+        /// Gets the <see cref="Transform"/> of the toy.
+        /// </summary>
+        public Transform Transform => AdminToyBase.transform;
+
+        /// <summary>
         /// Gets or sets the movement smoothing value of the toy.
         /// <para>
         /// Higher values reflect smoother movements.
