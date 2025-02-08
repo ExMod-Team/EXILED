@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Enums
 {
+    using System;
+
     using Extensions;
 
     /// <summary>
@@ -44,5 +46,26 @@ namespace Exiled.API.Enums
         /// Used by <see cref="ItemType.SCP2176"/>.
         /// </summary>
         Scp2176,
+
+        /// <summary>
+        /// Coal.
+        /// Used by <see cref="ItemType.Coal"/>.
+        /// </summary>
+        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        Coal,
+
+        /// <summary>
+        /// SpecialCoal.
+        /// Used by <see cref="ItemType.SpecialCoal"/>.
+        /// </summary>
+        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        SpecialCoal,
+
+        /// <summary>
+        /// Snowball.
+        /// Used by <see cref="ItemType.Snowball"/>.
+        /// </summary>
+        [Obsolete("Only availaible for Christmas.")]
+        Snowball,
     }
 }
