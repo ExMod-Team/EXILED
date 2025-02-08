@@ -30,7 +30,7 @@ namespace Exiled.Loader.Features
 
         /// <summary>
         /// Gets the Easter egg loader message.
-        /// </summary>S
+        /// </summary>
         public static string EasterEgg => @"
    ▄████████    ▄████████ ▀████    ▐████▀  ▄█   ▄█          ▄████████ ████████▄
   ███    ███   ███    ███   ███▌   ████▀  ███  ███         ███    ███ ███   ▀███
