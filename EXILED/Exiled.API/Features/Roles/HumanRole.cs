@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Roles
 {
-    using Mirror;
-
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
     using Respawning;
@@ -68,14 +66,5 @@ namespace Exiled.API.Features.Roles
         /// <param name="hitbox">The <see cref="HitboxType"/>.</param>
         /// <returns>The armor efficacy.</returns>
         public int GetArmorEfficacy(HitboxType hitbox) => Base.GetArmorEfficacy(hitbox);
-
-        /// <inheritdoc/>
-        internal override void SendAppearanceSpawnMessage(NetworkWriter writer, PlayerRoleBase basicRole)
-        {
-            if (UsesUnitNames)
-                writer.WriteByte(basicRole is HumanGameRole humanRole && humanRole.UsesUnitNames ? humanRole.UnitNameId : (byte)0);
-
-            base.SendAppearanceSpawnMessage(writer, basicRole);
-        }
     }
 }

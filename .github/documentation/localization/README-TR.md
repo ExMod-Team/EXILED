@@ -23,7 +23,7 @@ EXILED'ı indirmek oldukça kolaydır. EXILED kendini Northwood'un Plugin API'si
 Eğer kurulum programını kullanmayı seçerseniz ve doğru bir şekilde çalıştırırsanız, bütün EXILED özelliklerini yüklemekle ilgili işlemleri otomatik olarak gerçekleştirir.
 
 # Windows
-### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **Not**: Sunucuyu indirdiğin kullanıcıda olduğundan emin ol veya yönetici olduğundan emin ol.
 
   - **`Exiled.Installer-Win.exe`'i [Buradan indir](https://github.com/ExMod-Team/EXILED/releases)** (Assets'e tıkla -> Installer'ı indir)
@@ -49,7 +49,7 @@ Bu kadar, EXILED şimdi sunucunuzda kuruldu ve bir sonraki sunucu başladığın
   - İndirdiğiniz eklentiyi: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins``'dizinine taşıyın (Win + R Tuşlarına basarak `%appdata%` yazarak buraya taşıyabilirsiniz)
 
 # Linux
-### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Otomatik indirme ([Daha fazla bilgi için tıkla](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **Not:** EXILED'ı uzaktan bağlanılan bir sunucuya indiriyor iseniz, indirme programını sunucuyu kurduğunuz kullanıcı ile açın veya (root) yetkiniz olması gerekir.
 

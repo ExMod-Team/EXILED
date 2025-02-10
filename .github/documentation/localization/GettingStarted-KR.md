@@ -12,7 +12,7 @@ Exiled는 불필요한 부분 없이 게임에서 함수를 직접적으로 호�
 이 문서는 Exiled 플러그인을 만들기 위한 가장 기본적인 부분을 설명하고 있습니다. 여기서부터 Exiled와 함께 당신의 창의력으로 무엇이든지 만들어보세요! 
 
 ### 플러그인 예제
-이 [플러그인 예제](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Example)는 이벤트를 사용하는 방법과 기본적인 구조를 설정하는 방법을 잘 나타내고 있습니다. 이것을 통해 Exiled를 제대로 사용하는 방법을 알 수 있으며, 이 플러그인 예제 안에는 몇 가지의 중요한 부분이 있습니다. 한번 볼까요? 
+이 [플러그인 예제](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Example)는 이벤트를 사용하는 방법과 기본적인 구조를 설정하는 방법을 잘 나타내고 있습니다. 이것을 통해 Exiled를 제대로 사용하는 방법을 알 수 있으며, 이 플러그인 예제 안에는 몇 가지의 중요한 부분이 있습니다. 한번 볼까요? 
 
 #### OnEnable + OnDisable 동적 업데이트
 Exiled는 **Reload** 명령어를 통해 원래 있던 모든 플러그인과 새 플러그인들을 리로드 할 수 있습니다. 이 말은 여러분이 여러분들의 플러그인을 **동적으로 업데이트** 할 수 있게 만들어야 한다는 뜻입니다. 모든 변수, 이벤트, 코루틴 등등은 *무조건* 활성화되었을 때 할당되고 비활성화되었을 때 null이 되어야 합니다. **OnEnable** 메소드는 모든 것들을 활성화시켜야 하고, **OnDisable** 메소드는 모든 것을 비활성화시켜야 합니다. 그러면 **OnReload**는 뭘까요? 정적인 변수들은 리로드 될 때 지워지지 않으므로, 이 메소드는 변수들을 지워지게 놔두고 싶지 않을 때 사용합니다. 예를 들어:
@@ -211,4 +211,4 @@ public override OnEnabled()
 
 #resources 채널에 들어가 유용한 정보들을 찾을 수 있으며, 여러분의 플러그인 개발을 기꺼이 도와줄 Exiled 기여자분들 또는 플러그인 개발자분들이 준비되어 있습니다.
 
-...아니면 현재 존재하는 이벤트를 모두 읽고 싶으시다면 [여기](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Events/EventArgs)를 클릭해주세요!
+...아니면 현재 존재하는 이벤트를 모두 읽고 싶으시다면 [여기](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)를 클릭해주세요!

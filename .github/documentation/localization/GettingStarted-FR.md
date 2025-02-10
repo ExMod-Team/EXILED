@@ -202,4 +202,4 @@ Si vous voulez plus d'informations, vous devriez rejoindre notre [discord!](http
 
 Nous avons un canal #resources que vous pourriez trouver utile, ainsi que des contributeurs Exiled et des développeurs de plugins qui seraient prêts à vous aider dans la création de votre/vos plugin(s).
 
-Ou vous pourriez consulter tous les événements que nous avons ! Si vous voulez les consulter, [ici!](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Events/EventArgs)
+Ou vous pourriez consulter tous les événements que nous avons ! Si vous voulez les consulter, [ici!](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)

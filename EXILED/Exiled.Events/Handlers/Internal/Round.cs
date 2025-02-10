@@ -81,24 +81,6 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.Inventory.ServerDropEverything();
         }
 
-        /// <inheritdoc cref="Handlers.Player.OnSpawned(SpawnedEventArgs)" />
-        public static void OnSpawned(SpawnedEventArgs ev)
-        {
-            if (ev.Reason is SpawnReason.Destroyed or SpawnReason.None)
-                return;
-
-            foreach (Player player in Player.List)
-            {
-                if (player == ev.Player)
-                    continue;
-
-                if (player.Role.TeamAppearances.ContainsKey(ev.Player.Role.Team) || player.Role.TeamAppearances.ContainsKey(ev.OldRole.Team))
-                {
-                    player.Role.UpdateAppearanceFor(ev.Player);
-                }
-            }
-        }
-
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />
         public static void OnActivatingSense(ActivatingSenseEventArgs ev)
         {

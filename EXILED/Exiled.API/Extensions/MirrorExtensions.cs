@@ -10,15 +10,12 @@ namespace Exiled.API.Extensions
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Text;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features.Roles;
-
     using Features;
     using Features.Pools;
 
@@ -27,6 +24,7 @@ namespace Exiled.API.Extensions
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
+    using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.Voice;
     using RelativePositioning;
 
@@ -231,7 +229,9 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
-        public static void ChangeAppearance(this Player player, RoleTypeId type) => ChangeAppearance(player, type, Player.List.Where(x => x != player));
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
+        public static void ChangeAppearance(this Player player, RoleTypeId type, bool skipJump = false, byte unitId = 0) => ChangeAppearance(player, type, Player.List.Where(x => x != player), skipJump, unitId);
 
         /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
@@ -240,23 +240,70 @@ namespace Exiled.API.Extensions
         /// <param name="player">Player to change.</param>
         /// <param name="type">Model type.</param>
         /// <param name="playersToAffect">The players who should see the changed appearance.</param>
-        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect)
+        /// <param name="skipJump">Whether to skip the little jump that works around an invisibility issue.</param>
+        /// <param name="unitId">The UnitNameId to use for the player's new role, if the player's new role uses unit names. (is NTF).</param>
+        public static void ChangeAppearance(this Player player, RoleTypeId type, IEnumerable<Player> playersToAffect, bool skipJump = false, byte unitId = 0)
         {
-            if (!player.IsConnected)
+            if (!player.IsConnected || !RoleExtensions.TryGetRoleBase(type, out PlayerRoleBase roleBase))
                 return;
 
-            if (!player.Role.CheckAppearanceCompatibility(type))
+            bool isRisky = type.GetTeam() is Team.Dead || player.IsDead;
+
+            NetworkWriterPooled writer = NetworkWriterPool.Get();
+            writer.WriteUShort(38952);
+            writer.WriteUInt(player.NetId);
+            writer.WriteRoleType(type);
+
+            if (roleBase is HumanRole humanRole && humanRole.UsesUnitNames)
             {
-                Log.Error($"Prevent Seld-Desync of {player.Nickname} ({player.Role.Type}) with {type}");
-                return;
+                if (player.Role.Base is not HumanRole)
+                    isRisky = true;
+                writer.WriteByte(unitId);
+            }
+
+            if (roleBase is ZombieRole)
+            {
+                if (player.Role.Base is not ZombieRole)
+                    isRisky = true;
+
+                writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(player.MaxHealth), ushort.MinValue, ushort.MaxValue));
+                writer.WriteBool(true);
+            }
+
+            if (roleBase is Scp1507Role)
+            {
+                if (player.Role.Base is not Scp1507Role)
+                    isRisky = true;
+
+                writer.WriteByte((byte)player.Role.SpawnReason);
+            }
+
+            if (roleBase is FpcStandardRoleBase fpc)
+            {
+                if (player.Role.Base is not FpcStandardRoleBase playerfpc)
+                    isRisky = true;
+                else
+                    fpc = playerfpc;
+
+                ushort value = 0;
+                fpc?.FpcModule.MouseLook.GetSyncValues(0, out value, out ushort _);
+                writer.WriteRelativePosition(player.RelativePosition);
+                writer.WriteUShort(value);
             }
 
             foreach (Player target in playersToAffect)
             {
-                player.Role.TrySetIndividualAppearance(target, type, false);
+                if (target != player || !isRisky)
+                    target.Connection.Send(writer.ToArraySegment());
+                else
+                    Log.Error($"Prevent Seld-Desync of {player.Nickname} with {type}");
             }
 
-            player.Role.UpdateAppearance();
+            NetworkWriterPool.Return(writer);
+
+            // To counter a bug that makes the player invisible until they move after changing their appearance, we will teleport them upwards slightly to force a new position update for all clients.
+            if (!skipJump)
+                player.Position += Vector3.up * 0.25f;
         }
 
         /// <summary>

@@ -22,7 +22,7 @@ Tutti gli eventi di EXILED sono scritti con Harmony, il che significa che non è
 L'installazione di EXILED è piuttosto semplice. Si carica tramite l'API del plugin NW. Per questo motivo, ci sono due cartelle all'interno del file  ``Exiled.tar.gz `` nei file di rilascio.  ``SCP Secret Laboratory `` contiene i file necessari per caricare le funzionalità di EXILED nella cartella  ``EXILED ``. Detto questo, tutto ciò che devi fare è spostare queste due cartelle nel percorso appropriato, che viene spiegato di seguito, ed è fatto!
 
 # Windows
-### Installazione automatica ([maggiori informazioni](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Installazione automatica ([maggiori informazioni](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **Nota**: Assicurati di essere connesso con l'utente che esegue il server o di avere i privilegi di amministratore prima di eseguire l'Installer.
 
   - Scarica **`Exiled.Installer-Win.exe` [da qui](https://github.com/ExMod-Team/EXILED/releases)** (clicca su Assets -> clicca sull'Installer)
@@ -49,7 +49,7 @@ Con questo, EXILED dovrebbe ora essere installato e attivo la prossima volta che
   - Spostalo su: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (sposta qui premendo Win + R, quindi scrivendo `%appdata%`)
 
 # Linux
-### Installazione automatica ([maggiori informazioni](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Installazione automatica ([maggiori informazioni](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **Nota:** Se stai installando EXILED su un server remoto, assicurati di eseguire l'Installer come lo stesso utente che avvia i tuoi server SCP:SL (o con privilegi di root).
 

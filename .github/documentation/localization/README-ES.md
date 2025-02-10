@@ -24,7 +24,7 @@ La instalación de EXILED es, en realidad, muy simple. Se carga por sí solo por
 Si eliges el instalador automático (si se ejecuta correctamente) se encargará de instalar todas las funcionalidades de EXILED.
 
 # Windows
-### Instalación automática ([más información](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Instalación automática ([más información](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **Nota:** Asegurate de que estás en el usuario que ejecuta el servidor o tiene privilegios de administrador antes de iniciar el Instalador.
 
   - Descarga **`Exiled.Installer-Win.exe` [de aquí](https://github.com/ExMod-Team/EXILED/releases)** (selecciona Assets -> descarga el Instalador).
@@ -50,7 +50,7 @@ Si eliges el instalador automático (si se ejecuta correctamente) se encargará 
   - Colócalo en: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (muévete a esta carpeta presionando Win + R, después escribiendo `%appdata%`)
 
 # Linux
-### Instalación automática ([más información](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Instalación automática ([más información](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **Nota:** Si estás instalando EXILED en un servidor remoto, asegúrate de que inicias el Instalador con el mismo usuario que ejecuta el servidor de SCP: SL (o con root)
 
