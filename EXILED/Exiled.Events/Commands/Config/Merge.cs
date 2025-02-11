@@ -50,7 +50,7 @@ namespace Exiled.Events.Commands.Config
             LoaderPlugin.Config.ConfigType = ConfigType.Default;
             bool haveBeenSaved = ConfigManager.Save(configs);
 
-            // LabApi.Loader.AssemblyLoader.InstalledPlugins.FirstOrDefault(x => x.PluginName == "Exiled Loader")?.SaveConfig(new LoaderPlugin(), nameof(LoaderPlugin.Config));
+            LoaderPlugin.Instance.SaveConfig();
             response = $"Configs have been merged successfully! Feel free to remove the directory in the following path:\n\"{Paths.IndividualConfigs}\"";
             return haveBeenSaved;
         }

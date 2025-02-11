@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Generic
         private static string BuildUserId(string userId) => $"{userId}@offline";
     }
 
-    /*
+    /* // TODO: Fix for labAPI online mode disabled
     /// <summary>
     ///     Patches <see cref="PlayerAuthenticationManager.Start"/> to add the player's UserId to the <see cref="LabApi.Features.Wrappers.Player"/> dictionary.
     /// </summary>

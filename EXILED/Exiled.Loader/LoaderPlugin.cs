@@ -29,6 +29,11 @@ namespace Exiled.Loader
         /// The config for the EXILED Loader.
         /// </summary>
         public static new Config Config;
+
+        /// <summary>
+        /// The config for the EXILED Loader.
+        /// </summary>
+        public static LoaderPlugin Instance;
 #pragma warning restore SA1401
 
         /// <summary>
@@ -66,6 +71,7 @@ namespace Exiled.Loader
         /// </summary>
         public override void Enable()
         {
+            Instance = this;
             Config = base.Config;
 
             if (Config == null)
