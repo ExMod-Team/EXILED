@@ -275,7 +275,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Destroy all specified <see cref="DecalPoolType"/> objects.
+        /// Destroy specified amount of specified <see cref="DecalPoolType"/> object.
         /// </summary>
         /// <param name="decalType">Decal type to destroy.</param>
         /// <param name="amount">Amount of decals to destroy.</param>
@@ -287,7 +287,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Destroy specified amount of specified <see cref="DecalPoolType"/> object.
+        /// Destroy all specified <see cref="DecalPoolType"/> objects.
         /// </summary>
         /// <param name="decalType">Decal type to destroy.</param>
         public static void Clean(DecalPoolType decalType)
