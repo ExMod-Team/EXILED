@@ -13,6 +13,8 @@ namespace Exiled.API.Features
     using System.Collections.ObjectModel;
     using System.Linq;
 
+    using CommandSystem.Commands.RemoteAdmin.Cleanup;
+    using Decals;
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
@@ -27,6 +29,7 @@ namespace Exiled.API.Features
     using PlayerRoles.Ragdolls;
     using UnityEngine;
     using Utils;
+    using Utils.Networking;
 
     using Object = UnityEngine.Object;
 
@@ -269,6 +272,27 @@ namespace Exiled.API.Features
         {
             foreach (Ragdoll ragDoll in ragDolls)
                 ragDoll.Destroy();
+        }
+
+        /// <summary>
+        /// Destroy all specified <see cref="DecalPoolType"/> objects.
+        /// </summary>
+        /// <param name="decalType">Decal type to destroy.</param>
+        /// <param name="amount">Amount of decals to destroy.</param>
+        public static void Clean(DecalPoolType decalType, int amount)
+        {
+            DecalCleanupMessage msg = new DecalCleanupMessage(decalType, amount);
+
+            msg.SendToAuthenticated();
+        }
+
+        /// <summary>
+        /// Destroy specified amount of specified <see cref="DecalPoolType"/> object.
+        /// </summary>
+        /// <param name="decalType">Decal type to destroy.</param>
+        public static void Clean(DecalPoolType decalType)
+        {
+            Clean(decalType, int.MaxValue);
         }
 
         /// <summary>
