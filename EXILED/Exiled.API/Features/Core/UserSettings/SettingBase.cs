@@ -219,6 +219,14 @@ namespace Exiled.API.Features.Core.UserSettings
         public static void SendToPlayer(Player player) => ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub);
 
         /// <summary>
+        /// Syncs specific settings with the specified target.
+        /// </summary>
+        /// <param name="player">Target player.</param>
+        /// <param name="settings">Settings to send to the player.</param>
+        public static void SendToPlayer(Player player, IEnumerable<SettingBase> settings) =>
+            ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub, settings.Select(setting => setting.Base).ToArray());
+
+        /// <summary>
         /// Registers all settings from the specified collection.
         /// </summary>
         /// <param name="settings">A collection of settings to register.</param>

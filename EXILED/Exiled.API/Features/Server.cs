@@ -174,7 +174,20 @@ namespace Exiled.API.Features
         /// Read the VSR for more info about its usage.
         /// </remarks>
         /// </summary>
+        [Obsolete("This field has been deleted because it used the wrong field (TransparentlyModded)")]
         public static bool IsHeavilyModded
+        {
+            get => false;
+            set => _ = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the server is marked as Transparently Modded.
+        /// <remarks>
+        /// It is not used now, wait for a new VSR update.
+        /// </remarks>
+        /// </summary>
+        public static bool IsTransparentlyModded
         {
             get => ServerConsole.TransparentlyModdedServerConfig;
             set => ServerConsole.TransparentlyModdedServerConfig = value;
