@@ -10,7 +10,7 @@ namespace Exiled.Events.EventArgs.Player
     using System.Reflection;
 
     using API.Features;
-
+    using CommandSystem;
     using Interfaces;
 
     /// <summary>
@@ -32,6 +32,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="issuer">
         /// <inheritdoc cref="Player" />
         /// </param>
+        /// <param name="commandSender">
+        /// <inheritdoc cref="ICommandSender" />
+        /// </param>
         /// <param name="reason">
         /// <inheritdoc cref="Reason" />
         /// </param>
@@ -41,10 +44,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public KickingEventArgs(Player target, Player issuer, string reason, string fullMessage, bool isAllowed = true)
+        public KickingEventArgs(Player target, Player issuer, ICommandSender commandSender, string reason, string fullMessage, bool isAllowed = true)
         {
             Target = target;
             Player = issuer ?? Server.Host;
+            CommandSender = commandSender;
             Reason = reason;
             startkickmessage = fullMessage;
             IsAllowed = isAllowed;
@@ -113,6 +117,11 @@ namespace Exiled.Events.EventArgs.Player
                 issuer = value;
             }
         }
+
+        /// <summary>
+        /// Gets the command sender.
+        /// </summary>
+        public ICommandSender CommandSender { get; }
 
         /// <summary>
         /// Logs the kick, anti-backdoor protection from malicious plugins.
