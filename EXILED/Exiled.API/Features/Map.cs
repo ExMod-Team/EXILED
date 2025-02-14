@@ -279,12 +279,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="decalType">Decal type to destroy.</param>
         /// <param name="amount">Amount of decals to destroy.</param>
-        public static void Clean(DecalPoolType decalType, int amount)
-        {
-            DecalCleanupMessage msg = new DecalCleanupMessage(decalType, amount);
-
-            msg.SendToAuthenticated();
-        }
+        public static void Clean(DecalPoolType decalType, int amount) => new DecalCleanupMessage(decalType, amount).SendToAuthenticated();
 
         /// <summary>
         /// Destroy all specified <see cref="DecalPoolType"/> objects.
