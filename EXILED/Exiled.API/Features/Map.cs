@@ -285,10 +285,7 @@ namespace Exiled.API.Features
         /// Destroy all specified <see cref="DecalPoolType"/> objects.
         /// </summary>
         /// <param name="decalType">Decal type to destroy.</param>
-        public static void Clean(DecalPoolType decalType)
-        {
-            Clean(decalType, int.MaxValue);
-        }
+        public static void Clean(DecalPoolType decalType) => Clean(decalType, int.MaxValue);
 
         /// <summary>
         /// Places a blood decal.
