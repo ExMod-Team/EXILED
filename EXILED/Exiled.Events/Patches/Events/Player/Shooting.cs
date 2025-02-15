@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -34,8 +35,6 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel = generator.DefineLabel();
-            Label continueLabel1 = generator.DefineLabel();
-            Label continueLabel2 = generator.DefineLabel();
 
             /*
             [] <= Here
@@ -59,37 +58,60 @@ namespace Exiled.Events.Patches.Events.Player
                 typeof(ShootingEventArgs),
                 new[] { typeof(InventorySystem.Items.Firearms.Firearm), typeof(ShotBacktrackData).MakeByRefType() });
 
-            CodeInstruction[] patchInstructions1 = GetInstructions(continueLabel1);
-            CodeInstruction[] patchInstructions2 = GetInstructions(continueLabel2);
+            Label continueLabel1 = generator.DefineLabel();
 
-            CodeInstruction[] GetInstructions(Label continueLabel) =>
-                new[]
-                {
-                    // ShootingEventArgs ev = new(firearm, this)
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Newobj, constructorInfo),
+            CodeInstruction[] noTargetInstructions =
+            {
+                // ShootingEventArgs ev = new(firearm, this)
+                new(OpCodes.Ldarg_1),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Newobj, constructorInfo),
 
-                    // Handlers.Player.OnShooting(ev)
-                    new(OpCodes.Dup), // Dup to keep ev on the stack
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShooting))),
+                // Handlers.Player.OnShooting(ev)
+                new(OpCodes.Dup), // Dup to keep ev on the stack
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShooting))),
 
-                    // if (!ev.IsAllowed) return
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
-                    new(OpCodes.Brtrue_S, continueLabel),
-                    new(OpCodes.Leave_S, returnLabel),
+                // if (!ev.IsAllowed) return
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
+                new(OpCodes.Brtrue_S, continueLabel1),
 
-                    new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
-                };
+                new(OpCodes.Leave_S, returnLabel),
+                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel1),
+            };
+
+            Label continueLabel2 = generator.DefineLabel();
+
+            CodeInstruction[] hasTargetInstructions =
+            {
+                // ShootingEventArgs ev = new(firearm, this)
+                new(OpCodes.Ldarg_1),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Newobj, constructorInfo),
+
+                // Handlers.Player.OnShooting(ev)
+                new(OpCodes.Dup), // Dup to keep ev on the stack
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShooting))),
+
+                // if (!ev.IsAllowed) return
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
+                new(OpCodes.Brtrue_S, continueLabel2),
+
+                // Dispose target FpcBacktracker
+                new(OpCodes.Ldloc_S, 5),
+                new(OpCodes.Callvirt, Method(typeof(IDisposable), nameof(IDisposable.Dispose))),
+
+                new(OpCodes.Leave_S, returnLabel),
+                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel2),
+            };
 
             newInstructions.InsertRange( // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up
                 noTargetIndex,
-                patchInstructions1);
+                noTargetInstructions);
             newInstructions[noTargetIndex].WithLabels(noTargetLabels);
 
             newInstructions.InsertRange(
                 hasTargetIndex,
-                patchInstructions2);
+                hasTargetInstructions);
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
