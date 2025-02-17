@@ -50,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label notAllowed = generator.DefineLabel();
             Label skip = generator.DefineLabel();
             Label skip2 = generator.DefineLabel();
-            Label @break = newInstructions.FindLast(instruction => instruction.IsLdarg(0)).labels[0];
+            Label @break = (Label)newInstructions.FindLast(instruction => instruction.opcode == OpCodes.Br_S).operand;
 
             int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Stopwatch), nameof(Stopwatch.Stop)))) + offset;
