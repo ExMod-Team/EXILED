@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // referenceHub
+                    // pocketDimensionTeleport
                     new CodeInstruction(OpCodes.Ldarg_0),
 
                     // referenceHub
@@ -57,7 +57,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Call, Method(typeof(Scp106PocketExitFinder), nameof(Scp106PocketExitFinder.GetBestExitPosition), new[] { typeof(IFpcRole) })),
 
-                    // EscapingPocketDimensionEventArgs ev = new(Player, Vector3)
+                    // EscapingPocketDimensionEventArgs ev = new(PocketDimensionTeleport, Player, Vector3)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingPocketDimensionEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
