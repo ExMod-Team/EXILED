@@ -3535,7 +3535,7 @@ namespace Exiled.API.Features
                     Teleport(locker.transform.position + Vector3.up + offset);
                     break;
                 case LockerChamber chamber:
-                    Teleport(chamber._spawnpoint.position + Vector3.up + offset);
+                    Teleport(chamber.Spawnpoint.position + Vector3.up + offset);
                     break;
                 case ElevatorChamber elevator:
                     Teleport(elevator.transform.position + Vector3.up + offset);

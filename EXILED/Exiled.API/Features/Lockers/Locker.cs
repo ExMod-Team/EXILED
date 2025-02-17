@@ -220,7 +220,7 @@ namespace Exiled.API.Features.Lockers
                 // If the chamber is configured to spawn items on the first opening, add the item to the list of items to be spawned.
                 // Otherwise, spawn the item immediately.
                 if (chamber.InitiallySpawn)
-                    chamber.Base._toBeSpawned.Add(item.Base);
+                    chamber.Base.ToBeSpawned.Add(item.Base);
                 else
                     ItemDistributor.SpawnPickup(item.Base);
             }

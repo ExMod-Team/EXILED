@@ -77,13 +77,13 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         public IEnumerable<Pickup> ToBeSpawned
         {
-            get => Base._toBeSpawned.Select(Pickup.Get);
+            get => Base.ToBeSpawned.Select(Pickup.Get);
             set
             {
-                Base._toBeSpawned.Clear();
+                Base.ToBeSpawned.Clear();
 
                 foreach (Pickup pickup in value)
-                    Base._toBeSpawned.Add(pickup.Base);
+                    Base.ToBeSpawned.Add(pickup.Base);
             }
         }
 
@@ -137,8 +137,8 @@ namespace Exiled.API.Features.Lockers
         /// </remarks>
         public Transform Spawnpoint
         {
-            get => Base._spawnpoint;
-            set => Base._spawnpoint = value;
+            get => Base.Spawnpoint;
+            set => Base.Spawnpoint = value;
         }
 
         /// <summary>
@@ -146,8 +146,8 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         public bool InitiallySpawn
         {
-            get => Base._spawnOnFirstChamberOpening;
-            set => Base._spawnOnFirstChamberOpening = value;
+            get => Base.SpawnOnFirstChamberOpening;
+            set => Base.SpawnOnFirstChamberOpening = value;
         }
 
         /// <summary>
@@ -155,8 +155,8 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         public float Cooldown
         {
-            get => Base._targetCooldown;
-            set => Base._targetCooldown = value;
+            get => Base.TargetCooldown;
+            set => Base.TargetCooldown = value;
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace Exiled.API.Features.Lockers
                     continue;
                 }
 
-                Base._toBeSpawned.Add(pickup.Base);
+                Base.ToBeSpawned.Add(pickup.Base);
             }
         }
 

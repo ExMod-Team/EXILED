@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches the <see cref="PocketDimensionTeleport.Exit(ReferenceHub)"/> method.
+    /// Patches the <see cref="PocketDimensionTeleport.Exit(PocketDimensionTeleport, ReferenceHub)"/> method.
     /// Adds the <see cref="Handlers.Player.EscapingPocketDimension"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.EscapingPocketDimension))]
@@ -48,7 +48,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // referenceHub
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldarg_0),
+
+                    // referenceHub
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
 
                     // Scp106PocketExitFinder.GetBestExitPosition(fpcRole)
                     new(OpCodes.Ldloc_0),

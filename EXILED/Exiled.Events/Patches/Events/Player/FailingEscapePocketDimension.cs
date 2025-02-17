@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="PocketDimensionTeleport.Kill(ReferenceHub)" />.
+    /// Patches <see cref="PocketDimensionTeleport.Kill(PocketDimensionTeleport, ReferenceHub)" />.
     /// Adds the <see cref="Handlers.Player.FailingEscapePocketDimension" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.FailingEscapePocketDimension))]
@@ -39,13 +39,16 @@ namespace Exiled.Events.Patches.Events.Player
                 0,
                 new[]
                 {
-                    // referenceHub
+                    // pocketDimensionTeleport
                     new CodeInstruction(OpCodes.Ldarg_0),
+
+                    // referenceHub
+                    new CodeInstruction(OpCodes.Ldarg_1),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // FailingEscapePocketDimensionEventArgs ev = new(ReferenceHub, bool)
+                    // FailingEscapePocketDimensionEventArgs ev = new(PocketDimensionTeleport, ReferenceHub, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FailingEscapePocketDimensionEventArgs))[0]),
                     new(OpCodes.Dup),
 

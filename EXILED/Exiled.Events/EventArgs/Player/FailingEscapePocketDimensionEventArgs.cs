@@ -21,14 +21,18 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="FailingEscapePocketDimensionEventArgs" /> class.
         /// </summary>
+        /// <param name="pocketDimensionTeleport">
+        /// <inheritdoc cref="Teleporter" />
+        /// </param>
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public FailingEscapePocketDimensionEventArgs(Player player, bool isAllowed = true)
+        public FailingEscapePocketDimensionEventArgs(PocketDimensionTeleport pocketDimensionTeleport, Player player, bool isAllowed = true)
         {
+            Teleporter = pocketDimensionTeleport;
             Player = player;
             IsAllowed = isAllowed;
         }
@@ -36,7 +40,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the PocketDimensionTeleport the player walked into.
         /// </summary>
-        [Obsolete("can't be used")]
         public PocketDimensionTeleport Teleporter { get; }
 
         /// <summary>

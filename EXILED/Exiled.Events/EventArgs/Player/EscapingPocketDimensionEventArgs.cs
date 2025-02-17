@@ -21,17 +21,26 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="EscapingPocketDimensionEventArgs" /> class.
         /// </summary>
+        /// <param name="pocketDimensionTeleport">
+        /// <inheritdoc cref="Teleporter" />
+        /// </param>
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="position">
         /// <inheritdoc cref="TeleportPosition" />
         /// </param>
-        public EscapingPocketDimensionEventArgs(Player player, Vector3 position)
+        public EscapingPocketDimensionEventArgs(PocketDimensionTeleport pocketDimensionTeleport, Player player, Vector3 position)
         {
+            Teleporter = pocketDimensionTeleport;
             Player = player;
             TeleportPosition = position;
         }
+
+        /// <summary>
+        /// Gets the PocketDimensionTeleport the player walked into.
+        /// </summary>
+        public PocketDimensionTeleport Teleporter { get; }
 
         /// <summary>
         /// Gets the player who's escaping the pocket dimension.
