@@ -290,6 +290,7 @@ Last Update (14.0.0.2)
 - [SpectatorSpawnReason](#spectatorspawnreason)
 - [State](#state)
 - [States](#states)
+- [StatMessageType](#statmessagetype)
 - [StatusType](#statustype)
 - [SteamLobbyPrivacy](#steamlobbyprivacy)
 - [StorageLocation](#storagelocation)
@@ -1747,6 +1748,7 @@ Last Update (14.0.0.2)
  [2] = CuffedClassD
  [3] = Scientist
  [4] = CuffedScientist
+ [5] = Custom
 ```
 
 </details>
@@ -4632,6 +4634,17 @@ Last Update (14.0.0.2)
  [3] = ClientConnecting
  [4] = ClientConnected
  [5] = Server
+```
+
+</details>
+
+### StatMessageType
+
+<details><summary><b>PlayerStatsSystem.SyncedStatMessages+StatMessageType</b></summary>
+
+```
+ [0] = CurrentValue
+ [1] = MaxValue
 ```
 
 </details>
