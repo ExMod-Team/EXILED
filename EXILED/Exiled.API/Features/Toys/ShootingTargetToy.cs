@@ -66,10 +66,8 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public ShootingTarget Base { get; }
 
-        /// <summary>
-        /// Gets the <see cref="UnityEngine.GameObject"/> of the target.
-        /// </summary>
-        public GameObject GameObject => Base.gameObject;
+        /// <inheritdoc cref="AdminToy.GameObject"/>
+        public new GameObject GameObject => base.GameObject;
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the bullseye.

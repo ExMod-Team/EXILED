@@ -34,6 +34,7 @@ namespace Exiled.API.Extensions
             SpawnLocationType.Inside914,
             SpawnLocationType.Inside049Armory,
             SpawnLocationType.InsideLczCafe,
+            SpawnLocationType.Inside939Cryo,
         };
 
         /// <summary>
@@ -102,6 +103,11 @@ namespace Exiled.API.Extensions
             SpawnLocationType.Inside173Connector => "173_CONNECTOR",
             SpawnLocationType.InsideEscapePrimary => "ESCAPE_PRIMARY",
             SpawnLocationType.InsideEscapeSecondary => "ESCAPE_SECONDARY",
+            SpawnLocationType.InsideGr18Glass => "GR18_INNER",
+            SpawnLocationType.Inside106Primary => "106_PRIMARY",
+            SpawnLocationType.Inside106Secondary => "106_SECONDARY",
+            SpawnLocationType.Inside939Cryo => "939_CRYO",
+            SpawnLocationType.Inside079Armory => "079_ARMORY",
             _ => default,
         };
     }
