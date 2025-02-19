@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Fixes
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Fix to add <see cref="Npc"/>> created via RA to the <see cref="Npc.List"/>>.
+    /// Fix to add <see cref="Npc"/> created via RA to the <see cref="Npc.List"/>.
     /// </summary>
     [HarmonyPatch(typeof(SpawnDummyCommand), nameof(SpawnDummyCommand.Execute))]
     internal static class RemoteAdminNpcCommandAddToDictionaryFix
