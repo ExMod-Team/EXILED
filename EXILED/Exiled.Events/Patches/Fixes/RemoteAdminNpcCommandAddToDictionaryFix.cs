@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Fixes
     /// Fix to add <see cref="Npc"/>> created via RA to the <see cref="Npc.List"/>>.
     /// </summary>
     [HarmonyPatch(typeof(SpawnDummyCommand), nameof(SpawnDummyCommand.Execute))]
-    internal class RemoteAdminNpcCommandAddToDictionaryFix
+    internal static class RemoteAdminNpcCommandAddToDictionaryFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -49,11 +49,11 @@ namespace Exiled.Events.Patches.Fixes
                         new(OpCodes.Newobj,   Constructor(typeof(Npc), new[] { typeof(ReferenceHub) })),
                         new(OpCodes.Stloc_S,  npc.LocalIndex),
 
-                        // Player.Dictionary::get_Dictionary
+                        // Player.Dictionary.get_Dictionary
                         new(OpCodes.Call,     PropertyGetter(typeof(Player), nameof(Player.Dictionary))),
                         new(OpCodes.Ldloc_S,  npc.LocalIndex),
 
-                        // Player::GameObject_getGameObject
+                        // Player::GameObject.get_GameObject
                         new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.GameObject))),
                         new(OpCodes.Ldloc_S,  npc.LocalIndex),
 
