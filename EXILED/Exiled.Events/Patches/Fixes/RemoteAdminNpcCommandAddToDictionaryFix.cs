@@ -62,9 +62,7 @@ namespace Exiled.Events.Patches.Fixes
                     });
 
             for (int i = 0; i < newInstructions.Count; i++)
-            {
                 yield return newInstructions[i];
-            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
