@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp049;
@@ -127,5 +129,23 @@ namespace Exiled.API.Features.Roles
         /// <param name="ragdoll">The ragdoll to check.</param>
         /// <returns><see langword="true"/> if close enough to consume the body; otherwise, <see langword="false"/>.</returns>
         public bool IsInConsumeRange(Ragdoll ragdoll) => ragdoll is not null && IsInConsumeRange(ragdoll.Base);
+
+        /// <inheritdoc/>
+        internal override void SendAppearanceSpawnMessage(NetworkWriter writer, PlayerRoleBase basicRole)
+        {
+            if (basicRole is ZombieRole basicZombieRole)
+            {
+                writer.WriteUShort(basicZombieRole._syncMaxHealth);
+                writer.WriteBool(basicZombieRole._showConfirmationBox);
+            }
+            else
+            {
+                // Doesn't really affect anything
+                writer.WriteUShort(400);
+                writer.WriteBool(false);
+            }
+
+            base.SendAppearanceSpawnMessage(writer, basicRole);
+        }
     }
 }
