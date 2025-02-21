@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using Exiled.API.Enums;
+    using Exiled.API.Features.Core;
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.HumeShield;
@@ -25,6 +26,8 @@ namespace Exiled.API.Features.Roles
     /// </summary>
     public class Scp3114Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole, ISpawnableScp
     {
+        private static ConstProperty<float> humeShieldReward = new(Scp3114Slap.HitHumeShieldReward, typeof(Scp3114Slap));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp3114Role"/> class.
         /// </summary>
@@ -222,6 +225,15 @@ namespace Exiled.API.Features.Roles
         /// Gets or sets the next bound dance.
         /// </summary>
         public DanceType? NextDanceType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hume shield reward.
+        /// </summary>
+        public float HumeShieldReward
+        {
+            get => humeShieldReward.Value;
+            set => humeShieldReward.Value = value;
+        }
 
         /// <summary>
         /// Gets or sets the bound dance.
