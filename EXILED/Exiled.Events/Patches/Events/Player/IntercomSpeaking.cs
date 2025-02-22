@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Player
             Label returnLabel = generator.DefineLabel();
 
             const int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.StoresField(Field(typeof(Intercom), nameof(Intercom._curSpeaker))))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.StoresField(Field(typeof(Intercom), nameof(Intercom._curSpeaker)))) + offset;
 
             newInstructions.InsertRange(
                 index,
