@@ -49,6 +49,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // this._hub
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Ldfld, Field(typeof(PlayerStats), nameof(PlayerStats._hub))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // handler
                     new(OpCodes.Ldarg_1),
