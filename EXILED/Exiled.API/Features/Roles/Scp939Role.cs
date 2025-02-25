@@ -90,6 +90,11 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         ~Scp939Role() => ListPool<Player>.Pool.Return(VisiblePlayers);
 
+        /// <summary>
+        /// Gets a list of players who are turned away from SCP-939 AmnesticCloud Ability.
+        /// </summary>
+        public static HashSet<Player> TurnedPlayers { get; } = new(20);
+
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp939;
 
