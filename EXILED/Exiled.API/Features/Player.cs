@@ -2908,6 +2908,22 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Removes specific candy from the players <see cref="Scp330Bag"/>.
+        /// </summary>
+        /// <param name="candyType">The <see cref="CandyKindID"/> to remove.</param>
+        /// <returns><see langword="true"/> if a candy was removed.</returns>
+        public bool TryRemoveCandу(CandyKindID candyType)
+        {
+            if (!Scp330Bag.TryGetBag(ReferenceHub, out Scp330Bag bag))
+                return false;
+
+            bool result = bag.Candies.Remove(candyType);
+            bag.ServerRefreshBag();
+
+            return result;
+        }
+
+        /// <summary>
         /// Resets the player's inventory to the provided list of items, clearing any items it already possess.
         /// </summary>
         /// <param name="newItems">The new items that have to be added to the inventory.</param>
