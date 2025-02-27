@@ -2908,19 +2908,23 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Removes specific candy from the players <see cref="Scp330Bag"/>.
+        /// Removes specific candy from the players <see cref="Scp330"/>.
         /// </summary>
         /// <param name="candyType">The <see cref="CandyKindID"/> to remove.</param>
+        /// <param name="removeAll">Remove all candy of that type.</param>
         /// <returns><see langword="true"/> if a candy was removed.</returns>
-        public bool TryRemoveCandу(CandyKindID candyType)
+        public bool TryRemoveCandу(CandyKindID candyType, bool removeAll = false)
         {
-            if (!Scp330Bag.TryGetBag(ReferenceHub, out Scp330Bag bag))
-                return false;
+            foreach (Item item in Items)
+            {
+                if (item is not Scp330 bag)
+                    continue;
 
-            bool result = bag.Candies.Remove(candyType);
-            bag.ServerRefreshBag();
+                if (bag.RemoveCandy(candyType, removeAll) > 0)
+                    return true;
+            }
 
-            return result;
+            return false;
         }
 
         /// <summary>
