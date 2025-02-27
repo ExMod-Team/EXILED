@@ -642,9 +642,9 @@ namespace Exiled.CustomItems.API.Features
                 Pickup? pickup;
                 if (spawnPoint is LockerSpawnPoint lockerSpawnPoint && lockerSpawnPoint.UseChamber)
                 {
-                    lockerSpawnPoint.GetSpawningInfo(out _, out Chamber chamber, out Vector3 position);
+                    lockerSpawnPoint.GetSpawningInfo(out _, out Chamber? chamber, out Vector3 position);
                     pickup = Spawn(position);
-                    chamber.AddItem(pickup!);
+                    chamber?.AddItem(pickup);
                 }
                 else
                 {

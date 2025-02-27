@@ -72,7 +72,8 @@ namespace Exiled.API.Features.Spawn
         /// <param name="chamber">The chamber to spawn in. Null when <see cref="UseChamber"/> is false.</param>
         /// <param name="position">The position to spawn in.</param>
         /// <exception cref="NullReferenceException">No locker was found.</exception>
-        public void GetSpawningInfo(out Locker locker, out Chamber chamber, out Vector3 position)
+        #nullable enable
+        public void GetSpawningInfo(out Locker locker, out Chamber? chamber, out Vector3 position)
         {
             locker = Locker.Random(Zone, Type) ?? throw new NullReferenceException("No locker found in the specified zone.");
             chamber = UseChamber ? locker.Chambers.GetRandomValue() : null;
