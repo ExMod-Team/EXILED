@@ -17,6 +17,7 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
+    using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Spawn;
@@ -25,15 +26,10 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp914;
     using Exiled.Loader;
-
     using InventorySystem.Items.Pickups;
-
     using MEC;
-
     using PlayerRoles;
-
     using UnityEngine;
-
     using YamlDotNet.Serialization;
 
     using static CustomItems;
@@ -643,16 +639,26 @@ namespace Exiled.CustomItems.API.Features
                     Log.Debug($"Spawned {Name} at {spawnPoint.Position} ({spawnPoint.Name})");
                 }*/
 
-                Pickup? pickup = Spawn(spawnPoint.Position);
+                Pickup? pickup;
+                if (spawnPoint is LockerSpawnPoint lockerSpawnPoint)
+                {
+                    lockerSpawnPoint.GetSpawningInfo(out _, out Chamber chamber, out Vector3 position);
+                    pickup = Spawn(position);
+                    chamber.AddItem(pickup!);
+                }
+                else
+                {
+                    pickup = Spawn(spawnPoint.Position);
+                }
 
                 if (pickup == null)
                     continue;
 
-                if (spawnPoint is LockerSpawnPoint { UseChamber: true } lockerSpawnPoint)
+                /*if (spawnPoint is LockerSpawnPoint { UseChamber: true } lockerSpawnPoint)
                 {
                     Exiled.API.Features.Lockers.Locker? foundLocker = Exiled.API.Features.Lockers.Locker.Random(lockerSpawnPoint.Zone, lockerSpawnPoint.Type);
                     foundLocker?.AddItem(pickup);
-                }
+                }*/
 
                 if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
                 {

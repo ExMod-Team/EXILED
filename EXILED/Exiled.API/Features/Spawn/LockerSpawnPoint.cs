@@ -4,12 +4,14 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
+
 namespace Exiled.API.Features.Spawn
 {
     using System;
     using System.Linq;
 
     using Exiled.API.Enums;
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Lockers;
     using UnityEngine;
     using YamlDotNet.Serialization;
@@ -57,16 +59,24 @@ namespace Exiled.API.Features.Spawn
         {
             get
             {
-                Locker foundLocker = Locker.Random(Zone, Type) ?? throw new NullReferenceException("No locker found in the specified zone.");
-
-                // If UseChamber is true, use a random chamber's position.
-                if (UseChamber)
-                    return foundLocker.RandomChamberPosition;
-
-                // Otherwise, use the Offset if provided, or the locker's position.
-                return Offset != Vector3.zero ? foundLocker.Transform.TransformPoint(Offset) : foundLocker.Position;
+                GetSpawningInfo(out _, out _, out Vector3 position);
+                return position;
             }
             set => throw new InvalidOperationException("The position of this type of SpawnPoint cannot be changed.");
+        }
+
+        /// <summary>
+        /// Gets the spawn info.
+        /// </summary>
+        /// <param name="locker">The locker to spawn in.</param>
+        /// <param name="chamber">The chamber to spawn in. Null when <see cref="UseChamber"/> is false.</param>
+        /// <param name="position">The position to spawn in.</param>
+        /// <exception cref="NullReferenceException">No locker was found.</exception>
+        public void GetSpawningInfo(out Locker locker, out Chamber chamber, out Vector3 position)
+        {
+            locker = Locker.Random(Zone, Type) ?? throw new NullReferenceException("No locker found in the specified zone.");
+            chamber = UseChamber ? locker.Chambers.GetRandomValue() : null;
+            position = chamber?.GetRandomSpawnPoint() ?? (Offset == Vector3.zero ? locker.Position : locker.Transform.TransformPoint(Offset));
         }
     }
 }
