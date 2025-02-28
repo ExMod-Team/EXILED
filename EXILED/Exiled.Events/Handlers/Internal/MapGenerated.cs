@@ -43,7 +43,7 @@ namespace Exiled.Events.Handlers.Internal
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.Dead] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Spectator);
             PlayerRoles.RoleAssign.HumanSpawner.Handlers[PlayerRoles.Team.Flamingos] = new PlayerRoles.RoleAssign.OneRoleHumanSpawner(PlayerRoles.RoleTypeId.Flamingo);
 
-            Timing.CallDelayed(1, Handlers.Map.OnGenerated);
+            Timing.CallDelayed(Timing.WaitForOneFrame, Handlers.Map.OnGenerated);
         }
     }
 }
