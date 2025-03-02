@@ -574,14 +574,20 @@ namespace Exiled.CustomItems.API.Features
                 if (Loader.Random.NextDouble() * 100 >= spawnPoint.Chance || (limit > 0 && spawned >= limit))
                     continue;
 
-                spawned++;
-
                 Pickup? pickup;
                 if (spawnPoint is LockerSpawnPoint { UseChamber: true } lockerSpawnPoint)
                 {
-                    lockerSpawnPoint.GetSpawningInfo(out _, out Chamber? chamber, out Vector3 position);
-                    pickup = Spawn(position);
-                    chamber?.AddItem(pickup);
+                    try
+                    {
+                        lockerSpawnPoint.GetSpawningInfo(out _, out Chamber? chamber, out Vector3 position);
+                        pickup = Spawn(position);
+                        chamber?.AddItem(pickup);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"CustomItem {Name}({Id} failed to spawn: {e.Message})");
+                        continue;
+                    }
                 }
                 else
                 {
@@ -590,6 +596,8 @@ namespace Exiled.CustomItems.API.Features
 
                 if (pickup == null)
                     continue;
+
+                spawned++;
 
                 /*if (pickup.Is(out FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
                 {
