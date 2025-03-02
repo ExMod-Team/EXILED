@@ -233,12 +233,10 @@ namespace Exiled.API.Features.Lockers
                 SpawnablesDistributorBase.BodiesToUnfreeze.Add(item.Rigidbody);
             }
 
-            // If the chamber is configured to spawn items on the first opening, add the item to the list of items to be spawned.
-            // Otherwise, spawn the item immediately.
-            if (InitiallySpawn)
-                Base._toBeSpawned.Add(item.Base);
-            else
-                ItemDistributor.SpawnPickup(item.Base);
+            Base.Content.Add(item.Base);
+            item.Spawn();
+            if (Base._wasEverOpened)
+                item.IsLocked = false;
         }
 
         /// <summary>
