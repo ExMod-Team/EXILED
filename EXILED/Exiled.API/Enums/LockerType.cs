@@ -46,9 +46,15 @@ namespace Exiled.API.Enums
         Adrenaline,
 
         /// <summary>
-        /// Unknow type of locker.
+        /// Unknown type of locker.
         /// </summary>
-        Unknow,
+        Unknown,
+
+        /// <summary>
+        /// Unknown type of locker.
+        /// </summary>
+        [Obsolete("Use LockerType.Unknown", true)]
+        Unknow = Unknown,
 
         /// <summary>
         /// MircoHid pedestal.

@@ -48,7 +48,7 @@ namespace Exiled.API.Extensions
             "RegularMedkitStructure" => LockerType.Medkit,
             "AdrenalineMedkitStructure" => LockerType.Adrenaline,
             "MicroHIDpedestal" => LockerType.MicroHid,
-            _ => LockerType.Unknow,
+            _ => LockerType.Unknown,
         };
     }
 }
