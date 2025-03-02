@@ -8,7 +8,6 @@
 namespace Exiled.API.Features.Spawn
 {
     using System;
-    using System.Linq;
 
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
@@ -40,7 +39,7 @@ namespace Exiled.API.Features.Spawn
         /// <summary>
         /// Gets or sets the type of the <see cref="Locker"/>.
         /// </summary>
-        public LockerType Type { get; set; } = LockerType.Unknow;
+        public LockerType Type { get; set; } = LockerType.Unknown;
 
         /// <inheritdoc/>
         public override float Chance { get; set; }
@@ -75,7 +74,7 @@ namespace Exiled.API.Features.Spawn
         #nullable enable
         public void GetSpawningInfo(out Locker locker, out Chamber? chamber, out Vector3 position)
         {
-            locker = Locker.Random(Zone, Type) ?? throw new NullReferenceException("No locker found in the specified zone.");
+            locker = Locker.Random(Zone, Type) ?? throw new NullReferenceException($"No locker found of type {Type} in {Zone}.");
             chamber = UseChamber ? locker.Chambers.GetRandomValue() : null;
             position = chamber?.GetRandomSpawnPoint() ?? (Offset == Vector3.zero ? locker.Position : locker.Transform.TransformPoint(Offset));
         }

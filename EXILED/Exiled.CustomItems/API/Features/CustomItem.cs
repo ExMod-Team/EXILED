@@ -640,7 +640,7 @@ namespace Exiled.CustomItems.API.Features
                 }*/
 
                 Pickup? pickup;
-                if (spawnPoint is LockerSpawnPoint lockerSpawnPoint && lockerSpawnPoint.UseChamber)
+                if (spawnPoint is LockerSpawnPoint { UseChamber: true } lockerSpawnPoint)
                 {
                     lockerSpawnPoint.GetSpawningInfo(out _, out Chamber? chamber, out Vector3 position);
                     pickup = Spawn(position);
@@ -660,7 +660,7 @@ namespace Exiled.CustomItems.API.Features
                     foundLocker?.AddItem(pickup);
                 }*/
 
-                if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
+                if (pickup.Is(out FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
                 {
                     // set MaxAmmo if synced TODO
                 }
