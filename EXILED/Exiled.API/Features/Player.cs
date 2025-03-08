@@ -3050,6 +3050,39 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Messages the given <see cref="Features.Message"/> to the player.
+        /// </summary>
+        /// <param name="message">The <see cref="Features.Message"/> to be messaged.</param>
+        /// <param name="shouldClearPrevious">Clears all player's messages before sending the new one.</param>
+        public void Message(Message message, bool shouldClearPrevious = false)
+        {
+            if (message.Show)
+                Message(message.Duration, message.Content, message.Type, shouldClearPrevious);
+        }
+
+        /// <summary>
+        /// Shows a message to the player.
+        /// </summary>
+        /// <param name="duration">The message duration.</param>
+        /// <param name="message">The message to be messaged.</param>
+        /// <param name="type">The message type.</param>
+        /// <param name="shouldClearPrevious">Clears all player's messages before sending the new one.</param>
+        public void Message(ushort duration, string message, MessageType type = MessageType.Broadcast, bool shouldClearPrevious = false)
+        {
+            if (type == MessageType.Broadcast)
+            {
+                if (shouldClearPrevious)
+                    ClearBroadcasts();
+
+                Broadcast(duration, message);
+            }
+            else
+            {
+                ShowHint(message, duration);
+            }
+        }
+
+        /// <summary>
         /// Sends a HitMarker to the player.
         /// </summary>
         /// <param name="size">The size of the hitmarker, ranging from <c>0</c> to <c><see cref="Hitmarker.MaxSize"/></c>).</param>
