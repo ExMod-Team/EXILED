@@ -3071,10 +3071,7 @@ namespace Exiled.API.Features
         {
             if (type == MessageType.Broadcast)
             {
-                if (shouldClearPrevious)
-                    ClearBroadcasts();
-
-                Broadcast(duration, message);
+                Broadcast(duration, message, shouldClearPrevious: shouldClearPrevious);
             }
             else
             {
