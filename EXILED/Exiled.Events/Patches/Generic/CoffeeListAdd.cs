@@ -10,7 +10,7 @@ namespace Exiled.Events.Patches.Generic
     using Exiled.API.Features;
     using HarmonyLib;
 #pragma warning disable SA1313
-
+#pragma warning disable CS0618
     /// <summary>
     /// Patches <see cref="global::Coffee.Start"/> to control coffee list.
     /// </summary>

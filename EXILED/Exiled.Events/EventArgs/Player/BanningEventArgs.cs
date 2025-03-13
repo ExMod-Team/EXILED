@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Player
     using System.Reflection;
 
     using API.Features;
+    using CommandSystem;
 
     /// <summary>
     /// Contains all information before banning a player from the server.
@@ -23,12 +24,13 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="target">The ban target.</param>
         /// <param name="issuer">The ban issuer.</param>
+        /// <param name="commandSender">The ban command sender.</param>
         /// <param name="duration">The ban seconds duration.</param>
         /// <param name="reason">The ban reason.</param>
         /// <param name="fullMessage">The ban full message.</param>
         /// <param name="isAllowed">Indicates whether the event can be executed or not.</param>
-        public BanningEventArgs(Player target, Player issuer, long duration, string reason, string fullMessage, bool isAllowed = true)
-            : base(target, issuer, reason, fullMessage, isAllowed)
+        public BanningEventArgs(Player target, Player issuer, ICommandSender commandSender, long duration, string reason, string fullMessage, bool isAllowed = true)
+            : base(target, issuer, commandSender, reason, fullMessage, isAllowed)
         {
             Duration = duration;
         }

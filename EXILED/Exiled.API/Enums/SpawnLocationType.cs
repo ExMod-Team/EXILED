@@ -143,5 +143,30 @@ namespace Exiled.API.Enums
         /// Just inside the LCZ WC door.
         /// </summary>
         InsideLczWc,
+
+        /// <summary>
+        /// Inside the Glass Box in GR-18.
+        /// </summary>
+        InsideGr18Glass,
+
+        /// <summary>
+        /// Inside 106's Primary Door
+        /// </summary>
+        Inside106Primary,
+
+        /// <summary>
+        /// Inside 106's Secondary Door
+        /// </summary>
+        Inside106Secondary,
+
+        /// <summary>
+        /// Inside 939 Cryo Chamber
+        /// </summary>
+        Inside939Cryo,
+
+        /// <summary>
+        /// Inside SCP-079's Armory
+        /// </summary>
+        Inside079Armory,
     }
 }

@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+#pragma warning disable CS0618 // Le type ou le membre est obsolète
     using System.Collections.Generic;
     using System.Reflection.Emit;
 

@@ -66,10 +66,8 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public ShootingTarget Base { get; }
 
-        /// <summary>
-        /// Gets the <see cref="UnityEngine.GameObject"/> of the target.
-        /// </summary>
-        public GameObject GameObject => Base.gameObject;
+        /// <inheritdoc cref="AdminToy.GameObject"/>
+        public new GameObject GameObject => base.GameObject;
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the bullseye.
@@ -214,6 +212,9 @@ namespace Exiled.API.Features.Toys
         /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
         public static ShootingTargetToy Get(ShootingTarget shootingTarget)
         {
+            if (shootingTarget == null)
+                return null;
+
             AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
             return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
         }

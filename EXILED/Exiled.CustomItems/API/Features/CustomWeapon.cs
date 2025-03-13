@@ -10,13 +10,14 @@ namespace Exiled.CustomItems.API.Features
     using System;
     using System.Linq;
 
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.DamageHandlers;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Player;
-
+    using InventorySystem;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
@@ -224,15 +225,30 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalReloaded(ReloadedWeaponEventArgs ev)
         {
-            if (!Check(ev.Player.CurrentItem))
+            if (!Check(ev.Item))
                 return;
 
             if (ClipSize > 0)
             {
                 int ammoChambered = ((AutomaticActionModule)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
-                int ammodrop = -(ClipSize - ev.Firearm.MagazineAmmo) - ammoChambered;
-                ev.Firearm.MagazineAmmo = ClipSize - ammoChambered;
-                ev.Player.AddAmmo(ev.Firearm.AmmoType, (ushort)Mathf.Clamp(ammodrop, ushort.MinValue, ushort.MaxValue));
+                int ammoToGive = ClipSize - ammoChambered;
+
+                AmmoType ammoType = ev.Firearm.AmmoType;
+                int firearmAmmo = ev.Firearm.MagazineAmmo;
+                int ammoDrop = -(ClipSize - firearmAmmo - ammoChambered);
+
+                int ammoInInventory = ev.Player.GetAmmo(ammoType) + firearmAmmo;
+                if (ammoToGive < ammoInInventory)
+                {
+                    ev.Firearm.MagazineAmmo = ammoToGive;
+                    int newAmmo = ev.Player.Inventory.GetCurAmmo(ammoType.GetItemType()) + ammoDrop;
+                    ev.Player.Inventory.ServerSetAmmo(ammoType.GetItemType(), newAmmo);
+                }
+                else
+                {
+                    ev.Firearm.MagazineAmmo = ammoInInventory;
+                    ev.Player.Inventory.ServerSetAmmo(ammoType.GetItemType(), 0);
+                }
             }
 
             OnReloaded(ev);

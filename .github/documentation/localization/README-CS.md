@@ -23,7 +23,7 @@ Instalace EXILED je poměrně jednoduchá. Načítá se prostřednictvím rozhra
 Pokud se rozhodnete použít instalační program, postará se při správném spuštění o instalaci všech funkcí EXILED.
 
 # Windows
-### Automatická instalace ([více informací](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatická instalace ([více informací](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **Poznámka:**: Před spuštěním instalačního programu se ujistěte, že jste uživatelem, který provozuje server, nebo že máte oprávnění správce.
 
   - Stáhněte **`Exiled.Installer-Win.exe` [odsud](https://github.com/ExMod-Team/EXILED/releases)** (Klikněte na Assets -> klikněte na Instalátor)
@@ -49,7 +49,7 @@ To je vše, EXILED by nyní měl být nainstalován a aktivní při příštím 
   - Přesuňte jej do: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (dostaňte se sem stiskem Win + R, a pak psaním `%appdata%`)
 
 # Linux
-### Automatická instalace ([více informací](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Automatická instalace ([více informací](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **Poznámka:** Pokud instalujete EXILED na vzdálený server, ujistěte se, že jste instalátor spustili jako stejný uživatel, který spouští servery SCP:SL (nebo jako root).
 

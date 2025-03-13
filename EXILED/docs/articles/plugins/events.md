@@ -23,12 +23,12 @@ The EXILED framework consists of two different types of events: Events that can 
 
 All events are part of a static class called a **handler**. All handlers can be found in the `Exiled.Events` namespace. Every handler is related to a specific feature in the game (eg. `Exiled.Events.Scp096` contains SCP-096 related events).
 
-Almost all events have a corresponding **event argument** class. The event argument provides the data of an event, as well as the ability to prevent it from occurring. All event arguments can be found in the `Exiled.Events.EventArgs` namespace, and all event arguments inherit from `System.EventArgs`.
+Almost all events have a corresponding **event argument** class. The event argument provides the data of an event, as well as the ability to prevent it from occurring. All event arguments can be found in the `Exiled.Events.EventArgs` namespace, and all event arguments inherit from `IExiledEvent`.
 
 ### Example: Enraging event
 The following is the structure of the `Exiled.Events.EventArgs.EnragingEventArgs`.
 ```cs
-public class EnragingEventArgs : System.EventArgs
+public class EnragingEventArgs : IScp096Event, IDeniableEvent
 {
     // Note: Constructor omitted.
     public Scp096 Scp096 { get; } // The SCP-096 instance.

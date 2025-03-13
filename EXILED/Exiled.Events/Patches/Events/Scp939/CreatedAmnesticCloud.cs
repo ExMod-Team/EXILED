@@ -23,9 +23,9 @@ namespace Exiled.Events.Patches.Events.Scp939
 
     /// <summary>
     /// Patches <see cref="Scp939AmnesticCloudInstance.State" /> setter.
-    /// to add the <see cref="Scp939.CreatedAmnesticCloud" /> event.
+    /// to add the <see cref="Scp939.UpdatedCloudState" /> event.
     /// </summary>
-    [EventPatch(typeof(Scp939), nameof(Scp939.CreatedAmnesticCloud))]
+    [EventPatch(typeof(Scp939), nameof(Scp939.UpdatedCloudState))]
     [HarmonyPatch(typeof(Scp939AmnesticCloudInstance), nameof(Scp939AmnesticCloudInstance.State), MethodType.Setter)]
     internal static class CreatedAmnesticCloud
     {
@@ -52,12 +52,15 @@ namespace Exiled.Events.Patches.Events.Scp939
                     // owner
                     new(OpCodes.Ldloc_S, hub.LocalIndex),
 
+                    // CloudState
+                    new(OpCodes.Ldarg_1),
+
                     // this
                     new(OpCodes.Ldarg_0),
 
-                    // Scp939.OnCreatedAmnesticCloud(new CreatedAmnesticCloudEventArgs(owner, this));
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(CreatedAmnesticCloudEventArgs))[0]),
-                    new(OpCodes.Call, Method(typeof(Scp939), nameof(Scp939.OnCreatedAmnesticCloud))),
+                    // Scp939.OnCreatedAmnesticCloud(new UpdatedCloudStateEventArgs(owner, CloudState, this));
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UpdatedCloudStateEventArgs))[0]),
+                    new(OpCodes.Call, Method(typeof(Scp939), nameof(Scp939.OnUpdatedCloudState))),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);

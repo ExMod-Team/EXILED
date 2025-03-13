@@ -601,6 +601,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before player interacts with coffee cup.
         /// </summary>
+        [Obsolete("Never available (for now).")]
         public static Event<DrinkingCoffeeEventArgs> DrinkingCoffee { get; set; } = new();
 
         /// <summary>
@@ -1296,6 +1297,7 @@ namespace Exiled.Events.Handlers
         /// Called before player interacts with coffee cup.
         /// </summary>
         /// <param name="ev">The <see cref="DrinkingCoffeeEventArgs"/> instance.</param>
+        [Obsolete("Never available (for now).")]
         public static void OnDrinkingCoffee(DrinkingCoffeeEventArgs ev) => DrinkingCoffee.InvokeSafely(ev);
 
         /// <summary>

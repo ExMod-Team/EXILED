@@ -7,12 +7,15 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
+    using System;
+
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
 
     /// <summary>
     /// Contains all information before player interacts with coffee cup.
     /// </summary>
+    [Obsolete("Never available (for now).")]
     public class DrinkingCoffeeEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>

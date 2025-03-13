@@ -364,30 +364,29 @@ namespace Exiled.API.Features.Items
         /// <param name="identifier">The <see cref="AttachmentIdentifier"/> to add.</param>
         public void AddAttachment(AttachmentIdentifier identifier)
         {
-            uint toRemove = 0;
-            uint code = 1;
+            // Fallback addedCode onto AvailableAttachments' code in case it's 0
+            uint addedCode = identifier.Code == 0
+                ? AvailableAttachments[FirearmType].FirstOrDefault(attId => attId.Name == identifier.Name).Code
+                : identifier.Code;
+
+            // Look for conflicting attachment (attachment that occupies the same slot)
+            uint conflicting = 0;
+            uint current = 1;
 
             foreach (Attachment attachment in Base.Attachments)
             {
                 if (attachment.Slot == identifier.Slot && attachment.IsEnabled)
                 {
-                    toRemove = code;
+                    conflicting = current;
                     break;
                 }
 
-                code *= 2;
+                current *= 2;
             }
 
-            uint newCode = identifier.Code == 0
-                ? AvailableAttachments[FirearmType].FirstOrDefault(
-                    attId =>
-                        attId.Name == identifier.Name).Code
-                : identifier.Code;
-
-            Base.ApplyAttachmentsCode((Base.GetCurrentAttachmentsCode() & ~toRemove) | newCode, true);
-
-            // TODO Not finish
-            // Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+            uint code = Base.ValidateAttachmentsCode((Base.GetCurrentAttachmentsCode() & ~conflicting) | addedCode);
+            Base.ApplyAttachmentsCode(code, false);
+            AttachmentCodeSync.ServerSetCode(Serial, code);
         }
 
         /// <summary>
