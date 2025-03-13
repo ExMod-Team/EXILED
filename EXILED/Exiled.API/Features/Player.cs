@@ -971,6 +971,9 @@ namespace Exiled.API.Features
             get => Item.Get(Inventory.CurInstance);
             set
             {
+                if (CurrentItem is MicroHid microHid)
+                    microHid.State = InventorySystem.Items.MicroHID.Modules.MicroHidPhase.Standby;
+
                 if (value is null || value.Type == ItemType.None)
                 {
                     Inventory.ServerSelectItem(0);
