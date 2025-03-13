@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Pickups.Projectiles
 {
+    using Exiled.API.Features.Items;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items.ThrowableProjectiles;
@@ -61,5 +62,15 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         /// <returns>A string containing Scp2176Pickup related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{FuseTime}| ={IsAlreadyDetonated}=";
+
+        /// <inheritdoc/>
+        internal override void ReadThrowableItemInfo(Throwable throwable)
+        {
+            base.ReadThrowableItemInfo(throwable);
+            if (throwable is Scp2176 scp2176)
+            {
+                DropSound = scp2176.DropSound;
+            }
+        }
     }
 }
