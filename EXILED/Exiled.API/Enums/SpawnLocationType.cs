@@ -79,6 +79,12 @@ namespace Exiled.API.Enums
         InsideLczCafe,
 
         /// <summary>
+        /// Inside the Nuke armory.
+        /// </summary>
+        [Obsolete("This Location has been removed from the game.")]
+        InsideNukeArmory,
+
+        /// <summary>
         /// Inside the surface nuke room.
         /// </summary>
         InsideSurfaceNuke,

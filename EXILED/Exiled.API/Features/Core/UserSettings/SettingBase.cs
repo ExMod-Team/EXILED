@@ -176,6 +176,8 @@ namespace Exiled.API.Features.Core.UserSettings
             SSGroupHeader header => new HeaderSetting(header),
             SSKeybindSetting keybindSetting => new KeybindSetting(keybindSetting),
             SSTwoButtonsSetting twoButtonsSetting => new TwoButtonsSetting(twoButtonsSetting),
+            SSPlaintextSetting plainTextSetting => new UserTextInputSetting(plainTextSetting),
+            SSSliderSetting sliderSetting => new SliderSetting(sliderSetting),
             _ => new SettingBase(settingBase)
         };
 
@@ -215,6 +217,14 @@ namespace Exiled.API.Features.Core.UserSettings
         /// </summary>
         /// <param name="player">Target player.</param>
         public static void SendToPlayer(Player player) => ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub);
+
+        /// <summary>
+        /// Syncs specific settings with the specified target.
+        /// </summary>
+        /// <param name="player">Target player.</param>
+        /// <param name="settings">Settings to send to the player.</param>
+        public static void SendToPlayer(Player player, IEnumerable<SettingBase> settings) =>
+            ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub, settings.Select(setting => setting.Base).ToArray());
 
         /// <summary>
         /// Registers all settings from the specified collection.

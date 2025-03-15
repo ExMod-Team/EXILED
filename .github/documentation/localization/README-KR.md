@@ -24,7 +24,7 @@ EXILED의 설치 과정은 상당히 간단합니다. 노스우드의 Plugin API
 
 # Windows
 
-### 설치 프로그램 사용 ([설치 프로그램 설명 (영어)](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### 설치 프로그램 사용 ([설치 프로그램 설명 (영어)](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **주의사항**: 설치 프로그램을 사용하기 전에, SCP: 비밀 연구소 서버를 실행할 유저와 같은 유저인지, 또는 관리자 권한을 가진 유저인지 확인해주세요.
 
@@ -55,7 +55,7 @@ EXILED의 설치 과정은 상당히 간단합니다. 노스우드의 Plugin API
 
 # 리눅스
 
-### 설치 프로그램 사용 ([설치 프로그램 설명 (영어)](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### 설치 프로그램 사용 ([설치 프로그램 설명 (영어)](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **주의사항**: 설치 프로그램을 사용하기 전에, SCP: 비밀 연구소 서버를 실행할 유저와 같은 유저인지, 또는 `root` 유저인지 확인해주세요.
 

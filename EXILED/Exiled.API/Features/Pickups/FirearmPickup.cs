@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Pickups
 {
+    using System;
+
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items;
@@ -56,7 +58,8 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets a value indicating whether the pickup is already distributed.
         /// </summary>
-        public bool IsDistributed { get; internal set; }
+        [Obsolete("Feature deprecated")]
+        public bool IsDistributed { get; }
 
         /// <summary>
         /// Gets or sets a value indicating how much ammo can contain this <see cref="FirearmPickup"/>.
@@ -104,7 +107,7 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Gets or sets a ammo drain per shoot.
+        /// Gets or sets the ammo drain per shoot.
         /// </summary>
         /// <remarks>
         /// Always <see langword="1"/> by default.
@@ -121,19 +124,16 @@ namespace Exiled.API.Features.Pickups
             set => Base.Worldmodel.Setup(Base.CurId, Base.Worldmodel.WorldmodelType, value);
         }
 
-        /// <inheritdoc />
-        public override void Spawn()
-        {
-            base.Spawn();
-            if (!IsDistributed)
-                Base.OnDistributed();
-        }
+        /// <summary>
+        /// Initializes the item as if it was spawned naturally by map generation.
+        /// </summary>
+        public void Distribute() => Base.OnDistributed();
 
         /// <summary>
-        /// Returns the FirearmPickup in a human readable format.
+        /// Returns the FirearmPickup in a human-readable format.
         /// </summary>
         /// <returns>A string containing FirearmPickup related data.</returns>
-        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{IsDistributed}| -{/*Ammo*/0}-";
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}*";
 
         /// <inheritdoc/>
         internal override void ReadItemInfo(Items.Item item)

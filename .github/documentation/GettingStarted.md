@@ -12,7 +12,7 @@ It also allows plugin developers to not have to change their code after every up
 This documentation will show you the bare basics of making an Exiled Plugin. From here you can start showing the world what creative things you can make with this framework!
 
 ### Example Plugin
-The [Example Plugin](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Example) which is a simple plugin that shows off events and how to properly make them. Using this example will help you learn how to properly use Exiled. There are a couple of things in that plugin that are important, lets talk about them
+The [Example Plugin](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Example) which is a simple plugin that shows off events and how to properly make them. Using this example will help you learn how to properly use Exiled. There are a couple of things in that plugin that are important, lets talk about them
 
 #### On Enable + On Disable Dynamic Updates
 Exiled is a framework that has a **Reload** command which can be used to reload all the plugins and get new ones. This means you must make your plugins **Dynamically Updatable.** This means that every variable, event, coroutine, etc *must* be assigned when enabled and nullified when disabled. The **On Enable** method should enable it all, and the **On Disable** method should disable it all. But you might be wondering what about **On Reload**? That void is meant to carry over static variables, as in every static constant you make won't be wiped. So you could do something like this:
@@ -203,4 +203,4 @@ If you want more information you should join our [discord!](https://discord.gg/P
 
 We have a #resources channel that you might find useful, as well as exiled contributors and plugin developers who would be willing to assist you in the creation of your plugin(s).
 
-Or you could read all the events that we have! If you want to check them out [here!](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Events/EventArgs)
+Or you could read all the events that we have! If you want to check them out [here!](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)

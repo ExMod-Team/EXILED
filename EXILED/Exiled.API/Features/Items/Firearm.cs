@@ -73,6 +73,11 @@ namespace Exiled.API.Features.Items
                 {
                     BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
                 }
+
+                if (module is HitscanHitregModuleBase hitregModule)
+                {
+                    HitscanHitregModule = hitregModule;
+                }
             }
         }
 
@@ -137,6 +142,11 @@ namespace Exiled.API.Features.Items
         public BarrelMagazine BarrelMagazine { get; }
 
         /// <summary>
+        /// Gets a primaty magazine for current firearm.
+        /// </summary>
+        public HitscanHitregModuleBase HitscanHitregModule { get; }
+
+        /// <summary>
         /// Gets or sets the amount of ammo in the firearm magazine.
         /// </summary>
         public int MagazineAmmo
@@ -175,6 +185,57 @@ namespace Exiled.API.Features.Items
             get => PrimaryMagazine.MaxAmmo;
             set => PrimaryMagazine.MaxAmmo = value;
         }
+
+        /// <summary>
+        /// Gets or sets the damage for this firearm.
+        /// </summary>
+        public float Damage
+        {
+            get => HitscanHitregModule.BaseDamage;
+            set => HitscanHitregModule.BaseDamage = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the inaccuracy for this firearm.
+        /// </summary>
+        public float Inaccuracy
+        {
+            get => HitscanHitregModule.BaseBulletInaccuracy;
+            set => HitscanHitregModule.BaseBulletInaccuracy = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the penetration for this firearm.
+        /// </summary>
+        public float Penetration
+        {
+            get => HitscanHitregModule.BasePenetration;
+            set => HitscanHitregModule.BasePenetration = value;
+        }
+
+        /// <summary>
+        /// Gets or sets how much fast the value drop over the distance.
+        /// </summary>
+        public float DamageFalloffDistance
+        {
+            get => HitscanHitregModule.DamageFalloffDistance;
+            set => HitscanHitregModule.DamageFalloffDistance = value;
+        }
+
+        /// <summary>
+        /// Gets the damage for this firearm with attachement modifier.
+        /// </summary>
+        public float EffectiveDamage => HitscanHitregModule.EffectiveDamage;
+
+        /// <summary>
+        /// Gets the inaccuracy for this firearm with attachement modifier.
+        /// </summary>
+        public float EffectiveInaccuracy => HitscanHitregModule.CurrentInaccuracy;
+
+        /// <summary>
+        /// Gets the penetration for this firearm with attachement modifier.
+        /// </summary>
+        public float EffectivePenetration => HitscanHitregModule.DisplayPenetration;
 
         /// <summary>
         /// Gets or sets the amount of max ammo in the firearm barrel.
@@ -225,7 +286,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether the firearm is being aimed.
         /// </summary>
-        public bool Aiming => Base.TryGetModule(out LinearAdsModule module) && module.AdsTarget;
+        public bool Aiming => Base.TryGetModule(out IAdsModule module) && module.AdsTarget;
 
         /// <summary>
         /// Gets a value indicating whether the firearm's flashlight module is enabled.
@@ -303,30 +364,29 @@ namespace Exiled.API.Features.Items
         /// <param name="identifier">The <see cref="AttachmentIdentifier"/> to add.</param>
         public void AddAttachment(AttachmentIdentifier identifier)
         {
-            uint toRemove = 0;
-            uint code = 1;
+            // Fallback addedCode onto AvailableAttachments' code in case it's 0
+            uint addedCode = identifier.Code == 0
+                ? AvailableAttachments[FirearmType].FirstOrDefault(attId => attId.Name == identifier.Name).Code
+                : identifier.Code;
+
+            // Look for conflicting attachment (attachment that occupies the same slot)
+            uint conflicting = 0;
+            uint current = 1;
 
             foreach (Attachment attachment in Base.Attachments)
             {
                 if (attachment.Slot == identifier.Slot && attachment.IsEnabled)
                 {
-                    toRemove = code;
+                    conflicting = current;
                     break;
                 }
 
-                code *= 2;
+                current *= 2;
             }
 
-            uint newCode = identifier.Code == 0
-                ? AvailableAttachments[FirearmType].FirstOrDefault(
-                    attId =>
-                        attId.Name == identifier.Name).Code
-                : identifier.Code;
-
-            Base.ApplyAttachmentsCode((Base.GetCurrentAttachmentsCode() & ~toRemove) | newCode, true);
-
-            // TODO Not finish
-            // Base.Status = new FirearmStatus(Math.Min(Ammo, MaxAmmo), Base.Status.Flags, Base.GetCurrentAttachmentsCode());
+            uint code = Base.ValidateAttachmentsCode((Base.GetCurrentAttachmentsCode() & ~conflicting) | addedCode);
+            Base.ApplyAttachmentsCode(code, false);
+            AttachmentCodeSync.ServerSetCode(Serial, code);
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ L'installation d'EXILED est assez simple. Il se charge via la PluginAPI de North
 Si vous choisissez d'utiliser l'installateur, il se chargera, s'il est exécuté correctement, d'installer toutes les fonctionnalités d'EXILED.
 
 # Windows
-### Installation automatique ([plus d'informations](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Installation automatique ([plus d'informations](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **Note**: Assurez-vous d'être connecté en tant qu'utilisateur exécutant le serveur, ou que vous disposez de privilèges Admin avant d'exécuter l'installateur.
 
   - Téléchargez **`Exiled.Installer-Win.exe` [ici](https://github.com/ExMod-Team/EXILED/releases)** (cliquez sur "Assets" -> cliquez sur "Installer")
@@ -49,7 +49,7 @@ C'est tout, EXILED devrait maintenant être installé et actif la prochaine fois
   - Déplacer vers: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (pour y accéder, appuyez sur Win + R, puis écrivez `%appdata%`)
 
 # Linux
-### Installation automatique ([plus d'informations](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Installation automatique ([plus d'informations](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **Note:** Si vous installez EXILED sur un serveur distant, assurez-vous d'exécuter l'installateur avec l'utilisateur qui exécute vos serveurs SCP:SL (ou en tant que root).
 

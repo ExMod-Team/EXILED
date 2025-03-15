@@ -38,15 +38,14 @@ namespace Exiled.Events.Patches.Events.Player
             Label returnLabel = generator.DefineLabel();
 
             const int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Stopwatch), nameof(Stopwatch.Restart)))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.StoresField(Field(typeof(Intercom), nameof(Intercom._curSpeaker)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // Player.Get(this._curSpeaker)
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Intercom), nameof(Intercom._curSpeaker))),
+                    // Player.Get(first)
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // true
