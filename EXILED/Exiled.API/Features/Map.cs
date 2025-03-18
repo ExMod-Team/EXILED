@@ -113,15 +113,17 @@ namespace Exiled.API.Features
         /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.
         /// </summary>
         /// <param name="message">The message to send.</param>
-        /// <param name="netId">The net id to send staff message as. 0 default (Server host).</param>
-        public static void StaffMessage(string message, uint netId = 0)
+        /// <param name="player">The player to send message as.</param>
+        public static void StaffMessage(string message, Player player = null)
         {
-            foreach (Player player in Player.List)
+            player ??= Server.Host;
+
+            foreach (Player target in Player.List)
             {
-                if (!CommandProcessor.CheckPermissions(player.Sender, PlayerPermissions.AdminChat))
+                if (!CommandProcessor.CheckPermissions(target.Sender, PlayerPermissions.AdminChat))
                     continue;
 
-                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(netId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
             }
         }
 
