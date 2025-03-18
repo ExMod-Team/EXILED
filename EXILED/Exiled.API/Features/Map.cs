@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using RemoteAdmin;
+
 namespace Exiled.API.Features
 {
 #pragma warning disable SA1401
@@ -106,6 +108,22 @@ namespace Exiled.API.Features
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
         public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
+
+        /// <summary>
+        /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <param name="netId">The net id to send staff message as. 0 default (Server host).</param>
+        public static void StaffMessage(string message, uint netId = 0)
+        {
+            foreach (Player player in Player.List)
+            {
+                if (!CommandProcessor.CheckPermissions(player.Sender, PlayerPermissions.AdminChat))
+                    continue;
+
+                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(netId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+            }
+        }
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.
