@@ -113,7 +113,7 @@ namespace Exiled.API.Features
         /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.
         /// </summary>
         /// <param name="message">The message to send.</param>
-        /// <param name="player">The player to send message as.</param>
+        /// <param name="player">The player to send message as, null will use Server Host.</param>
         public static void StaffMessage(string message, Player player = null)
         {
             player ??= Server.Host;
