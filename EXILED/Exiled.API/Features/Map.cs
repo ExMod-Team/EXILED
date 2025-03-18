@@ -5,11 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using RemoteAdmin;
-
 namespace Exiled.API.Features
 {
 #pragma warning disable SA1401
+
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -29,6 +28,7 @@ namespace Exiled.API.Features
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using PlayerRoles.Ragdolls;
+    using RemoteAdmin;
     using UnityEngine;
     using Utils;
     using Utils.Networking;
