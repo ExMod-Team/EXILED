@@ -134,6 +134,17 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Broadcasts delegate invocation result to all <see cref="Player">players</see>.
+        /// </summary>
+        /// <param name="duration">The duration in seconds.</param>
+        /// <param name="func">The delegate whose invocation result will be the message.</param>
+        public static void Broadcast(ushort duration, Func<Player, string> func)
+        {
+            foreach (Player player in Player.List)
+                player.Broadcast(duration, func.Invoke(player));
+        }
+
+        /// <summary>
         /// Shows a hint to all <see cref="Player">players</see>.
         /// </summary>
         /// <param name="message">The message that will be broadcasted (supports Unity Rich Text formatting).</param>
