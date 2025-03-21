@@ -48,7 +48,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldarg_2),
 
                 // IsAllowed
-                new(OpCodes.Ldloc_0),
+                new(OpCodes.Ldloc_1),
 
                 // CanInteract
                 new(OpCodes.Ldc_I4_1),
