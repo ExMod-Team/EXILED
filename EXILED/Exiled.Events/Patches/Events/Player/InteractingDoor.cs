@@ -48,12 +48,12 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldarg_2),
 
                 // IsAllowed
-                new(OpCodes.Ldc_I4_1),
-
-                // CanInteract
                 new(OpCodes.Ldloc_1),
 
-                // InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, colliderId, false, true);
+                // CanInteract
+                new(OpCodes.Ldc_I4_1),
+
+                // InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, colliderId, bool, true);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingDoorEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
