@@ -7,15 +7,15 @@
 
 namespace Exiled.API.Features
 {
-    using System.Linq;
-
-#pragma warning disable SA1402
+#pragma warning disable SA1402 // File may only contain a single type
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
     using CommandSystem;
     using Enums;
+    using Exiled.API.Features.Pools;
     using Extensions;
     using Interfaces;
     using RemoteAdmin;
@@ -99,82 +99,80 @@ namespace Exiled.API.Features
         /// <inheritdoc/>
         public virtual void OnRegisteringCommands()
         {
-            Dictionary<Type, List<ICommand>> toRegister = new();
+            Dictionary<Type, List<ICommand>> toRegister = DictionaryPool<Type, List<ICommand>>.Pool.Get();
+            Dictionary<Type, ParentCommand> parentCommands = DictionaryPool<Type, ParentCommand>.Pool.Get();
 
             foreach (Type type in Assembly.GetTypes())
             {
                 if (type.GetInterface("ICommand") != typeof(ICommand))
                     continue;
 
-                if (!Attribute.IsDefined(type, typeof(CommandHandlerAttribute)))
-                    continue;
+                ICommand command = (ICommand)Activator.CreateInstance(type);
 
-                foreach (CustomAttributeData customAttributeData in type.GetCustomAttributesData())
+                foreach (CustomAttributeData attributeData in type.GetCustomAttributesData())
                 {
+                    if (attributeData.AttributeType == typeof(CommandHandlerAttribute))
+                        continue;
+
+                    Type attribute = (Type)attributeData.ConstructorArguments[0].Value;
+
                     try
                     {
-                        if (customAttributeData.AttributeType != typeof(CommandHandlerAttribute))
-                            continue;
-
-                        Type commandHandlerType = (Type)customAttributeData.ConstructorArguments[0].Value;
-
-                        ICommand command = GetCommand(type) ?? (ICommand)Activator.CreateInstance(type);
-
-                        if (typeof(ParentCommand).IsAssignableFrom(commandHandlerType))
+                        if (typeof(ParentCommand).IsAssignableFrom(attribute))
                         {
-                            ParentCommand parentCommand = GetCommand(commandHandlerType) as ParentCommand;
-
-                            if (parentCommand == null)
+                            if (parentCommands.TryGetValue(attribute, out ParentCommand parentCommand))
                             {
-                                if (!toRegister.TryGetValue(commandHandlerType, out List<ICommand> list))
-                                    toRegister.Add(commandHandlerType, new() { command });
-                                else
-                                    list.Add(command);
-
-                                continue;
-                            }
-
-                            parentCommand.RegisterCommand(command);
-                            continue;
-                        }
-
-                        try
-                        {
-                            if (commandHandlerType == typeof(RemoteAdminCommandHandler))
-                                CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(command);
-                            else if (commandHandlerType == typeof(GameConsoleCommandHandler))
-                                GameCore.Console.singleton.ConsoleCommandHandler.RegisterCommand(command);
-                            else if (commandHandlerType == typeof(ClientCommandHandler))
-                                QueryProcessor.DotCommandHandler.RegisterCommand(command);
-                        }
-                        catch (ArgumentException e)
-                        {
-                            if (e.Message.StartsWith("An"))
-                            {
-                                Log.Error($"Command with same name has already registered! Command: {command.Command}");
+                                parentCommand.RegisterCommand(command);
                             }
                             else
                             {
-                                Log.Error($"An error has occurred while registering a command: {e}");
+                                if (toRegister.TryGetValue(attribute, out List<ICommand> list))
+                                    list.Add(command);
+                                else
+                                    toRegister.Add(attribute, new() { command });
                             }
                         }
-
-                        Commands[commandHandlerType][type] = command;
+                        else
+                        {
+                            if (attribute == typeof(RemoteAdminCommandHandler))
+                                CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(command);
+                            else if (attribute == typeof(GameConsoleCommandHandler))
+                                GameCore.Console.singleton.ConsoleCommandHandler.RegisterCommand(command);
+                            else if (attribute == typeof(ClientCommandHandler))
+                                QueryProcessor.DotCommandHandler.RegisterCommand(command);
+                        }
+                    }
+                    catch (ArgumentException argumentException)
+                    {
+                        if (argumentException.Message.StartsWith("An"))
+                        {
+                            Log.Error($"Command with same name has already registered! Command: {command.Command}");
+                        }
+                        else
+                        {
+                            Log.Error($"An error has occurred while registering a command: {argumentException}");
+                        }
                     }
                     catch (Exception exception)
                     {
                         Log.Error($"An error has occurred while registering a command: {exception}");
                     }
+
+                    if (command is ParentCommand)
+                    {
+                        ParentCommand parentCommand = (ParentCommand)command;
+
+                        if (toRegister.TryGetValue(type, out List<ICommand> list))
+                        {
+                            foreach (ICommand com in list)
+                                parentCommand.RegisterCommand(com);
+                        }
+                    }
                 }
             }
 
-            foreach (KeyValuePair<Type, List<ICommand>> kvp in toRegister)
-            {
-                ParentCommand parentCommand = GetCommand(kvp.Key) as ParentCommand;
-
-                foreach (ICommand command in kvp.Value)
-                    parentCommand.RegisterCommand(command);
-            }
+            DictionaryPool<Type, ParentCommand>.Pool.Return(parentCommands);
+            DictionaryPool<Type, List<ICommand>>.Pool.Return(toRegister);
         }
 
         /// <summary>

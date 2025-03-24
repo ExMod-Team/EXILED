@@ -127,6 +127,16 @@ namespace Exiled.Events.Patches.Generic
 
                 Log.Debug($"CheckFriendlyFirePlayerRules, Attacker role {attacker.Role} and Victim {victim.Role}");
 
+                // Check victim's CustomUnitFriendlyFireMultiplier for custom FF multiplier
+                if (victim.CustomUnitFriendlyFireMultiplier != null
+                    && victim.CustomUnitFriendlyFireMultiplier.TryGetValue(victim.Role, out ffMultiplier))
+                    return true;
+
+                // Check attacker's CustomUnitFriendlyFireMultiplier for custom FF multiplier
+                if (attacker.CustomUnitFriendlyFireMultiplier != null &&
+                    attacker.CustomUnitFriendlyFireMultiplier.TryGetValue(attacker.Role, out ffMultiplier))
+                    return true;
+
                 // Check victim's UniqueRole for custom FF multiplier
                 if (!string.IsNullOrEmpty(victim.UniqueRole) &&
                     victim.CustomRoleFriendlyFireMultiplier.TryGetValue(victim.UniqueRole, out Dictionary<RoleTypeId, float> victimPairedData) &&
