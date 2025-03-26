@@ -1,21 +1,20 @@
 // -----------------------------------------------------------------------
-// <copyright file="Deactivating.cs" company="ExMod Team">
+// <copyright file="ExplodingMicroHID.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.API.Features;
-using Exiled.Events.EventArgs.Player;
-using InventorySystem.Items.MicroHID;
-
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
 namespace Exiled.Events.Patches.Events.Player
 {
+    using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.Attributes;
+    using Exiled.Events.EventArgs.Player;
     using HarmonyLib;
+    using InventorySystem.Items.MicroHID;
 
     /// <summary>
     /// Patches <see cref="InventorySystem.Items.MicroHID.Modules.ChargeFireModeModule.ServerExplode"/>.
