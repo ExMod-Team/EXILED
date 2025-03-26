@@ -9,24 +9,39 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
-    using Exiled.API.Features;
-    using Exiled.API.Features.Items;
-    using Exiled.Events.Attributes;
+    using Attributes;
+
     using Exiled.Events.EventArgs.Player;
+
+    using Footprinting;
     using HarmonyLib;
-    using InventorySystem.Items.MicroHID;
+
+    using Interactables;
+    using Interactables.Interobjects.DoorUtils;
+    using InventorySystem.Items.MicroHID.Modules;
+    using MapGeneration;
+
+    using PlayerRoles.FirstPersonControl;
+    using PlayerStatsSystem;
+
+    using UnityEngine;
 
     /// <summary>
     /// Patches <see cref="InventorySystem.Items.MicroHID.Modules.ChargeFireModeModule.ServerExplode"/>.
     /// Adds the <see cref="ExplodingMicroHid" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ExplodingMicroHid))]
-    [HarmonyPatch(typeof(InventorySystem.Items.MicroHID.Modules.ChargeFireModeModule), nameof(InventorySystem.Items.MicroHID.Modules.ChargeFireModeModule.ServerExplode))]
+    [HarmonyPatch(typeof(ChargeFireModeModule), nameof(ChargeFireModeModule.ServerExplode))]
     internal static class ExplodingMicroHid
     {
-        private static bool Prefix(ref MicroHIDItem __instance)
+        private static bool Prefix(ref ChargeFireModeModule __instance)
         {
-            ExplodingMicroHidEventArgs ev = new(Item.Get(__instance));
+            if (__instance._alreadyExploded)
+            {
+                return false;
+            }
+
+            ExplodingMicroHidEventArgs ev = new(API.Features.Items.Item.Get(__instance.MicroHid));
             Exiled.Events.Handlers.Player.OnExplodingMicroHid(ev);
 
             if (!ev.IsAllowed)
@@ -34,6 +49,42 @@ namespace Exiled.Events.Patches.Events.Player
                 return false;
             }
 
+            __instance._alreadyExploded = true;
+            __instance.MicroHid.BrokenSync.ServerSetBroken();
+            ReferenceHub owner = __instance.Item.Owner;
+            IFpcRole fpcRole = owner.roleManager.CurrentRole as IFpcRole;
+            if (fpcRole == null)
+            {
+                return false;
+            }
+
+            __instance.Energy -= 0.25f;
+            Vector3 position = fpcRole.FpcModule.Position;
+            int num;
+            HitregUtils.OverlapSphere(position, 10f, out num, null);
+            for (int i = 0; i < num; i++)
+            {
+                InteractableCollider interactableCollider;
+                if (HitregUtils.DetectionsNonAlloc[i].TryGetComponent<InteractableCollider>(out interactableCollider))
+                {
+                    IDamageableDoor damageableDoor = interactableCollider.Target as IDamageableDoor;
+                    if (damageableDoor != null && __instance.CheckIntercolLineOfSight(position, interactableCollider))
+                    {
+                        damageableDoor.ServerDamage(350f, DoorDamageType.Grenade, new Footprint(owner));
+                    }
+                }
+            }
+
+            RoomIdentifier roomIdentifier = RoomIdUtils.RoomAtPositionRaycasts(position, true);
+            foreach (RoomLightController roomLightController in RoomLightController.Instances)
+            {
+                if (!(roomLightController.Room != roomIdentifier) && roomLightController.LightsEnabled)
+                {
+                    roomLightController.ServerFlickerLights(1f);
+                }
+            }
+
+            owner.playerStats.DealDamage(new MicroHidDamageHandler(125f, __instance.MicroHid));
             return true;
         }
     }
