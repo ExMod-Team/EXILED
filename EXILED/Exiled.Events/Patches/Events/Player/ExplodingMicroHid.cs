@@ -85,7 +85,7 @@ namespace Exiled.Events.Patches.Events.Player
             }
 
             owner.playerStats.DealDamage(new MicroHidDamageHandler(125f, __instance.MicroHid));
-            return true;
+            return false;
         }
     }
 }
