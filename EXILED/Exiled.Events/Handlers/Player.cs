@@ -584,6 +584,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
 
         /// <summary>
+        /// Invoked before the player explode with the micro HID.
+        /// </summary>
+        public static Event<ExplodingMicroHidEventArgs> ExplodingMicroHid { get; set; } = new();
+
+        /// <summary>
         /// Invoked before player interacts with coffee cup.
         /// </summary>
         [Obsolete("Never available (for now).")]
@@ -1259,6 +1264,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
         public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before disruptor's mode is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExplodingMicroHidEventArgs"/> instance.</param>
+        public static void OnExplodingMicroHid(ExplodingMicroHidEventArgs ev) => ExplodingMicroHid.InvokeSafely(ev);
 
         /// <summary>
         /// Called before player interacts with coffee cup.
