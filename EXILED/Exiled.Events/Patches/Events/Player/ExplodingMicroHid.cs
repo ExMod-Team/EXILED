@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ExplodingMicroHid.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -30,7 +30,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="InventorySystem.Items.MicroHID.Modules.ChargeFireModeModule.ServerExplode"/>.
     /// Adds the <see cref="ExplodingMicroHid" /> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ExplodingMicroHid))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ExplodingMicroHID))]
     [HarmonyPatch(typeof(ChargeFireModeModule), nameof(ChargeFireModeModule.ServerExplode))]
     internal static class ExplodingMicroHid
     {
@@ -41,8 +41,8 @@ namespace Exiled.Events.Patches.Events.Player
                 return false;
             }
 
-            ExplodingMicroHidEventArgs ev = new(API.Features.Items.Item.Get(__instance.MicroHid));
-            Exiled.Events.Handlers.Player.OnExplodingMicroHid(ev);
+            ExplodingMicroHIDEventArgs ev = new(__instance.MicroHid);
+            Exiled.Events.Handlers.Player.OnExplodingMicroHID(ev);
 
             if (!ev.IsAllowed)
             {

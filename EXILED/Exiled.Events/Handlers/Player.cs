@@ -586,7 +586,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before the player explode with the micro HID.
         /// </summary>
-        public static Event<ExplodingMicroHidEventArgs> ExplodingMicroHid { get; set; } = new();
+        public static Event<ExplodingMicroHIDEventArgs> ExplodingMicroHID { get; set; } = new();
 
         /// <summary>
         /// Invoked before player interacts with coffee cup.
@@ -1268,8 +1268,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before disruptor's mode is changed.
         /// </summary>
-        /// <param name="ev">The <see cref="ExplodingMicroHidEventArgs"/> instance.</param>
-        public static void OnExplodingMicroHid(ExplodingMicroHidEventArgs ev) => ExplodingMicroHid.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="ExplodingMicroHIDEventArgs"/> instance.</param>
+        public static void OnExplodingMicroHID(ExplodingMicroHIDEventArgs ev) => ExplodingMicroHID.InvokeSafely(ev);
 
         /// <summary>
         /// Called before player interacts with coffee cup.

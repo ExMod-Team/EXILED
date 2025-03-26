@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ExplodingMicroHidEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -9,27 +9,27 @@ namespace Exiled.Events.EventArgs.Player
 {
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+    using InventorySystem.Items.MicroHID;
 
     /// <summary>
     /// Contains all information before the micro hid explode.
     /// </summary>
-    public class ExplodingMicroHidEventArgs : IPlayerEvent
+    public class ExplodingMicroHIDEventArgs : IPlayerEvent, IMicroHIDEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExplodingMicroHidEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="ExplodingMicroHIDEventArgs" /> class.
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
-        public ExplodingMicroHidEventArgs(Item item)
+        public ExplodingMicroHIDEventArgs(MicroHIDItem item)
         {
-            Item = item;
-            MicroHid = item as MicroHid;
-            Player = item.Owner;
+            MicroHID = Item.Get<MicroHid>(item);
+            Player = MicroHID.Owner;
         }
 
         /// <summary>
         /// Gets the item.
         /// </summary>
-        public Item Item { get; }
+        public Item Item => MicroHID;
 
         /// <summary>
         /// Gets the player in owner of the item.
@@ -37,9 +37,9 @@ namespace Exiled.Events.EventArgs.Player
         public Exiled.API.Features.Player Player { get; }
 
         /// <summary>
-        /// Gets Scp1344 item.
+        /// Gets MicroHid item.
         /// </summary>
-        public MicroHid MicroHid { get; }
+        public MicroHid MicroHID { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player can explode the micro HID.
