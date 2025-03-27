@@ -20,6 +20,7 @@ namespace Exiled.Events.EventArgs.Player
         /// Initializes a new instance of the <see cref="ExplodingMicroHIDEventArgs" /> class.
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
+        /// <param name="isAllowed">Whether the Micro HID can explode the player or not.</param>
         public ExplodingMicroHIDEventArgs(MicroHIDItem item, bool isAllowed = true)
         {
             MicroHID = Item.Get<MicroHid>(item);
