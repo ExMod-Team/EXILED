@@ -12,7 +12,7 @@ namespace Exiled.Events.EventArgs.Player
     using InventorySystem.Items.MicroHID;
 
     /// <summary>
-    /// Contains all information before the micro hid explode.
+    /// Contains all information before the micro opens a doors.
     /// </summary>
     public class MicroHIDOpeningDoorEventArgs : IDeniableEvent, IPlayerEvent, IItemEvent
     {
