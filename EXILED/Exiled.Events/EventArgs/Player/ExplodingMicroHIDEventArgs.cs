@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ExplodingMicroHidEventArgs.cs" company="ExMod Team">
+// <copyright file="ExplodingMicroHIDEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -14,16 +14,17 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information before the micro hid explode.
     /// </summary>
-    public class ExplodingMicroHIDEventArgs : IPlayerEvent, IMicroHIDEvent
+    public class ExplodingMicroHIDEventArgs : IDeniableEvent, IMicroHIDEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ExplodingMicroHIDEventArgs" /> class.
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
-        public ExplodingMicroHIDEventArgs(MicroHIDItem item)
+        public ExplodingMicroHIDEventArgs(MicroHIDItem item, bool isAllowed = true)
         {
             MicroHID = Item.Get<MicroHid>(item);
             Player = MicroHID.Owner;
+            IsAllowed = isAllowed;
         }
 
         /// <summary>
@@ -44,6 +45,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the player can explode the micro HID.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
+        public bool IsAllowed { get; set; }
     }
 }
