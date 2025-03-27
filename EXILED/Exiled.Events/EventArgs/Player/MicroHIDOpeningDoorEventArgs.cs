@@ -51,7 +51,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets the <see cref="API.Features.Doors.Door"/> instance.
         /// </summary>
-        public Door Door { get; set; }
+        public Door Door { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player can explode the micro HID.
