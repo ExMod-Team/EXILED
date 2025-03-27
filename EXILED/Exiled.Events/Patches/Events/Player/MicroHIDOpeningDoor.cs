@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Player
             {
                 return;
             }
-//
+
             if (breakableDoor.AllowInteracting(__instance.Item.Owner, interactable.ColliderId))
             {
                 return;
