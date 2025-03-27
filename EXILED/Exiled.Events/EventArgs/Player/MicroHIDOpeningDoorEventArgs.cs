@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Player
         public MicroHid MicroHID { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="API.Features.Doors.Door"/> instance.
+        /// Gets the <see cref="API.Features.Doors.Door"/> instance.
         /// </summary>
         public Door Door { get; }
 
