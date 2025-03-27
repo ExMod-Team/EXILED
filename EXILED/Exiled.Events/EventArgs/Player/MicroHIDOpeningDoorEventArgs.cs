@@ -5,14 +5,14 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.API.Features.Doors;
-using Interactables.Interobjects.DoorUtils;
-using BreakableDoor = Interactables.Interobjects.BreakableDoor;
-
 namespace Exiled.Events.EventArgs.Player
 {
+
+    using Exiled.API.Features.Doors;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+
+    using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items.MicroHID;
 
     /// <summary>
