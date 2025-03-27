@@ -7,7 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
