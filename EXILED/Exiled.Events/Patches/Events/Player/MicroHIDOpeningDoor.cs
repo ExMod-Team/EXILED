@@ -45,7 +45,7 @@ namespace Exiled.Events.Patches.Events.Player
                 return;
             }
 
-            MicroHIDOpeningDoorEventArgs ev = new(__instance.MicroHid);
+            MicroHIDOpeningDoorEventArgs ev = new(__instance.MicroHid, breakableDoor);
             Exiled.Events.Handlers.Player.OnMicroHIDOpeningDoor(ev);
 
             if (!ev.IsAllowed)

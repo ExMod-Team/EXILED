@@ -5,6 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.API.Features.Doors;
+using Interactables.Interobjects.DoorUtils;
+using BreakableDoor = Interactables.Interobjects.BreakableDoor;
+
 namespace Exiled.Events.EventArgs.Player
 {
     using Exiled.API.Features.Items;
@@ -14,18 +18,20 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information before the micro opens a doors.
     /// </summary>
-    public class MicroHIDOpeningDoorEventArgs : IDeniableEvent, IPlayerEvent, IItemEvent
+    public class MicroHIDOpeningDoorEventArgs : IDeniableEvent, IDoorEvent, IItemEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroHIDOpeningDoorEventArgs"/> class.
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
         /// <param name="isAllowed">Whether the Micro HID can open the door or not.</param>
-        public MicroHIDOpeningDoorEventArgs(MicroHIDItem item, bool isAllowed = true)
+        /// <param name="door"><inheritdoc cref="Door"/></param>
+        public MicroHIDOpeningDoorEventArgs(MicroHIDItem item, DoorVariant door, bool isAllowed = true)
         {
             MicroHID = Item.Get<MicroHid>(item);
             Player = MicroHID.Owner;
             IsAllowed = isAllowed;
+            Door = Door.Get(door);
         }
 
         /// <summary>
@@ -42,6 +48,11 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets MicroHid item.
         /// </summary>
         public MicroHid MicroHID { get; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="API.Features.Doors.Door"/> instance.
+        /// </summary>
+        public Door Door { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player can explode the micro HID.
