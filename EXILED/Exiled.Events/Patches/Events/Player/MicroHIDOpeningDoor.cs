@@ -27,22 +27,22 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(ChargeFireModeModule), nameof(ChargeFireModeModule.HandlePotentialDoor))]
     internal static class MicroHIDOpeningDoor
     {
-        private static void Prefix(ref ChargeFireModeModule __instance, InteractableCollider interactable)
+        private static bool Prefix(ref ChargeFireModeModule __instance, InteractableCollider interactable)
         {
             BreakableDoor breakableDoor = interactable.Target as BreakableDoor;
-            if(breakableDoor == null)
+            if (breakableDoor == null)
             {
-                return;
+                return false;
             }
 
             if (breakableDoor.TargetState)
             {
-                return;
+                return false;
             }
 
             if (breakableDoor.AllowInteracting(__instance.Item.Owner, interactable.ColliderId))
             {
-                return;
+                return false;
             }
 
             MicroHIDOpeningDoorEventArgs ev = new(__instance.MicroHid, breakableDoor, (breakableDoor.ActiveLocks & (ushort)~(ushort)ChargeFireModeModule.BypassableLocks) == 0);
@@ -52,6 +52,8 @@ namespace Exiled.Events.Patches.Events.Player
             {
                 breakableDoor.NetworkTargetState = true;
             }
+
+            return false;
         }
     }
 }
