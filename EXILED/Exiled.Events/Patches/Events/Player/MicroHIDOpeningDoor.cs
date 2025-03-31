@@ -45,15 +45,10 @@ namespace Exiled.Events.Patches.Events.Player
                 return;
             }
 
-            MicroHIDOpeningDoorEventArgs ev = new(__instance.MicroHid, breakableDoor);
+            MicroHIDOpeningDoorEventArgs ev = new(__instance.MicroHid, breakableDoor, (breakableDoor.ActiveLocks & (ushort)~(ushort)ChargeFireModeModule.BypassableLocks) == 0);
             Exiled.Events.Handlers.Player.OnMicroHIDOpeningDoor(ev);
 
-            if (!ev.IsAllowed)
-            {
-                return;
-            }
-
-            if ((breakableDoor.ActiveLocks & (ushort)(~(ushort)ChargeFireModeModule.BypassableLocks)) == 0)
+            if (ev.IsAllowed)
             {
                 breakableDoor.NetworkTargetState = true;
             }
