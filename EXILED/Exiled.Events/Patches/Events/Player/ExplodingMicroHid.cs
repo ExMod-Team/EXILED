@@ -74,59 +74,5 @@ namespace Exiled.Events.Patches.Events.Player
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
-
-        private static bool Prefix(ref ChargeFireModeModule __instance)
-        {
-            if (__instance._alreadyExploded)
-            {
-                return false;
-            }
-
-            ExplodingMicroHIDEventArgs ev = new(__instance.MicroHid);
-            Exiled.Events.Handlers.Player.OnExplodingMicroHID(ev);
-
-            if (!ev.IsAllowed)
-            {
-                return false;
-            }
-
-            __instance._alreadyExploded = true;
-            __instance.MicroHid.BrokenSync.ServerSetBroken();
-            ReferenceHub owner = __instance.Item.Owner;
-            IFpcRole fpcRole = owner.roleManager.CurrentRole as IFpcRole;
-            if (fpcRole == null)
-            {
-                return false;
-            }
-
-            __instance.Energy -= 0.25f;
-            Vector3 position = fpcRole.FpcModule.Position;
-            int num;
-            HitregUtils.OverlapSphere(position, 10f, out num, null);
-            for (int i = 0; i < num; i++)
-            {
-                InteractableCollider interactableCollider;
-                if (HitregUtils.DetectionsNonAlloc[i].TryGetComponent<InteractableCollider>(out interactableCollider))
-                {
-                    IDamageableDoor damageableDoor = interactableCollider.Target as IDamageableDoor;
-                    if (damageableDoor != null && __instance.CheckIntercolLineOfSight(position, interactableCollider))
-                    {
-                        damageableDoor.ServerDamage(350f, DoorDamageType.Grenade, new Footprint(owner));
-                    }
-                }
-            }
-
-            RoomIdentifier roomIdentifier = RoomIdUtils.RoomAtPositionRaycasts(position, true);
-            foreach (RoomLightController roomLightController in RoomLightController.Instances)
-            {
-                if (!(roomLightController.Room != roomIdentifier) && roomLightController.LightsEnabled)
-                {
-                    roomLightController.ServerFlickerLights(1f);
-                }
-            }
-
-            owner.playerStats.DealDamage(new MicroHidDamageHandler(125f, __instance.MicroHid));
-            return false;
-        }
     }
 }
