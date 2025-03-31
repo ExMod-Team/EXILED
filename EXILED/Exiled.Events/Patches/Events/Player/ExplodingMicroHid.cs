@@ -15,14 +15,8 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
-    using Footprinting;
     using HarmonyLib;
-    using Interactables;
-    using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items.MicroHID.Modules;
-    using MapGeneration;
-    using PlayerRoles.FirstPersonControl;
-    using PlayerStatsSystem;
 
     using static HarmonyLib.AccessTools;
 
