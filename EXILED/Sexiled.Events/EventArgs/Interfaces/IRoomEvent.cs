@@ -1,0 +1,22 @@
+// -----------------------------------------------------------------------
+// <copyright file="IRoomEvent.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.Events.EventArgs.Interfaces
+{
+    using API.Features;
+
+    /// <summary>
+    /// Event args used for all <see cref="API.Features.Room" /> related events.
+    /// </summary>
+    public interface IRoomEvent : ISexiledEvent
+    {
+        /// <summary>
+        /// Gets the <see cref="API.Features.Room" /> that is a part of the event.
+        /// </summary>
+        public Room Room { get; }
+    }
+}

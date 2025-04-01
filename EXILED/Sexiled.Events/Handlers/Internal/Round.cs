@@ -1,0 +1,155 @@
+// -----------------------------------------------------------------------
+// <copyright file="Round.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.Events.Handlers.Internal
+{
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using CentralAuth;
+    using Sexiled.API.Enums;
+    using Sexiled.API.Extensions;
+    using Sexiled.API.Features;
+    using Sexiled.API.Features.Core.UserSettings;
+    using Sexiled.API.Features.Items;
+    using Sexiled.API.Features.Pools;
+    using Sexiled.API.Features.Roles;
+    using Sexiled.API.Structs;
+    using Sexiled.Events.EventArgs.Player;
+    using Sexiled.Events.EventArgs.Scp049;
+    using Sexiled.Loader;
+    using Sexiled.Loader.Features;
+    using InventorySystem;
+    using InventorySystem.Items.Firearms.Attachments;
+    using InventorySystem.Items.Firearms.Attachments.Components;
+    using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp244.Hypothermia;
+    using PlayerRoles;
+    using PlayerRoles.RoleAssign;
+    using Utils.NonAllocLINQ;
+
+    /// <summary>
+    /// Handles some round clean-up events and some others related to players.
+    /// </summary>
+    internal static class Round
+    {
+        /// <inheritdoc cref="Handlers.Player.OnUsedItem" />
+        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable));
+
+        /// <inheritdoc cref="Handlers.Server.OnWaitingForPlayers" />
+        public static void OnWaitingForPlayers()
+        {
+            GenerateAttachments();
+            MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.WAITING_FOR_PLAYERS);
+
+            if (Events.Instance.Config.ShouldReloadConfigsAtRoundRestart)
+                ConfigManager.Reload();
+
+            if (Events.Instance.Config.ShouldReloadTranslationsAtRoundRestart)
+                TranslationManager.Reload();
+
+            RoundSummary.RoundLock = false;
+        }
+
+        /// <inheritdoc cref="Handlers.Server.OnRestartingRound" />
+        public static void OnRestartingRound()
+        {
+            Scp049Role.TurnedPlayers.Clear();
+            Scp173Role.TurnedPlayers.Clear();
+            Scp096Role.TurnedPlayers.Clear();
+            Scp079Role.TurnedPlayers.Clear();
+            Scp939Role.TurnedPlayers.Clear();
+
+            MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_END);
+
+            TeslaGate.IgnoredPlayers.Clear();
+            TeslaGate.IgnoredRoles.Clear();
+            TeslaGate.IgnoredTeams.Clear();
+
+            API.Features.Round.IgnoredPlayers.Clear();
+        }
+
+        /// <inheritdoc cref="Handlers.Server.OnRoundStarted" />
+        public static void OnRoundStarted() => MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_START);
+
+        /// <inheritdoc cref="Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
+        public static void OnChangingRole(ChangingRoleEventArgs ev)
+        {
+            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason != API.Enums.SpawnReason.Destroyed && Events.Instance.Config.ShouldDropInventory)
+                ev.Player.Inventory.ServerDropEverything();
+        }
+
+        /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />
+        public static void OnActivatingSense(ActivatingSenseEventArgs ev)
+        {
+            if (ev.Target is null)
+                return;
+            if ((Events.Instance.Config.CanScp049SenseTutorial || ev.Target.Role.Type is not RoleTypeId.Tutorial) && !Scp049Role.TurnedPlayers.Contains(ev.Target))
+                return;
+            ev.Target = ev.Scp049.SenseAbility.CanFindTarget(out ReferenceHub hub) ? Player.Get(hub) : null;
+        }
+
+        /// <inheritdoc cref="Handlers.Player.OnVerified(VerifiedEventArgs)" />
+        public static void OnVerified(VerifiedEventArgs ev)
+        {
+            RoleAssigner.CheckLateJoin(ev.Player.ReferenceHub, ClientInstanceMode.ReadyClient);
+
+            if (SettingBase.SyncOnJoin != null && SettingBase.SyncOnJoin(ev.Player))
+                SettingBase.SendToPlayer(ev.Player);
+
+            // TODO: Remove if this has been fixed for https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/52
+            foreach (Room room in Room.List.Where(current => current.AreLightsOff))
+            {
+                ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), true);
+                ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), false);
+            }
+
+            // TODO: Remove if this has been fixed for https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/947
+            if (ev.Player.TryGetEffect(out Hypothermia hypothermia))
+            {
+                hypothermia.SubEffects = hypothermia.SubEffects.Where(x => x.GetType() != typeof(PostProcessSubEffect)).ToArray();
+            }
+        }
+
+        private static void GenerateAttachments()
+        {
+            foreach (FirearmType firearmType in EnumUtils<FirearmType>.Values)
+            {
+                if (firearmType == FirearmType.None)
+                    continue;
+
+                if (Item.Create(firearmType.GetItemType()) is not Firearm firearm)
+                    continue;
+
+                Firearm.ItemTypeToFirearmInstance[firearmType] = firearm;
+
+                List<AttachmentIdentifier> attachmentIdentifiers = ListPool<AttachmentIdentifier>.Pool.Get();
+                HashSet<AttachmentSlot> attachmentsSlots = HashSetPool<AttachmentSlot>.Pool.Get();
+
+                uint code = 1;
+
+                foreach (Attachment attachment in firearm.Attachments)
+                {
+                    attachmentsSlots.Add(attachment.Slot);
+                    attachmentIdentifiers.Add(new(code, attachment.Name, attachment.Slot));
+                    code *= 2U;
+                }
+
+                uint baseCode = 0;
+                attachmentsSlots.ForEach(slot => baseCode += attachmentIdentifiers
+                        .Where(attachment => attachment.Slot == slot)
+                        .Min(slot => slot.Code));
+
+                Firearm.BaseCodesValue[firearmType] = baseCode;
+                Firearm.AvailableAttachmentsValue[firearmType] = attachmentIdentifiers.ToArray();
+
+                ListPool<AttachmentIdentifier>.Pool.Return(attachmentIdentifiers);
+                HashSetPool<AttachmentSlot>.Pool.Return(attachmentsSlots);
+            }
+        }
+    }
+}

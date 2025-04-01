@@ -2,7 +2,7 @@
 title: MEC (More Effective Coroutines)
 ---
 
-This tutorial assumes that you are familiar with C# and with setting up a plugin in the EXILED framework. See the Plugin Structure tutorial if you are unfamiliar with setting up a plugin using **EXILED**.
+This tutorial assumes that you are familiar with C# and with setting up a plugin in the SEXILED framework. See the Plugin Structure tutorial if you are unfamiliar with setting up a plugin using **EXILED**.
 
 # MEC (More Effective Coroutines)
 If you are unfamiliar with MEC, this will be a very brief and simple primer to get you started. **MEC Coroutines** are basically timed methods, that support waiting periods of time before continuing execution, without interrupting/sleeping the main game thread. MEC coroutines are safe to use with Unity, unlike traditional threading, which *will* crash the server.
@@ -17,7 +17,7 @@ MEC offers [tons of features](http://trinary.tech/category/mec/free/) for contro
 
 ```cs
 using MEC;
-using Exiled.API.Features;
+using Sexiled.API.Features;
 public void SomeMethod()
 {
     Timing.RunCoroutine(MyCoroutine());
@@ -37,7 +37,7 @@ This example prints, "Hey, I'm an infinite loop!" every 5 seconds infinitely. Co
 A simpler method of running an action after a delay is using `Timing.CallDelayed(float, Action)`, which executes code after a given number of seconds passes. This method does not require a coroutine to be created, hence why it's useful. An example can be seen below, logging a message 5 seconds after the method is called.
 ```cs
 using MEC;
-using Exiled.API.Features;
+using Sexiled.API.Features;
 public void SomeMethod()
 {
     Timing.CallDelayed(5f, () => // Execute the provided method 5 seconds late.
@@ -46,4 +46,4 @@ public void SomeMethod()
     })
 }
 ```
-It is ***strongly*** recommended that you do some googling, or ask around **[in the EXILED Discord server](https://discord.gg/PyUkWTg)** if you are unfamiliar with MEC and would like to learn more, get advice, or need help. Questions, no matter how 'stupid' they are, will always be answered as helpfully and clearly as possible for plugin developers to excel. Better code is better for everyone.
+It is ***strongly*** recommended that you do some googling, or ask around **[in the SEXILED Discord server](https://discord.gg/PyUkWTg)** if you are unfamiliar with MEC and would like to learn more, get advice, or need help. Questions, no matter how 'stupid' they are, will always be answered as helpfully and clearly as possible for plugin developers to excel. Better code is better for everyone.

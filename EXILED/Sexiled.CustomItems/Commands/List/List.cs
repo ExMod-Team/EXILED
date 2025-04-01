@@ -1,0 +1,59 @@
+// -----------------------------------------------------------------------
+// <copyright file="List.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.CustomItems.Commands.List
+{
+    using System;
+
+    using CommandSystem;
+
+    /// <summary>
+    /// The command to list all installed items.
+    /// </summary>
+    internal sealed class List : ParentCommand
+    {
+        private List()
+        {
+            LoadGeneratedCommands();
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Info"/> instance.
+        /// </summary>
+        public static List Instance { get; } = new();
+
+        /// <inheritdoc/>
+        public override string Command { get; } = "list";
+
+        /// <inheritdoc/>
+        public override string[] Aliases { get; } = { "s", "l", "show", "sh" };
+
+        /// <inheritdoc/>
+        public override string Description { get; } = "Gets a list of all currently registered custom items.";
+
+        /// <inheritdoc/>
+        public override void LoadGeneratedCommands()
+        {
+            RegisterCommand(Registered.Instance);
+            RegisterCommand(Tracked.Instance);
+        }
+
+        /// <inheritdoc/>
+        protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
+        {
+            if (arguments.IsEmpty() && TryGetCommand(Registered.Instance.Command, out ICommand command))
+            {
+                command.Execute(arguments, sender, out response);
+                response += $"\nTo view custom items in players' inventories, use the command: {string.Join(" ", arguments.Array)} insideinventories";
+                return true;
+            }
+
+            response = "Invalid subcommand! Available: registered, insideinventories";
+            return false;
+        }
+    }
+}

@@ -1,12 +1,12 @@
 ---
-title: Installing EXILED
+title: Installing SEXILED
 ---
 
-# Installing EXILED
+# Installing SEXILED
 
 ## Automatic Installation
 
-Exiled has a tool that allows you to install **automatically** the framework for you.
+Sexiled has a tool that allows you to install **automatically** the framework for you.
 
 ## Guides
 

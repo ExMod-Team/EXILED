@@ -1,0 +1,25 @@
+// -----------------------------------------------------------------------
+// <copyright file="TeslaList.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.Events.Patches.Generic
+{
+    using API.Features;
+
+    using HarmonyLib;
+
+    /// <summary>
+    /// Patches <see cref="TeslaGateController.Start"/>.
+    /// </summary>
+    [HarmonyPatch(typeof(TeslaGateController), nameof(TeslaGateController.Start))]
+    internal class TeslaList
+    {
+        private static void Postfix()
+        {
+            TeslaGate.BaseTeslaGateToTeslaGate.Clear();
+        }
+    }
+}

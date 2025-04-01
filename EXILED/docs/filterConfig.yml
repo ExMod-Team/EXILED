@@ -1,10 +1,10 @@
 apiRules:
   - exclude:
-      uidRegex: Exiled.Updater
+      uidRegex: Sexiled.Updater
       type: Namespace
   - exclude:
-      uidRegex: Exiled.Example
+      uidRegex: Sexiled.Example
       type: Namespace
   - exclude:
-      uidRegex: Exiled.CreditTags
+      uidRegex: Sexiled.CreditTags
       type: Namespace

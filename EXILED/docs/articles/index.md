@@ -2,9 +2,9 @@
 title: Introduction
 ---
 
-# Exiled Introduction
+# Sexiled Introduction
 
-## About EXILED
+## About SEXILED
 
 **EXILED** is a low level plugin framework for SCP: Secret Laboratory.
 
@@ -19,10 +19,10 @@ All **EXILED** events are coded with [Harmony](https://harmony.pardeike.net/) us
 
 # Frequently Asked Questions
 
-## What is EXILED?
+## What is SEXILED?
 EXILED - short for "EXtended In-runtime Library for External Development" is a plugin framework for SCP: Secret Laboratory compatible with MP2. It is not a direct replacement for SMOD, but it's purpose is to implement an event-based framework using Harmony patches, that plugin developers can utilize to develop plugins for SCP:SL servers.
 
-## How do I install EXILED?
+## How do I install SEXILED?
 See the [Installation](/articles/installation/index.html) page for installation information.
 
 ## How do I install plugins?
@@ -42,8 +42,8 @@ No, this is unnecessary because this is a base-game feature! Simply set the `914
 Harmony is a library that examines the code of a program as it is being run, allowing developers to tap into those functions, and run their own code, either adding onto, or completely replacing, the code the program would normally run.
 
 
-The reason EXILED uses harmony is to allow easier updating of the framework in conjunction with game updates. Under ideal circumstances, a new game update will not break EXILED itself, and the only thing needed to make EXILED work again, is a very simple copy/paste of a few lines of code into the new Assembly-CSharp file.
+The reason SEXILED uses harmony is to allow easier updating of the framework in conjunction with game updates. Under ideal circumstances, a new game update will not break SEXILED itself, and the only thing needed to make SEXILED work again, is a very simple copy/paste of a few lines of code into the new Assembly-CSharp file.
 
 
-By keeping all of our code outside of the Assembly, other developers can have full, unhindered access to the entirety of EXILED's source code, making collaboration easier.  <br />
-Additionally, it means that our code will be mostly unaffected by game updates. Unless the game drastically changes code in a very specific function EXILED uses for an event patch, a game update may not even require EXILED itself to also be updated.
+By keeping all of our code outside of the Assembly, other developers can have full, unhindered access to the entirety of SEXILED's source code, making collaboration easier.  <br />
+Additionally, it means that our code will be mostly unaffected by game updates. Unless the game drastically changes code in a very specific function SEXILED uses for an event patch, a game update may not even require SEXILED itself to also be updated.

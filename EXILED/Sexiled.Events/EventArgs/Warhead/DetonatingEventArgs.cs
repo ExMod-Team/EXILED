@@ -1,0 +1,20 @@
+// -----------------------------------------------------------------------
+// <copyright file="DetonatingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.Events.EventArgs.Warhead
+{
+    using Sexiled.Events.EventArgs.Interfaces;
+
+    /// <summary>
+    /// Contains all information before detonating the warhead.
+    /// </summary>
+    public class DetonatingEventArgs : IDeniableEvent
+    {
+        /// <inheritdoc/>
+        public bool IsAllowed { get; set; } = true;
+    }
+}

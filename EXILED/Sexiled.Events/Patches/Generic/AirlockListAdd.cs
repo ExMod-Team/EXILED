@@ -1,0 +1,39 @@
+// -----------------------------------------------------------------------
+// <copyright file="AirlockListAdd.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.Events.Patches.Generic
+{
+#pragma warning disable SA1313
+#pragma warning disable SA1402
+
+    using HarmonyLib;
+    using Interactables.Interobjects;
+
+    /// <summary>
+    /// Patch for adding <see cref="API.Features.Doors.AirlockController"/> to list.
+    /// </summary>
+    [HarmonyPatch(typeof(AirlockController), nameof(AirlockController.Start))]
+    internal class AirlockListAdd
+    {
+        private static void Postfix(AirlockController __instance)
+        {
+            _ = new API.Features.Doors.AirlockController(__instance);
+        }
+    }
+
+    /// <summary>
+    /// Patch for removing <see cref="API.Features.Doors.AirlockController"/> to list.
+    /// </summary>
+    [HarmonyPatch(typeof(AirlockController), nameof(AirlockController.OnDestroy))]
+    internal class AirlockListRemove
+    {
+        private static void Postfix(AirlockController __instance)
+        {
+            API.Features.Doors.AirlockController.BaseToSexiledControllers.Remove(__instance);
+        }
+    }
+}

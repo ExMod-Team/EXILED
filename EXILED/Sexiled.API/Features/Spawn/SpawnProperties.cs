@@ -1,0 +1,53 @@
+// -----------------------------------------------------------------------
+// <copyright file="SpawnProperties.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.API.Features.Spawn
+{
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// Handles special properties of spawning an item.
+    /// </summary>
+    public class SpawnProperties
+    {
+        /// <summary>
+        /// Gets or sets a value indicating how many of the item can be spawned when the round starts.
+        /// </summary>
+        public uint Limit { get; set; }
+
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of possible dynamic spawn points.
+        /// </summary>
+        public List<DynamicSpawnPoint> DynamicSpawnPoints { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of possible static spawn points.
+        /// </summary>
+        public List<StaticSpawnPoint> StaticSpawnPoints { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of possible role-based spawn points.
+        /// </summary>
+        public List<RoleSpawnPoint> RoleSpawnPoints { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of possible room-based spawn points.
+        /// </summary>
+        public List<RoomSpawnPoint> RoomSpawnPoints { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets a <see cref="List{T}"/> of possible locker-based spawn points.
+        /// </summary>
+        public List<LockerSpawnPoint> LockerSpawnPoints { get; set; } = new();
+
+        /// <summary>
+        /// Counts how many spawn points are in this instance.
+        /// </summary>
+        /// <returns>How many spawn points there are.</returns>
+        public int Count() => DynamicSpawnPoints.Count + StaticSpawnPoints.Count + RoleSpawnPoints.Count + RoomSpawnPoints.Count + LockerSpawnPoints.Count;
+    }
+}

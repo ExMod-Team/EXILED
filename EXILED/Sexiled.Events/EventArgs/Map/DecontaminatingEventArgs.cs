@@ -1,0 +1,33 @@
+// -----------------------------------------------------------------------
+// <copyright file="DecontaminatingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.Events.EventArgs.Map
+{
+    using Interfaces;
+
+    /// <summary>
+    /// Contains all information before decontaminating the light containment zone.
+    /// </summary>
+    public class DecontaminatingEventArgs : IDeniableEvent
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DecontaminatingEventArgs" /> class.
+        /// </summary>
+        /// <param name="isAllowed">
+        /// <inheritdoc cref="IsAllowed" />
+        /// </param>
+        public DecontaminatingEventArgs(bool isAllowed = true)
+        {
+            IsAllowed = isAllowed;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether light containment zone decontamination can begin.
+        /// </summary>
+        public bool IsAllowed { get; set; }
+    }
+}

@@ -4,7 +4,7 @@ title: Automatic Windows Installation
 
 # Automatic Windows Installation
 
-Download `Exiled.Installer-Win.exe` from [here](https://github.com/ExMod-Team/EXILED/releases).
+Download `Sexiled.Installer-Win.exe` from [here](https://github.com/ExMod-Team/EXILED/releases).
 
 Move it into your **server directory** and double click the .exe.
 - Make sure the server directory is the one where LocalAdmin.exe is found.
@@ -12,7 +12,7 @@ Move it into your **server directory** and double click the .exe.
 #### Usage
 ```
 Usage:
-  Exiled.Installer [options] [[--] <additional arguments>...]]
+  Sexiled.Installer [options] [[--] <additional arguments>...]]
 
 Options:
   -p, --path <path> (REQUIRED)         Path to the folder with the SL server [default: YourWorkingFolder]
@@ -35,9 +35,9 @@ Additional Arguments:
 Using powershell.
 
 ```powershell title="Basic installation in the folder you are in"
-.\Exiled.Installer-Win --pre-releases
+.\Sexiled.Installer-Win --pre-releases
 ```
 
 ```powershell title="Installation in a specific folder, specific version and specific appdata folder"
-.\Exiled.Installer-Win -p D:\Games\SCPSL\Server --appdata C --target-version 2.0.8
+.\Sexiled.Installer-Win -p D:\Games\SCPSL\Server --appdata C --target-version 2.0.8
 ```

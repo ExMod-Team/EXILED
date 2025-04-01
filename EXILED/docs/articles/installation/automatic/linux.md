@@ -4,15 +4,15 @@ title: Automatic Linux Installation
 
 # Automatic Linux Installation
 
-Download `Exiled.Installer-Linux` from [here](https://github.com/ExMod-Team/EXILED/releases).
+Download `Sexiled.Installer-Linux` from [here](https://github.com/ExMod-Team/EXILED/releases).
 
-Move it into your **server directory** and run it using `./Exiled.Installer-Linux`
+Move it into your **server directory** and run it using `./Sexiled.Installer-Linux`
 - Make sure the server directory is the one where LocalAdmin executable is found.
 
 #### Usage
 ```
 Usage:
-  Exiled.Installer [options] [[--] <additional arguments>...]]
+  Sexiled.Installer [options] [[--] <additional arguments>...]]
 
 Options:
   -p, --path <path> (REQUIRED)         Path to the folder with the SL server [default: YourWorkingFolder]
@@ -35,9 +35,9 @@ Additional Arguments:
 
 - ##### Installation in a specific folder, specific version and specific appdata folder
 ```powershell title="Basic installation in the folder you are in"
-.\Exiled.Installer-Linux --pre-releases
+.\Sexiled.Installer-Linux --pre-releases
 ```
 
 ```powershell title="Installation in a specific folder, specific version and specific appdata folder"
-.\Exiled.Installer-Linux -p /home/user/scpsl/server --appdata /home/user/scpsl --target-version 2.0.8
+.\Sexiled.Installer-Linux -p /home/user/scpsl/server --appdata /home/user/scpsl --target-version 2.0.8
 ```

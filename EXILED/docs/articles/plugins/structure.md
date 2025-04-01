@@ -5,31 +5,31 @@ title: Plugin Structure
 This tutorial assumes that you are familiar with C#.
 
 ### Plugin Structure
-In order to be loaded onto the framework, *every* plugin must follow a certain structure and inherit from certain members. If this is not achieved, the plugin will not execute. This tutorial will explain the proper setup for a plugin on the EXILED framework.
+In order to be loaded onto the framework, *every* plugin must follow a certain structure and inherit from certain members. If this is not achieved, the plugin will not execute. This tutorial will explain the proper setup for a plugin on the SEXILED framework.
 
 ## Plugin Core
 Every plugin must have a .cs file that consists of the plugin class itself. This file (and the class itself) are typically simply named "Plugin"; however, any name is appropriate for the main plugin class. This example will use "Plugin" as the name of the class.
 
-After the main file is created, the Plugin class must be declared as a plugin, so that the EXILED framework loads it. This can be done by inheriting the `Plugin<IConfig>` class, provided in the `Exiled.API.Features` namespace.
+After the main file is created, the Plugin class must be declared as a plugin, so that the SEXILED framework loads it. This can be done by inheriting the `Plugin<IConfig>` class, provided in the `Sexiled.API.Features` namespace.
 
-The following example shows how to properly inherit the class. However, notice the `Config` class inside of the angled brackets. This class must be created and must inherit from `IConfig`, which is part of the `Exiled.API.Interfaces` namespace. Upon the creation of the Config class, the interface will require you to add an `IsEnabled` property.
+The following example shows how to properly inherit the class. However, notice the `Config` class inside of the angled brackets. This class must be created and must inherit from `IConfig`, which is part of the `Sexiled.API.Interfaces` namespace. Upon the creation of the Config class, the interface will require you to add an `IsEnabled` property.
 ```cs
 namespace MyPluginNamespace
 {
-    using Exiled.API.Features;
+    using Sexiled.API.Features;
     public class Plugin : Plugin<Config>
     {
-        // This plugin will now be recognized by the EXILED framework!
+        // This plugin will now be recognized by the SEXILED framework!
     }
     // It is strongly encouraged to create a separate file for your Config class.
-    using Exiled.API.Interfaces;
+    using Sexiled.API.Interfaces;
     public class Config : IConfig
     {
         public bool IsEnabled { get; set; }
     }
 }
 ```
-By creating the `Config` class and including it in the angled brackets, the rest of the plugin's code, as well as the EXILED framework, will recognize that the class resembles configuration for server owners. For more information about setting up configuration, see the Configuration section below.
+By creating the `Config` class and including it in the angled brackets, the rest of the plugin's code, as well as the SEXILED framework, will recognize that the class resembles configuration for server owners. For more information about setting up configuration, see the Configuration section below.
 
 ## OnEnabled and OnDisabled
 The plugin is now successfully loaded onto the framework. However, it doesn't actually do anything; no functionality has been assigned. The `Plugin<IConfig>` class provides two overridable methods in order to give the plugin functionality: `OnEnabled` and `OnDisabled`. These two methods do exactly as they sound: Execute when the plugin is enabled/loaded, and when it is disabled.
@@ -38,7 +38,7 @@ The following example shows how to utilize these methods to send a message to th
 ```cs
 namespace MyPluginNamespace
 {
-    using Exiled.API.Features;
+    using Sexiled.API.Features;
     public class Plugin : Plugin<Config>
     {
         public override void OnEnabled()
@@ -51,7 +51,7 @@ namespace MyPluginNamespace
         }
     }
     // Config.cs file
-    using Exiled.API.Interfaces;
+    using Sexiled.API.Interfaces;
     public class Config : IConfig
     {
         public bool IsEnabled { get; set; }
@@ -68,7 +68,7 @@ The following example shows how to properly override this data.
 namespace MyPluginNamespace
 {
     using System;
-    using Exiled.API.Features;
+    using Sexiled.API.Features;
     public class Plugin : Plugin<Config>
     {
         public override string Name => "My Awesome Plugin";
@@ -89,7 +89,7 @@ To start, take a look at your Config.cs file.
 ```cs
 namespace MyPluginNamespace
 {
-    using Exiled.API.Interfaces;
+    using Sexiled.API.Interfaces;
     public class Config : IConfig
     {
         public bool IsEnabled { get; set; }
@@ -103,7 +103,7 @@ In the following example, a config file with three configs is created.
 ```cs
 namespace MyPluginNamespace
 {
-    using Exiled.API.Interfaces;
+    using Sexiled.API.Interfaces;
     public class Config : IConfig
     {
         public bool IsEnabled { get; set; }
@@ -119,7 +119,7 @@ To server hosts, the functionality of these configs might be confusing at first.
 namespace MyPluginNamespace
 {
     using System.ComponentModel;
-    using Exiled.API.Interfaces;
+    using Sexiled.API.Interfaces;
     public class Config : IConfig
     {
         [Description("Whether the plugin is enabled.")]
@@ -138,7 +138,7 @@ namespace MyPluginNamespace
 
 ### Reading Configs
 > [!NOTE]
-> You do not need to read the value of the `IsEnabled` config; EXILED will automatically prevent your plugin from executing if its `IsEnabled` config is set to false.
+> You do not need to read the value of the `IsEnabled` config; SEXILED will automatically prevent your plugin from executing if its `IsEnabled` config is set to false.
 
 
 Reading configuration is more simple than creating it. The base `Plugin<IConfig>` class provides a property, called `Config`, which can be used to access these values.
@@ -147,7 +147,7 @@ In the following example, our config from the previous class is displayed when t
 ```cs
 namespace MyPluginNamespace
 {
-    using Exiled.API.Features;
+    using Sexiled.API.Features;
     public class Plugin : Plugin<Config>
     {
         public override void OnEnabled()
@@ -159,7 +159,7 @@ namespace MyPluginNamespace
     }
     // Config.cs file
     using System.ComponentModel;
-    using Exiled.API.Interfaces;
+    using Sexiled.API.Interfaces;
     public class Config : IConfig
     {
         [Description("Whether the plugin is enabled.")]

@@ -4,10 +4,10 @@
 <#@ assembly name="%EXILED_REFERENCES%\Mirror.dll" #>
 <#@ assembly name="%EXILED_REFERENCES%\UnityEngine.CoreModule.dll" #>
 <#@ assembly name="%EXILED_REFERENCES%\Assembly-CSharp-Publicized.dll" #>
-<#@ assembly name="bin\Release\Exiled.API.dll" #>
-<#@ assembly name="bin\Release\Exiled.Loader.dll" #>
-<#@ import namespace="Exiled.API.Enums" #>
-<#@ import namespace="Exiled.API.Extensions" #>
+<#@ assembly name="bin\Release\Sexiled.API.dll" #>
+<#@ assembly name="bin\Release\Sexiled.Loader.dll" #>
+<#@ import namespace="Sexiled.API.Enums" #>
+<#@ import namespace="Sexiled.API.Extensions" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Reflection" #>
 <#@ import namespace="PlayerRoles" #>
@@ -17,7 +17,7 @@
 title: NW Documentation
 ---
 
-Last Update (<#= Exiled.Loader.AutoUpdateFiles.RequiredSCPSLVersion#>)
+Last Update (<#= Sexiled.Loader.AutoUpdateFiles.RequiredSCPSLVersion#>)
 
 ### Index
 
@@ -87,7 +87,7 @@ catch(Exception ex)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: <#= Exiled.Loader.AutoUpdateFiles.RequiredSCPSLVersion#>"
+```md title="Latest Updated: <#= Sexiled.Loader.AutoUpdateFiles.RequiredSCPSLVersion#>"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"

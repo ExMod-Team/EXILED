@@ -1,0 +1,36 @@
+// -----------------------------------------------------------------------
+// <copyright file="SinkholeHazard.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Sexiled.API.Features.Hazards
+{
+    using Sexiled.API.Enums;
+    using global::Hazards;
+
+    /// <summary>
+    /// Represents a sinkhole hazard.
+    /// </summary>
+    public class SinkholeHazard : Hazard
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SinkholeHazard"/> class.
+        /// </summary>
+        /// <param name="hazard">The <see cref="SinkholeEnvironmentalHazard"/> instance.</param>
+        public SinkholeHazard(SinkholeEnvironmentalHazard hazard)
+            : base(hazard)
+        {
+            Base = hazard;
+        }
+
+        /// <summary>
+        /// Gets the <see cref="SinkholeEnvironmentalHazard"/>.
+        /// </summary>
+        public new SinkholeEnvironmentalHazard Base { get; }
+
+        /// <inheritdoc />
+        public override HazardType Type => HazardType.Sinkhole;
+    }
+}
