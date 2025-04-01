@@ -25,7 +25,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Initializes a new instance of the <see cref="Broadcast"/> class.
         /// </summary>
-        /// <param name="content">The content of the broadcast>.</param>
+        /// <param name="content">The content of the broadcast.</param>
         /// <param name="duration">The duration of the broadcast, in seconds.</param>
         /// <param name="show">Whether the broadcast should be shown.</param>
         /// <param name="type">The type of the broadcast.</param>
