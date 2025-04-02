@@ -56,7 +56,6 @@ namespace Exiled.API.Features
     using PluginAPI.Core;
     using RelativePositioning;
     using RemoteAdmin;
-    using Respawning.NamingRules;
     using RoundRestarting;
     using UnityEngine;
     using Utils;
@@ -96,8 +95,6 @@ namespace Exiled.API.Features
         private readonly HashSet<EActor> componentsInChildren = new();
 
         private ReferenceHub referenceHub;
-        private CustomHealthStat healthStat;
-        private CustomHumeShieldStat humeShieldStat;
         private Role role;
 
         /// <summary>
@@ -145,6 +142,11 @@ namespace Exiled.API.Features
         /// </summary>
         public static Dictionary<string, Player> UserIdsCache { get; } = new(20);
 
+        /// <summary>
+        /// Gets or sets a <see cref="CustomHumeShieldStat"/>.
+        /// </summary>
+        public CustomHumeShieldStat CustomHumeShieldStat { get; protected set; }
+
         /// <inheritdoc/>
         public IReadOnlyCollection<EActor> ComponentsInChildren => componentsInChildren;
 
@@ -178,8 +180,8 @@ namespace Exiled.API.Features
                 Inventory = value.inventory;
                 CameraTransform = value.PlayerCameraReference;
 
-                value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = healthStat = new CustomHealthStat { Hub = value };
-                value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = humeShieldStat = new CustomHumeShieldStat { Hub = value };
+                value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = CustomHealthStat = new CustomHealthStat { Hub = value };
+                value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = CustomHumeShieldStat = new CustomHumeShieldStat { Hub = value };
             }
         }
 
@@ -867,13 +869,13 @@ namespace Exiled.API.Features
         /// </summary>
         public float Health
         {
-            get => healthStat.CurValue;
+            get => CustomHealthStat.CurValue;
             set
             {
                 if (value > MaxHealth)
                     MaxHealth = value;
 
-                healthStat.CurValue = value;
+                CustomHealthStat.CurValue = value;
             }
         }
 
@@ -882,8 +884,8 @@ namespace Exiled.API.Features
         /// </summary>
         public float MaxHealth
         {
-            get => healthStat.MaxValue;
-            set => healthStat.CustomMaxValue = value;
+            get => CustomHealthStat.MaxValue;
+            set => CustomHealthStat.CustomMaxValue = value;
         }
 
         /// <summary>
@@ -929,8 +931,8 @@ namespace Exiled.API.Features
         /// <remarks>This value can bypass the role's hume shield maximum. However, this value will only be visible to the end-player as Hume Shield if <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>. Otherwise, the game will treat the player as though they have the amount of Hume Shield specified, even though they cannot see it.</remarks>
         public float HumeShield
         {
-            get => HumeShieldStat.CurValue;
-            set => HumeShieldStat.CurValue = value;
+            get => CustomHumeShieldStat.CurValue;
+            set => CustomHumeShieldStat.CurValue = value;
         }
 
         /// <summary>
@@ -938,8 +940,8 @@ namespace Exiled.API.Features
         /// </summary>
         public float MaxHumeShield
         {
-            get => humeShieldStat.MaxValue;
-            set => humeShieldStat.CustomMaxValue = value;
+            get => CustomHumeShieldStat.MaxValue;
+            set => CustomHumeShieldStat.CustomMaxValue = value;
         }
 
         /// <summary>
@@ -947,8 +949,8 @@ namespace Exiled.API.Features
         /// </summary>
         public float HumeShieldRegenerationMultiplier
         {
-            get => humeShieldStat.ShieldRegenerationMultiplier;
-            set => humeShieldStat.ShieldRegenerationMultiplier = value;
+            get => CustomHumeShieldStat.ShieldRegenerationMultiplier;
+            set => CustomHumeShieldStat.ShieldRegenerationMultiplier = value;
         }
 
         /// <summary>
@@ -958,9 +960,9 @@ namespace Exiled.API.Features
 
         /// <summary>
         /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
-        /// TODO: Change to <see cref="CustomHumeShieldStat"/>.
         /// </summary>
-        public HumeShieldStat HumeShieldStat => humeShieldStat;
+        [Obsolete("Use " + nameof(CustomHumeShieldStat) + " instead.")]
+        public HumeShieldStat HumeShieldStat => CustomHumeShieldStat;
 
         /// <summary>
         /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
@@ -1183,6 +1185,11 @@ namespace Exiled.API.Features
         /// Gets a dictionary for storing player objects of connected but not yet verified players.
         /// </summary>
         internal static ConditionalWeakTable<GameObject, Player> UnverifiedPlayers { get; } = new();
+
+        /// <summary>
+        /// Gets or sets a <see cref="CustomHealthStat"/>.
+        /// </summary>
+        protected CustomHealthStat CustomHealthStat { get; set; }
 
         /// <summary>
         /// Converts NwPluginAPI player to EXILED player.
