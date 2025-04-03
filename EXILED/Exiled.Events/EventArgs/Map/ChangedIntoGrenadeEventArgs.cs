@@ -15,7 +15,7 @@ namespace Exiled.Events.EventArgs.Map
     /// <summary>
     /// Contains all information for when the server is turned a pickup into a live grenade.
     /// </summary>
-    public class ChangedIntoGrenadeEventArgs : IExiledEvent
+    public class ChangedIntoGrenadeEventArgs : IExiledEvent, IPickupEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangedIntoGrenadeEventArgs"/> class.
@@ -37,5 +37,13 @@ namespace Exiled.Events.EventArgs.Map
         /// Gets a value indicating the projectile that spawned.
         /// </summary>
         public Projectile Projectile { get; }
+
+#pragma warning disable SA1623 // Property summary documentation should match accessors. It match i take it from the interface.
+        /// <summary>
+        /// <inheritdoc path="/summary"/>
+        /// This property is equivalent to <see cref="Pickup"/>.
+        /// </summary>
+        Pickup IPickupEvent.Pickup => Pickup;
+#pragma warning restore SA1623 // Property summary documentation should match accessors
     }
 }
