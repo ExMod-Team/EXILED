@@ -8,6 +8,7 @@
 namespace Exiled.API.Features
 {
 #pragma warning disable SA1401
+
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -27,6 +28,7 @@ namespace Exiled.API.Features
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using PlayerRoles.Ragdolls;
+    using RemoteAdmin;
     using UnityEngine;
     using Utils;
     using Utils.Networking;
@@ -106,6 +108,24 @@ namespace Exiled.API.Features
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
         public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
+
+        /// <summary>
+        /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <param name="player">The player to send message as, null will use Server Host.</param>
+        public static void StaffMessage(string message, Player player = null)
+        {
+            player ??= Server.Host;
+
+            foreach (Player target in Player.List)
+            {
+                if (!CommandProcessor.CheckPermissions(target.Sender, PlayerPermissions.AdminChat))
+                    continue;
+
+                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+            }
+        }
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.
