@@ -28,10 +28,14 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+        /// <param name="playerSync"><inheritdoc cref="SettingBase.PlayerSync"/></param>
+        /// <param name="priority"><inheritdoc cref="SettingBase.Priority"/></param>
+        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null, Predicate<Player> playerSync = null, int priority = 0)
             : base(new SSTwoButtonsSetting(id, label, firstOption, secondOption, defaultIsSecond, hintDescription), header, onChanged)
         {
             Base = (SSTwoButtonsSetting)base.Base;
+            PlayerSync = playerSync;
+            Priority = priority;
         }
 
         /// <summary>

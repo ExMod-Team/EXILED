@@ -29,10 +29,14 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="stringFormat"><inheritdoc cref="StringFormat"/></param>
         /// <param name="displayFormat"><inheritdoc cref="DisplayFormat"/></param>
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        public SliderSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger = false, string stringFormat = "0.##", string displayFormat = "{0}", string hintDescription = null)
+        /// <param name="playerSync"><inheritdoc cref="SettingBase.PlayerSync"/></param>
+        /// <param name="priority"><inheritdoc cref="SettingBase.Priority"/></param>
+        public SliderSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger = false, string stringFormat = "0.##", string displayFormat = "{0}", string hintDescription = null, Predicate<Player> playerSync = null, int priority = 0)
             : this(new SSSliderSetting(id, label, minValue, maxValue, defaultValue, isInteger, stringFormat, displayFormat, hintDescription))
         {
             Base = (SSSliderSetting)base.Base;
+            PlayerSync = playerSync;
+            Priority = priority;
         }
 
         /// <summary>

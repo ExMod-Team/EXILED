@@ -27,10 +27,14 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="characterLimit"><inheritdoc cref="CharacterLimit"/></param>
         /// <param name="contentType"><inheritdoc cref="ContentType"/></param>
         /// /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        public UserTextInputSetting(int id, string label, string placeHolder = "", int characterLimit = 64, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, string hintDescription = null)
+        /// <param name="playerSync"><inheritdoc cref="SettingBase.PlayerSync"/></param>
+        /// <param name="priority"><inheritdoc cref="SettingBase.Priority"/></param>
+        public UserTextInputSetting(int id, string label, string placeHolder = "", int characterLimit = 64, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, string hintDescription = null, Predicate<Player> playerSync = null, int priority = 0)
             : this(new SSPlaintextSetting(id, label, placeHolder, characterLimit, contentType, hintDescription))
         {
             Base = (SSPlaintextSetting)base.Base;
+            PlayerSync = playerSync;
+            Priority = priority;
         }
 
         /// <summary>
