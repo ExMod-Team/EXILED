@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Core.UserSettings
 {
+    using System;
+
     using Exiled.API.Interfaces;
     using global::UserSettings.ServerSpecific;
 
@@ -21,10 +23,14 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="name"><inheritdoc cref="SettingBase.Label"/></param>
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="paddling"><inheritdoc cref="ReducedPaddling"/></param>
-        public HeaderSetting(string name, string hintDescription = "", bool paddling = false)
+        /// <param name="playerSync"><inheritdoc cref="SettingBase.PlayerSync"/></param>
+        /// <param name="priority"><inheritdoc cref="SettingBase.Priority"/></param>
+        public HeaderSetting(string name, string hintDescription = "", bool paddling = false, Predicate<Player> playerSync = null, int priority = 0)
             : this(new SSGroupHeader(name, paddling, hintDescription))
         {
             Base = (SSGroupHeader)base.Base;
+            PlayerSync = playerSync;
+            Priority = priority;
 
             Base.SetId(null, name);
         }
@@ -38,6 +44,8 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             Base = settingBase;
             Base.SetId(null, settingBase.Label);
+            PlayerSync = null;
+            Priority = 0;
         }
 
         /// <inheritdoc/>
