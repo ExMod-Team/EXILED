@@ -28,6 +28,8 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        /// <param name="playerSync"><inheritdoc cref="SettingBase.PlayerSync"/></param>
+        /// <param name="priority"><inheritdoc cref="SettingBase.Priority"/></param>
         public TextInputSetting(
             int id,
             string label,
@@ -35,10 +37,14 @@ namespace Exiled.API.Features.Core.UserSettings
             TextAlignmentOptions alignment = TextAlignmentOptions.TopLeft,
             string hintDescription = null,
             HeaderSetting header = null,
-            Action<Player, SettingBase> onChanged = null)
+            Action<Player, SettingBase> onChanged = null,
+            Predicate<Player> playerSync = null,
+            int priority = 0)
             : base(new SSTextArea(id, label, foldoutMode, hintDescription, alignment), header, onChanged)
         {
             Base = (SSTextArea)base.Base;
+            PlayerSync = playerSync;
+            Priority = priority;
         }
 
         /// <summary>
