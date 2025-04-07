@@ -3278,7 +3278,7 @@ namespace Exiled.API.Features
         /// <param name="intensity">The intensity of the effect will be active for.</param>
         /// <param name="duration">The amount of time the effect will be active for.</param>
         /// <param name="addDurationIfActive">If the effect is already active, setting to <see langword="true"/> will add this duration onto the effect.</param>
-        /// <returns>return if the effect has been Enable.</returns>
+        /// <returns>A bool indicating whether the effect was valid and successfully enabled.</returns>
         public bool EnableEffect(EffectType type, byte intensity, float duration = 0f, bool addDurationIfActive = false)
             => TryGetEffect(type, out StatusEffectBase statusEffect) && EnableEffect(statusEffect, intensity, duration, addDurationIfActive);
 

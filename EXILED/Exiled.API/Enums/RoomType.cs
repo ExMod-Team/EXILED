@@ -235,7 +235,7 @@ namespace Exiled.API.Enums
         EzGateB,
 
         /// <summary>
-        /// Entrance Zone's Shelter rfoom.
+        /// Entrance Zone's Shelter room.
         /// </summary>
         EzShelter,
 
