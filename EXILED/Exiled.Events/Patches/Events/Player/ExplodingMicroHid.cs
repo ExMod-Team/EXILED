@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-#pragma warning disable SA1313 // Parameter names should begin with lower-case letter
-
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
