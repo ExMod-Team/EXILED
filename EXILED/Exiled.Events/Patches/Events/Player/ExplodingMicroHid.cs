@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ExplodingMicroHid.cs" company="ExMod Team">
+// <copyright file="ExplodingMicroHID.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -21,12 +21,12 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="InventorySystem.Items.MicroHID.Modules.ChargeFireModeModule.ServerExplode"/>.
-    /// Adds the <see cref="ExplodingMicroHid" /> event.
+    /// Patches <see cref="ChargeFireModeModule.ServerExplode"/>.
+    /// Adds the <see cref="Handlers.Player.ExplodingMicroHID" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ExplodingMicroHID))]
     [HarmonyPatch(typeof(ChargeFireModeModule), nameof(ChargeFireModeModule.ServerExplode))]
-    internal static class ExplodingMicroHid
+    internal static class ExplodingMicroHID
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {

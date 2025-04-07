@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information before the micro opens a doors.
     /// </summary>
-    public class MicroHIDOpeningDoorEventArgs : IDeniableEvent, IDoorEvent, IItemEvent
+    public class MicroHIDOpeningDoorEventArgs : IDeniableEvent, IDoorEvent, IMicroHIDEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MicroHIDOpeningDoorEventArgs"/> class.
