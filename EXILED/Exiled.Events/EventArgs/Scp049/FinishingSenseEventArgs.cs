@@ -1,0 +1,67 @@
+﻿// -----------------------------------------------------------------------
+// <copyright file="AttackingEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Exiled.Events.EventArgs.Scp049
+{
+    using Exiled.API.Features;
+    using Exiled.API.Features.Roles;
+    using Exiled.Events.EventArgs.Interfaces;
+
+    /// <summary>
+    /// Contains all information before SCP-049 finishes his sense ability.
+    /// </summary>
+    public class FinishingSenseEventArgs : IScp049Event, IDeniableEvent
+    {
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FinishingSenseEventArgs"/> class.
+        /// </summary>
+        /// <param name="target">
+        /// <inheritdoc cref="Target player of Scp049" />
+        /// </param>
+        /// <param name="scp049">
+        /// <inheritdoc cref="Player" />
+        /// </param>
+        /// <param name="CooldownTime">
+        /// <inheritdoc cref="double?" />
+        /// </param>
+        /// <param name="isAllowed">
+        /// <inheritdoc cref="bool" />
+        /// </param>
+        public FinishingSenseEventArgs(Player scp049 , Player? target , double cooldowntime ,bool isAllowed = true)
+        {
+            Player = scp049;
+            Scp049 = Player.Role.As<Scp049Role>();
+            Target = target;
+            IsAllowed = isAllowed;
+            CooldownTime = cooldowntime;
+        }
+
+        /// <inheritdoc/>
+        public Scp049Role Scp049 { get; }
+
+        /// <summary>
+        /// Gets the player who is controlling SCP-049.
+        /// </summary>
+        public Player Player { get; }
+
+        /// <summary>
+        /// Gets the player who is SCP-049's active target. Can be null.
+        /// </summary>
+        public Player Target { get; }
+
+        /// <summary>
+        /// Gets or sets the cooldown duration of the Sense ability.
+        /// </summary>
+        public double CooldownTime { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the server will finishing or not finishing 049 Sense Ability.
+        /// </summary>
+        public bool IsAllowed { get; set; }
+    }
+}
