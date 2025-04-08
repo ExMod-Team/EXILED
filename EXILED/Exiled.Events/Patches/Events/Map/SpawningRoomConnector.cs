@@ -1,4 +1,4 @@
-﻿﻿// -----------------------------------------------------------------------
+﻿// -----------------------------------------------------------------------
 // <copyright file="SpawningRoomConnector.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -20,8 +20,8 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="WaveUpdateMessage.ServerSendUpdate"/>.
-    /// Adds the <see cref="Handlers.Map.SpawningTeamVehicle"/> event.
+    /// Patches <see cref="RoomConnectorDistributorSettings.TryGetTemplate"/>.
+    /// Adds the <see cref="Handlers.Map.OnSpawningRoomConnector"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Map), nameof(Handlers.Map.SpawningRoomConnector))]
     [HarmonyPatch(typeof(RoomConnectorDistributorSettings), nameof(RoomConnectorDistributorSettings.TryGetTemplate))]
