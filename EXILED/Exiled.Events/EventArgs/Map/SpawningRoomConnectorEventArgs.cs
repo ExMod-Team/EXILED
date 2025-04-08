@@ -30,7 +30,7 @@ namespace Exiled.Events.EventArgs.Map
         public SpawnableRoomConnectorType ConnectorType { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the item can be spawned.
+        /// Gets or sets a value indicating whether the connector can be spawned.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
     }
