@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Events.Scp049
 
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerLoseTarget))]
-    internal class FinishingSenseEvent
+    internal class FinishingSense
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -93,7 +93,7 @@ namespace Exiled.Events.Patches.Events.Scp049
 
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerProcessKilledPlayer))]
-    internal class FinishingSenseEvent2
+    internal class FinishingSense2
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
