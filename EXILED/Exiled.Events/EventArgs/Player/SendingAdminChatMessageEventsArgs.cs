@@ -39,7 +39,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the pickup can be searched.
+        /// Gets or sets a value indicating whether the message will be sent to other.
         /// </summary>
         public bool IsAllowed { get; set; }
 
