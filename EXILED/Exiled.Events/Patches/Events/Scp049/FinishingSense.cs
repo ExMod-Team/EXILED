@@ -15,8 +15,6 @@ namespace Exiled.Events.Patches.Events.Scp049
     using System.Collections.Generic;
     using static HarmonyLib.AccessTools;
 
-    using Scp49FinishingSenseEvent;
-
     using PlayerRoles.Subroutines;
     using Exiled.Events.EventArgs.Scp049;
     using PlayerRoles.PlayableScps.Scp049;
