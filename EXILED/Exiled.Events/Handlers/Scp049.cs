@@ -35,7 +35,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before SCP-049 finish the good sense of the doctor ability.
         /// </summary>
-        public static Event<FinishingSenseEventArgs> FinishingSense { get; set; } = new Event<FinishingSenseEventArgs>();
+        public static Event<FinishingSenseEventArgs> FinishingSense { get; set; } = new();
 
         /// <summary>
         /// Invoked before SCP-049 uses the call ability.
