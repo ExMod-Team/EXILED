@@ -21,13 +21,13 @@ namespace Exiled.Events.EventArgs.Scp049
         /// Initializes a new instance of the <see cref="FinishingSenseEventArgs"/> class.
         /// </summary>
         /// <param name="target">
-        /// <inheritdoc cref="Target player of Scp049" />
+        /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="scp049">
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="CooldownTime">
-        /// <inheritdoc cref="double?" />
+        /// <param name="cooldowntime">
+        /// <inheritdoc cref="double" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="bool" />
