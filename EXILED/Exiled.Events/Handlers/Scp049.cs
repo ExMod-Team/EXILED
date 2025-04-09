@@ -64,13 +64,13 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ActivatingSenseEventArgs" /> instance.</param>
         public static void OnActivatingSense(ActivatingSenseEventArgs ev) => ActivatingSense.InvokeSafely(ev);
-        
+
         /// <summary>
         /// Called before SCP-049 finish the good sense of the doctor ability.
         /// </summary>
         /// <param name="ev">The <see cref="FinishingSenseEventArgs" /> instance.</param>
         public static void OnFinishingSense(FinishingSenseEventArgs ev) => FinishingSense.InvokeSafely(ev);
-        
+
         /// <summary>
         /// Called before SCP-049 starts the call ability.
         /// </summary>
