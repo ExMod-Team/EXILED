@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="AttackingEventArgs.cs" company="ExMod Team">
+// <copyright file="FinishingSenseEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -32,7 +32,7 @@ namespace Exiled.Events.EventArgs.Scp049
         /// <param name="isAllowed">
         /// <inheritdoc cref="bool" />
         /// </param>
-        public FinishingSenseEventArgs(Player scp049 , Player? target , double cooldowntime ,bool isAllowed = true)
+        public FinishingSenseEventArgs(Player scp049 , Player? target , double cooldowntime , bool isAllowed = true)
         {
             Player = scp049;
             Scp049 = Player.Role.As<Scp049Role>();
