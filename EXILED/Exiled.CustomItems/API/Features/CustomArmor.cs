@@ -8,13 +8,16 @@
 namespace Exiled.CustomItems.API.Features
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
 
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
+    using Exiled.API.Structs;
     using Exiled.Events.EventArgs.Player;
 
+    using InventorySystem.Items.Armor;
     using MEC;
 
     /// <summary>
@@ -55,6 +58,16 @@ namespace Exiled.CustomItems.API.Features
         [Description("The value must be above 0 and below 100")]
         public virtual int VestEfficacy { get; set; } = 80;
 
+        /// <summary>
+        /// Gets or sets the Ammunition limit the player have.
+        /// </summary>
+        public virtual List<ArmorAmmoLimit> AmmoLimits { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets the Item Category limit the player have.
+        /// </summary>
+        public virtual List<BodyArmor.ArmorCategoryLimitModifier> CategoryLimits { get; set; } = new();
+
         /// <inheritdoc />
         public override void Give(Player player, bool displayMessage = true)
         {
@@ -65,6 +78,12 @@ namespace Exiled.CustomItems.API.Features
 
             armor.VestEfficacy = VestEfficacy;
             armor.HelmetEfficacy = HelmetEfficacy;
+
+            if (AmmoLimits.Count != 0)
+                armor.AmmoLimits = AmmoLimits;
+
+            if (AmmoLimits.Count != 0)
+                armor.CategoryLimits = CategoryLimits;
 
             player.AddItem(armor);
 
