@@ -284,7 +284,7 @@ namespace Exiled.Events.Patches.Events.Scp049
 
                 // this.Cooldown.Trigger(ev.cooldown.time)
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldfld, typeof(Scp049SenseAbility).GetField("Cooldown", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)),
+                new(OpCodes.Ldfld, Field(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Cooldown))),
                 new(OpCodes.Ldloc, ev3.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
                 new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
