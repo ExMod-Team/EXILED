@@ -6,21 +6,22 @@
 // -----------------------------------------------------------------------
 
 namespace Exiled.Events.Patches.Events.Scp049
-{ 
+{
+    using System.Collections.Generic;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    
     using API.Features;
     using API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp049;
-    
     using HarmonyLib;
-    using System.Reflection;
-    using System.Reflection.Emit;
-    using System.Collections.Generic;
-    using static HarmonyLib.AccessTools;
-
-    using PlayerRoles.Subroutines;
+    
     using PlayerRoles.PlayableScps.Scp049;
-
+    using PlayerRoles.Subroutines;
+    
+    using static HarmonyLib.AccessTools;
+    
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerLoseTarget))]
     internal class FinishingSense
