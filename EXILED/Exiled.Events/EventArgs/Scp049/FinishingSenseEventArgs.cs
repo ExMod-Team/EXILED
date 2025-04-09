@@ -18,17 +18,17 @@ namespace Exiled.Events.EventArgs.Scp049
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FinishingSenseEventArgs"/> class.
-        /// </summary>
-        /// <param name="target">
+        /// </summary> 
+        /// <param name="scp049">The SCP-049 instance triggering the event.
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="scp049">
+        /// <param name="target">The player targeted by SCP-049's Sense ability.
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="cooldowntime">
+        /// <param name="cooldowntime">The time in seconds before the Sense ability can be used again.
         /// <inheritdoc cref="double" />
         /// </param>
-        /// <param name="isAllowed">
+        /// <param name="isAllowed">Specifies whether the Sense effect is allowed to finish.
         /// <inheritdoc cref="bool" />
         /// </param>
         public FinishingSenseEventArgs(Player scp049, Player? target, double cooldowntime, bool isAllowed = true)
