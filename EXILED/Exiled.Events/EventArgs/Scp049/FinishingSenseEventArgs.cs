@@ -16,7 +16,6 @@ namespace Exiled.Events.EventArgs.Scp049
     /// </summary>
     public class FinishingSenseEventArgs : IScp049Event, IDeniableEvent
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FinishingSenseEventArgs"/> class.
         /// </summary>
@@ -32,7 +31,7 @@ namespace Exiled.Events.EventArgs.Scp049
         /// <param name="isAllowed">
         /// <inheritdoc cref="bool" />
         /// </param>
-        public FinishingSenseEventArgs(Player scp049 , Player? target , double cooldowntime , bool isAllowed = true)
+        public FinishingSenseEventArgs(Player scp049, Player? target, double cooldowntime, bool isAllowed = true)
         {
             Player = scp049;
             Scp049 = Player.Role.As<Scp049Role>();
