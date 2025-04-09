@@ -22,6 +22,10 @@ namespace Exiled.Events.Patches.Events.Scp049
     
     using static HarmonyLib.AccessTools;
     
+    /// <summary>
+    /// Patches <see cref="Scp049SenseAbility.ServerLoseTarget" />.
+    /// Adds the <see cref="Handlers.Scp049.FinishingSense" /> event.
+    /// </summary>
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerLoseTarget))]
     internal class FinishingSense
@@ -41,7 +45,6 @@ namespace Exiled.Events.Patches.Events.Scp049
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
-
                 // Player scp049 = Player.Get(this.Owner);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
@@ -92,7 +95,11 @@ namespace Exiled.Events.Patches.Events.Scp049
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
-
+    
+    /// <summary>
+    /// Patches <see cref="Scp049SenseAbility.ServerProcessKilledPlayer" />.
+    /// Adds the <see cref="Handlers.Scp049.FinishingSense" /> event.
+    /// </summary>
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerProcessKilledPlayer))]
     internal class FinishingSense2
@@ -126,7 +133,6 @@ namespace Exiled.Events.Patches.Events.Scp049
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-
                 // Player scp049 = Player.Get(this.Owner);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
@@ -177,7 +183,11 @@ namespace Exiled.Events.Patches.Events.Scp049
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
-
+    
+    /// <summary>
+    /// Patches <see cref="Scp049SenseAbility.ServerProcessCmd" />.
+    /// Adds the <see cref="Handlers.Scp049.FinishingSense" /> event.
+    /// </summary>
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerProcessCmd), new[] { typeof(Mirror.NetworkReader) })]
     internal class FinishingSense3
@@ -190,13 +200,13 @@ namespace Exiled.Events.Patches.Events.Scp049
             LocalBuilder ev3 = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
 
             // Declare local variable for If Ability is active
-            LocalBuilder IsAbilityActive = generator.DeclareLocal(typeof(bool));
+            LocalBuilder isAbilityActive = generator.DeclareLocal(typeof(bool));
 
             // Contuinue label for if ability is not active
             Label continueLabel = generator.DefineLabel();
 
             // Ret label for Exiting the code without breaking ActivatingSense patch
-            Label Allowed = generator.DefineLabel();
+            Label allowed = generator.DefineLabel();
 
             // BaseCoolDown value double
             const double DefaultFailCooldowntime = Scp049SenseAbility.AttemptFailCooldown;
@@ -206,7 +216,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // To determine whether the ability is active, i.e. whether this is an unsuccessful attempt or a sense that is not allowed to end
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.HasTarget))),
-                new(OpCodes.Stloc, IsAbilityActive.LocalIndex),
+                new(OpCodes.Stloc, isAbilityActive.LocalIndex),
             });
 
             // this.Cooldown.Trigger(2.5) index
@@ -227,7 +237,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Skip if the ability is not active and this is an unsuccessful attempt
-                new(OpCodes.Ldloc, IsAbilityActive.LocalIndex),
+                new(OpCodes.Ldloc, isAbilityActive.LocalIndex),
                 new(OpCodes.Brfalse_S, continueLabel),
 
                 // Player scp049 = Player.Get(this.Owner);
@@ -257,7 +267,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // if (!ev.IsAllowed) return;
                 new(OpCodes.Ldloc_S, ev3.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.IsAllowed))),
-                new(OpCodes.Brtrue_S, Allowed),
+                new(OpCodes.Brtrue_S, allowed),
 
                 // If not allowed, set hastarget to true so as not to break the sense ability
                 // this.HasTarget = true;
@@ -269,7 +279,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Pop),
                 new(OpCodes.Ret),
 
-                new CodeInstruction(OpCodes.Nop).WithLabels(Allowed),
+                new CodeInstruction(OpCodes.Nop).WithLabels(allowed),
 
                 // this.Cooldown.Trigger(ev.cooldown.time)
                 new(OpCodes.Ldarg_0),
@@ -291,7 +301,6 @@ namespace Exiled.Events.Patches.Events.Scp049
 
                 // Continue  if the ability is not active and this is an unsuccessful attempt
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
-            
             });
 
             // Return the new instructions
