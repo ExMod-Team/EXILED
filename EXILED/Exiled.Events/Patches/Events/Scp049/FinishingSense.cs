@@ -13,6 +13,7 @@ namespace Exiled.Events.Patches.Events.Scp049
     using Exiled.Events.EventArgs.Scp049;
     
     using HarmonyLib;
+    using System.Reflection;
     using System.Reflection.Emit;
     using System.Collections.Generic;
     using static HarmonyLib.AccessTools;
