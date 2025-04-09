@@ -288,7 +288,6 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
                 new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
 
-
                 // this.ServerSendRpc(true)
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldc_I4_1), // true
@@ -297,7 +296,6 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // return;
                 new(OpCodes.Pop),
                 new(OpCodes.Ret),
-
 
                 // Continue  if the ability is not active and this is an unsuccessful attempt
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
