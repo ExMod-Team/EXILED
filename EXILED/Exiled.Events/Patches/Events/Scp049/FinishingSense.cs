@@ -238,7 +238,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // double CooldownTime = 2.5;
-                new CodeInstruction(OpCodes.Ldc_R8, DefaultFailCooldowntime),
+                new(OpCodes.Ldc_R8, DefaultFailCooldowntime),
 
                 // true (IsAllowed)
                 new(OpCodes.Ldc_I4_1),
@@ -269,17 +269,17 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new CodeInstruction(OpCodes.Nop).WithLabels(Allowed),
 
                 // this.Cooldown.Trigger(ev.cooldown.time)
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldfld, typeof(Scp049SenseAbility).GetField("Cooldown", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)),
-                new CodeInstruction(OpCodes.Ldloc, ev3.LocalIndex),
-                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
-                new CodeInstruction(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, typeof(Scp049SenseAbility).GetField("Cooldown", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)),
+                new(OpCodes.Ldloc, ev3.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
+                new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
 
 
                 // this.ServerSendRpc(true)
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Ldc_I4_1), // true
-                new CodeInstruction(OpCodes.Call, Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldc_I4_1), // true
+                new(OpCodes.Call, Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })),
 
                 // return;
                 new(OpCodes.Pop),
