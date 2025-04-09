@@ -31,7 +31,7 @@ namespace Exiled.Events.EventArgs.Scp049
         /// <param name="isAllowed">Specifies whether the Sense effect is allowed to finish.
         /// <inheritdoc cref="bool" />
         /// </param>
-        public FinishingSenseEventArgs(Player scp049, Player? target, double cooldowntime, bool isAllowed = true)
+        public FinishingSenseEventArgs(Player scp049, Player target, double cooldowntime, bool isAllowed = true)
         {
             Player = scp049;
             Scp049 = Player.Role.As<Scp049Role>();
