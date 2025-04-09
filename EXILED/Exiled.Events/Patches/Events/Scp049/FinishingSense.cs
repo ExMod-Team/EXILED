@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Scp049
 {
+#pragma warning disable SA1402 // File may only contain a single type
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -95,7 +96,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
-    
+
     /// <summary>
     /// Patches <see cref="Scp049SenseAbility.ServerProcessKilledPlayer" />.
     /// Adds the <see cref="Handlers.Scp049.FinishingSense" /> event.
@@ -120,7 +121,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             // this.Cooldown.Trigger(40.0) index
             int offset = -2;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == defaultCooldowntime) + offset;
-            
+
             // Fail safe: if index cant be found, exit the patch
             if (index < 0)
             {
@@ -175,7 +176,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             // Replace "this.Cooldown.Trigger(40.0)" with "this.Cooldown.Trigger((double)ev.cooldowntime)"
             newInstructions[cooldownIndex] = new CodeInstruction(OpCodes.Ldloc, ev2.LocalIndex);
             newInstructions.Insert(cooldownIndex + 1, new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))));
-            
+
             // Return the new instructions
             foreach (var newInstruction in newInstructions)
                 yield return newInstruction;
@@ -183,7 +184,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
-    
+
     /// <summary>
     /// Patches <see cref="Scp049SenseAbility.ServerProcessCmd" />.
     /// Adds the <see cref="Handlers.Scp049.FinishingSense" /> event.
