@@ -9,14 +9,15 @@ namespace Exiled.Events.Patches.Events.Scp049
 { 
     using API.Features;
     using API.Features.Pools;
-
+    using Exiled.Events.Attributes;
+    using Exiled.Events.EventArgs.Scp049;
+    
     using HarmonyLib;
     using System.Reflection.Emit;
     using System.Collections.Generic;
     using static HarmonyLib.AccessTools;
 
     using PlayerRoles.Subroutines;
-    using Exiled.Events.EventArgs.Scp049;
     using PlayerRoles.PlayableScps.Scp049;
 
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
