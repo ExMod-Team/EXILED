@@ -129,6 +129,8 @@ namespace Exiled.Events.Patches.Events.Scp049
                 foreach (var instruction in instructions)
                     yield return instruction;
 
+                ListPool<CodeInstruction>.Pool.Return(instructions); // cleanup
+
                 yield break;
             }
 
@@ -173,6 +175,18 @@ namespace Exiled.Events.Patches.Events.Scp049
             // this.Cooldown.Trigger(40.0) index
             int cooldownIndex = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == defaultCooldowntime);
 
+            // Fail safe: if index cant be found, exit the patch
+            if (cooldownIndex < 0)
+            {
+                Log.Error("FinishingSenseEvent2 error: this.Cooldown.Trigger(40.0) index not found, patch failed.");
+                foreach (var instruction in instructions)
+                    yield return instruction;
+
+                ListPool<CodeInstruction>.Pool.Return(instructions); // cleanup
+
+                yield break;
+            }
+            
             // Replace "this.Cooldown.Trigger(40.0)" with "this.Cooldown.Trigger((double)ev.cooldowntime)"
             newInstructions[cooldownIndex] = new CodeInstruction(OpCodes.Ldloc, ev2.LocalIndex);
             newInstructions.Insert(cooldownIndex + 1, new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))));
@@ -231,6 +245,8 @@ namespace Exiled.Events.Patches.Events.Scp049
                 Log.Error("FinishingSenseEvent3 error: Scp049SenseAbility.AttemptFailCooldown not found, patch failed.");
                 foreach (var instruction in instructions)
                     yield return instruction;
+
+                ListPool<CodeInstruction>.Pool.Return(instructions); // cleanup
 
                 yield break;
             }
