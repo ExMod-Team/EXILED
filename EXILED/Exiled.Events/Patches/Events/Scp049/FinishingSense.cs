@@ -36,18 +36,18 @@ namespace Exiled.Events.Patches.Events.Scp049
             // ReducedCooldown value double
             const double DefaultReducedCooldowntime = Scp049SenseAbility.ReducedCooldown;
 
-            newInstructions.InsertRange(0,
-            [
+            newInstructions.InsertRange(0, new CodeInstruction[]
+            {
 
                 // Player scp049 = Player.Get(this.Owner);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // Player target = Player.Get(this.Target);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Target))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // double CooldownTime = 20;
                 new(OpCodes.Ldc_R8, DefaultReducedCooldowntime),
@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Scp049
 
                 // continue label
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
-            ]);
+            });
 
             // this.Cooldown.Trigger(20.0) index
             int cooldownIndex = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == DefaultReducedCooldowntime);
@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             int offset = -2;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == defaultCooldowntime) + offset;
             
-            // if index cant be found, exit the patch
+            // Fail safe: if index cant be found, exit the patch
             if (index < 0)
             {
                 Log.Error("FinishingSenseEvent2 error: Scp049SenseAbility.Cooldown not found, patch failed.");
@@ -121,18 +121,18 @@ namespace Exiled.Events.Patches.Events.Scp049
                 yield break;
             }
 
-            newInstructions.InsertRange(index,
-            [
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
 
                 // Player scp049 = Player.Get(this.Owner);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // Player target = Player.Get(this.Target);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Target))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // double CooldownTime = 40;
                 new CodeInstruction(OpCodes.Ldc_R8, defaultCooldowntime),
@@ -158,7 +158,7 @@ namespace Exiled.Events.Patches.Events.Scp049
 
                 // continue label
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
-            ]);
+            });
 
             // this.Cooldown.Trigger(40.0) index
             int cooldownIndex = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == defaultCooldowntime);
@@ -176,7 +176,7 @@ namespace Exiled.Events.Patches.Events.Scp049
     }
 
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.FinishingSense))]
-    [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerProcessCmd), [typeof(Mirror.NetworkReader)])]
+    [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerProcessCmd), new[] { typeof(Mirror.NetworkReader) })]
     internal class FinishingSense3
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -198,31 +198,31 @@ namespace Exiled.Events.Patches.Events.Scp049
             // BaseCoolDown value double
             const double DefaultFailCooldowntime = Scp049SenseAbility.AttemptFailCooldown;
 
-            newInstructions.InsertRange(0,
-            [
+            newInstructions.InsertRange(0, new CodeInstruction[]
+            {
                 // To determine whether the ability is active, i.e. whether this is an unsuccessful attempt or a sense that is not allowed to end
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.HasTarget))),
                 new(OpCodes.Stloc, IsAbilityActive.LocalIndex),
-            ]);
+            });
 
             // this.Cooldown.Trigger(2.5) index
             MethodInfo triggerMethod = Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger));
             int offset = -3;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && i.operand is MethodInfo method && method == triggerMethod) + offset;
 
-            // if index cant be found, exit the patch
+            // Fail safe: if index cant be found, exit the patch
             if (index < 0)
             {
-                Log.Error("FinishingSenseEvent2 error: Scp049SenseAbility.AttemptFailCooldown not found, patch failed.");
+                Log.Error("FinishingSenseEvent3 error: Scp049SenseAbility.AttemptFailCooldown not found, patch failed.");
                 foreach (var instruction in instructions)
                     yield return instruction;
 
                 yield break;
             }
 
-            newInstructions.InsertRange(index,
-            [
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
                 // Skip if the ability is not active and this is an unsuccessful attempt
                 new(OpCodes.Ldloc, IsAbilityActive.LocalIndex),
                 new(OpCodes.Brfalse_S, continueLabel),
@@ -230,12 +230,12 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // Player scp049 = Player.Get(this.Owner);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // Player target = Player.Get(this.Target);
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Target))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), [typeof(ReferenceHub)])),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // double CooldownTime = 2.5;
                 new CodeInstruction(OpCodes.Ldc_R8, DefaultFailCooldowntime),
@@ -273,13 +273,13 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new CodeInstruction(OpCodes.Ldfld, typeof(Scp049SenseAbility).GetField("Cooldown", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)),
                 new CodeInstruction(OpCodes.Ldloc, ev3.LocalIndex),
                 new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
-                new CodeInstruction(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), [typeof(double)])),
+                new CodeInstruction(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
 
 
                 // this.ServerSendRpc(true)
                 new CodeInstruction(OpCodes.Ldarg_0),
                 new CodeInstruction(OpCodes.Ldc_I4_1), // true
-                new CodeInstruction(OpCodes.Call, Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), [typeof(bool)])),
+                new CodeInstruction(OpCodes.Call, Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })),
 
                 // return;
                 new(OpCodes.Pop),
@@ -289,7 +289,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // Continue  if the ability is not active and this is an unsuccessful attempt
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             
-            ]);
+            });
 
             // Return the new instructions
             foreach (var newInstruction in newInstructions)
