@@ -186,7 +186,7 @@ namespace Exiled.Events.Patches.Events.Scp049
 
                 yield break;
             }
-            
+
             // Replace "this.Cooldown.Trigger(40.0)" with "this.Cooldown.Trigger((double)ev.cooldowntime)"
             newInstructions[cooldownIndex] = new CodeInstruction(OpCodes.Ldloc, ev2.LocalIndex);
             newInstructions.Insert(cooldownIndex + 1, new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))));
