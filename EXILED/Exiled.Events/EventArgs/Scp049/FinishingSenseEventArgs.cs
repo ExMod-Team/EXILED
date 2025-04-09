@@ -18,7 +18,7 @@ namespace Exiled.Events.EventArgs.Scp049
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FinishingSenseEventArgs"/> class.
-        /// </summary> 
+        /// </summary>
         /// <param name="scp049">The SCP-049 instance triggering the event.
         /// <inheritdoc cref="Player" />
         /// </param>
