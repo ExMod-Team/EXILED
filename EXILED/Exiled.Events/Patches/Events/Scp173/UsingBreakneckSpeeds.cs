@@ -54,7 +54,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<Scp173Role>), nameof(StandardSubroutine<Scp173Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // value attempted to be set
+                    // value to be set (will the ability turn on or off)
                     new(OpCodes.Ldarg_1),
 
                     // this.Cooldown.Remaining == 0
