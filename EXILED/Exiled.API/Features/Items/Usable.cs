@@ -127,11 +127,6 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Uses the item.
         /// </summary>
-        public virtual void Use() => Use(Owner);
-
-        /// <summary>
-        /// Uses the item.
-        /// </summary>
         /// <param name="owner">Target <see cref="Player"/> to use an <see cref="Usable"/>.</param>
         public virtual void Use(Player owner = null)
         {
