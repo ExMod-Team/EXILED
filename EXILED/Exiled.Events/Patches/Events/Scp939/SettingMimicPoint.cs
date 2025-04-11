@@ -5,13 +5,12 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.Events.EventArgs.Scp939;
-
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
 namespace Exiled.Events.Patches.Events.Scp939
 {
     using Attributes;
+    using Exiled.Events.EventArgs.Scp939;
     using HarmonyLib;
     using Mirror;
     using PlayerRoles.PlayableScps.Scp939.Mimicry;
@@ -25,11 +24,19 @@ namespace Exiled.Events.Patches.Events.Scp939
     [HarmonyPatch(typeof(MimicPointController), nameof(MimicPointController.ServerProcessCmd))]
     internal static class SettingMimicPoint
     {
-        private static bool Prefix(ref MimicPointController __instance, ref NetworkReader reader)
+        private static bool Prefix(MimicPointController __instance, ref NetworkReader reader)
         {
-            SettingMimicPointEventArgs ev = new(API.Features.Player.Get(__instance.Owner));
-            Handlers.Scp1344.OnChangingStatus(ev);
-            __instance.ServerProcessCmd(reader);
+            if (!__instance.Active)
+            {
+                SettingMimicPointEventArgs ev = new SettingMimicPointEventArgs(API.Features.Player.Get(__instance.Owner));
+                Handlers.Scp939.OnSettingMimicPoint(ev);
+
+                if (!ev.IsAllowed)
+                {
+                    return false;
+                }
+            }
+
             if (__instance.Active)
             {
                 __instance._syncMessage = MimicPointController.RpcStateMsg.RemovedByUser;

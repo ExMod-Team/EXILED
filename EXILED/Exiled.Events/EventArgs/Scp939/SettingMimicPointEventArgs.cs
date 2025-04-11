@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="PlayingVoiceEventArgs.cs" company="ExMod Team">
+// <copyright file="SettingMimicPointEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -25,9 +25,9 @@ namespace Exiled.Events.EventArgs.Scp939
         /// /// <param name="isAllowed">
         /// Indicates whether the mimic point can be placed or not.
         /// </param>
-        public SettingMimicPointEventArgs(ReferenceHub player, bool isAllowed = true)
+        public SettingMimicPointEventArgs(Player player, bool isAllowed = true)
         {
-            Player = Player.Get(player);
+            Player = player;
             Scp939 = Player.Role.As<Scp939Role>();
             IsAllowed = isAllowed;
         }
