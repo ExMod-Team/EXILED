@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.Events.EventArgs.Scp939;
+
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
 namespace Exiled.Events.Patches.Events.Scp939
@@ -25,6 +27,8 @@ namespace Exiled.Events.Patches.Events.Scp939
     {
         private static bool Prefix(ref MimicPointController __instance, ref NetworkReader reader)
         {
+            SettingMimicPointEventArgs ev = new(API.Features.Player.Get(__instance.Owner));
+            Handlers.Scp1344.OnChangingStatus(ev);
             __instance.ServerProcessCmd(reader);
             if (__instance.Active)
             {
