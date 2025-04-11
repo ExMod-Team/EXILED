@@ -5,12 +5,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using PlayerRoles.PlayableScps.Scp049;
-
 namespace Exiled.Events.EventArgs.Scp049
 {
     using API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+    using PlayerRoles.PlayableScps.Scp049;
 
     using Scp049Role = API.Features.Roles.Scp049Role;
 
@@ -20,7 +19,7 @@ namespace Exiled.Events.EventArgs.Scp049
     public class EndingSenseEventArgs : IScp049Event, IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EndingSenseEventArgs"/> class with information before SCP-049 sense is activated.
+        /// Initializes a new instance of the <see cref="EndingSenseEventArgs"/> class with information before SCP-049 sense is cancelled.
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="target"><inheritdoc cref="Target"/></param>
