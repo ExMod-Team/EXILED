@@ -54,6 +54,9 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<Scp173Role>), nameof(StandardSubroutine<Scp173Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
+                    // value to be set (will the ability turn on or off)
+                    new(OpCodes.Ldarg_1),
+
                     // this.Cooldown.Remaining == 0
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Scp173BreakneckSpeedsAbility), nameof(Scp173BreakneckSpeedsAbility.Cooldown))),
@@ -61,7 +64,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Ldc_R4, 0f),
                     new(OpCodes.Ceq),
 
-                    // UsingBreakneckSpeedsEventArgs ev = new(Player, bool)
+                    // UsingBreakneckSpeedsEventArgs ev = new(Player, bool, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingBreakneckSpeedsEventArgs))[0]),
                     new(OpCodes.Dup),
 
