@@ -16,7 +16,6 @@ namespace Exiled.Events.Patches.Events.Map
     using Exiled.API.Extensions;
     using Exiled.Events.EventArgs.Map;
     using Exiled.Events.Patches.Generic;
-    using Footprinting;
     using HarmonyLib;
     using InventorySystem.Items.ThrowableProjectiles;
     using UnityEngine;
@@ -67,12 +66,15 @@ namespace Exiled.Events.Patches.Events.Map
             HashSet<Player> targetToAffect = HashSetPool<Player>.Pool.Get();
             foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
             {
-                if ((instance.transform.position - player.Position).sqrMagnitude >= distance)
+                if ((instance.transform.position - player.Position).sqrMagnitude > distance)
                     continue;
+
                 if (!ExiledEvents.Instance.Config.CanFlashbangsAffectThrower && instance.PreviousOwner.CompareLife(player.ReferenceHub))
                     continue;
+
                 if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub) && !instance.PreviousOwner.CompareLife(player.ReferenceHub))
                     continue;
+
                 if (Physics.Linecast(instance.transform.position, player.CameraTransform.position, instance._blindingMask))
                     continue;
 
