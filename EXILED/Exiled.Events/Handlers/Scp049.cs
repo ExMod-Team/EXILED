@@ -43,6 +43,11 @@ namespace Exiled.Events.Handlers
         public static Event<AttackingEventArgs> Attacking { get; set; } = new();
 
         /// <summary>
+        /// Invoked before SCP-049 ends the good sense of the doctor ability.
+        /// </summary>
+        public static Event<EndingSenseEventArgs> EndingSense { get; set; } = new();
+
+        /// <summary>
         /// Called before SCP-049 finishes reviving a player.
         /// </summary>
         /// <param name="ev">The <see cref="FinishingRecallEventArgs" /> instance.</param>
@@ -71,5 +76,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="AttackingEventArgs"/> instance.</param>
         public static void OnAttacking(AttackingEventArgs ev) => Attacking.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before SCP-049 attacks player.
+        /// </summary>
+        /// <param name="ev">The <see cref="EndingSenseEventArgs"/> instance.</param>
+        public static void OnEndingSense(EndingSenseEventArgs ev) => EndingSense.InvokeSafely(ev);
     }
 }
