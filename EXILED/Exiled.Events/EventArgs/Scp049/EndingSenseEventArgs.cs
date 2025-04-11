@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using PlayerRoles.PlayableScps.Scp049;
+
 namespace Exiled.Events.EventArgs.Scp049
 {
     using API.Features;
@@ -43,6 +45,11 @@ namespace Exiled.Events.EventArgs.Scp049
         /// Gets or sets the Player who the sense ability is affecting.
         /// </summary>
         public Player Target { get; set; }
+
+        /// <summary>
+        /// Gets or sets the sense cooldown duration.
+        /// </summary>
+        public float Cooldown { get; set; } = Scp049SenseAbility.BaseCooldown;
 
         /// <summary>
         /// Gets or sets a value indicating whether the server will send 049 information on the recall.

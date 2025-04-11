@@ -35,7 +35,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             }
 
             __instance.HasTarget = false;
-            __instance.Cooldown.Trigger(20.0);
+            __instance.Cooldown.Trigger(ev.Cooldown);
             __instance.ServerSendRpc(true);
             return true;
         }
