@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             // Declare local variable for FinishingSenseEventArgs
             LocalBuilder ev = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
 
-            // Contuinue label for isAllowed check
+            // Continue label for isAllowed check
             Label continueLabel = generator.DefineLabel();
 
             // ReducedCooldown value double
@@ -112,7 +112,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             // Declare local variable for FinishingSenseEventArgs
             LocalBuilder ev2 = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
 
-            // Contuinue label for isAllowed check
+            // Continue label for isAllowed check
             Label continueLabel = generator.DefineLabel();
 
             // BaseCoolDown value double
@@ -147,7 +147,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // double CooldownTime = 40;
-                new CodeInstruction(OpCodes.Ldc_R8, defaultCooldowntime),
+                new(OpCodes.Ldc_R8, defaultCooldowntime),
 
                 // true (IsAllowed)
                 new(OpCodes.Ldc_I4_1),
@@ -217,7 +217,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             // Declare local variable for If Ability is active
             LocalBuilder isAbilityActive = generator.DeclareLocal(typeof(bool));
 
-            // Contuinue label for if ability is not active
+            // Continue label for if ability is not active
             Label continueLabel = generator.DefineLabel();
 
             // Ret label for Exiting the code without breaking ActivatingSense patch
@@ -286,7 +286,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, allowed),
 
-                // If not allowed, set hastarget to true so as not to break the sense ability
+                // If not allowed, set has target to true so as not to break the sense ability
                 // this.HasTarget = true;
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldc_I4_1),
