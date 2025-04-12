@@ -9,23 +9,24 @@ namespace Exiled.Events.EventArgs.Scp1344
 {
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+    using InventorySystem.Items;
     using InventorySystem.Items.Usables.Scp1344;
 
     /// <summary>
     /// Contains all information after SCP-1344 status changing.
     /// </summary>
-    public class ChangedStatusEventArgs : IScp1344Event, IPlayerEvent, IDeniableEvent
+    public class ChangedStatusEventArgs : IScp1344Event, IPlayerEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangedStatusEventArgs" /> class.
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
         /// <param name="scp1344Status"><inheritdoc cref="InventorySystem.Items.Usables.Scp1344.Scp1344Status"/></param>
-        public ChangedStatusEventArgs(Item item, Scp1344Status scp1344Status)
+        public ChangedStatusEventArgs(ItemBase item, Scp1344Status scp1344Status)
         {
-            Item = item;
-            Scp1344 = item as Scp1344;
-            Player = item.Owner;
+            Item = Item.Get(item);
+            Scp1344 = Item as Scp1344;
+            Player = Item.Owner;
             Scp1344Status = scp1344Status;
         }
 
@@ -48,8 +49,5 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// Gets Scp1344 item.
         /// </summary>
         public Scp1344 Scp1344 { get; }
-
-        /// <inheritdoc/>
-        public bool IsAllowed { get; set; }
     }
 }
