@@ -180,26 +180,40 @@ namespace Exiled.API.Features
         /// <summary>
         /// Starts the warhead countdown.
         /// </summary>
-        public static void Start()
+        /// <param name="isAutomatic">Indicates whether the warhead is started automatically.</param>
+        /// <param name="suppressSubtitles">If <see langword="true"/>, subtitles will not be displayed during the countdown.</param>
+        /// <param name="trigger">The <see cref="ReferenceHub"/> of the entity that triggered the warhead.</param>
+        public static void Start(bool isAutomatic = false, bool suppressSubtitles = false, ReferenceHub trigger = null)
         {
             Controller.InstantPrepare();
-            Controller.StartDetonation(false);
+            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger);
         }
 
         /// <summary>
-        /// Stops the warhead.
+        /// Stops the warhead detonation process.
         /// </summary>
-        public static void Stop() => Controller.CancelDetonation();
+        /// <param name="disabler">
+        /// The <see cref="Player"/> who is disabling the warhead.
+        /// If <see langword="null"/>, the warhead will be stopped without a specific player reference.
+        /// </param>
+        public static void Stop(Player disabler = null) => Controller.CancelDetonation(disabler.ReferenceHub);
 
         /// <summary>
-        /// Detonates the warhead.
+        /// Detonates the warhead after the specified remaining time.
         /// </summary>
-        public static void Detonate() => Controller.ForceTime(0f);
+        /// <param name="remaining">
+        /// The time in seconds until the warhead detonates.
+        /// If set to <see langword="0"/>, the warhead will detonate immediately.
+        /// </param>
+        public static void Detonate(float remaining = 0f) => Controller.ForceTime(remaining);
 
         /// <summary>
         /// Shake all players, like if the warhead has been detonated.
         /// </summary>
-        public static void Shake() => Controller.RpcShake(false);
+        /// <param name="archieve">
+        /// If <see langword="true"/>, the shake effect will be archived.
+        /// </param>
+        public static void Shake(bool archieve = false) => Controller.RpcShake(archieve);
 
         /// <summary>
         /// Gets whether the provided position will be detonated by the alpha warhead.
