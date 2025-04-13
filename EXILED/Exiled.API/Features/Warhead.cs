@@ -180,6 +180,15 @@ namespace Exiled.API.Features
         /// <summary>
         /// Starts the warhead countdown.
         /// </summary>
+        public static void Start()
+        {
+            Controller.InstantPrepare();
+            Controller.StartDetonation(false);
+        }
+        
+        /// <summary>
+        /// Starts the warhead countdown.
+        /// </summary>
         /// <param name="isAutomatic">Indicates whether the warhead is started automatically.</param>
         /// <param name="suppressSubtitles">If <see langword="true"/>, subtitles will not be displayed during the countdown.</param>
         /// <param name="trigger">The <see cref="ReferenceHub"/> of the entity that triggered the warhead.</param>
@@ -190,6 +199,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Stops the warhead.
+        /// </summary>
+        public static void Stop() => Controller.CancelDetonation();
+        
+        /// <summary>
         /// Stops the warhead detonation process.
         /// </summary>
         /// <param name="disabler">
@@ -199,6 +213,11 @@ namespace Exiled.API.Features
         public static void Stop(ReferenceHub disabler = null) => Controller.CancelDetonation(disabler);
 
         /// <summary>
+        /// Detonates the warhead.
+        /// </summary>
+        public static void Detonate() => Controller.ForceTime(0f);
+        
+        /// <summary>
         /// Detonates the warhead after the specified remaining time.
         /// </summary>
         /// <param name="remaining">
@@ -207,6 +226,11 @@ namespace Exiled.API.Features
         /// </param>
         public static void Detonate(float remaining = 0f) => Controller.ForceTime(remaining);
 
+        /// <summary>
+        /// Shake all players, like if the warhead has been detonated.
+        /// </summary>
+        public static void Shake() => Controller.RpcShake(false);
+        
         /// <summary>
         /// Shake all players, like if the warhead has been detonated.
         /// </summary>
