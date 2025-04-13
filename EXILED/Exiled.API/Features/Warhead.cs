@@ -185,7 +185,7 @@ namespace Exiled.API.Features
             Controller.InstantPrepare();
             Controller.StartDetonation(false);
         }
-        
+
         /// <summary>
         /// Starts the warhead countdown.
         /// </summary>
@@ -202,7 +202,7 @@ namespace Exiled.API.Features
         /// Stops the warhead.
         /// </summary>
         public static void Stop() => Controller.CancelDetonation();
-        
+
         /// <summary>
         /// Stops the warhead detonation process.
         /// </summary>
@@ -216,7 +216,7 @@ namespace Exiled.API.Features
         /// Detonates the warhead.
         /// </summary>
         public static void Detonate() => Controller.ForceTime(0f);
-        
+
         /// <summary>
         /// Detonates the warhead after the specified remaining time.
         /// </summary>
@@ -230,7 +230,7 @@ namespace Exiled.API.Features
         /// Shake all players, like if the warhead has been detonated.
         /// </summary>
         public static void Shake() => Controller.RpcShake(false);
-        
+
         /// <summary>
         /// Shake all players, like if the warhead has been detonated.
         /// </summary>
