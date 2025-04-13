@@ -49,5 +49,13 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// Gets Scp1344 item.
         /// </summary>
         public Scp1344 Scp1344 { get; }
+
+        /// <summary>
+        /// Do not use this parameter, it is incorrect and does not work.
+        /// </summary>
+        [Obsolete]
+        #pragma warning disable SA1623 // Property summary documentation should match accessors
+        public bool IsAllowed { get; set; }
+        #pragma warning restore SA1623 // Property summary documentation should match accessors
     }
 }
