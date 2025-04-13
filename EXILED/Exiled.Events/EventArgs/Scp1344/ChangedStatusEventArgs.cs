@@ -8,7 +8,7 @@
 namespace Exiled.Events.EventArgs.Scp1344
 {
     using System;
-    
+
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
 
