@@ -11,7 +11,7 @@ namespace Exiled.Events.EventArgs.Scp1344
     
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
-    
+
     using InventorySystem.Items;
     using InventorySystem.Items.Usables.Scp1344;
 
