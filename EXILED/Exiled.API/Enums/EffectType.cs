@@ -24,12 +24,12 @@ namespace Exiled.API.Enums
         None,
 
         /// <summary>
-        /// The player isn't able to open their inventory or reload a weapon.
+        /// Prevents the player from reloading weapons and using medical items.
         /// </summary>
         AmnesiaItems,
 
         /// <summary>
-        /// The player isn't able to see properly.
+        /// Makes SCP-939 invisible to players under its effect. Visibility is temporarily restored when SCP-939 takes damage or attacks.
         /// </summary>
         AmnesiaVision,
 
