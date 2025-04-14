@@ -26,9 +26,9 @@ namespace Exiled.Events.EventArgs.Scp0492
         /// <param name="player"> <inheritdoc cref="Player"/></param>
         /// <param name="result"> the result of the attack.</param>
         /// <param name="playerHits"> the list of players who are getting hit.</param>
-        public HitEventArgs(ReferenceHub player, AttackResult result, HashSet<ReferenceHub> playerHits)
+        public HitEventArgs(Player player, AttackResult result, HashSet<ReferenceHub> playerHits)
         {
-            Player = Player.Get(player);
+            Player = player;
             Scp0492 = Player.Role.As<Scp0492Role>();
             Result = result;
             PlayersAffected = playerHits.Select(Player.Get).ToList().AsReadOnly();

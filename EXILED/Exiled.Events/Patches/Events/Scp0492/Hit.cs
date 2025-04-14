@@ -10,6 +10,7 @@ namespace Exiled.Events.Patches.Events.Scp0492
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using API.Features;
     using API.Features.Pools;
     using Attributes;
     using Exiled.Events.EventArgs.Scp0492;
@@ -19,6 +20,8 @@ namespace Exiled.Events.Patches.Events.Scp0492
     using PlayerRoles.Subroutines;
 
     using static HarmonyLib.AccessTools;
+
+    using Scp939Role = PlayerRoles.PlayableScps.Scp939.Scp939Role;
 
     /// <summary>
     /// Patches ScpAttackAbilityBase.ServerPerformAttack
@@ -34,16 +37,24 @@ namespace Exiled.Events.Patches.Events.Scp0492
 
             LocalBuilder ev = generator.DeclareLocal(typeof(HitEventArgs));
 
-            int offset = -1;
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret) + offset;
+            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret);
+
+            Label skipEventLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // base.Owner
+                    // if(this is ScpAttackAbilityBase<Scp939Role>)
+                    //    goto skip;
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Isinst, typeof(ScpAttackAbilityBase<Scp939Role>)),
+                    new CodeInstruction(OpCodes.Brtrue_S, skipEventLabel),
+
+                    // Player.Get(base.Owner);
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<ZombieRole>), nameof(StandardSubroutine<ZombieRole>.Owner))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this.LastAttackResult
                     new CodeInstruction(OpCodes.Ldarg_0),
@@ -60,6 +71,9 @@ namespace Exiled.Events.Patches.Events.Scp0492
 
                     // Handlers.Scp049.OnHit(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Scp0492), nameof(Handlers.Scp0492.OnHit))),
+
+                    // skip:
+                    new CodeInstruction(OpCodes.Nop).WithLabels(skipEventLabel),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
