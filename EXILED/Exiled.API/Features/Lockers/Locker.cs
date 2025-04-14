@@ -156,11 +156,11 @@ namespace Exiled.API.Features.Lockers
         /// <param name="zone">The <see cref="ZoneType"/> to filter by. If unspecified, all zones are considered.</param>
         /// <param name="lockerType">The <see cref="LockerType"/> to filter by. If unspecified, all locker types are considered.</param>
         /// <returns>A random <see cref="Locker"/> object, or  <see langword="null"/> if no matching locker is found.</returns>
-        public static Locker? Random(ZoneType zone = ZoneType.Unspecified, LockerType lockerType = LockerType.Unknow)
+        public static Locker? Random(ZoneType zone = ZoneType.Unspecified, LockerType lockerType = LockerType.Unknown)
         {
             IEnumerable<Locker> filteredLockers = List;
 
-            if (lockerType != LockerType.Unknow)
+            if (lockerType != LockerType.Unknown)
                 filteredLockers = filteredLockers.Where(l => l.Type == lockerType);
 
             if (zone != ZoneType.Unspecified)
@@ -173,58 +173,7 @@ namespace Exiled.API.Features.Lockers
         /// Adds an item to a randomly selected locker chamber.
         /// </summary>
         /// <param name="item">The <see cref="Pickup"/> to be added to the locker chamber.</param>
-        public void AddItem(Pickup item)
-        {
-            // Select a random chamber from the available locker chambers.
-            Chamber chamber = Chambers.GetRandomValue();
-
-            // Determine the parent transform where the item will be placed.
-            Transform parentTransform = chamber.UseMultipleSpawnpoints && chamber.Spawnpoints.Any()
-                ? chamber.Spawnpoints.GetRandomValue()
-                : chamber.Spawnpoint;
-
-            // If the chamber is open, immediately set the item's parent and spawn it.
-            if (chamber.IsOpen)
-            {
-                item.Transform.SetParent(parentTransform);
-
-                if(!item.IsSpawned)
-                    item.Spawn();
-            }
-            else
-            {
-                // If the item is already spawned on the network, unspawn it before proceeding.
-                if (item.IsSpawned)
-                    item.UnSpawn();
-
-                // Set the item's parent transform.
-                item.Transform.SetParent(parentTransform);
-
-                // Lock the item in place.
-                item.IsLocked = true;
-
-                // Notify any pickup distributor triggers.
-                (item.Base as IPickupDistributorTrigger)?.OnDistributed();
-
-                // If the item has a Rigidbody component, make it kinematic and reset its position and rotation.
-                if (item.Rigidbody != null)
-                {
-                    item.Rigidbody.isKinematic = true;
-                    item.Rigidbody.transform.localPosition = Vector3.zero;
-                    item.Rigidbody.transform.localRotation = Quaternion.identity;
-
-                    // Add the Rigidbody to the list of bodies to be unfrozen later.
-                    SpawnablesDistributorBase.BodiesToUnfreeze.Add(item.Rigidbody);
-                }
-
-                // If the chamber is configured to spawn items on the first opening, add the item to the list of items to be spawned.
-                // Otherwise, spawn the item immediately.
-                if (chamber.InitiallySpawn)
-                    chamber.Base._toBeSpawned.Add(item.Base);
-                else
-                    ItemDistributor.SpawnPickup(item.Base);
-            }
-        }
+        public void AddItem(Pickup item) => Chambers.GetRandomValue().AddItem(item);
 
         /// <summary>
         /// Spawns an item of the specified <see cref="ItemType"/> to the locker by creating a new <see cref="Pickup"/>.

@@ -241,8 +241,9 @@ namespace Exiled.API.Enums
         CheckpointGateB,
 
         /// <summary>
-        /// Represents the Gate in the Checkpoint between EZ and HCZ.
+        /// Represents a door than Yamato never implemented.
         /// </summary>
+        [Obsolete("This Door has never been in the game.")]
         SurfaceDoor,
 
         /// <summary>
