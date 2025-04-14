@@ -26,9 +26,8 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
         public ChangingStatusEventArgs(ItemBase item, Scp1344Status scp1344StatusNew, Scp1344Status scp1344StatusOld, bool isAllowed = true)
         {
-            Item = Item.Get(item);
-            Scp1344 = Item as Scp1344;
-            Player = Item.Owner;
+            Scp1344 = Item.Get<Scp1344>(item); 
+            Player = Scp1344.Owner;
             Scp1344StatusNew = scp1344StatusNew;
             Scp1344StatusOld = scp1344StatusOld;
             IsAllowed = isAllowed;
@@ -47,7 +46,7 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// <summary>
         /// Gets the item.
         /// </summary>
-        public Item Item { get; }
+        public Item Item => Scp1344;
 
         /// <summary>
         /// Gets the player in owner of the item.
