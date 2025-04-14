@@ -3513,8 +3513,14 @@ namespace Exiled.API.Features
         }
 
         /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, byte, byte)"/>
-        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0) =>
-            MirrorExtensions.PlayGunSound(this, Position, type, volume, audioClipId);
+        [Obsolete("Use PlayGunSound(Player, Vector3, ItemType, byte, byte) instead.")]
+        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0)
+        {
+        }
+
+        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, FirearmType, float, int)"/>
+        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
+            this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
