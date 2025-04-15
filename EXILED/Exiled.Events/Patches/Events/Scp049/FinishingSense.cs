@@ -90,7 +90,7 @@ namespace Exiled.Events.Patches.Events.Scp049
             newInstructions.Insert(cooldownIndex + 1, new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))));
 
             // Return the new instructions
-            foreach (var newInstruction in newInstructions)
+            foreach (CodeInstruction newInstruction in newInstructions)
                 yield return newInstruction;
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
