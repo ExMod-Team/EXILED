@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="UsingVigor.cs" company="ExMod Team">
+// <copyright file="UsingVigorEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
