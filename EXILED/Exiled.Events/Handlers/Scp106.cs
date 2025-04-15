@@ -28,6 +28,11 @@ namespace Exiled.Events.Handlers
         public static Event<TeleportingEventArgs> Teleporting { get; set; } = new();
 
         /// <summary>
+        /// Invoked before SCP-106 using vigor.
+        /// </summary>
+        public static Event<UsingVigorEventArgs> UsingVigor { get; set; } = new();
+
+        /// <summary>
         /// Invoked before SCP-106 use the stalk ability.
         /// </summary>
         public static Event<StalkingEventArgs> Stalking { get; set; } = new();
@@ -48,6 +53,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="TeleportingEventArgs" /> instance.</param>
         public static void OnTeleporting(TeleportingEventArgs ev) => Teleporting.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before SCP-106 using vigor.
+        /// </summary>
+        /// <param name="ev">The <see cref="UsingVigorEventArgs" /> instance.</param>
+        public static void OnUsingVigor(UsingVigorEventArgs ev) => UsingVigor.InvokeSafely(ev);
 
         /// <summary>
         /// Called before SCP-106 use the stalk ability.
