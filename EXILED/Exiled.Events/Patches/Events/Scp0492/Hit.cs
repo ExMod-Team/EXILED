@@ -35,8 +35,6 @@ namespace Exiled.Events.Patches.Events.Scp0492
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(HitEventArgs));
-
             int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret);
 
             Label skipEventLabel = generator.DefineLabel();
@@ -64,10 +62,8 @@ namespace Exiled.Events.Patches.Events.Scp0492
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(ScpAttackAbilityBase<ZombieRole>), nameof(ScpAttackAbilityBase<ZombieRole>.DetectedPlayers))),
 
-                    // HitEventArgs ev = new(ReferenceHub, AttackResult, HashSet<ReferenceHub>)
+                    // new(ReferenceHub, AttackResult, HashSet<ReferenceHub>)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(HitEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Scp049.OnHit(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Scp0492), nameof(Handlers.Scp0492.OnHit))),
