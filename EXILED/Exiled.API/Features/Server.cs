@@ -64,7 +64,7 @@ namespace Exiled.API.Features
             set
             {
                 ServerConsole._serverName = value;
-                ServerConsole.singleton.RefreshServerName();
+                ServerConsole.singleton.RefreshServerNameSafe();
             }
         }
 
