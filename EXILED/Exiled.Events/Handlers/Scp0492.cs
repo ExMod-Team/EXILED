@@ -17,7 +17,6 @@ namespace Exiled.Events.Handlers
     /// </summary>
     public class Scp0492
     {
-
         /// <summary>
         /// Invoked before a player triggers the bloodlust effect for 049-2.
         /// </summary>
