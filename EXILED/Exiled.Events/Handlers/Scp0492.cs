@@ -17,10 +17,6 @@ namespace Exiled.Events.Handlers
     /// </summary>
     public class Scp0492
     {
-        /// <summary>
-        /// Invoked after a player triggers the attack.
-        /// </summary>
-        public static Event<HitEventArgs> Hit { get; set; } = new ();
 
         /// <summary>
         /// Invoked before a player triggers the bloodlust effect for 049-2.
@@ -36,12 +32,6 @@ namespace Exiled.Events.Handlers
         /// Called before 049-2 gets his benefits from consuming ability.
         /// </summary>
         public static Event<ConsumingCorpseEventArgs> ConsumingCorpse { get; set; } = new();
-
-        /// <summary>
-        /// Called after a player triggers the attack.
-        /// </summary>
-        /// <param name="ev">The <see cref="HitEventArgs"/> instance.</param>
-        public static void OnHit(HitEventArgs ev) => Hit.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a player triggers the bloodlust effect for 049-2.

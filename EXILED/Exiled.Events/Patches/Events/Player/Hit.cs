@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.Patches.Events.Scp0492
+namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
     using System.Reflection.Emit;
@@ -13,7 +13,7 @@ namespace Exiled.Events.Patches.Events.Scp0492
     using API.Features;
     using API.Features.Pools;
     using Attributes;
-    using Exiled.Events.EventArgs.Scp0492;
+    using Exiled.Events.EventArgs.Player;
     using HarmonyLib;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Subroutines;
@@ -21,13 +21,11 @@ namespace Exiled.Events.Patches.Events.Scp0492
 
     using static HarmonyLib.AccessTools;
 
-    using Scp939Role = PlayerRoles.PlayableScps.Scp939.Scp939Role;
-
     /// <summary>
     /// Patches ScpAttackAbilityBase.ServerPerformAttack
-    /// to add <see cref="Handlers.Scp0492.Hit" /> event.
+    /// to add <see cref="Handlers.Player.Hit" /> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Scp0492), nameof(Handlers.Scp0492.Hit))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Hit))]
     [HarmonyPatch(typeof(ScpAttackAbilityBase<ZombieRole>), nameof(ScpAttackAbilityBase<ZombieRole>.ServerPerformAttack))]
     public class Hit
     {
@@ -37,18 +35,10 @@ namespace Exiled.Events.Patches.Events.Scp0492
 
             int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret);
 
-            Label skipEventLabel = generator.DefineLabel();
-
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // if(this is ScpAttackAbilityBase<Scp939Role>)
-                    //    goto skip;
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new CodeInstruction(OpCodes.Isinst, typeof(ScpAttackAbilityBase<Scp939Role>)),
-                    new CodeInstruction(OpCodes.Brtrue_S, skipEventLabel),
-
                     // Player.Get(base.Owner);
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<ZombieRole>), nameof(StandardSubroutine<ZombieRole>.Owner))),
@@ -65,11 +55,8 @@ namespace Exiled.Events.Patches.Events.Scp0492
                     // new(ReferenceHub, AttackResult, HashSet<ReferenceHub>)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(HitEventArgs))[0]),
 
-                    // Handlers.Scp049.OnHit(ev)
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp0492), nameof(Handlers.Scp0492.OnHit))),
-
-                    // skip:
-                    new CodeInstruction(OpCodes.Nop).WithLabels(skipEventLabel),
+                    // Handlers.Player.OnHit(ev)
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnHit))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

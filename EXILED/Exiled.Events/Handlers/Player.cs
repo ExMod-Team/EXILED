@@ -27,6 +27,11 @@ namespace Exiled.Events.Handlers
     public class Player
     {
         /// <summary>
+        /// Invoked after a player triggers the attack as an SCP.
+        /// </summary>
+        public static Event<HitEventArgs> Hit { get; set; } = new ();
+
+        /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
         public static Event<PreAuthenticatingEventArgs> PreAuthenticating { get; set; } = new();
@@ -1294,5 +1299,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev"><The cref="PreAuthenticatingEventArgs"/> instance.</param>
         public static void OnPreAuthenticating(PreAuthenticatingEventArgs ev) => PreAuthenticating.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a player triggers the melee attack as an SCP.
+        /// </summary>
+        /// <param name="ev">The <see cref="HitEventArgs"/> instance.</param>
+        public static void OnHit(HitEventArgs ev) => Hit.InvokeSafely(ev);
     }
 }

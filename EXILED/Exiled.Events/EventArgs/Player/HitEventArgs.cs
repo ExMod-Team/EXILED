@@ -5,20 +5,19 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.EventArgs.Scp0492
+namespace Exiled.Events.EventArgs.Player
 {
     using System.Collections.Generic;
     using System.Linq;
 
     using API.Features;
-    using Exiled.API.Features.Roles;
     using Interfaces;
     using PlayerRoles.PlayableScps.Subroutines;
 
     /// <summary>
-    /// Contains all information after zombie sends an attack.
+    /// Contains all information after player sends an attack as an SCP.
     /// </summary>
-    public class HitEventArgs : IScp0492Event
+    public class HitEventArgs : IPlayerEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HitEventArgs"/> class.
@@ -29,18 +28,12 @@ namespace Exiled.Events.EventArgs.Scp0492
         public HitEventArgs(Player player, AttackResult result, HashSet<ReferenceHub> playerHits)
         {
             Player = player;
-            Scp0492 = Player.Role.As<Scp0492Role>();
             Result = result;
             PlayersAffected = playerHits.Select(Player.Get).ToList().AsReadOnly();
         }
 
-        /// <summary>
-        /// Gets the player who is controlling SCP-049-2.
-        /// </summary>
-        public Player Player { get; }
-
         /// <inheritdoc />
-        public Scp0492Role Scp0492 { get; }
+        public Player Player { get; }
 
         /// <summary>
         /// Gets the attack result for the server.
