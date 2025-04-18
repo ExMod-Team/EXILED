@@ -3511,7 +3511,7 @@ namespace Exiled.API.Features
             UsableItemsController.GetHandler(ReferenceHub)
                 .ActiveRegenerations.Add(new RegenerationProcess(regenCurve, speedMultiplier, healthPointsMultiplier));
         }
-        
+
         /// <summary>
         /// Reconnects the player to the server. Can be used to redirect them to another server on a different port but same IP.
         /// </summary>
