@@ -59,6 +59,16 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingMicroHIDPickupStateEventArgs> ChangingMicroHIDPickupState { get; set; } = new();
 
         /// <summary>
+        /// Invoked before weapon is inspected.
+        /// </summary>
+        public static Event<InspectingWeaponEventArgs> InspectingWeapon { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after weapon is inspected.
+        /// </summary>
+        public static Event<InspectedWeaponEventArgs> InspectedWeapon { get; set; } = new();
+
+        /// <summary>
         /// Called before the ammo of an firearm is changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingAmmoEventArgs"/> instance.</param>
@@ -105,5 +115,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingMicroHIDPickupStateEventArgs"/> instance.</param>
         public static void OnChangingMicroHIDPickupState(ChangingMicroHIDPickupStateEventArgs ev) => ChangingMicroHIDPickupState.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before weapon is inspected.
+        /// </summary>
+        /// <param name="ev">The <see cref="InspectingWeaponEventArgs"/> instance.</param>
+        public static void OnInspectingWeapon(InspectingWeaponEventArgs ev) => InspectingWeapon.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after weapon is inspected.
+        /// </summary>
+        /// <param name="ev">The <see cref="InspectedWeaponEventArgs"/> instance.</param>
+        public static void OnInspectedWeapon(InspectedWeaponEventArgs ev) => InspectedWeapon.InvokeSafely(ev);
     }
 }

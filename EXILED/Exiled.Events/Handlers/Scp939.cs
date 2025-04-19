@@ -75,6 +75,11 @@ namespace Exiled.Events.Handlers
         public static Event<ValidatingVisibilityEventArgs> ValidatingVisibility { get; set; } = new();
 
         /// <summary>
+        /// Invoked before mimicry point is placed.
+        /// </summary>
+        public static Event<PlacingMimicPointEventArgs> PlacingMimicPoint { get; set; } = new();
+
+        /// <summary>
         /// Called before SCP-939 changes its target focus.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingFocusEventArgs" /> instance.</param>
@@ -139,5 +144,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ValidatingVisibilityEventArgs"/> instance.</param>
         public static void OnValidatingVisibility(ValidatingVisibilityEventArgs ev) => ValidatingVisibility.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before mimicry point is placed.
+        /// </summary>
+        /// <param name="ev">The <see cref="PlacingMimicPointEventArgs"/> instance.</param>
+        public static void OnPlacingMimicPoint(PlacingMimicPointEventArgs ev) => PlacingMimicPoint.InvokeSafely(ev);
     }
 }
