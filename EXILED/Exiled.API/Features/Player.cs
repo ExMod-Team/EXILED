@@ -19,6 +19,7 @@ namespace Exiled.API.Features
     using DamageHandlers;
     using Enums;
     using Exiled.API.Features.Core.Interfaces;
+    using Exiled.API.Features.Core.UserSettings;
     using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Hazards;
@@ -3662,6 +3663,24 @@ namespace Exiled.API.Features
         /// </summary>
         /// <typeparam name="T">Object for teleport.</typeparam>
         public void RandomTeleport<T>() => RandomTeleport(typeof(T));
+
+        /// <summary>
+        /// Registers a collection of Server-side specific settings for the player.
+        /// </summary>
+        /// <param name="settings">The collection of Server-side specific settings to register.</param>
+        public void RegisterSettings(IEnumerable<SettingBase> settings)
+        {
+            SettingBase.Register(settings, (p) => { return p == this; });
+        }
+
+        /// <summary>
+        /// Unregisters a collection of Server-side specific settings for the player.
+        /// </summary>
+        /// <param name="settings">The collection of Server-side specific settings to unregister.</param>
+        public void UnregisterSettings(IEnumerable<SettingBase> settings)
+        {
+            SettingBase.Unregister((p) => { return p == this; }, settings);
+        }
 
         /// <inheritdoc/>
         public T AddComponent<T>(string name = "")
