@@ -377,3 +377,6 @@ JSON/
 
 # Mac DS_Store
 .DS_Store
+
+# Code Rush
+/EXILED/.cr/*
