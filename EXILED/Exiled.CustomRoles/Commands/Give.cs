@@ -19,7 +19,6 @@ namespace Exiled.CustomRoles.Commands
     using Exiled.Permissions.Extensions;
 
     using RemoteAdmin;
-    using Utils;
 
     /// <summary>
     /// The command to give a role to player(s).
@@ -108,9 +107,7 @@ namespace Exiled.CustomRoles.Commands
                 }
 
                 foreach (Player player in list)
-                {
                     role.AddRole(player);
-                }
 
                 response = $"Customrole {role.Name} given to {list.Count()} players!";
 
