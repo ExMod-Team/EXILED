@@ -66,8 +66,6 @@ namespace Exiled.API.Features
             ["106 RECONTAINMENT"] = CameraType.Hcz106Recontainment,
             ["CHKPT (EZ)"] = CameraType.HczChkptEz,
             ["CHKPT (HCZ)"] = CameraType.HczChkptHcz,
-            ["H.I.D. CHAMBER"] = CameraType.HczHIDChamber,
-            ["H.I.D. HALLWAY"] = CameraType.HczHIDHallway,
             ["HCZ 939"] = CameraType.Hcz939,
             ["HCZ ARMORY"] = CameraType.HczArmory,
             ["HCZ ARMORY INTERIOR"] = CameraType.HczArmoryInterior,

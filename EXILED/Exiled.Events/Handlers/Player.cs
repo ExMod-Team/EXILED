@@ -584,6 +584,16 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
 
         /// <summary>
+        /// Invoked before the player explode with the micro HID.
+        /// </summary>
+        public static Event<ExplodingMicroHIDEventArgs> ExplodingMicroHID { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before the micro HID opens a door.
+        /// </summary>
+        public static Event<MicroHIDOpeningDoorEventArgs> MicroHIDOpeningDoor { get; set; } = new();
+
+        /// <summary>
         /// Invoked before player interacts with coffee cup.
         /// </summary>
         [Obsolete("Never available (for now).")]
@@ -1259,6 +1269,18 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
         public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before disruptor's mode is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExplodingMicroHIDEventArgs"/> instance.</param>
+        public static void OnExplodingMicroHID(ExplodingMicroHIDEventArgs ev) => ExplodingMicroHID.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before the micro HID opens a door.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
+        public static void OnMicroHIDOpeningDoor(MicroHIDOpeningDoorEventArgs ev) => MicroHIDOpeningDoor.InvokeSafely(ev);
 
         /// <summary>
         /// Called before player interacts with coffee cup.
