@@ -351,7 +351,6 @@ namespace Exiled.API.Features
                 if (NicknameSync.ValidateCustomInfo(value, out string rejectionText))
                 {
                     Log.Error($"Could not set CustomInfo for {Nickname}. Reason: {rejectionText}");
-                    return;
                 }
 
                 InfoArea = string.IsNullOrEmpty(value) ? InfoArea & ~PlayerInfoArea.CustomInfo : InfoArea |= PlayerInfoArea.CustomInfo;
