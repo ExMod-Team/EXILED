@@ -210,7 +210,7 @@ namespace Exiled.API.Features
         /// The <see cref="Player"/> who is disabling the warhead.
         /// If <see langword="null"/>, the warhead will be stopped without a specific player reference.
         /// </param>
-        public static void Stop(ReferenceHub disabler = null) => Controller.CancelDetonation(disabler);
+        public static void Stop(Player disabler = null) => Controller.CancelDetonation(disabler = null ? null : disabler.ReferenceHub);
 
         /// <summary>
         /// Detonates the warhead.
