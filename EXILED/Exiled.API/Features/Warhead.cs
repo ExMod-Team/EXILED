@@ -191,11 +191,11 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="isAutomatic">Indicates whether the warhead is started automatically.</param>
         /// <param name="suppressSubtitles">If <see langword="true"/>, subtitles will not be displayed during the countdown.</param>
-        /// <param name="trigger">The <see cref="ReferenceHub"/> of the entity that triggered the warhead.</param>
-        public static void Start(bool isAutomatic = false, bool suppressSubtitles = false, ReferenceHub trigger = null)
+        /// <param name="trigger">The <see cref="Player"/> of the entity that triggered the warhead.</param>
+        public static void Start(bool isAutomatic = false, bool suppressSubtitles = false, Player trigger = null)
         {
             Controller.InstantPrepare();
-            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger);
+            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger == null ? null : trigger.ReferenceHub);
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace Exiled.API.Features
         /// The <see cref="Player"/> who is disabling the warhead.
         /// If <see langword="null"/>, the warhead will be stopped without a specific player reference.
         /// </param>
-        public static void Stop(Player disabler = null) => Controller.CancelDetonation(disabler = null ? null : disabler.ReferenceHub);
+        public static void Stop(Player disabler = null) => Controller.CancelDetonation(disabler == null ? null : disabler.ReferenceHub);
 
         /// <summary>
         /// Detonates the warhead.
