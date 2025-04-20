@@ -37,12 +37,17 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="settingBase">A <see cref="ServerSpecificSettingBase"/> instance.</param>
         /// <param name="header"><inheritdoc cref="Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="OnChanged"/></param>
-        internal SettingBase(ServerSpecificSettingBase settingBase, HeaderSetting header, Action<Player, SettingBase> onChanged)
+        /// <param name="playerSync"><inheritdoc cref="PlayerSync"/></param>
+        /// <param name="priority"><inheritdoc cref="Priority"/></param>
+        internal SettingBase(ServerSpecificSettingBase settingBase, HeaderSetting header, Action<Player, SettingBase> onChanged, Predicate<Player> playerSync = null, int priority = 0)
         {
             Base = settingBase;
 
             Header = header;
             OnChanged = onChanged;
+
+            PlayerSync = playerSync;
+            Priority = priority;
         }
 
         /// <summary>
@@ -52,6 +57,8 @@ namespace Exiled.API.Features.Core.UserSettings
         internal SettingBase(ServerSpecificSettingBase settingBase)
         {
             Base = settingBase;
+            Priority = 0;
+            PlayerSync = null;
 
             if (OriginalDefinition != null)
             {
@@ -74,9 +81,9 @@ namespace Exiled.API.Features.Core.UserSettings
         public static IReadOnlyCollection<SettingBase> List => Settings;
 
         /// <summary>
-        /// Gets or sets the predicate for syncing this setting when a player joins.
+        /// Gets or sets the predicate for who receives this setting.
         /// </summary>
-        public static Predicate<Player> SyncOnJoin { get; set; }
+        public Predicate<Player> PlayerSync { get; set; }
 
         /// <inheritdoc/>
         public ServerSpecificSettingBase Base { get; }
@@ -89,6 +96,11 @@ namespace Exiled.API.Features.Core.UserSettings
             get => Base.SettingId;
             set => Base.SetId(value, string.Empty);
         }
+
+        /// <summary>
+        /// Gets or sets the priority of this setting.
+        /// </summary>
+        public int Priority { get; set; }
 
         /// <summary>
         /// Gets or sets the label of this setting.
@@ -197,7 +209,13 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <summary>
         /// Syncs setting with all players.
         /// </summary>
-        public static void SendToAll() => ServerSpecificSettingsSync.SendToAll();
+        public static void SendToAll()
+        {
+            foreach (Player player in Player.List)
+            {
+                SendToPlayer(player);
+            }
+        }
 
         /// <summary>
         /// Syncs setting with all players according to the specified predicate.
@@ -216,7 +234,12 @@ namespace Exiled.API.Features.Core.UserSettings
         /// Syncs setting with the specified target.
         /// </summary>
         /// <param name="player">Target player.</param>
-        public static void SendToPlayer(Player player) => ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub);
+        public static void SendToPlayer(Player player)
+        {
+            ServerSpecificSettingBase[] settings = GetGroupedSettings().Where(setting => setting.PlayerSync == null || setting.PlayerSync(player)).Select(setting => setting.Base).ToArray();
+            if (settings.Any())
+                ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub, settings);
+        }
 
         /// <summary>
         /// Syncs specific settings with the specified target.
@@ -224,16 +247,15 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="player">Target player.</param>
         /// <param name="settings">Settings to send to the player.</param>
         public static void SendToPlayer(Player player, IEnumerable<SettingBase> settings) =>
-            ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub, settings.Select(setting => setting.Base).ToArray());
+            ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub, settings.OrderByDescending(setting => setting.Priority).Select(setting => setting.Base).ToArray());
 
         /// <summary>
         /// Registers all settings from the specified collection.
         /// </summary>
         /// <param name="settings">A collection of settings to register.</param>
-        /// <param name="predicate">A requirement to meet when sending settings to players.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully registered.</returns>
         /// <remarks>This method is used to sync new settings with players.</remarks>
-        public static IEnumerable<SettingBase> Register(IEnumerable<SettingBase> settings, Func<Player, bool> predicate = null)
+        public static IEnumerable<SettingBase> Register(IEnumerable<SettingBase> settings)
         {
             IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
 
@@ -251,10 +273,7 @@ namespace Exiled.API.Features.Core.UserSettings
             ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(result.Select(s => s.Base)).ToArray();
             Settings.AddRange(result);
 
-            if (predicate == null)
-                SendToAll();
-            else
-                SendToAll(predicate);
+            SendToAll();
 
             return result;
         }
@@ -262,21 +281,17 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <summary>
         /// Removes settings from players.
         /// </summary>
-        /// <param name="predicate">Determines which players will receive this update.</param>
         /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
         /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register"/> provides an opportunity to update synced settings.</remarks>
-        public static IEnumerable<SettingBase> Unregister(Func<Player, bool> predicate = null, IEnumerable<SettingBase> settings = null)
+        public static IEnumerable<SettingBase> Unregister(IEnumerable<SettingBase> settings = null)
         {
             List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
             List<SettingBase> list2 = new((settings ?? Settings).Where(setting => list.Remove(setting.Base)));
 
             ServerSpecificSettingsSync.DefinedSettings = list.ToArray();
 
-            if (predicate == null)
-                SendToAll();
-            else
-                SendToAll(predicate);
+            SendToAll();
 
             ListPool<ServerSpecificSettingBase>.Pool.Return(list);
 
@@ -336,6 +351,31 @@ namespace Exiled.API.Features.Core.UserSettings
             }
 
             setting.OriginalDefinition?.OnChanged?.Invoke(player, setting);
+        }
+
+        /// <summary>
+        ///  Internal method that gets all settings sorted by priority and grouped by header.
+        /// </summary>
+        /// <returns>All registered settings sorted by priority and grouped by header.</returns>
+        internal static IEnumerable<SettingBase> GetGroupedSettings()
+        {
+            List<SettingBase> settings = Settings.Where(setting => setting.Header == null).OrderByDescending(setting => setting.Priority).ToList();
+            List<IGrouping<HeaderSetting, SettingBase>> groups = settings.GroupBy(setting => setting.Header).Where(group => group.Key != null).ToList();
+
+            // look this was the best I could come up with :sob:
+            while (groups.Any())
+            {
+                foreach (IGrouping<HeaderSetting, SettingBase> group in groups.ToArray())
+                {
+                    int index = settings.IndexOf(group.Key);
+                    if (index == -1)
+                        continue;
+                    settings.InsertRange(index, group);
+                    groups.Remove(group);
+                }
+            }
+
+            return settings;
         }
     }
 }
