@@ -22,9 +22,9 @@ namespace Exiled.Events.Patches.Events.Scp049
 
     /// <summary>
     /// Patches <see cref="Scp049AttackAbility.ServerProcessCmd(Mirror.NetworkReader)"/>
-    /// to add <see cref="Handlers.Scp049.Attacking"/> event.
+    /// to add <see cref="Handlers.Scp049.Scp049Attacking"/> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.Attacking))]
+    [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.Scp049Attacking))]
     [HarmonyPatch(typeof(Scp049AttackAbility), nameof(Scp049AttackAbility.ServerProcessCmd))]
     internal class Scp049Attacking
     {

@@ -22,9 +22,9 @@ namespace Exiled.Events.Patches.Events.Scp106
 
     /// <summary>
     /// Patches <see cref="Scp106Attack.ServerShoot"/>
-    /// to add <see cref="Handlers.Scp106.Attacking"/> event.
+    /// to add <see cref="Handlers.Scp106.Scp106Attacking"/> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Scp106), nameof(Handlers.Scp106.Attacking))]
+    [EventPatch(typeof(Handlers.Scp106), nameof(Handlers.Scp106.Scp106Attacking))]
     [HarmonyPatch(typeof(Scp106Attack), nameof(Scp106Attack.ServerShoot))]
     internal class Scp106Attacking
     {
