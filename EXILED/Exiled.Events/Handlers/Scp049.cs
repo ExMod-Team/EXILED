@@ -40,7 +40,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before SCP-049 attacks player.
         /// </summary>
-        public static Event<AttackingEventArgs> Attacking { get; set; } = new();
+        public static Event<Scp049AttackingEventArgs> Attacking { get; set; } = new();
 
         /// <summary>
         /// Called before SCP-049 finishes reviving a player.
@@ -69,7 +69,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before SCP-049 attacks player.
         /// </summary>
-        /// <param name="ev">The <see cref="AttackingEventArgs"/> instance.</param>
-        public static void OnAttacking(AttackingEventArgs ev) => Attacking.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="Scp049AttackingEventArgs"/> instance.</param>
+        public static void OnAttacking(Scp049AttackingEventArgs ev) => Attacking.InvokeSafely(ev);
     }
 }
