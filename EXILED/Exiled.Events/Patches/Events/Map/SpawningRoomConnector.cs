@@ -51,8 +51,7 @@ namespace Exiled.Events.Patches.Events.Map
                 // SpawningRoomConnectorEventArgs ev = new SpawningRoomConnectorEventArgs(RoomConnectorSpawnpointBase, SpawnableRoomConnectorType)
                 new(OpCodes.Newobj, Constructor(
                     typeof(SpawningRoomConnectorEventArgs),
-                    new[] { typeof(RoomConnectorSpawnpointBase), typeof(SpawnableRoomConnectorType) }
-                )),
+                    new[] { typeof(RoomConnectorSpawnpointBase), typeof(SpawnableRoomConnectorType) })),
                 new(OpCodes.Stloc_S, evLocal),
 
                 // Handlers.Map.OnSpawningRoomConnector(ev);
