@@ -9,10 +9,8 @@ namespace Exiled.Events.Patches.Events.Scp049
 {
 #pragma warning disable SA1402 // File may only contain a single type
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Features;
     using API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp049;
@@ -35,34 +33,26 @@ namespace Exiled.Events.Patches.Events.Scp049
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            // Declare local variable for FinishingSenseEventArgs
             LocalBuilder ev = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
-
-            // Continue label for isAllowed check
-            Label continueLabel = generator.DefineLabel();
-
-            // ReducedCooldown value double
-            const double DefaultReducedCooldowntime = Scp049SenseAbility.ReducedCooldown;
+            Label retLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
-                // Player scp049 = Player.Get(this.Owner);
+                // this.Owner
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // Player target = Player.Get(this.Target);
+                // this.Target
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Target))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // double CooldownTime = 20;
-                new(OpCodes.Ldc_R8, DefaultReducedCooldowntime),
+                // Scp049SenseAbility.ReducedCooldown
+                new(OpCodes.Ldc_R8, (double)Scp049SenseAbility.ReducedCooldown),
 
                 // true (IsAllowed)
                 new(OpCodes.Ldc_I4_1),
 
-                // FinishingSenseEventArgs ev = new FinishingSenseEventArgs(scp049, target ,cooldowntime, isallowed);
+                // FinishingSenseEventArgs ev = new FinishingSenseEventArgs(ReferenceHub, ReferenceHub, double, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FinishingSenseEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, ev.LocalIndex),
@@ -73,25 +63,24 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // if (!ev.IsAllowed) return;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.IsAllowed))),
-                new(OpCodes.Brtrue_S, continueLabel),
-
-                // Return;
-                new(OpCodes.Ret),
-
-                // continue label
-                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
+                new(OpCodes.Brfalse_S, retLabel),
             });
 
-            // this.Cooldown.Trigger(20.0) index
-            int cooldownIndex = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == DefaultReducedCooldowntime);
+            // this.Cooldown.Trigger((double)Scp049SenseAbility.ReducedCooldown) index
+            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == Scp049SenseAbility.ReducedCooldown);
 
-            // Replace "this.Cooldown.Trigger(20.0)" with "this.Cooldown.Trigger((double)ev.cooldowntime)"
-            newInstructions[cooldownIndex] = new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex);
-            newInstructions.Insert(cooldownIndex + 1, new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))));
+            // Replace "this.Cooldown.Trigger((double)Scp049SenseAbility.ReducedCooldown)" with "this.Cooldown.Trigger((double)ev.cooldowntime)"
+            newInstructions.RemoveAt(index);
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                new(OpCodes.Ldloc, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
+            });
 
-            // Return the new instructions
-            foreach (CodeInstruction newInstruction in newInstructions)
-                yield return newInstruction;
+            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
+
+            for (int i = 0; i < newInstructions.Count; i++)
+                yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
@@ -109,91 +98,59 @@ namespace Exiled.Events.Patches.Events.Scp049
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            // Declare local variable for FinishingSenseEventArgs
-            LocalBuilder ev2 = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
 
             // Continue label for isAllowed check
-            Label continueLabel = generator.DefineLabel();
+            Label retLabel = generator.DefineLabel();
 
-            // BaseCoolDown value double
-            const double defaultCooldowntime = Scp049SenseAbility.BaseCooldown;
-
-            // this.Cooldown.Trigger(40.0) index
+            // this.Cooldown.Trigger(Scp049SenseAbility.BaseCooldown) index
             int offset = -2;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == defaultCooldowntime) + offset;
-
-            // Fail safe: if index cant be found, exit the patch
-            if (index < 0)
-            {
-                Log.Error("FinishingSenseEvent2 error: Scp049SenseAbility.Cooldown not found, patch failed.");
-                foreach (CodeInstruction instruction in newInstructions)
-                    yield return instruction;
-
-                ListPool<CodeInstruction>.Pool.Return(newInstructions); // cleanup
-
-                yield break;
-            }
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == Scp049SenseAbility.BaseCooldown) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // Player scp049 = Player.Get(this.Owner);
+                // this.Owner
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // Player target = Player.Get(this.Target);
+                // this.Target
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Target))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // double CooldownTime = 40;
-                new(OpCodes.Ldc_R8, defaultCooldowntime),
+                // double CooldownTime = Scp049SenseAbility.BaseCooldown;
+                new(OpCodes.Ldc_R8, (double)Scp049SenseAbility.BaseCooldown),
 
                 // true (IsAllowed)
                 new(OpCodes.Ldc_I4_1),
 
-                // FinishingSenseEventArgs ev = new FinishingSenseEventArgs(scp049, target, cooldowntime, isAllowed);
+                // FinishingSenseEventArgs ev = new FinishingSenseEventArgs(ReferenceHub, ReferenceHub, double, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FinishingSenseEventArgs))[0]),
                 new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, ev2.LocalIndex),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
 
                 // Handlers.Scp049.OnFinishingSense(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Scp049), nameof(Handlers.Scp049.OnFinishingSense))),
 
                 // if (!ev.IsAllowed) return;
-                new(OpCodes.Ldloc_S, ev2.LocalIndex),
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.IsAllowed))),
-                new(OpCodes.Brtrue_S, continueLabel),
-
-                // return;
-                new(OpCodes.Ret),
-
-                // continue label
-                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
+                new(OpCodes.Brtrue_S, retLabel),
             });
 
-            // this.Cooldown.Trigger(40.0) index
-            int cooldownIndex = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == defaultCooldowntime);
+            // this.Cooldown.Trigger(Scp049SenseAbility.BaseCooldown) index
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R8 && (double)i.operand == Scp049SenseAbility.BaseCooldown);
 
-            // Fail safe: if index cant be found, exit the patch
-            if (cooldownIndex < 0)
+            newInstructions.RemoveAt(index);
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                Log.Error("FinishingSenseEvent2 error: this.Cooldown.Trigger(40.0) index not found, patch failed.");
-                foreach (CodeInstruction instruction in newInstructions)
-                    yield return instruction;
+                new(OpCodes.Ldloc, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
+            });
 
-                ListPool<CodeInstruction>.Pool.Return(newInstructions); // cleanup
+            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
 
-                yield break;
-            }
-
-            // Replace "this.Cooldown.Trigger(40.0)" with "this.Cooldown.Trigger((double)ev.cooldowntime)"
-            newInstructions[cooldownIndex] = new CodeInstruction(OpCodes.Ldloc, ev2.LocalIndex);
-            newInstructions.Insert(cooldownIndex + 1, new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))));
-
-            // Return the new instructions
-            foreach (var newInstruction in newInstructions)
-                yield return newInstruction;
+            for (int i = 0; i < newInstructions.Count; i++)
+                yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
@@ -211,10 +168,7 @@ namespace Exiled.Events.Patches.Events.Scp049
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            // Declare local variable for FinishingSenseEventArgs
-            LocalBuilder ev3 = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
-
-            // Declare local variable for If Ability is active
+            LocalBuilder ev = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
             LocalBuilder isAbilityActive = generator.DeclareLocal(typeof(bool));
 
             // Continue label for if ability is not active
@@ -223,33 +177,17 @@ namespace Exiled.Events.Patches.Events.Scp049
             // Ret label for Exiting the code without breaking ActivatingSense patch
             Label allowed = generator.DefineLabel();
 
-            // BaseCoolDown value double
-            const double DefaultFailCooldowntime = Scp049SenseAbility.AttemptFailCooldown;
-
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
-                // To determine whether the ability is active, i.e. whether this is an unsuccessful attempt or a sense that is not allowed to end
+                // isAbilityActive = this.HasTarget;
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.HasTarget))),
                 new(OpCodes.Stloc, isAbilityActive.LocalIndex),
             });
 
             // this.Cooldown.Trigger(2.5) index
-            MethodInfo triggerMethod = Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger));
             int offset = -3;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && i.operand is MethodInfo method && method == triggerMethod) + offset;
-
-            // Fail safe: if index cant be found, exit the patch
-            if (index < 0)
-            {
-                Log.Error("FinishingSenseEvent3 error: Scp049SenseAbility.AttemptFailCooldown not found, patch failed.");
-                foreach (CodeInstruction instruction in newInstructions)
-                    yield return instruction;
-
-                ListPool<CodeInstruction>.Pool.Return(newInstructions); // cleanup
-
-                yield break;
-            }
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && i.operand == (object)Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -257,32 +195,30 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Ldloc, isAbilityActive.LocalIndex),
                 new(OpCodes.Brfalse_S, continueLabel),
 
-                // Player scp049 = Player.Get(this.Owner);
+                // this.Owner;
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // Player target = Player.Get(this.Target);
+                // this.Target;
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Target))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // double CooldownTime = 2.5;
-                new(OpCodes.Ldc_R8, DefaultFailCooldowntime),
+                // Scp049SenseAbility.AttemptFailCooldown;
+                new(OpCodes.Ldc_R8, (double)Scp049SenseAbility.AttemptFailCooldown),
 
                 // true (IsAllowed)
                 new(OpCodes.Ldc_I4_1),
 
-                // FinishingSenseEventArgs ev = new FinishingSenseEventArgs(scp049, target, cooldowntime, isAllowed);
+                // FinishingSenseEventArgs ev = new FinishingSenseEventArgs(ReferenceHub, ReferenceHub, double, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FinishingSenseEventArgs))[0]),
                 new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, ev3.LocalIndex),
+                new(OpCodes.Stloc_S, ev.LocalIndex),
 
                 // Handlers.Scp049.OnFinishingSense(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Scp049), nameof(Handlers.Scp049.OnFinishingSense))),
 
                 // if (!ev.IsAllowed) return;
-                new(OpCodes.Ldloc_S, ev3.LocalIndex),
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, allowed),
 
@@ -301,13 +237,13 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // this.Cooldown.Trigger(ev.cooldown.time)
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Cooldown))),
-                new(OpCodes.Ldloc, ev3.LocalIndex),
+                new(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
                 new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
 
                 // this.ServerSendRpc(true)
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldc_I4_1), // true
+                new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Call, Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })),
 
                 // return;
@@ -318,9 +254,8 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
             });
 
-            // Return the new instructions
-            foreach (var newInstruction in newInstructions)
-                yield return newInstruction;
+            for (int i = 0; i < newInstructions.Count; i++)
+                yield return newInstructions[i];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
