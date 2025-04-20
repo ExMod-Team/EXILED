@@ -3498,6 +3498,21 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Adds a new <see cref="RegenerationProcess"/> to the player.
+        /// </summary>
+        /// <param name="starttime">The delay before regeneration starts (in seconds).</param>
+        /// <param name="rate">Health points regenerated per second.</param>
+        /// <param name="duration">Total duration of the regeneration (in seconds).</param>
+        /// <param name="speedMultiplier">How fast the regeneration progresses (default is 1.0).</param>
+        /// <param name="healthPointsMultiplier">Multiplier for HP amount being regenerated (default is 1.0).</param>
+        public void AddRegeneration(float starttime = 0f, float rate = 1f, float duration = 1f, float speedMultiplier = 1f, float healthPointsMultiplier = 1f)
+        {
+            AnimationCurve regenCurve = AnimationCurve.Constant(starttime, duration, rate);
+            UsableItemsController.GetHandler(ReferenceHub)
+                .ActiveRegenerations.Add(new RegenerationProcess(regenCurve, speedMultiplier, healthPointsMultiplier));
+        }
+
+        /// <summary>
         /// Reconnects the player to the server. Can be used to redirect them to another server on a different port but same IP.
         /// </summary>
         /// <param name="newPort">New port.</param>
@@ -3513,8 +3528,14 @@ namespace Exiled.API.Features
         }
 
         /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, byte, byte)"/>
-        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0) =>
-            MirrorExtensions.PlayGunSound(this, Position, type, volume, audioClipId);
+        [Obsolete("Use PlayGunSound(Player, Vector3, ItemType, byte, byte) instead.")]
+        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0)
+        {
+        }
+
+        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, FirearmType, float, int)"/>
+        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
+            this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
