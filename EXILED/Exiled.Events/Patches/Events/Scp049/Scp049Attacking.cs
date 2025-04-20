@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Attacking.cs" company="ExMod Team">
+// <copyright file="Scp049Attacking.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Scp049
     /// </summary>
     [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.Attacking))]
     [HarmonyPatch(typeof(Scp049AttackAbility), nameof(Scp049AttackAbility.ServerProcessCmd))]
-    internal class Attacking
+    internal class Scp049Attacking
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -58,8 +58,8 @@ namespace Exiled.Events.Patches.Events.Scp049
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp049AttackingEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Handlers.Scp049.OnAttacking(ev);
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp049), nameof(Handlers.Scp049.OnAttacking))),
+                    // Handlers.Scp049.OnScp049Attacking(ev);
+                    new(OpCodes.Call, Method(typeof(Handlers.Scp049), nameof(Handlers.Scp049.OnScp049Attacking))),
 
                     // if (!ev.IsAllowed)
                     //      return;

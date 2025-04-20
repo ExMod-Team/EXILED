@@ -20,7 +20,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before SCP-106 attacks player.
         /// </summary>
-        public static Event<Scp106AttackingEventArgs> Attacking { get; set; } = new();
+        public static Event<Scp106AttackingEventArgs> Scp106Attacking { get; set; } = new();
 
         /// <summary>
         /// Invoked before SCP-106 teleports using the hunter atlas.
