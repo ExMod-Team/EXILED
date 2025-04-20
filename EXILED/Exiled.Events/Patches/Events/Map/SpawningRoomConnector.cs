@@ -36,8 +36,6 @@ namespace Exiled.Events.Patches.Events.Map
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-            LocalBuilder evLocal = generator.DeclareLocal(typeof(SpawningRoomConnectorEventArgs));
             Label retLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new CodeInstruction[]
@@ -52,20 +50,18 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Newobj, Constructor(
                     typeof(SpawningRoomConnectorEventArgs),
                     new[] { typeof(RoomConnectorSpawnpointBase), typeof(SpawnableRoomConnectorType) })),
-                new(OpCodes.Stloc_S, evLocal),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
 
                 // Handlers.Map.OnSpawningRoomConnector(ev);
-                new(OpCodes.Ldloc_S, evLocal),
                 new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnSpawningRoomConnector))),
 
                 // type = ev.ConnectorType
-                new(OpCodes.Ldloc_S, evLocal),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRoomConnectorEventArgs), nameof(SpawningRoomConnectorEventArgs.ConnectorType))),
                 new(OpCodes.Starg_S, 1),
 
                 // if (!ev.IsAllowed)
                 //    return;
-                new(OpCodes.Ldloc_S, evLocal),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRoomConnectorEventArgs), nameof(SpawningRoomConnectorEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
             });
