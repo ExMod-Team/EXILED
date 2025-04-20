@@ -53,7 +53,7 @@ namespace Exiled.Events.EventArgs.Scp1344
         public Scp1344 Scp1344 { get; }
 
         /// <inheritdoc/>
-        [Obsolete]
+        [Obsolete("Please use ChangingStatusEventArgs::IsAllowed instead of this", true)]
         public bool IsAllowed { get; set; }
     }
 }
