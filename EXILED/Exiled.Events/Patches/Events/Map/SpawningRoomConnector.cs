@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.Patches.Events.Map
 {
+    using MapGeneration.RoomConnectors;
+
 #pragma warning disable SA1402 // File may only contain a single type
 
     using System.Collections.Generic;
@@ -35,6 +37,7 @@ namespace Exiled.Events.Patches.Events.Map
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            LocalBuilder evLocal = generator.DeclareLocal(typeof(SpawningRoomConnectorEventArgs));
             Label retLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new CodeInstruction[]
@@ -46,30 +49,33 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Ldarg_1),
 
                 // SpawningRoomConnectorEventArgs ev = new SpawningRoomConnectorEventArgs(RoomConnectorSpawnpointBase, SpawnableRoomConnectorType)
-                new(OpCodes.Newobj, Constructor(typeof(SpawningRoomConnectorEventArgs))),
-                new(OpCodes.Dup),
-                new(OpCodes.Dup),
+                new(OpCodes.Newobj, Constructor(
+                    typeof(SpawningRoomConnectorEventArgs),
+                    new[] { typeof(RoomConnectorSpawnpointBase), typeof(SpawnableRoomConnectorType) }
+                )),
+                new(OpCodes.Stloc_S, evLocal),
 
                 // Handlers.Map.OnSpawningRoomConnector(ev);
+                new(OpCodes.Ldloc_S, evLocal),
                 new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnSpawningRoomConnector))),
 
                 // type = ev.ConnectorType
+                new(OpCodes.Ldloc_S, evLocal),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRoomConnectorEventArgs), nameof(SpawningRoomConnectorEventArgs.ConnectorType))),
                 new(OpCodes.Starg_S, 1),
 
                 // if (!ev.IsAllowed)
                 //    return;
+                new(OpCodes.Ldloc_S, evLocal),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningRoomConnectorEventArgs), nameof(SpawningRoomConnectorEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
             });
 
-            newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
+            int earlyRetIndex = newInstructions.FindIndex(i => i.opcode == OpCodes.Ret);
+            newInstructions[earlyRetIndex].WithLabels(retLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
-            {
-                Log.Info($"[{z}]{newInstructions[z].opcode}  {newInstructions[z].operand} ({newInstructions[z].labels.Count})");
                 yield return newInstructions[z];
-            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
