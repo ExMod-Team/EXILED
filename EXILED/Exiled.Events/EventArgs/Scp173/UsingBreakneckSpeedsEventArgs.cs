@@ -42,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp173
         public bool IsAllowed { get; set; }
 
         /// <summary>
-        /// Gets a value indicating whether gets whether the player is attempting to activate breakneck speeds.
+        /// Gets a value indicating whether the player is attempting to activate breakneck speeds.
         /// </summary>
         public bool IsActivationRequested { get; }
 
