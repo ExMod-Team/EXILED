@@ -54,9 +54,22 @@ namespace Exiled.Events.Handlers
         public static Event<UsingRadioPickupBatteryEventArgs> UsingRadioPickupBattery { get; set; } = new();
 
         /// <summary>
-        /// Invoked before a<see cref="API.Features.Pickups.MicroHIDPickup"/> state is changed.
+        /// Invoked before a <see cref="API.Features.Pickups.MicroHIDPickup"/> state is changed.
         /// </summary>
         public static Event<ChangingMicroHIDPickupStateEventArgs> ChangingMicroHIDPickupState { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a <see cref="ItemType.ParticleDisruptor"/> firing while on the ground.
+        /// <remarks>The client will still see all effects, like sounds and shoot.</remarks>
+        /// </summary>
+        public static Event<DisruptorFiringEventArgs> DisruptorFiring { get; set; } = new();
+
+        /// <summary>
+        /// Called before a <see cref="ItemType.ParticleDisruptor"/> firing while on the ground.
+        /// WARNING: Client still receive the shoot sound AND the ammo is still removed. (even if <see cref="DisruptorFiringEventArgs.IsAllowed"/> = false).
+        /// </summary>
+        /// <param name="ev">The <see cref="DisruptorFiringEventArgs"/> instance.</param>
+        public static void OnDisruptorFiring(DisruptorFiringEventArgs ev) => DisruptorFiring.InvokeSafely(ev);
 
         /// <summary>
         /// Called before the ammo of an firearm is changed.
