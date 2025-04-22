@@ -10,8 +10,6 @@ namespace Exiled.Events.Commands.Hub
     using System;
 
     using CommandSystem;
-    using CommandSystem.Commands.RemoteAdmin;
-    using Exiled.API.Features;
 
     /// <summary>
     /// The EXILED hub command.
