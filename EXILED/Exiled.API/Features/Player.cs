@@ -60,6 +60,7 @@ namespace Exiled.API.Features
     using Respawning.NamingRules;
     using RoundRestarting;
     using UnityEngine;
+    using UserSettings.UserInterfaceSettings;
     using Utils;
     using Utils.Networking;
     using VoiceChat;
@@ -3615,9 +3616,17 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Unregisters a collection of Server-side specific settings for the player.
+        /// Unregisters all Server-side specific settings associated with this player.
         /// </summary>
-        /// <param name="settings">The collection of Server-side specific settings to unregister.</param>
+        public void UnregisterSettings()
+        {
+            SettingBase.Unregister((p) => { return p == this; });
+        }
+
+        /// <summary>
+        /// Unregisters the specified Server-side specific settings for the player.
+        /// </summary>
+        /// <param name="settings">The collection of settings to unregister.</param>
         public void UnregisterSettings(IEnumerable<SettingBase> settings)
         {
             SettingBase.Unregister((p) => { return p == this; }, settings);
