@@ -10,11 +10,12 @@ namespace Exiled.Events.Commands.Hub
     using System;
 
     using CommandSystem;
+    using CommandSystem.Commands.RemoteAdmin;
+    using Exiled.API.Features;
 
     /// <summary>
     /// The EXILED hub command.
     /// </summary>
-    [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Hub : ParentCommand
     {
@@ -44,6 +45,12 @@ namespace Exiled.Events.Commands.Hub
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
+            if (sender is not ServerConsoleSender || Environment.StackTrace.Contains(nameof(RconCommand)) || Environment.StackTrace.Contains($"{nameof(Server)}.{nameof(Server.ExecuteCommand)}"))
+            {
+                response = "EXILED hub can only be used directly through the game console!";
+                return false;
+            }
+
             response = "Please, specify a valid subcommand! Available ones: install";
             return false;
         }
