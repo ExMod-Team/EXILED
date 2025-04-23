@@ -190,7 +190,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Break the window.
         /// </summary>
-        public void BreakWindow() => Base.BreakWindow();
+        public void BreakWindow() => Base.ServerDamageWindow(Health);
 
         /// <summary>
         /// Damages the window.
