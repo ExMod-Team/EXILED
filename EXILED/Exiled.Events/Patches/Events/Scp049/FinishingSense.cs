@@ -190,7 +190,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 i.operand == (object)Field(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Cooldown))) + offset;
 
             newInstructions[index].labels.Add(continueLabel);
-            
+
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Skip if the ability is not active and this is an unsuccessful attempt
@@ -244,11 +244,11 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Br_S, skipactivatingsense),
             });
 
-             offset = -2;
-             index = newInstructions.FindIndex(i =>
-                 i.opcode == OpCodes.Call &&
-                 i.operand == (object)Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })) + offset;
-            
+            offset = -2;
+            index = newInstructions.FindIndex(i =>
+                i.opcode == OpCodes.Call &&
+                i.operand == (object)Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })) + offset;
+
             newInstructions[index].labels.Add(skipactivatingsense);
             
             for (int i = 0; i < newInstructions.Count; i++)
