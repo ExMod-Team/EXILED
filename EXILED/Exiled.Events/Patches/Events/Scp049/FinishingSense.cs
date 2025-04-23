@@ -250,7 +250,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 i.operand == (object)Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })) + offset;
 
             newInstructions[index].labels.Add(skipactivatingsense);
-            
+
             for (int i = 0; i < newInstructions.Count; i++)
                 yield return newInstructions[i];
 
