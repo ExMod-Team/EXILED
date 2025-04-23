@@ -134,7 +134,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // if (!ev.IsAllowed) return;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.IsAllowed))),
-                new(OpCodes.Brtrue_S, retLabel),
+                new(OpCodes.Brfalse_S, retLabel),
             });
 
             // this.Cooldown.Trigger(Scp049SenseAbility.BaseCooldown) index
@@ -171,10 +171,8 @@ namespace Exiled.Events.Patches.Events.Scp049
             LocalBuilder ev = generator.DeclareLocal(typeof(FinishingSenseEventArgs));
             LocalBuilder isAbilityActive = generator.DeclareLocal(typeof(bool));
 
-            // Continue label for if ability is not active
+            Label skipactivatingsense = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
-
-            // Ret label for Exiting the code without breaking ActivatingSense patch
             Label allowed = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new CodeInstruction[]
@@ -186,9 +184,13 @@ namespace Exiled.Events.Patches.Events.Scp049
             });
 
             // this.Cooldown.Trigger(2.5) index
-            int offset = -3;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && i.operand == (object)Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger))) + offset;
+            int offset = -1;
+            int index = newInstructions.FindIndex(i =>
+                i.opcode == OpCodes.Ldfld &&
+                i.operand == (object)Field(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Cooldown))) + offset;
 
+            newInstructions[index].labels.Add(continueLabel);
+            
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Skip if the ability is not active and this is an unsuccessful attempt
@@ -229,31 +231,26 @@ namespace Exiled.Events.Patches.Events.Scp049
                 new(OpCodes.Callvirt, PropertySetter(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.HasTarget))),
 
                 // return;
-                new(OpCodes.Pop),
                 new(OpCodes.Ret),
 
                 new CodeInstruction(OpCodes.Nop).WithLabels(allowed),
 
                 // this.Cooldown.Trigger(ev.cooldown.time)
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldfld, Field(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Cooldown))),
                 new(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
                 new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
 
-                // this.ServerSendRpc(true)
-                new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldc_I4_1),
-                new(OpCodes.Call, Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })),
-
-                // return;
-                new(OpCodes.Pop),
-                new(OpCodes.Ret),
-
-                // Continue  if the ability is not active and this is an unsuccessful attempt
-                new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
+                new(OpCodes.Br_S, skipactivatingsense),
             });
 
+             offset = -2;
+             index = newInstructions.FindIndex(i =>
+                 i.opcode == OpCodes.Call &&
+                 i.operand == (object)Method(typeof(SubroutineBase), nameof(SubroutineBase.ServerSendRpc), new[] { typeof(bool) })) + offset;
+            
+            newInstructions[index].labels.Add(skipactivatingsense);
+            
             for (int i = 0; i < newInstructions.Count; i++)
                 yield return newInstructions[i];
 
