@@ -45,8 +45,6 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.RemoveRange(index, 17);
 
-            newInstructions[index].labels.Add(continueLabel);
-
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -108,6 +106,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brtrue_S, continueLabel),
 
                     new(OpCodes.Ret),
+
+                    // flag = true;
+                    new CodeInstruction(OpCodes.Ldc_I4_1).WithLabels(continueLabel),
+                    new(OpCodes.Stloc_1),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
