@@ -106,6 +106,11 @@ namespace Exiled.Events.Handlers
         public static Event<PickupDestroyedEventArgs> PickupDestroyed { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a room connector spawns.
+        /// </summary>
+        public static Event<SpawningRoomConnectorEventArgs> SpawningRoomConnector { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a team vehicle is spawned.
         /// </summary>
         public static Event<SpawningTeamVehicleEventArgs> SpawningTeamVehicle { get; set; } = new();
@@ -220,6 +225,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PickupDestroyedEventArgs"/> instance.</param>
         public static void OnPickupDestroyed(PickupDestroyedEventArgs ev) => PickupDestroyed.InvokeSafely(ev);
+
+        /// <summary>
+        /// Invoked before a room connector spawns.
+        /// </summary>
+        /// <param name="ev">The <see cref="SpawningRoomConnectorEventArgs"/> instance.</param>
+        public static void OnSpawningRoomConnector(SpawningRoomConnectorEventArgs ev) => SpawningRoomConnector.InvokeSafely(ev);
 
         /// <summary>
         /// Invoked before a team vehicle is spawned.

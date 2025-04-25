@@ -55,7 +55,6 @@ namespace Exiled.API.Features
     using PlayerStatsSystem;
     using RelativePositioning;
     using RemoteAdmin;
-    using Respawning.NamingRules;
     using RoundRestarting;
     using UnityEngine;
     using Utils;
@@ -95,8 +94,7 @@ namespace Exiled.API.Features
         private readonly HashSet<EActor> componentsInChildren = new();
 
         private ReferenceHub referenceHub;
-        private HealthStat healthStat;
-        private CustomHumeShieldStat humeShieldStat;
+
         private Role role;
 
         /// <summary>
@@ -144,6 +142,11 @@ namespace Exiled.API.Features
         /// </summary>
         public static Dictionary<string, Player> UserIdsCache { get; } = new(20);
 
+        /// <summary>
+        /// Gets or sets a <see cref="CustomHumeShieldStat"/>.
+        /// </summary>
+        public CustomHumeShieldStat CustomHumeShieldStat { get; protected set; }
+
         /// <inheritdoc/>
         public IReadOnlyCollection<EActor> ComponentsInChildren => componentsInChildren;
 
@@ -177,8 +180,8 @@ namespace Exiled.API.Features
                 Inventory = value.inventory;
                 CameraTransform = value.PlayerCameraReference;
 
-                healthStat = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] as HealthStat;
-                value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = humeShieldStat = new CustomHumeShieldStat { Hub = value };
+                CustomHealthStat = (HealthStat)value.playerStats._dictionarizedTypes[typeof(HealthStat)];
+                value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = CustomHumeShieldStat = new CustomHumeShieldStat { Hub = value };
             }
         }
 
@@ -838,13 +841,13 @@ namespace Exiled.API.Features
         /// </summary>
         public float Health
         {
-            get => healthStat.CurValue;
+            get => CustomHealthStat.CurValue;
             set
             {
                 if (value > MaxHealth)
                     MaxHealth = value;
 
-                healthStat.CurValue = value;
+                CustomHealthStat.CurValue = value;
             }
         }
 
@@ -853,8 +856,8 @@ namespace Exiled.API.Features
         /// </summary>
         public float MaxHealth
         {
-            get => healthStat.MaxValue;
-            set => healthStat.MaxValue = value;
+            get => CustomHealthStat.MaxValue;
+            set => CustomHealthStat.MaxValue = value;
         }
 
         /// <summary>
@@ -900,8 +903,8 @@ namespace Exiled.API.Features
         /// <remarks>This value can bypass the role's hume shield maximum. However, this value will only be visible to the end-player as Hume Shield if <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>. Otherwise, the game will treat the player as though they have the amount of Hume Shield specified, even though they cannot see it.</remarks>
         public float HumeShield
         {
-            get => HumeShieldStat.CurValue;
-            set => HumeShieldStat.CurValue = value;
+            get => CustomHumeShieldStat.CurValue;
+            set => CustomHumeShieldStat.CurValue = value;
         }
 
         /// <summary>
@@ -909,8 +912,8 @@ namespace Exiled.API.Features
         /// </summary>
         public float MaxHumeShield
         {
-            get => humeShieldStat.MaxValue;
-            set => humeShieldStat.MaxValue = value;
+            get => CustomHumeShieldStat.MaxValue;
+            set => CustomHumeShieldStat.MaxValue = value;
         }
 
         /// <summary>
@@ -918,8 +921,8 @@ namespace Exiled.API.Features
         /// </summary>
         public float HumeShieldRegenerationMultiplier
         {
-            get => humeShieldStat.ShieldRegenerationMultiplier;
-            set => humeShieldStat.ShieldRegenerationMultiplier = value;
+            get => CustomHumeShieldStat.ShieldRegenerationMultiplier;
+            set => CustomHumeShieldStat.ShieldRegenerationMultiplier = value;
         }
 
         /// <summary>
@@ -929,9 +932,9 @@ namespace Exiled.API.Features
 
         /// <summary>
         /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
-        /// TODO: Change to <see cref="CustomHumeShieldStat"/>.
         /// </summary>
-        public HumeShieldStat HumeShieldStat => humeShieldStat;
+        [Obsolete("Use " + nameof(CustomHumeShieldStat) + " instead.")]
+        public HumeShieldStat HumeShieldStat => CustomHumeShieldStat;
 
         /// <summary>
         /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
@@ -942,6 +945,9 @@ namespace Exiled.API.Features
             get => Item.Get(Inventory.CurInstance);
             set
             {
+                if (CurrentItem is MicroHid microHid)
+                    microHid.State = InventorySystem.Items.MicroHID.Modules.MicroHidPhase.Standby;
+
                 if (value is null || value.Type == ItemType.None)
                 {
                     Inventory.ServerSelectItem(0);
@@ -1151,6 +1157,11 @@ namespace Exiled.API.Features
         /// Gets a dictionary for storing player objects of connected but not yet verified players.
         /// </summary>
         internal static ConditionalWeakTable<GameObject, Player> UnverifiedPlayers { get; } = new();
+
+        /// <summary>
+        /// Gets or sets a <see cref="CustomHealthStat"/>.
+        /// </summary>
+        protected HealthStat CustomHealthStat { get; set; }
 
         /// <summary>
         /// Converts LabApi player to EXILED player.
@@ -3028,6 +3039,36 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Messages the given <see cref="Features.Message"/> to the player.
+        /// </summary>
+        /// <param name="message">The <see cref="Features.Message"/> to be messaged.</param>
+        /// <param name="shouldClearPrevious">Clears all player's messages before sending the new one.</param>
+        public void Message(Message message, bool shouldClearPrevious = false)
+        {
+            if (message.Show)
+                Message(message.Duration, message.Content, message.Type, shouldClearPrevious);
+        }
+
+        /// <summary>
+        /// Shows a message to the player.
+        /// </summary>
+        /// <param name="duration">The message duration.</param>
+        /// <param name="message">The message to be messaged.</param>
+        /// <param name="type">The message type.</param>
+        /// <param name="shouldClearPrevious">Clears all player's messages before sending the new one.</param>
+        public void Message(ushort duration, string message, MessageType type = MessageType.Broadcast, bool shouldClearPrevious = false)
+        {
+            if (type == MessageType.Broadcast)
+            {
+                Broadcast(duration, message, shouldClearPrevious: shouldClearPrevious);
+            }
+            else
+            {
+                ShowHint(message, duration);
+            }
+        }
+
+        /// <summary>
         /// Sends a HitMarker to the player.
         /// </summary>
         /// <param name="size">The size of the hitmarker, ranging from <c>0</c> to <c><see cref="Hitmarker.MaxSize"/></c>).</param>
@@ -3223,7 +3264,7 @@ namespace Exiled.API.Features
         /// <param name="intensity">The intensity of the effect will be active for.</param>
         /// <param name="duration">The amount of time the effect will be active for.</param>
         /// <param name="addDurationIfActive">If the effect is already active, setting to <see langword="true"/> will add this duration onto the effect.</param>
-        /// <returns>return if the effect has been Enable.</returns>
+        /// <returns>A bool indicating whether the effect was valid and successfully enabled.</returns>
         public bool EnableEffect(EffectType type, byte intensity, float duration = 0f, bool addDurationIfActive = false)
             => TryGetEffect(type, out StatusEffectBase statusEffect) && EnableEffect(statusEffect, intensity, duration, addDurationIfActive);
 
@@ -3443,6 +3484,21 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Adds a new <see cref="RegenerationProcess"/> to the player.
+        /// </summary>
+        /// <param name="starttime">The delay before regeneration starts (in seconds).</param>
+        /// <param name="rate">Health points regenerated per second.</param>
+        /// <param name="duration">Total duration of the regeneration (in seconds).</param>
+        /// <param name="speedMultiplier">How fast the regeneration progresses (default is 1.0).</param>
+        /// <param name="healthPointsMultiplier">Multiplier for HP amount being regenerated (default is 1.0).</param>
+        public void AddRegeneration(float starttime = 0f, float rate = 1f, float duration = 1f, float speedMultiplier = 1f, float healthPointsMultiplier = 1f)
+        {
+            AnimationCurve regenCurve = AnimationCurve.Constant(starttime, duration, rate);
+            UsableItemsController.GetHandler(ReferenceHub)
+                .ActiveRegenerations.Add(new RegenerationProcess(regenCurve, speedMultiplier, healthPointsMultiplier));
+        }
+
+        /// <summary>
         /// Reconnects the player to the server. Can be used to redirect them to another server on a different port but same IP.
         /// </summary>
         /// <param name="newPort">New port.</param>
@@ -3458,8 +3514,13 @@ namespace Exiled.API.Features
         }
 
         /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, byte, byte)"/>
-        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0) =>
-            MirrorExtensions.PlayGunSound(this, Position, type, volume, audioClipId);
+        [Obsolete("Use PlayGunSound(Player, Vector3, FirearmType, byte, byte) instead.")]
+        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0)
+            => PlayGunSound(type.GetFirearmType(), volume, audioClipId);
+
+        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, FirearmType, float, int)"/>
+        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
+            this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);

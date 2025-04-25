@@ -15,21 +15,24 @@ namespace Exiled.API.Extensions
     using System.Reflection.Emit;
     using System.Text;
 
+    using AudioPooling;
     using Exiled.API.Enums;
+    using Exiled.API.Features.Items;
     using Features;
     using Features.Pools;
-
+    using InventorySystem;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Firearms;
+    using InventorySystem.Items.Firearms.Modules;
+    using MEC;
     using Mirror;
-
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.Voice;
     using RelativePositioning;
-
     using Respawning;
-
     using UnityEngine;
 
     /// <summary>
@@ -168,20 +171,53 @@ namespace Exiled.API.Extensions
         /// <param name="itemType">Weapon' sound to play.</param>
         /// <param name="volume">Sound's volume to set.</param>
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
+        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
-        {
-            // TODO: Not finish
-            /*
-            GunAudioMessage message = new()
-            {
-                Weapon = itemType,
-                AudioClipId = audioClipId,
-                MaxDistance = volume,
-                ShooterHub = player.ReferenceHub,
-                ShooterPosition = new RelativePosition(position),
-            };
+            => PlayGunSound(player, position, itemType.GetFirearmType(), volume, audioClipId);
 
-            player.Connection.Send(message);*/
+        /// <summary>
+        /// Plays a gun sound that only the <paramref name="player"/> can hear.
+        /// </summary>
+        /// <param name="player">Target to play.</param>
+        /// <param name="position">Position to play on.</param>
+        /// <param name="firearmType">Weapon's sound to play.</param>
+        /// <param name="pitch">Speed of sound.</param>
+        /// <param name="clipIndex">Index of clip.</param>
+        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0)
+        {
+            if (firearmType is FirearmType.ParticleDisruptor or FirearmType.None)
+                return;
+
+            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[firearmType];
+
+            if (firearm == null)
+                return;
+
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
+                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub).Write(writer);
+                writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
+                writer.WriteUShort(0);
+                player.Connection.Send(writer);
+            }
+
+            firearm.BarrelAmmo = 1;
+            firearm.BarrelMagazine.IsCocked = true;
+            player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
+
+            if (!firearm.Base.TryGetModule(out AudioModule audioModule))
+                return;
+
+            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
+            {
+                audioModule.SendRpc(player.ReferenceHub, writer =>
+                    audioModule.ServerSend(writer, clipIndex, pitch, MixerChannel.Weapons, 12f, position, false));
+
+                player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
+
+                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub));
+            });
         }
 
         /// <summary>

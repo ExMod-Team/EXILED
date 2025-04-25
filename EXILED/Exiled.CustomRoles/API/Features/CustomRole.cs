@@ -25,9 +25,7 @@ namespace Exiled.CustomRoles.API.Features
     using Exiled.Events.EventArgs.Player;
     using Exiled.Loader;
     using InventorySystem.Configs;
-
     using MEC;
-
     using PlayerRoles;
 
     using UnityEngine;
@@ -39,6 +37,8 @@ namespace Exiled.CustomRoles.API.Features
     /// </summary>
     public abstract class CustomRole
     {
+        private const float AddRoleDelay = 0.25f;
+
         private static Dictionary<Type, CustomRole?> typeLookupTable = new();
 
         private static Dictionary<string, CustomRole?> stringLookupTable = new();
@@ -505,31 +505,31 @@ namespace Exiled.CustomRoles.API.Features
         public virtual void AddRole(Player player)
         {
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
-            TrackedPlayers.Add(player);
+            player.UniqueRole = Name;
 
             if (Role != RoleTypeId.None)
             {
-                switch (KeepPositionOnSpawn)
+                if (KeepPositionOnSpawn)
                 {
-                    case true when KeepInventoryOnSpawn:
+                    if (KeepInventoryOnSpawn)
                         player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.None);
-                        break;
-                    case true:
+                    else
                         player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.AssignInventory);
-                        break;
-                    default:
-                        {
-                            if (KeepInventoryOnSpawn && player.IsAlive)
-                                player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.UseSpawnpoint);
-                            else
-                                player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.All);
-                            break;
-                        }
+                }
+                else
+                {
+                    if (KeepInventoryOnSpawn && player.IsAlive)
+                        player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.UseSpawnpoint);
+                    else
+                        player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.All);
                 }
             }
 
+            player.UniqueRole = Name;
+            TrackedPlayers.Add(player);
+
             Timing.CallDelayed(
-                0.25f,
+                AddRoleDelay,
                 () =>
                 {
                     if (!KeepInventoryOnSpawn)
@@ -581,7 +581,6 @@ namespace Exiled.CustomRoles.API.Features
             ShowMessage(player);
             ShowBroadcast(player);
             RoleAdded(player);
-            player.UniqueRole = Name;
             player.TryAddCustomRoleFriendlyFire(Name, CustomRoleFFMultiplier);
 
             if (!string.IsNullOrEmpty(ConsoleMessage))
@@ -919,10 +918,8 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnInternalChangingNickname(ChangingNicknameEventArgs ev)
         {
-            if (!Check(ev.Player))
-                return;
-
-            ev.Player.CustomInfo = $"{ev.NewName}\n{CustomInfo}";
+            if (Check(ev.Player))
+                ev.Player.CustomInfo = $"{ev.NewName}\n{CustomInfo}";
         }
 
         private void OnInternalSpawned(SpawnedEventArgs ev)
@@ -933,13 +930,8 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnInternalChangingRole(ChangingRoleEventArgs ev)
         {
-            if(ev.Reason == SpawnReason.Destroyed)
-                return;
-
-            if (Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && ev.NewRole != Role && !KeepRoleOnChangingRole)))
-            {
+            if (ev.IsAllowed && ev.Reason != SpawnReason.Destroyed && Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && !KeepRoleOnChangingRole)))
                 RemoveRole(ev.Player);
-            }
         }
 
         private void OnSpawningRagdoll(SpawningRagdollEventArgs ev)

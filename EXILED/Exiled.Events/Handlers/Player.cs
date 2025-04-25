@@ -23,6 +23,11 @@ namespace Exiled.Events.Handlers
     public class Player
     {
         /// <summary>
+        /// Invoked after a player triggers the attack as an SCP.
+        /// </summary>
+        public static Event<HitEventArgs> Hit { get; set; } = new ();
+
+        /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
         public static Event<PreAuthenticatingEventArgs> PreAuthenticating { get; set; } = new();
@@ -578,6 +583,16 @@ namespace Exiled.Events.Handlers
         /// Invoked before disruptor's mode is changed.
         /// </summary>
         public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before the player explode with the micro HID.
+        /// </summary>
+        public static Event<ExplodingMicroHIDEventArgs> ExplodingMicroHID { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before the micro HID opens a door.
+        /// </summary>
+        public static Event<MicroHIDOpeningDoorEventArgs> MicroHIDOpeningDoor { get; set; } = new();
 
         /// <summary>
         /// Invoked before player interacts with coffee cup.
@@ -1257,6 +1272,18 @@ namespace Exiled.Events.Handlers
         public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before disruptor's mode is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExplodingMicroHIDEventArgs"/> instance.</param>
+        public static void OnExplodingMicroHID(ExplodingMicroHIDEventArgs ev) => ExplodingMicroHID.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before the micro HID opens a door.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
+        public static void OnMicroHIDOpeningDoor(MicroHIDOpeningDoorEventArgs ev) => MicroHIDOpeningDoor.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before player interacts with coffee cup.
         /// </summary>
         /// <param name="ev">The <see cref="DrinkingCoffeeEventArgs"/> instance.</param>
@@ -1268,5 +1295,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev"><The cref="PreAuthenticatingEventArgs"/> instance.</param>
         public static void OnPreAuthenticating(PreAuthenticatingEventArgs ev) => PreAuthenticating.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a player triggers the melee attack as an SCP.
+        /// </summary>
+        /// <param name="ev">The <see cref="HitEventArgs"/> instance.</param>
+        public static void OnHit(HitEventArgs ev) => Hit.InvokeSafely(ev);
     }
 }

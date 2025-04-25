@@ -8,6 +8,7 @@
 namespace Exiled.API.Features
 {
 #pragma warning disable SA1401
+
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -27,6 +28,7 @@ namespace Exiled.API.Features
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using PlayerRoles.Ragdolls;
+    using RemoteAdmin;
     using UnityEngine;
     using Utils;
     using Utils.Networking;
@@ -105,7 +107,25 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
-        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
+        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindFirstObjectByType<SqueakSpawner>();
+
+        /// <summary>
+        /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <param name="player">The player to send message as, null will use Server Host.</param>
+        public static void StaffMessage(string message, Player player = null)
+        {
+            player ??= Server.Host;
+
+            foreach (Player target in Player.List)
+            {
+                if (!CommandProcessor.CheckPermissions(target.Sender, PlayerPermissions.AdminChat))
+                    continue;
+
+                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+            }
+        }
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.
@@ -362,19 +382,9 @@ namespace Exiled.API.Features
         /// <param name="firearmType">The type of firearm to play the sound of.</param>
         /// <param name="maxDistance">The maximum distance the sound can be heard from.</param>
         /// <param name="audioClipId">The audio clip ID to play.</param>
+        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
         public static void PlayGunSound(Vector3 position, ItemType firearmType, byte maxDistance = 45, byte audioClipId = 0)
         {
-            // TODO: Not finish
-            /*
-            GunAudioMessage msg = new()
-            {
-                Weapon = firearmType,
-                AudioClipId = audioClipId,
-                MaxDistance = maxDistance,
-                ShooterHub = ReferenceHub._hostHub,
-                ShooterPosition = new RelativePosition(position),
-            };
-            msg.SendToAuthenticated();*/
         }
 
         /// <summary>
