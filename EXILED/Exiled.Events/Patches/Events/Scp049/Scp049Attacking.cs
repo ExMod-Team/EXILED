@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp049Attacking.cs" company="ExMod Team">
+// <copyright file="CardiacAttacking.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -22,11 +22,11 @@ namespace Exiled.Events.Patches.Events.Scp049
 
     /// <summary>
     /// Patches <see cref="Scp049AttackAbility.ServerProcessCmd(Mirror.NetworkReader)"/>
-    /// to add <see cref="Handlers.Scp049.Scp049Attacking"/> event.
+    /// to add <see cref="Handlers.Scp049.CardiacAttacking"/> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.Scp049Attacking))]
+    [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.CardiacAttacking))]
     [HarmonyPatch(typeof(Scp049AttackAbility), nameof(Scp049AttackAbility.ServerProcessCmd))]
-    internal class Scp049Attacking
+    internal class CardiacAttacking
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -54,16 +54,16 @@ namespace Exiled.Events.Patches.Events.Scp049
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // Scp049AttackingEventArgs ev = new(player, target, true);
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp049AttackingEventArgs))[0]),
+                    // CardiacAttackingEventArgs ev = new(player, target, true);
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(CardiacAttackingEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Handlers.Scp049.OnScp049Attacking(ev);
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp049), nameof(Handlers.Scp049.OnScp049Attacking))),
+                    // Handlers.Scp049.OnCardiacAttacking(ev);
+                    new(OpCodes.Call, Method(typeof(Handlers.Scp049), nameof(Handlers.Scp049.OnCardiacAttacking))),
 
                     // if (!ev.IsAllowed)
                     //      return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp049AttackingEventArgs), nameof(Scp049AttackingEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(CardiacAttackingEventArgs), nameof(CardiacAttackingEventArgs.IsAllowed))),
                     new(OpCodes.Brtrue_S, continueLabel),
 
                     new(OpCodes.Ret),

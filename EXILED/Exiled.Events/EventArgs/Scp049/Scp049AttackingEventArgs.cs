@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp049AttackingEventArgs.cs" company="ExMod Team">
+// <copyright file="CardiacAttackingEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -14,15 +14,15 @@ namespace Exiled.Events.EventArgs.Scp049
     /// <summary>
     /// Contains all information before SCP-049 attacks a player.
     /// </summary>
-    public class Scp049AttackingEventArgs : IScp049Event, IDeniableEvent
+    public class CardiacAttackingEventArgs : IScp049Event, IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scp049AttackingEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="CardiacAttackingEventArgs"/> class.
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="target"><inheritdoc cref="Target"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public Scp049AttackingEventArgs(Player player, Player target, bool isAllowed = true)
+        public CardiacAttackingEventArgs(Player player, Player target, bool isAllowed = true)
         {
             Player = player;
             Scp049 = player.Role.As<Scp049Role>();
