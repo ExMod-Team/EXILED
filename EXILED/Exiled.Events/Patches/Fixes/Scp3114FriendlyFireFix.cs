@@ -94,6 +94,10 @@ namespace Exiled.Events.Patches.Fixes
 
         public override float Damage { get; set; }
 
+        public override string RagdollInspectText { get; }
+
+        public override string DeathScreenText { get; }
+
         public override string ServerLogsText { get; }
 #pragma warning restore SA1600 // Elements should be documented
 

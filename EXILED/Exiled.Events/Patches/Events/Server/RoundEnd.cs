@@ -97,7 +97,7 @@ namespace Exiled.Events.Patches.Events.Server
 
             // put the LeadingTeam logic before the event
             offset = 1;
-            index = newInstructions.FindIndex(x => x.StoresField(Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded)))) + offset;
+            index = newInstructions.FindIndex(x => x.StoresField(Field(typeof(RoundSummary), nameof(RoundSummary.IsRoundEnded)))) + offset;
 
             newInstructions.InsertRange(index, leadingTeamLogic);
 
@@ -120,7 +120,7 @@ namespace Exiled.Events.Patches.Events.Server
 
                     // this._roundEnded
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
+                    new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary.IsRoundEnded))),
 
                     // EndingRoundEventArgs evEndingRound = new(LeadingTeam, RoundSummary.SumInfo_ClassList, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EndingRoundEventArgs))[0]),
@@ -134,7 +134,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
-                    new(OpCodes.Stfld, Field(typeof(RoundSummary), nameof(RoundSummary._roundEnded))),
+                    new(OpCodes.Stfld, Field(typeof(RoundSummary), nameof(RoundSummary.IsRoundEnded))),
 
                     // this.LeadingTeam = ev.LeadingTeam
                     new(OpCodes.Ldarg_0),

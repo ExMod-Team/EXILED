@@ -49,15 +49,20 @@ namespace Exiled.CustomItems.API.Features
         {
             base.Give(player, item, displayMessage);
 
+            // TODO: Rework custom keycard
+            /*
             if (item.Is(out Keycard card))
                 card.Permissions = Permissions;
+                */
         }
 
         /// <inheritdoc/>
         public override Pickup? Spawn(Vector3 position, Item item, Player? previousOwner = null)
         {
+            /*
             if (item.Is(out Keycard card))
                 card.Permissions = Permissions;
+                */
 
             return base.Spawn(position, item, previousOwner);
         }

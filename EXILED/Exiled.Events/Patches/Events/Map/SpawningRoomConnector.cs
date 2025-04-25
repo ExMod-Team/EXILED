@@ -94,7 +94,7 @@ namespace Exiled.Events.Patches.Events.Map
             newInstructions.RemoveAt(index);
 
             offset = -1;
-            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(PluginAPI.Events.MapGeneratedEvent))[0]) + offset;
+            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.MapGeneratedEventArgs))[0]) + offset;
             newInstructions.Insert(index, new CodeInstruction(OpCodes.Call, Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))).MoveLabelsFrom(newInstructions[index]));
 
             for (int z = 0; z < newInstructions.Count; z++)

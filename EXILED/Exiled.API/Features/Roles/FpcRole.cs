@@ -82,12 +82,8 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public bool IsFallDamageEnable
         {
-            get => FirstPersonController.FpcModule.Motor._enableFallDamage;
-            set
-            {
-                enableFallDamageField ??= AccessTools.Field(typeof(FpcMotor), nameof(FpcMotor._enableFallDamage));
-                enableFallDamageField.SetValue(FirstPersonController.FpcModule.Motor, value);
-            }
+            get => FirstPersonController.FpcModule.Motor._fallDamageSettings.Enabled;
+            set => FirstPersonController.FpcModule.Motor._fallDamageSettings.Enabled = value;
         }
 
         /// <summary>

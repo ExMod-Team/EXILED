@@ -22,11 +22,10 @@ namespace Exiled.API.Features.Doors
     using UnityEngine;
 
     using BaseBreakableDoor = Interactables.Interobjects.BreakableDoor;
-    using BaseKeycardPermissions = Interactables.Interobjects.DoorUtils.KeycardPermissions;
     using Breakable = BreakableDoor;
     using Checkpoint = CheckpointDoor;
     using Elevator = ElevatorDoor;
-    using KeycardPermissions = Enums.KeycardPermissions;
+    using KeycardPermissions = Exiled.API.Enums.KeycardPermissions;
 
     /// <summary>
     /// A wrapper class for <see cref="DoorVariant"/>.
@@ -181,8 +180,8 @@ namespace Exiled.API.Features.Doors
         /// </remarks>
         public KeycardPermissions KeycardPermissions
         {
-            get => (KeycardPermissions)RequiredPermissions.RequiredPermissions;
-            set => RequiredPermissions.RequiredPermissions = (BaseKeycardPermissions)value;
+            get => (KeycardPermissions)RequiredPermissions;
+            set => RequiredPermissions = (DoorPermissionFlags)value;
         }
 
         /// <summary>
@@ -244,10 +243,10 @@ namespace Exiled.API.Features.Doors
         /// <summary>
         /// Gets or sets the required permissions to open the door.
         /// </summary>
-        public DoorPermissions RequiredPermissions
+        public DoorPermissionFlags RequiredPermissions
         {
-            get => Base.RequiredPermissions;
-            set => Base.RequiredPermissions = value;
+            get => Base.RequiredPermissions.RequiredPermissions;
+            set => Base.RequiredPermissions.RequiredPermissions = value;
         }
 
         /// <summary>
@@ -472,6 +471,8 @@ namespace Exiled.API.Features.Doors
         /// <param name="beep">The beep sound to play.</param>
         public void PlaySound(DoorBeepType beep)
         {
+            // TODO: Fix that
+            /*
             switch (Base)
             {
                 case Interactables.Interobjects.BasicDoor basic:
@@ -481,6 +482,7 @@ namespace Exiled.API.Features.Doors
                     chkPt.RpcPlayBeepSound((byte)Mathf.Min((int)beep, 3));
                     break;
             }
+            */
         }
 
         /// <summary>
@@ -553,7 +555,7 @@ namespace Exiled.API.Features.Doors
         /// Returns the Door in a human-readable format.
         /// </summary>
         /// <returns>A string containing Door-related data.</returns>
-        public override string ToString() => $"{Type} ({Zone}) [{Room}] *{DoorLockType}* ={RequiredPermissions?.RequiredPermissions}=";
+        public override string ToString() => $"{Type} ({Zone}) [{Room}] *{DoorLockType}* ={RequiredPermissions}=";
 
         /// <summary>
         /// Creates the door object associated with a specific <see cref="DoorVariant"/>.

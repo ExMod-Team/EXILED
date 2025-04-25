@@ -84,8 +84,8 @@ namespace Exiled.API.Features
         /// </summary>
         public static bool IsKeycardActivated
         {
-            get => OutsitePanel.NetworkkeycardEntered;
-            set => OutsitePanel.NetworkkeycardEntered = value;
+            get => AlphaWarheadActivationPanel.IsUnlocked;
+            set => AlphaWarheadActivationPanel.IsUnlocked = value;
         }
 
         /// <summary>

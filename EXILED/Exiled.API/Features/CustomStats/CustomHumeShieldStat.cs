@@ -23,7 +23,14 @@ namespace Exiled.API.Features.CustomStats
         /// </summary>
         public float ShieldRegenerationMultiplier { get; set; } = 1;
 
-        private float ShieldRegeneration => TryGetHsModule(out HumeShieldModuleBase controller) ? controller.HsRegeneration * ShieldRegenerationMultiplier : 0;
+        private float ShieldRegeneration
+        {
+            get
+            {
+                IHumeShieldProvider.GetForHub(Hub, out _, out _, out float hsRegen, out _);
+                return hsRegen * ShieldRegenerationMultiplier;
+            }
+        }
 
         /// <inheritdoc/>
         public override void Update()
