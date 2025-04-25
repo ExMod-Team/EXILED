@@ -233,10 +233,8 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // return;
                 new(OpCodes.Ret),
 
-                new CodeInstruction(OpCodes.Nop).WithLabels(allowed),
-
                 // this.Cooldown.Trigger(ev.cooldown.time)
-                new(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(allowed),
                 new(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
                 new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
