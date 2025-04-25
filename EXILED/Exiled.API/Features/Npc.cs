@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using NetworkManagerUtils.Dummies;
+
 namespace Exiled.API.Features
 {
 #nullable enable

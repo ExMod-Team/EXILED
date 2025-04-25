@@ -80,5 +80,10 @@ namespace Exiled.API.Enums
         /// <see cref="Checkpoints"/>.
         /// </summary>
         ScpOverride = 1024, // 0x0400
+
+        /// <summary>
+        /// All permissions.
+        /// </summary>
+        All = 65535,
     }
 }

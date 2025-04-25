@@ -27,7 +27,7 @@ namespace Exiled.Events.Patches.Generic
     /// <summary>
     /// Patches <see cref="RoomIdentifier.Awake"/>.
     /// </summary>
-    [HarmonyPatch(typeof(RoomIdentifier), nameof(RoomIdentifier.TryAssignId))]
+    [HarmonyPatch(typeof(RoomIdentifier), nameof(RoomIdentifier.Awake))]
     internal class RoomList
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)

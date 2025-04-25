@@ -246,7 +246,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The <see cref="Vector3"/> to search for.</param>
         /// <returns>The <see cref="Room"/> with the given <see cref="Vector3"/> or <see langword="null"/> if not found.</returns>
-        public static Room Get(Vector3 position) => RoomUtils.RoomAtPositionRaycasts(position, false) is RoomIdentifier identifier ? Get(identifier) : null;
+        public static Room Get(Vector3 position) => RoomUtils.TryRaycastRoom(position, Vector3.up, out RoomIdentifier identifier) ? Get(identifier) : null;
 
         /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="RelativePosition"/>.

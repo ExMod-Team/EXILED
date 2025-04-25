@@ -45,12 +45,12 @@ namespace Exiled.API.Features.Items
         public new KeycardItem Base { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
+        /// Gets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
         public KeycardPermissions Permissions
         {
-            get => (KeycardPermissions)Base.Permissions;
-            set => Base.Permissions = (Interactables.Interobjects.DoorUtils.KeycardPermissions)value;
+            get => (KeycardPermissions)Base.GetPermissions(null);
+            // set => Base.Permissions = (Interactables.Interobjects.DoorUtils.KeycardPermissions)value; TODO
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Exiled.API.Features.Items
         /// <returns> New <see cref="Keycard"/> object. </returns>
         public override Item Clone() => new Keycard(Type)
         {
-            Permissions = Permissions,
+            // Permissions = Permissions,
         };
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Exiled.API.Features.Items
             base.ReadPickupInfoBefore(pickup);
             if (pickup is KeycardPickup keycardPickup)
             {
-                Permissions = keycardPickup.Permissions;
+                // Permissions = keycardPickup.Permissions;
             }
         }
     }

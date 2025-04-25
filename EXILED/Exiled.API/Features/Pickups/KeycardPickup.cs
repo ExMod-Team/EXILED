@@ -67,7 +67,7 @@ namespace Exiled.API.Features.Pickups
             base.InitializeProperties(itemBase);
             if (itemBase is KeycardItem keycardItem)
             {
-                Permissions = (KeycardPermissions)keycardItem.Permissions;
+                Permissions = (KeycardPermissions)keycardItem.GetPermissions(null);
             }
         }
     }

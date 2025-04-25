@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using InventorySystem.Items.Keycards;
+
 namespace Exiled.Events.Patches.Events.Item
 {
     using System.Collections.Generic;
@@ -170,8 +172,8 @@ namespace Exiled.Events.Patches.Events.Item
 
         private static bool CheckPermissions(BaseKeycardPickup keycard, DoorVariant door)
         {
-            DoorPermissions permissions = door.RequiredPermissions;
-            if (permissions.RequiredPermissions == KeycardPermissions.None)
+            DoorPermissionsPolicy permissions = door.RequiredPermissions;
+            if (permissions.RequiredPermissions == DoorPermissionFlags.None)
             {
                 return true;
             }
@@ -180,13 +182,13 @@ namespace Exiled.Events.Patches.Events.Item
             {
                 if (!permissions.RequireAll)
                 {
-                    return ((KeycardPermissions)keycardPickup.Permissions & permissions.RequiredPermissions) != 0;
+                    return ((DoorPermissionFlags)keycardPickup.Permissions & permissions.RequiredPermissions) != 0;
                 }
 
-                return ((KeycardPermissions)keycardPickup.Permissions & permissions.RequiredPermissions) == permissions.RequiredPermissions;
+                return ((DoorPermissionFlags)keycardPickup.Permissions & permissions.RequiredPermissions) == permissions.RequiredPermissions;
             }
 
-            return InventorySystem.InventoryItemLoader.AvailableItems.TryGetValue(keycard.Info.ItemId, out ItemBase itemBase) && permissions.CheckPermissions(itemBase, null);
+            return false;
         }
     }
 }

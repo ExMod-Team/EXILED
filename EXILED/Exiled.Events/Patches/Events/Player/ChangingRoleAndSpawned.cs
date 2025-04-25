@@ -196,8 +196,8 @@ namespace Exiled.Events.Patches.Events.Player
                 if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
                     List<ItemPickupBase> list = new List<ItemPickupBase>();
-                    if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
-                        bodyArmor.DontRemoveExcessOnDrop = true;
+                    /*if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor)) TODO may cause some issues. If does, add patch to BodyArmor::OnRemoved
+                        bodyArmor.DontRemoveExcessOnDrop = true;*/
 
                     HashSet<ushort> hashSet = HashSetPool<ushort>.Pool.Get();
                     foreach (KeyValuePair<ushort, ItemBase> item2 in inventory.UserInventory.Items)

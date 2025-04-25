@@ -33,6 +33,11 @@ namespace Exiled.API.Features
         public static AlphaWarheadNukesitePanel SitePanel => AlphaWarheadOutsitePanel.nukeside;
 
         /// <summary>
+        /// Gets the cahced <see cref="AlphaWarheadActivationPanel"/> instance.
+        /// </summary>
+        public static AlphaWarheadActivationPanel ActivationPanel => AlphaWarheadActivationPanel.Instance;
+
+        /// <summary>
         /// Gets the cached <see cref="AlphaWarheadOutsitePanel"/> component.
         /// </summary>
         public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>());
@@ -84,8 +89,8 @@ namespace Exiled.API.Features
         /// </summary>
         public static bool IsKeycardActivated
         {
-            get => OutsitePanel.NetworkkeycardEntered;
-            set => OutsitePanel.NetworkkeycardEntered = value;
+            get => ActivationPanel.Network_unlocked;
+            set => ActivationPanel.Network_unlocked = value;
         }
 
         /// <summary>

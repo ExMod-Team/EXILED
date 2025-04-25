@@ -5,6 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Interactables.Interobjects.DoorUtils;
+using LabApi.Events.Arguments.PlayerEvents;
+
 namespace Exiled.Events.Patches.Events.Player
 {
     using System;
@@ -26,7 +29,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Adds the <see cref="Handlers.Player.ActivatingWarheadPanel" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ActivatingWarheadPanel))]
-    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdSwitchAWButton))]
+    [HarmonyPatch(typeof(PlayerInteract), nameof(AlphaWarheadActivationPanel.ServerInteractKeycard))]
     internal static class ActivatingWarheadPanel
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -37,11 +40,8 @@ namespace Exiled.Events.Patches.Events.Player
             Label ev = generator.DefineLabel();
             Label cardCheck = generator.DefineLabel();
 
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
-            LocalBuilder allowed = generator.DeclareLocal(typeof(bool));
-            LocalBuilder card = generator.DeclareLocal(typeof(Keycard));
-
-            int index = newInstructions.FindIndex(i => i.Is(OpCodes.Ldfld, Field(typeof(PlayerInteract), nameof(PlayerInteract._sr))));
+            int offset = 2;
+            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(DoorPermissionsPolicy), nameof(DoorPermissionsPolicy.CheckPermissions)))) + offset;
 
             newInstructions.RemoveRange(index, 17);
 
@@ -52,48 +52,11 @@ namespace Exiled.Events.Patches.Events.Player
                     // Player player = Player.Get(this._hub);
                     new(OpCodes.Ldfld, Field(typeof(PlayerInteract), nameof(PlayerInteract._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Stloc_S, player.LocalIndex),
 
-                    // allowed = false;
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Stloc_S, allowed.LocalIndex),
+                    // flag
+                    new(OpCodes.Ldloc_0),
 
-                    // if (player.IsBypassModeEnabled)
-                    //      allowed = true;
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.IsBypassModeEnabled))),
-                    new(OpCodes.Brfalse_S, cardCheck),
-
-                    new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Stloc_S, allowed.LocalIndex),
-                    new(OpCodes.Br_S, ev),
-
-                    // if (player.CurrentItem != null && player.CurrentItem is Keycard card && card.Permissions.HasFlag(KeycardPermissions.AlphaWarhead))
-                    //      allowed = true;
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).WithLabels(cardCheck),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.CurrentItem))),
-                    new(OpCodes.Brfalse_S, ev),
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.CurrentItem))),
-                    new(OpCodes.Isinst, typeof(Keycard)),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, card.LocalIndex),
-                    new(OpCodes.Brfalse_S, ev),
-                    new(OpCodes.Ldloc_S, card.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Keycard), nameof(Keycard.Permissions))),
-                    new(OpCodes.Box, typeof(KeycardPermissions)),
-                    new(OpCodes.Ldc_I4_8),
-                    new(OpCodes.Box, typeof(KeycardPermissions)),
-                    new(OpCodes.Call, Method(typeof(Enum), nameof(Enum.HasFlag))),
-                    new(OpCodes.Stloc_S, allowed.LocalIndex),
-
-                    // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).WithLabels(ev),
-
-                    // allowed
-                    new(OpCodes.Ldloc_S, allowed.LocalIndex),
-
-                    // ActivatingWarheadPanekEventArgs ev = new(player, allowed);
+                    // ActivatingWarheadPanekEventArgs ev = new(player, flag);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ActivatingWarheadPanelEventArgs))[0]),
                     new(OpCodes.Dup),
 

@@ -73,6 +73,7 @@ namespace Exiled.API.Features.Items
             set => Base._weight = value;
         }
 
+        /* TODO we need patch. Are we going to implement it?
         /// <summary>
         /// Gets or sets a value indicating whether excess ammo should be removed when the armor is dropped.
         /// </summary>
@@ -81,6 +82,7 @@ namespace Exiled.API.Features.Items
             get => !Base.DontRemoveExcessOnDrop;
             set => Base.DontRemoveExcessOnDrop = !value;
         }
+        */
 
         /// <summary>
         /// Gets or sets how strong the helmet on the armor is.
