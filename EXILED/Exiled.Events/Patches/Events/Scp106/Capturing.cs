@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Attacking.cs" company="ExMod Team">
+// <copyright file="Capturing.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -22,11 +22,11 @@ namespace Exiled.Events.Patches.Events.Scp106
 
     /// <summary>
     /// Patches <see cref="Scp106Attack.ServerShoot"/>
-    /// to add <see cref="Handlers.Scp106.Attacking"/> event.
+    /// to add <see cref="Handlers.Scp106.Capturing"/> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Scp106), nameof(Handlers.Scp106.Attacking))]
+    [EventPatch(typeof(Handlers.Scp106), nameof(Handlers.Scp106.Capturing))]
     [HarmonyPatch(typeof(Scp106Attack), nameof(Scp106Attack.ServerShoot))]
-    internal class Attacking
+    internal class Capturing
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -53,16 +53,16 @@ namespace Exiled.Events.Patches.Events.Scp106
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // AttackingEventArgs ev = new(player, target, true);
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AttackingEventArgs))[0]),
+                    // CapturingEventArgs ev = new(player, target, true);
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(CapturingEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Handlers.Scp106.OnAttacking(ev);
-                    new(OpCodes.Call, Method(typeof(Handlers.Scp106), nameof(Handlers.Scp106.OnAttacking))),
+                    // Handlers.Scp106.OnCapturing(ev);
+                    new(OpCodes.Call, Method(typeof(Handlers.Scp106), nameof(Handlers.Scp106.OnCapturing))),
 
                     // if (!ev.IsAllowed)
                     //      return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AttackingEventArgs), nameof(AttackingEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(CapturingEventArgs), nameof(CapturingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
                 });
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
