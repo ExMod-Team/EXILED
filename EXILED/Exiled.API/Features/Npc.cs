@@ -18,12 +18,14 @@ namespace Exiled.API.Features
     using CommandSystem.Commands.RemoteAdmin.Dummies;
     using Exiled.API.Enums;
     using Exiled.API.Features.Components;
+    using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Roles;
     using Footprinting;
     using GameCore;
     using MEC;
     using Mirror;
     using PlayerRoles;
+    using PlayerStatsSystem;
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -33,6 +35,11 @@ namespace Exiled.API.Features
     /// </summary>
     public class Npc : Player
     {
+        /// <summary>
+        /// The time it takes for the NPC to receive its <see cref="CustomHealthStat"/>, <see cref="CustomHumeShieldStat"/> and <see cref="Role"/>.
+        /// </summary>
+        public const float SpawnSetRoleDelay = 0.5f;
+
         /// <inheritdoc cref="Player" />
         public Npc(ReferenceHub referenceHub)
             : base(referenceHub)
@@ -252,10 +259,13 @@ namespace Exiled.API.Features
         {
             Npc npc = new(DummyUtils.SpawnDummy(name));
 
-            Timing.CallDelayed(0.5f, () =>
+            Timing.CallDelayed(SpawnSetRoleDelay, () =>
             {
-                npc.Role.Set(role);
+                npc.Role.Set(role, SpawnReason.ForceClass);
                 npc.Position = position;
+                npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HealthStat)] = npc.ReferenceHub.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = npc.CustomHealthStat = new CustomHealthStat { Hub = npc.ReferenceHub };
+                npc.Health = npc.MaxHealth; // otherwise the npc will spawn with 0 health
+                npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = npc.ReferenceHub.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = npc.CustomHumeShieldStat = new CustomHumeShieldStat { Hub = npc.ReferenceHub };
             });
 
             Dictionary.Add(npc.GameObject, npc);
@@ -274,9 +284,12 @@ namespace Exiled.API.Features
         {
             Npc npc = new(DummyUtils.SpawnDummy(name));
 
-            Timing.CallDelayed(0.5f, () =>
+            Timing.CallDelayed(SpawnSetRoleDelay, () =>
             {
                 npc.Role.Set(role, SpawnReason.ForceClass, position is null ? RoleSpawnFlags.All : RoleSpawnFlags.AssignInventory);
+                npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HealthStat)] = npc.ReferenceHub.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = npc.CustomHealthStat = new CustomHealthStat { Hub = npc.ReferenceHub };
+                npc.Health = npc.MaxHealth; // otherwise the npc will spawn with 0 health
+                npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = npc.ReferenceHub.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = npc.CustomHumeShieldStat = new CustomHumeShieldStat { Hub = npc.ReferenceHub };
 
                 if (position is not null)
                     npc.Position = position.Value;

@@ -22,13 +22,17 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
+        /// <param name="isActivationRequested">
+        /// <inheritdoc cref="IsActivationRequested" />
+        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public UsingBreakneckSpeedsEventArgs(Player player, bool isAllowed = true)
+        public UsingBreakneckSpeedsEventArgs(Player player, bool isActivationRequested, bool isAllowed = true)
         {
             Player = player;
             Scp173 = player.Role.As<Scp173Role>();
+            IsActivationRequested = isActivationRequested;
             IsAllowed = isAllowed;
         }
 
@@ -36,6 +40,11 @@ namespace Exiled.Events.EventArgs.Scp173
         /// Gets or sets a value indicating whether the player can use breakneck speeds.
         /// </summary>
         public bool IsAllowed { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the player is attempting to activate breakneck speeds.
+        /// </summary>
+        public bool IsActivationRequested { get; }
 
         /// <summary>
         /// Gets the player who's using breakneck speeds.
