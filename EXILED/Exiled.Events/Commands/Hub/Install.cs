@@ -13,7 +13,7 @@ namespace Exiled.Events.Commands.Hub
     using System.Net.Http;
 
     using CommandSystem;
-
+    using CommandSystem.Commands.RemoteAdmin;
     using Exiled.API.Features;
     using Exiled.Events.Commands.Hub.HubApi.Models;
     using Exiled.Loader;
@@ -54,6 +54,12 @@ namespace Exiled.Events.Commands.Hub
             if (!sender.CheckPermission(permission) && sender is PlayerCommandSender playerSender && !playerSender.FullPermissions)
             {
                 response = $"You don't have permissions to install the plugins. Required permission node: \"{permission}\".";
+                return false;
+            }
+
+            if (sender is not ServerConsoleSender || Environment.StackTrace.Contains(nameof(RconCommand)) || Environment.StackTrace.Contains($"{nameof(Server)}.{nameof(Server.ExecuteCommand)}"))
+            {
+                response = "EXILED hub can only be used directly through the game console!";
                 return false;
             }
 

@@ -14,7 +14,6 @@ namespace Exiled.Events.Commands.Hub
     /// <summary>
     /// The EXILED hub command.
     /// </summary>
-    [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class Hub : ParentCommand
     {
