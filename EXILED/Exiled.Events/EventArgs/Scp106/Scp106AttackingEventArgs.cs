@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="Scp106AttackingEventArgs.cs" company="ExMod Team">
+// <copyright file="CapturingEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -14,15 +14,15 @@ namespace Exiled.Events.EventArgs.Scp106
     /// <summary>
     /// Contains all information before SCP-106 attacks a player.
     /// </summary>
-    public class Scp106AttackingEventArgs : IScp106Event, IDeniableEvent
+    public class CapturingEventArgs : IScp106Event, IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Scp106AttackingEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="CapturingEventArgs"/> class.
         /// </summary>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="target"><inheritdoc cref="Target"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public Scp106AttackingEventArgs(Player player, Player target, bool isAllowed = true)
+        public CapturingEventArgs(Player player, Player target, bool isAllowed = true)
         {
             Player = player;
             Scp106 = player.Role.As<Scp106Role>();
