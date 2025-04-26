@@ -421,7 +421,7 @@ namespace Exiled.API.Features
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             RoomIdentifierToRoom.Add(Identifier, this);
 
-            Zone = FindZone(gameObject);
+            Zone = Identifier.Zone.GetZone();
 #if DEBUG
             if (Zone is ZoneType.Unspecified)
                 Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
@@ -496,6 +496,8 @@ namespace Exiled.API.Features
                 "HCZ_Straight Variant" => RoomType.HczStraightVariant,
                 "HCZ_ChkpA" => RoomType.HczElevatorA,
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
+                "HCZ_127" => RoomType.Hcz127,
+                "HCZ_ServerRoom" => RoomType.HczServerRoom,
                 "EZ_GateA" => RoomType.EzGateA,
                 "EZ_GateB" => RoomType.EzGateB,
                 "EZ_ThreeWay" => RoomType.EzTCross,
@@ -525,23 +527,6 @@ namespace Exiled.API.Features
                     _ => RoomType.HczEzCheckpointB
                 },
                 _ => RoomType.Unknown,
-            };
-        }
-
-        private static ZoneType FindZone(GameObject gameObject)
-        {
-            Transform transform = gameObject.transform;
-
-            if (gameObject.name == "PocketWorld")
-                return ZoneType.Pocket;
-
-            return transform.parent?.name.RemoveBracketsOnEndOfName() switch
-            {
-                "HeavyRooms" => ZoneType.HeavyContainment,
-                "LightRooms" => ZoneType.LightContainment,
-                "EntranceRooms" => ZoneType.Entrance,
-                "HCZ_EZ_Checkpoint" => ZoneType.HeavyContainment | ZoneType.Entrance,
-                _ => transform.position.y > 900 ? ZoneType.Surface : ZoneType.Unspecified,
             };
         }
     }

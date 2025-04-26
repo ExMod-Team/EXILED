@@ -225,6 +225,7 @@ namespace Exiled.API.Features
             RoomType.HczTestRoom => GlassType.TestRoom,
             RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
             RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
+            RoomType.Hcz127 => GlassType.Scp127,
             _ => GlassType.Unknown,
         };
     }
