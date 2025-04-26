@@ -16,6 +16,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
     using HarmonyLib;
     using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Firearms.Modules.Misc;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
@@ -25,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Adds the <see cref="Handlers.Player.Shot" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Shot))]
-    [HarmonyPatch(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.ServerPerformHitscan))]
+    [HarmonyPatch(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.ServerAppendPrescan))]
     internal static class Shot
     {
         private static void ProcessRaycastMiss(HitscanHitregModuleBase hitregModule, Ray ray, float maxDistance)
@@ -45,16 +46,6 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            /*
-            IL_0020: ldarg.1      // targetRay
-            IL_0021: ldloca.s     hitInfo
-            IL_0023: ldloc.0      // maxDistance
-            IL_0024: ldsfld       class CachedLayerMask InventorySystem.Items.Firearms.Modules.HitscanHitregModuleBase::HitregMask
-            IL_0029: call         int32 CachedLayerMask::op_Implicit(class CachedLayerMask)
-            IL_002e: call         bool [UnityEngine.PhysicsModule]UnityEngine.Physics::Raycast(valuetype [UnityEngine.CoreModule]UnityEngine.Ray, valuetype [UnityEngine.PhysicsModule]UnityEngine.RaycastHit&, float32, int32)
-            IL_0033: brtrue.s     IL_0037
-            [] <= Here
-             */
             MethodInfo raycastMethod = Method(typeof(Physics), nameof(Physics.Raycast), new[] { typeof(Ray), typeof(RaycastHit).MakeByRefType(), typeof(float), typeof(int) });
             int raycastFailIndex = newInstructions.FindIndex(i => i.Calls(raycastMethod)) + 2;
 
@@ -69,14 +60,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Shot), nameof(ProcessRaycastMiss))),
                 });
 
-            /*
-            IL_0037: ldloca.s     hitInfo
-            IL_0039: call         instance class [UnityEngine.PhysicsModule]UnityEngine.Collider [UnityEngine.PhysicsModule]UnityEngine.RaycastHit::get_collider()
-            IL_003e: ldloca.s     component
-            IL_0040: callvirt     instance bool [UnityEngine.CoreModule]UnityEngine.Component::TryGetComponent<class IDestructible>(!!0/*class IDestructible* /&)
-            [] <= Here  // This position is reached whether IDestructible is found or not.
-            IL_0045: brfalse.s    IL_005e
-             */
             int destructibleGetIndex = newInstructions.FindIndex(i => i.operand is MethodInfo { Name: nameof(Component.TryGetComponent) }) + 1;
 
             Label continueLabel = generator.DefineLabel();
@@ -111,17 +94,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
-            /*
-            [] <= Here
-            IL_0067: ldarg.0      // this
-            IL_0068: call         instance class InventorySystem.Items.Firearms.Firearm InventorySystem.Items.Firearms.FirearmSubcomponentBase::get_Firearm()
-            IL_006d: ldloca.s     module
-            IL_006f: ldc.i4.1
-            IL_0070: call         bool InventorySystem.Items.Firearms.Modules.ModulesUtils::TryGetModule<class InventorySystem.Items.Firearms.Modules.ImpactEffectsModule>(class InventorySystem.Items.Firearms.Firearm, !!0/*class InventorySystem.Items.Firearms.Modules.ImpactEffectsModule* /&, bool)
-            IL_0075: brtrue.s     IL_0079
-             */
-            int impactEffectsIndex = newInstructions.FindIndex(i => i.operand is MethodInfo { Name: nameof(ModulesUtils.TryGetModule) }) - 4;
-            List<Label> impactEffectsLabels = newInstructions[impactEffectsIndex].ExtractLabels();
+            int impactEffectsIndex = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(HitscanResult), nameof(HitscanResult.Obstacles)))) - 1;
             Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
@@ -129,7 +102,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // if (!ev.CanSpawnImpactEffects) return;
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(impactEffectsLabels),
+                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).MoveLabelsFrom(newInstructions[impactEffectsIndex]),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ShotEventArgs), nameof(ShotEventArgs.CanSpawnImpactEffects))),
                     new(OpCodes.Brfalse, returnLabel),
                 });
