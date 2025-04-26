@@ -19,9 +19,9 @@ namespace Exiled.Events.Patches.Fixes
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="BodyArmorUtils.RemoveEverythingExceedingLimits(Inventory, BodyArmor, bool, bool)"/> to fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/230 bug.
+    /// Patches <see cref="BodyArmorUtils.RemoveEverythingExceedingLimits(InventorySystem.Inventory)"/> to fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/230 bug.
     /// </summary>
-    [HarmonyPatch(typeof(BodyArmorUtils), nameof(BodyArmorUtils.RemoveEverythingExceedingLimits), typeof(Inventory), typeof(BodyArmor), typeof(bool), typeof(bool))]
+    [HarmonyPatch(typeof(BodyArmorUtils), nameof(BodyArmorUtils.RemoveEverythingExceedingLimits), typeof(InventorySystem.Inventory))]
     internal static class ArmorDropPatch
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

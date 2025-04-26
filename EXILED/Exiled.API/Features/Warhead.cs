@@ -35,7 +35,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the cached <see cref="AlphaWarheadOutsitePanel"/> component.
         /// </summary>
-        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>());
+        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>());
 
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the warhead lever.

@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="HitscanHitregModuleBase.ServerPerformHitscan" />.
+    /// Patches <see cref="HitscanHitregModuleBase.ServerAppendPrescan" />.
     /// Adds the <see cref="Handlers.Player.Shot" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Shot))]

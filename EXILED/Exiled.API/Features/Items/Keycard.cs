@@ -7,15 +7,9 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System.Linq;
-    using CommandSystem.Commands.RemoteAdmin.Inventory;
     using Exiled.API.Enums;
-    using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-    using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items.Keycards;
-
-    using KeycardPickup = Pickups.KeycardPickup;
 
     /// <summary>
     /// A wrapper class for <see cref="KeycardItem"/>.

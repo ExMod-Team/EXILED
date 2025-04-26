@@ -11,6 +11,7 @@ namespace Exiled.API.Features
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using CommandSystem;
     using CommandSystem.Commands.RemoteAdmin.Dummies;
     using Exiled.API.Enums;
@@ -30,7 +31,7 @@ namespace Exiled.API.Features
     public class Npc : Player
     {
         /// <summary>
-        /// The time it takes for the NPC to receive its <see cref="CustomHealthStat"/>, <see cref="CustomHumeShieldStat"/> and <see cref="Role"/>.
+        /// The time it takes for the NPC to receive its <see cref="CustomHumeShieldStat"/> and <see cref="Role"/>.
         /// </summary>
         public const float SpawnSetRoleDelay = 0.5f;
 

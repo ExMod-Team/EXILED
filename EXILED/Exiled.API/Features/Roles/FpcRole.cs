@@ -27,7 +27,6 @@ namespace Exiled.API.Features.Roles
     /// </summary>
     public abstract class FpcRole : Role, IVoiceRole
     {
-        private static FieldInfo enableFallDamageField;
         private bool isUsingStamina = true;
 
         /// <summary>
