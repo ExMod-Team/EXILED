@@ -114,13 +114,8 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brtrue_S) + 1;
-
-            newInstructions.InsertRange(index, new CodeInstruction[]
+            CodeInstruction[] eventInstructions =
             {
-                // this
-                new(OpCodes.Ldarg_0),
-
                 // hitInfo
                 new(OpCodes.Ldloc_1),
 
@@ -139,7 +134,13 @@ namespace Exiled.Events.Patches.Events.Player
 
                 // Handlers.Player.OnShot(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShot))),
-            });
+            };
+
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brtrue_S) + 1;
+            newInstructions.InsertRange(index, new CodeInstruction[] { new(OpCodes.Ldarg_0), }.AddRangeToArray(eventInstructions));
+
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldarg_2);
+            newInstructions.InsertRange(index, new[] { new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]) }.AddRangeToArray(eventInstructions));
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
