@@ -103,7 +103,6 @@ namespace Exiled.Events.Patches.Events.Player
         }
     }
 
-
     /// <summary>
     /// Patches <see cref="HitscanHitregModuleBase.ServerAppendPrescan" />.
     /// Adds the <see cref="Handlers.Player.Shot" /> event.
