@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+#pragma warning disable SA1402
+#pragma warning disable SA1649
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -22,92 +24,123 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="HitscanHitregModuleBase.ServerAppendPrescan" />.
+    /// Patches <see cref="HitscanHitregModuleBase.ServerApplyDestructibleDamage" />.
     /// Adds the <see cref="Handlers.Player.Shot" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Shot))]
-    [HarmonyPatch(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.ServerAppendPrescan))]
-    internal static class Shot
+    [HarmonyPatch(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.ServerApplyDestructibleDamage))]
+    internal static class ShotTarget
     {
-        private static void ProcessRaycastMiss(HitscanHitregModuleBase hitregModule, Ray ray, float maxDistance)
-        {
-            RaycastHit hit = new()
-            {
-                distance = maxDistance,
-                point = ray.GetPoint(maxDistance),
-                normal = -ray.direction,
-            };
-
-            ShotEventArgs ev = new(hitregModule, hit, hitregModule.Firearm, null);
-            Handlers.Player.OnShot(ev);
-        }
-
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            MethodInfo raycastMethod = Method(typeof(Physics), nameof(Physics.Raycast), new[] { typeof(Ray), typeof(RaycastHit).MakeByRefType(), typeof(float), typeof(int) });
-            int raycastFailIndex = newInstructions.FindIndex(i => i.Calls(raycastMethod)) + 2;
-
-            newInstructions.InsertRange(
-                raycastFailIndex,
-                new CodeInstruction[]
-                {
-                    // ProcessRaycastMiss(this, targetRay, maxDistance);
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldloc_0),
-                    new(OpCodes.Call, Method(typeof(Shot), nameof(ProcessRaycastMiss))),
-                });
-
-            int destructibleGetIndex = newInstructions.FindIndex(i => i.operand is MethodInfo { Name: nameof(Component.TryGetComponent) }) + 1;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloc_2);
 
             Label continueLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ShotEventArgs));
 
             newInstructions.InsertRange(
-                destructibleGetIndex,
+                index,
                 new[]
                 {
-                    // var ev = new ShotEventArgs(this, hitInfo, firearm, component);
-                    new(OpCodes.Ldarg_0), // this
-                    new(OpCodes.Ldloc_1), // hitInfo
-                    new(OpCodes.Ldarg_0), // this.Firearm
+                    // this
+                    new(OpCodes.Ldarg_0),
+
+                    // target.Raycast.Hit
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Ldfld, Field(typeof(DestructibleHitPair), nameof(DestructibleHitPair.Raycast))),
+                    new(OpCodes.Ldfld, Field(typeof(HitRayPair), nameof(HitRayPair.Hit))),
+
+                    // this.Firearm
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.Firearm))),
-                    new(OpCodes.Ldloc_2), // component
+
+                    // destructible
+                    new(OpCodes.Ldloc_2),
+
+                    // damage
+                    new(OpCodes.Ldloc_0),
+
+                    // ShotEventArgs ev = new ShotEventArgs(this, hitInfo, firearm, component, damage);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShotEventArgs))[0]),
-                    new(OpCodes.Dup), // Leave ShotEventArgs on the stack
+                    new(OpCodes.Dup),
+                    new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    new(OpCodes.Dup), // Leave ShotEventArgs on the stack
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShot))),
 
-                    // if (!ev.CanHurt) hitInfo.distance = maxDistance;
+                    // if (!ev.CanHurt) num = 0;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ShotEventArgs), nameof(ShotEventArgs.CanHurt))),
                     new(OpCodes.Brtrue, continueLabel),
 
-                    new(OpCodes.Ldloca_S, 1), // hitInfo address
-                    new(OpCodes.Ldloc_0), // maxDistance
-                    new(OpCodes.Call, PropertySetter(typeof(RaycastHit), nameof(RaycastHit.distance))), // hitInfo.distance = maxDistance
+                    new(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Stloc_0),
 
                     new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
-            int impactEffectsIndex = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(HitscanResult), nameof(HitscanResult.Obstacles)))) - 1;
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldarg_0);
             Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
-                impactEffectsIndex,
-                new[]
+                index,
+                new CodeInstruction[]
                 {
                     // if (!ev.CanSpawnImpactEffects) return;
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).MoveLabelsFrom(newInstructions[impactEffectsIndex]),
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ShotEventArgs), nameof(ShotEventArgs.CanSpawnImpactEffects))),
-                    new(OpCodes.Brfalse, returnLabel),
+                    new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+
+
+    /// <summary>
+    /// Patches <see cref="HitscanHitregModuleBase.ServerAppendPrescan" />.
+    /// Adds the <see cref="Handlers.Player.Shot" /> event.
+    /// </summary>
+    [HarmonyPatch(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.ServerAppendPrescan))]
+    internal static class ShotMiss
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brtrue_S) + 1;
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // this
+                new(OpCodes.Ldarg_0),
+
+                // hitInfo
+                new(OpCodes.Ldloc_1),
+
+                // this.Firearm
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.Firearm))),
+
+                // (IDestructible)null
+                new(OpCodes.Ldnull),
+
+                // 0f
+                new(OpCodes.Ldc_R4, 0f),
+
+                // ShotEventArgs = new(this, hitInfo, this.Firearm, (IDestructible)null, 0f)
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ShotEventArgs))[0]),
+
+                // Handlers.Player.OnShot(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnShot))),
+            });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
