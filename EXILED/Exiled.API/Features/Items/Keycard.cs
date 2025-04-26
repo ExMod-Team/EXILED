@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
     using InventorySystem.Items.Keycards;
+    using System;
 
     /// <summary>
     /// A wrapper class for <see cref="KeycardItem"/>.
@@ -61,7 +62,8 @@ namespace Exiled.API.Features.Items
                 return KeycardPermissions.None;
             }
 
-            set => Base.Permissions = (Interactables.Interobjects.DoorUtils.KeycardPermissions)value;
+            [Obsolete("Not functional anymore", true)]
+            set => _ = value;
         }
 
         /// <summary>

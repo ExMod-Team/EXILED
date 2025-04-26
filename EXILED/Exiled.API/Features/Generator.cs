@@ -308,9 +308,9 @@ namespace Exiled.API.Features
             DoorPermissionFlags permission = (DoorPermissionFlags)flag;
 
             if (isEnabled)
-                Base._requiredPermission |= permissions;
+                Base._requiredPermission |= permission;
             else
-                Base._requiredPermission &= ~permissions;
+                Base._requiredPermission &= ~permission;
         }
 
         /// <summary>
