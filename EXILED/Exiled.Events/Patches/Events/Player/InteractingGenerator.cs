@@ -171,9 +171,6 @@ namespace Exiled.Events.Patches.Events.Player
             // deactivating generator instructions
             CodeInstruction[] deactivatingGeneratorEvent =
             {
-                // player
-                new(OpCodes.Ldloc_S, player.LocalIndex),
-
                 // Scp079Generator
                 new(OpCodes.Ldarg_0),
 
@@ -192,11 +189,17 @@ namespace Exiled.Events.Patches.Events.Player
             // deactivating generator index
             offset = -2;
             index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerDeactivatingGeneratorEventArgs))[0]) + offset;
-            newInstructions.InsertRange(index, deactivatingGeneratorEvent);
+            newInstructions.InsertRange(index, new[]
+            {
+                new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+            }.AddRangeToArray(deactivatingGeneratorEvent));
 
             // second deactivating generator index
             index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerDeactivatingGeneratorEventArgs))[0]) + offset;
-            newInstructions.InsertRange(index, deactivatingGeneratorEvent);
+            newInstructions.InsertRange(index, new[]
+            {
+                new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
+            }.AddRangeToArray(deactivatingGeneratorEvent));
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
