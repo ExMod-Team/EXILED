@@ -53,8 +53,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public float MainTimer
         {
-            get => Base.SequenceCtrl.OpenLoopTime;
-            set => Base.SequenceCtrl.OpenLoopTime = value;
+            get => Base.SequenceCtrl.RemainingTime;
+            set => Base.SequenceCtrl.RemainingTime = value;
         }
 
         /// <summary>
@@ -62,8 +62,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public float WaitTime
         {
-            get => Base.SequenceCtrl.RemainingTime;
-            set => Base.SequenceCtrl.RemainingTime = value;
+            get => Base.SequenceCtrl.OpenLoopTime;
+            set => Base.SequenceCtrl.OpenLoopTime = value;
         }
 
         /// <summary>
