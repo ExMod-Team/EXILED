@@ -168,6 +168,7 @@ namespace Exiled.API.Features.Toys
                 SpeakerToy speakerToy => new Speaker(speakerToy),
                 CapybaraToy capybaraToy => new Capybara(capybaraToy),
                 Scp079CameraToy scp079CameraToy => new CameraToy(scp079CameraToy),
+                InvisibleInteractableToy invisibleInteractableToy => new InteractableToy(invisibleInteractableToy),
                 _ => throw new System.NotImplementedException()
             };
         }
