@@ -351,7 +351,7 @@ namespace Exiled.API.Features
             get => ReferenceHub.nicknameSync.Network_customPlayerInfoString;
             set
             {
-                if (NicknameSync.ValidateCustomInfo(value, out string rejectionText))
+                if (!NicknameSync.ValidateCustomInfo(value, out string rejectionText))
                 {
                     Log.Error($"Could not set CustomInfo for {Nickname}. Reason: {rejectionText}");
                 }
