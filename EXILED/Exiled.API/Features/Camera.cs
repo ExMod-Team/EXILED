@@ -134,6 +134,13 @@ namespace Exiled.API.Features
             ["WARHEAD TOP ELEVATORS"] = CameraType.HczWarheadTopElevators,
             ["WARHEAD CONNECTOR"] = CameraType.HczWarheadConnector,
             ["WARHEAD PORT ELEVATOR"] = CameraType.HczWarheadPortElevator,
+
+            // CustomCamera
+            ["EZ ARM CAMERA TOY"] = CameraType.EzArmCameraToy,
+            ["EZ CAMERA TOY"] = CameraType.EzCameraToy,
+            ["HCZ CAMERA TOY"] = CameraType.HczCameraToy,
+            ["LCZ CAMERA TOY"] = CameraType.LczCameraToy,
+            ["SZ CAMERA TOY"] = CameraType.SzCameraToy,
         };
 
         private Room room;

@@ -138,5 +138,13 @@ namespace Exiled.API.Enums
         HczMicroHIDLab,
         HczPipesMain,
         #endregion
+
+        #region custom
+        EzArmCameraToy,
+        EzCameraToy,
+        HczCameraToy,
+        LczCameraToy,
+        SzCameraToy,
+        #endregion
     }
 }

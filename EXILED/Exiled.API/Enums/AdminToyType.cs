@@ -37,5 +37,15 @@ namespace Exiled.API.Enums
         /// Capybara toy.
         /// </summary>
         Capybara,
+
+        /// <summary>
+        /// InvisibleInteractable toy.
+        /// </summary>
+        InvisibleInteractableToy,
+
+        /// <summary>
+        /// Camera Object toy.
+        /// </summary>
+        CameraToy,
     }
 }
