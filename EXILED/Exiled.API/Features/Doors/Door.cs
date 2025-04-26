@@ -471,8 +471,6 @@ namespace Exiled.API.Features.Doors
         /// <param name="beep">The beep sound to play.</param>
         public void PlaySound(DoorBeepType beep)
         {
-            // TODO: Fix that
-            /*
             switch (Base)
             {
                 case Interactables.Interobjects.BasicDoor basic when beep is not DoorBeepType.InteractionAllowed:
@@ -482,7 +480,6 @@ namespace Exiled.API.Features.Doors
                     chkPt.RpcPlayDeniedBeep();
                     break;
             }
-            */
         }
 
         /// <summary>
