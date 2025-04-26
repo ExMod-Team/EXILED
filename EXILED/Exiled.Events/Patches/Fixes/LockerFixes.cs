@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Fixes
     /// <summary>
     /// Fix for chamber lists weren't cleared.
     /// </summary>
-    [HarmonyPatch(typeof(LockerChamber), nameof(LockerChamber.SetDoor))]
+    [HarmonyPatch(typeof(LockerChamber), nameof(LockerChamber.OnFirstTimeOpen))]
     internal class LockerFixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
