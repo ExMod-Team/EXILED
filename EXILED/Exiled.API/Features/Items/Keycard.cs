@@ -7,10 +7,11 @@
 
 namespace Exiled.API.Features.Items
 {
+    using System;
+
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
     using InventorySystem.Items.Keycards;
-    using System;
 
     /// <summary>
     /// A wrapper class for <see cref="KeycardItem"/>.
@@ -42,7 +43,7 @@ namespace Exiled.API.Features.Items
         public new KeycardItem Base { get; }
 
         /// <summary>
-        /// Gets the <see cref="KeycardPermissions"/> of the keycard.
+        /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
         public KeycardPermissions Permissions
         {
