@@ -50,16 +50,19 @@ namespace Exiled.Events.Patches.Events.Item
             int offset = 1;
             int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.ActiveLocks)))) + offset;
 
+            Label continueLabel = (Label)newInstructions[index].operand;
+
             newInstructions.RemoveAt(index);
 
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
                     // check and write door lock state (isUnlocked)
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
-                    new CodeInstruction(OpCodes.Stloc_S, isUnlocked.LocalIndex),
+                    new(OpCodes.Stloc_S, isUnlocked.LocalIndex),
+                    new(OpCodes.Br, continueLabel),
                 });
 
             offset = 1;
