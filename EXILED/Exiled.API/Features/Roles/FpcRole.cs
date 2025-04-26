@@ -86,6 +86,15 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets the multiplier of <see cref="Enums.DamageType.Falldown"/> damage.
+        /// </summary>
+        public float FallDamageMultiplier
+        {
+            get => FirstPersonController.FpcModule.Motor._fallDamageSettings.Multiplier;
+            set => FirstPersonController.FpcModule.Motor._fallDamageSettings.Multiplier = value;
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether if a rotation is detected on the player.
         /// </summary>
         public bool RotationDetected

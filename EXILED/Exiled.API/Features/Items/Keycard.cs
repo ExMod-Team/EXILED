@@ -60,6 +60,8 @@ namespace Exiled.API.Features.Items
 
                 return KeycardPermissions.None;
             }
+
+            set => Base.Permissions = (Interactables.Interobjects.DoorUtils.KeycardPermissions)value;
         }
 
         /// <summary>

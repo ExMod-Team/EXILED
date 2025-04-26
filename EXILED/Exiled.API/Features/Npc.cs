@@ -258,7 +258,7 @@ namespace Exiled.API.Features
             {
                 npc.Role.Set(role, SpawnReason.ForceClass);
                 npc.Position = position;
-                npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HealthStat)] = npc.ReferenceHub.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = npc.CustomHealthStat = new HealthStat { Hub = npc.ReferenceHub };
+                npc.CustomHealthStat = (HealthStat)npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HealthStat)];
                 npc.Health = npc.MaxHealth; // otherwise the npc will spawn with 0 health
                 npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = npc.ReferenceHub.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = npc.CustomHumeShieldStat = new CustomHumeShieldStat { Hub = npc.ReferenceHub };
             });
