@@ -8,12 +8,8 @@
 namespace Exiled.API.Features.Items
 {
     using Exiled.API.Enums;
-    using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
-
     using InventorySystem.Items.Keycards;
-
-    using KeycardPickup = Pickups.KeycardPickup;
 
     /// <summary>
     /// A wrapper class for <see cref="KeycardItem"/>.
@@ -45,37 +41,33 @@ namespace Exiled.API.Features.Items
         public new KeycardItem Base { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
+        /// Gets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
         public KeycardPermissions Permissions
         {
-            get => (KeycardPermissions)Base.GetPermissions(new());
+            get
+            {
+                foreach (DetailBase detail in Base.Details)
+                {
+                    switch (detail)
+                    {
+                        case PredefinedPermsDetail predefinedPermsDetail:
+                            return (KeycardPermissions)predefinedPermsDetail.Levels.Permissions;
+                        case CustomPermsDetail customPermsDetail:
+                            return (KeycardPermissions)customPermsDetail.GetPermissions(null);
+                    }
+                }
+
+                return KeycardPermissions.None;
+            }
+
             set => Base.Permissions = (Interactables.Interobjects.DoorUtils.KeycardPermissions)value;
         }
-
-        /// <summary>
-        /// Clones current <see cref="Keycard"/> object.
-        /// </summary>
-        /// <returns> New <see cref="Keycard"/> object. </returns>
-        public override Item Clone() => new Keycard(Type)
-        {
-            Permissions = Permissions,
-        };
 
         /// <summary>
         /// Returns the Keycard in a human readable format.
         /// </summary>
         /// <returns>A string containing Keycard-related data.</returns>
         public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{Permissions}|";
-
-        /// <inheritdoc/>
-        internal override void ReadPickupInfoBefore(Pickup pickup)
-        {
-            base.ReadPickupInfoBefore(pickup);
-            if (pickup is KeycardPickup keycardPickup)
-            {
-                Permissions = keycardPickup.Permissions;
-            }
-        }
     }
 }

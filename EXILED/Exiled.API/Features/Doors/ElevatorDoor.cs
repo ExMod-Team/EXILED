@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Doors
             Base = door;
             Lift = Lift.Get(x => x.Group == Group).FirstOrDefault();
 
-            Panel = Object.FindObjectsOfType<ElevatorPanel>().FirstOrDefault(x => x._door == door);
+            Panel = Object.FindObjectsByType<ElevatorPanel>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(x => x._door == door);
         }
 
         /// <summary>
