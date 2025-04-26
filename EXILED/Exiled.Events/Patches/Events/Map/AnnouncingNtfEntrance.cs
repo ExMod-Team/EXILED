@@ -55,8 +55,8 @@ namespace Exiled.Events.Patches.Events.Map
                     // WaveAnnouncementBase
                     new(OpCodes.Ldarg_0),
 
-                    // int scpsLeft = ReferenceHub.GetAllHubs().Values.Count(x => x.characterClassManager.CurRole.team == Team.SCP && x.characterClassManager.CurClass != RoleTypeId.Scp0492);
-                    new(OpCodes.Ldloc_3),
+                    // scpsLeft
+                    new(OpCodes.Ldloc_2),
 
                     // string[] unitInformation = unitNameClear.Split('-');
                     new(OpCodes.Ldloc_1),
@@ -111,7 +111,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // scpsLeft = ev.ScpsLeft;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.ScpsLeft))),
-                    new(OpCodes.Stloc_3),
+                    new(OpCodes.Stloc_2),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
