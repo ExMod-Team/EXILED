@@ -170,7 +170,6 @@ namespace Exiled.API.Enums
         [Obsolete("This Door has been renamed too HID_LAB.")]
         HIDUpper,
 
-
         /// <summary>
         /// Represents the HID_LAB door.
         /// </summary>
@@ -335,7 +334,6 @@ namespace Exiled.API.Enums
         /// Represents the Elevator door for <see cref="ElevatorGroup.ServerRoom"/>.
         /// </summary>
         ElevatorServerRoom,
-
 
         /// <summary>
         /// Represents the HCZ_127_LAB door.

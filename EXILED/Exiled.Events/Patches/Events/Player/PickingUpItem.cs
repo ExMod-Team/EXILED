@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -40,7 +41,8 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder info = generator.DeclareLocal(typeof(PickupSyncInfo));
             LocalBuilder ev = generator.DeclareLocal(typeof(PickingUpItemEventArgs));
 
-            const int index = 0;
+            int offset = -4;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerPickingUpItemEventArgs))[0]) + offset;
 
             newInstructions[index].WithLabels(continueLabel);
 
@@ -50,7 +52,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // this.Hub
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.Hub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.Hub))),
 
                     // this.TargetPickup
                     new(OpCodes.Ldarg_0),

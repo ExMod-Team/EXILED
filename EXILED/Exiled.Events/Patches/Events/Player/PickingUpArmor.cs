@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -35,7 +36,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
 
-            const int index = 0;
+            int offset = -5;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerPickingUpArmorEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -43,7 +45,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // this.Hub
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Hub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Hub))),
 
                     // this.TargetPickup
                     new(OpCodes.Ldarg_0),

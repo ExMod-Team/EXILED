@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
@@ -19,8 +20,6 @@ namespace Exiled.Events.Patches.Events.Player
     using InventorySystem.Searching;
 
     using static HarmonyLib.AccessTools;
-
-    using Player = API.Features.Player;
 
     /// <summary>
     /// Patches <see cref="Scp244SearchCompletor" /> to add missing event handler to the
@@ -36,8 +35,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+            int offset = -4;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerPickingUpItemEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -45,7 +44,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // this.Hub
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Ldfld, Field(typeof(Scp244SearchCompletor), nameof(Scp244SearchCompletor.Hub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp244SearchCompletor), nameof(Scp244SearchCompletor.Hub))),
 
                     // scp244DeployablePickup
                     new(OpCodes.Ldloc_0),
