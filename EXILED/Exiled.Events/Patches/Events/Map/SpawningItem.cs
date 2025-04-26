@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="ItemDistributor.ServerCreatePickup" />.
+    /// Patches <see cref="ItemDistributor.ServerRegisterPickup" />.
     /// Adds the <see cref="Map.SpawningItem" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.SpawningItem))]
