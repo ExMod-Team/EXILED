@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // PickupSyncInfo info = this.TargetPickup.Info;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(SearchCompletor), nameof(SearchCompletor.TargetPickup))),
+                    new(OpCodes.Ldfld, Field(typeof(AmmoSearchCompletor), nameof(AmmoSearchCompletor.TargetPickup))),
                     new(OpCodes.Ldfld, Field(typeof(ItemPickupBase), nameof(ItemPickupBase.Info))),
                     new(OpCodes.Stloc_S, 4),
 
@@ -77,7 +77,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                     // this.TargetPickup.NetworkInfo = info;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(SearchCompletor), nameof(SearchCompletor.TargetPickup))),
+                    new(OpCodes.Ldfld, Field(typeof(AmmoSearchCompletor), nameof(AmmoSearchCompletor.TargetPickup))),
                     new(OpCodes.Ldloc_S, 4),
                     new(OpCodes.Call, PropertySetter(typeof(ItemPickupBase), nameof(ItemPickupBase.NetworkInfo))),
 

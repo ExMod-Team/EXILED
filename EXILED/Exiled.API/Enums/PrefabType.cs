@@ -345,5 +345,29 @@ namespace Exiled.API.Enums
 
         [Prefab(1548138668, "AutoRagdoll")]
         AutoRagdoll,
+
+        [Prefab(1323017091, "ElevatorChamberCargo")]
+        ElevatorChamberCargo,
+
+        [Prefab(359728307, "InvisibleInteractableToy")]
+        InvisibleInteractableToy,
+
+        [Prefab(1824808402, "EzArmCameraToy")]
+        EzArmCameraToy,
+
+        [Prefab(3375932423, "EzCameraToy")]
+        EzCameraToy,
+
+        [Prefab(144958943, "HczCameraToy")]
+        HczCameraToy,
+
+        [Prefab(2026969629, "LczCameraToy")]
+        LczCameraToy,
+
+        [Prefab(1548138668, "SzCameraToy")]
+        SzCameraToy,
+
+        [Prefab(2842703865, "KeycardPickup_Chaos")]
+        KeycardPickupChaos,
     }
 }

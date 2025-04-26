@@ -25,7 +25,7 @@ namespace Exiled.API.Features.Doors
     using Breakable = BreakableDoor;
     using Checkpoint = CheckpointDoor;
     using Elevator = ElevatorDoor;
-    using KeycardPermissions = Enums.KeycardPermissions;
+    using KeycardPermissions = Exiled.API.Enums.KeycardPermissions;
 
     /// <summary>
     /// A wrapper class for <see cref="DoorVariant"/>.
@@ -180,8 +180,8 @@ namespace Exiled.API.Features.Doors
         /// </remarks>
         public KeycardPermissions KeycardPermissions
         {
-            get => (KeycardPermissions)Base.RequiredPermissions.RequiredPermissions;
-            set => Base.RequiredPermissions = new((DoorPermissionFlags)value, Base.RequiredPermissions.RequireAll, Base.RequiredPermissions.Bypass2176);
+            get => (KeycardPermissions)RequiredPermissions;
+            set => RequiredPermissions = (DoorPermissionFlags)value;
         }
 
         /// <summary>
@@ -239,6 +239,15 @@ namespace Exiled.API.Features.Doors
         /// Gets the name of this door.
         /// </summary>
         public string Name => Nametag == null ? GameObject.name.GetBefore(' ') : Nametag.GetName.RemoveBracketsOnEndOfName();
+
+        /// <summary>
+        /// Gets or sets the required permissions to open the door.
+        /// </summary>
+        public DoorPermissionFlags RequiredPermissions
+        {
+            get => Base.RequiredPermissions.RequiredPermissions;
+            set => Base.RequiredPermissions.RequiredPermissions = value;
+        }
 
         /// <summary>
         /// Gets or sets the door's rotation.
@@ -462,6 +471,8 @@ namespace Exiled.API.Features.Doors
         /// <param name="beep">The beep sound to play.</param>
         public void PlaySound(DoorBeepType beep)
         {
+            // TODO: Fix that
+            /*
             switch (Base)
             {
                 case Interactables.Interobjects.BasicDoor basic when beep is not DoorBeepType.InteractionAllowed:
@@ -471,6 +482,7 @@ namespace Exiled.API.Features.Doors
                     chkPt.RpcPlayDeniedBeep();
                     break;
             }
+            */
         }
 
         /// <summary>

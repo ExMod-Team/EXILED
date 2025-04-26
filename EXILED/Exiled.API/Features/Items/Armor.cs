@@ -74,15 +74,6 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether excess ammo should be removed when the armor is dropped.
-        /// </summary>
-        public bool RemoveExcessOnDrop
-        {
-            get => !Base.DontRemoveExcessOnDrop;
-            set => Base.DontRemoveExcessOnDrop = !value;
-        }
-
-        /// <summary>
         /// Gets or sets how strong the helmet on the armor is.
         /// </summary>
         public int HelmetEfficacy
