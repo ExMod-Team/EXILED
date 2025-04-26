@@ -25,7 +25,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ActivatingWarheadPanelEventArgs(Player player, bool isAllowed = true)
+        public ActivatingWarheadPanelEventArgs(Player player, bool isAllowed)
         {
             Player = player;
             IsAllowed = isAllowed;
