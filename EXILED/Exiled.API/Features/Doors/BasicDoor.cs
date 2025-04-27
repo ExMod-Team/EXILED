@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Doors
 {
     using System.Collections.Generic;
 
+    using Exiled.API.Enums;
+    using PlayerRoles;
     using UnityEngine;
 
     using Basegame = Interactables.Interobjects.BasicDoor;
@@ -33,6 +35,11 @@ namespace Exiled.API.Features.Doors
         /// Gets the base <see cref="Basegame"/>.
         /// </summary>
         public new Basegame Base { get; }
+
+        /// <summary>
+        /// Gets the list with all Ignored's colliders for <see cref="RoleTypeId.Scp106"/> or <see cref="EffectType.Ghostly"/>.
+        /// </summary>
+        public IEnumerable<Collider> Scp106Colliders => Base.IgnoredColliders;
 
         /// <summary>
         /// Gets or sets the total cooldown before door can be triggered again.
