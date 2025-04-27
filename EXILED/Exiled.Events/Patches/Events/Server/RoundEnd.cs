@@ -130,7 +130,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnEndingRound))),
                     new(OpCodes.Stloc_S, evEndingRound.LocalIndex),
 
-                    // this._roundEnded = ev.IsAllowed
+                    // this.IsRoundEnded = ev.IsAllowed
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
