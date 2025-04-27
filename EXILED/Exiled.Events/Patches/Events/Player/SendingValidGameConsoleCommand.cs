@@ -59,13 +59,9 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                   // this
-                   new(OpCodes.Ldarg_0),
-
-                   // this._hub
-                   new(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
-
                    // Player.Get(Hub)
+                   new(OpCodes.Ldarg_0),
+                   new(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                    // command
