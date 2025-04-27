@@ -24,16 +24,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="pocketDimensionTeleport">
         /// <inheritdoc cref="Teleporter" />
         /// </param>
-        /// <param name="player">
+        /// <param name="hub">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public FailingEscapePocketDimensionEventArgs(PocketDimensionTeleport pocketDimensionTeleport, Player player, bool isAllowed = true)
+        public FailingEscapePocketDimensionEventArgs(PocketDimensionTeleport pocketDimensionTeleport, ReferenceHub hub, bool isAllowed = true)
         {
+            Player = Player.Get(hub);
             Teleporter = pocketDimensionTeleport;
-            Player = player;
             IsAllowed = isAllowed;
         }
 
