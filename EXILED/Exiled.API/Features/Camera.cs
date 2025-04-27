@@ -70,7 +70,6 @@ namespace Exiled.API.Features
             ["HCZ ARMORY"] = CameraType.HczArmory,
             ["HCZ ARMORY INTERIOR"] = CameraType.HczArmoryInterior,
             ["HCZ CROSSING"] = CameraType.HczCrossing,
-            ["HCZ CURVE"] = CameraType.HczCurve,
             ["HCZ ELEV SYS A"] = CameraType.HczElevSysA,
             ["HCZ ELEV SYS B"] = CameraType.HczElevSysB,
             ["HCZ HALLWAY"] = CameraType.HczHallway,

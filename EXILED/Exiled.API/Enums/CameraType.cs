@@ -123,6 +123,7 @@ namespace Exiled.API.Enums
         Hcz173ContChamber,
         [System.Obsolete("This Camera no longer exist.")]
         Hcz173Hallway,
+        [System.Obsolete("This Camera no longer exist.")]
         HczCurve,
         HczJunkMain,
         HczJunkHallway,
