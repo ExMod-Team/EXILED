@@ -14,7 +14,6 @@ namespace Exiled.Events.Patches.Events.Item
     using API.Features.Pickups;
     using API.Features.Pools;
     using Attributes;
-    using Exiled.Events;
     using Exiled.Events.EventArgs.Item;
 
     using Footprinting;
@@ -22,9 +21,6 @@ namespace Exiled.Events.Patches.Events.Item
     using HarmonyLib;
 
     using Interactables.Interobjects.DoorUtils;
-
-    using InventorySystem.Items;
-
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
@@ -35,6 +31,7 @@ namespace Exiled.Events.Patches.Events.Item
     /// Patches <see cref="BaseKeycardPickup.ProcessCollision(Collision)"/> and adds <see cref="KeycardPickup.Permissions"/> implementation.
     /// Adds the <see cref="Handlers.Player.InteractingDoor"/> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Item), nameof(Handlers.Item.KeycardInteracting))]
     [HarmonyPatch(typeof(BaseKeycardPickup), nameof(BaseKeycardPickup.ProcessCollision))]
     internal static class KeycardInteracting
     {
@@ -90,13 +87,9 @@ namespace Exiled.Events.Patches.Events.Item
                 // door
                 new(OpCodes.Ldloc_1),
 
-                // isAllowed = isUnlocked && hasPermission && Events.Instance.Config.CanKeycardThrowAffectDoors
+                // isAllowed = isUnlocked && hasPermission
                 new(OpCodes.Ldloc_S, isUnlocked.LocalIndex),
                 new(OpCodes.Ldloc_S, hasPermission.LocalIndex),
-                new(OpCodes.And),
-                new(OpCodes.Call, PropertyGetter(typeof(Events), nameof(Events.Instance))),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Events), nameof(Events.Config))),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Config), nameof(Config.CanKeycardThrowAffectDoors))),
                 new(OpCodes.And),
 
                 // ev = new KeycardInteractingEventArgs(pickup, player, door, isAllowed)
