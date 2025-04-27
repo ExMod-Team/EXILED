@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Scp079
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
@@ -16,7 +17,7 @@ namespace Exiled.Events.Patches.Events.Scp079
     using Exiled.Events.Handlers;
 
     using HarmonyLib;
-
+    using LabApi.Events.Arguments.Scp079Events;
     using Mirror;
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
@@ -38,8 +39,8 @@ namespace Exiled.Events.Patches.Events.Scp079
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 6;
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && (sbyte)x.operand == (sbyte)Scp079HudTranslation.SignalLost) + offset;
+            int offset = -4;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.Scp079Events.Scp079ChangingCameraEventArgs))[0]) + offset;
 
             Label returnLabel = generator.DefineLabel();
 
@@ -47,9 +48,9 @@ namespace Exiled.Events.Patches.Events.Scp079
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
-                    // Player.Get(base.Owner)
+                    // Player.Get(this.Owner)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<Scp079Role>), nameof(StandardSubroutine<Scp079Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
@@ -87,9 +88,9 @@ namespace Exiled.Events.Patches.Events.Scp079
                     new(OpCodes.Stfld, Field(typeof(Scp079CurrentCameraSync), nameof(Scp079CurrentCameraSync._switchTarget))),
                 });
 
-            // return as the same way than NW does
-            offset = -1;
-            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_S && (sbyte)x.operand == (sbyte)Scp079HudTranslation.SignalLost) + offset;
+            // return as the same way as NW does
+            offset = 2;
+            index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(Scp079ChangingCameraEventArgs), nameof(Scp079ChangingCameraEventArgs.IsAllowed)))) + offset;
             newInstructions[index].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
