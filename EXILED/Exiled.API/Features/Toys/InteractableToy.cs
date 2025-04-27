@@ -36,8 +36,8 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public ColliderShape Shape
         {
-            get => Base.Shape;
-            set => Base.Shape = value;
+            get => Base.NetworkShape;
+            set => Base.NetworkShape = value;
         }
 
         /// <summary>
