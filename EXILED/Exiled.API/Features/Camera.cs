@@ -134,6 +134,11 @@ namespace Exiled.API.Features
             ["WARHEAD TOP ELEVATORS"] = CameraType.HczWarheadTopElevators,
             ["WARHEAD CONNECTOR"] = CameraType.HczWarheadConnector,
             ["WARHEAD PORT ELEVATOR"] = CameraType.HczWarheadPortElevator,
+            ["HCZ SCP-127 LAB"] = CameraType.HczScp127Lab,
+            ["HCZ SCP-127 CONTAINMENT"] = CameraType.HczScp127Containment,
+            ["HCZ SERVERS UPPER STORAGE"] = CameraType.HczServersUpperStorage,
+            ["HCZ LOWER SERVER STORAGE"] = CameraType.HczLowerServerStorage,
+            ["HCZ SERVERS STAIRCASE"] = CameraType.HczServerStaircase,
 
             // CustomCamera
             ["EZ ARM CAMERA TOY"] = CameraType.EzArmCameraToy,
@@ -154,10 +159,6 @@ namespace Exiled.API.Features
             Base = camera079;
             Camera079ToCamera.Add(camera079, this);
             Type = GetCameraType();
-#if DEBUG
-            if (Type is CameraType.Unknown)
-                Log.Error($"[CAMERATYPE UNKNOWN] {this} BASE = {Base}");
-#endif
         }
 
         /// <summary>
