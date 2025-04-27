@@ -182,6 +182,7 @@ namespace Exiled.API.Extensions
             ItemType.GunCom45 => FirearmType.Com45,
             ItemType.GunFRMG0 => FirearmType.FRMG0,
             ItemType.ParticleDisruptor => FirearmType.ParticleDisruptor,
+            ItemType.GunSCP127 => FirearmType.Scp127,
             _ => FirearmType.None,
         };
 
@@ -220,6 +221,7 @@ namespace Exiled.API.Extensions
             FirearmType.Com45 => ItemType.GunCom45,
             FirearmType.FRMG0 => ItemType.GunFRMG0,
             FirearmType.ParticleDisruptor => ItemType.ParticleDisruptor,
+            FirearmType.Scp127 => ItemType.GunSCP127,
             _ => ItemType.None,
         };
 
