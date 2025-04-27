@@ -14,7 +14,6 @@ namespace Exiled.Events.Patches.Events.Player
     using API.Features.Pools;
     using Attributes;
     using EventArgs.Player;
-    using Handlers;
     using HarmonyLib;
     using Interactables.Interobjects.DoorUtils;
     using LabApi.Events.Arguments.PlayerEvents;
@@ -26,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="DoorVariant.ServerInteract(ReferenceHub, byte)" />.
     /// Adds the <see cref="Handlers.Player.InteractingDoor" /> event.
     /// </summary>
-    [EventPatch(typeof(Player), nameof(Player.InteractingDoor))]
+    [EventPatch(typeof(Handlers.Player), nameof(Player.InteractingDoor))]
     [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), typeof(ReferenceHub), typeof(byte))]
     internal static class InteractingDoor
     {
@@ -101,7 +100,7 @@ namespace Exiled.Events.Patches.Events.Player
                     // canOpen
                     new(OpCodes.Ldloc_0),
 
-                    // labEvent = PlayerInteractingDoorEventArgs(ReferenceHub, DoorVariant, bool)
+                    // labEvent = new PlayerInteractingDoorEventArgs(ReferenceHub, DoorVariant, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlayerInteractingDoorEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -122,7 +121,7 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             offset = -3;
-            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingDoorEventArgs))[0]) + offset;
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingDoorEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -171,7 +170,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// <summary>
     /// Patches <see cref="DoorVariant.TryResolveLock" />.
     /// </summary>
-    [EventPatch(typeof(Player), nameof(Player.InteractingDoor))]
+    [EventPatch(typeof(Handlers.Player), nameof(Player.InteractingDoor))]
     [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.TryResolveLock))]
 #pragma warning disable SA1402
     internal static class ChangeNWLogic
