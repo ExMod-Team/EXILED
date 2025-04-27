@@ -87,10 +87,11 @@ namespace Exiled.Events.Patches.Events.Server
             });
 
             // Get the whole leadingteam logic
-            offset = -20;
-            index = newInstructions.FindIndex(x => x.StoresField(Field(PrivateType, LeadingTeam))) + offset;
-            int offset2 = -1;
-            int index2 = newInstructions.FindIndex(x => x.LoadsField(Field(PrivateType, LeadingTeam))) + offset2;
+            offset = 2;
+            index = newInstructions.FindLastIndex(x => x.LoadsField(Field(typeof(RoundSummary), nameof(RoundSummary.IsRoundEnded)))) + offset;
+            int offset2 = -2;
+            int index2 = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.RoundEndingEventArgs))[0]) + offset2;
+
             List<CodeInstruction> leadingTeamLogic = newInstructions.GetRange(index, index2 - index);
             List<Label> moveLabel = newInstructions[index2].ExtractLabels();
             newInstructions.RemoveRange(index, index2 - index);
@@ -108,7 +109,7 @@ namespace Exiled.Events.Patches.Events.Server
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // this.LeadingTeam
                     new CodeInstruction(OpCodes.Ldarg_0).WithLabels(moveLabel),
@@ -118,8 +119,8 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(PrivateType, NewList)),
 
-                    // this._roundEnded
-                    new(OpCodes.Ldarg_0),
+                    // roundSummary.IsRoundEnded
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldfld, Field(typeof(RoundSummary), nameof(RoundSummary.IsRoundEnded))),
 
                     // EndingRoundEventArgs evEndingRound = new(LeadingTeam, RoundSummary.SumInfo_ClassList, bool);
@@ -131,7 +132,7 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Stloc_S, evEndingRound.LocalIndex),
 
                     // this.IsRoundEnded = ev.IsAllowed
-                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldloc_S, evEndingRound.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EndingRoundEventArgs), nameof(EndingRoundEventArgs.IsAllowed))),
                     new(OpCodes.Stfld, Field(typeof(RoundSummary), nameof(RoundSummary.IsRoundEnded))),
