@@ -262,11 +262,11 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <summary>
         /// Registers all settings from the specified collection to player.
         /// </summary>
-        /// <param name="settings">A collection of settings to register.</param>
         /// <param name="player">A player that will receive settings.</param>
+        /// <param name="settings">A collection of settings to register.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully registered.</returns>
         /// <remarks>This method is used to sync new settings with players.</remarks>
-        public static IEnumerable<SettingBase> Register(IEnumerable<SettingBase> settings, Player player)
+        public static IEnumerable<SettingBase> Register(Player player, IEnumerable<SettingBase> settings)
         {
             IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
 
@@ -319,7 +319,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="player">Determines which player will receive this update.</param>
         /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
-        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(IEnumerable{SettingBase},Player)"/> provides an opportunity to update synced settings.</remarks>
+        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(Player,IEnumerable{SettingBase})"/> provides an opportunity to update synced settings.</remarks>
         public static IEnumerable<SettingBase> Unregister(Player player, IEnumerable<SettingBase> settings = null)
         {
             List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
