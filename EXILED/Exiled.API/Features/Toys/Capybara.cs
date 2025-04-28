@@ -21,7 +21,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="speakerToy">The <see cref="CapybaraToy"/> of the toy.</param>
         internal Capybara(CapybaraToy speakerToy)
-            : base(speakerToy, AdminToyType.Speaker) => Base = speakerToy;
+            : base(speakerToy, AdminToyType.Speaker) => Base = speakerToy;//
 
         /// <summary>
         /// Gets the prefab.
