@@ -69,7 +69,7 @@ namespace Exiled.Loader
             name != Assembly.GetExecutingAssembly().GetName().Name
             select new ExiledLib(a);
 
-        private string Folder => File.Exists($"{LabApi.Loader.Features.Paths.PathManager.Plugins}/Exiled.Loader.dll") ? "global" : Server.Port.ToString();
+        private string Folder => File.Exists($"{LabApi.Loader.Features.Paths.PathManager.Plugins.FullName}/Exiled.Loader.dll") ? "global" : Server.Port.ToString();
 
         private string InstallerName
         {
