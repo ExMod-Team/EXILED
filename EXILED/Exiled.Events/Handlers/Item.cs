@@ -59,6 +59,16 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingMicroHIDPickupStateEventArgs> ChangingMicroHIDPickupState { get; set; } = new();
 
         /// <summary>
+        /// Invoked before item inspection is started.
+        /// </summary>
+        public static Event<InspectingItemEventArgs> InspectingItem { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after item inspection is started.
+        /// </summary>
+        public static Event<InspectedItemEventArgs> InspectedItem { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="ItemType.ParticleDisruptor"/> firing while on the ground.
         /// <remarks>The client will still see all effects, like sounds and shoot.</remarks>
         /// </summary>
@@ -118,5 +128,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingMicroHIDPickupStateEventArgs"/> instance.</param>
         public static void OnChangingMicroHIDPickupState(ChangingMicroHIDPickupStateEventArgs ev) => ChangingMicroHIDPickupState.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before item inspection is started.
+        /// </summary>
+        /// <param name="ev">The <see cref="InspectingItemEventArgs"/> instance.</param>
+        public static void OnInspectingItem(InspectingItemEventArgs ev) => InspectingItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before item inspection is started.
+        /// </summary>
+        /// <param name="ev">The <see cref="InspectedItemEventArgs"/> instance.</param>
+        public static void OnInspectedItem(InspectedItemEventArgs ev) => InspectedItem.InvokeSafely(ev);
     }
 }
