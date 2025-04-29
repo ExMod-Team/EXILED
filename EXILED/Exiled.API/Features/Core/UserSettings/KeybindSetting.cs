@@ -28,8 +28,24 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+        [Obsolete("Use the constructor without the Header instead.")]
+        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
             : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, hintDescription), header, onChanged)
+        {
+            Base = (SSKeybindSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeybindSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="suggested"><inheritdoc cref="KeyCode"/></param>
+        /// <param name="preventInteractionOnGUI"><inheritdoc cref="PreventInteractionOnGUI"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, string hintDescription = "", Action<Player, SettingBase> onChanged = null)
+            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, hintDescription), onChanged)
         {
             Base = (SSKeybindSetting)base.Base;
         }

@@ -97,8 +97,12 @@ namespace Exiled.Events.Handlers.Internal
         {
             RoleAssigner.CheckLateJoin(ev.Player.ReferenceHub, ClientInstanceMode.ReadyClient);
 
+#pragma warning disable CS0618 // Type or member is obsolete
             if (SettingBase.SyncOnJoin != null && SettingBase.SyncOnJoin(ev.Player))
                 SettingBase.SendToPlayer(ev.Player);
+            else if (SettingBase.SyncOnJoin == null)
+                SettingBase.SendToPlayer(ev.Player);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             // TODO: Remove if this has been fixed for https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/52
             foreach (Room room in Room.List.Where(current => current.AreLightsOff))

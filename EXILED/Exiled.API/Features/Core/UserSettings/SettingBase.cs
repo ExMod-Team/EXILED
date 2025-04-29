@@ -32,16 +32,34 @@ namespace Exiled.API.Features.Core.UserSettings
         internal static readonly List<SettingBase> Settings = new();
 
         /// <summary>
+        /// A collection that contains all groups of settings that will be sent to clients.
+        /// </summary>
+        internal static readonly List<SettingGroup> Groups = new() { SettingGroup.ObsoleteGroup };
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SettingBase"/> class.
         /// </summary>
         /// <param name="settingBase">A <see cref="ServerSpecificSettingBase"/> instance.</param>
         /// <param name="header"><inheritdoc cref="Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="OnChanged"/></param>
+        [Obsolete("Use the constructor without the Header instead.")]
         internal SettingBase(ServerSpecificSettingBase settingBase, HeaderSetting header, Action<Player, SettingBase> onChanged)
         {
             Base = settingBase;
 
             Header = header;
+            OnChanged = onChanged;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SettingBase"/> class.
+        /// </summary>
+        /// <param name="settingBase">A <see cref="ServerSpecificSettingBase"/> instance.</param>
+        /// <param name="onChanged"><inheritdoc cref="OnChanged"/></param>
+        internal SettingBase(ServerSpecificSettingBase settingBase, Action<Player, SettingBase> onChanged)
+        {
+            Base = settingBase;
+
             OnChanged = onChanged;
         }
 
@@ -55,7 +73,9 @@ namespace Exiled.API.Features.Core.UserSettings
 
             if (OriginalDefinition != null)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 Header = OriginalDefinition.Header;
+#pragma warning restore CS0618 // Type or member is obsolete
                 OnChanged = OriginalDefinition.OnChanged;
                 Label = OriginalDefinition.Label;
                 HintDescription = OriginalDefinition.HintDescription;
@@ -74,8 +94,14 @@ namespace Exiled.API.Features.Core.UserSettings
         public static IReadOnlyCollection<SettingBase> List => Settings;
 
         /// <summary>
+        /// Gets the list of setting groups that are registered.
+        /// </summary>
+        public static IReadOnlyCollection<SettingGroup> AllGroups => Groups;
+
+        /// <summary>
         /// Gets or sets the predicate for syncing this setting when a player joins.
         /// </summary>
+        [Obsolete("Use SettingGroup::Viewers instead of SettingBase.SyncOnJoin")]
         public static Predicate<Player> SyncOnJoin { get; set; }
 
         /// <inheritdoc/>
@@ -123,6 +149,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// Gets or sets the header of this setting.
         /// </summary>
         /// <remarks>Can be <c>null</c>.</remarks>
+        [Obsolete("Use SettingGroup instead")]
         public HeaderSetting Header { get; set; }
 
         /// <summary>
@@ -197,7 +224,13 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <summary>
         /// Syncs setting with all players.
         /// </summary>
-        public static void SendToAll() => ServerSpecificSettingsSync.SendToAll();
+        public static void SendToAll()
+        {
+            foreach (Player player in Player.List)
+            {
+                SendToPlayer(player);
+            }
+        }
 
         /// <summary>
         /// Syncs setting with all players according to the specified predicate.
@@ -216,7 +249,11 @@ namespace Exiled.API.Features.Core.UserSettings
         /// Syncs setting with the specified target.
         /// </summary>
         /// <param name="player">Target player.</param>
-        public static void SendToPlayer(Player player) => ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub);
+        public static void SendToPlayer(Player player)
+        {
+            ServerSpecificSettingBase[] sorted = Groups.OrderByDescending(group => group.Priority).SelectMany(group => group.GetViewableSettingsOrdered(player)).Select(setting => setting.Base).ToArray();
+            ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub, sorted);
+        }
 
         /// <summary>
         /// Syncs specific settings with the specified target.
@@ -233,6 +270,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="predicate">A requirement to meet when sending settings to players.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully registered.</returns>
         /// <remarks>This method is used to sync new settings with players.</remarks>
+        [Obsolete("Use RegisterGroups instead")]
         public static IEnumerable<SettingBase> Register(IEnumerable<SettingBase> settings, Func<Player, bool> predicate = null)
         {
             IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
@@ -250,6 +288,7 @@ namespace Exiled.API.Features.Core.UserSettings
 
             ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(result.Select(s => s.Base)).ToArray();
             Settings.AddRange(result);
+            SettingGroup.ObsoleteGroup.Settings = SettingGroup.ObsoleteGroup.Settings.Concat(result);
 
             if (predicate == null)
                 SendToAll();
@@ -260,12 +299,46 @@ namespace Exiled.API.Features.Core.UserSettings
         }
 
         /// <summary>
+        /// Registers all settings from the specified collection.
+        /// </summary>
+        /// <param name="settings">A collection of groups of settings to register.</param>
+        /// <param name="predicate">A requirement to meet when sending settings to players after registering all groups.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully registered.</returns>
+        /// <remarks>This method is used to sync new settings with players.</remarks>
+        public static IEnumerable<SettingBase> RegisterGroups(IEnumerable<SettingGroup> settings, Predicate<Player> predicate = null)
+        {
+            settings = settings.Where(group => group != null).ToArray();
+            SettingBase[] sorted = settings.OrderByDescending(group => group.Priority).SelectMany(group => group.GetAllSettings()).ToArray();
+            ServerSpecificSettingBase[] sent = sorted.Select(setting => setting.Base).ToArray();
+            ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(sent).ToArray();
+            Settings.AddRange(sorted);
+            Groups.AddRange(settings);
+            if (predicate == null)
+            {
+                SendToAll();
+            }
+            else
+            {
+                foreach (Player player in Player.List)
+                {
+                    if (predicate(player))
+                    {
+                        SendToPlayer(player);
+                    }
+                }
+            }
+
+            return sorted;
+        }
+
+        /// <summary>
         /// Registers all settings from the specified collection to player.
         /// </summary>
         /// <param name="player">A player that will receive settings.</param>
         /// <param name="settings">A collection of settings to register.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully registered.</returns>
         /// <remarks>This method is used to sync new settings with players.</remarks>
+        [Obsolete("Use RegisterGroups instead")]
         public static IEnumerable<SettingBase> Register(Player player, IEnumerable<SettingBase> settings)
         {
             IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
@@ -283,6 +356,7 @@ namespace Exiled.API.Features.Core.UserSettings
 
             ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(result.Select(s => s.Base)).ToArray();
             Settings.AddRange(result);
+            SettingGroup.ObsoleteGroup.Settings = SettingGroup.ObsoleteGroup.Settings.Concat(result);
 
             SendToPlayer(player);
 
@@ -296,10 +370,42 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
         /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(IEnumerable{SettingBase},Func{Player,bool})"/> provides an opportunity to update synced settings.</remarks>
+        [Obsolete("Use SettingGroups instead")]
         public static IEnumerable<SettingBase> Unregister(Func<Player, bool> predicate = null, IEnumerable<SettingBase> settings = null)
         {
             List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
             List<SettingBase> list2 = new((settings ?? Settings).Where(setting => list.Remove(setting.Base)));
+            SettingGroup.ObsoleteGroup.Settings = SettingGroup.ObsoleteGroup.Settings.Except(settings ?? Settings);
+
+            ServerSpecificSettingsSync.DefinedSettings = list.ToArray();
+
+            if (predicate == null)
+                SendToAll();
+            else
+                SendToAll(predicate);
+
+            ListPool<ServerSpecificSettingBase>.Pool.Return(list);
+
+            return list2;
+        }
+
+        /// <summary>
+        /// Removes settings from players.
+        /// </summary>
+        /// <param name="predicate">Determines which players will receive this update.</param>
+        /// <param name="groups">Groups to remove. If <c>null</c>, all settings will be removed.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
+        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(System.Collections.Generic.IEnumerable{Exiled.API.Features.Core.UserSettings.SettingBase},System.Func{Exiled.API.Features.Player,bool})"/> provides an opportunity to update synced settings.</remarks>
+        public static IEnumerable<SettingBase> UnregisterGroups(Func<Player, bool> predicate = null, IEnumerable<SettingGroup> groups = null)
+        {
+            List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
+            SettingGroup[] settingGroups = groups?.ToArray();
+            List<SettingBase> list2 = new((settingGroups?.SelectMany(group => group.Settings) ?? Settings).Where(setting => list.Remove(setting.Base)));
+
+            if (groups == null)
+                Groups.Clear();
+            else
+                Groups.RemoveAll(settingGroups.Contains);
 
             ServerSpecificSettingsSync.DefinedSettings = list.ToArray();
 
@@ -319,11 +425,13 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="player">Determines which player will receive this update.</param>
         /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
-        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(Player,IEnumerable{SettingBase})"/> provides an opportunity to update synced settings.</remarks>
+        /// /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(Player,IEnumerable{SettingBase})"/> provides an opportunity to update synced settings.</remarks>
+        [Obsolete("Use SettingGroups instead")]
         public static IEnumerable<SettingBase> Unregister(Player player, IEnumerable<SettingBase> settings = null)
         {
             List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
             List<SettingBase> list2 = new((settings ?? Settings).Where(setting => list.Remove(setting.Base)));
+            SettingGroup.ObsoleteGroup.Settings = SettingGroup.ObsoleteGroup.Settings.Except(settings ?? Settings);
 
             ServerSpecificSettingsSync.DefinedSettings = list.ToArray();
 
@@ -340,7 +448,9 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <returns>A string in human-readable format.</returns>
         public override string ToString()
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             return $"{Id} ({Label}) [{HintDescription}] {{{ResponseMode}}} ^{Header}^";
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         /// <summary>

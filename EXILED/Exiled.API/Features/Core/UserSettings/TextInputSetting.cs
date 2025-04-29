@@ -28,15 +28,37 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        [Obsolete("Use the constructor without the Header instead.")]
+        public TextInputSetting(
+            int id,
+            string label,
+            SSTextArea.FoldoutMode foldoutMode,
+            TextAlignmentOptions alignment,
+            string hintDescription,
+            HeaderSetting header,
+            Action<Player, SettingBase> onChanged)
+            : base(new SSTextArea(id, label, foldoutMode, hintDescription, alignment), header, onChanged)
+        {
+            Base = (SSTextArea)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TextInputSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="foldoutMode"><inheritdoc cref="FoldoutMode"/></param>
+        /// <param name="alignment"><inheritdoc cref="Alignment"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
         public TextInputSetting(
             int id,
             string label,
             SSTextArea.FoldoutMode foldoutMode = SSTextArea.FoldoutMode.NotCollapsable,
             TextAlignmentOptions alignment = TextAlignmentOptions.TopLeft,
             string hintDescription = null,
-            HeaderSetting header = null,
             Action<Player, SettingBase> onChanged = null)
-            : base(new SSTextArea(id, label, foldoutMode, hintDescription, alignment), header, onChanged)
+            : base(new SSTextArea(id, label, foldoutMode, hintDescription, alignment), onChanged)
         {
             Base = (SSTextArea)base.Base;
         }
