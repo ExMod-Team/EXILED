@@ -52,7 +52,7 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Gets or sets the weapon damage.
         /// </summary>
-        public virtual float Damage { get; set; } = float.NaN;
+        public virtual float Damage { get; set; } = -1;
 
         /// <summary>
         /// Gets or sets a value indicating how big of a clip the weapon will have.
