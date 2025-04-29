@@ -382,19 +382,9 @@ namespace Exiled.API.Features
         /// <param name="firearmType">The type of firearm to play the sound of.</param>
         /// <param name="maxDistance">The maximum distance the sound can be heard from.</param>
         /// <param name="audioClipId">The audio clip ID to play.</param>
+        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
         public static void PlayGunSound(Vector3 position, ItemType firearmType, byte maxDistance = 45, byte audioClipId = 0)
         {
-            // TODO: Not finish
-            /*
-            GunAudioMessage msg = new()
-            {
-                Weapon = firearmType,
-                AudioClipId = audioClipId,
-                MaxDistance = maxDistance,
-                ShooterHub = ReferenceHub._hostHub,
-                ShooterPosition = new RelativePosition(position),
-            };
-            msg.SendToAuthenticated();*/
         }
 
         /// <summary>

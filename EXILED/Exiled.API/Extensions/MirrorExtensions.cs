@@ -171,25 +171,24 @@ namespace Exiled.API.Extensions
         /// <param name="itemType">Weapon' sound to play.</param>
         /// <param name="volume">Sound's volume to set.</param>
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
-        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, ItemType, float, int, bool) overload instead.")]
+        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
-        {
-        }
+            => PlayGunSound(player, position, itemType.GetFirearmType(), volume, audioClipId);
 
         /// <summary>
         /// Plays a gun sound that only the <paramref name="player"/> can hear.
         /// </summary>
         /// <param name="player">Target to play.</param>
         /// <param name="position">Position to play on.</param>
-        /// <param name="itemType">Weapon's sound to play.</param>
+        /// <param name="firearmType">Weapon's sound to play.</param>
         /// <param name="pitch">Speed of sound.</param>
         /// <param name="clipIndex">Index of clip.</param>
-        public static void PlayGunSound(this Player player, Vector3 position, FirearmType itemType, float pitch = 1, int clipIndex = 0)
+        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0)
         {
-            if (itemType is FirearmType.ParticleDisruptor or FirearmType.None)
+            if (firearmType is FirearmType.ParticleDisruptor or FirearmType.None)
                 return;
 
-            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[itemType];
+            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[firearmType];
 
             if (firearm == null)
                 return;
