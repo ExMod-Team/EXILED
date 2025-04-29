@@ -17,6 +17,7 @@ namespace Exiled.CustomRoles.API.Features
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Roles;
     using Exiled.API.Features.Spawn;
@@ -541,7 +542,14 @@ namespace Exiled.CustomRoles.API.Features
                     foreach (string itemName in Inventory)
                     {
                         Log.Debug($"{Name}: Adding {itemName} to inventory.");
-                        TryAddItem(player, itemName);
+                        if (TryAddItem(player, itemName) && CustomItem.TryGet(itemName, out CustomItem? customItem) && customItem is CustomWeapon customWeapon)
+                        {
+                            if (player.CurrentItem is Firearm firearm && !customWeapon.Attachments.IsEmpty())
+                            {
+                                firearm.AddAttachment(customWeapon.Attachments);
+                                Log.Debug($"{Name}: Applied attachments to {itemName}.");
+                            }
+                        }
                     }
 
                     if (Ammo.Count > 0)
