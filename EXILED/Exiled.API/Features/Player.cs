@@ -344,6 +344,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the player's current aspect ratio type.
+        /// </summary>
+        public AspectRatioType AspectRatio => ReferenceHub.aspectRatioSync.AspectRatio.GetAspectRatioLabel();
+
+        /// <summary>
         /// Gets or sets the player's custom player info string. This string is displayed along with the player's <see cref="InfoArea"/>.
         /// </summary>
         public string CustomInfo
