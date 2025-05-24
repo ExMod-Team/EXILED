@@ -59,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ldc_I4, 1),
                 new(OpCodes.Bne_Un_S, retLabel),
 
-                // ReferanceHub
+                // hub
                 new(OpCodes.Ldloc, hub.LocalIndex),
 
                 // OldRatio
