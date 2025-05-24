@@ -690,7 +690,7 @@ namespace Exiled.Events.Handlers
         public static void OnCancelledItemUse(CancelledItemUseEventArgs ev) => CancelledItemUse.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before a <see cref="API.Features.Player"/>'s aspect ratio changes.
+        /// Called after a <see cref="API.Features.Player"/>'s aspect ratio changes.
         /// </summary>
         /// <param name="ev">The <see cref="ChangedRatioEventArgs"/> instance.</param>
         public static void OnChangedRatio(ChangedRatioEventArgs ev) => ChangedRatio.InvokeSafely(ev);
