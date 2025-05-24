@@ -31,8 +31,8 @@ namespace Exiled.Events.EventArgs.Player
         public ChangedRatioEventArgs(ReferenceHub player, float oldratio, float newratio)
         {
             Player = Player.Get(player);
-            OldRatio = GetAspectRatioLabel(oldratio);
-            NewRatio = GetAspectRatioLabel(newratio);
+            OldRatio = oldratio.GetAspectRatioLabel();
+            NewRatio = newratio.GetAspectRatioLabel();
         }
 
         /// <summary>
