@@ -7,9 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-    using System.Collections.Generic;
-
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
@@ -52,34 +49,5 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the players new ratio.
         /// </summary>
         public AspectRatioType NewRatio { get; }
-
-        private static AspectRatioType GetAspectRatioLabel(float ratio)
-        {
-            Dictionary<AspectRatioType, float> referencevalues = new()
-            {
-            { AspectRatioType.Ratio3_2, 3f / 2f },
-            { AspectRatioType.Ratio4_3, 4f / 3f },
-            { AspectRatioType.Ratio5_4, 5f / 4f },
-            { AspectRatioType.Ratio16_9, 16f / 9f },
-            { AspectRatioType.Ratio16_10, 16f / 10f },
-            { AspectRatioType.Ratio21_9, 21f / 9f },
-            { AspectRatioType.Ratio32_9, 32f / 9f },
-            };
-
-            float closestDiff = float.MaxValue;
-            AspectRatioType closestRatio = AspectRatioType.Unknown;
-
-            foreach (KeyValuePair<AspectRatioType, float> kvp in referencevalues)
-            {
-                float diff = Math.Abs(ratio - kvp.Value);
-                if (diff < closestDiff)
-                {
-                    closestDiff = diff;
-                    closestRatio = kvp.Key;
-                }
-            }
-
-            return closestRatio;
-        }
     }
 }
