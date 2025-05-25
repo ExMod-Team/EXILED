@@ -23,10 +23,10 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">The player who is changed ratio.
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="oldratio">The time in seconds before the Sense ability can be used again.
+        /// <param name="oldratio">Old aspect ratio of the player.
         /// <inheritdoc cref="float" />
         /// </param>
-        /// <param name="newratio">Specifies whether the Sense effect is allowed to finish.
+        /// <param name="newratio">New aspect ratio of the player.
         /// <inheritdoc cref="float" />
         /// </param>
         public ChangedRatioEventArgs(ReferenceHub player, float oldratio, float newratio)
