@@ -27,6 +27,7 @@ namespace Exiled.Events.Patches.Events.Item
     /// </summary>
     [EventPatch(typeof(Item), nameof(Item.Swinging))]
     [EventPatch(typeof(Item), nameof(Item.ChargingJailbird))]
+    [EventPatch(typeof(Item), nameof(Item.JailbirdChargeComplete))]
     [HarmonyPatch(typeof(JailbirdItem), nameof(JailbirdItem.ServerProcessCmd))]
     internal static class JailbirdPatch
     {
@@ -83,11 +84,24 @@ namespace Exiled.Events.Patches.Events.Item
                     return ev.IsAllowed;
                 }
 
-                case JailbirdMessageType.ChargeStarted:
+                case JailbirdMessageType.ChargeLoadTriggered:
                 {
                     ChargingJailbirdEventArgs ev = new(instance.Owner, instance);
 
                     Item.OnChargingJailbird(ev);
+                    if (ev.IsAllowed)
+                        return true;
+
+                    ev.Player.RemoveHeldItem(destroy: false);
+                    ev.Player.CurrentItem = ev.Item;
+                    return false;
+                }
+
+                case JailbirdMessageType.ChargeStarted:
+                {
+                    JailbirdChargeCompleteEventArgs ev = new(instance.Owner, instance);
+
+                    Item.OnJailbirdChargeComplete(ev);
                     if (ev.IsAllowed)
                         return true;
 

@@ -44,9 +44,14 @@ namespace Exiled.Events.Handlers
         public static Event<SwingingEventArgs> Swinging { get; set; } = new();
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Items.Jailbird"/> is charged.
+        /// Invoked when a <see cref="API.Features.Items.Jailbird"/> starts charging.
         /// </summary>
         public static Event<ChargingJailbirdEventArgs> ChargingJailbird { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a <see cref="API.Features.Items.Jailbird"/> finishes charging.
+        /// </summary>
+        public static Event<JailbirdChargeCompleteEventArgs> JailbirdChargeComplete { get; set; } = new();
 
         /// <summary>
         /// Invoked before a radio pickup is draining battery.
@@ -102,10 +107,16 @@ namespace Exiled.Events.Handlers
         public static void OnSwinging(SwingingEventArgs ev) => Swinging.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before a <see cref="API.Features.Items.Jailbird"/> is charged.
+        /// Called before a <see cref="API.Features.Items.Jailbird"/> that is being charged.
         /// </summary>
         /// <param name="ev">The <see cref="ChargingJailbirdEventArgs"/> instance.</param>
         public static void OnChargingJailbird(ChargingJailbirdEventArgs ev) => ChargingJailbird.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Items.Jailbird"/> finish charging.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChargingJailbirdEventArgs"/> instance.</param>
+        public static void OnJailbirdChargeComplete(JailbirdChargeCompleteEventArgs ev) => JailbirdChargeComplete.InvokeSafely(ev);
 
         /// <summary>
         /// Called before radio pickup is draining battery.
