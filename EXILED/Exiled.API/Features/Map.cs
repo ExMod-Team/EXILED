@@ -117,13 +117,12 @@ namespace Exiled.API.Features
         public static void StaffMessage(string message, Player player = null)
         {
             player ??= Server.Host;
-
             foreach (Player target in Player.List)
             {
                 if (!CommandProcessor.CheckPermissions(target.Sender, PlayerPermissions.AdminChat))
                     continue;
 
-                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+                target.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
             }
         }
 
