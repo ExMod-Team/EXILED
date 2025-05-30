@@ -47,5 +47,10 @@ namespace Exiled.API.Enums
         /// Camera Object toy.
         /// </summary>
         CameraToy,
+
+        /// <summary>
+        /// Text toy.
+        /// </summary>
+        TextToy,
     }
 }

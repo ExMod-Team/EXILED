@@ -75,6 +75,7 @@ namespace Exiled.API.Extensions
             { EffectType.SeveredEyes, typeof(SeveredEyes) },
             { EffectType.PitDeath, typeof(PitDeath) },
             { EffectType.Blurred, typeof(Blurred) },
+            { EffectType.Scp1344Detected, typeof(Scp1344Detected) },
             #pragma warning disable CS0618
             { EffectType.Marshmallow, typeof(MarshmallowEffect) },
             { EffectType.BecomingFlamingo, typeof(BecomingFlamingo) },

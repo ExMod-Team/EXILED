@@ -43,7 +43,7 @@ Trying to find release..
 Release found!
 PRE: True | ID: 87710626 | TAG: 6.0.0-beta.18
 Asset found!
-ID: 90263995 | NAME: Exiled.tar.gz | SIZE: 1027928 | URL: https://api.github.com/repos/ExMod-Team/Exiled-EA/releases/assets/90263995 | DownloadURL: https://github.com/ExMod-Team/Exiled-EA/releases/download/6.0.0-beta.18/Exiled.tar.gz
+ID: 90263995 | NAME: Exiled.tar.gz | SIZE: 1027928 | URL: https://api.github.com/repos/ExSLMod-Team/Exiled-EA/releases/assets/90263995 | DownloadURL: https://github.com/ExSLMod-Team/Exiled-EA/releases/download/6.0.0-beta.18/Exiled.tar.gz
 Processing 'EXILED/Plugins/dependencies/0Harmony.dll'
 Extracting '0Harmony.dll' into 'YourAppDataPath/EXILED/Plugins/dependencies/0Harmony.dll'...
 Processing 'EXILED/Plugins/dependencies/Exiled.API.dll'
@@ -88,7 +88,7 @@ Trying to find release..
 Release found!
 PRE: False | ID: 87710626 | TAG: 6.0.0-beta.18
 Asset found!
-ID: 90263995 | NAME: Exiled.tar.gz | SIZE: 1027928 | URL: https://api.github.com/repos/ExMod-Team/Exiled-EA/releases/assets/90263995 | DownloadURL: https://github.com/ExMod-Team/Exiled-EA/releases/download/6.0.0-beta.18/Exiled.tar.gz
+ID: 90263995 | NAME: Exiled.tar.gz | SIZE: 1027928 | URL: https://api.github.com/repos/ExSLMod-Team/Exiled-EA/releases/assets/90263995 | DownloadURL: https://github.com/ExSLMod-Team/Exiled-EA/releases/download/6.0.0-beta.18/Exiled.tar.gz
 Processing 'EXILED/Plugins/dependencies/0Harmony.dll'
 Extracting '0Harmony.dll' into '/user/SCP/EXILED/Plugins/dependencies/0Harmony.dll'...
 Processing 'EXILED/Plugins/dependencies/Exiled.API.dll'
