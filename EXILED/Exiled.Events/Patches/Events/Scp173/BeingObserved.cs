@@ -42,8 +42,6 @@ namespace Exiled.Events.Patches.Events.Scp173
 
             int offset = 4;
             int index = newInstructions.FindIndex(x =>x.Calls(PropertyGetter(typeof(VisionInformation), nameof(VisionInformation.IsLooking)))) + offset;
-            Console.WriteLine("bahhhh");
-            Log.Info("BNahhhhhhhhhhhhh\n\n\n\n\n\n\n\n\n\n");
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Player.Get(target)
