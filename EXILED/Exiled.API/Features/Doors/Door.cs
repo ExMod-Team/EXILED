@@ -246,6 +246,24 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether all required permissions must be present to open the door.
+        /// </summary>
+        public bool RequireAllPermissions
+        {
+            get => Base.RequiredPermissions.RequireAll;
+            set => Base.RequiredPermissions.RequireAll = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the permissions policy used to determine access to the door.
+        /// </summary>
+        public DoorPermissionsPolicy PermissionsPolicy
+        {
+            get => Base.RequiredPermissions;
+            set => Base.RequiredPermissions = value;
+        }
+
+        /// <summary>
         /// Gets or sets the door's rotation.
         /// </summary>
         public Quaternion Rotation

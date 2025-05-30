@@ -4,7 +4,7 @@ title: Automatic Windows Installation
 
 # Automatic Windows Installation
 
-Download `Exiled.Installer-Win.exe` from [here](https://github.com/ExMod-Team/EXILED/releases).
+Download `Exiled.Installer-Win.exe` from [here](https://github.com/ExSLMod-Team/EXILED/releases).
 
 Move it into your **server directory** and double click the .exe.
 - Make sure the server directory is the one where LocalAdmin.exe is found.
