@@ -17,14 +17,9 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
-    using Exiled.API.Interfaces;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Player;
     using Interactables.Interobjects.DoorUtils;
-
-    using InventorySystem;
-    using InventorySystem.Items;
-    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Keycards;
     using UnityEngine;
 
@@ -60,12 +55,12 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Gets or sets a color of keycard label.
         /// </summary>
-        public virtual Color32? KeycardLabelColor { get; set; } = new Color32(100, 100, 100, 222);
+        public virtual Color32? KeycardLabelColor { get; set; }
 
         /// <summary>
         /// Gets or sets a tint color.
         /// </summary>
-        public virtual Color32? TintColor { get; set; } = new Color32(100, 200, 100, 222);
+        public virtual Color32? TintColor { get; set; }
 
         /// <summary>
         /// Gets or sets the permissions for custom keycard.
@@ -75,13 +70,11 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Gets or sets a color of keycard permissions.
         /// </summary>
-        public virtual Color32? KeycardPermissionsColor { get; set; } = new Color32(100, 100, 200, 222);
+        public virtual Color32? KeycardPermissionsColor { get; set; }
 
         /// <inheritdoc/>
         public override void Give(Player player, Item item, bool displayMessage = true)
         {
-            
-            Log.Info("Wuhhh 11111");
             if (item.Is(out Keycard card))
                 SetupKeycard(card);
             base.Give(player, item, displayMessage);
@@ -91,7 +84,6 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         public override Pickup? Spawn(Vector3 position, Item item, Player? previousOwner = null)
         {
-            Log.Info("Wuhhh 122222");
             if (item.Is(out Keycard card))
                 SetupKeycard(card);
 
@@ -104,48 +96,30 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="keycard">Item instance.</param>
         protected virtual void SetupKeycard(Keycard keycard)
         {
-            Log.Info("waaa");
             if (!keycard.Base.Customizable)
-            {
-                Log.Info("Not Customizable");
                 return;
-            }
-            // InventoryItemLoader.TryGetItem<KeycardItem>(keycard.Base.ItemTypeId, out item);
-            // if (!keycard.Base.TryGetTemplate(keycard.Base.ItemTypeId, out BaseKeycardItem template))
-            // {
-            //     
-            // }
-            //     
+
             DetailBase[] details = keycard.Base.Details;
-            
-            
+
+            NametagDetail? nameDetail = details.OfType<NametagDetail>().FirstOrDefault();
+
+            if (nameDetail != null && !string.IsNullOrEmpty(KeycardName))
+                NametagDetail._customNametag = KeycardName;
+
             CustomItemNameDetail? raNameDetail = details.OfType<CustomItemNameDetail>().FirstOrDefault();
 
             if (raNameDetail != null)
-            {
-                if (string.IsNullOrEmpty(Name))
-                {
-                    Name = string.Empty;
-                }
                 raNameDetail.Name = Name;
-            }
-            
-
-
 
             CustomLabelDetail? labelDetail = details.OfType<CustomLabelDetail>().FirstOrDefault();
 
             if (labelDetail != null)
             {
-                if (string.IsNullOrEmpty(KeycardLabel))
-                {
-                    KeycardLabel = string.Empty;
-                }
-                CustomLabelDetail._customText = KeycardLabel;
+                if (!string.IsNullOrEmpty(KeycardLabel))
+                    CustomLabelDetail._customText = KeycardLabel;
 
-
-                KeycardLabelColor ??= new Color32(100, 200, 200, 222);
-                CustomLabelDetail._customColor = KeycardLabelColor.Value;
+                if (KeycardLabelColor.HasValue)
+                    CustomLabelDetail._customColor = KeycardLabelColor.Value;
             }
 
             CustomPermsDetail? permsDetail = details.OfType<CustomPermsDetail>().FirstOrDefault();
@@ -153,62 +127,15 @@ namespace Exiled.CustomItems.API.Features
             if (permsDetail != null)
             {
                 CustomPermsDetail._customLevels = new((DoorPermissionFlags)Permissions);
-                KeycardPermissionsColor ??= new Color32(200, 100, 200, 222);
                 CustomPermsDetail._customColor = KeycardPermissionsColor;
             }
-            
-            CustomRankDetail? rankDetail = details.OfType<CustomRankDetail>().FirstOrDefault();
-
-            if (rankDetail != null)
-            {
-
-                rankDetail.SetArguments(new ArraySegment<object>(new object[]
-                {
-                    1,
-                }, 0, 1));
-            }
-            
-            // SerialNumberDetail? serialDetail = details.OfType<SerialNumberDetail>().FirstOrDefault();
-            //
-            // if (serialDetail != null)
-            // {
-            //
-            //     serialDetail.SetArguments(new ArraySegment<object>(new object[]
-            //     {
-            //         0
-            //     }, 0, 1));
-            // }
-
 
             CustomTintDetail? tintDetail = details.OfType<CustomTintDetail>().FirstOrDefault();
-            if (tintDetail != null)
+
+            if (tintDetail != null && TintColor.HasValue)
             {
-                TintColor ??= new Color32(100, 200, 100, 200);
                 CustomTintDetail._customColor = TintColor.Value;
             }
-
-            CustomWearDetail? wearDetail = details.OfType<CustomWearDetail>().FirstOrDefault();
-            if (wearDetail != null)
-            {
-                wearDetail.SetArguments(new ArraySegment<object>(
-                    new object[]
-                {
-                    1,
-                }, 0, 1));
-            }
-
-            NametagDetail? nameDetail = details.OfType<NametagDetail>().FirstOrDefault();
-
-            if (nameDetail != null)
-            {
-                if (string.IsNullOrEmpty(KeycardName))
-                {
-                    KeycardName = string.Empty;
-                }
-                NametagDetail._customNametag = KeycardName;
-            }
-
-            
         }
 
         /// <summary>

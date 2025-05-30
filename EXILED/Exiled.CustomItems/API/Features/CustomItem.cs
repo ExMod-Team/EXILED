@@ -643,7 +643,6 @@ namespace Exiled.CustomItems.API.Features
         {
             try
             {
-                Log.Info($"Item base null? {item}, {item?.Base}, {item?.Base.ItemTypeId}");
                 Log.Debug($"{Name}.{nameof(Give)}: Item Serial: {item.Serial} Ammo: {(item is Firearm firearm ? firearm.MagazineAmmo : -1)}");
 
                 player.AddItem(item);
