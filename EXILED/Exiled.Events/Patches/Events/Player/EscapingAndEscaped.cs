@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
             LocalBuilder role = generator.DeclareLocal(typeof(Role));
 
-            ConstructorInfo plugin_api_constructor = typeof(LabApi.Events.Arguments.PlayerEvents.PlayerEscapingEventArgs)
+            ConstructorInfo pluginAPIConstructor = typeof(LabApi.Events.Arguments.PlayerEvents.PlayerEscapingEventArgs)
                 .GetConstructor(new[]
                 {
                     typeof(ReferenceHub),
@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Player
                     typeof(Escape.EscapeScenarioType),
                 });
             int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Is(OpCodes.Newobj, plugin_api_constructor)) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Is(OpCodes.Newobj, pluginAPIConstructor)) + offset;
             newInstructions.InsertRange(
                 index,
                 new[]
