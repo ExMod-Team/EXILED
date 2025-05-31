@@ -82,6 +82,12 @@ namespace Exiled.Events
         public bool CanKeycardThrowAffectDoors { get; set; } = false;
 
         /// <summary>
+        /// Gets or sets a value indicating whether custom escapes are allowed (Default false).
+        /// </summary>
+        [Description("Indicates whether custom escapes are allowed (Default false)")]
+        public bool AllowCustomEscapes { get; set; } = false;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the SCP079 will recontained if there are no SCPs left.
         /// </summary>
         [Description("Indicates whether the SCP079 will recontained if there are no SCPs left.")]

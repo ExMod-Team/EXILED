@@ -43,7 +43,6 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel = generator.DefineLabel();
-            Label continuePluginApiCode = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
             LocalBuilder role = generator.DeclareLocal(typeof(Role));
@@ -80,19 +79,13 @@ namespace Exiled.Events.Patches.Events.Player
                     // Handlers.Player.OnEscaping(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnEscaping))),
 
-                    // if (ev.Defer)
-                    //    continue to normal processing;
-                    // else isAllowed check
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Defer))),
-                    new(OpCodes.Brtrue_S, continuePluginApiCode),
-
                     // if (!ev.IsAllowed)
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, returnLabel),
 
                     // roleTypeId = ev.NewRole
-                    new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(continuePluginApiCode),
+                    new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.NewRole))),
                     new(OpCodes.Stloc_1),
 

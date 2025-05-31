@@ -39,14 +39,8 @@ namespace Exiled.Events.EventArgs.Player
             Player = Player.Get(referenceHub);
             NewRole = newRole;
             EscapeScenario = escapeScenario;
-            IsAllowed = escapeScenario is not EscapeScenario.None and not EscapeScenario.CustomEscape;
-            Defer = false;
+            IsAllowed = (escapeScenario is not EscapeScenario.None and not EscapeScenario.CustomEscape) || Events.Instance.Config.AllowCustomEscapes;
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to defer to PluginAPI answer or only use Exiled answer. True (Plugin API call is allowed (Ignores IsAllowed)), False (Instant return, doesn't call Plugin API).
-        /// </summary>
-        public bool Defer { get; set; }
 
         /// <summary>
         /// Gets the player who's escaping.
