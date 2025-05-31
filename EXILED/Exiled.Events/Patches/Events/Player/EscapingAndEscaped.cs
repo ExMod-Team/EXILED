@@ -11,6 +11,7 @@ namespace Exiled.Events.Patches.Events.Player
 #pragma warning disable IDE0060
 
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Enums;
@@ -19,7 +20,12 @@ namespace Exiled.Events.Patches.Events.Player
     using EventArgs.Player;
     using Exiled.API.Features.Roles;
     using Exiled.Events.Attributes;
+
+    using global::Scp914;
+
     using HarmonyLib;
+
+    using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
 
     using static HarmonyLib.AccessTools;
@@ -37,13 +43,20 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel = generator.DefineLabel();
+            Label continuePluginApiCode = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
             LocalBuilder role = generator.DeclareLocal(typeof(Role));
 
+            ConstructorInfo plugin_api_constructor = typeof(LabApi.Events.Arguments.PlayerEvents.PlayerEscapingEventArgs)
+                .GetConstructor(new[]
+                {
+                    typeof(ReferenceHub),
+                    typeof(RoleTypeId),
+                    typeof(Escape.EscapeScenarioType),
+                });
             int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
-
+            int index = newInstructions.FindIndex(instruction => instruction.Is(OpCodes.Newobj, plugin_api_constructor)) + offset;
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -61,10 +74,17 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Player.OnEscaping(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnEscaping))),
+
+                    // if (ev.Defer)
+                    //    continue to normal processing;
+                    // else isAllowed check
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Defer))),
+                    new(OpCodes.Brtrue_S, continuePluginApiCode),
 
                     // if (!ev.IsAllowed)
                     //    return;
@@ -72,7 +92,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse, returnLabel),
 
                     // roleTypeId = ev.NewRole
-                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(continuePluginApiCode),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.NewRole))),
                     new(OpCodes.Stloc_1),
 
