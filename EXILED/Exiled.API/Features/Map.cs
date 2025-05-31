@@ -116,6 +116,16 @@ namespace Exiled.API.Features
         /// <param name="player">The player to send message as, null will use Server Host.</param>
         public static void StaffMessage(string message, Player player = null)
         {
+            if (player != null)
+            {
+                if (!CommandProcessor.CheckPermissions(player.Sender, PlayerPermissions.AdminChat))
+                {
+                    return;
+                }
+
+                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+            }
+
             player ??= Server.Host;
             foreach (Player target in Player.List)
             {
