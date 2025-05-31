@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Player
                 MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.SERVER_FULL);
             }
 
-            if (__instance != Server.Host.ReferenceHub)
+            if (__instance != Server.Host?.ReferenceHub)
             {
                 CallEvent(__instance, out _);
             }
