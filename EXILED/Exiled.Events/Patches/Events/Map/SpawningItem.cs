@@ -10,22 +10,27 @@ namespace Exiled.Events.Patches.Events.Map
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using API.Features;
     using API.Features.Doors;
-    using API.Features.Pickups;
     using API.Features.Pools;
 
-    using Exiled.Events.Attributes;
-    using Exiled.Events.EventArgs.Map;
-    using Handlers;
+    using Attributes;
+
+    using EventArgs.Map;
+
     using HarmonyLib;
+
     using Interactables.Interobjects.DoorUtils;
+
     using MapGeneration.Distributors;
 
     using static HarmonyLib.AccessTools;
 
+    using Map = Handlers.Map;
+
     /// <summary>
     /// Patches <see cref="ItemDistributor.ServerRegisterPickup" />.
-    /// Adds the <see cref="Map.SpawningItem" /> event.
+    /// Adds the <see cref="Handlers.Map.SpawningItem" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.SpawningItem))]
     [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.ServerRegisterPickup))]
@@ -49,6 +54,8 @@ namespace Exiled.Events.Patches.Events.Map
             int offset = -1;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup)))) + offset;
 
+            Log.Info("\n\nWoooooooooooooooooa\n\n");
+
             newInstructions.InsertRange(
                 index,
                 new[]
@@ -57,24 +64,28 @@ namespace Exiled.Events.Patches.Events.Map
                     new CodeInstruction(OpCodes.Ldc_I4_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Stloc_S, initiallySpawn.LocalIndex),
 
-                    // door = null
+                    // Presume door null for now
                     new(OpCodes.Ldnull),
-                    new(OpCodes.Stloc_S, door.LocalIndex),
+                    new(OpCodes.Stloc, 1),
 
-                    // goto skip
-                    new(OpCodes.Br_S, skip),
+                    // door = some answer from code
+                    new(OpCodes.Ldsfld, Field(typeof(DoorNametagExtension), nameof(DoorNametagExtension.NamedDoors))),
+                    new(OpCodes.Ldarg_2),
+                    new(OpCodes.Ldloca, 1),
+                    new(OpCodes.Callvirt, Method(typeof(Dictionary<string, DoorNametagExtension>), "TryGetValue", new[] { typeof(string), typeof(DoorNametagExtension).MakeByRefType() })),
+                    new(OpCodes.Pop),
 
                     // initiallySpawn = false
-                    new CodeInstruction(OpCodes.Ldc_I4_0).MoveLabelsFrom(newInstructions[lastIndex]),
+                    new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(skip),
                     new(OpCodes.Stloc_S, initiallySpawn.LocalIndex),
 
                     // door = doorNametagExtension.TargetDoor
-                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldfld, Field(typeof(DoorVariantExtension), nameof(DoorVariantExtension.TargetDoor))),
                     new(OpCodes.Stloc_S, door.LocalIndex),
 
                     // ipb
-                    new CodeInstruction(OpCodes.Ldloc_1).WithLabels(skip),
+                    new CodeInstruction(OpCodes.Ldarg_0),
 
                     // initiallySpawn
                     new(OpCodes.Ldloc_S, initiallySpawn.LocalIndex),
