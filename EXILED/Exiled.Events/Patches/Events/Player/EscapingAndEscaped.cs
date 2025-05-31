@@ -73,7 +73,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Player.OnEscaping(ev)
