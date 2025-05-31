@@ -301,8 +301,19 @@ namespace Exiled.API.Features
                     room = FindParentRoom(role.Camera.GameObject);
             }
 
+            Lift lift = Lift.Get(objectInRoom.transform.position);
+            if (lift != null)
+            {
+                Room componentInParent = lift.GameObject.GetComponent<Room>();
+                if (componentInParent == null)
+                {
+                    CreateComponent(lift.GameObject);
+                }
+                room = lift.GameObject.GetComponent<Room>();
+            }
+
             // Finally, try for objects that aren't children, like players and pickups.
-            return room ?? Get(objectInRoom.transform.position) ?? default;
+            return room ?? Get(objectInRoom.transform.position);
         }
 
         /// <summary>
