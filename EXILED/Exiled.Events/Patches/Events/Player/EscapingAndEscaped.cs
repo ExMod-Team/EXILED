@@ -14,19 +14,15 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Enums;
     using API.Features;
     using API.Features.Pools;
     using EventArgs.Player;
     using Exiled.API.Features.Roles;
     using Exiled.Events.Attributes;
 
-    using global::Scp914;
-
     using HarmonyLib;
 
     using PlayerRoles;
-    using PlayerRoles.FirstPersonControl;
 
     using static HarmonyLib.AccessTools;
 
