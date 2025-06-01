@@ -304,12 +304,13 @@ namespace Exiled.API.Features
             Lift lift = Lift.Get(objectInRoom.transform.position);
             if (lift != null)
             {
-                Room componentInParent = lift.GameObject.GetComponent<Room>();
-                if (componentInParent == null)
+                room = lift.GameObject.GetComponent<Room>();
+                if (room == null)
                 {
                     CreateComponent(lift.GameObject);
+                    room = lift.GameObject.GetComponent<Room>();
                 }
-                room = lift.GameObject.GetComponent<Room>();
+                
             }
 
             // Finally, try for objects that aren't children, like players and pickups.
