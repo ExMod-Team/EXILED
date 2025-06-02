@@ -63,29 +63,24 @@
 
         private static bool Prefix(WaveAnnouncementBase __instance)
         {
-            StringBuilder messageToSend = new();
-            WaveSendingSubtitlesEventArgs ev = new(__instance, messageToSend);
+            WaveSendingSubtitlesEventArgs ev = new(__instance);
             Handlers.Map.OnWaveSendingSubtitles(ev);
 
-            if (!ev.IsAllowed)
-            {
-                return false;
-            }
+            return ev.IsAllowed;
 
-            if (ev.runDefaultCode)
-            {
-                return true;
-            }
-
-            List<SubtitlePart> list = new()
-            {
-                new SubtitlePart(SubtitleType.Custom, ev.Words.ToString()),
-            };
-            Timing.CallDelayed(5f, () =>
-            {
-                new SubtitleMessage(list.ToArray()).SendToAuthenticated(0);
-            });
-            return false;
+            // if (ev.runDefaultCode)
+            // {
+            //     return true;
+            // }
+            //
+            // List<SubtitlePart> list = new()
+            // {
+            //     new SubtitlePart(SubtitleType.Custom, ev.Words.ToString()),
+            // };
+            // Timing.CallDelayed(5f, () =>
+            // {
+            //     new SubtitleMessage(list.ToArray()).SendToAuthenticated(0);
+            // });
         }
     }
 }
