@@ -44,6 +44,11 @@ namespace Exiled.Events.Handlers
         /// Invoked before announcing the Chaos entrance.
         /// </summary>
         public static Event<AnnouncingChaosEntranceEventArgs> AnnouncingChaosEntrance { get; set; } = new();
+        
+        /// <summary>
+        /// Invoked before sending subtitles for any wave event.
+        /// </summary>
+        public static Event<WaveSendingSubtitlesEventArgs> WaveSendingSubtitles { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="Scp079Generator"/> has been activated.
@@ -154,6 +159,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="AnnouncingChaosEntranceEventArgs"/> instance.</param>
         public static void OnAnnouncingChaosEntrance(AnnouncingChaosEntranceEventArgs ev) => AnnouncingChaosEntrance.InvokeSafely(ev);
+        
+        /// <summary>
+        /// Called before sending subtitles during a wave event.
+        /// </summary>
+        /// <param name="ev">The <see cref="WaveSendingSubtitlesEventArgs"/> instance.</param>
+        public static void OnWaveSendingSubtitles(WaveSendingSubtitlesEventArgs ev) => WaveSendingSubtitles.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="Scp079Generator"/> has been activated.

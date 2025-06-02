@@ -23,7 +23,7 @@
 
     <ItemGroup>
         <Reference Include="Assembly-CSharp">
-          <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-Publicized.dll</HintPath>
+            <HintPath>$(EXILED_REFERENCES)\Assembly-CSharp-Publicized.dll</HintPath>
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass" HintPath="$(EXILED_REFERENCES)\Assembly-CSharp-firstpass.dll" Private="false" />
         <Reference Include="CommandSystem.Core" HintPath="$(EXILED_REFERENCES)\CommandSystem.Core.dll" Private="false" />
@@ -41,7 +41,18 @@
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-        <PostBuildEvent>if not "$(EXILED_DEV_PLUGINAPI_REFERENCE)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_PLUGINAPI_REFERENCE)\dependencies\" &amp;&amp; if not "$(EXILED_DEV_REFERENCES)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_REFERENCES)\Plugins\dependencies\"</PostBuildEvent>
+        <PostBuildEvent>
+            if not "$(EXILED_DEV_PLUGINAPI_REFERENCE)"=="" (
+            copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_PLUGINAPI_REFERENCE)\dependencies\"
+            )
+            if not "$(EXILED_DEV_REFERENCES)"=="" (
+            copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_REFERENCES)\Plugins\dependencies\"
+            )
+            if not "$(EXILED_DEV_PLUGINAPI_REFERENCE_GLOBAL)"=="" (
+            if not exist "$(EXILED_DEV_PLUGINAPI_REFERENCE_GLOBAL)\dependencies\global" mkdir "$(EXILED_DEV_PLUGINAPI_REFERENCE_GLOBAL)\dependencies\global"
+            copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_PLUGINAPI_REFERENCE_GLOBAL)\dependencies\global\"
+            )
+        </PostBuildEvent>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
         <PostBuildEvent>if [[ ! -z "$EXILED_DEV_REFERENCES" ]]; then cp "$(OutputPath)$(AssemblyName).dll" "$EXILED_DEV_REFERENCES/Plugins/dependencies/"; fi</PostBuildEvent>
