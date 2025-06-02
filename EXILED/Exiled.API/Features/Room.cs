@@ -277,20 +277,26 @@ namespace Exiled.API.Features
         /// <seealso cref="Get(Vector3)"/>
         public static Room FindParentRoom(GameObject objectInRoom)
         {
+            Log.Info("1");
             if (objectInRoom == null)
                 return default;
 
             Room room = null;
 
             const string playerTag = "Player";
+            Log.Info("2");
 
             // First try to find the room owner quickly.
             if (!objectInRoom.CompareTag(playerTag))
             {
+                Log.Info("3");
+
                 room = objectInRoom.GetComponentInParent<Room>();
             }
             else
             {
+                Log.Info("4");
+
                 // Check for SCP-079 if it's a player
                 Player ply = Player.Get(objectInRoom);
 
@@ -300,18 +306,34 @@ namespace Exiled.API.Features
                 if (ply.Role.Is(out Roles.Scp079Role role))
                     room = FindParentRoom(role.Camera.GameObject);
             }
-
+            Log.Info("Pray");
             Lift lift = Lift.Get(objectInRoom.transform.position);
+            Log.Info("Pray 1");
             if (lift != null)
             {
+                Log.Info("Pray 2 ");
                 room = lift.GameObject.GetComponent<Room>();
+                Log.Info("Pray 3");
                 if (room == null)
                 {
-                    CreateComponent(lift.GameObject);
-                    room = lift.GameObject.GetComponent<Room>();
+                    Log.Info($"Pray 4, lift null? {lift == null} or objet null {lift.GameObject == null}");
+                    // lift.GameObject.AddComponent<RoomIdentifier>();
+                    // CreateComponent(lift.GameObject);
+                    
+                    // CreateComponent(lift.GameObject);
+                    lift.GameObject.AddComponent<RoomIdentifier>();
+                    Log.Info("Pray 5");
+                    if (RoomIdentifierToRoom.TryGetValue(lift.GameObject.GetComponent<RoomIdentifier>(), out Room currentRoom))
+                    {
+                        Log.Info($"Pray 6 and what's the room {currentRoom.ToString()}");
+                        return currentRoom;
+                    }
+                    Log.Info("Pray 7");
+                    // room = lift.GameObject.GetComponent<Room>();
                 }
                 
             }
+            Log.Info($"Pray complete - null? = {room != null}");
 
             // Finally, try for objects that aren't children, like players and pickups.
             return room ?? Get(objectInRoom.transform.position);
@@ -436,12 +458,34 @@ namespace Exiled.API.Features
             Zone = Identifier.Zone.GetZone();
 #if DEBUG
             if (Zone is ZoneType.Unspecified)
+            {
                 Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
+            }
 #endif
             Type = FindType(gameObject);
 #if DEBUG
             if (Type is RoomType.Unknown)
+            {
                 Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
+                if (gameObject.name.Contains("ElevatorChamber Gates"))
+                {
+                    //53, 294, -30 - surface 300 > pos > 290
+                    //174, -99, 17 - entrance -80 < pos > -101
+                    //lcz - 100 - lcz  110 > pos > 90
+                    if (gameObject.transform.position.y is > 290 and < 300)
+                    {
+                        Type = RoomType.SurfaceToEntranceElevator;
+                    }
+                    else if (gameObject.transform.position.y is > 90 and < 100)
+                    {
+                        Type = RoomType.EntranceToSurfaceElevator;
+                    }
+                    else if(gameObject.transform.position.y is > -101 and < -80)
+                    {
+                        Type = RoomType.LczToHczElevator;   
+                    }
+                }
+            }
 #endif
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
