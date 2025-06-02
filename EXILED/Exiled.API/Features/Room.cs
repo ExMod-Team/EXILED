@@ -67,7 +67,25 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="ZoneType"/> in which the room is located.
         /// </summary>
-        public ZoneType Zone { get; private set; } = ZoneType.Unspecified;
+        public ZoneType ZoneValue = ZoneType.Unspecified;
+        private bool isLift = false;
+
+        /// <summary>
+        /// Gets the <see cref="ZoneType"/> in which the room is located.
+        /// </summary>
+        public ZoneType Zone
+        {
+            get
+            {
+                if (!isLift)
+                {
+                    return ZoneValue;
+                }
+                LiftLocationIdentifier();
+                return ZoneValue;
+            }
+            private set => ZoneValue = value;
+        }
 
         /// <summary>
         /// Gets the <see cref="MapGeneration.RoomName"/> enum representing this room.
@@ -277,26 +295,20 @@ namespace Exiled.API.Features
         /// <seealso cref="Get(Vector3)"/>
         public static Room FindParentRoom(GameObject objectInRoom)
         {
-            Log.Info("1");
             if (objectInRoom == null)
                 return default;
 
             Room room = null;
 
             const string playerTag = "Player";
-            Log.Info("2");
 
             // First try to find the room owner quickly.
             if (!objectInRoom.CompareTag(playerTag))
             {
-                Log.Info("3");
-
                 room = objectInRoom.GetComponentInParent<Room>();
             }
             else
             {
-                Log.Info("4");
-
                 // Check for SCP-079 if it's a player
                 Player ply = Player.Get(objectInRoom);
 
@@ -306,34 +318,27 @@ namespace Exiled.API.Features
                 if (ply.Role.Is(out Roles.Scp079Role role))
                     room = FindParentRoom(role.Camera.GameObject);
             }
-            Log.Info("Pray");
+
+            // Is it a lift? If so.. here we go.
             Lift lift = Lift.Get(objectInRoom.transform.position);
-            Log.Info("Pray 1");
-            if (lift != null)
+            if (lift == null)
             {
-                Log.Info("Pray 2 ");
-                room = lift.GameObject.GetComponent<Room>();
-                Log.Info("Pray 3");
-                if (room == null)
-                {
-                    Log.Info($"Pray 4, lift null? {lift == null} or objet null {lift.GameObject == null}");
-                    // lift.GameObject.AddComponent<RoomIdentifier>();
-                    // CreateComponent(lift.GameObject);
-                    
-                    // CreateComponent(lift.GameObject);
-                    lift.GameObject.AddComponent<RoomIdentifier>();
-                    Log.Info("Pray 5");
-                    if (RoomIdentifierToRoom.TryGetValue(lift.GameObject.GetComponent<RoomIdentifier>(), out Room currentRoom))
-                    {
-                        Log.Info($"Pray 6 and what's the room {currentRoom.ToString()}");
-                        return currentRoom;
-                    }
-                    Log.Info("Pray 7");
-                    // room = lift.GameObject.GetComponent<Room>();
-                }
-                
+                return room ?? Get(objectInRoom.transform.position);
             }
-            Log.Info($"Pray complete - null? = {room != null}");
+
+            room = lift.GameObject.GetComponent<Room>();
+            if (room == null)
+            {
+                lift.GameObject.AddComponent<RoomIdentifier>();
+                if (RoomIdentifierToRoom.TryGetValue(lift.GameObject.GetComponent<RoomIdentifier>(), out Room currentRoom))
+                {
+                    return currentRoom;
+                }
+            }
+            else
+            {
+                room.LiftLocationIdentifier();
+            }
 
             // Finally, try for objects that aren't children, like players and pickups.
             return room ?? Get(objectInRoom.transform.position);
@@ -467,24 +472,7 @@ namespace Exiled.API.Features
             if (Type is RoomType.Unknown)
             {
                 Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
-                if (gameObject.name.Contains("ElevatorChamber Gates"))
-                {
-                    //53, 294, -30 - surface 300 > pos > 290
-                    //174, -99, 17 - entrance -80 < pos > -101
-                    //lcz - 100 - lcz  110 > pos > 90
-                    if (gameObject.transform.position.y is > 290 and < 300)
-                    {
-                        Type = RoomType.SurfaceToEntranceElevator;
-                    }
-                    else if (gameObject.transform.position.y is > 90 and < 100)
-                    {
-                        Type = RoomType.EntranceToSurfaceElevator;
-                    }
-                    else if(gameObject.transform.position.y is > -101 and < -80)
-                    {
-                        Type = RoomType.LczToHczElevator;   
-                    }
-                }
+                LiftLocationIdentifier();
             }
 #endif
 
@@ -505,6 +493,68 @@ namespace Exiled.API.Features
             Doors = DoorsValue.AsReadOnly();
             Speakers = SpeakersValue.AsReadOnly();
             Cameras = CamerasValue.AsReadOnly();
+        }
+
+        private void LiftLocationIdentifier()
+        {
+            float currentHeight = gameObject.transform.position.y;
+            if (gameObject.name.Contains("ElevatorChamber Gates"))
+            {
+                // 53, 294, -30 - surface 300 > pos > 290
+                // 174, -99, 17 - entrance 90 < pos > 110
+                // lcz - 100 - lcz -101 > pos > -80
+
+                switch (currentHeight)
+                {
+                    case > 290 and < 300:
+                        Type = RoomType.SurfaceToEntranceElevator;
+                        Zone = ZoneType.Surface;
+                        break;
+                    case > -101 and < -80:
+                        Type = RoomType.EntranceToSurfaceElevator;
+                        Zone = ZoneType.Entrance;
+                        break;
+                }
+                isLift = true;
+            }
+            else if (gameObject.name.Contains("ElevatorChamberNuke"))
+            {
+                // 53, 294, -30 - surface 300 > pos > 290
+                // 174, -99, 17 - entrance 90 < pos > 110
+                // lcz - 100 - lcz -101 > pos > -80
+
+                switch (currentHeight)
+                {
+                    case > -180 and < -140:
+                        Type = RoomType.NukeToHczElevator;
+                        Zone = ZoneType.Nuke;
+                        break;
+                    case > -141 and < -90:
+                        Type = RoomType.HczToNukeElevator;
+                        Zone = ZoneType.HeavyContainment;
+                        break;
+                }
+                isLift = true;
+            }
+            else if (gameObject.name.Contains("ElevatorChamber"))
+            {
+
+                switch (currentHeight)
+                {
+                    //     //53, 294, -30 - surface 300 > pos > 290
+                    //     //174, -99, 17 - entrance 90  < pos >  110
+                    //     //lcz - 100 - lcz -101 > pos > -80
+                    case > 70 and < 110:
+                        Type = RoomType.LczToHczElevator;
+                        Zone = ZoneType.LightContainment;
+                        break;
+                    case > -101 and < -80:
+                        Type = RoomType.HczToLczElevator;
+                        Zone = ZoneType.HeavyContainment;
+                        break;
+                }
+                isLift = true;
+            }
         }
 
         private static RoomType FindType(GameObject gameObject)

@@ -352,6 +352,21 @@ namespace Exiled.API.Enums
         /// Lcz Elevator to Hcz room.
         /// </summary>
         LczToHczElevator,
+        
+        /// <summary>
+        /// Hcz Elevator to Lcz room.
+        /// </summary>
+        HczToLczElevator,
+        
+        /// <summary>
+        /// Hcz Elevator to Nuke room.
+        /// </summary>
+        HczToNukeElevator,
+        
+        /// <summary>
+        /// Nuke Elevator to Hcz room.
+        /// </summary>
+        NukeToHczElevator,
 
     }
 }

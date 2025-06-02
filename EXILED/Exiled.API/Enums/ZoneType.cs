@@ -60,5 +60,10 @@ namespace Exiled.API.Enums
         /// An unknown type of zone.
         /// </summary>
         Other = 32,
+        
+        /// <summary>
+        /// Nuke Zone
+        /// </summary>
+        Nuke = 64,
     }
 }
