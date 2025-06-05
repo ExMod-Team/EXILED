@@ -45,6 +45,7 @@ namespace Exiled.Events.Patches.Events.Map
             LocalBuilder ev = generator.DeclareLocal(typeof(SpawningItemEventArgs));
 
             Label skip = generator.DefineLabel();
+            Label storeData = generator.DefineLabel();
             Label skipdoorSpawn = generator.DefineLabel();
             Label doorSpawn = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
@@ -64,28 +65,21 @@ namespace Exiled.Events.Patches.Events.Map
                     new CodeInstruction(OpCodes.Ldc_I4_1).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Stloc_S, initiallySpawn.LocalIndex),
 
-                    // Presume door null for now
-                    new(OpCodes.Ldnull),
-                    new(OpCodes.Stloc, 1),
-
-                    // door = some answer from code
-                    new(OpCodes.Ldsfld, Field(typeof(DoorNametagExtension), nameof(DoorNametagExtension.NamedDoors))),
-                    new(OpCodes.Ldarg_2),
-                    new(OpCodes.Ldloca, 1),
-                    new(OpCodes.Callvirt, Method(typeof(Dictionary<string, DoorNametagExtension>), "TryGetValue", new[] { typeof(string), typeof(DoorNametagExtension).MakeByRefType() })),
-                    new(OpCodes.Pop),
-
-                    // initiallySpawn = false
-                    new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(skip),
+                    // initiallySpawn = true
+                    new CodeInstruction(OpCodes.Ldc_I4_1),
                     new(OpCodes.Stloc_S, initiallySpawn.LocalIndex),
 
-                    // door = doorNametagExtension.TargetDoor
+                    // door = doorNametagExtension.TargetDoor if not null, otherwise, null door
+                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Brfalse, skip),
                     new(OpCodes.Ldloc_1),
                     new(OpCodes.Ldfld, Field(typeof(DoorVariantExtension), nameof(DoorVariantExtension.TargetDoor))),
-                    new(OpCodes.Stloc_S, door.LocalIndex),
+                    new(OpCodes.Br, storeData),
+                    new CodeInstruction(OpCodes.Ldnull).WithLabels(skip),
+                    new CodeInstruction(OpCodes.Stloc, door.LocalIndex).WithLabels(storeData),
 
                     // ipb
-                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_1),
 
                     // initiallySpawn
                     new(OpCodes.Ldloc_S, initiallySpawn.LocalIndex),

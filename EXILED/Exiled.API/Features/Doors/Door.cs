@@ -290,14 +290,18 @@ namespace Exiled.API.Features.Doors
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
         public static Door Get(DoorVariant doorVariant)
         {
+            Log.Info($"uh is door null? {doorVariant == null}");
             if (doorVariant == null)
                 return null;
+
+            Log.Info($"uh is door room null? {doorVariant.Rooms  == null}");
 
             if (doorVariant.Rooms == null)
             {
                 doorVariant.RegisterRooms();
             }
 
+            Log.Info($"uh is door not in door variant to door? {DoorVariantToDoor.ContainsKey(doorVariant)}");
             // Exiled door must be created after the `RegisterRooms` call
             return DoorVariantToDoor[doorVariant];
         }

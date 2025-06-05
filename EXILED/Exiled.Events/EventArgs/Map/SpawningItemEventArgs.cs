@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
+    using API.Features;
+
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Interfaces;
@@ -32,9 +34,13 @@ namespace Exiled.Events.EventArgs.Map
         /// </param>
         public SpawningItemEventArgs(ItemPickupBase pickupBase, bool shouldInitiallySpawn, DoorVariant door)
         {
+            Log.Info("pickup (spawning item event)");
             Pickup = Pickup.Get(pickupBase);
+            Log.Info("TriggerDoor (spawning item event)");
             TriggerDoor = Door.Get(door);
+            Log.Info("ShouldInitiallySpawn (spawning item event)");
             ShouldInitiallySpawn = shouldInitiallySpawn;
+            Log.Info("Done (spawning item event)");
         }
 
         /// <summary>
