@@ -45,6 +45,8 @@ namespace Exiled.Events.Patches.Events.Map
             LocalBuilder ev = generator.DeclareLocal(typeof(SpawningItemEventArgs));
 
             Label skip = generator.DefineLabel();
+            Label allowOriginalLogic = generator.DefineLabel();
+            Label loadGameObjectLocation = generator.DefineLabel();
             Label storeData = generator.DefineLabel();
             Label skipdoorSpawn = generator.DefineLabel();
             Label doorSpawn = generator.DefineLabel();
@@ -54,8 +56,6 @@ namespace Exiled.Events.Patches.Events.Map
 
             int offset = -1;
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup)))) + offset;
-
-            Log.Info("\n\nWoooooooooooooooooa\n\n");
 
             newInstructions.InsertRange(
                 index,
@@ -122,20 +122,27 @@ namespace Exiled.Events.Patches.Events.Map
             // "base.RegisterUnspawnedObject(doorNametagExtension.TargetDoor, itemPickupBase.gameObject);"
             // with "base.RegisterUnspawnedObject(ev.Door.Base, itemPickupBase.gameObject);"
             offset = -1;
-            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldfld) + offset;
+            index = newInstructions.FindLastIndex(i =>  i.LoadsField(Field(typeof(DoorVariantExtension), nameof(DoorVariantExtension.TargetDoor)))) + offset;
 
-            newInstructions.RemoveRange(index, 2);
+            newInstructions[index].WithLabels(allowOriginalLogic);
+
+            int temp_instr = newInstructions.FindLastIndex(i => i.Calls(PropertyGetter(typeof(UnityEngine.Component), nameof(UnityEngine.Component.gameObject)))) - 1;
+            newInstructions[temp_instr].WithLabels(loadGameObjectLocation);
 
             newInstructions.InsertRange(index, new[]
             {
                 // ev.Door.Base
-                new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
+                new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
+                new(OpCodes.Brfalse, allowOriginalLogic),
+                new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningItemEventArgs), nameof(SpawningItemEventArgs.TriggerDoor))),
+                new(OpCodes.Brfalse, allowOriginalLogic),
+                new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SpawningItemEventArgs), nameof(SpawningItemEventArgs.TriggerDoor))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Door), nameof(Door.Base))),
+                new(OpCodes.Br, loadGameObjectLocation),
             });
-
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
-
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
