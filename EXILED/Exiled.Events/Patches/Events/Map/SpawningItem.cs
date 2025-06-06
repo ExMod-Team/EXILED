@@ -121,7 +121,7 @@ namespace Exiled.Events.Patches.Events.Map
             // "base.RegisterUnspawnedObject(doorNametagExtension.TargetDoor, itemPickupBase.gameObject);"
             // with "base.RegisterUnspawnedObject(ev.Door.Base, itemPickupBase.gameObject);"
             offset = -1;
-            index = newInstructions.FindLastIndex(i =>  i.LoadsField(Field(typeof(DoorVariantExtension), nameof(DoorVariantExtension.TargetDoor)))) + offset;
+            index = newInstructions.FindLastIndex(i => i.LoadsField(Field(typeof(DoorVariantExtension), nameof(DoorVariantExtension.TargetDoor)))) + offset;
 
             newInstructions[index].WithLabels(allowOriginalLogic);
 
