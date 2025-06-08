@@ -49,8 +49,8 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         public float MaxRadius
         {
-            get => Base._maxRadius;
-            set => Base._maxRadius = value;
+            get => Base.MaxRadius;
+            set => Base.MaxRadius = value;
         }
 
         /// <summary>
@@ -94,8 +94,8 @@ namespace Exiled.API.Features.Pickups.Projectiles
         /// </summary>
         public float ScpDamageMultiplier
         {
-            get => Base._scpDamageMultiplier;
-            set => Base._scpDamageMultiplier = value;
+            get => Base.ScpDamageMultiplier;
+            set => Base.ScpDamageMultiplier = value;
         }
 
         /// <summary>

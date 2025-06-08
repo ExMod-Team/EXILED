@@ -69,5 +69,10 @@ namespace Exiled.API.Enums
         /// Represents the window in <see cref="RoomType.HczTestRoom"/>.
         /// </summary>
         TestRoom,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.Hcz127"/>.
+        /// </summary>
+        Scp127,
     }
 }

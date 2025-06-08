@@ -30,17 +30,14 @@ namespace Exiled.Events.EventArgs.Map
         /// <param name="damageHandlerBase">
         /// <inheritdoc cref="DamageHandler" />
         /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public AnnouncingScpTerminationEventArgs(Player scp, DamageHandlerBase damageHandlerBase, bool isAllowed = true)
+        public AnnouncingScpTerminationEventArgs(Player scp, DamageHandlerBase damageHandlerBase)
         {
             Player = scp;
             Role = scp.Role;
             DamageHandler = new CustomDamageHandler(scp, damageHandlerBase);
             Attacker = DamageHandler.BaseIs(out CustomAttackerHandler customAttackerHandler) ? customAttackerHandler.Attacker : null;
             TerminationCause = damageHandlerBase.CassieDeathAnnouncement.Announcement;
-            IsAllowed = isAllowed;
+            IsAllowed = true;
         }
 
         /// <summary>
@@ -71,6 +68,6 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets or sets a value indicating whether the SCP termination will be announced by C.A.S.S.I.E.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
+        public bool IsAllowed { get; set; }
     }
 }

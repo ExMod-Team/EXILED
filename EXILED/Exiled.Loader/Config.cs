@@ -57,7 +57,7 @@ namespace Exiled.Loader
         /// Gets or sets the config files distribution type.
         /// </summary>
         [Description("The config files distribution type (Default, Separated)")]
-        public ConfigType ConfigType { get; set; } = ConfigType.Default;
+        public ConfigType ConfigType { get; set; } = ConfigType.Separated;
 
         /// <summary>
         /// Gets or sets the quotes wrapper type.

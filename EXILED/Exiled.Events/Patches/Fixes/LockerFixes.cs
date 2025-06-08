@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Fixes
     /// <summary>
     /// Fix for chamber lists weren't cleared.
     /// </summary>
-    [HarmonyPatch(typeof(LockerChamber), nameof(LockerChamber.SetDoor))]
+    [HarmonyPatch(typeof(LockerChamber), nameof(LockerChamber.OnFirstTimeOpen))]
     internal class LockerFixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -31,7 +31,7 @@ namespace Exiled.Events.Patches.Fixes
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             int offset = -1;
-            int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(LockerChamber), nameof(LockerChamber._spawnOnFirstChamberOpening)))) + offset;
+            int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(LockerChamber), nameof(LockerChamber.SpawnOnFirstChamberOpening)))) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -50,16 +50,16 @@ namespace Exiled.Events.Patches.Fixes
         {
             chamber.Content.Clear();
 
-            if (!chamber._spawnOnFirstChamberOpening)
+            if (!chamber.SpawnOnFirstChamberOpening)
                 return;
 
-            foreach (ItemPickupBase ipb in chamber._toBeSpawned)
+            foreach (ItemPickupBase ipb in chamber.ToBeSpawned)
             {
                 if (ipb != null)
                     ItemDistributor.SpawnPickup(ipb);
             }
 
-            chamber._toBeSpawned.Clear();
+            chamber.ToBeSpawned.Clear();
         }
     }
 }

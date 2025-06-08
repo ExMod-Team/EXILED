@@ -42,9 +42,9 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
+        /// Gets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
-        public KeycardPermissions Permissions { get; set; }
+        public KeycardPermissions Permissions { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="BaseKeycard"/> that this class is encapsulating.
@@ -67,7 +67,18 @@ namespace Exiled.API.Features.Pickups
             base.InitializeProperties(itemBase);
             if (itemBase is KeycardItem keycardItem)
             {
-                Permissions = (KeycardPermissions)keycardItem.Permissions;
+                foreach (DetailBase detail in keycardItem.Details)
+                {
+                    switch (detail)
+                    {
+                        case PredefinedPermsDetail predefinedPermsDetail:
+                            Permissions = (KeycardPermissions)predefinedPermsDetail.Levels.Permissions;
+                            return;
+                        case CustomPermsDetail customPermsDetail:
+                            Permissions = (KeycardPermissions)customPermsDetail.GetPermissions(null);
+                            return;
+                    }
+                }
             }
         }
     }

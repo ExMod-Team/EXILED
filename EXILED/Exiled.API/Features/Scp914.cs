@@ -40,8 +40,8 @@ namespace Exiled.API.Features
         /// </summary>
         public static Scp914Mode ConfigMode
         {
-            get => Scp914Controller._configMode.Value;
-            set => Scp914Controller._configMode.Value = value;
+            get => Scp914Controller.ConfigMode.Value;
+            set => Scp914Controller.ConfigMode.Value = value;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether SCP-914 is active and currently processing items.
         /// </summary>
-        public static bool IsWorking => Scp914Controller._isUpgrading;
+        public static bool IsWorking => Scp914Controller.IsUpgrading;
 
         /// <summary>
         /// Gets a value indicating all of the GameObjects currently present inside SCP-914's intake chamber.
@@ -92,7 +92,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the list with <see cref="Door"/> which SCP-914 has.
         /// </summary>
-        public static IReadOnlyCollection<Door> Doors => Scp914Controller._doors.Select(Door.Get).ToList();
+        public static IReadOnlyCollection<Door> Doors => Scp914Controller.Doors.Select(Door.Get).ToList();
 
         /// <summary>
         /// Filters all GameObjects inside SCP-914's intake chamber into players and items.

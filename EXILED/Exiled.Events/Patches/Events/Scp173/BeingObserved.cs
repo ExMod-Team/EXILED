@@ -18,7 +18,6 @@ namespace Exiled.Events.Patches.Events.Scp173
     using HarmonyLib;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.Subroutines;
-    using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
@@ -36,16 +35,10 @@ namespace Exiled.Events.Patches.Events.Scp173
 
             Label continueLabel = generator.DefineLabel();
 
-            const int offset = -4;
-            MethodInfo scp173ExecuteEvent = typeof(EventManager)
-                .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .FirstOrDefault(m => m.Name == nameof(EventManager.ExecuteEvent)
-                                     && !m.IsGenericMethod);
-            int index = newInstructions.FindLastIndex(i => i.Calls(scp173ExecuteEvent)) + offset;
+            int offset = 1;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brtrue_S) + offset;
 
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Player.Get(target)
                 new(OpCodes.Ldarg_1),

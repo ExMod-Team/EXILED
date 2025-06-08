@@ -10,16 +10,16 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/github/v/release/ExMod-Team/EXILED?sort=semver&style=flat-square&color=8DBBE9&label=Version)]()
+[![Version](https://img.shields.io/github/v/release/ExSLMod-Team/EXILED?sort=semver&style=flat-square&color=8DBBE9&label=Version)]()
 [![License](https://img.shields.io/badge/License-CC%20BY%E2%80%93SA%203.0-df967f?style=flat-square)]()
-[![Contributors](https://img.shields.io/github/contributors-anon/ExMod-Team/EXILED?color=90E59A&style=flat-square&label=Contributors)]()
-[![GitHub Issues](https://img.shields.io/github/issues/ExMod-Team/EXILED.svg?style=flat-square&label=Issues&color=d77982)](https://github.com/ExMod-Team/EXILED/issues)
+[![Contributors](https://img.shields.io/github/contributors-anon/ExSLMod-Team/EXILED?color=90E59A&style=flat-square&label=Contributors)]()
+[![GitHub Issues](https://img.shields.io/github/issues/ExSLMod-Team/EXILED.svg?style=flat-square&label=Issues&color=d77982)](https://github.com/ExSLMod-Team/EXILED/issues)
 [![Discord](https://img.shields.io/discord/656673194693885975?color=738adb&label=Discord&logo=discord&logoColor=white&style=flat-square)](https://discord.gg/PyUkWTg)
 
 </div>
 
 <p align="center">
-  <img alt="EXILED Development" src="https://repobeats.axiom.co/api/embed/19be90a4299eb2cfb0891a0c35774a120ed0f1ec.svg">
+  <img alt="EXILED Development" src="https://repobeats.axiom.co/api/embed/0c505b2680484777d21ca2f5dbd0204451476fc5.svg">
 </p>
 
 <h1 align="center">
@@ -112,5 +112,5 @@ Localized READMEs
   </div>
 </div>
 
-<h5 align="center">This repo is a fork of <a href="https://github.com/Exiled-Team/EXILED">Exiled-Team/EXILED</a> after changes in project leadership.</h5>
+<h5 align="center">This repo is a fork of <a href="https://github.com/ExMod-Team/EXILED">ExMod-Team/EXILED</a> after an organisation has been taken down.</h5>
 <h6 align="center">You can access the commit this update was forked from <a href="https://github.com/Exiled-Team/EXILED/tree/8b03fe7d9d2fe7ebffd5e6d1d038fc3881cdeb70">here</a>.</h6>

@@ -101,7 +101,7 @@ namespace Exiled.API.Features
         public DamageHandlerBase DamageHandler
         {
             get => NetworkInfo.Handler;
-            set => NetworkInfo = new(NetworkInfo.OwnerHub, value, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Nickname, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, value, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -145,7 +145,16 @@ namespace Exiled.API.Features
         public string Nickname
         {
             get => NetworkInfo.Nickname;
-            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, value, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, value, NetworkInfo.CreationTime);
+        }
+
+        /// <summary>
+        /// Gets or sets the ragdoll's Scale with RagdollData.
+        /// </summary>
+        public Vector3 Scale
+        {
+            get => NetworkInfo.Scale;
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, value, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -159,7 +168,7 @@ namespace Exiled.API.Features
         public Player Owner
         {
             get => Player.Get(NetworkInfo.OwnerHub);
-            set => NetworkInfo = new(value.ReferenceHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Nickname, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(value.ReferenceHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -171,7 +180,7 @@ namespace Exiled.API.Features
             set
             {
                 float creationTime = (float)(NetworkTime.time - (DateTime.Now - value).TotalSeconds);
-                NetworkInfo = new RagdollData(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Nickname, creationTime);
+                NetworkInfo = new RagdollData(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, creationTime);
             }
         }
 
@@ -181,7 +190,7 @@ namespace Exiled.API.Features
         public RoleTypeId Role
         {
             get => NetworkInfo.RoleType;
-            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, value, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Nickname, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, value, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -248,9 +257,9 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the ragdoll's scale.
+        /// Gets or sets the ragdoll's as Gameobjectscale.
         /// </summary>
-        public Vector3 Scale
+        public Vector3 RagdollScale
         {
             get => Base.transform.localScale;
             set

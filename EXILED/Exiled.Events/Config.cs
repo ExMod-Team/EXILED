@@ -45,12 +45,6 @@ namespace Exiled.Events
         public bool CanScp049SenseTutorial { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether Tutorial is affected by Scp-939 Amnestic Cloud.
-        /// </summary>
-        [Description("Indicates whether Tutorial is affected by Scp-939 Amnestic Cloud")]
-        public bool TutorialAffectedByScp939AmnesticCloud { get; set; } = true;
-
-        /// <summary>
         /// Gets or sets a value indicating whether tutorial is affected by SCP-079 scan.
         /// </summary>
         [Description("Indicates whether tutorial is affected by SCP-079 scan.")]
@@ -83,6 +77,7 @@ namespace Exiled.Events
         /// <summary>
         /// Gets or sets a value indicating whether keycard throw can affect basic doors.
         /// </summary>
+        /// TODO: Make a poll about removing this config. (unimplemented since 9.6.0-beta7)
         [Description("Indicates whether thrown keycards can affect doors that don't require any permissions")]
         public bool CanKeycardThrowAffectDoors { get; set; } = false;
 

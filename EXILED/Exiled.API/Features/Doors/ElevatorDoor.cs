@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Doors
             Base = door;
             Lift = Lift.Get(x => x.Group == Group).FirstOrDefault();
 
-            Panel = Object.FindObjectsOfType<ElevatorPanel>().FirstOrDefault(x => x._door == door);
+            Panel = Object.FindObjectsByType<ElevatorPanel>(FindObjectsInactive.Include, FindObjectsSortMode.None).FirstOrDefault(x => x._door == door);
         }
 
         /// <summary>
@@ -56,6 +56,7 @@ namespace Exiled.API.Features.Doors
             ElevatorGroup.Scp049 => ElevatorType.Scp049,
             ElevatorGroup.GateA => ElevatorType.GateA,
             ElevatorGroup.GateB => ElevatorType.GateB,
+            ElevatorGroup.ServerRoom => ElevatorType.ServerRoom,
             ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => ElevatorType.LczA,
             ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => ElevatorType.LczB,
             ElevatorGroup.Nuke01 or ElevatorGroup.Nuke02 => ElevatorType.Nuke,

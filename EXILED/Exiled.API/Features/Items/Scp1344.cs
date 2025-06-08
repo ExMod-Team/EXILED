@@ -11,7 +11,7 @@ namespace Exiled.API.Features.Items
 
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp1344;
-    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
+    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
 
     /// <summary>
     /// A wrapper class for <see cref="Scp1344Item"/>.

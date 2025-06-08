@@ -593,7 +593,7 @@ namespace Exiled.API.Features.Roles
             Scp079Camera cam = CurrentCameraSync.CurrentCamera;
             RewardManager.MarkRoom(cam.Room);
 
-            if (!global::TeslaGate.AllGates.TryGetFirst(x => RoomIdUtils.IsTheSameRoom(cam.Position, x.transform.position), out global::TeslaGate teslaGate))
+            if (!global::TeslaGate.AllGates.TryGetFirst(x => cam.Position.TryGetRoom(out RoomIdentifier camRoom) && x.transform.position.TryGetRoom(out RoomIdentifier teslaRoom) && camRoom == teslaRoom, out global::TeslaGate teslaGate))
                 return;
 
             if (consumeEnergy)

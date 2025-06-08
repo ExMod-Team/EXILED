@@ -166,6 +166,10 @@ namespace Exiled.API.Features.Toys
                 PrimitiveObjectToy primitiveObjectToy => new Primitive(primitiveObjectToy),
                 ShootingTarget shootingTarget => new ShootingTargetToy(shootingTarget),
                 SpeakerToy speakerToy => new Speaker(speakerToy),
+                CapybaraToy capybaraToy => new Capybara(capybaraToy),
+                Scp079CameraToy scp079CameraToy => new CameraToy(scp079CameraToy),
+                InvisibleInteractableToy invisibleInteractableToy => new InteractableToy(invisibleInteractableToy),
+                TextToy textToy => new Text(textToy),
                 _ => throw new System.NotImplementedException()
             };
         }

@@ -21,31 +21,29 @@ namespace Exiled.Events.EventArgs.Scp330
         /// <summary>
         /// Initializes a new instance of the <see cref="InteractingScp330EventArgs" /> class.
         /// </summary>
-        /// <param name="player">
+        /// <param name="referenceHub">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="usage">
         /// <inheritdoc cref="UsageCount" />
         /// </param>
-        public InteractingScp330EventArgs(Player player, int usage)
+        /// <param name="shouldPlaySound">
+        /// <inheritdoc cref="ShouldPlaySound" />
+        /// </param>
+        /// <param name="shouldSever">
+        /// <inheritdoc cref="ShouldSever" />
+        /// </param>
+        /// <param name="candy">
+        /// <inheritdoc cref="Candy" />
+        /// </param>
+        public InteractingScp330EventArgs(ReferenceHub referenceHub, int usage, bool shouldPlaySound, bool shouldSever, CandyKindID candy)
         {
-            Player = player;
+            Player = Player.Get(referenceHub);
             UsageCount = usage;
             ShouldSever = usage >= 2;
-            ShouldPlaySound = true;
+            ShouldPlaySound = shouldPlaySound;
             IsAllowed = Player.IsHuman;
             Candy = Scp330Candies.GetRandom();
-
-            if (Scp330Bag.TryGetBag(player.ReferenceHub, out Scp330Bag scp330Bag))
-            {
-                Scp330 = (Scp330)Item.Get(scp330Bag);
-            }
-            else
-            {
-                Scp330 = (Scp330)Item.Create(ItemType.SCP330, player);
-                Scp330.RemoveAllCandy();
-                player.AddItem(Scp330);
-            }
         }
 
         /// <summary>

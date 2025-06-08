@@ -32,5 +32,25 @@ namespace Exiled.API.Enums
         /// Speaker toy.
         /// </summary>
         Speaker,
+
+        /// <summary>
+        /// Capybara toy.
+        /// </summary>
+        Capybara,
+
+        /// <summary>
+        /// InvisibleInteractable toy.
+        /// </summary>
+        InvisibleInteractableToy,
+
+        /// <summary>
+        /// Camera Object toy.
+        /// </summary>
+        CameraToy,
+
+        /// <summary>
+        /// Text toy.
+        /// </summary>
+        TextToy,
     }
 }

@@ -7,8 +7,12 @@
 
 namespace Exiled.Events.EventArgs.Scp1344
 {
+    using System;
+
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+
+    using InventorySystem.Items;
     using InventorySystem.Items.Usables.Scp1344;
 
     /// <summary>
@@ -21,11 +25,10 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// </summary>
         /// <param name="item"><inheritdoc cref="Item"/></param>
         /// <param name="scp1344Status"><inheritdoc cref="InventorySystem.Items.Usables.Scp1344.Scp1344Status"/></param>
-        public ChangedStatusEventArgs(Item item, Scp1344Status scp1344Status)
+        public ChangedStatusEventArgs(ItemBase item, Scp1344Status scp1344Status)
         {
-            Item = item;
-            Scp1344 = item as Scp1344;
-            Player = item.Owner;
+            Scp1344 = Item.Get<Scp1344>(item);
+            Player = Scp1344.Owner;
             Scp1344Status = scp1344Status;
         }
 
@@ -37,7 +40,7 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// <summary>
         /// Gets the item.
         /// </summary>
-        public Item Item { get; }
+        public Item Item => Scp1344;
 
         /// <summary>
         /// Gets the player in owner of the item.
@@ -50,6 +53,7 @@ namespace Exiled.Events.EventArgs.Scp1344
         public Scp1344 Scp1344 { get; }
 
         /// <inheritdoc/>
+        [Obsolete("Please use ChangingStatusEventArgs::IsAllowed instead of this", true)]
         public bool IsAllowed { get; set; }
     }
 }

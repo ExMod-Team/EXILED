@@ -13,14 +13,15 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features;
     using API.Features.Pools;
+    using CustomPlayerEffects;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
 
     using InventorySystem.Items.Usables;
-
-    using PluginAPI.Events;
+    using LabApi.Events.Arguments.PlayerEvents;
+    using Utils.Networking;
 
     using static HarmonyLib.AccessTools;
 
@@ -45,17 +46,16 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder evUsingItemEventArgs = generator.DeclareLocal(typeof(UsingItemEventArgs));
             LocalBuilder evCancellingItemUseEventArgs = generator.DeclareLocal(typeof(CancellingItemUseEventArgs));
 
-            int offset = 2;
+            int offset = 3;
             int index = newInstructions.FindIndex(
-                instruction => instruction.Calls(Method(typeof(UsableItemsController), nameof(UsableItemsController.GetCooldown)))) + offset;
+                instruction => instruction.Calls(Method(typeof(UsableItemModifierEffectExtensions), nameof(UsableItemModifierEffectExtensions.GetSpeedMultiplier)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // Player.Get(referenceHub)
-                    new(OpCodes.Ldloc_0),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    // referenceHub
+                    new CodeInstruction(OpCodes.Ldloc_0).MoveLabelsFrom(newInstructions[index]),
 
                     // usableItem
                     new(OpCodes.Ldloc_1),
@@ -83,21 +83,18 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc_S, 4),
                 });
 
-            offset = -16;
-            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerCancelUsingItemEvent))[0]) + offset;
+            offset = -2;
+            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerCancellingUsingItemEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(referenceHub)
+                    // referenceHub
                     new CodeInstruction(OpCodes.Ldloc_0),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // handler.CurrentUsable.Item
-                    new(OpCodes.Ldloc_2),
-                    new(OpCodes.Ldflda, Field(typeof(PlayerHandler), nameof(PlayerHandler.CurrentUsable))),
-                    new(OpCodes.Ldfld, Field(typeof(CurrentlyUsedItem), nameof(CurrentlyUsedItem.Item))),
+                    // usableItem
+                    new(OpCodes.Ldloc_1),
 
                     // CancellingItemUseEventArgs ev = new(Player, UsableItem)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(CancellingItemUseEventArgs))[0]),
@@ -114,25 +111,25 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            offset = -1;
-            index = newInstructions.Count + offset;
+            // right before the LabAPI event "new PlayerCancelledUsingItemEventArgs(...)"
+            offset = -2;
+            index = newInstructions.FindLastIndex(
+                instruction => instruction.opcode == OpCodes.Newobj) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(referenceHub)
+                    // referenceHub
                     new CodeInstruction(OpCodes.Ldloc_0),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // evCancellingItemUseEventArgs.Item
-                    new(OpCodes.Ldloc_S, evCancellingItemUseEventArgs.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(CancellingItemUseEventArgs), nameof(CancellingItemUseEventArgs.Item))),
+                    // usableItem
+                    new(OpCodes.Ldloc_1),
 
-                    // CancellingItemUseEventArgs ev = new(Player, UsableItem)
+                    // CancelledItemUseEventArgs ev = new(ReferenceHub, UsableItem)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(CancelledItemUseEventArgs))[0]),
 
-                    // Handlers.Player.OnCancellingItemUse(ev)
+                    // Handlers.Player.OnCancelledItemUse(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnCancelledItemUse))),
                 });
 

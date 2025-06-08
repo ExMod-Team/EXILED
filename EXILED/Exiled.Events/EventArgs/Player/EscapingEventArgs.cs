@@ -25,7 +25,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="EscapingEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
+        /// <param name="referenceHub">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="newRole">
@@ -34,12 +34,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="escapeScenario">
         /// <inheritdoc cref="EscapeScenario" />
         /// </param>
-        public EscapingEventArgs(Player player, RoleTypeId newRole, EscapeScenario escapeScenario)
+        public EscapingEventArgs(ReferenceHub referenceHub, RoleTypeId newRole, EscapeScenario escapeScenario)
         {
-            Player = player;
+            Player = Player.Get(referenceHub);
             NewRole = newRole;
             EscapeScenario = escapeScenario;
-            IsAllowed = escapeScenario is not EscapeScenario.CustomEscape;
+            IsAllowed = escapeScenario is not EscapeScenario.None and not EscapeScenario.CustomEscape;
         }
 
         /// <summary>

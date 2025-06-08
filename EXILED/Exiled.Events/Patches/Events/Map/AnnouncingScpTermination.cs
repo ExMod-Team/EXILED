@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Map
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.DamageHandlers;
@@ -39,8 +40,8 @@ namespace Exiled.Events.Patches.Events.Map
 
             Label ret = generator.DefineLabel();
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloc_0) + offset;
+            int offset = -3;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.CassieQueuingScpTerminationEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -53,10 +54,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // hit
                     new(OpCodes.Ldarg_1),
 
-                    // true
-                    new(OpCodes.Ldc_I4_1),
-
-                    // AnnouncingScpTerminationEventArgs ev = new(Player, DamageHandlerBase, bool)
+                    // AnnouncingScpTerminationEventArgs ev = new(Player, DamageHandlerBase)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingScpTerminationEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

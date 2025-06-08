@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-
+    using LabApi.Features.Enums;
     using RemoteAdmin;
 
     using static HarmonyLib.AccessTools;
@@ -45,7 +45,7 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(SendingValidCommandEventArgs));
 
             int offset = 2;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ClientCommandHandler), nameof(ClientCommandHandler.TryGetCommand)))) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(CommandHandler), nameof(CommandHandler.TryGetCommand)))) + offset;
             Label contlabel = generator.DefineLabel();
 
             offset = -6;
@@ -57,64 +57,60 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
-                   // this
-                   new CodeInstruction(OpCodes.Ldarg_0),
-
-                   // this._hub
-                   new CodeInstruction(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
-
                    // Player.Get(Hub)
-                   new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub) })),
+                   new(OpCodes.Ldarg_0),
+                   new(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
+                   new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                    // command
-                   new (OpCodes.Ldloc_S, 1),
+                   new (OpCodes.Ldloc_S, 4),
 
-                   // commandtype client
-                   new CodeInstruction(OpCodes.Ldc_I4_2),
+                   // CommandType.Client
+                   new(OpCodes.Ldc_I4_S, (sbyte)CommandType.Client),
 
                    // query
-                   new CodeInstruction(OpCodes.Ldarg_1),
+                   new(OpCodes.Ldarg_1),
 
                    // response
-                   new CodeInstruction(OpCodes.Ldloc_S, 3),
+                   new(OpCodes.Ldloc_S, 6),
 
                    // new SendingValidCommandEventArgs
-                   new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingValidCommandEventArgs))[0]),
-                   new CodeInstruction(OpCodes.Dup),
-                   new CodeInstruction(OpCodes.Stloc_S, ev.LocalIndex),
+                   new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingValidCommandEventArgs))[0]),
+                   new(OpCodes.Dup),
+                   new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // OnSendingValidCommad(ev)
-                   new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingValidCommand))),
+                   new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingValidCommand))),
 
                     // if ev.IsAllowed cont
-                   new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
-                   new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.IsAllowed))),
-                   new CodeInstruction(OpCodes.Brtrue_S, contlabel),
+                   new(OpCodes.Ldloc_S, ev.LocalIndex),
+                   new(OpCodes.Callvirt, PropertyGetter(typeof(SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.IsAllowed))),
+                   new(OpCodes.Brtrue_S, contlabel),
 
                    // if ev.Response.IsNullOrEmpty rets
-                   new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
-                   new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
-                   new CodeInstruction(OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
-                   new CodeInstruction(OpCodes.Brtrue_S, setproperresp),
+                   new(OpCodes.Ldloc_S, ev.LocalIndex),
+                   new(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
+                   new(OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
+                   new(OpCodes.Brtrue_S, setproperresp),
 
                    // response = ev.Response
-                   new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
-                   new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
-                   new CodeInstruction(OpCodes.Stloc_S, 3),
+                   new(OpCodes.Ldloc_S, ev.LocalIndex),
+                   new(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
+                   new(OpCodes.Stloc_S, 6),
 
                    // goto sendreply
-                   new CodeInstruction(OpCodes.Br, sendreply),
+                   new(OpCodes.Br, sendreply),
 
                    // response = "The Command Execution Was Prevented By Plugin."
                    new CodeInstruction(OpCodes.Ldstr, "The Command Execution Was Prevented By Plugin.").WithLabels(setproperresp),
-                   new CodeInstruction(OpCodes.Stloc_S, 3),
-                   new CodeInstruction(OpCodes.Br, sendreply),
+                   new(OpCodes.Stloc_S, 6),
+                   new(OpCodes.Br, sendreply),
                 });
 
-            offset = -3;
-            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ldstr && (string)instruction.operand == "magenta") + offset;
+            offset = 2;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Misc), nameof(Misc.CloseAllRichTextTags)))) + offset;
             Label skip = generator.DefineLabel();
             newInstructions[index].WithLabels(skip);
             newInstructions.InsertRange(
@@ -122,45 +118,41 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction[]
                 {
                    // if ev.Response.IsNullOrEmpty skip
-                   new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
-                   new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
-                   new CodeInstruction(OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
-                   new CodeInstruction(OpCodes.Brtrue_S, skip),
+                   new(OpCodes.Ldloc_S, ev.LocalIndex),
+                   new(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
+                   new(OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
+                   new(OpCodes.Brtrue_S, skip),
 
                    // response = ev.Response
-                   new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
-                   new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
-                   new CodeInstruction(OpCodes.Stloc_S, 3),
+                   new(OpCodes.Ldloc_S, ev.LocalIndex),
+                   new(OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
+                   new(OpCodes.Stloc_S, 6),
                 });
-            offset = 0;
-            index = newInstructions.FindIndex(instrction => instrction.Calls(Method(typeof(GameConsoleTransmission), nameof(GameConsoleTransmission.SendToClient)))) + offset;
+
+            offset = 1;
+            index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(GameConsoleTransmission), nameof(GameConsoleTransmission.SendToClient)))) + offset;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // this
-                    new CodeInstruction(OpCodes.Ldarg_0),
-
-                    // this._hub
-                    new CodeInstruction(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
-
-                    // Player.Get(Hub)
-                    new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub) })),
+                    // Player.Get(sender)
+                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(CommandSender) })),
 
                     // command
-                    new CodeInstruction(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldloc_S, 4),
 
-                    // commandtype CLIENT
-                    new CodeInstruction(OpCodes.Ldc_I4_2),
+                    // CommandType.Client
+                    new (OpCodes.Ldc_I4_S, (sbyte)CommandType.Client),
 
                     // query
-                    new CodeInstruction(OpCodes.Ldarg_1),
+                    new(OpCodes.Ldarg_1),
 
                     // response
-                    new CodeInstruction(OpCodes.Ldloc_S, 3),
+                    new(OpCodes.Ldloc_S, 6),
 
                     // result
-                    new (OpCodes.Ldloc_S, 2),
+                    new (OpCodes.Ldloc_S, 7),
 
                     // new SentValidCommandEventArgs
                     new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SentValidCommandEventArgs))[0]),

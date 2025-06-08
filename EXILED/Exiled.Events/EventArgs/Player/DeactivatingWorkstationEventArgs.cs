@@ -31,7 +31,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </param>
         public DeactivatingWorkstationEventArgs(WorkstationController controller, bool isAllowed = true)
         {
-            Player = Player.Get(controller._knownUser);
+            Player = Player.Get(controller.KnownUser);
             WorkstationController = controller;
             IsAllowed = isAllowed;
         }

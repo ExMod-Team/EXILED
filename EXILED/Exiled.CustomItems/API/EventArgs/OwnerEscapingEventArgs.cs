@@ -30,7 +30,7 @@ namespace Exiled.CustomItems.API.EventArgs
         /// <param name="item"><inheritdoc cref="Item"/></param>
         /// <param name="ev">The <see cref="EscapingEventArgs"/> instance.</param>
         public OwnerEscapingEventArgs(Item item, EscapingEventArgs ev)
-            : base(ev.Player, ev.NewRole, ev.EscapeScenario)
+            : base(ev.Player.ReferenceHub, ev.NewRole, ev.EscapeScenario)
         {
             Item = item;
         }

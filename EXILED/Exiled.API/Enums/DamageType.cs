@@ -269,5 +269,10 @@ namespace Exiled.API.Enums
         /// Damage caused by <see cref="ItemType.Snowball"/>.
         /// </summary>
         SnowBall,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.GunSCP127"/>.
+        /// </summary>
+        Scp127,
     }
 }

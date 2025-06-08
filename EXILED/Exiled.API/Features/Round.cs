@@ -54,7 +54,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the round is ended.
         /// </summary>
-        public static bool IsEnded => RoundSummary._singletonSet && RoundSummary.singleton._roundEnded;
+        public static bool IsEnded => RoundSummary._singletonSet && RoundSummary.singleton.IsRoundEnded;
 
         /// <summary>
         /// Gets a value indicating whether the round is lobby.

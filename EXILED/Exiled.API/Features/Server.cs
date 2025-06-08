@@ -60,11 +60,11 @@ namespace Exiled.API.Features
         /// </summary>
         public static string Name
         {
-            get => ServerConsole._serverName;
+            get => ServerConsole.ServerName;
             set
             {
-                ServerConsole._serverName = value;
-                ServerConsole.singleton.RefreshServerName();
+                ServerConsole.ServerName = value;
+                ServerConsole.Singleton.RefreshServerNameSafe();
             }
         }
 

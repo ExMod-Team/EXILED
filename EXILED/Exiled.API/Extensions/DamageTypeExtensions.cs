@@ -102,6 +102,7 @@ namespace Exiled.API.Extensions
             { ItemType.Jailbird, DamageType.Jailbird },
             { ItemType.GunFRMG0, DamageType.Frmg0 },
             { ItemType.GunA7, DamageType.A7 },
+            { ItemType.GunSCP127, DamageType.Scp127 },
         };
 
         /// <summary>

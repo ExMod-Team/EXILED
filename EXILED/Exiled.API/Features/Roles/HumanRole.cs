@@ -8,7 +8,7 @@
 namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
-
+    using PlayerRoles.PlayableScps.HumeShield;
     using Respawning;
     using Respawning.NamingRules;
 
@@ -17,7 +17,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents a human class.
     /// </summary>
-    public class HumanRole : FpcRole
+    public class HumanRole : FpcRole, IHumeShieldRole
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HumanRole"/> class.
@@ -27,6 +27,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             Base = baseRole;
+            HumeShieldModule = baseRole.HumeShieldModule;
         }
 
         /// <inheritdoc/>
@@ -55,6 +56,9 @@ namespace Exiled.API.Features.Roles
         /// Gets the game <see cref="HumanGameRole"/>.
         /// </summary>
         public new HumanGameRole Base { get; }
+
+        /// <inheritdoc/>
+        public HumeShieldModuleBase HumeShieldModule { get; }
 
         /// <summary>
         /// Gets the <see cref="HumanRole"/> armor efficacy based on a specific <see cref="HitboxType"/> and the armor the <see cref="Role.Owner"/> is wearing.

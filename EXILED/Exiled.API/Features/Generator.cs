@@ -13,7 +13,7 @@ namespace Exiled.API.Features
 
     using Enums;
     using Exiled.API.Interfaces;
-
+    using Interactables.Interobjects.DoorUtils;
     using MapGeneration.Distributors;
 
     using UnityEngine;
@@ -216,7 +216,7 @@ namespace Exiled.API.Features
         public KeycardPermissions KeycardPermissions
         {
             get => (KeycardPermissions)Base._requiredPermission;
-            set => Base._requiredPermission = (Interactables.Interobjects.DoorUtils.KeycardPermissions)value;
+            set => Base._requiredPermission = (DoorPermissionFlags)value;
         }
 
         /// <summary>
@@ -281,7 +281,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Denies the unlock.
         /// </summary>
-        public void DenyUnlock() => Base.RpcDenied();
+        public void DenyUnlock() => Base.RpcDenied(DoorPermissionFlags.None);
+
+        /// <summary>
+        /// Denies the unlock.
+        /// </summary>
+        /// <param name="doorPermission">.</param>
+        public void DenyUnlock(KeycardPermissions doorPermission) => Base.RpcDenied((Interactables.Interobjects.DoorUtils.DoorPermissionFlags)doorPermission);
 
         /// <summary>
         /// Denies the unlock and resets the interaction cooldown.
@@ -299,7 +305,7 @@ namespace Exiled.API.Features
         /// <param name="isEnabled">A value indicating whether the flag is enabled.</param>
         public void SetPermissionFlag(KeycardPermissions flag, bool isEnabled)
         {
-            Interactables.Interobjects.DoorUtils.KeycardPermissions permission = (Interactables.Interobjects.DoorUtils.KeycardPermissions)flag;
+            DoorPermissionFlags permission = (DoorPermissionFlags)flag;
 
             if (isEnabled)
                 Base._requiredPermission |= permission;

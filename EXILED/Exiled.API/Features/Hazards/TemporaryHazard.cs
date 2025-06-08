@@ -56,8 +56,8 @@ namespace Exiled.API.Features.Hazards
         /// </summary>
         public float Duration
         {
-            get => Base._elapsed;
-            set => Base._elapsed = value;
+            get => Base.Elapsed;
+            set => Base.Elapsed = value;
         }
 
         /// <summary>

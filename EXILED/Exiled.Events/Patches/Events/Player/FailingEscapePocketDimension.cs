@@ -22,11 +22,11 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="PocketDimensionTeleport.OnTriggerEnter(Collider)" />.
+    /// Patches <see cref="PocketDimensionTeleport.Kill(PocketDimensionTeleport, ReferenceHub)" />.
     /// Adds the <see cref="Handlers.Player.FailingEscapePocketDimension" /> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.FailingEscapePocketDimension))]
-    [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
+    [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.Kill))]
     internal static class FailingEscapePocketDimension
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -35,34 +35,20 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
 
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
-
-            // --------- Player check ---------
-            // The check is a check that this is a player, if it isn't a player, then we simply call return
-            // if we don't, we'll get a NullReferenceException which is also thrown when we try to call the event.
-            int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
-
             newInstructions.InsertRange(
-                index,
+                0,
                 new[]
                 {
-                    new CodeInstruction(OpCodes.Ldloc_1).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse, returnLabel),
+                    // pocketDimensionTeleport
+                    new CodeInstruction(OpCodes.Ldarg_0),
 
-                    // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
-
-                    // this
-                    new(OpCodes.Ldarg_0),
+                    // referenceHub
+                    new CodeInstruction(OpCodes.Ldarg_1),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // FailingEscapePocketDimensionEventArgs ev = new(Player, PocketDimensionTeleport, bool)
+                    // FailingEscapePocketDimensionEventArgs ev = new(PocketDimensionTeleport, ReferenceHub, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FailingEscapePocketDimensionEventArgs))[0]),
                     new(OpCodes.Dup),
 

@@ -52,7 +52,7 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Gets or sets the weapon damage.
         /// </summary>
-        public abstract float Damage { get; set; }
+        public virtual float Damage { get; set; } = -1;
 
         /// <summary>
         /// Gets or sets a value indicating how big of a clip the weapon will have.
@@ -205,7 +205,7 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="ev"><see cref="HurtingEventArgs"/>.</param>
         protected virtual void OnHurting(HurtingEventArgs ev)
         {
-            if (ev.IsAllowed && Damage > 0f)
+            if (ev.IsAllowed && Damage >= 0)
                 ev.Amount = Damage;
         }
 

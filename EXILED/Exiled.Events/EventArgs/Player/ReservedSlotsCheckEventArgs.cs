@@ -13,21 +13,24 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information when checking if a player has a reserved slot.
     /// </summary>
-    public class ReservedSlotsCheckEventArgs : IExiledEvent
+    public class ReservedSlotsCheckEventArgs : IExiledEvent, IDeniableEvent
     {
+        private ReservedSlotEventResult reservedSlotEventResult = ReservedSlotEventResult.UseBaseGameSystem;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReservedSlotsCheckEventArgs" /> class.
         /// </summary>
-        /// <param name="userId">
-        /// <inheritdoc cref="UserId" />
-        /// </param>
         /// <param name="hasReservedSlot">
         /// <inheritdoc cref="HasReservedSlot" />
         /// </param>
-        public ReservedSlotsCheckEventArgs(string userId, bool hasReservedSlot)
+        /// <param name="userId">
+        /// <inheritdoc cref="UserId" />
+        /// </param>
+        public ReservedSlotsCheckEventArgs(bool hasReservedSlot, string userId)
         {
             UserId = userId;
             HasReservedSlot = hasReservedSlot;
+            IsAllowed = hasReservedSlot;
         }
 
         /// <summary>
@@ -41,8 +44,35 @@ namespace Exiled.Events.EventArgs.Player
         public bool HasReservedSlot { get; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the player is allowed to connect.
+        /// </summary>
+        public bool IsAllowed { get; set; }
+
+        /// <summary>
         /// Gets or sets the event result.
         /// </summary>
-        public ReservedSlotEventResult Result { get; set; } = ReservedSlotEventResult.UseBaseGameSystem;
+        public ReservedSlotEventResult Result
+        {
+            get => reservedSlotEventResult;
+            set
+            {
+                switch (reservedSlotEventResult)
+                {
+                    case ReservedSlotEventResult.CanUseReservedSlots or ReservedSlotEventResult.UseBaseGameSystem:
+                        IsAllowed = HasReservedSlot;
+                        break;
+                    case ReservedSlotEventResult.AllowConnectionUnconditionally:
+                        IsAllowed = true;
+                        break;
+                    case ReservedSlotEventResult.CannotUseReservedSlots:
+                        IsAllowed = false;
+                        break;
+                    default:
+                        return;
+                }
+
+                reservedSlotEventResult = value;
+            }
+        }
     }
 }

@@ -33,61 +33,45 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = newInstructions[newInstructions.Count - 1].labels[0];
-            Label continueLabel = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(UsingRadioBatteryEventArgs));
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_0) + offset;
-
-            newInstructions[index].WithLabels(continueLabel);
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_1) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // if (Player.Get(base.Owner) is not Player player)
-                    //    continue;
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, PropertyGetter(typeof(RadioItem), nameof(RadioItem.Owner))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel),
-
                     // this
                     new(OpCodes.Ldarg_0),
 
-                    // player
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-
                     // num
-                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Ldloc_1),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // UsingRadioBatteryEventArgs ev = new(RadioItem, Player, float, bool);
+                    // UsingRadioBatteryEventArgs ev = new(RadioItem, ReferenceHub, float, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UsingRadioBatteryEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Player.OnUsingRadioBattery(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUsingRadioBattery))),
+
+                    // num = ev.Drain;
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(UsingRadioBatteryEventArgs), nameof(UsingRadioBatteryEventArgs.Drain))),
+                    new(OpCodes.Stloc_1),
 
                     // if (!ev.IsAllowed)
                     //   return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(UsingRadioBatteryEventArgs), nameof(UsingRadioBatteryEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
-
-                    // num = ev.Drain;
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(UsingRadioBatteryEventArgs), nameof(UsingRadioBatteryEventArgs.Drain))),
-                    new(OpCodes.Stloc_0),
                 });
+
+            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

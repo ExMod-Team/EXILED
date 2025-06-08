@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="CustomHumeShieldStat.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -18,25 +18,24 @@ namespace Exiled.API.Features.CustomStats
     /// </summary>
     public class CustomHumeShieldStat : HumeShieldStat
     {
-        /// <inheritdoc />
-        public override float MaxValue => CustomMaxValue == -1 ? base.MaxValue : CustomMaxValue;
-
         /// <summary>
         /// Gets or sets the multiplier for gaining HumeShield.
         /// </summary>
         public float ShieldRegenerationMultiplier { get; set; } = 1;
 
-        /// <summary>
-        /// Gets or sets the maximum amount of HumeShield the player can have.
-        /// </summary>
-        public float CustomMaxValue { get; set; } = -1;
-
-        private float ShieldRegeneration => TryGetHsModule(out HumeShieldModuleBase controller) ? controller.HsRegeneration * ShieldRegenerationMultiplier : 0;
+        private float ShieldRegeneration
+        {
+            get
+            {
+                IHumeShieldProvider.GetForHub(Hub, out _, out _, out float hsRegen, out _);
+                return hsRegen * ShieldRegenerationMultiplier;
+            }
+        }
 
         /// <inheritdoc/>
         public override void Update()
         {
-            if (MaxValue == -1 && ShieldRegenerationMultiplier is 1)
+            if (ShieldRegenerationMultiplier is 1)
             {
                 base.Update();
                 return;
@@ -45,7 +44,7 @@ namespace Exiled.API.Features.CustomStats
             if (!NetworkServer.active)
                 return;
 
-            if (_valueDirty)
+            if (ValueDirty)
             {
                 new SyncedStatMessages.StatMessage()
                 {
@@ -53,7 +52,7 @@ namespace Exiled.API.Features.CustomStats
                     SyncedValue = CurValue,
                 }.SendToHubsConditionally(CanReceive);
                 _lastSent = CurValue;
-                _valueDirty = false;
+                ValueDirty = false;
             }
 
             if (ShieldRegeneration == 0)

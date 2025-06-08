@@ -38,35 +38,32 @@ namespace Exiled.Events.Patches.Events.Scp0492
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ConsumedCorpseEventArgs));
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
-
             Label returnLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(
-                index,
+                0,
                 new[]
                 {
-                    // Player.Get(base.Owner)
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    // base.Owner
+                    new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<ZombieRole>), nameof(StandardSubroutine<ZombieRole>.Owner))),
 
                     // base.CurRagdoll
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(RagdollAbilityBase<ZombieRole>), nameof(RagdollAbilityBase<ZombieRole>.CurRagdoll))),
 
-                    // ConsumingCorpseEventArgs ev = new(Player, Ragdoll, bool)
+                    // ConsumingCorpseEventArgs ev = new(ReferenceHub, Ragdoll)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ConsumedCorpseEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // Handlers.Scp049.OnSendingCall(ev)
+                    // Handlers.Scp049.OnConsumedCorpse(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Scp0492), nameof(Handlers.Scp0492.OnConsumedCorpse))),
                 });
 
-            // replace "base.Owner.playerStats.GetModule<HealthStat>().ServerHeal(100f)" with "base.Owner.playerStats.GetModule<HealthStat>().ServerHeal(ev.ConsumeHeal)"
-            offset = -1;
-            index = newInstructions.FindIndex(instruction => instruction.operand == (object)Method(typeof(HealthStat), nameof(HealthStat.ServerHeal))) + offset;
+            // replace "Scp0492ConsumingCorpseEventArgs(base.Owner, base.CurRagdoll, 100f);" with "Scp0492ConsumingCorpseEventArgs(base.Owner, base.CurRagdoll, ev.ConsumeHeal);"
+            int offset = 0;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_R4 && (float)x.operand == ZombieConsumeAbility.ConsumeHeal) + offset;
             newInstructions.RemoveAt(index);
 
             newInstructions.InsertRange(

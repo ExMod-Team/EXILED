@@ -24,11 +24,11 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="ItemDistributor.SpawnPickup" />.
+    /// Patches <see cref="ItemDistributor.ServerRegisterPickup" />.
     /// Adds the <see cref="Map.SpawningItem" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.SpawningItem))]
-    [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.CreatePickup))]
+    [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.ServerRegisterPickup))]
     internal static class SpawningItem
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

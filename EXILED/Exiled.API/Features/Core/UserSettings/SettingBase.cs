@@ -260,12 +260,42 @@ namespace Exiled.API.Features.Core.UserSettings
         }
 
         /// <summary>
+        /// Registers all settings from the specified collection to player.
+        /// </summary>
+        /// <param name="player">A player that will receive settings.</param>
+        /// <param name="settings">A collection of settings to register.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully registered.</returns>
+        /// <remarks>This method is used to sync new settings with players.</remarks>
+        public static IEnumerable<SettingBase> Register(Player player, IEnumerable<SettingBase> settings)
+        {
+            IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
+
+            List<SettingBase> result = new();
+
+            // Group settings by headers
+            foreach (IGrouping<HeaderSetting, SettingBase> grouping in grouped)
+            {
+                if (grouping.Key != null)
+                    result.Add(grouping.Key);
+
+                result.AddRange(grouping);
+            }
+
+            ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(result.Select(s => s.Base)).ToArray();
+            Settings.AddRange(result);
+
+            SendToPlayer(player);
+
+            return result;
+        }
+
+        /// <summary>
         /// Removes settings from players.
         /// </summary>
         /// <param name="predicate">Determines which players will receive this update.</param>
         /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
-        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register"/> provides an opportunity to update synced settings.</remarks>
+        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(IEnumerable{SettingBase},Func{Player,bool})"/> provides an opportunity to update synced settings.</remarks>
         public static IEnumerable<SettingBase> Unregister(Func<Player, bool> predicate = null, IEnumerable<SettingBase> settings = null)
         {
             List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
@@ -277,6 +307,27 @@ namespace Exiled.API.Features.Core.UserSettings
                 SendToAll();
             else
                 SendToAll(predicate);
+
+            ListPool<ServerSpecificSettingBase>.Pool.Return(list);
+
+            return list2;
+        }
+
+        /// <summary>
+        /// Removes settings from players.
+        /// </summary>
+        /// <param name="player">Determines which player will receive this update.</param>
+        /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
+        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(Player,IEnumerable{SettingBase})"/> provides an opportunity to update synced settings.</remarks>
+        public static IEnumerable<SettingBase> Unregister(Player player, IEnumerable<SettingBase> settings = null)
+        {
+            List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
+            List<SettingBase> list2 = new((settings ?? Settings).Where(setting => list.Remove(setting.Base)));
+
+            ServerSpecificSettingsSync.DefinedSettings = list.ToArray();
+
+            SendToPlayer(player);
 
             ListPool<ServerSpecificSettingBase>.Pool.Return(list);
 

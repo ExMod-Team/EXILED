@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     // Player.Get(base.OwnerHub)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Call, PropertyGetter(typeof(CharacterModel), nameof(CharacterModel.OwnerHub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(CharacterModel), nameof(CharacterModel.OwnerHub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // LandingEventArgs ev = new(Player)

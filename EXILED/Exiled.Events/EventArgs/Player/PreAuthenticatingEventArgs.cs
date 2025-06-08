@@ -13,7 +13,6 @@ namespace Exiled.Events.EventArgs.Player
 
     using LiteNetLib;
     using LiteNetLib.Utils;
-    using PluginAPI.Events;
 
 #pragma warning disable SA1600 //TODO:
 #pragma warning disable SA1309

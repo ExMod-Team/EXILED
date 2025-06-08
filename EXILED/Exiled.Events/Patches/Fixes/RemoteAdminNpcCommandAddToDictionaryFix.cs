@@ -16,6 +16,7 @@ namespace Exiled.Events.Patches.Fixes
     using Exiled.API.Features.Pools;
     using GameCore;
     using HarmonyLib;
+    using NetworkManagerUtils.Dummies;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

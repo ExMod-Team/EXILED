@@ -52,7 +52,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="RoomType"/> contains any SCP.</returns>
         public static bool IsScp(this RoomType room)
             => room is RoomType.Lcz173 or RoomType.Lcz330 or RoomType.Lcz914 or RoomType.Hcz049 or RoomType.Hcz079 or
-                RoomType.Hcz096 or RoomType.Hcz106 or RoomType.Hcz939;
+                RoomType.Hcz096 or RoomType.Hcz106 or RoomType.Hcz939 or RoomType.Hcz127;
 
         /// <summary>
         /// Converts the provided <see cref="FacilityZone"/> into the corresponding <see cref="ZoneType"/>.

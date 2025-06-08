@@ -20,7 +20,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="FlippingCoinEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
+        /// <param name="referenceHub">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="coin">
@@ -29,9 +29,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isTails">
         /// <inheritdoc cref="IsTails" />
         /// </param>
-        public FlippingCoinEventArgs(Player player, Coin coin, bool isTails)
+        public FlippingCoinEventArgs(ReferenceHub referenceHub, Coin coin, bool isTails)
         {
-            Player = player;
+            Player = Player.Get(referenceHub);
             Item = Item.Get(coin);
             IsTails = isTails;
         }

@@ -48,5 +48,10 @@ namespace Exiled.API.Enums
         /// Light Containment Zone checkpoint B elevator.
         /// </summary>
         LczB,
+
+        /// <summary>
+        /// Heavy Containment Zone ServerRoom elevator.
+        /// </summary>
+        ServerRoom,
     }
 }

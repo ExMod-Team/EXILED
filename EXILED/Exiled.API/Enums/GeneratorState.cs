@@ -20,9 +20,9 @@ namespace Exiled.API.Enums
     public enum GeneratorState : byte
     {
         /// <summary>
-        /// Generator is locked.
+        /// Generator is doing nothing.
         /// </summary>
-        None = 1,
+        None = 0,
 
         /// <summary>
         /// Generator is unlocked.

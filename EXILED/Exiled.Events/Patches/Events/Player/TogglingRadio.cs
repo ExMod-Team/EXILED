@@ -20,8 +20,6 @@ namespace Exiled.Events.Patches.Events.Player
 
     using InventorySystem.Items.Radio;
 
-    using PluginAPI.Events;
-
     using static HarmonyLib.AccessTools;
 
     /// <summary>
@@ -38,7 +36,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label retLabel = generator.DefineLabel();
 
-            Predicate<CodeInstruction> match = instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(PlayerRadioToggleEvent))[0];
+            Predicate<CodeInstruction> match = instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerTogglingRadioEventArgs))[0];
             int offset = -4;
             int index = newInstructions.FindIndex(match) + offset;
 

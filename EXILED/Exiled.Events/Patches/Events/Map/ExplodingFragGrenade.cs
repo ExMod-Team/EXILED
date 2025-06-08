@@ -62,53 +62,62 @@ namespace Exiled.Events.Patches.Events.Map
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_3) + offset;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_S && i.operand is LocalBuilder { LocalIndex: 5 }) + offset;
 
-            Label returnLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ExplodingGrenadeEventArgs));
 
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    // attacker;
-                    new(OpCodes.Ldarg_0),
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // attacker;
+                new(OpCodes.Ldarg_0),
 
-                    // position
-                    new(OpCodes.Ldarg_1),
+                // position
+                new(OpCodes.Ldarg_1),
 
-                    // grenade
-                    new(OpCodes.Ldarg_2),
+                // grenade
+                new(OpCodes.Ldarg_2),
 
-                    // Collider[]
-                    new(OpCodes.Ldloc_3),
+                // Collider[]
+                new(OpCodes.Ldloc_S, 5),
 
-                    // explosionType
-                    new(OpCodes.Ldarg_3),
+                // explosionType
+                new(OpCodes.Ldarg_3),
 
-                    // ExplodingGrenadeEventArgs ev = new(player, position, grenade, colliders, ExplosionType);
-                    new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Footprint), typeof(Vector3), typeof(ExplosionGrenade), typeof(Collider[]), typeof(ExplosionType) })),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc, ev.LocalIndex),
+                // ExplodingGrenadeEventArgs ev = new(Footprint, position, grenade, colliders, ExplosionType);
+                new(OpCodes.Newobj, DeclaredConstructor(typeof(ExplodingGrenadeEventArgs), new[] { typeof(Footprint), typeof(Vector3), typeof(ExplosionGrenade), typeof(Collider[]), typeof(ExplosionType) })),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc, ev.LocalIndex),
 
-                    // Map.OnExplodingGrenade(ev);
-                    new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnExplodingGrenade))),
+                // Map.OnExplodingGrenade(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Map), nameof(Handlers.Map.OnExplodingGrenade))),
 
-                    // if (!ev.IsAllowed)
-                    //     return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ExplodingGrenadeEventArgs), nameof(ExplodingGrenadeEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse, returnLabel),
+                // if (!ev.IsAllowed)
+                //     return;
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ExplodingGrenadeEventArgs), nameof(ExplodingGrenadeEventArgs.IsAllowed))),
+                new(OpCodes.Brtrue_S, continueLabel),
 
-                    // colliders = TrimColliders(ev, colliders)
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Ldloc_3),
-                    new(OpCodes.Call, Method(typeof(ExplodingFragGrenade), nameof(TrimColliders))),
-                    new(OpCodes.Stloc_3),
-                });
+                // HashSetPool<uint>.Shared.Return(hashSet);
+                new(OpCodes.Ldsfld, Field(typeof(NorthwoodLib.Pools.HashSetPool<uint>), nameof(NorthwoodLib.Pools.HashSetPool<uint>.Shared))),
+                new(OpCodes.Ldloc_2),
+                new(OpCodes.Callvirt, Method(typeof(NorthwoodLib.Pools.HashSetPool<uint>), nameof(NorthwoodLib.Pools.HashSetPool<uint>.Return))),
 
-            newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
+                // HashSetPool<uint>.Shared.Return(hashSet2);
+                new(OpCodes.Ldsfld, Field(typeof(NorthwoodLib.Pools.HashSetPool<uint>), nameof(NorthwoodLib.Pools.HashSetPool<uint>.Shared))),
+                new(OpCodes.Ldloc_3),
+                new(OpCodes.Callvirt, Method(typeof(NorthwoodLib.Pools.HashSetPool<uint>), nameof(NorthwoodLib.Pools.HashSetPool<uint>.Return))),
+
+                // return;
+                new(OpCodes.Ret),
+
+                // colliders = TrimColliders(ev, colliders)
+                new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex).WithLabels(continueLabel),
+                new(OpCodes.Ldloc_S, 5),
+                new(OpCodes.Call, Method(typeof(ExplodingFragGrenade), nameof(TrimColliders))),
+                new(OpCodes.Stloc_S, 5),
+            });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

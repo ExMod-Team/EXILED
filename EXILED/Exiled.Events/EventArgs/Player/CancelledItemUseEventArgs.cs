@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Player
     using API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+    using InventorySystem.Items.Usables;
 
     /// <summary>
     /// Contains all information before a player cancels usage of an item.
@@ -19,14 +20,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="CancelledItemUseEventArgs" /> class.
         /// </summary>
-        /// <param name="player">The player who's stopping the use of an item.</param>
-        /// <param name="item">
+        /// <param name="hub">
+        /// <inheritdoc cref="Player" />
+        /// </param>
+        /// <param name="usableItem">
         /// <inheritdoc cref="Usable" />
         /// </param>
-        public CancelledItemUseEventArgs(Player player, Item item)
+        public CancelledItemUseEventArgs(ReferenceHub hub, UsableItem usableItem)
         {
-            Player = player;
-            Usable = item is Usable usable ? usable : null;
+            Player = Player.Get(hub);
+            Usable = Item.Get<Usable>(usableItem);
         }
 
         /// <summary>

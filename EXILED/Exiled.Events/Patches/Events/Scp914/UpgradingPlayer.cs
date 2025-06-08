@@ -16,6 +16,7 @@ namespace Exiled.Events.Patches.Events.Scp914
     using Exiled.Events.EventArgs.Scp914;
     using global::Scp914;
     using HarmonyLib;
+    using Mono.Cecil.Cil;
     using PlayerRoles.FirstPersonControl;
     using UnityEngine;
 
@@ -41,9 +42,8 @@ namespace Exiled.Events.Patches.Events.Scp914
             LocalBuilder curSetting = generator.DeclareLocal(typeof(Scp914KnobSetting));
             LocalBuilder ev = generator.DeclareLocal(typeof(UpgradingPlayerEventArgs));
 
-            // Find override position
-            const int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(FpcExtensionMethods), nameof(FpcExtensionMethods.TryOverridePosition)))) + offset;
+            int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_0) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -106,18 +106,13 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Stloc_S, curSetting.LocalIndex),
                 });
 
-            // Find InventoryUpgrade, and set position there.
-            index = newInstructions.FindIndex(
-                instruction => instruction.LoadsField(Field(typeof(Scp914Upgrader), nameof(Scp914Upgrader.OnInventoryItemUpgraded))));
-
-            Label continueLabel = generator.DefineLabel();
-
-            // Find iterator jump by going -3 from leave_s
-            int continueIndex = newInstructions.FindIndex(index, instruction => instruction.opcode == OpCodes.Leave_S) - 3;
-
-            newInstructions[continueIndex].labels.Add(continueLabel);
+            offset = 1;
+            index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(LabApi.Events.Arguments.Scp914Events.Scp914ProcessingInventoryItemEventArgs), nameof(LabApi.Events.Arguments.Scp914Events.Scp914ProcessingInventoryItemEventArgs.IsAllowed)))) + offset;
+            Label continueLabel = (Label)newInstructions[index].operand;
 
             LocalBuilder ev2 = generator.DeclareLocal(typeof(UpgradingInventoryItemEventArgs));
+            offset = 1;
+            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Stloc_S && x.operand is LocalBuilder { LocalIndex: 10 }) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -132,7 +127,7 @@ namespace Exiled.Events.Patches.Events.Scp914
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // itemBase
-                    new(OpCodes.Ldloc_S, 7),
+                    new(OpCodes.Ldloc_S, 8),
 
                     // setting
                     new(OpCodes.Ldarg_S, 3),

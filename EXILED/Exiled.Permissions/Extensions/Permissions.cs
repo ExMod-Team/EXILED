@@ -105,7 +105,7 @@ namespace Exiled.Permissions.Extensions
                 {
                     try
                     {
-                        if (string.Equals(group.Key, "user", StringComparison.OrdinalIgnoreCase) || ServerStatic.PermissionsHandler._groups.ContainsKey(group.Key))
+                        if (string.Equals(group.Key, "user", StringComparison.OrdinalIgnoreCase) || ServerStatic.PermissionsHandler.Groups.ContainsKey(group.Key))
                         {
                             deserializedPerms.Add(group.Key, Deserializer.Deserialize<Group>(Serializer.Serialize(group.Value)));
                         }
@@ -207,7 +207,7 @@ namespace Exiled.Permissions.Extensions
             Log.Debug($"UserID: {player.UserId} | PlayerId: {player.Id}");
             Log.Debug($"Permission string: {permission}");
 
-            string plyGroupKey = player.Group is not null ? ServerStatic.GetPermissionsHandler()._groups.FirstOrDefault(g => g.Value.EqualsTo(player.Group)).Key : null;
+            string plyGroupKey = player.Group is not null ? ServerStatic.PermissionsHandler.Groups.FirstOrDefault(g => g.Value.EqualsTo(player.Group)).Key : null;
             Log.Debug($"GroupKey: {plyGroupKey ?? "(null)"}");
 
             if (plyGroupKey is null || !Groups.TryGetValue(plyGroupKey, out Group group))

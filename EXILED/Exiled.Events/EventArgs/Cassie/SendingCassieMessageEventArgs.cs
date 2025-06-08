@@ -26,12 +26,20 @@ namespace Exiled.Events.EventArgs.Cassie
         /// <param name="makeNoise">
         /// <inheritdoc cref="MakeNoise" />
         /// </param>
+        /// <param name="customAnnouncement">
+        /// <inheritdoc cref="IsCustomAnnouncement" />
+        /// </param>
+        /// <param name="customSubtitles">
+        /// <inheritdoc cref="CustomSubtitles" />
+        /// </param>
         /// <param name="isAllowed">Indicates whether the event can be executed.</param>
-        public SendingCassieMessageEventArgs(string words, bool makeHold, bool makeNoise, bool isAllowed = true)
+        public SendingCassieMessageEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement, string customSubtitles, bool isAllowed = true)
         {
             Words = words;
+            CustomSubtitles = customSubtitles;
             MakeHold = makeHold;
             MakeNoise = makeNoise;
+            IsCustomAnnouncement = customAnnouncement;
             IsAllowed = isAllowed;
         }
 
@@ -39,6 +47,11 @@ namespace Exiled.Events.EventArgs.Cassie
         /// Gets or sets the message.
         /// </summary>
         public string Words { get; set; }
+
+        /// <summary>
+        /// Gets or sets the message subtitles.
+        /// </summary>
+        public string CustomSubtitles { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the message should be held.
@@ -54,5 +67,10 @@ namespace Exiled.Events.EventArgs.Cassie
         /// Gets or sets a value indicating whether the message can be sent.
         /// </summary>
         public bool IsAllowed { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the message can be sent.
+        /// </summary>
+        public bool IsCustomAnnouncement { get; set; }
     }
 }
