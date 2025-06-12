@@ -26,10 +26,11 @@ namespace Exiled.Events.Patches.Events.Warhead
     /// Adds the <see cref="Warhead.ChangingLeverStatus" /> event.
     /// </summary>
     [EventPatch(typeof(Warhead), nameof(Warhead.ChangingLeverStatus))]
-    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdUsePanel__AlphaPanelOperations))]
+
+    // [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdUsePanel__AlphaPanelOperations))]
     internal static class ChangingLeverStatus
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        /*private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
@@ -72,6 +73,6 @@ namespace Exiled.Events.Patches.Events.Warhead
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
-        }
+        }*/
     }
 }

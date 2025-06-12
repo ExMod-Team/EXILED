@@ -28,7 +28,6 @@ Last Update (14.1.0.0)
 - [ActionName](#actionname)
 - [Activity](#activity)
 - [AdminFlags](#adminflags)
-- [AlphaPanelOperations](#alphapaneloperations)
 - [AnimItemLayer3p](#animitemlayer3p)
 - [AnimState3p](#animstate3p)
 - [AttachmentDescriptiveAdvantages](#attachmentdescriptiveadvantages)
@@ -119,6 +118,7 @@ Last Update (14.1.0.0)
 - [ExampleId](#exampleid)
 - [ExampleId](#exampleid)
 - [ExplosionType](#explosiontype)
+- [ExportPreset](#exportpreset)
 - [FacilityZone](#facilityzone)
 - [Faction](#faction)
 - [FailReason](#failreason)
@@ -141,7 +141,6 @@ Last Update (14.1.0.0)
 - [FreezingMode](#freezingmode)
 - [FriendlyFireAction](#friendlyfireaction)
 - [FriendlyFireInteraction](#friendlyfireinteraction)
-- [Generator079Operations](#generator079operations)
 - [GeneratorColliderId](#generatorcolliderid)
 - [GeneratorFlags](#generatorflags)
 - [GeoblockingMode](#geoblockingmode)
@@ -211,13 +210,16 @@ Last Update (14.1.0.0)
 - [NtpMode](#ntpmode)
 - [NullableBoolValue](#nullableboolvalue)
 - [OpenerEventType](#openereventtype)
+- [OptOutExportBehavior](#optoutexportbehavior)
 - [OpusApplicationType](#opusapplicationtype)
 - [OpusCtlGetRequest](#opusctlgetrequest)
 - [OpusCtlSetRequest](#opusctlsetrequest)
 - [OpusStatusCode](#opusstatuscode)
+- [OtherAudioSetting](#otheraudiosetting)
 - [OtherCondition](#othercondition)
 - [OutputCodes](#outputcodes)
 - [PacketProperty](#packetproperty)
+- [PanelColliderId](#panelcolliderid)
 - [ParameterMixingMode](#parametermixingmode)
 - [ParseResult](#parseresult)
 - [PDTeleportType](#pdteleporttype)
@@ -326,7 +328,6 @@ Last Update (14.1.0.0)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
 - [VariantType](#varianttype)
-- [VcAudioSetting](#vcaudiosetting)
 - [VcMuteFlags](#vcmuteflags)
 - [VcPrivacyFlags](#vcprivacyflags)
 - [VersionType](#versiontype)
@@ -482,17 +483,6 @@ Last Update (14.1.0.0)
  [1] = Noclip
  [2] = GodMode
  [4] = BypassMode
-```
-
-</details>
-
-### AlphaPanelOperations
-
-<details><summary><b>PlayerInteract+AlphaPanelOperations</b></summary>
-
-```
- [0] = Cancel
- [1] = Lever
 ```
 
 </details>
@@ -1894,6 +1884,16 @@ Last Update (14.1.0.0)
 
 </details>
 
+### ExportPreset
+
+<details><summary><b>Metrics.DeathsCollector+ExportPreset</b></summary>
+
+```
+ [0] = DeathReasons
+```
+
+</details>
+
 ### FacilityZone
 
 <details><summary><b>MapGeneration.FacilityZone</b></summary>
@@ -2197,18 +2197,6 @@ Last Update (14.1.0.0)
 
 </details>
 
-### Generator079Operations
-
-<details><summary><b>PlayerInteract+Generator079Operations</b></summary>
-
-```
- [0] = Door
- [1] = Tablet
- [2] = Cancel
-```
-
-</details>
-
 ### GeneratorColliderId
 
 <details><summary><b>MapGeneration.Distributors.Scp079Generator+GeneratorColliderId</b></summary>
@@ -2346,6 +2334,7 @@ Last Update (14.1.0.0)
  [16] = PackedULong
  [17] = Scp330Hint
  [18] = SSKeybind
+ [19] = AnimationCurve
 ```
 
 </details>
@@ -3331,6 +3320,18 @@ Last Update (14.1.0.0)
 
 </details>
 
+### OptOutExportBehavior
+
+<details><summary><b>Metrics.ScpPreferencesCollector+OptOutExportBehavior</b></summary>
+
+```
+ [0] = Include
+ [1] = Exclude
+ [2] = TreatAsZero
+```
+
+</details>
+
 ### OpusApplicationType
 
 <details><summary><b>VoiceChat.Codec.Enums.OpusApplicationType</b></summary>
@@ -3410,6 +3411,18 @@ Last Update (14.1.0.0)
 
 </details>
 
+### OtherAudioSetting
+
+<details><summary><b>UserSettings.AudioSettings.OtherAudioSetting</b></summary>
+
+```
+ [0] = NoiseReduction
+ [1] = ProxVcReverbIntensity
+ [2] = SpatialAnnouncements
+```
+
+</details>
+
 ### OtherCondition
 
 <details><summary><b>InventorySystem.Items.Firearms.Extensions.ConditionalEvaluator+OtherCondition</b></summary>
@@ -3463,6 +3476,17 @@ Last Update (14.1.0.0)
  [15] = InvalidProtocol
  [16] = NatMessage
  [17] = Empty
+```
+
+</details>
+
+### PanelColliderId
+
+<details><summary><b>AlphaWarheadNukesitePanel+PanelColliderId</b></summary>
+
+```
+ [1] = Cancel
+ [2] = Lever
 ```
 
 </details>
@@ -3641,6 +3665,7 @@ Last Update (14.1.0.0)
  [134217728] = FriendlyFireDetectorImmunity
  [268435456] = FriendlyFireDetectorTempDisable
  [536870912] = ServerLogLiveFeed
+ [1073741824] = ExecuteAs
 ```
 
 </details>
@@ -3860,6 +3885,7 @@ Last Update (14.1.0.0)
  [1] = ConfirmThrowWeak
  [2] = ConfirmThrowFullForce
  [3] = CancelThrow
+ [4] = ForceCancel
 ```
 
 </details>
@@ -5342,16 +5368,6 @@ Last Update (14.1.0.0)
  [0] = Original
  [1] = Disguise
  [2] = Reveal
-```
-
-</details>
-
-### VcAudioSetting
-
-<details><summary><b>UserSettings.AudioSettings.VcAudioSetting</b></summary>
-
-```
- [0] = NoiseReduction
 ```
 
 </details>

@@ -25,11 +25,12 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
         /// <param name="suggested"><inheritdoc cref="KeyCode"/></param>
         /// <param name="preventInteractionOnGUI"><inheritdoc cref="PreventInteractionOnGUI"/></param>
+        /// <param name="allowSpectatorTrigger"><inheritdoc cref="AllowSpectatorTrigger"/></param>
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
-            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, hintDescription), header, onChanged)
+        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, bool allowSpectatorTrigger = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, allowSpectatorTrigger, hintDescription), header, onChanged)
         {
             Base = (SSKeybindSetting)base.Base;
         }
@@ -59,6 +60,15 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             get => Base.PreventInteractionOnGUI;
             set => Base.PreventInteractionOnGUI = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the interaction is prevented in spectator roles.
+        /// </summary>
+        public bool AllowSpectatorTrigger
+        {
+            get => Base.AllowSpectatorTrigger;
+            set => Base.AllowSpectatorTrigger = value;
         }
 
         /// <summary>

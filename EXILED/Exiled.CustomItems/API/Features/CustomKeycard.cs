@@ -75,10 +75,9 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         public override void Give(Player player, Item item, bool displayMessage = true)
         {
-            base.Give(player, item, displayMessage);
-
             if (item.Is(out Keycard card))
                 SetupKeycard(card);
+            base.Give(player, item, displayMessage);
         }
 
         /// <inheritdoc/>

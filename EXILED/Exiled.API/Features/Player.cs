@@ -1164,6 +1164,11 @@ namespace Exiled.API.Features
         protected HealthStat CustomHealthStat { get; set; }
 
         /// <summary>
+        /// Gets or sets a <see cref="ScaleController"/>.
+        /// </summary>
+        protected FpcScaleController ScaleController { get; set; }
+
+        /// <summary>
         /// Converts LabApi player to EXILED player.
         /// </summary>
         /// <param name="player">The LabApi player.</param>
@@ -2072,7 +2077,7 @@ namespace Exiled.API.Features
 
             try
             {
-                ReferenceHub.transform.localScale = scale;
+                ScaleController.Scale = scale;
 
                 foreach (Player target in viewers)
                     Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, target.Connection });
@@ -2094,12 +2099,12 @@ namespace Exiled.API.Features
 
             try
             {
-                ReferenceHub.transform.localScale = fakeScale;
+                ScaleController.Scale = fakeScale;
 
                 foreach (Player target in viewers)
                     Server.SendSpawnMessage.Invoke(null, new object[] { NetworkIdentity, target.Connection });
 
-                ReferenceHub.transform.localScale = currentScale;
+                ScaleController.Scale = currentScale;
             }
             catch (Exception ex)
             {
