@@ -49,7 +49,7 @@ namespace Exiled.Events.EventArgs.Server
         /// <summary>
         /// Gets or sets a value indicating whether the round is ended by API call.
         /// </summary>
-        [Obsolete("This event is now call only when it's haven't been force eneded")]
+        [Obsolete("This event is now triggered only when it hasn't been forcefully ended.")]
         public bool IsForceEnded
         {
             get => false; // This event is now call only when ForceEnd method haven't been called

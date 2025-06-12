@@ -369,5 +369,8 @@ namespace Exiled.API.Enums
 
         [Prefab(2842703865, "KeycardPickup_Chaos")]
         KeycardPickupChaos,
+
+        [Prefab(162530276, "TextToy")]
+        TextToy,
     }
 }

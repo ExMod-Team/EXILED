@@ -8,7 +8,7 @@ You can download exiled manually following this steps:
 
 ### Pick a release
 
-You can select a release inside [our official GitHub repo](https://github.com/ExMod-Team/EXILED/releases/).
+You can select a release inside [our official GitHub repo](https://github.com/ExSLMod-Team/EXILED/releases/).
 
 ### Download the release
 

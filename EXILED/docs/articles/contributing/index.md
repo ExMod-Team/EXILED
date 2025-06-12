@@ -6,7 +6,7 @@ title: Contributing to EXILED
 This is a simple tutorial guiding you to contribute to our framework.
 
 ### Forking EXILED
-First, create a fork of our [GitHub repository](https://github.com/ExMod-Team/EXILED).
+First, create a fork of our [GitHub repository](https://github.com/ExSLMod-Team/EXILED).
 
 Then, clone it to your computer like so: `git clone https://github.com/your-username/EXILED.git`
 
@@ -14,7 +14,7 @@ Open a terminal in your forked EXILED folder and run ```git checkout dev```. Thi
 
 ### Setting `EXILED_REFERENCES`
 
-If you haven't already, install the `SCP: Secret Laboratory Dedicated Server` through Steam or extract [this zip file](https://ExMod-Team.github.io/SL-References/Dev.zip) to an easily accessible folder.
+If you haven't already, install the `SCP: Secret Laboratory Dedicated Server` through Steam or extract [this zip file](https://ExSLMod-Team.github.io/SL-References/Dev.zip) to an easily accessible folder.
 
 #### Windows users
 Open the Environment Variables menu by searching for `Environment Variables` in the Start Menu.
