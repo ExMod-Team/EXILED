@@ -3059,7 +3059,7 @@ namespace Exiled.API.Features
         public void ShowHint(Hint hint)
         {
             if (hint.Show)
-                ShowHint(hint);
+                ShowHint(hint.Content, hint.Duration);
         }
 
         /// <summary>
