@@ -3021,8 +3021,35 @@ namespace Exiled.API.Features
         /// <param name="duration">The duration the text will be on screen.</param>
         public void ShowHint(string message, float duration = 3f)
         {
+            ShowHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration);
+        }
+
+        /// <summary>
+        /// Shows a hint to the player with the specified message, hint effects, and duration.
+        /// </summary>
+        /// <param name="message">The message to be shown as a hint.</param>
+        /// <param name="hintEffects">The array of hint effects to apply.</param>
+        /// <param name="duration">The duration the hint will be displayed, in seconds.</param>
+        public void ShowHint(string message, HintEffect[] hintEffects, float duration = 3f)
+        {
+            ShowHint(message, new HintParameter[] { new StringHintParameter(message) }, hintEffects, duration);
+        }
+
+        /// <summary>
+        /// Shows a hint to the player with the specified message, hint parameters, hint effects, and duration.
+        /// </summary>
+        /// <param name="message">The message to be shown as a hint.</param>
+        /// <param name="hintParameters">The array of hint parameters to use.</param>
+        /// <param name="hintEffects">The array of hint effects to apply.</param>
+        /// <param name="duration">The duration the hint will be displayed, in seconds.</param>
+        public void ShowHint(string message, HintParameter[] hintParameters, HintEffect[] hintEffects, float duration = 3f)
+        {
             message ??= string.Empty;
-            HintDisplay.Show(new TextHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration));
+            HintDisplay.Show(new TextHint(
+                message,
+                (!hintParameters.IsEmpty()) ? hintParameters : new HintParameter[] { new StringHintParameter(message) },
+                hintEffects,
+                duration));
         }
 
         /// <summary>
