@@ -25,8 +25,8 @@
 
     <Copyright>Copyright © $(Authors) 2020 - $([System.DateTime]::Now.ToString("yyyy"))</Copyright>
     <RepositoryType>Git</RepositoryType>
-    <RepositoryUrl>https://github.com/ExSLMod-Team/EXILED</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/ExSLMod-Team/EXILED</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Exmod-Team/EXILED</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Exmod-Team/EXILED</PackageProjectUrl>
     <PackageLicenseExpression>CC-BY-SA-3.0</PackageLicenseExpression>
 
     <DefineConstants Condition="$(PublicBeta) == 'true'">$(DefineConstants);PUBLIC_BETA</DefineConstants>

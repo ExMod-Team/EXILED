@@ -9,9 +9,9 @@
     <owners>ExMod-Team</owners>
     <copyright>Copyright © ExMod Team 2024 - $year$</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <repository type="Git" url="https://github.com/ExSLMod-Team/EXILED" />
-    <licenseUrl>https://github.com/ExSLMod-Team/EXILED/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/ExSLMod-Team/EXILED</projectUrl>
+    <repository type="Git" url="https://github.com/Exmod-Team/EXILED" />
+    <licenseUrl>https://github.com/Exmod-Team/EXILED/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/Exmod-Team/EXILED</projectUrl>
     <icon>images\Exiled_Icon.png</icon>
     <description>Plugin framework for SCP: Secret Laboratory.</description>
 

@@ -136,7 +136,7 @@ namespace Exiled.Loader
                 Timeout = TimeSpan.FromSeconds(480),
             };
 
-            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/ExSLMod-Team/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
+            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/Exmod-Team/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
 
             return client;
         }

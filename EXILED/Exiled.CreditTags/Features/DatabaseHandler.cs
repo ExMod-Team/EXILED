@@ -17,7 +17,7 @@ namespace Exiled.CreditTags.Features
 
     public static class DatabaseHandler
     {
-        private const string Url = "https://raw.githubusercontent.com/ExSLMod-Team/CreditTags/main/data.yml";
+        private const string Url = "https://raw.githubusercontent.com/Exmod-Team/CreditTags/main/data.yml";
         private const string ETagCacheFileName = "etag_cache.txt";
         private const string DatabaseCacheFileName = "data.yml";
         private const int CacheTimeInMinutes = 5;
