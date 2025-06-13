@@ -107,7 +107,7 @@ namespace Exiled.Events.Patches.Events.Player
             });
 
             const int offset = 1;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_2) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -116,7 +116,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingItemEventArgs), nameof(DroppingItemEventArgs.Player))),
 
                 // ItemPickupBase
-                new(OpCodes.Ldloc_1),
+                new(OpCodes.Ldloc_2),
 
                 // ev.IsThrown
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
