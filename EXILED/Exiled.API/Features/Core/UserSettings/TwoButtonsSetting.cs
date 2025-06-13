@@ -28,8 +28,25 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+        [Obsolete("Use the constructor without the Header instead.")]
+        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
             : base(new SSTwoButtonsSetting(id, label, firstOption, secondOption, defaultIsSecond, hintDescription), header, onChanged)
+        {
+            Base = (SSTwoButtonsSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwoButtonsSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="firstOption"><inheritdoc cref="FirstOption"/></param>
+        /// <param name="secondOption"><inheritdoc cref="SecondOption"/></param>
+        /// <param name="defaultIsSecond"><inheritdoc cref="IsSecondDefault"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond = false, string hintDescription = "", Action<Player, SettingBase> onChanged = null)
+            : base(new SSTwoButtonsSetting(id, label, firstOption, secondOption, defaultIsSecond, hintDescription), onChanged)
         {
             Base = (SSTwoButtonsSetting)base.Base;
         }
