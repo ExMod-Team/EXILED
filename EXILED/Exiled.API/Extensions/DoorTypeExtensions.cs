@@ -90,8 +90,8 @@ namespace Exiled.API.Extensions
         /// <returns>Returns <c>true</c> if the <see cref="DoorType"/> is a door from HCZ; otherwise, <c>false</c>.</returns>
         public static bool IsHCZ(this DoorType door) => door is DoorType.HczArmory or DoorType.Scp049Armory or DoorType.Scp049Gate or DoorType.Scp079Armory
             or DoorType.Scp079First or DoorType.Scp079Second or DoorType.Scp096 or DoorType.Scp106Primary or DoorType.Scp106Secondary or DoorType.Scp173NewGate
-            or DoorType.Scp939Cryo or DoorType.ElevatorScp049 or DoorType.HeavyBulkDoor or DoorType.HeavyContainmentDoor or DoorType.HIDChamber or DoorType.HIDLower
-            or DoorType.HIDUpper or DoorType.CheckpointEzHczA or DoorType.CheckpointEzHczB or DoorType.CheckpointGateA or DoorType.CheckpointGateB;
+            or DoorType.Scp939Cryo or DoorType.ElevatorScp049 or DoorType.HeavyBulkDoor or DoorType.HeavyContainmentDoor or DoorType.HIDChamber or DoorType.HIDLab
+            or DoorType.Hcz127Lab or DoorType.CheckpointEzHczA or DoorType.CheckpointEzHczB or DoorType.CheckpointGateA or DoorType.CheckpointGateB;
 
         /// <summary>
         /// Checks if a <see cref="DoorType"/> is located in the Entrance Zone (EZ).
