@@ -71,6 +71,16 @@ namespace Exiled.Events.Handlers
         public static Event<EarningAchievementEventArgs> EarningAchievement { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> executes a Remote Admin command.
+        /// </summary>
+        public static Event<ExecutingRemoteAdminCommandEventArgs> ExecutingRemoteAdminCommand { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> executes a Client command.
+        /// </summary>
+        public static Event<ExecutingClientCommandEventArgs> ExecutingClientCommand { get; set; } = new();
+
+        /// <summary>
         /// Invoked before the player starts to use an <see cref="API.Features.Items.Usable"/>. In other words, it is invoked just before the animation starts.
         /// </summary>
         /// <remarks>
@@ -948,6 +958,18 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="DamagingShootingTargetEventArgs"/> instance.</param>
         public static void OnDamagingShootingTarget(DamagingShootingTargetEventArgs ev) => DamagingShootingTarget.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="Player"/> executes a Remote Admin command.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExecutingRemoteAdminCommandEventArgs"/> instance.</param>
+        public static void OnExecutingRemoteAdminCommand(ExecutingRemoteAdminCommandEventArgs ev) => ExecutingRemoteAdminCommand.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="Player"/> executes a Client command.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExecutingClientCommandEventArgs"/> instance.</param>
+        public static void OnExecutingClientCommand(ExecutingClientCommandEventArgs ev) => ExecutingClientCommand.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> flips a coin.

@@ -30,7 +30,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after the start of a new round.
         /// </summary>
-        public static Event RoundStarted { get; set; } = new();
+        public static Event<RoundStartedEventArgs> RoundStarted { get; set; } = new();
 
         /// <summary>
         /// Invoked before ending a round.
@@ -135,7 +135,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called after the start of a new round.
         /// </summary>
-        public static void OnRoundStarted() => RoundStarted.InvokeSafely();
+        /// <param name="ev">The <see cref="RoundStartedEventArgs"/> instance.</param>
+        public static void OnRoundStarted(RoundStartedEventArgs ev) => RoundStarted.InvokeSafely(ev);
 
         /// <summary>
         /// Called before ending a round.

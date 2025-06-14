@@ -9,21 +9,25 @@ namespace Exiled.Events
 {
     using System;
     using System.Diagnostics;
+    using System.Linq;
 
-    using API.Enums;
-    using API.Features;
     using CentralAuth;
+    using Exiled.API.Enums;
+    using Exiled.API.Features;
     using Exiled.API.Features.Core.UserSettings;
+    using Exiled.Events.EventArgs.Server;
     using Exiled.Events.Features;
+    using GameCore;
     using HarmonyLib;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.RoleAssign;
-
     using Respawning;
     using UnityEngine.SceneManagement;
     using UserSettings.ServerSpecific;
+
+    using Log = Exiled.API.Features.Log;
 
     /// <summary>
     /// Patch and unpatch events into the game.
@@ -50,16 +54,11 @@ namespace Exiled.Events
         {
             instance = this;
             base.OnEnabled();
-
             Stopwatch watch = Stopwatch.StartNew();
-
             Patch();
-
             watch.Stop();
-
             Log.Info($"{(Config.UseDynamicPatching ? "Non-event" : "All")} patches completed in {watch.Elapsed}");
             PlayerAuthenticationManager.OnInstanceModeChanged -= RoleAssigner.CheckLateJoin;
-
             CustomNetworkManager.OnClientStarted += Handlers.Internal.ClientStarted.OnClientStarted;
             SceneManager.sceneUnloaded += Handlers.Internal.SceneUnloaded.OnSceneUnloaded;
             MapGeneration.SeedSynchronizer.OnGenerationFinished += Handlers.Internal.MapGenerated.OnMapGenerated;
@@ -71,22 +70,20 @@ namespace Exiled.Events
             Handlers.Scp049.ActivatingSense += Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified += Handlers.Internal.Round.OnVerified;
             Handlers.Map.ChangedIntoGrenade += Handlers.Internal.ExplodingGrenade.OnChangedIntoGrenade;
-
-            CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
+            CharacterClassManager.OnRoundStarted += () => Handlers.Server.OnRoundStarted(new RoundStartedEventArgs(
+                DateTime.UtcNow,
+                Player.List.Where(p => !p.IsNPC && !p.IsHost).Count(),
+                !ConfigFile.ServerConfig.GetBool("end_round_on_one_player", false)));
             WaveManager.OnWaveSpawned += Handlers.Server.OnRespawnedTeam;
             InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
             InventorySystem.InventoryExtensions.OnItemRemoved += Handlers.Player.OnItemRemoved;
-
             RagdollManager.OnRagdollSpawned += Handlers.Internal.RagdollList.OnSpawnedRagdoll;
             RagdollManager.OnRagdollRemoved += Handlers.Internal.RagdollList.OnRemovedRagdoll;
             ItemPickupBase.OnPickupAdded += Handlers.Internal.PickupEvent.OnSpawnedPickup;
             ItemPickupBase.OnPickupDestroyed += Handlers.Internal.PickupEvent.OnRemovedPickup;
-
             AdminToys.AdminToyBase.OnAdded += Handlers.Internal.AdminToyList.OnAddedAdminToys;
             AdminToys.AdminToyBase.OnRemoved += Handlers.Internal.AdminToyList.OnRemovedAdminToys;
-
             ServerSpecificSettingsSync.ServerOnSettingValueReceived += SettingBase.OnSettingUpdated;
-
             ServerConsole.ReloadServerName();
         }
 
@@ -94,9 +91,7 @@ namespace Exiled.Events
         public override void OnDisabled()
         {
             base.OnDisabled();
-
             Unpatch();
-
             CustomNetworkManager.OnClientStarted -= Handlers.Internal.ClientStarted.OnClientStarted;
             SceneManager.sceneUnloaded -= Handlers.Internal.SceneUnloaded.OnSceneUnloaded;
             MapGeneration.SeedSynchronizer.OnGenerationFinished -= Handlers.Internal.MapGenerated.OnMapGenerated;
@@ -108,9 +103,10 @@ namespace Exiled.Events
             Handlers.Scp049.ActivatingSense -= Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified -= Handlers.Internal.Round.OnVerified;
             Handlers.Map.ChangedIntoGrenade -= Handlers.Internal.ExplodingGrenade.OnChangedIntoGrenade;
-
-            CharacterClassManager.OnRoundStarted -= Handlers.Server.OnRoundStarted;
-
+            CharacterClassManager.OnRoundStarted -= () => Handlers.Server.OnRoundStarted(new RoundStartedEventArgs(
+                DateTime.UtcNow,
+                Player.List.Where(p => !p.IsNPC && !p.IsHost).Count(),
+                !ConfigFile.ServerConfig.GetBool("end_round_on_one_player", false)));
             InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
             InventorySystem.InventoryExtensions.OnItemRemoved -= Handlers.Player.OnItemRemoved;
             WaveManager.OnWaveSpawned -= Handlers.Server.OnRespawnedTeam;
@@ -118,7 +114,6 @@ namespace Exiled.Events
             RagdollManager.OnRagdollRemoved -= Handlers.Internal.RagdollList.OnRemovedRagdoll;
             ItemPickupBase.OnPickupAdded -= Handlers.Internal.PickupEvent.OnSpawnedPickup;
             ItemPickupBase.OnPickupDestroyed -= Handlers.Internal.PickupEvent.OnRemovedPickup;
-
             ServerSpecificSettingsSync.ServerOnSettingValueReceived -= SettingBase.OnSettingUpdated;
         }
 
@@ -135,7 +130,6 @@ namespace Exiled.Events
                 Harmony.DEBUG = true;
 #endif
                 Patcher.PatchAll(!Config.UseDynamicPatching, out int failedPatch);
-
                 if (failedPatch == 0)
                     Log.Debug("Events patched successfully!");
                 else

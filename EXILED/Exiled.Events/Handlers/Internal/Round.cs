@@ -21,6 +21,7 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.API.Structs;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp049;
+    using Exiled.Events.EventArgs.Server;
     using Exiled.Loader;
     using Exiled.Loader.Features;
     using InventorySystem;
@@ -73,7 +74,7 @@ namespace Exiled.Events.Handlers.Internal
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRoundStarted" />
-        public static void OnRoundStarted() => MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_START);
+        public static void OnRoundStarted(RoundStartedEventArgs ev) => MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_START);
 
         /// <inheritdoc cref="Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
         public static void OnChangingRole(ChangingRoleEventArgs ev)

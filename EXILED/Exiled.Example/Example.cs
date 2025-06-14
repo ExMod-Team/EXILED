@@ -92,6 +92,8 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Player.Shooting += playerHandler.OnShooting;
             Exiled.Events.Handlers.Player.ReloadingWeapon += playerHandler.OnReloading;
             Exiled.Events.Handlers.Player.ReceivingEffect += playerHandler.OnReceivingEffect;
+            Exiled.Events.Handlers.Player.ExecutingRemoteAdminCommand += playerHandler.OnExecuteRemoteAdminCommand;
+            Exiled.Events.Handlers.Player.ExecutingClientCommand += playerHandler.OnExecuteClientCommand;
 
             Exiled.Events.Handlers.Warhead.Stopping += warheadHandler.OnStopping;
             Exiled.Events.Handlers.Warhead.Starting += warheadHandler.OnStarting;
@@ -133,6 +135,8 @@ namespace Exiled.Example
             Exiled.Events.Handlers.Player.EscapingPocketDimension -= playerHandler.OnEscapingPocketDimension;
             Exiled.Events.Handlers.Player.UnlockingGenerator -= playerHandler.OnUnlockingGenerator;
             Exiled.Events.Handlers.Player.PreAuthenticating -= playerHandler.OnPreAuthenticating;
+            Exiled.Events.Handlers.Player.ExecutingRemoteAdminCommand -= playerHandler.OnExecuteRemoteAdminCommand;
+            Exiled.Events.Handlers.Player.ExecutingClientCommand -= playerHandler.OnExecuteClientCommand;
 
             Exiled.Events.Handlers.Warhead.Stopping -= warheadHandler.OnStopping;
             Exiled.Events.Handlers.Warhead.Starting -= warheadHandler.OnStarting;

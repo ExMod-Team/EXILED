@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.Events.EventArgs.Server;
+
 namespace Exiled.Example.Events
 {
     using Exiled.API.Features;
@@ -21,9 +23,12 @@ namespace Exiled.Example.Events
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundStarted"/>
-        public void OnRoundStarted()
+        public void OnRoundStarted(RoundStartedEventArgs ev)
         {
-            Log.Info($"A round has started with {Player.Dictionary.Count} players!");
+            if (ev.KeepRoundOnOne)
+            {
+                Log.Info($"Round started at {ev.RoundStartTime:yyyy-MM-dd HH:mm:ss} with players!");
+            }
         }
     }
 }

@@ -225,5 +225,23 @@ namespace Exiled.Example.Events
                 ev.Amount = 1f;
             }
         }
+
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.ExecutingRemoteAdminCommand"/>
+        public void OnExecuteRemoteAdminCommand(ExecutingRemoteAdminCommandEventArgs ev)
+        {
+            if (!ev.IsAllowed)
+            {
+                ev.Player.SendConsoleMessage("get out", "red");
+            }
+        }
+
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.ExecutingClientCommand"/>
+        public void OnExecuteClientCommand(ExecutingClientCommandEventArgs ev)
+        {
+            if (!ev.IsAllowed)
+            {
+                ev.Player.Health -= 1f;
+            }
+        }
     }
 }
