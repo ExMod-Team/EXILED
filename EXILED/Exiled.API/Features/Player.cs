@@ -3687,7 +3687,6 @@ namespace Exiled.API.Features
             SettingBase.Unregister((p) => { return p == this; }, settings);
         }
 
-
         /// <inheritdoc/>
         public T AddComponent<T>(string name = "")
             where T : EActor
