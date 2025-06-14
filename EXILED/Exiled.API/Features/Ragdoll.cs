@@ -274,9 +274,9 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the ragdoll's scale.
+        /// Gets or sets the ragdoll's as Gameobjectscale.
         /// </summary>
-        public Vector3 Scale
+        public Vector3 RagdollScale
         {
             get => Base.transform.localScale;
             set
