@@ -14,10 +14,7 @@ namespace Exiled.API.Features
 
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
-    using Interactables.Interobjects.DoorUtils;
-    using Interactables.Interobjects;
     using InventorySystem.Items.Firearms.Attachments;
-    using LabApi.Features.Wrappers;
     using UnityEngine;
 
     /// <summary>
