@@ -2068,13 +2068,13 @@ namespace Exiled.API.Features
         {
             try
             {
-                if (Role.Base is not FpcStandardRoleBase fpcRole)
+                if (Role is not FpcRole fpcRole)
                 {
                     Log.Error($"{nameof(SetScale)} error: {nameof(Role)} {Role} is not a {nameof(FpcRole)}, cannot set scale.");
                     return;
                 }
 
-                fpcRole.FpcModule.Motor.ScaleController.Scale = scale;
+                fpcRole.FirstPersonController.FpcModule.Motor.ScaleController.Scale = scale;
             }
             catch (Exception exception)
             {
