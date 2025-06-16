@@ -568,7 +568,7 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Setting health values.");
             player.Health = MaxHealth;
             player.MaxHealth = MaxHealth;
-            player.Scale = Scale;
+            Timing.CallDelayed(0.1f, () => player.Scale = Scale); // To fix : remove in 14.1.2 when the crash issue is resolved
             if (Gravity.HasValue && player.Role is FpcRole fpcRole)
                 fpcRole.Gravity = Gravity.Value;
             Vector3 position = GetSpawnPosition();
