@@ -693,7 +693,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Scale
         {
-            get => Role is FpcRole fpcRole ? fpcRole.FirstPersonController.FpcModule.Motor.ScaleController.Scale : Vector3.one;
+            get => Role.Base is FpcStandardRoleBase fpcRole ? fpcRole.FpcModule.Motor.ScaleController.Scale : Vector3.one;
             set => SetScale(value);
         }
 
@@ -2068,13 +2068,13 @@ namespace Exiled.API.Features
         {
             try
             {
-                if (Role is not FpcRole fpcRole)
+                if (Role.Base is not FpcStandardRoleBase fpcRole)
                 {
                     Log.Error($"{nameof(SetScale)} error: {nameof(Role)} {Role} is not a {nameof(FpcRole)}, cannot set scale.");
                     return;
                 }
 
-                fpcRole.FirstPersonController.FpcModule.Motor.ScaleController.Scale = scale;
+                fpcRole.FpcModule.Motor.ScaleController.Scale = scale;
             }
             catch (Exception exception)
             {
