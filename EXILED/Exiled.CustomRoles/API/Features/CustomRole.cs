@@ -568,7 +568,7 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Setting health values.");
             player.Health = MaxHealth;
             player.MaxHealth = MaxHealth;
-            Timing.CallDelayed(0.1f, () => player.Scale = Scale); // To fix : remove in 14.1.2 when the crash issue is resolved
+            Timing.CallDelayed(0.1f, () => player.Scale = Scale); // To fix : remove the delay in 14.1.2 once the crash issue is resolved
             if (Gravity.HasValue && player.Role is FpcRole fpcRole)
                 fpcRole.Gravity = Gravity.Value;
             Vector3 position = GetSpawnPosition();
@@ -635,7 +635,6 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Removing role from {player.Nickname}");
             player.CustomInfo = string.Empty;
             player.InfoArea |= PlayerInfoArea.Role | PlayerInfoArea.Nickname;
-            player.Scale = Vector3.one;
             if (CustomAbilities is not null)
             {
                 foreach (CustomAbility ability in CustomAbilities)
