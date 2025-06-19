@@ -85,7 +85,7 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
         public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
         {
-            if (ev.Role.IsDead() || ev.Role == RoleTypeId.Scp079)
+            if (ev.Role.IsDead() || ev.Role.IsFpcRole())
                 ev.IsAllowed = false;
         }
 
