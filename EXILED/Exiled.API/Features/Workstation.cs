@@ -135,7 +135,7 @@ namespace Exiled.API.Features
         public static bool TryGet(Func<Workstation, bool> predicate, out IEnumerable<Workstation> workstations)
         {
             workstations = Get(predicate);
-            return Get(predicate).Any();
+            return workstations.Any();
         }
 
         /// <summary>
