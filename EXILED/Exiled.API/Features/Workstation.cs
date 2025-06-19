@@ -15,6 +15,7 @@ namespace Exiled.API.Features
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
     using InventorySystem.Items.Firearms.Attachments;
+    using Mirror;
     using UnityEngine;
 
     /// <summary>
@@ -72,8 +73,13 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Position
         {
-            get => Base.transform.position;
-            set => Base.transform.position = value;
+            get => GameObject.transform.position;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                GameObject.transform.position = value;
+                NetworkServer.Spawn(GameObject);
+            }
         }
 
         /// <summary>
@@ -81,8 +87,13 @@ namespace Exiled.API.Features
         /// </summary>
         public Quaternion Rotation
         {
-            get => Base.transform.rotation;
-            set => Base.transform.rotation = value;
+            get => GameObject.transform.rotation;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                GameObject.transform.rotation = value;
+                NetworkServer.Spawn(GameObject);
+            }
         }
 
         /// <summary>
@@ -124,7 +135,7 @@ namespace Exiled.API.Features
         public static bool TryGet(Func<Workstation, bool> predicate, out IEnumerable<Workstation> workstations)
         {
             workstations = Get(predicate);
-            return workstations.Any();
+            return Get(predicate).Any();
         }
 
         /// <summary>
@@ -132,19 +143,13 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="player">The player to check.</param>
         /// <returns><c>true</c> if the player is in range; otherwise, <c>false</c>.</returns>
-        public bool IsInRange(Player player)
-        {
-            return Base.IsInRange(player.ReferenceHub);
-        }
+        public bool IsInRange(Player player) => Base.IsInRange(player.ReferenceHub);
 
         /// <summary>
         /// Interacts with the workstation as the specified player.
         /// </summary>
         /// <param name="player">The player to interact as.</param>
-        public void Interact(Player player)
-        {
-            Base.ServerInteract(player.ReferenceHub, Base.ActivateCollider.ColliderId);
-        }
+        public void Interact(Player player) => Base.ServerInteract(player.ReferenceHub, Base.ActivateCollider.ColliderId);
 
         /// <summary>
         /// Returns the Room in a human-readable format.
