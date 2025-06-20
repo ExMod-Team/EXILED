@@ -28,8 +28,24 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public ButtonSetting(int id, string label, string buttonText, float holdTime = 0.0f, string hintDescription = null, HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+        [Obsolete("Use the constructor without the Header instead.")]
+        public ButtonSetting(int id, string label, string buttonText, float holdTime, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
             : base(new SSButton(id, label, buttonText, holdTime, hintDescription), header, onChanged)
+        {
+            Base = (SSButton)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ButtonSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="buttonText"><inheritdoc cref="Text"/></param>
+        /// <param name="holdTime"><inheritdoc cref="HoldTime"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        public ButtonSetting(int id, string label, string buttonText, float holdTime = 0.0f, string hintDescription = null, Action<Player, SettingBase> onChanged = null)
+            : base(new SSButton(id, label, buttonText, holdTime, hintDescription), onChanged)
         {
             Base = (SSButton)base.Base;
         }

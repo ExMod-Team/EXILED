@@ -28,7 +28,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        [Obsolete("This method will be removed next major version because of a new feature. Use the constructor with \"allowSpectator\" instead.")]
+        [Obsolete("Use the constructor without the Header instead.")]
         public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
             : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, false, hintDescription), header, onChanged)
         {
@@ -44,10 +44,9 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="preventInteractionOnGUI"><inheritdoc cref="PreventInteractionOnGUI"/></param>
         /// <param name="allowSpectatorTrigger"><inheritdoc cref="AllowSpectatorTrigger"/></param>
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, bool allowSpectatorTrigger = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
-            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, allowSpectatorTrigger, hintDescription), header, onChanged)
+        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, bool allowSpectatorTrigger = false, string hintDescription = "", Action<Player, SettingBase> onChanged = null)
+            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, allowSpectatorTrigger, hintDescription), onChanged)
         {
             Base = (SSKeybindSetting)base.Base;
         }
