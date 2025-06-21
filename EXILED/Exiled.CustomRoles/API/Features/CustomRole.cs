@@ -76,6 +76,12 @@ namespace Exiled.CustomRoles.API.Features
         public abstract string CustomInfo { get; set; }
 
         /// <summary>
+        /// Gets or sets tracks the number of players spawned with custom roles.
+        /// </summary>
+        [YamlIgnore]
+        public int SpawnedPlayers { get; set; } = 0;
+
+        /// <summary>
         /// Gets all of the players currently set to this role.
         /// </summary>
         [YamlIgnore]
@@ -527,6 +533,7 @@ namespace Exiled.CustomRoles.API.Features
 
             player.UniqueRole = Name;
             TrackedPlayers.Add(player);
+            this.SpawnedPlayers++;
 
             Timing.CallDelayed(
                 AddRoleDelay,
@@ -867,7 +874,6 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Loading events.");
             Exiled.Events.Handlers.Player.ChangingNickname += OnInternalChangingNickname;
             Exiled.Events.Handlers.Player.ChangingRole += OnInternalChangingRole;
-            Exiled.Events.Handlers.Player.Spawned += OnInternalSpawned;
             Exiled.Events.Handlers.Player.SpawningRagdoll += OnSpawningRagdoll;
             Exiled.Events.Handlers.Player.Destroying += OnDestroying;
         }
@@ -877,13 +883,11 @@ namespace Exiled.CustomRoles.API.Features
         /// </summary>
         protected virtual void UnsubscribeEvents()
         {
-            foreach (Player player in TrackedPlayers)
-                RemoveRole(player);
+            TrackedPlayers.Clear();
 
             Log.Debug($"{Name}: Unloading events.");
             Exiled.Events.Handlers.Player.ChangingNickname -= OnInternalChangingNickname;
             Exiled.Events.Handlers.Player.ChangingRole -= OnInternalChangingRole;
-            Exiled.Events.Handlers.Player.Spawned -= OnInternalSpawned;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= OnSpawningRagdoll;
             Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
         }
@@ -920,12 +924,6 @@ namespace Exiled.CustomRoles.API.Features
         {
             if (Check(ev.Player))
                 ev.Player.CustomInfo = $"{ev.NewName}\n{CustomInfo}";
-        }
-
-        private void OnInternalSpawned(SpawnedEventArgs ev)
-        {
-            if (!IgnoreSpawnSystem && SpawnChance > 0 && !Check(ev.Player) && ev.Player.Role.Type == Role && Loader.Random.NextDouble() * 100 <= SpawnChance)
-                AddRole(ev.Player);
         }
 
         private void OnInternalChangingRole(ChangingRoleEventArgs ev)
