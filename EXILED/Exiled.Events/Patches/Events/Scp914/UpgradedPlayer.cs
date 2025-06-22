@@ -42,12 +42,8 @@ namespace Exiled.Events.Patches.Events.Scp914
             int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Stloc_S && x.operand is LocalBuilder lb && lb.LocalIndex == 11) + 1;
 
             LocalBuilder curSetting = generator.DeclareLocal(typeof(Scp914KnobSetting));
-            LocalBuilder ev = generator.DeclareLocal(typeof(UpgradedInventoryItemEventArgs));
             List<Label> label = newInstructions[index].ExtractLabels();
 
-            // ridtp lcz914
-            // noclip
-            // give tuxwonder7 47
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
@@ -72,10 +68,6 @@ namespace Exiled.Events.Patches.Events.Scp914
 
                     // UpgradedInventoryItemEventArgs ev = new(player, itemBase, setting, resultingItems)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UpgradedInventoryItemEventArgs))[0]),
-
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Scp914.OnUpgradedInventoryItem(ev);
                     new(OpCodes.Call, Method(typeof(Scp914), nameof(Scp914.OnUpgradedInventoryItem))),

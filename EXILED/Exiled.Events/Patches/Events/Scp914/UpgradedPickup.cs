@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="UpgradedItem.cs" company="ExMod Team">
+// <copyright file="UpgradedPickup.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Scp914
     /// </summary>
     [EventPatch(typeof(Scp914), nameof(Scp914.UpgradedPickup))]
     [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.ProcessPickup))]
-    internal static class UpgradedItem
+    internal static class UpgradedPickup
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -36,7 +36,6 @@ namespace Exiled.Events.Patches.Events.Scp914
 
             int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_2);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(UpgradedPickupEventArgs));
             List<Label> label = newInstructions[index].ExtractLabels();
 
             newInstructions.InsertRange(
@@ -58,9 +57,6 @@ namespace Exiled.Events.Patches.Events.Scp914
 
                     // UpgradedPickupEventArgs ev = new(pickup, outputPos, knobSetting, resultingPickups)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(UpgradedPickupEventArgs))[0]),
-
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Scp914.OnUpgradingPickup(ev);
                     new(OpCodes.Call, Method(typeof(Scp914), nameof(Scp914.OnUpgradedPickup))),
