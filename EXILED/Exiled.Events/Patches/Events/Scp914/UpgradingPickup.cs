@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="UpgradingItem.cs" company="ExMod Team">
+// <copyright file="UpgradingPickup.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Scp914
     /// </summary>
     [EventPatch(typeof(Scp914), nameof(Scp914.UpgradingPickup))]
     [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.ProcessPickup))]
-    internal static class UpgradingItem
+    internal static class UpgradingPickup
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
