@@ -41,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Warhead
     x.opcode == OpCodes.Call &&
     x.operand is MethodInfo m &&
     m.Name == "set_Networkenabled" &&
-    m.DeclaringType == typeof(AlphaWarheadNukesitePanel)) + 1;
+    m.DeclaringType == typeof(AlphaWarheadNukesitePanel)) - 5;
 
             newInstructions.InsertRange(
                 index,
