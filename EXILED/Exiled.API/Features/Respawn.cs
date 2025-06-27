@@ -389,6 +389,26 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Pauses a specific respawn wave by removing it from the active wave list and adding it to the paused wave list.
+        /// </summary>
+        /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> representing the wave to pause.</param>
+        public static void PauseWave(SpawnableFaction spawnableFaction)
+        {
+            if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
+            {
+                if (!PausedWaves.Contains(spawnableWaveBase))
+                {
+                    PausedWaves.Add(spawnableWaveBase);
+                }
+
+                if (WaveManager.Waves.Contains(spawnableWaveBase))
+                {
+                    WaveManager.Waves.Remove(spawnableWaveBase);
+                }
+            }
+        }
+
+        /// <summary>
         /// Pauses respawn waves by removing them from <see cref="WaveManager.Waves">WaveManager.Waves</see> and storing them in <see cref="PausedWaves"/>.
         /// </summary>
         /// <!--Beryl said this should work fine but it requires testing-->
@@ -397,6 +417,21 @@ namespace Exiled.API.Features
             PausedWaves.Clear();
             PausedWaves.AddRange(WaveManager.Waves);
             WaveManager.Waves.Clear();
+        }
+
+        /// <summary>
+        /// Pauses the specified list of respawn waves by iterating through each wave
+        /// and pausing it using the <see cref="PauseWave(SpawnableFaction)"/> method.
+        /// </summary>
+        /// <param name="spawnableFactions">
+        /// A list of <see cref="SpawnableFaction"/> instances representing the waves to pause.
+        /// </param>
+        public static void PauseWaves(List<SpawnableFaction> spawnableFactions)
+        {
+            foreach (SpawnableFaction spawnableFaction in spawnableFactions)
+            {
+                PauseWave(spawnableFaction);
+            }
         }
 
         /// <summary>
@@ -412,6 +447,29 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Restarts a specific respawn wave by adding it back to the active wave list
+        /// and removing it from the paused wave list if necessary.
+        /// </summary>
+        /// <param name="spawnableFaction">
+        /// The <see cref="SpawnableFaction"/> representing the wave to restart.
+        /// </param>
+        public static void RestartWave(SpawnableFaction spawnableFaction)
+        {
+            if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
+            {
+                if (!WaveManager.Waves.Contains(spawnableWaveBase))
+                {
+                    WaveManager.Waves.Add(spawnableWaveBase);
+                }
+
+                if (PausedWaves.Contains(spawnableWaveBase))
+                {
+                    PausedWaves.Remove(spawnableWaveBase);
+                }
+            }
+        }
+
+        /// <summary>
         /// Restarts respawn waves by clearing <see cref="WaveManager.Waves">WaveManager.Waves</see> and filling it with new values..
         /// </summary>
         /// <!--Beryl said this should work fine but it requires testing-->
@@ -421,6 +479,21 @@ namespace Exiled.API.Features
             WaveManager.Waves.Clear();
             WaveManager.Waves.AddRange(new List<SpawnableWaveBase> { new ChaosMiniWave(), new ChaosSpawnWave(), new NtfMiniWave(), new NtfSpawnWave() });
             PausedWaves.Clear();
+        }
+
+        /// <summary>
+        /// Restarts the specified respawn waves by iterating through each wave
+        /// and restarting it using the <see cref="RestartWave(SpawnableFaction)"/> method.
+        /// </summary>
+        /// <param name="spawnableFactions">
+        /// A list of <see cref="SpawnableFaction"/> instances representing the waves to restart.
+        /// </param>
+        public static void RestartWaves(List<SpawnableFaction> spawnableFactions)
+        {
+            foreach (SpawnableFaction spawnableFaction in spawnableFactions)
+            {
+                RestartWave(spawnableFaction);
+            }
         }
 
         /// <summary>
