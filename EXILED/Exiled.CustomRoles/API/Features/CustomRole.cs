@@ -578,7 +578,9 @@ namespace Exiled.CustomRoles.API.Features
                     ability.AddAbility(player);
             }
 
-            ShowMessage(player);
+            if (CustomRoles.Instance!.Config.GotRoleHint.Show)
+                ShowMessage(player);
+
             ShowBroadcast(player);
             RoleAdded(player);
             player.TryAddCustomRoleFriendlyFire(Name, CustomRoleFFMultiplier);
