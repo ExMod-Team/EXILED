@@ -62,14 +62,22 @@ namespace Exiled.CustomRoles
 
             if (Config.UseKeypressActivation)
                 keypressActivator = new();
+
+            Exiled.Events.Handlers.Player.Spawned += playerHandlers.OnSpawned;
             Exiled.Events.Handlers.Player.SpawningRagdoll += playerHandlers.OnSpawningRagdoll;
+
+            Exiled.Events.Handlers.Server.WaitingForPlayers += playerHandlers.OnWaitingForPlayers;
             base.OnEnabled();
         }
 
         /// <inheritdoc/>
         public override void OnDisabled()
         {
+            Exiled.Events.Handlers.Player.Spawned -= playerHandlers!.OnSpawned;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= playerHandlers!.OnSpawningRagdoll;
+
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= playerHandlers!.OnWaitingForPlayers;
+
             keypressActivator = null;
             base.OnDisabled();
         }

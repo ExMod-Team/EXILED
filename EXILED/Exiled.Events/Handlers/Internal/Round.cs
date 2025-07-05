@@ -82,6 +82,13 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.Inventory.ServerDropEverything();
         }
 
+        /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
+        public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
+        {
+            if (ev.Role.IsDead() || !ev.Role.IsFpcRole())
+                ev.IsAllowed = false;
+        }
+
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />
         public static void OnActivatingSense(ActivatingSenseEventArgs ev)
         {
