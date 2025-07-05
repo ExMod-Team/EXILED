@@ -61,7 +61,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="Room"/> the workstation is located in.
         /// </summary>
-        public Room Room => Room.Get(Transform.position);
+        public Room Room => Room.Get(Position);
 
         /// <summary>
         /// Gets the <see cref="ZoneType"/> of the workstation's room.
@@ -73,11 +73,11 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Position
         {
-            get => GameObject.transform.position;
+            get => Transform.position;
             set
             {
                 NetworkServer.UnSpawn(GameObject);
-                GameObject.transform.position = value;
+                Transform.position = value;
                 NetworkServer.Spawn(GameObject);
             }
         }
@@ -87,11 +87,11 @@ namespace Exiled.API.Features
         /// </summary>
         public Quaternion Rotation
         {
-            get => GameObject.transform.rotation;
+            get => Transform.rotation;
             set
             {
                 NetworkServer.UnSpawn(GameObject);
-                GameObject.transform.rotation = value;
+                Transform.rotation = value;
                 NetworkServer.Spawn(GameObject);
             }
         }
