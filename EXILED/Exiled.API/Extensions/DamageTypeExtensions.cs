@@ -125,11 +125,12 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
         /// <param name="checkMicro">Indicates whether the MicroHid damage type should be taken into account.</param>
+        /// /// <param name="checkJailbird">Indicates whether the Jailbird item should be taken into account.</param>
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by weapon.</returns>
-        public static bool IsWeapon(this DamageType type, bool checkMicro = true) => type switch
+        public static bool IsWeapon(this DamageType type, bool checkMicro = true, bool checkJailbird = true) => type switch
         {
             DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 => true,
-            DamageType.MicroHid when checkMicro => true,
+            DamageType.MicroHid when checkMicro => true, DamageType.Jailbird when checkJailbird => true,
             _ => false,
         };
 
