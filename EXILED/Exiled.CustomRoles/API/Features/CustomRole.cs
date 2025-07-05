@@ -38,17 +38,17 @@ namespace Exiled.CustomRoles.API.Features
     public abstract class CustomRole
     {
         /// <summary>
-        /// Gets or sets the number of players that naturally spawned with this custom role.
-        /// </summary>
-        [YamlIgnore]
-        #pragma warning disable SA1401 // Fields should be private
-        public int SpawnedPlayers = 0;
-        #pragma warning restore SA1401 // Fields should be private
-
-        private const float AddRoleDelay = 0.25f;
         /// The delay after which ammo and items are added to the player.
         /// </summary>
         public const float AddRoleItemAndAmmoDelay = 0.25f;
+
+        /// <summary>
+        /// Gets or sets the number of players that naturally spawned with this custom role.
+        /// </summary>
+        [YamlIgnore]
+#pragma warning disable SA1401 // Fields should be private
+        public int SpawnedPlayers = 0;
+#pragma warning restore SA1401 // Fields should be private
 
         private static readonly Dictionary<Type, CustomRole?> TypeLookupTable = new();
 
@@ -96,6 +96,11 @@ namespace Exiled.CustomRoles.API.Features
         /// Gets or sets the <see cref="RoleTypeId"/> to spawn this role as.
         /// </summary>
         public virtual RoleTypeId Role { get; set; }
+
+        /// <summary>
+        /// Gets or sets the valid <see cref="SpawnReason"/> to get this <see cref="CustomRole"/>.
+        /// </summary>
+        public virtual SpawnReason[] ValidSpawnReasons { get; set; } = new[] { SpawnReason.RoundStart, SpawnReason.LateJoin, SpawnReason.Respawn, SpawnReason.Escaped };
 
         /// <summary>
         /// Gets or sets a list of the roles custom abilities.
@@ -526,6 +531,7 @@ namespace Exiled.CustomRoles.API.Features
         {
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
             player.UniqueRole = Name;
+            player.CustomRoleIds.Add(Id);
 
             RoleSpawnFlags keptSpawnFlags = overrideSpawnFlags;
 
@@ -639,7 +645,7 @@ namespace Exiled.CustomRoles.API.Features
         /// <param name="roleSpawnFlags">The <see cref="RoleSpawnFlags"/> to apply.</param>
         public virtual void RemoveRole(Player player, SpawnReason spawnReason = SpawnReason.ForceClass, RoleSpawnFlags roleSpawnFlags = RoleSpawnFlags.All)
         {
-            if (!TrackedPlayers.Remove(player))
+            if (!player.CustomRoleIds.Remove(Id) || !TrackedPlayers.Remove(player))
                 return;
 
             Log.Debug($"{Name}: Removing role from {player.Nickname}");
@@ -979,12 +985,6 @@ namespace Exiled.CustomRoles.API.Features
         {
             if (Check(ev.Player))
                 ev.Player.CustomInfo = $"{ev.NewName}\n{CustomInfo}";
-        }
-
-        private void OnInternalSpawned(SpawnedEventArgs ev)
-        {
-            if (!IgnoreSpawnSystem && SpawnChance > 0 && !Check(ev.Player) && ev.Player.Role.Type == Role && Loader.Random.NextDouble() * 100 <= SpawnChance)
-                AddRole(ev.Player, ev.Reason, false);
         }
 
         private void OnInternalChangingRole(ChangingRoleEventArgs ev)
