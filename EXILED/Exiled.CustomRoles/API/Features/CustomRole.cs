@@ -578,7 +578,9 @@ namespace Exiled.CustomRoles.API.Features
                     ability.AddAbility(player);
             }
 
-            ShowMessage(player);
+            if (CustomRoles.Instance!.Config.GotRoleHint.Show)
+                ShowMessage(player);
+
             ShowBroadcast(player);
             RoleAdded(player);
             player.TryAddCustomRoleFriendlyFire(Name, CustomRoleFFMultiplier);
@@ -936,7 +938,7 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
         {
-            if (Check(ev.Player))
+            if (Check(ev.Player) && Role.IsFpcRole())
                 ev.Role = Role;
         }
 
