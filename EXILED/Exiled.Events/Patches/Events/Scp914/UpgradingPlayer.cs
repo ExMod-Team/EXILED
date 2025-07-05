@@ -116,14 +116,14 @@ namespace Exiled.Events.Patches.Events.Scp914
             offset = 1;
 
             // index = newInstructions.FindIndex(x => x.opcode == OpCodes.Stloc_S && x.operand is LocalBuilder { LocalIndex: 10 }) + offset;
-            ConstructorInfo plugin_api_constructor = typeof(LabApi.Events.Arguments.Scp914Events.Scp914ProcessingInventoryItemEventArgs)
+            ConstructorInfo lab_api_constructor = typeof(LabApi.Events.Arguments.Scp914Events.Scp914ProcessingInventoryItemEventArgs)
                 .GetConstructor(new[]
                 {
                     typeof(InventorySystem.Items.ItemBase),
                     typeof(Scp914KnobSetting),
                     typeof(ReferenceHub),
                 });
-            index = newInstructions.FindIndex(x => x.Is(OpCodes.Newobj, plugin_api_constructor)) + offset;
+            index = newInstructions.FindIndex(x => x.Is(OpCodes.Newobj, lab_api_constructor)) + offset;
 
             // ridtp lcz914
             // noclip
