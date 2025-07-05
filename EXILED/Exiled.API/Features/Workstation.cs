@@ -120,6 +120,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets a <see cref="Workstation"/> given a <see cref="WorkstationController"/> instance.
+        /// </summary>
+        /// <param name="workstationController">The <see cref="WorkstationController"/> instance.</param>
+        /// <returns>The <see cref="Workstation"/> instance.</returns>
+        public static Workstation Get(WorkstationController workstationController) => WorkstationControllerToWorkstation.TryGetValue(workstationController, out Workstation workstation) ? workstation : new(workstationController);
+
+        /// <summary>
         /// Gets all <see cref="Workstation"/> instances that match the specified predicate.
         /// </summary>
         /// <param name="predicate">The predicate to filter workstations.</param>

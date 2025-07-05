@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(WorkstationController __instance)
         {
-            _ = new API.Features.Workstation(__instance);
+            API.Features.Workstation.Get(__instance);
         }
     }
 
