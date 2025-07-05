@@ -137,6 +137,7 @@ namespace Exiled.API.Features
             ElevatorGroup.Scp049 => ElevatorType.Scp049,
             ElevatorGroup.GateA => ElevatorType.GateA,
             ElevatorGroup.GateB => ElevatorType.GateB,
+            ElevatorGroup.ServerRoom => ElevatorType.ServerRoom,
             ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => ElevatorType.LczA,
             ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => ElevatorType.LczB,
             ElevatorGroup.Nuke01 or ElevatorGroup.Nuke02 => ElevatorType.Nuke,
