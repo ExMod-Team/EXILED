@@ -924,7 +924,7 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnInternalSpawned(SpawnedEventArgs ev)
         {
-            if (!IgnoreSpawnSystem && SpawnChance > 0 && !Check(ev.Player) && ev.Player.Role.Type == Role && Loader.Random.NextDouble() * 100 <= SpawnChance)
+            if (!IgnoreSpawnSystem && SpawnChance > 0 && !Check(ev.Player) && ev.Player.Role.Type == Role && Loader.Random.NextDouble() * 100 <= SpawnChance && (SpawnProperties.Limit == 0 || TrackedPlayers.Count < SpawnProperties.Limit))
                 AddRole(ev.Player);
         }
 
