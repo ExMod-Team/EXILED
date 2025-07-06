@@ -50,6 +50,11 @@ namespace Exiled.CustomRoles.API.Features
         /// </summary>
         public const float AddRoleItemAndAmmoDelay = 0.25f;
 
+        private const float AddRoleDelay = 0.25f;
+        /// The delay after which ammo and items are added to the player.
+        /// </summary>
+        public const float AddRoleItemAndAmmoDelay = 0.25f;
+
         private static readonly Dictionary<Type, CustomRole?> TypeLookupTable = new();
 
         private static readonly Dictionary<string, CustomRole?> StringLookupTable = new();
