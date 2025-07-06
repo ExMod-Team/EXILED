@@ -15,7 +15,6 @@ namespace Exiled.CustomRoles
     using Exiled.CustomRoles.Events;
     using Exiled.Loader;
     using Exiled.Loader.Features.Configs.CustomConverters;
-
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
     using YamlDotNet.Serialization.NodeDeserializers;
@@ -25,7 +24,7 @@ namespace Exiled.CustomRoles
     /// </summary>
     public class CustomRoles : Plugin<Config>
     {
-        private PlayerHandlers? playerHandlers;
+        private PlayerHandler? playerHandlers;
         private KeypressActivator? keypressActivator;
 
         /// <summary>
@@ -58,18 +57,22 @@ namespace Exiled.CustomRoles
         public override void OnEnabled()
         {
             Instance = this;
-            playerHandlers = new PlayerHandlers(this);
+            playerHandlers = new PlayerHandler(this);
 
             if (Config.UseKeypressActivation)
                 keypressActivator = new();
-            Exiled.Events.Handlers.Player.SpawningRagdoll += playerHandlers.OnSpawningRagdoll;
+
+            playerHandlers.Register();
+
             base.OnEnabled();
         }
 
         /// <inheritdoc/>
         public override void OnDisabled()
         {
-            Exiled.Events.Handlers.Player.SpawningRagdoll -= playerHandlers!.OnSpawningRagdoll;
+            playerHandlers!.Unregister();
+            playerHandlers = null;
+
             keypressActivator = null;
             base.OnDisabled();
         }
