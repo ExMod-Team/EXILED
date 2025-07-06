@@ -15,7 +15,6 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.API.Structs;
-    using Exiled.Events.EventArgs.Player;
 
     using InventorySystem.Items.Armor;
     using MEC;
@@ -87,44 +86,12 @@ namespace Exiled.CustomItems.API.Features
 
             player.AddItem(armor);
 
-            TrackedSerials.Add(armor.Serial);
+            SerialLookupTable[armor.Serial] = this;
 
-            Timing.CallDelayed(0.05f, () => OnAcquired(player, armor, displayMessage));
+            OnAcquired(player, armor, displayMessage);
 
             if (displayMessage)
                 ShowPickedUpMessage(player);
-        }
-
-        /// <inheritdoc/>
-        protected override void SubscribeEvents()
-        {
-            Exiled.Events.Handlers.Player.PickingUpItem += OnInternalPickingUpItem;
-            base.SubscribeEvents();
-        }
-
-        /// <inheritdoc/>
-        protected override void UnsubscribeEvents()
-        {
-            Exiled.Events.Handlers.Player.PickingUpItem -= OnInternalPickingUpItem;
-            base.UnsubscribeEvents();
-        }
-
-        private void OnInternalPickingUpItem(PickingUpItemEventArgs ev)
-        {
-            if (!Check(ev.Pickup) || ev.Player.Items.Count >= 8 || ev.Pickup is Exiled.API.Features.Pickups.BodyArmorPickup)
-                return;
-
-            OnPickingUp(ev);
-
-            if (!ev.IsAllowed)
-                return;
-
-            ev.IsAllowed = false;
-
-            TrackedSerials.Remove(ev.Pickup.Serial);
-            ev.Pickup.Destroy();
-
-            Give(ev.Player);
         }
     }
 }

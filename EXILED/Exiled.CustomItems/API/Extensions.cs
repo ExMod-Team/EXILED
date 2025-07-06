@@ -27,12 +27,6 @@ namespace Exiled.CustomItems.API
         /// <param name="displayMessage">Indicates a value whether <see cref="CustomItem.ShowPickedUpMessage"/> will be called when the player receives the <see cref="CustomItem"/> or not.</param>
         public static void ResetInventory(this Player player, IEnumerable<string> newItems, bool displayMessage = false)
         {
-            foreach (Item item in player.Items)
-            {
-                if (CustomItem.TryGet(item, out CustomItem? customItem))
-                    customItem?.TrackedSerials.Remove(item.Serial);
-            }
-
             player.ClearInventory();
 
             foreach (string item in newItems)
@@ -47,6 +41,14 @@ namespace Exiled.CustomItems.API
                 }
             }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="Item"/> is a custom item.
+        /// </summary>
+        /// <param name="item">The <see cref="Item"/> to check.</param>
+        /// <returns>Whether or not the <paramref name="item"/> is a <see cref="CustomItem"/> or not.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if <paramref name="item"/> is <see langword="null"/>.</exception>
+        public static bool IsCustomItem(this Item item) => CustomItem.SerialLookupTable.ContainsKey(item.Serial);
 
         /// <summary>
         /// Registers an <see cref="IEnumerable{T}"/> of <see cref="CustomItem"/>s.

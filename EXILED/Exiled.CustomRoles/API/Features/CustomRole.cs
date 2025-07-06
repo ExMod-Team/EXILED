@@ -38,17 +38,17 @@ namespace Exiled.CustomRoles.API.Features
     public abstract class CustomRole
     {
         /// <summary>
+        /// The delay after which ammo and items are added to the player.
+        /// </summary>
+        public const float AddRoleItemAndAmmoDelay = 0.25f;
+
+        /// <summary>
         /// Gets or sets the number of players that naturally spawned with this custom role.
         /// </summary>
         [YamlIgnore]
         #pragma warning disable SA1401 // Fields should be private
         public int SpawnedPlayers = 0;
         #pragma warning restore SA1401 // Fields should be private
-
-        private const float AddRoleDelay = 0.25f;
-        /// The delay after which ammo and items are added to the player.
-        /// </summary>
-        public const float AddRoleItemAndAmmoDelay = 0.25f;
 
         private static readonly Dictionary<Type, CustomRole?> TypeLookupTable = new();
 

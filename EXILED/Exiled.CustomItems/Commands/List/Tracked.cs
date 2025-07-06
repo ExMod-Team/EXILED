@@ -14,6 +14,7 @@ namespace Exiled.CustomItems.Commands.List
     using CommandSystem;
 
     using Exiled.API.Features;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.CustomItems.API.Features;
     using Exiled.Permissions.Extensions;
@@ -60,27 +61,17 @@ namespace Exiled.CustomItems.Commands.List
 
             int count = 0;
 
-            foreach (CustomItem customItem in CustomItem.Registered)
+            foreach (Player player in Player.List)
             {
-                if (customItem.TrackedSerials.Count == 0)
-                    continue;
-
-                message.AppendLine()
-                    .Append('[').Append(customItem.Id).Append(". ").Append(customItem.Name).Append(" (").Append(customItem.Type).Append(')')
-                    .Append(" {").Append(customItem.TrackedSerials.Count).AppendLine("}]").AppendLine();
-
-                count += customItem.TrackedSerials.Count;
-
-                foreach (int insideInventory in customItem.TrackedSerials)
+                foreach (Item item in player.Items)
                 {
-                    Player owner = Player.List.FirstOrDefault(player => player.Inventory.UserInventory.Items.Any(item => item.Key == insideInventory));
-
-                    message.Append(insideInventory).Append(". ");
-
-                    if (owner is null)
-                        message.AppendLine("Nobody");
-                    else
-                        message.Append(owner.Nickname).Append(" (").Append(owner.UserId).Append(") (").Append(owner.Id).Append(") [").Append(owner.Role).AppendLine("]");
+                    if (CustomItem.TryGet(item, out CustomItem? customItem))
+                    {
+                        message.AppendLine()
+                            .Append('[').Append(customItem!.Id).Append(". ").Append(customItem.Name).Append(" (").Append(customItem.Type).Append(')') // this is unreadable, I don't know why you would write it like this but whatever - Bonjemus
+                            .Append(" {").Append(item.Serial).AppendLine("}]").AppendLine();
+                        count++;
+                    }
                 }
             }
 
