@@ -22,7 +22,7 @@ namespace Exiled.CustomItems.Events
         {
             if (!ev.IsAllowed)
                 return;
-            if (ev.Item != null && CustomItem.TryGet(ev.Item, out CustomItem? newItem) && (newItem?.ShouldMessageOnGban ?? false))
+            if (CustomItem.TryGet(ev.Item, out CustomItem? newItem) && (newItem?.ShouldMessageOnGban ?? false))
             {
                 SpectatorCustomNickname(ev.Player, $"{ev.Player.CustomName} (CustomItem: {newItem.Name})");
             }
