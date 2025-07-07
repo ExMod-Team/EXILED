@@ -22,8 +22,7 @@ namespace Exiled.CustomRoles.Events
     /// </summary>
     public class PlayerHandlers
     {
-        private readonly CustomRoles plugin;
-        private readonly HashSet<SpawnReason> validSpawnReasons = new()
+        private static readonly HashSet<SpawnReason> ValidSpawnReasons = new()
         {
             SpawnReason.RoundStart,
             SpawnReason.Respawn,
@@ -32,6 +31,8 @@ namespace Exiled.CustomRoles.Events
             SpawnReason.Escaped,
             SpawnReason.ItemUsage,
         };
+
+        private readonly CustomRoles plugin;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerHandlers"/> class.
@@ -64,7 +65,7 @@ namespace Exiled.CustomRoles.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.Spawning"/>
         internal void OnSpawned(SpawnedEventArgs ev)
         {
-            if (!validSpawnReasons.Contains(ev.Reason) || ev.Player.HasAnyCustomRole())
+            if (!ValidSpawnReasons.Contains(ev.Reason) || ev.Player.HasAnyCustomRole())
             {
                 return;
             }
@@ -108,7 +109,7 @@ namespace Exiled.CustomRoles.Events
                     break;
                 }
 
-                int newSpawnCount = Interlocked.Increment(ref candidateRole.SpawnedPlayers);
+                int newSpawnCount = candidateRole.SpawnedPlayers++;
                 if (newSpawnCount <= candidateRole.SpawnProperties.Limit)
                 {
                     candidateRole.AddRole(ev.Player);
@@ -116,7 +117,7 @@ namespace Exiled.CustomRoles.Events
                 }
                 else
                 {
-                    Interlocked.Decrement(ref candidateRole.SpawnedPlayers);
+                    candidateRole.SpawnedPlayers--;
                     randomRoll -= candidateRole.SpawnChance;
                 }
             }
