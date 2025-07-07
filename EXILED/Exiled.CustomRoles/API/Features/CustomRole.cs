@@ -42,14 +42,6 @@ namespace Exiled.CustomRoles.API.Features
         /// </summary>
         public const float AddRoleItemAndAmmoDelay = 0.25f;
 
-        /// <summary>
-        /// Gets or sets the number of players that naturally spawned with this custom role.
-        /// </summary>
-        [YamlIgnore]
-#pragma warning disable SA1401 // Fields should be private
-        public int SpawnedPlayers = 0;
-#pragma warning restore SA1401 // Fields should be private
-
         private static readonly Dictionary<Type, CustomRole?> TypeLookupTable = new();
 
         private static readonly Dictionary<string, CustomRole?> StringLookupTable = new();
@@ -191,6 +183,12 @@ namespace Exiled.CustomRoles.API.Features
         /// Gets or sets a <see cref="string"/> for the ability usage help sent to players in the player console.
         /// </summary>
         public virtual string AbilityUsage { get; set; } = "Enter \".special\" in the console to use your ability. If you have multiple abilities, you can use this command to cycle through them, or specify the one to use with \".special ROLENAME AbilityNum\"";
+
+        /// <summary>
+        /// Gets or sets the number of players that naturally spawned with this custom role.
+        /// </summary>
+        [YamlIgnore]
+        public int SpawnedPlayers { get; set; }
 
         /// <summary>
         /// Gets a <see cref="CustomRole"/> by ID.
@@ -532,6 +530,7 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
             player.UniqueRole = Name;
             player.CustomRoleIds.Add(Id);
+            TrackedPlayers.Add(player);
 
             RoleSpawnFlags keptSpawnFlags = overrideSpawnFlags;
 
@@ -553,7 +552,6 @@ namespace Exiled.CustomRoles.API.Features
             }
 
             player.UniqueRole = Name;
-            TrackedPlayers.Add(player);
 
             if (keptSpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
             {
@@ -989,7 +987,7 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnInternalChangingRole(ChangingRoleEventArgs ev)
         {
-            if (ev.IsAllowed && ev.Reason != SpawnReason.Destroyed && Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && !KeepRoleOnChangingRole)))
+            if (ev.IsAllowed && ev.Reason is not(SpawnReason.Destroyed or SpawnReason.CustomRole) && Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && !KeepRoleOnChangingRole)))
                 RemoveRole(ev.Player, ev.Reason, ev.SpawnFlags);
         }
 
