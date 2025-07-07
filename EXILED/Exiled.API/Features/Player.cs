@@ -698,7 +698,7 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Scale
         {
-            get => Role.Base is FpcStandardRoleBase fpcRole ? fpcRole.FpcModule.Motor.ScaleController.Scale : Vector3.one;
+            get => ReferenceHub.transform.localScale;
             set => SetScale(value);
         }
 
@@ -2071,20 +2071,8 @@ namespace Exiled.API.Features
         /// <param name="scale">The scale to set.</param>
         public void SetScale(Vector3 scale)
         {
-            try
-            {
-                if (Role is not FpcRole fpcRole)
-                {
-                    Log.Error($"{nameof(SetScale)} error: {nameof(Role)} {Role} is not a {nameof(FpcRole)}, cannot set scale.");
-                    return;
-                }
-
-                fpcRole.FirstPersonController.FpcModule.Motor.ScaleController.Scale = scale;
-            }
-            catch (Exception exception)
-            {
-                Log.Error($"{nameof(SetScale)} error: {exception}");
-            }
+            ReferenceHub.transform.localScale = scale;
+            new SyncedScaleMessages.ScaleMessage(scale, ReferenceHub).SendToAuthenticated();
         }
 
         /// <summary>
@@ -2092,34 +2080,10 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="scale">The scale to set.</param>
         /// <param name="viewers">Who should see the updated scale.</param>
-        public void SetScale(Vector3 scale, IEnumerable<Player> viewers) => SetScale(scale, viewers.Select(p => p.ReferenceHub));
-
-        /// <summary>
-        /// Sets the scale of a player on the server side.
-        /// </summary>
-        /// <param name="scale">The scale to set.</param>
-        /// <param name="viewers">Who should see the updated scale.</param>
-        public void SetScale(Vector3 scale, IEnumerable<ReferenceHub> viewers)
+        public void SetScale(Vector3 scale, IEnumerable<Player> viewers)
         {
-            try
-            {
-                if (Role is not FpcRole fpcRole)
-                {
-                    Log.Error($"{nameof(SetScale)} error: {nameof(Role)} {Role} is not a {nameof(FpcRole)}, cannot set scale.");
-                    return;
-                }
-
-                if (fpcRole.FirstPersonController.FpcModule.Motor.ScaleController.Scale == scale)
-                    return;
-
-                fpcRole.FirstPersonController.FpcModule.Motor.ScaleController._scale = scale;
-                ReferenceHub.transform.localScale = scale;
-                new SyncedScaleMessages.ScaleMessage(scale, ReferenceHub).SendToHubsConditionally(h => viewers.Contains(h));
-            }
-            catch (Exception exception)
-            {
-                Log.Error($"{nameof(SetScale)} error: {exception}");
-            }
+            ReferenceHub.transform.localScale = scale;
+            new SyncedScaleMessages.ScaleMessage(scale, ReferenceHub).SendToHubsConditionally(x => x != null && viewers.Contains(Get(x)));
         }
 
         /// <summary>
@@ -2127,29 +2091,11 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="fakeScale">The scale to set to.</param>
         /// <param name="viewers">Who should see the fake scale.</param>
-        public void SetFakeScale(Vector3 fakeScale, IEnumerable<Player> viewers) => SetFakeScale(fakeScale, viewers.Select(p => p.ReferenceHub));
-
-        /// <summary>
-        /// Sets the scale of the player for other players.
-        /// </summary>
-        /// <param name="fakeScale">The scale to set to.</param>
-        /// <param name="viewers">Who should see the fake scale.</param>
-        public void SetFakeScale(Vector3 fakeScale, IEnumerable<ReferenceHub> viewers)
+        public void SetFakeScale(Vector3 fakeScale, IEnumerable<Player> viewers)
         {
-            try
-            {
-                if (Role is not FpcRole fpcRole)
-                {
-                    Log.Error($"{nameof(SetFakeScale)} error: {nameof(Role)} {Role} is not a {nameof(FpcRole)}, cannot set fake scale.");
-                    return;
-                }
-
-                new SyncedScaleMessages.ScaleMessage(fakeScale, ReferenceHub).SendToHubsConditionally(h => viewers.Contains(h));
-            }
-            catch (Exception exception)
-            {
-                Log.Error($"{nameof(SetFakeScale)} error: {exception}");
-            }
+            SyncedScaleMessages.ScaleMessage scaleMessage = new(fakeScale, ReferenceHub);
+            foreach (Player player in viewers)
+                player.Connection.Send(scaleMessage, 0);
         }
 
         /// <summary>

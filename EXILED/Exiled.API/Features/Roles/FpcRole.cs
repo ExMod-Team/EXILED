@@ -77,6 +77,15 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets the player's scale.
+        /// </summary>
+        public Vector3 Scale
+        {
+            get => FirstPersonController.FpcModule.Motor.ScaleController.Scale;
+            set => FirstPersonController.FpcModule.Motor.ScaleController.Scale = value;
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether if the player should get <see cref="Enums.DamageType.Falldown"/> damage.
         /// </summary>
         public bool IsFallDamageEnable
