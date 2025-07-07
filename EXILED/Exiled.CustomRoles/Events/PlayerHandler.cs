@@ -9,8 +9,8 @@ namespace Exiled.CustomRoles.Events
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
 
+    using Exiled.API.Enums;
     using Exiled.CustomRoles.API;
     using Exiled.CustomRoles.API.Features;
     using Exiled.Events.EventArgs.Player;
@@ -20,6 +20,16 @@ namespace Exiled.CustomRoles.Events
     /// </summary>
     internal sealed class PlayerHandler
     {
+        private static readonly HashSet<SpawnReason> ValidSpawnReasons = new()
+        {
+            SpawnReason.RoundStart,
+            SpawnReason.Respawn,
+            SpawnReason.LateJoin,
+            SpawnReason.Revived,
+            SpawnReason.Escaped,
+            SpawnReason.ItemUsage,
+        };
+
         private readonly CustomRoles plugin;
 
         /// <summary>
@@ -70,7 +80,7 @@ namespace Exiled.CustomRoles.Events
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.Spawning"/>
         private void OnSpawned(SpawnedEventArgs ev)
         {
-            if (ev.Player == null || ev.Player.HasAnyCustomRole())
+            if (ev.Player == null || !ValidSpawnReasons.Contains(ev.Reason) || ev.Player.HasAnyCustomRole())
                 return;
 
             float totalChance = 0f;
@@ -104,19 +114,19 @@ namespace Exiled.CustomRoles.Events
 
                 if (candidateRole.SpawnProperties is null)
                 {
-                    candidateRole.AddRole(ev.Player, ev.Reason, false, ev.SpawnFlags);
+                    candidateRole.AddRole(ev.Player, false, ev.SpawnFlags);
                     break;
                 }
 
-                int newSpawnCount = Interlocked.Increment(ref candidateRole.SpawnedPlayers);
+                int newSpawnCount = candidateRole.SpawnedPlayers++;
                 if (newSpawnCount <= candidateRole.SpawnProperties.Limit)
                 {
-                    candidateRole.AddRole(ev.Player, ev.Reason, false, ev.SpawnFlags);
+                    candidateRole.AddRole(ev.Player, false, ev.SpawnFlags);
                     break;
                 }
                 else
                 {
-                    Interlocked.Decrement(ref candidateRole.SpawnedPlayers);
+                    candidateRole.SpawnedPlayers--;
                     randomRoll -= candidateRole.SpawnChance;
                 }
             }

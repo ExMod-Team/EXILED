@@ -38,19 +38,6 @@ namespace Exiled.CustomRoles.API.Features
     public abstract class CustomRole
     {
         /// <summary>
-        /// Gets or sets the number of players that naturally spawned with this custom role.
-        /// </summary>
-        [YamlIgnore]
-#pragma warning disable SA1401 // Fields should be private
-        public int SpawnedPlayers = 0;
-#pragma warning restore SA1401 // Fields should be private
-
-        private const float AddRoleDelay = 0.25f;
-        /// The delay after which ammo and items are added to the player.
-        /// </summary>
-        public const float AddRoleItemAndAmmoDelay = 0.25f;
-
-        private const float AddRoleDelay = 0.25f;
         /// The delay after which ammo and items are added to the player.
         /// </summary>
         public const float AddRoleItemAndAmmoDelay = 0.25f;
@@ -196,6 +183,12 @@ namespace Exiled.CustomRoles.API.Features
         /// Gets or sets a <see cref="string"/> for the ability usage help sent to players in the player console.
         /// </summary>
         public virtual string AbilityUsage { get; set; } = "Enter \".special\" in the console to use your ability. If you have multiple abilities, you can use this command to cycle through them, or specify the one to use with \".special ROLENAME AbilityNum\"";
+
+        /// <summary>
+        /// Gets or sets the number of players that naturally spawned with this custom role.
+        /// </summary>
+        [YamlIgnore]
+        public int SpawnedPlayers { get; set; }
 
         /// <summary>
         /// Gets a <see cref="CustomRole"/> by ID.
@@ -523,20 +516,20 @@ namespace Exiled.CustomRoles.API.Features
         /// Handles setup of the role, including spawn location, inventory and registering event handlers and add FF rules.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to add the role to.</param>
-        public virtual void AddRole(Player player) => AddRole(player, SpawnReason.ForceClass, false, RoleSpawnFlags.All);
+        public virtual void AddRole(Player player) => AddRole(player, false, RoleSpawnFlags.All);
 
         /// <summary>
         /// Handles setup of the role, including spawn location, inventory and registering event handlers and add FF rules.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to add the role to.</param>
-        /// <param name="spawnReason">The <see cref="SpawnReason"/>.</param>
         /// <param name="overrideFlags">Whether it should use <paramref name="overrideSpawnFlags"/> or not.</param>
         /// <param name="overrideSpawnFlags">The <see cref="RoleSpawnFlags"/> to apply if <paramref name="overrideFlags"/> is <see langword="true"/>.</param>
-        public virtual void AddRole(Player player, SpawnReason spawnReason = SpawnReason.ForceClass, bool overrideFlags = false, RoleSpawnFlags overrideSpawnFlags = RoleSpawnFlags.All)
+        public virtual void AddRole(Player player, bool overrideFlags = false, RoleSpawnFlags overrideSpawnFlags = RoleSpawnFlags.All)
         {
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
             player.UniqueRole = Name;
             player.CustomRoleIds.Add(Id);
+            TrackedPlayers.Add(player);
 
             RoleSpawnFlags keptSpawnFlags = overrideSpawnFlags;
 
@@ -554,11 +547,10 @@ namespace Exiled.CustomRoles.API.Features
                         keptSpawnFlags = KeepInventoryOnSpawn && player.IsAlive ? RoleSpawnFlags.UseSpawnpoint : RoleSpawnFlags.All;
                 }
 
-                player.Role.Set(Role, spawnReason, keptSpawnFlags);
+                player.Role.Set(Role, SpawnReason.CustomRole, keptSpawnFlags);
             }
 
             player.UniqueRole = Name;
-            TrackedPlayers.Add(player);
 
             if (keptSpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
             {
@@ -609,7 +601,7 @@ namespace Exiled.CustomRoles.API.Features
                 ShowMessage(player);
 
             ShowBroadcast(player);
-            RoleAdded(player, spawnReason, keptSpawnFlags);
+            RoleAdded(player, keptSpawnFlags);
             player.TryAddCustomRoleFriendlyFire(Name, CustomRoleFFMultiplier);
 
             if (!string.IsNullOrEmpty(ConsoleMessage))
@@ -640,15 +632,14 @@ namespace Exiled.CustomRoles.API.Features
         /// Removes the role from a specific player and FF rules.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to remove the role from.</param>
-        public virtual void RemoveRole(Player player) => RemoveRole(player, SpawnReason.ForceClass, RoleSpawnFlags.All);
+        public virtual void RemoveRole(Player player) => RemoveRole(player, RoleSpawnFlags.All);
 
         /// <summary>
         /// Removes the role from a specific player and FF rules.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to remove the role from.</param>
-        /// <param name="spawnReason">The <see cref="SpawnReason"/>.</param>
         /// <param name="roleSpawnFlags">The <see cref="RoleSpawnFlags"/> to apply.</param>
-        public virtual void RemoveRole(Player player, SpawnReason spawnReason = SpawnReason.ForceClass, RoleSpawnFlags roleSpawnFlags = RoleSpawnFlags.All)
+        public virtual void RemoveRole(Player player, RoleSpawnFlags roleSpawnFlags = RoleSpawnFlags.All)
         {
             if (!player.CustomRoleIds.Remove(Id) || !TrackedPlayers.Remove(player))
                 return;
@@ -662,12 +653,12 @@ namespace Exiled.CustomRoles.API.Features
                     ability.RemoveAbility(player);
             }
 
-            RoleRemoved(player, spawnReason, roleSpawnFlags);
+            RoleRemoved(player, roleSpawnFlags);
             player.UniqueRole = string.Empty;
             player.TryRemoveCustomeRoleFriendlyFire(Name);
 
             if (RemovalKillsPlayer)
-                player.Role.Set(RoleTypeId.Spectator, spawnReason, roleSpawnFlags);
+                player.Role.Set(RoleTypeId.Spectator, SpawnReason.CustomRole, roleSpawnFlags);
         }
 
         /// <summary>
@@ -945,9 +936,8 @@ namespace Exiled.CustomRoles.API.Features
         /// Called after the role has been added to the player.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> the role was added to.</param>
-        /// <param name="spawnReason">The <see cref="SpawnReason"/>.</param>
         /// <param name="roleSpawnFlags">The <see cref="RoleSpawnFlags"/> to apply.</param>
-        protected virtual void RoleAdded(Player player, SpawnReason spawnReason, RoleSpawnFlags roleSpawnFlags)
+        protected virtual void RoleAdded(Player player, RoleSpawnFlags roleSpawnFlags)
         {
 #pragma warning disable CS0618
             RoleAdded(player);
@@ -967,9 +957,8 @@ namespace Exiled.CustomRoles.API.Features
         /// Called 1 frame before the role is removed from the player.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> the role was removed from.</param>
-        /// <param name="spawnReason">The <see cref="SpawnReason"/>.</param>
         /// <param name="roleSpawnFlags">The <see cref="RoleSpawnFlags"/> to apply.</param>
-        protected virtual void RoleRemoved(Player player, SpawnReason spawnReason, RoleSpawnFlags roleSpawnFlags)
+        protected virtual void RoleRemoved(Player player, RoleSpawnFlags roleSpawnFlags)
         {
 #pragma warning disable CS0618
             RoleRemoved(player);
@@ -993,8 +982,8 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnInternalChangingRole(ChangingRoleEventArgs ev)
         {
-            if (ev.IsAllowed && ev.Reason != SpawnReason.Destroyed && Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && !KeepRoleOnChangingRole)))
-                RemoveRole(ev.Player, ev.Reason, ev.SpawnFlags);
+            if (ev.IsAllowed && ev.Reason is not(SpawnReason.Destroyed or SpawnReason.CustomRole) && Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && !KeepRoleOnChangingRole)))
+                RemoveRole(ev.Player, ev.SpawnFlags);
         }
 
         private void OnSpawningRagdoll(SpawningRagdollEventArgs ev)

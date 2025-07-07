@@ -29,7 +29,10 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
+    using UnityEngine;
+    using Utils.Networking;
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -114,10 +117,10 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), false);
             }
 
-            // TODO: Remove if this has been fixed for https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/947
-            if (ev.Player.TryGetEffect(out Hypothermia hypothermia))
+            // Fix bug that player that Join do not receive information about other players Scale
+            foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
             {
-                hypothermia.SubEffects = hypothermia.SubEffects.Where(x => x.GetType() != typeof(PostProcessSubEffect)).ToArray();
+                player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
             }
         }
 

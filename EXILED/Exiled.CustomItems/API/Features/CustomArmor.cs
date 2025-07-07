@@ -87,7 +87,7 @@ namespace Exiled.CustomItems.API.Features
 
             player.AddItem(armor);
 
-            TrackedSerials.Add(armor.Serial);
+            SerialLookupTable.Add(armor.Serial);
 
             Timing.CallDelayed(0.05f, () => OnAcquired(player, armor, displayMessage));
 
@@ -121,7 +121,7 @@ namespace Exiled.CustomItems.API.Features
 
             ev.IsAllowed = false;
 
-            TrackedSerials.Remove(ev.Pickup.Serial);
+            SerialLookupTable.Remove(ev.Pickup.Serial);
             ev.Pickup.Destroy();
 
             Give(ev.Player);
