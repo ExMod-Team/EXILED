@@ -442,25 +442,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Spawns the ragdoll on the network.
         /// </summary>
-        public void Spawn()
-        {
-            if (!IsSpawned)
-            {
-                NetworkServer.Spawn(GameObject);
-            }
-        }
+        public void Spawn() => NetworkServer.Spawn(GameObject);
 
         /// <summary>
         /// Spawns the ragdoll on the network with a specified owner.
         /// </summary>
         /// <param name="ownerPlayer">The owner of the ragdoll.</param>
-        public void Spawn(GameObject ownerPlayer)
-        {
-            if (!IsSpawned)
-            {
-                NetworkServer.Spawn(GameObject, ownerPlayer);
-            }
-        }
+        public void Spawn(GameObject ownerPlayer) => NetworkServer.Spawn(GameObject, ownerPlayer);
 
         /// <summary>
         /// Spawns the ragdoll on the network with a specified network connection or asset ID.
@@ -469,25 +457,16 @@ namespace Exiled.API.Features
         /// <param name="assetId">The optional asset ID of the ragdoll.</param>
         public void Spawn(NetworkConnection ownerConnection, uint? assetId = null)
         {
-            if (!IsSpawned)
-            {
-                if (assetId.HasValue)
-                    NetworkServer.Spawn(GameObject, assetId.Value, ownerConnection);
-                else
-                    NetworkServer.Spawn(GameObject, ownerConnection);
-            }
+            if (assetId.HasValue)
+                NetworkServer.Spawn(GameObject, assetId.Value, ownerConnection);
+            else
+                NetworkServer.Spawn(GameObject, ownerConnection);
         }
 
         /// <summary>
         /// Un-spawns the ragdoll.
         /// </summary>
-        public void UnSpawn()
-        {
-            if (IsSpawned)
-            {
-                NetworkServer.UnSpawn(GameObject);
-            }
-        }
+        public void UnSpawn() => NetworkServer.UnSpawn(GameObject);
 
         /// <summary>
         /// Returns the Ragdoll in a human-readable format.
