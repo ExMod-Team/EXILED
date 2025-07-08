@@ -76,6 +76,11 @@ namespace Exiled.API.Features
     {
 #pragma warning disable SA1401
         /// <summary>
+        /// A list of the player's CustomRole Ids.
+        /// </summary>
+        public readonly List<uint> CustomRoleIds = new();
+
+        /// <summary>
         /// A list of the player's items.
         /// </summary>
         internal readonly List<Item> ItemsValue = new(8);
