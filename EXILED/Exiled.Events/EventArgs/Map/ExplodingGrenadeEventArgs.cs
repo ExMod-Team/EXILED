@@ -25,7 +25,7 @@ namespace Exiled.Events.EventArgs.Map
     /// <summary>
     /// Contains all information before a grenade explodes.
     /// </summary>
-    public class ExplodingGrenadeEventArgs : IPlayerEvent, IDeniableEvent
+    public class ExplodingGrenadeEventArgs : IPlayerEvent, IDeniableEvent, IPickupEvent
     {
         private ExplosionType explosionType;
 
@@ -148,5 +148,13 @@ namespace Exiled.Events.EventArgs.Map
         /// Gets the player who thrown the grenade.
         /// </summary>
         public Player Player { get; }
+
+#pragma warning disable SA1623 // Property summary documentation should match accessors. It match i take it from the interface.
+        /// <summary>
+        /// <inheritdoc path="/summary"/>
+        /// This property is equivalent to <see cref="Projectile"/>.
+        /// </summary>
+        Pickup IPickupEvent.Pickup => Projectile;
+#pragma warning restore SA1623 // Property summary documentation should match accessors
     }
 }
