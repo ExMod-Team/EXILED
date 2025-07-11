@@ -39,7 +39,7 @@ namespace Exiled.Events.EventArgs.Player
             Player = Player.Get(referenceHub);
             NewRole = newRole;
             EscapeScenario = escapeScenario;
-            IsAllowed = true;
+            IsAllowed = escapeScenario is not EscapeScenario.None;
         }
 
         /// <summary>
