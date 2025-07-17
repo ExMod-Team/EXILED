@@ -2135,8 +2135,20 @@ namespace Exiled.API.Features
         /// <param name="damageType">The <see cref="DamageType"/> of the damage dealt.</param>
         /// <param name="cassieAnnouncement">The <see cref="CassieAnnouncement"/> cassie announcement to make if the damage kills the player.</param>
         /// <param name="deathText"> The <see langword="string"/> death text to appear on <see cref="Player"/> screen. </param>
-        public void Hurt(Player attacker, float amount, DamageType damageType = DamageType.Unknown, CassieAnnouncement cassieAnnouncement = null, string deathText = null) =>
+        public void Hurt(Player attacker, float amount, DamageType damageType, CassieAnnouncement cassieAnnouncement, string deathText) =>
             Hurt(new GenericDamageHandler(this, attacker, amount, damageType, cassieAnnouncement, deathText));
+
+        /// <summary>
+        /// Hurts the player.
+        /// </summary>
+        /// <param name="attacker">The <see cref="Player"/> attacking player.</param>
+        /// <param name="amount">The <see langword="float"/> amount of damage to deal.</param>
+        /// <param name="damageType">The <see cref="DamageType"/> of the damage dealt.</param>
+        /// <param name="cassieAnnouncement">The <see cref="CassieAnnouncement"/> cassie announcement to make if the damage kills the player.</param>
+        /// <param name="deathText">The <see langword="string"/> death text to appear on <see cref="Player"/> screen.</param>
+        /// <param name="overrideCassieForAllRole">Whether to play Cassie for non-SCPs as well.</param>
+        public void Hurt(Player attacker, float amount, DamageType damageType, CassieAnnouncement cassieAnnouncement, string deathText, bool overrideCassieForAllRole) =>
+            Hurt(new GenericDamageHandler(this, attacker, amount, damageType, cassieAnnouncement, deathText, overrideCassieForAllRole));
 
         /// <summary>
         /// Hurts the player.
