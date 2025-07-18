@@ -71,7 +71,7 @@ namespace Exiled.CustomItems.Commands.List
 
                 count += customItem.TrackedSerials.Count;
 
-                foreach (int insideInventory in customItem.TrackedSerials)
+                foreach (int insideInventory in customItem.SerialLookupTable)
                 {
                     Player owner = Player.List.FirstOrDefault(player => player.Inventory.UserInventory.Items.Any(item => item.Key == insideInventory));
 
