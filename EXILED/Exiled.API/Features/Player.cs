@@ -672,6 +672,12 @@ namespace Exiled.API.Features
         public bool IsScp => Role?.Type.IsScp() ?? false;
 
         /// <summary>
+        /// Indicates whether the player has enabled the "Opt out of SCP" setting,  
+        /// which prevents them from being assigned any SCP role.  
+        /// </summary>
+        public bool IsOptedOutOfScp => ScpPlayerPicker.IsOptedOutOfScp(ReferenceHub);
+
+        /// <summary>
         /// Gets a value indicating whether the player's <see cref="RoleTypeId"/> is any human rank.
         /// </summary>
         public bool IsHuman => Role is not null && Role.Is(out HumanRole _);
