@@ -27,8 +27,12 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
+    using UnityEngine;
+    using Utils.Networking;
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -81,6 +85,13 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.Inventory.ServerDropEverything();
         }
 
+        /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
+        public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
+        {
+            if (ev.Role.IsDead() || !ev.Role.IsFpcRole())
+                ev.IsAllowed = false;
+        }
+
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />
         public static void OnActivatingSense(ActivatingSenseEventArgs ev)
         {
@@ -105,6 +116,12 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), true);
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), false);
             }
+
+            // Fix bug that player that Join do not receive information about other players Scale
+            foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
+            {
+                player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
+            }
         }
 
         private static void GenerateAttachments()
@@ -117,7 +134,7 @@ namespace Exiled.Events.Handlers.Internal
                 if (Item.Create(firearmType.GetItemType()) is not Firearm firearm)
                     continue;
 
-                Firearm.ItemTypeToFirearmInstance.Add(firearmType, firearm);
+                Firearm.ItemTypeToFirearmInstance[firearmType] = firearm;
 
                 List<AttachmentIdentifier> attachmentIdentifiers = ListPool<AttachmentIdentifier>.Pool.Get();
                 HashSet<AttachmentSlot> attachmentsSlots = HashSetPool<AttachmentSlot>.Pool.Get();
@@ -136,8 +153,8 @@ namespace Exiled.Events.Handlers.Internal
                         .Where(attachment => attachment.Slot == slot)
                         .Min(slot => slot.Code));
 
-                Firearm.BaseCodesValue.Add(firearmType, baseCode);
-                Firearm.AvailableAttachmentsValue.Add(firearmType, attachmentIdentifiers.ToArray());
+                Firearm.BaseCodesValue[firearmType] = baseCode;
+                Firearm.AvailableAttachmentsValue[firearmType] = attachmentIdentifiers.ToArray();
 
                 ListPool<AttachmentIdentifier>.Pool.Return(attachmentIdentifiers);
                 HashSetPool<AttachmentSlot>.Pool.Return(attachmentsSlots);

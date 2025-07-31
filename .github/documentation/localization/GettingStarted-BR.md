@@ -12,7 +12,7 @@ Isso também permite que desenvolvedores de plug-in não precisem atualizar seus
 Esse documento mostrará a você os básicos de como se fazer um Plug-in para o Exiled. A partir daqui, você poderá mostrar ao mundo as coisas criativas que você pode criar com essa framework!
 
 ### Exemplo de Plug-in
-Um [Exemplo de Plug-in](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Example) que é um plug-in simples que mostra eventos e como fazer eles adequadamente. Usar esse exemplo ajudará você a aprender a como usar o Exiled apropriadamente. Há alguns aspectos nesse plug-in que são importantes, falaremos sobre eles.
+Um [Exemplo de Plug-in](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Example) que é um plug-in simples que mostra eventos e como fazer eles adequadamente. Usar esse exemplo ajudará você a aprender a como usar o Exiled apropriadamente. Há alguns aspectos nesse plug-in que são importantes, falaremos sobre eles.
 
 #### Atualizações Dinâmicas em On Enable + On Disable
 Exiled é uma framework que tem um comando de **Reload** que pode ser usado para recarregar todos os plug-ins e obter novos. Isso significa que você deve fazer com que seus plug-ins sejam **Dinamicamente Atualizáveis.** Isso significa que toda variável, evento, corrotina, etc *deve* ser atribuída quando ativada e anulada quando desativada. O método **On Enable** deve ativar todos, e o método **On Disable** deve desativar todos. Mas talvez você esteja se perguntando 'E o **On Reload**'? Essa função tem como objetivo carregar variáveis estáticas para que toda constante estática que você fizer não seja apagada. Então você poderia fazer algo assim:
@@ -203,4 +203,4 @@ Se você quiser mais informações, você deve entrar no nosso [discord!](https:
 
 Nós temos um canal de #resources que você pode considerar útil, assim como colaboradores do EXILED e desenvolvedores de plug-in que estariam dispostos a ajudá-lo na criação de seus plug-ins.
 
-Ou você poderia ler sobre todos os eventos que nós temos! Se você deseja verificá-los, veja [aqui!](https://github.com/ExMod-Team/EXILED/tree/master/Exiled.Events/EventArgs)
+Ou você poderia ler sobre todos os eventos que nós temos! Se você deseja verificá-los, veja [aqui!](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)

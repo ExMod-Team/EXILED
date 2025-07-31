@@ -35,12 +35,21 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the cached <see cref="AlphaWarheadOutsitePanel"/> component.
         /// </summary>
-        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = Object.FindObjectOfType<AlphaWarheadOutsitePanel>());
+        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>());
 
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the warhead lever.
         /// </summary>
         public static GameObject Lever => SitePanel.lever.gameObject;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether DeadmanSwitch detonation is enabled.
+        /// </summary>
+        public static bool DeadmanSwitchEnabled
+        {
+            get => DeadmanSwitch.IsDeadmanSwitchEnabled;
+            set => DeadmanSwitch.IsDeadmanSwitchEnabled = value;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether automatic detonation is enabled.
@@ -79,8 +88,8 @@ namespace Exiled.API.Features
         /// </summary>
         public static bool IsKeycardActivated
         {
-            get => OutsitePanel.NetworkkeycardEntered;
-            set => OutsitePanel.NetworkkeycardEntered = value;
+            get => AlphaWarheadActivationPanel.IsUnlocked;
+            set => AlphaWarheadActivationPanel.IsUnlocked = value;
         }
 
         /// <summary>
@@ -163,7 +172,16 @@ namespace Exiled.API.Features
         public static void CloseBlastDoors()
         {
             foreach (BlastDoor door in BlastDoors)
-                door.SetClosed(false, true);
+                door.SetDoorState(true, false);
+        }
+
+        /// <summary>
+        /// Open the surface blast doors.
+        /// </summary>
+        public static void OpenBlastDoors()
+        {
+            foreach (BlastDoor door in BlastDoors)
+                door.SetDoorState(false, true);
         }
 
         /// <summary>
@@ -182,9 +200,30 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Starts the warhead countdown.
+        /// </summary>
+        /// <param name="isAutomatic">Indicates whether the warhead is started automatically.</param>
+        /// <param name="suppressSubtitles">If <see langword="true"/>, subtitles will not be displayed during the countdown.</param>
+        /// <param name="trigger">The <see cref="Player"/> of the entity that triggered the warhead.</param>
+        public static void Start(bool isAutomatic, bool suppressSubtitles = false, Player trigger = null)
+        {
+            Controller.InstantPrepare();
+            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger == null ? null : trigger.ReferenceHub);
+        }
+
+        /// <summary>
         /// Stops the warhead.
         /// </summary>
         public static void Stop() => Controller.CancelDetonation();
+
+        /// <summary>
+        /// Stops the warhead detonation process.
+        /// </summary>
+        /// <param name="disabler">
+        /// The <see cref="Player"/> who is disabling the warhead.
+        /// If <see langword="null"/>, the warhead will be stopped without a specific player reference.
+        /// </param>
+        public static void Stop(Player disabler) => Controller.CancelDetonation(disabler.ReferenceHub);
 
         /// <summary>
         /// Detonates the warhead.
@@ -192,9 +231,26 @@ namespace Exiled.API.Features
         public static void Detonate() => Controller.ForceTime(0f);
 
         /// <summary>
+        /// Detonates the warhead after the specified remaining time.
+        /// </summary>
+        /// <param name="remaining">
+        /// The time in seconds until the warhead detonates.
+        /// If set to <see langword="0"/>, the warhead will detonate immediately.
+        /// </param>
+        public static void Detonate(float remaining) => Controller.ForceTime(remaining);
+
+        /// <summary>
         /// Shake all players, like if the warhead has been detonated.
         /// </summary>
         public static void Shake() => Controller.RpcShake(false);
+
+        /// <summary>
+        /// Shake all players, like if the warhead has been detonated.
+        /// </summary>
+        /// <param name="archieve">
+        /// If <see langword="true"/>, the shake effect will be archived.
+        /// </param>
+        public static void Shake(bool archieve) => Controller.RpcShake(archieve);
 
         /// <summary>
         /// Gets whether the provided position will be detonated by the alpha warhead.

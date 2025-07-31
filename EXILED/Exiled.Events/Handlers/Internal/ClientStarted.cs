@@ -43,11 +43,28 @@ namespace Exiled.Events.Handlers.Internal
                     prefabs.Add(ragdollPrefab.assetId, (ragdollPrefab.gameObject, component));
             }
 
-            foreach (PrefabType prefabType in EnumUtils<PrefabType>.Values)
+            for (int i = 0; i < EnumUtils<PrefabType>.Values.Length; i++)
             {
+                PrefabType prefabType = EnumUtils<PrefabType>.Values[i];
                 PrefabAttribute attribute = prefabType.GetPrefabAttribute();
-                PrefabHelper.Prefabs.Add(prefabType, prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.Item1.name.Contains(attribute.Name)).Value);
+                if (prefabs.TryGetValue(attribute.AssetId, out GameObject gameObject))
+                {
+                    PrefabHelper.Prefabs.Add(prefabType, prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.Item1.name.Contains(attribute.Name)).Value);
+                    prefabs.Remove(attribute.AssetId);
+                    continue;
+                }
+
+                KeyValuePair<uint, GameObject>? value = prefabs.FirstOrDefault(x => x.Value.name == attribute.Name);
+                if (value.HasValue)
+                {
+                    PrefabHelper.Prefabs.Add(prefabType, prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.Item1.name.Contains(attribute.Name)).Value);
+                    prefabs.Remove(value.Value.Key);
+                    continue;
+                }
             }
+
+            foreach (KeyValuePair<uint, GameObject> missing in prefabs)
+                Log.Warn($"Missing prefab in {nameof(PrefabType)}: {missing.Value.name} ({missing.Key})");
         }
     }
 }

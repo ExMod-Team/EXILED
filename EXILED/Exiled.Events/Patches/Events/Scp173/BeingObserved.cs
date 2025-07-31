@@ -7,18 +7,22 @@
 
 namespace Exiled.Events.Patches.Events.Scp173
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
+    using API.Features;
+
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp173;
     using HarmonyLib;
+
+    using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.Subroutines;
-    using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
@@ -36,19 +40,12 @@ namespace Exiled.Events.Patches.Events.Scp173
 
             Label continueLabel = generator.DefineLabel();
 
-            const int offset = -4;
-            MethodInfo scp173ExecuteEvent = typeof(EventManager)
-                .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                .FirstOrDefault(m => m.Name == nameof(EventManager.ExecuteEvent)
-                                     && !m.IsGenericMethod);
-            int index = newInstructions.FindLastIndex(i => i.Calls(scp173ExecuteEvent)) + offset;
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
+            int offset = 4;
+            int index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(VisionInformation), nameof(VisionInformation.IsLooking)))) + offset;
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Player.Get(target)
-                new(OpCodes.Ldarg_1),
+                new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // Player.Get(base.Owner)

@@ -8,11 +8,14 @@
 namespace Exiled.API.Features
 {
 #pragma warning disable SA1401
+
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
 
+    using CommandSystem.Commands.RemoteAdmin.Cleanup;
+    using Decals;
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
@@ -25,8 +28,10 @@ namespace Exiled.API.Features
     using LightContainmentZoneDecontamination;
     using MapGeneration;
     using PlayerRoles.Ragdolls;
+    using RemoteAdmin;
     using UnityEngine;
     using Utils;
+    using Utils.Networking;
 
     using Object = UnityEngine.Object;
 
@@ -55,6 +60,14 @@ namespace Exiled.API.Features
         public static DecontaminationState DecontaminationState =>
             DecontaminationController.Singleton.NetworkDecontaminationOverride is DecontaminationController.DecontaminationStatus.Disabled ?
             DecontaminationState.Disabled : (DecontaminationState)DecontaminationController.Singleton._nextPhase;
+
+        /// <summary>
+        /// Gets the remaining time for the decontamination process.
+        /// </summary>
+        /// <returns>
+        /// The remaining time in seconds for the decontamination process.
+        /// </returns>
+        public static float RemainingDecontaminationTime => Mathf.Max(0, (float)(DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime));
 
         /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
@@ -94,7 +107,24 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
-        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindObjectOfType<SqueakSpawner>();
+        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindFirstObjectByType<SqueakSpawner>();
+
+        /// <summary>
+        /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.
+        /// </summary>
+        /// <param name="message">The message to send.</param>
+        /// <param name="player">The player to send message as, null will use Server Host.</param>
+        public static void StaffMessage(string message, Player player = null)
+        {
+            player ??= Server.Host;
+            foreach (Player target in Player.List)
+            {
+                if (!CommandProcessor.CheckPermissions(target.Sender, PlayerPermissions.AdminChat))
+                    continue;
+
+                target.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+            }
+        }
 
         /// <summary>
         /// Broadcasts a message to all <see cref="Player">players</see>.
@@ -120,6 +150,17 @@ namespace Exiled.API.Features
                 ClearBroadcasts();
 
             Server.Broadcast.RpcAddElement(message, duration, type);
+        }
+
+        /// <summary>
+        /// Broadcasts delegate invocation result to all <see cref="Player">players</see>.
+        /// </summary>
+        /// <param name="duration">The duration in seconds.</param>
+        /// <param name="func">The delegate whose invocation result will be the message.</param>
+        public static void Broadcast(ushort duration, Func<Player, string> func)
+        {
+            foreach (Player player in Player.List)
+                player.Broadcast(duration, func.Invoke(player));
         }
 
         /// <summary>
@@ -264,6 +305,19 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Destroy specified amount of specified <see cref="DecalPoolType"/> object.
+        /// </summary>
+        /// <param name="decalType">Decal type to destroy.</param>
+        /// <param name="amount">Amount of decals to destroy.</param>
+        public static void Clean(DecalPoolType decalType, int amount) => new DecalCleanupMessage(decalType, amount).SendToAuthenticated();
+
+        /// <summary>
+        /// Destroy all specified <see cref="DecalPoolType"/> objects.
+        /// </summary>
+        /// <param name="decalType">Decal type to destroy.</param>
+        public static void Clean(DecalPoolType decalType) => Clean(decalType, int.MaxValue);
+
+        /// <summary>
         /// Places a blood decal.
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
@@ -327,19 +381,9 @@ namespace Exiled.API.Features
         /// <param name="firearmType">The type of firearm to play the sound of.</param>
         /// <param name="maxDistance">The maximum distance the sound can be heard from.</param>
         /// <param name="audioClipId">The audio clip ID to play.</param>
+        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
         public static void PlayGunSound(Vector3 position, ItemType firearmType, byte maxDistance = 45, byte audioClipId = 0)
         {
-            // TODO: Not finish
-            /*
-            GunAudioMessage msg = new()
-            {
-                Weapon = firearmType,
-                AudioClipId = audioClipId,
-                MaxDistance = maxDistance,
-                ShooterHub = ReferenceHub._hostHub,
-                ShooterPosition = new RelativePosition(position),
-            };
-            msg.SendToAuthenticated();*/
         }
 
         /// <summary>
@@ -367,6 +411,12 @@ namespace Exiled.API.Features
             Firearm.ItemTypeToFirearmInstance.Clear();
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
+
+#pragma warning disable CS0618
+            Scp559.CakeToWrapper.Clear();
+
+            Coffee.BaseToWrapper.Clear();
+#pragma warning restore CS0618
         }
     }
 }

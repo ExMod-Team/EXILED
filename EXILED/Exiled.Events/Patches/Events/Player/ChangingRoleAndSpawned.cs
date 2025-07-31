@@ -186,15 +186,16 @@ namespace Exiled.Events.Patches.Events.Player
         {
             try
             {
-                if (!NetworkServer.active || ev == null || !ev.SpawnFlags.HasFlag(RoleSpawnFlags.AssignInventory))
+                if (ev is null)
+                    return;
+
+                if (ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
                     return;
 
                 Inventory inventory = ev.Player.Inventory;
                 if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
                     List<ItemPickupBase> list = new List<ItemPickupBase>();
-                    if (inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
-                        bodyArmor.DontRemoveExcessOnDrop = true;
 
                     HashSet<ushort> hashSet = HashSetPool<ushort>.Pool.Get();
                     foreach (KeyValuePair<ushort, ItemBase> item2 in inventory.UserInventory.Items)

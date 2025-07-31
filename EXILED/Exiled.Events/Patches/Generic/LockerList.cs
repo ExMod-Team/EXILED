@@ -20,14 +20,16 @@ namespace Exiled.Events.Patches.Generic
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="MapGeneration.Distributors.Locker.Start"/>.
+    /// Patches <see cref="SpawnableStructure.Start"/>.
     /// </summary>
-    [HarmonyPatch(typeof(MapGeneration.Distributors.Locker), nameof(MapGeneration.Distributors.Locker.Start))]
+    [HarmonyPatch(typeof(SpawnableStructure), nameof(SpawnableStructure.Start))]
     internal class LockerList
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> codeInstructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(codeInstructions);
+
+            Label jump = generator.DefineLabel();
 
             // new Locker(this)
             newInstructions.InsertRange(
@@ -35,8 +37,11 @@ namespace Exiled.Events.Patches.Generic
                 new CodeInstruction[]
                 {
                     new(OpCodes.Ldarg_0),
+                    new(OpCodes.Isinst, typeof(MapGeneration.Distributors.Locker)),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Brfalse_S, jump),
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(API.Features.Lockers.Locker))[0]),
-                    new(OpCodes.Pop),
+                    new CodeInstruction(OpCodes.Pop).WithLabels(jump),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)

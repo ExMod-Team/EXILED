@@ -23,7 +23,7 @@ namespace Exiled.Events.Patches.Fixes
 
     /// <summary>
     /// Patches <see cref="JailbirdDeteriorationTracker.Setup(JailbirdItem, JailbirdHitreg)" />.
-    /// Bug reported to NW (https://trello.com/c/kyr3hV9B).
+    /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/88).
     /// </summary>
     [HarmonyPatch(typeof(JailbirdDeteriorationTracker), nameof(JailbirdDeteriorationTracker.Setup))]
     internal static class Jailbird914CoarseFix

@@ -62,6 +62,8 @@ namespace Exiled.API.Features.Items
                 ushort serial = ItemSerialGenerator.GenerateNext();
                 Serial = serial;
                 itemBase.OnAdded(null);
+                if (Base is ModularAutosyncItem syncItem)
+                    syncItem.InstantiationStatus = AutosyncInstantiationStatus.SimulatedInstance;
 #if DEBUG
                 Log.Debug($"{nameof(Item)}.ctor: Generating new serial number. Serial should now be: {serial}. // {Serial}");
 #endif
@@ -194,6 +196,11 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Gets the <see cref="ItemIdentifier"/> for this item.
+        /// </summary>
+        public ItemIdentifier Identifier => Base.ItemId;
+
+        /// <summary>
         /// Gets an existing <see cref="Item"/> or creates a new instance of one.
         /// </summary>
         /// <param name="itemBase">The <see cref="ItemBase"/> to convert into an item.</param>
@@ -293,28 +300,34 @@ namespace Exiled.API.Features.Items
         /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
         /// <param name="owner">The <see cref="Player"/> who owns the item by default.</param>
         /// <returns>The <see cref="Item"/> created. This can be cast as a subclass.</returns>
-        public static Item Create(ItemType type, Player owner = null) => type switch
+        public static Item Create(ItemType type, Player owner = null) => type.GetTemplate() switch
         {
-            ItemType.SCP268 => new Usable(type),
-            ItemType.Adrenaline or ItemType.Medkit or ItemType.Painkillers or ItemType.SCP500 or ItemType.SCP207 or ItemType.SCP1853 or ItemType.AntiSCP207 => new Consumable(type),
-            ItemType.SCP244a or ItemType.SCP244b => new Scp244(type),
-            ItemType.Ammo9x19 or ItemType.Ammo12gauge or ItemType.Ammo44cal or ItemType.Ammo556x45 or ItemType.Ammo762x39 => new Ammo(type),
-            ItemType.Flashlight or ItemType.Lantern => new Flashlight(type),
-            ItemType.Radio => new Radio(),
-            ItemType.MicroHID => new MicroHid(),
-            ItemType.GrenadeFlash => new FlashGrenade(owner),
-            ItemType.GrenadeHE => new ExplosiveGrenade(type, owner),
-            ItemType.SCP018 => new Scp018(type, owner),
-            ItemType.GunCrossvec or ItemType.GunLogicer or ItemType.GunRevolver or ItemType.GunShotgun or ItemType.GunAK or ItemType.GunCOM15 or ItemType.GunCOM18 or ItemType.GunCom45 or ItemType.GunE11SR or ItemType.GunFSP9 or ItemType.ParticleDisruptor or ItemType.GunA7 or ItemType.GunFRMG0 => new Firearm(type),
-            ItemType.KeycardGuard or ItemType.KeycardJanitor or ItemType.KeycardO5 or ItemType.KeycardScientist or ItemType.KeycardChaosInsurgency or ItemType.KeycardContainmentEngineer or ItemType.KeycardFacilityManager or ItemType.KeycardResearchCoordinator or ItemType.KeycardZoneManager or ItemType.KeycardMTFPrivate or ItemType.KeycardMTFOperative or
-            ItemType.KeycardMTFCaptain => new Keycard(type),
-            ItemType.ArmorLight or ItemType.ArmorCombat or ItemType.ArmorHeavy => new Armor(type),
-            ItemType.SCP330 => new Scp330(),
-            ItemType.SCP2176 => new Scp2176(owner),
-            ItemType.SCP1576 => new Scp1576(),
-            ItemType.SCP1344 => new Scp1344(),
-            ItemType.Jailbird => new Jailbird(),
-            _ => new Item(type),
+            InventorySystem.Items.Firearms.Firearm => new Firearm(type),
+            KeycardItem => new Keycard(type),
+            UsableItem usable => usable switch
+            {
+                Scp330Bag => new Scp330(),
+                Scp244Item => new Scp244(type),
+                Scp1576Item => new Scp1576(),
+                Scp1344Item => new Scp1344(),
+                BaseConsumable => new Consumable(type),
+                _ => new Usable(type),
+            },
+            RadioItem => new Radio(),
+            MicroHIDItem => new MicroHid(),
+            BodyArmor => new Armor(type),
+            AmmoItem => new Ammo(type),
+            ToggleableLightItemBase => new Flashlight(type),
+            JailbirdItem => new Jailbird(),
+            ThrowableItem throwable => throwable.Projectile switch
+            {
+                FlashbangGrenade => new FlashGrenade(owner),
+                ExplosionGrenade => new ExplosiveGrenade(type, owner),
+                Scp2176Projectile => new Scp2176(owner),
+                Scp018Projectile => new Scp018(type, owner),
+                _ => new Throwable(type, owner),
+            },
+            _ => new(type),
         };
 
         /// <summary>
@@ -349,7 +362,7 @@ namespace Exiled.API.Features.Items
         /// <param name="owner">The <see cref="Player"/> who owns the item by default.</param>
         /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
         /// <returns>The <see cref="Item"/> created. This can be cast as a subclass.</returns>
-        public static Item Create<T>(ItemType type, Player owner = null)
+        public static Item Create<T>(ItemType type, Player owner = null) // TODO modify return type to "T"
             where T : Item => Create(type, owner) as T;
 
         /// <summary>

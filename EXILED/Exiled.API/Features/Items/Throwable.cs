@@ -93,6 +93,11 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Cancel the the throws of the item.
+        /// </summary>
+        public void CancelThrow() => Base.ServerProcessCancellation();
+
+        /// <summary>
         /// Clones current <see cref="Throwable"/> object.
         /// </summary>
         /// <returns> New <see cref="Throwable"/> object. </returns>

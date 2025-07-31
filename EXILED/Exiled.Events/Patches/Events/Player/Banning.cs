@@ -46,16 +46,24 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
+                    // target
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(Footprint) })),
 
+                    // issuer
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ICommandSender) })),
 
+                    // commandSender
+                    new(OpCodes.Ldarg_1),
+
+                    // duration
                     new(OpCodes.Ldarg_3),
 
+                    // reason
                     new(OpCodes.Ldarg_2),
 
+                    // fullMessage
                     new(OpCodes.Ldstr, "You have been banned. "),
                     new(OpCodes.Ldarg_2),
                     new(OpCodes.Call, Method(typeof(string), nameof(string.IsNullOrEmpty))),
@@ -67,8 +75,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(string), nameof(string.Concat), new[] { typeof(string), typeof(string) })),
                     new CodeInstruction(OpCodes.Call, Method(typeof(string), nameof(string.Concat), new[] { typeof(string), typeof(string) })).WithLabels(empty),
 
+                    // isAllowed = true
                     new(OpCodes.Ldc_I4_1),
 
+                    // ev = new BanningEventArgs(target, issuer, commandSender, duration, reason, fullMessage, true)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(BanningEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

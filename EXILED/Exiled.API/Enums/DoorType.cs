@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Enums
 {
+    using System;
+
     using Exiled.API.Features.Doors;
     using Interactables.Interobjects;
 
@@ -165,11 +167,20 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the HID_UPPER door.
         /// </summary>
+        [Obsolete("This Door has been renamed too HID_LAB.")]
         HIDUpper,
+
+        /// <summary>
+        /// Represents the HID_LAB door.
+        /// </summary>
+#pragma warning disable CS0618
+        HIDLab = HIDUpper,
+#pragma warning restore CS0618
 
         /// <summary>
         /// Represents the HID_LOWER door.
         /// </summary>
+        [Obsolete("This Door has been removed from the game.")]
         HIDLower,
 
         /// <summary>
@@ -200,6 +211,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents the NUKE_ARMORY door.
         /// </summary>
+        [Obsolete("This Door has been removed from the game.")]
         NukeArmory,
 
         /// <summary>
@@ -238,8 +250,9 @@ namespace Exiled.API.Enums
         CheckpointGateB,
 
         /// <summary>
-        /// Represents the Gate in the Checkpoint between EZ and HCZ.
+        /// Represents a door than Yamato never implemented.
         /// </summary>
+        [Obsolete("This Door has never been in the game.")]
         SurfaceDoor,
 
         /// <summary>
@@ -316,5 +329,15 @@ namespace Exiled.API.Enums
         /// Represents the ESCAPE_FINAL door.
         /// </summary>
         EscapeFinal,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.ServerRoom"/>.
+        /// </summary>
+        ElevatorServerRoom,
+
+        /// <summary>
+        /// Represents the HCZ_127_LAB door.
+        /// </summary>
+        Hcz127Lab,
     }
 }

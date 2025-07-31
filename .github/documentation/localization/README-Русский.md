@@ -22,7 +22,7 @@ EXILED - низкоуровневый фреймворк для серверов
 Если вы решите использовать программу установки, она, при правильном запуске, "позаботится" об установке `Exiled.Loader`, `Exiled.Updater`, `Exiled.Permissions`, `Exiled.API` и `Exiled.Events`, а также о том, чтобы на вашем сервере был установлен правильный файл Assembly-CSharp.dll.
 
 # Windows
-### Автоматическая установка ([подробнее](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Автоматическая установка ([подробнее](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 **Примечание**: Перед запуском программы установки убедитесь, что вы находитесь под пользователем, который запускает сервер, или у вас есть права администратора.
 
 - Скачайте **`Exiled.Installer-Win.exe` [отсюда](https://github.com/ExMod-Team/EXILED/releases)** (нажмите на Assets -> нажмите на Installer).
@@ -48,7 +48,7 @@ EXILED - низкоуровневый фреймворк для серверов
   - Переместите его в: ``C:\Users\%UserName%\AppData\Roaming\EXILED\Plugins`` (переместите его сюда, нажав Win + R, а затем написав `%appdata%`)
 
 # Linux
-### Автоматическая установка ([подробнее](https://github.com/ExMod-Team/EXILED/blob/master/Exiled.Installer/README.md))
+### Автоматическая установка ([подробнее](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
 
 **Примечание:** Если вы устанавливаете EXILED на удаленный сервер, убедитесь, что вы запускаете программу установки от имени того же пользователя, который запускает ваши серверы SCP:SL (или root).
 

@@ -40,8 +40,8 @@ namespace Exiled.API.Features
         /// </summary>
         public static Scp914Mode ConfigMode
         {
-            get => Scp914Controller._configMode.Value;
-            set => Scp914Controller._configMode.Value = value;
+            get => Scp914Controller.ConfigMode.Value;
+            set => Scp914Controller.ConfigMode.Value = value;
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether SCP-914 is active and currently processing items.
         /// </summary>
-        public static bool IsWorking => Scp914Controller._isUpgrading;
+        public static bool IsWorking => Scp914Controller.IsUpgrading;
 
         /// <summary>
         /// Gets a value indicating all of the GameObjects currently present inside SCP-914's intake chamber.
         /// </summary>
-        public static Collider[] InsideIntake => Physics.OverlapBox(IntakePosition, Scp914Controller.IntakeChamberSize);
+        public static Collider[] InsideIntake => Physics.OverlapBox(Scp914Controller.IntakeChamber.position, Scp914Controller.IntakeChamberSize);
 
         /// <summary>
         /// Gets the intake booth <see cref="UnityEngine.Transform"/>.
@@ -92,7 +92,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the list with <see cref="Door"/> which SCP-914 has.
         /// </summary>
-        public static IReadOnlyCollection<Door> Doors => Scp914Controller._doors.Select(Door.Get).ToList();
+        public static IReadOnlyCollection<Door> Doors => Scp914Controller.Doors.Select(Door.Get).ToList();
 
         /// <summary>
         /// Filters all GameObjects inside SCP-914's intake chamber into players and items.
@@ -116,8 +116,7 @@ namespace Exiled.API.Features
                     {
                         pickups.Add(pickup);
                     }
-                    else if (Player.TryGet(gameObject, out Player player)
-                        && Physics.Linecast(player.Position, IntakePosition, Scp914Upgrader.SolidObjectMask))
+                    else if (Player.TryGet(gameObject, out Player player))
                     {
                         players.Add(player);
                     }

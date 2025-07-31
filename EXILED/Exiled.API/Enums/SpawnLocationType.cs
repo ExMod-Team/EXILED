@@ -81,6 +81,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Inside the Nuke armory.
         /// </summary>
+        [Obsolete("This Location has been removed from the game.")]
         InsideNukeArmory,
 
         /// <summary>
@@ -124,23 +125,48 @@ namespace Exiled.API.Enums
         InsideHczArmory,
 
         /// <summary>
-        /// Inside the Micro-HID room.
+        /// Inside the chamber that contains the Micro-HID in Micro-HID room.
         /// </summary>
-        InsideHid,
+        InsideHidChamber,
 
         /// <summary>
-        /// Just inside the left door next to Micro-HID room.
+        /// Inside the lower door that leads to the stairs in Micro-HID room.
         /// </summary>
-        InsideHidLeft,
+        InsideHidLower,
 
         /// <summary>
-        /// Just inside the right door next to Micro-HID room.
+        /// Inside the upper door that leads into the Micro-HID room just after the stairs.
         /// </summary>
-        InsideHidRight,
+        InsideHidUpper,
 
         /// <summary>
         /// Just inside the LCZ WC door.
         /// </summary>
         InsideLczWc,
+
+        /// <summary>
+        /// Inside the Glass Box in GR-18.
+        /// </summary>
+        InsideGr18Glass,
+
+        /// <summary>
+        /// Inside 106's Primary Door
+        /// </summary>
+        Inside106Primary,
+
+        /// <summary>
+        /// Inside 106's Secondary Door
+        /// </summary>
+        Inside106Secondary,
+
+        /// <summary>
+        /// Inside 939 Cryo Chamber
+        /// </summary>
+        Inside939Cryo,
+
+        /// <summary>
+        /// Inside SCP-079's Armory
+        /// </summary>
+        Inside079Armory,
     }
 }

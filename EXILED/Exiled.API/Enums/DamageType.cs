@@ -15,8 +15,7 @@ namespace Exiled.API.Enums
     /// Identifiers for types of damage.
     /// </summary>
     /// <seealso cref="Player.Hurt(float, DamageType, string)"/>
-    /// <seealso cref="Player.Hurt(Player, float, DamageType, Features.DamageHandlers.DamageHandlerBase.CassieAnnouncement)"/>
-    /// <seealso cref="Player.Hurt(Player, float, DamageType, Features.DamageHandlers.DamageHandlerBase.CassieAnnouncement, string)"/>
+    /// <seealso cref="Player.Hurt(Player, float, DamageType, Features.DamageHandlers.DamageHandlerBase.CassieAnnouncement, string, bool)"/>
     /// <seealso cref="Player.Kill(DamageType, string)"/>
     public enum DamageType
     {
@@ -254,5 +253,25 @@ namespace Exiled.API.Enums
         /// Damage caused by the marshmallow man.
         /// </summary>
         Marshmallow,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Flamingo"/> ,<see cref="RoleTypeId.AlphaFlamingo"/> or <see cref="RoleTypeId.ZombieFlamingo"/>.
+        /// </summary>
+        Scp1507,
+
+        /// <summary>
+        /// Damage caused by Scp956 the pinata.
+        /// </summary>
+        Scp956,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.Snowball"/>.
+        /// </summary>
+        SnowBall,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.GunSCP127"/>.
+        /// </summary>
+        Scp127,
     }
 }

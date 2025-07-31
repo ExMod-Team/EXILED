@@ -23,10 +23,10 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="firearm">
         /// <inheritdoc cref="Firearm" />
         /// </param>
-        public UnloadingWeaponEventArgs(Firearm firearm)
+        public UnloadingWeaponEventArgs(InventorySystem.Items.Firearms.Firearm firearm)
         {
-            Firearm = firearm;
-            Player = firearm.Owner;
+            Firearm = Item.Get<Firearm>(firearm);
+            Player = Firearm.Owner;
         }
 
         /// <summary>

@@ -116,6 +116,16 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets the <see cref="UnityEngine.GameObject"/> of the toy.
+        /// </summary>
+        public GameObject GameObject => AdminToyBase.gameObject;
+
+        /// <summary>
+        /// Gets the <see cref="UnityEngine.Transform"/> of the toy.
+        /// </summary>
+        public Transform Transform => AdminToyBase.transform;
+
+        /// <summary>
         /// Gets or sets the movement smoothing value of the toy.
         /// <para>
         /// Higher values reflect smoother movements.
@@ -156,6 +166,10 @@ namespace Exiled.API.Features.Toys
                 PrimitiveObjectToy primitiveObjectToy => new Primitive(primitiveObjectToy),
                 ShootingTarget shootingTarget => new ShootingTargetToy(shootingTarget),
                 SpeakerToy speakerToy => new Speaker(speakerToy),
+                CapybaraToy capybaraToy => new Capybara(capybaraToy),
+                Scp079CameraToy scp079CameraToy => new CameraToy(scp079CameraToy),
+                InvisibleInteractableToy invisibleInteractableToy => new InteractableToy(invisibleInteractableToy),
+                TextToy textToy => new Text(textToy),
                 _ => throw new System.NotImplementedException()
             };
         }

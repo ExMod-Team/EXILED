@@ -56,5 +56,20 @@ namespace Exiled.API.Enums
         /// The user will be destroyed.
         /// </summary>
         Destroyed,
+
+        /// <summary>
+        /// The player was dead and is respawning in a mini-wave.
+        /// </summary>
+        RespawnMiniwave,
+
+        /// <summary>
+        /// The user has been spawn by the usage of an Item.
+        /// </summary>
+        ItemUsage,
+
+        /// <summary>
+        /// The user has been spawn by Exiled CustomRole.
+        /// </summary>
+        CustomRole,
     }
 }

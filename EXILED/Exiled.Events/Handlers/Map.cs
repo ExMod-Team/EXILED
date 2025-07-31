@@ -56,6 +56,11 @@ namespace Exiled.Events.Handlers
         public static Event<DecontaminatingEventArgs> Decontaminating { get; set; } = new();
 
         /// <summary>
+        /// Invoked after an elevator sequence is updated.
+        /// </summary>
+        public static Event<ElevatorSequencesUpdatedEventArgs> ElevatorSequencesUpdated { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a grenade explodes.
         /// </summary>
         public static Event<ExplodingGrenadeEventArgs> ExplodingGrenade { get; set; } = new();
@@ -91,14 +96,19 @@ namespace Exiled.Events.Handlers
         public static Event<TurningOffLightsEventArgs> TurningOffLights { get; set; } = new();
 
         /// <summary>
-        /// Invoked after an pickup is spawned.
+        /// Invoked after a pickup is spawned.
         /// </summary>
         public static Event<PickupAddedEventArgs> PickupAdded { get; set; } = new();
 
         /// <summary>
-        /// Invoked after an pickup is destroyed.
+        /// Invoked after a pickup is destroyed.
         /// </summary>
         public static Event<PickupDestroyedEventArgs> PickupDestroyed { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a room connector spawns.
+        /// </summary>
+        public static Event<SpawningRoomConnectorEventArgs> SpawningRoomConnector { get; set; } = new();
 
         /// <summary>
         /// Invoked before a team vehicle is spawned.
@@ -158,6 +168,12 @@ namespace Exiled.Events.Handlers
         public static void OnDecontaminating(DecontaminatingEventArgs ev) => Decontaminating.InvokeSafely(ev);
 
         /// <summary>
+        /// Called after an elevator sequence is updated.
+        /// </summary>
+        /// <param name="ev">The <see cref="ElevatorSequencesUpdatedEventArgs"/> instance.</param>
+        public static void OnElevatorSequencesUpdated(ElevatorSequencesUpdatedEventArgs ev) => ElevatorSequencesUpdated.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before a grenade explodes.
         /// </summary>
         /// <param name="ev">The <see cref="ExplodingGrenadeEventArgs"/> instance.</param>
@@ -209,6 +225,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PickupDestroyedEventArgs"/> instance.</param>
         public static void OnPickupDestroyed(PickupDestroyedEventArgs ev) => PickupDestroyed.InvokeSafely(ev);
+
+        /// <summary>
+        /// Invoked before a room connector spawns.
+        /// </summary>
+        /// <param name="ev">The <see cref="SpawningRoomConnectorEventArgs"/> instance.</param>
+        public static void OnSpawningRoomConnector(SpawningRoomConnectorEventArgs ev) => SpawningRoomConnector.InvokeSafely(ev);
 
         /// <summary>
         /// Invoked before a team vehicle is spawned.

@@ -21,16 +21,18 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="UsingItemEventArgs" /> class.
         /// </summary>
-        /// <param name="player">The player who's going to use the item.</param>
+        /// <param name="hub">
+        /// <inheritdoc cref="Player" />
+        /// </param>
         /// <param name="cooldown">
         /// <inheritdoc cref="Cooldown" />
         /// </param>
         /// <param name="item">
         /// <inheritdoc cref="UsedItemEventArgs.Item" />
         /// </param>
-        public UsingItemEventArgs(Player player, UsableItem item, float cooldown)
+        public UsingItemEventArgs(ReferenceHub hub, UsableItem item, float cooldown)
         {
-            Player = player;
+            Player = Player.Get(hub);
             Usable = Item.Get(item) is Usable usable ? usable : null;
             Cooldown = cooldown;
         }

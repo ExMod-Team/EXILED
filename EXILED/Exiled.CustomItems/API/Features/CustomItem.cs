@@ -17,6 +17,7 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
+    using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Spawn;
@@ -25,18 +26,10 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp914;
     using Exiled.Loader;
-
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Pickups;
-
-    using MapGeneration.Distributors;
-
     using MEC;
-
     using PlayerRoles;
-
     using UnityEngine;
-
     using YamlDotNet.Serialization;
 
     using static CustomItems;
@@ -460,7 +453,7 @@ namespace Exiled.CustomItems.API.Features
         {
             List<CustomItem> unregisteredItems = new();
 
-            foreach (CustomItem customItem in Registered)
+            foreach (CustomItem customItem in Registered.ToList())
             {
                 customItem.TryUnregister();
                 unregisteredItems.Add(customItem);
@@ -581,83 +574,35 @@ namespace Exiled.CustomItems.API.Features
                 if (Loader.Random.NextDouble() * 100 >= spawnPoint.Chance || (limit > 0 && spawned >= limit))
                     continue;
 
-                spawned++;
-
-                /*if (spawnPoint is DynamicSpawnPoint dynamicSpawnPoint && dynamicSpawnPoint.Location == SpawnLocationType.InsideLocker)
+                Pickup? pickup;
+                if (spawnPoint is LockerSpawnPoint { UseChamber: true } lockerSpawnPoint)
                 {
-                    for (int i = 0; i < 50; i++)
+                    try
                     {
-                        if (Exiled.API.Features.Lockers.Locker.List is null)
-                        {
-                            Log.Debug($"{nameof(Spawn)}: Locker list is null.");
-                            continue;
-                        }
-
-                        Locker locker = Exiled.API.Features.Lockers.Locker.Random();
-
-                        if (locker is null)
-                        {
-                            Log.Debug($"{nameof(Spawn)}: Selected locker is null.");
-                            continue;
-                        }
-
-                        if (locker.Loot is null)
-                        {
-                            Log.Debug($"{nameof(Spawn)}: Invalid locker location. Attempting to find a new one..");
-                            continue;
-                        }
-
-                        if (locker.Chambers is null)
-                        {
-                            Log.Debug($"{nameof(Spawn)}: Locker chambers is null");
-                            continue;
-                        }
-
-                        LockerChamber chamber = locker.Chambers[Loader.Random.Next(Mathf.Max(0, locker.Chambers.Length - 1))];
-
-                        if (chamber is null)
-                        {
-                            Log.Debug($"{nameof(Spawn)}: chamber is null");
-                            continue;
-                        }
-
-                        Vector3 position = chamber._spawnpoint.transform.position;
-
-                        Pickup? pickup = Spawn(position, null);
-                        if (pickup?.Base is BaseFirearmPickup firearmPickup && this is CustomWeapon customWeapon)
-                        {
-                            firearmPickup.Status = new FirearmStatus(customWeapon.ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
-                            firearmPickup.NetworkStatus = firearmPickup.Status;
-                        }
-
-                        Log.Debug($"Spawned {Name} at {position} ({spawnPoint.Name})");
-                        break;
+                        lockerSpawnPoint.GetSpawningInfo(out _, out Chamber? chamber, out Vector3 position);
+                        pickup = Spawn(position);
+                        chamber?.AddItem(pickup);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error($"CustomItem {Name}({Id} failed to spawn: {e.Message})");
+                        continue;
                     }
                 }
                 else
                 {
-                    Pickup? pickup = Spawn(spawnPoint.Position, null);
-                    if (pickup?.Base is BaseFirearmPickup firearmPickup && this is CustomWeapon customWeapon)
-                    {
-                        firearmPickup.Status = new FirearmStatus(customWeapon.ClipSize, firearmPickup.Status.Flags, firearmPickup.Status.Attachments);
-                        firearmPickup.NetworkStatus = firearmPickup.Status;
-                    }
-
-                    Log.Debug($"Spawned {Name} at {spawnPoint.Position} ({spawnPoint.Name})");
-                }*/
-
-                Pickup? pickup = Spawn(spawnPoint.Position);
+                    pickup = Spawn(spawnPoint.Position);
+                }
 
                 if (pickup == null)
                     continue;
 
-                if (spawnPoint is LockerSpawnPoint)
-                    pickup.IsLocked = true;
+                spawned++;
 
-                if (pickup.Is(out Exiled.API.Features.Pickups.FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
+                /*if (pickup.Is(out FirearmPickup firearmPickup) && this is CustomWeapon customWeapon)
                 {
-                    // set MaxAmmo if synced TODO
-                }
+                    // TODO: Set MaxAmmo (if synced)
+                }*/
             }
 
             return spawned;
@@ -834,7 +779,8 @@ namespace Exiled.CustomItems.API.Features
         protected virtual void SubscribeEvents()
         {
             Exiled.Events.Handlers.Player.Dying += OnInternalOwnerDying;
-            Exiled.Events.Handlers.Player.DroppingItem += OnInternalDropping;
+            Exiled.Events.Handlers.Player.DroppingItem += OnInternalDroppingItem;
+            Exiled.Events.Handlers.Player.DroppingAmmo += OnInternalDroppingAmmo;
             Exiled.Events.Handlers.Player.ChangingItem += OnInternalChanging;
             Exiled.Events.Handlers.Player.Escaping += OnInternalOwnerEscaping;
             Exiled.Events.Handlers.Player.PickingUpItem += OnInternalPickingUp;
@@ -852,7 +798,8 @@ namespace Exiled.CustomItems.API.Features
         protected virtual void UnsubscribeEvents()
         {
             Exiled.Events.Handlers.Player.Dying -= OnInternalOwnerDying;
-            Exiled.Events.Handlers.Player.DroppingItem -= OnInternalDropping;
+            Exiled.Events.Handlers.Player.DroppingItem -= OnInternalDroppingItem;
+            Exiled.Events.Handlers.Player.DroppingAmmo -= OnInternalDroppingAmmo;
             Exiled.Events.Handlers.Player.ChangingItem -= OnInternalChanging;
             Exiled.Events.Handlers.Player.Escaping -= OnInternalOwnerEscaping;
             Exiled.Events.Handlers.Player.PickingUpItem -= OnInternalPickingUp;
@@ -900,7 +847,24 @@ namespace Exiled.CustomItems.API.Features
         /// Handles tracking items when they are dropped by a player.
         /// </summary>
         /// <param name="ev"><see cref="DroppingItemEventArgs"/>.</param>
+        protected virtual void OnDroppingItem(DroppingItemEventArgs ev)
+        {
+        }
+
+        /// <summary>
+        /// Handles tracking items when they are dropped by a player.
+        /// </summary>
+        /// <param name="ev"><see cref="DroppingItemEventArgs"/>.</param>
+        [Obsolete("Use OnDroppingItem instead.", false)]
         protected virtual void OnDropping(DroppingItemEventArgs ev)
+        {
+        }
+
+        /// <summary>
+        /// Handles tracking when player requests drop of item which <see cref="ItemType"/> equals to the <see cref="ItemType"/> specified by <see cref="CustomItem"/>.
+        /// </summary>
+        /// <param name="ev"><see cref="DroppingAmmoEventArgs"/>.</param>
+        protected virtual void OnDroppingAmmo(DroppingAmmoEventArgs ev)
         {
         }
 
@@ -973,7 +937,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalOwnerChangingRole(ChangingRoleEventArgs ev)
         {
-            if (ev.Reason is SpawnReason.Escaped or SpawnReason.Destroyed)
+            if (ev.Reason is SpawnReason.Escaped or SpawnReason.Destroyed or SpawnReason.LateJoin)
                 return;
 
             foreach (Item item in ev.Player.Items.ToList())
@@ -1061,12 +1025,25 @@ namespace Exiled.CustomItems.API.Features
             }
         }
 
-        private void OnInternalDropping(DroppingItemEventArgs ev)
+        private void OnInternalDroppingItem(DroppingItemEventArgs ev)
         {
             if (!Check(ev.Item))
                 return;
 
+            OnDroppingItem(ev);
+
+            // TODO: Don't forget to remove this with next update
+#pragma warning disable CS0618
             OnDropping(ev);
+#pragma warning restore CS0618
+        }
+
+        private void OnInternalDroppingAmmo(DroppingAmmoEventArgs ev)
+        {
+            if (Type != ev.ItemType)
+                return;
+
+            OnDroppingAmmo(ev);
         }
 
         private void OnInternalPickingUp(PickingUpItemEventArgs ev)

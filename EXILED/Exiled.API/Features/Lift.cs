@@ -48,7 +48,7 @@ namespace Exiled.API.Features
             Base = elevator;
             ElevatorChamberToLift.Add(elevator, this);
 
-            internalDoorsList.AddRange(Interactables.Interobjects.ElevatorDoor.AllElevatorDoors[Group]);
+            internalDoorsList.AddRange(Elevator.AllElevatorDoors[Group]);
         }
 
         /// <summary>
@@ -137,6 +137,7 @@ namespace Exiled.API.Features
             ElevatorGroup.Scp049 => ElevatorType.Scp049,
             ElevatorGroup.GateA => ElevatorType.GateA,
             ElevatorGroup.GateB => ElevatorType.GateB,
+            ElevatorGroup.ServerRoom => ElevatorType.ServerRoom,
             ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => ElevatorType.LczA,
             ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => ElevatorType.LczB,
             ElevatorGroup.Nuke01 or ElevatorGroup.Nuke02 => ElevatorType.Nuke,
@@ -222,6 +223,13 @@ namespace Exiled.API.Features
         /// <param name="type">The <see cref="ElevatorType"/>.</param>
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
         public static Lift Get(ElevatorType type) => Get(lift => lift.Type == type).FirstOrDefault();
+
+        /// <summary>
+        /// Gets the <see cref="Lift"/> corresponding to the specified <see cref="ElevatorGroup"/>, if any.
+        /// </summary>
+        /// <param name="type">The <see cref="ElevatorGroup"/>.</param>
+        /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
+        public static Lift Get(ElevatorGroup type) => Get(lift => lift.Group == type).FirstOrDefault();
 
         /// <summary>
         /// Gets the <see cref="Lift"/> corresponding to the specified name, if any.

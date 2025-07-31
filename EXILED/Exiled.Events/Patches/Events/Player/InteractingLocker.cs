@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -32,14 +33,15 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldloc_1);
+            int offset = -9;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingLockerEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
                     // Player.Get(ply);
-                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this
@@ -54,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ceq),
 
                     // InteractingLockerEventArgs ev = new(Player, Locker, byte, bool)
-                    new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingLockerEventArgs))[0]),
                     new(OpCodes.Dup),
 
                     // Handlers.Player.OnInteractingLocker(ev)

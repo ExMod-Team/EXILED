@@ -132,7 +132,16 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IReadOnlyList{T}"/> of <see cref="Room"/> around the <see cref="Room"/>.
         /// </summary>
-        public IReadOnlyList<Room> NearestRooms { get; private set; }
+        public IReadOnlyList<Room> NearestRooms
+        {
+            get
+            {
+                if (NearestRoomsValue.Count == 0 && Identifier.ConnectedRooms.Count > 0)
+                    NearestRoomsValue.AddRange(Identifier.ConnectedRooms.Select(Get));
+
+                return NearestRoomsValue;
+            }
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Pickup"/> in the <see cref="Room"/>.
@@ -237,7 +246,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The <see cref="Vector3"/> to search for.</param>
         /// <returns>The <see cref="Room"/> with the given <see cref="Vector3"/> or <see langword="null"/> if not found.</returns>
-        public static Room Get(Vector3 position) => RoomIdUtils.RoomAtPositionRaycasts(position, false) is RoomIdentifier identifier ? Get(identifier) : null;
+        public static Room Get(Vector3 position) => position.TryGetRoom(out RoomIdentifier room) ? Get(room) : null;
 
         /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="RelativePosition"/>.
@@ -401,10 +410,45 @@ namespace Exiled.API.Features
         /// Factory method to create and add a <see cref="Room"/> component to a Transform.
         /// We can add parameters to be set privately here.
         /// </summary>
-        /// <param name="roomGameObject">The Game Object to attach the Room component to.</param>
-        internal static void CreateComponent(GameObject roomGameObject)
+        /// <param name="baseRoom">The Game Object to attach the Room component to.</param>
+        internal static void CreateComponent(GameObject baseRoom) => baseRoom.AddComponent<Room>().InternalCreate();
+
+        /// <summary>
+        /// Factory method to complete all element inside a Room.
+        /// </summary>
+        internal void InternalCreate()
         {
-            roomGameObject.AddComponent<Room>().InternalCreate();
+            Identifier = gameObject.GetComponent<RoomIdentifier>();
+            RoomIdentifierToRoom.Add(Identifier, this);
+
+            Zone = Identifier.Zone.GetZone();
+#if DEBUG
+            if (Zone is ZoneType.Unspecified)
+                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
+#endif
+            Type = FindType(gameObject);
+#if DEBUG
+            if (Type is RoomType.Unknown)
+                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
+#endif
+
+            RoomLightControllers = RoomLightControllersValue.AsReadOnly();
+
+            GetComponentsInChildren<BreakableWindow>().ForEach(component =>
+            {
+                Window window = new(component, this);
+                window.Room.WindowsValue.Add(window);
+            });
+
+            if (GetComponentInChildren<global::TeslaGate>() is global::TeslaGate tesla)
+            {
+                TeslaGate = new TeslaGate(tesla, this);
+            }
+
+            Windows = WindowsValue.AsReadOnly();
+            Doors = DoorsValue.AsReadOnly();
+            Speakers = SpeakersValue.AsReadOnly();
+            Cameras = CamerasValue.AsReadOnly();
         }
 
         private static RoomType FindType(GameObject gameObject)
@@ -452,6 +496,8 @@ namespace Exiled.API.Features
                 "HCZ_Straight Variant" => RoomType.HczStraightVariant,
                 "HCZ_ChkpA" => RoomType.HczElevatorA,
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
+                "HCZ_127" => RoomType.Hcz127,
+                "HCZ_ServerRoom" => RoomType.HczServerRoom,
                 "EZ_GateA" => RoomType.EzGateA,
                 "EZ_GateB" => RoomType.EzGateB,
                 "EZ_ThreeWay" => RoomType.EzTCross,
@@ -472,69 +518,16 @@ namespace Exiled.API.Features
                 "EZ_Shelter" => RoomType.EzShelter,
                 "EZ_HCZ_Checkpoint Part" => gameObject.transform.position.z switch
                 {
-                    > 80 => RoomType.EzCheckpointHallwayA,
+                    > 95 => RoomType.EzCheckpointHallwayA,
                     _ => RoomType.EzCheckpointHallwayB,
                 },
                 "HCZ_EZ_Checkpoint Part" => gameObject.transform.position.z switch
                 {
-                    > 80 => RoomType.HczEzCheckpointA,
+                    > 95 => RoomType.HczEzCheckpointA,
                     _ => RoomType.HczEzCheckpointB
                 },
                 _ => RoomType.Unknown,
             };
-        }
-
-        private static ZoneType FindZone(GameObject gameObject)
-        {
-            Transform transform = gameObject.transform;
-
-            if (gameObject.name == "PocketWorld")
-                return ZoneType.Pocket;
-
-            return transform.parent?.name.RemoveBracketsOnEndOfName() switch
-            {
-                "HeavyRooms" => ZoneType.HeavyContainment,
-                "LightRooms" => ZoneType.LightContainment,
-                "EntranceRooms" => ZoneType.Entrance,
-                "HCZ_EZ_Checkpoint" => ZoneType.HeavyContainment | ZoneType.Entrance,
-                _ => transform.position.y > 900 ? ZoneType.Surface : ZoneType.Unspecified,
-            };
-        }
-
-        private void InternalCreate()
-        {
-            Identifier = gameObject.GetComponent<RoomIdentifier>();
-            RoomIdentifierToRoom.Add(Identifier, this);
-
-            Zone = FindZone(gameObject);
-#if DEBUG
-            if (Zone is ZoneType.Unspecified)
-                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
-#endif
-            Type = FindType(gameObject);
-#if DEBUG
-            if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
-#endif
-
-            RoomLightControllers = RoomLightControllersValue.AsReadOnly();
-
-            GetComponentsInChildren<BreakableWindow>().ForEach(component =>
-            {
-                Window window = new(component, this);
-                window.Room.WindowsValue.Add(window);
-            });
-
-            if (GetComponentInChildren<global::TeslaGate>() is global::TeslaGate tesla)
-            {
-                TeslaGate = new TeslaGate(tesla, this);
-            }
-
-            Windows = WindowsValue.AsReadOnly();
-            Doors = DoorsValue.AsReadOnly();
-            NearestRooms = NearestRoomsValue.AsReadOnly();
-            Speakers = SpeakersValue.AsReadOnly();
-            Cameras = CamerasValue.AsReadOnly();
         }
     }
 }

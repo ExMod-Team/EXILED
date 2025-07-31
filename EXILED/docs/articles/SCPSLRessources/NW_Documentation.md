@@ -17,7 +17,7 @@
 title: NW Documentation
 ---
 
-Last Update (13.5.0.1)
+Last Update (14.1.0.1)
 
 ### Index
 
@@ -28,7 +28,6 @@ Last Update (13.5.0.1)
 - [ActionName](#actionname)
 - [Activity](#activity)
 - [AdminFlags](#adminflags)
-- [AlphaPanelOperations](#alphapaneloperations)
 - [AnimItemLayer3p](#animitemlayer3p)
 - [AnimState3p](#animstate3p)
 - [AttachmentDescriptiveAdvantages](#attachmentdescriptiveadvantages)
@@ -46,6 +45,7 @@ Last Update (13.5.0.1)
 - [Authorization](#authorization)
 - [AutoHideType](#autohidetype)
 - [AutosyncInstantiationStatus](#autosyncinstantiationstatus)
+- [AutosyncMessageType](#autosyncmessagetype)
 - [BadgePreferences](#badgepreferences)
 - [BadgeVisibilityPreferences](#badgevisibilitypreferences)
 - [BanType](#bantype)
@@ -60,8 +60,7 @@ Last Update (13.5.0.1)
 - [ChallengeState](#challengestate)
 - [ChallengeType](#challengetype)
 - [ChamberState](#chamberstate)
-- [CheckpointErrorType](#checkpointerrortype)
-- [CheckpointSequenceStage](#checkpointsequencestage)
+- [ChaosMsgType](#chaosmsgtype)
 - [ClientFlags](#clientflags)
 - [ClientInstanceMode](#clientinstancemode)
 - [ClientReceivedContentType](#clientreceivedcontenttype)
@@ -69,7 +68,9 @@ Last Update (13.5.0.1)
 - [ClientType](#clienttype)
 - [CloudState](#cloudstate)
 - [CmdTeleportData](#cmdteleportdata)
+- [CoffeeTranslation](#coffeetranslation)
 - [CollectionDeserializeToBehaviour](#collectiondeserializetobehaviour)
+- [ColliderShape](#collidershape)
 - [CollisionsDisablingReasons](#collisionsdisablingreasons)
 - [ColorMode](#colormode)
 - [CommandOperationMode](#commandoperationmode)
@@ -87,6 +88,7 @@ Last Update (13.5.0.1)
 - [DecalPoolType](#decalpooltype)
 - [DecontaminationStatus](#decontaminationstatus)
 - [DeliveryMethod](#deliverymethod)
+- [DetectionStatus](#detectionstatus)
 - [DiodeType](#diodetype)
 - [DisconnectReason](#disconnectreason)
 - [DisconnectResult](#disconnectresult)
@@ -99,9 +101,11 @@ Last Update (13.5.0.1)
 - [DoorDamageType](#doordamagetype)
 - [DoorLockMode](#doorlockmode)
 - [DoorLockReason](#doorlockreason)
+- [DoorPermissionFlags](#doorpermissionflags)
 - [DropdownEntryType](#dropdownentrytype)
 - [DtoaMode](#dtoamode)
 - [EffectClassification](#effectclassification)
+- [EffectReason](#effectreason)
 - [ElevatorGroup](#elevatorgroup)
 - [ElevatorSequence](#elevatorsequence)
 - [EmotionBlendshape](#emotionblendshape)
@@ -114,6 +118,7 @@ Last Update (13.5.0.1)
 - [ExampleId](#exampleid)
 - [ExampleId](#exampleid)
 - [ExplosionType](#explosiontype)
+- [ExportPreset](#exportpreset)
 - [FacilityZone](#facilityzone)
 - [Faction](#faction)
 - [FailReason](#failreason)
@@ -128,11 +133,14 @@ Last Update (13.5.0.1)
 - [Flags](#flags)
 - [FogType](#fogtype)
 - [FoldoutMode](#foldoutmode)
+- [FootprintsTranslation](#footprintstranslation)
 - [FootstepLoudness](#footsteploudness)
+- [ForceCondition](#forcecondition)
+- [ForceResult](#forceresult)
 - [FpcViewMode](#fpcviewmode)
 - [FreezingMode](#freezingmode)
 - [FriendlyFireAction](#friendlyfireaction)
-- [Generator079Operations](#generator079operations)
+- [FriendlyFireInteraction](#friendlyfireinteraction)
 - [GeneratorColliderId](#generatorcolliderid)
 - [GeneratorFlags](#generatorflags)
 - [GeoblockingMode](#geoblockingmode)
@@ -140,16 +148,13 @@ Last Update (13.5.0.1)
 - [GroupMuteFlags](#groupmuteflags)
 - [HandlerOutput](#handleroutput)
 - [HandlerType](#handlertype)
-- [HidState](#hidstate)
-- [HidStatusMessageType](#hidstatusmessagetype)
-- [HidUserInput](#hiduserinput)
 - [HintEffectType](#hinteffecttype)
 - [HintMessageTypes](#hintmessagetypes)
 - [HintParameterType](#hintparametertype)
 - [HintTranslations](#hinttranslations)
 - [HintType](#hinttype)
 - [HitboxType](#hitboxtype)
-- [Holidays](#holidays)
+- [HolidayType](#holidaytype)
 - [HotkeysTranslation](#hotkeystranslation)
 - [HttpQueryMode](#httpquerymode)
 - [IcomText](#icomtext)
@@ -169,7 +174,9 @@ Last Update (13.5.0.1)
 - [JailbirdMessageType](#jailbirdmessagetype)
 - [JailbirdWearState](#jailbirdwearstate)
 - [JsonToken](#jsontoken)
-- [KeycardPermissions](#keycardpermissions)
+- [KeycardLabelTranslation](#keycardlabeltranslation)
+- [KeyCodeTranslations](#keycodetranslations)
+- [LcdElementType](#lcdelementtype)
 - [LeadingTeam](#leadingteam)
 - [LegacyInterfaces](#legacyinterfaces)
 - [LightingVideoSetting](#lightingvideosetting)
@@ -179,10 +186,12 @@ Last Update (13.5.0.1)
 - [MapGenerationPhase](#mapgenerationphase)
 - [MappingLifetime](#mappinglifetime)
 - [MessageHeader](#messageheader)
-- [MessageHeader](#messageheader)
 - [MessageImportance](#messageimportance)
+- [MessageInterceptionResult](#messageinterceptionresult)
 - [MessageType](#messagetype)
 - [MessageType](#messagetype)
+- [MicroHidFiringMode](#microhidfiringmode)
+- [MicroHidPhase](#microhidphase)
 - [MiscControlsSetting](#misccontrolssetting)
 - [MiscPrivacySetting](#miscprivacysetting)
 - [MiscVideoSetting](#miscvideosetting)
@@ -191,6 +200,7 @@ Last Update (13.5.0.1)
 - [Mode](#mode)
 - [ModifierMode](#modifiermode)
 - [Modules](#modules)
+- [MsgType](#msgtype)
 - [NatAddressType](#nataddresstype)
 - [NetLogLevel](#netloglevel)
 - [NetworkProtocolType](#networkprotocoltype)
@@ -200,13 +210,16 @@ Last Update (13.5.0.1)
 - [NtpMode](#ntpmode)
 - [NullableBoolValue](#nullableboolvalue)
 - [OpenerEventType](#openereventtype)
+- [OptOutExportBehavior](#optoutexportbehavior)
 - [OpusApplicationType](#opusapplicationtype)
 - [OpusCtlGetRequest](#opusctlgetrequest)
 - [OpusCtlSetRequest](#opusctlsetrequest)
 - [OpusStatusCode](#opusstatuscode)
+- [OtherAudioSetting](#otheraudiosetting)
 - [OtherCondition](#othercondition)
 - [OutputCodes](#outputcodes)
 - [PacketProperty](#packetproperty)
+- [PanelColliderId](#panelcolliderid)
 - [ParameterMixingMode](#parametermixingmode)
 - [ParseResult](#parseresult)
 - [PDTeleportType](#pdteleporttype)
@@ -226,11 +239,14 @@ Last Update (13.5.0.1)
 - [RadioCommand](#radiocommand)
 - [RadioRangeLevel](#radiorangelevel)
 - [RejectionReason](#rejectionreason)
+- [RejectionReason](#rejectionreason)
+- [ReloaderMessageHeader](#reloadermessageheader)
 - [RemoteAdminResponseFlags](#remoteadminresponseflags)
 - [RemovalMode](#removalmode)
 - [ReproProjectAssetType](#reproprojectassettype)
 - [RequestType](#requesttype)
 - [RespawnSetting](#respawnsetting)
+- [RespawnTooltipTranslation](#respawntooltiptranslation)
 - [ResurrectError](#resurrecterror)
 - [RoleChangeReason](#rolechangereason)
 - [RoleSpawnFlags](#rolespawnflags)
@@ -239,8 +255,11 @@ Last Update (13.5.0.1)
 - [RoomShape](#roomshape)
 - [RootCullablePriority](#rootcullablepriority)
 - [RoundRestartType](#roundrestarttype)
-- [RpcHeader](#rpcheader)
 - [RpcStateMsg](#rpcstatemsg)
+- [RpcType](#rpctype)
+- [RpcType](#rpctype)
+- [RpcType](#rpctype)
+- [RpcType](#rpctype)
 - [RpcType](#rpctype)
 - [RpcType](#rpctype)
 - [RpcType](#rpctype)
@@ -256,6 +275,8 @@ Last Update (13.5.0.1)
 - [Scp096HitResult](#scp096hitresult)
 - [Scp096HudTranslation](#scp096hudtranslation)
 - [Scp096RageState](#scp096ragestate)
+- [Scp127Tier](#scp127tier)
+- [Scp127VoiceLinesTranslation](#scp127voicelinestranslation)
 - [Scp1344Status](#scp1344status)
 - [Scp173SoundId](#scp173soundid)
 - [Scp244State](#scp244state)
@@ -267,8 +288,10 @@ Last Update (13.5.0.1)
 - [Scp939DamageType](#scp939damagetype)
 - [Scp939HudTranslation](#scp939hudtranslation)
 - [Scp939LungeState](#scp939lungestate)
+- [ScpSetting](#scpsetting)
 - [SecurityLevel](#securitylevel)
 - [SensitivitySetting](#sensitivitysetting)
+- [SequenceState](#sequencestate)
 - [ServerLogType](#serverlogtype)
 - [ServerOperativeSystem](#serveroperativesystem)
 - [ServerRateLimit](#serverratelimit)
@@ -278,15 +301,17 @@ Last Update (13.5.0.1)
 - [SettingType](#settingtype)
 - [ShutdownResult](#shutdownresult)
 - [SpawnableRoomConnectorType](#spawnableroomconnectortype)
-- [SpawnableTeamType](#spawnableteamtype)
 - [SpectatableListElementType](#spectatablelistelementtype)
 - [SpectatorSpawnReason](#spectatorspawnreason)
+- [State](#state)
 - [States](#states)
+- [StatMessageType](#statmessagetype)
 - [StatusType](#statustype)
 - [SteamLobbyPrivacy](#steamlobbyprivacy)
 - [StorageLocation](#storagelocation)
 - [StructureType](#structuretype)
 - [SubtitleType](#subtitletype)
+- [SyncData](#syncdata)
 - [SyncDataFlags](#syncdataflags)
 - [SyncMode](#syncmode)
 - [TargetButton](#targetbutton)
@@ -297,17 +322,18 @@ Last Update (13.5.0.1)
 - [UISetting](#uisetting)
 - [UnconnectedMessageType](#unconnectedmessagetype)
 - [UpdateMessageFlags](#updatemessageflags)
+- [UrgencyLevel](#urgencylevel)
 - [UserResponseMode](#userresponsemode)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
 - [VariantType](#varianttype)
-- [VcAudioSetting](#vcaudiosetting)
 - [VcMuteFlags](#vcmuteflags)
 - [VcPrivacyFlags](#vcprivacyflags)
 - [VersionType](#versiontype)
 - [VoiceChatChannel](#voicechatchannel)
 - [VoiceChatSupportMode](#voicechatsupportmode)
+- [VoiceLinePriority](#voicelinepriority)
 - [VoiceLinesName](#voicelinesname)
 - [VolumeSliderSetting](#volumeslidersetting)
 - [WarheadScenarioType](#warheadscenariotype)
@@ -372,6 +398,7 @@ Last Update (13.5.0.1)
  [48] = UndeadSpaceProgram
  [49] = ArizonaRanger
  [50] = Matador
+ [51] = ToothAndNail
 ```
 
 </details>
@@ -456,17 +483,6 @@ Last Update (13.5.0.1)
  [1] = Noclip
  [2] = GodMode
  [4] = BypassMode
-```
-
-</details>
-
-### AlphaPanelOperations
-
-<details><summary><b>PlayerInteract+AlphaPanelOperations</b></summary>
-
-```
- [0] = Cancel
- [1] = Lever
 ```
 
 </details>
@@ -596,9 +612,9 @@ Last Update (13.5.0.1)
  [32] = LowcapMagFMJ
  [33] = LowcapMagAP
  [34] = LowcapMagJHP
- [35] = CylinderMag4
+ [35] = CylinderMag5
  [36] = CylinderMag6
- [37] = CylinderMag8
+ [37] = CylinderMag7
  [38] = CarbineBody
  [39] = RifleBody
  [40] = ShortBarrel
@@ -772,6 +788,18 @@ Last Update (13.5.0.1)
  [1] = Template
  [2] = InventoryInstance
  [3] = SimulatedInstance
+```
+
+</details>
+
+### AutosyncMessageType
+
+<details><summary><b>InventorySystem.Items.Autosync.AutosyncMessageType</b></summary>
+
+```
+ [0] = RpcInstance
+ [1] = RpcTemplate
+ [2] = Cmd
 ```
 
 </details>
@@ -964,27 +992,15 @@ Last Update (13.5.0.1)
 
 </details>
 
-### CheckpointErrorType
+### ChaosMsgType
 
-<details><summary><b>Interactables.Interobjects.CheckpointDoor+CheckpointErrorType</b></summary>
-
-```
- [0] = Denied
- [1] = LockedDown
- [2] = Destroyed
-```
-
-</details>
-
-### CheckpointSequenceStage
-
-<details><summary><b>Interactables.Interobjects.CheckpointDoor+CheckpointSequenceStage</b></summary>
+<details><summary><b>InventorySystem.Items.Keycards.ChaosKeycardItem+ChaosMsgType</b></summary>
 
 ```
- [0] = Idle
- [1] = Granted
- [2] = Open
- [3] = Closing
+ [0] = SnakeMsgSync
+ [1] = NewConnectionFullSync
+ [2] = MovementSwitch
+ [3] = UseDetails
 ```
 
 </details>
@@ -1080,6 +1096,54 @@ Last Update (13.5.0.1)
 
 </details>
 
+### CoffeeTranslation
+
+<details><summary><b>CoffeeTranslation</b></summary>
+
+```
+ [0] = EnoughCoffee
+ [1] = Orhu
+ [2] = Ced
+ [3] = Secret
+ [4] = Beryl
+ [5] = Banzai
+ [6] = Decimalis
+ [7] = Crimson
+ [8] = Meep
+ [9] = Pixl
+ [10] = X3j
+ [11] = Plank
+ [12] = M4st3r0re
+ [13] = RedZ
+ [14] = Naveil
+ [15] = Astral
+ [16] = Sixxy
+ [17] = Morantol
+ [18] = Metaverse
+ [19] = Ryan
+ [20] = Mikel
+ [21] = Ender
+ [22] = UIU
+ [23] = Goop
+ [24] = ChemicalWolf
+ [25] = MajorFox
+ [26] = Dellarie
+ [27] = JesusQC
+ [28] = Georgia
+ [29] = Jegg
+ [30] = Danstr
+ [31] = Nightshade
+ [32] = Lion
+ [33] = Goop2
+ [34] = Spoon
+ [35] = CombatSwift
+ [36] = Tychus
+ [37] = alleyes
+ [38] = Secret3
+```
+
+</details>
+
 ### CollectionDeserializeToBehaviour
 
 <details><summary><b>Utf8Json.CollectionDeserializeToBehaviour</b></summary>
@@ -1087,6 +1151,18 @@ Last Update (13.5.0.1)
 ```
  [0] = Add
  [1] = OverwriteReplace
+```
+
+</details>
+
+### ColliderShape
+
+<details><summary><b>AdminToys.InvisibleInteractableToy+ColliderShape</b></summary>
+
+```
+ [0] = Box
+ [1] = Sphere
+ [2] = Capsule
 ```
 
 </details>
@@ -1343,6 +1419,18 @@ Last Update (13.5.0.1)
 
 </details>
 
+### DetectionStatus
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.Scp127.Scp127CassieBasedVoiceTriggerBase+DetectionStatus</b></summary>
+
+```
+ [0] = Idle
+ [1] = WaitingForTrigger
+ [2] = AnnouncementStartedPlaying
+```
+
+</details>
+
 ### DiodeType
 
 <details><summary><b>AlphaWarheadNukesitePanel+DiodeType</b></summary>
@@ -1515,6 +1603,28 @@ Last Update (13.5.0.1)
 
 </details>
 
+### DoorPermissionFlags
+
+<details><summary><b>Interactables.Interobjects.DoorUtils.DoorPermissionFlags</b></summary>
+
+```
+ [0] = None
+ [1] = Checkpoints
+ [2] = ExitGates
+ [4] = Intercom
+ [8] = AlphaWarhead
+ [16] = ContainmentLevelOne
+ [32] = ContainmentLevelTwo
+ [64] = ContainmentLevelThree
+ [128] = ArmoryLevelOne
+ [256] = ArmoryLevelTwo
+ [512] = ArmoryLevelThree
+ [1024] = ScpOverride
+ [65535] = All
+```
+
+</details>
+
 ### DropdownEntryType
 
 <details><summary><b>UserSettings.ServerSpecific.SSDropdownSetting+DropdownEntryType</b></summary>
@@ -1545,9 +1655,22 @@ Last Update (13.5.0.1)
 <details><summary><b>CustomPlayerEffects.StatusEffectBase+EffectClassification</b></summary>
 
 ```
- [0] = Negative
- [1] = Mixed
- [2] = Positive
+ [0] = Technical
+ [1] = Negative
+ [2] = Mixed
+ [3] = Positive
+```
+
+</details>
+
+### EffectReason
+
+<details><summary><b>Scp956Target+EffectReason</b></summary>
+
+```
+ [0] = None
+ [254] = Child
+ [255] = HasCandy
 ```
 
 </details>
@@ -1566,6 +1689,7 @@ Last Update (13.5.0.1)
  [6] = Nuke01
  [7] = Scp049
  [8] = Nuke02
+ [9] = ServerRoom
 ```
 
 </details>
@@ -1575,11 +1699,12 @@ Last Update (13.5.0.1)
 <details><summary><b>Interactables.Interobjects.ElevatorChamber+ElevatorSequence</b></summary>
 
 ```
- [0] = DoorClosing
- [1] = MovingAway
- [2] = Arriving
- [3] = DoorOpening
- [4] = Ready
+ [0] = StartingSequence
+ [1] = DoorClosing
+ [2] = MovingAway
+ [3] = Arriving
+ [4] = DoorOpening
+ [5] = Ready
 ```
 
 </details>
@@ -1664,6 +1789,7 @@ Last Update (13.5.0.1)
  [2] = CuffedClassD
  [3] = Scientist
  [4] = CuffedScientist
+ [5] = Custom
 ```
 
 </details>
@@ -1758,6 +1884,16 @@ Last Update (13.5.0.1)
 
 </details>
 
+### ExportPreset
+
+<details><summary><b>Metrics.DeathsCollector+ExportPreset</b></summary>
+
+```
+ [0] = DeathReasons
+```
+
+</details>
+
 ### FacilityZone
 
 <details><summary><b>MapGeneration.FacilityZone</b></summary>
@@ -1782,6 +1918,7 @@ Last Update (13.5.0.1)
  [1] = FoundationStaff
  [2] = FoundationEnemy
  [3] = Unclassified
+ [4] = Flamingos
 ```
 
 </details>
@@ -1933,6 +2070,12 @@ Last Update (13.5.0.1)
  [4] = Amnesia
  [5] = Nuke
  [6] = Scp244
+ [7] = BecomingFlamingo
+ [8] = HalloweenInside
+ [9] = HalloweenOutside
+ [10] = ChristmasInside
+ [11] = ChristmasOutside
+ [12] = PocketDimension
 ```
 
 </details>
@@ -1951,6 +2094,24 @@ Last Update (13.5.0.1)
 
 </details>
 
+### FootprintsTranslation
+
+<details><summary><b>Respawning.Objectives.FootprintsTranslation</b></summary>
+
+```
+ [0] = TimerRewardDisplay
+ [1] = InfluenceRewardDisplay
+ [2] = GenericRewardsDisplay
+ [3] = ObjectiveFeedExample
+ [4] = KillObjective
+ [5] = DamageObjective
+ [6] = EscapeObjective
+ [7] = GeneratorObjective
+ [8] = ItemPickupObjective
+```
+
+</details>
+
 ### FootstepLoudness
 
 <details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.AnimatedCharacterModel+FootstepLoudness</b></summary>
@@ -1960,6 +2121,29 @@ Last Update (13.5.0.1)
  [12] = FoundationForces
  [30] = Chaos
  [35] = Scp
+```
+
+</details>
+
+### ForceCondition
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.GlowInTheDarkSubcontroller+ForceCondition</b></summary>
+
+```
+ [0] = NeverForce
+ [1] = ForceWhenFriendly
+ [2] = ForceWhenEnemy
+```
+
+</details>
+
+### ForceResult
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.GlowInTheDarkSubcontroller+ForceResult</b></summary>
+
+```
+ [0] = ForceDarkened
+ [1] = ForceNormal
 ```
 
 </details>
@@ -2001,14 +2185,14 @@ Last Update (13.5.0.1)
 
 </details>
 
-### Generator079Operations
+### FriendlyFireInteraction
 
-<details><summary><b>PlayerInteract+Generator079Operations</b></summary>
+<details><summary><b>InventorySystem.Items.ThrowableProjectiles.FlybyDetectorProjectile+FriendlyFireInteraction</b></summary>
 
 ```
- [0] = Door
- [1] = Tablet
- [2] = Cancel
+ [0] = UseFriendlyFireConfig
+ [1] = CollideWithEveryone
+ [2] = CollideWithOnlyEnemies
 ```
 
 </details>
@@ -2102,45 +2286,6 @@ Last Update (13.5.0.1)
 
 </details>
 
-### HidState
-
-<details><summary><b>InventorySystem.Items.MicroHID.HidState</b></summary>
-
-```
- [0] = Idle
- [1] = PoweringUp
- [2] = PoweringDown
- [3] = Primed
- [4] = Firing
- [5] = StopSound
-```
-
-</details>
-
-### HidStatusMessageType
-
-<details><summary><b>InventorySystem.Items.MicroHID.HidStatusMessageType</b></summary>
-
-```
- [0] = UserInput
- [1] = State
- [2] = EnergySync
-```
-
-</details>
-
-### HidUserInput
-
-<details><summary><b>InventorySystem.Items.MicroHID.HidUserInput</b></summary>
-
-```
- [0] = None
- [1] = Prime
- [2] = Fire
-```
-
-</details>
-
 ### HintEffectType
 
 <details><summary><b>Utils.Networking.HintEffectReaderWriter+HintEffectType</b></summary>
@@ -2188,6 +2333,8 @@ Last Update (13.5.0.1)
  [15] = PackedLong
  [16] = PackedULong
  [17] = Scp330Hint
+ [18] = SSKeybind
+ [19] = AnimationCurve
 ```
 
 </details>
@@ -2230,20 +2377,15 @@ Last Update (13.5.0.1)
 
 </details>
 
-### Holidays
+### HolidayType
 
-<details><summary><b>Holidays</b></summary>
+<details><summary><b>MapGeneration.Holidays.HolidayType</b></summary>
 
 ```
- [0] = NoHoliday
- [1] = Halloween
- [2] = Christmas
+ [0] = None
+ [1] = Christmas
+ [2] = Halloween
  [3] = AprilFools
- [4] = October
- [5] = December
- [6] = FirstHalfOfApril
- [7] = OctoberOrDecember
- [-1] = Always
 ```
 
 </details>
@@ -2421,6 +2563,10 @@ Last Update (13.5.0.1)
  [22] = DisruptorToggleModeHint
  [23] = JailbirdAttackHint
  [24] = JailbirdChargeHint
+ [25] = MicroHidReadyToDischarge
+ [26] = MicroHidDamaged
+ [27] = Scp127OnEquip
+ [28] = SnakeHint
 ```
 
 </details>
@@ -2463,6 +2609,7 @@ Last Update (13.5.0.1)
  [3] = StartingItem
  [4] = Scp914Upgrade
  [5] = StatusEffect
+ [6] = Scp2536
 ```
 
 </details>
@@ -2497,6 +2644,7 @@ Last Update (13.5.0.1)
  [3] = Armor
  [4] = None
  [5] = Scp330Bag
+ [6] = Custom
 ```
 
 </details>
@@ -2575,6 +2723,17 @@ Last Update (13.5.0.1)
  [53] = GunA7
  [54] = Lantern
  [55] = SCP1344
+ [56] = Snowball
+ [57] = Coal
+ [58] = SpecialCoal
+ [59] = SCP1507Tape
+ [60] = DebugRagdollMover
+ [61] = SurfaceAccessPass
+ [62] = GunSCP127
+ [63] = KeycardCustomTaskForce
+ [64] = KeycardCustomSite02
+ [65] = KeycardCustomManagement
+ [66] = KeycardCustomMetalCase
  [-1] = None
 ```
 
@@ -2634,23 +2793,66 @@ Last Update (13.5.0.1)
 
 </details>
 
-### KeycardPermissions
+### KeycardLabelTranslation
 
-<details><summary><b>Interactables.Interobjects.DoorUtils.KeycardPermissions</b></summary>
+<details><summary><b>InventorySystem.Items.Keycards.TranslatedLabelDetail+KeycardLabelTranslation</b></summary>
 
 ```
- [0] = None
- [1] = Checkpoints
- [2] = ExitGates
- [4] = Intercom
- [8] = AlphaWarhead
- [16] = ContainmentLevelOne
- [32] = ContainmentLevelTwo
- [64] = ContainmentLevelThree
- [128] = ArmoryLevelOne
- [256] = ArmoryLevelTwo
- [512] = ArmoryLevelThree
- [1024] = ScpOverride
+ [0] = Scientist
+ [1] = Janitor
+ [2] = ResearchSupervisor
+ [3] = ContEngineer
+ [4] = SecurityGuard
+ [5] = ZoneManager
+ [6] = FacilityManager
+ [7] = SurfaceAccessPassNormal
+ [8] = SurfaceAccessPassUsed
+```
+
+</details>
+
+### KeyCodeTranslations
+
+<details><summary><b>Hints.KeyCodeTranslations</b></summary>
+
+```
+ [0] = ServerSettingNotFound
+ [1] = KeyNotAssigned
+ [2] = ArrowUp
+ [3] = ArrowDown
+ [4] = ArrowLeft
+ [5] = ArrowRight
+ [6] = LeftShift
+ [7] = RightShift
+ [8] = LeftControl
+ [9] = RightControl
+ [10] = LeftAlt
+ [11] = RightAlt
+ [12] = Tab
+ [13] = Space
+ [14] = Enter
+ [15] = MousePrimary
+ [16] = MouseSecondary
+ [17] = MouseMiddle
+ [18] = MouseN
+```
+
+</details>
+
+### LcdElementType
+
+<details><summary><b>InventorySystem.Items.MicroHID.MicroHIDMonitor+LcdElementType</b></summary>
+
+```
+ [0] = Windup
+ [1] = Winddown
+ [2] = ReadyToFire
+ [3] = Firing
+ [4] = Standby
+ [5] = Broken
+ [6] = JeffHappy
+ [7] = JeffSad
+ [8] = JeffConcerned
 ```
 
 </details>
@@ -2663,7 +2865,8 @@ Last Update (13.5.0.1)
  [0] = FacilityForces
  [1] = ChaosInsurgency
  [2] = Anomalies
- [3] = Draw
+ [3] = Flamingos
+ [4] = Draw
 ```
 
 </details>
@@ -2749,12 +2952,14 @@ Last Update (13.5.0.1)
 <details><summary><b>MapGeneration.MapGenerationPhase</b></summary>
 
 ```
- [0] = ParentRoomRegistration
- [1] = RelativePositioningWaypoints
- [2] = ComplexDecorationsAndClutter
- [3] = SimpleDecorations
- [4] = CullingCaching
- [5] = SpawnableStructures
+ [0] = RoomCoordsRegistrations
+ [1] = ParentRoomRegistration
+ [2] = RelativePositioningWaypoints
+ [3] = ComplexDecorationsAndClutter
+ [4] = SimpleDecorations
+ [5] = CullingCaching
+ [6] = SpawnableStructures
+ [7] = StaticBatching
 ```
 
 </details>
@@ -2774,20 +2979,6 @@ Last Update (13.5.0.1)
 
 ### MessageHeader
 
-<details><summary><b>InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase+MessageHeader</b></summary>
-
-```
- [0] = Custom
- [1] = Reload
- [2] = Unload
- [3] = Stop
- [4] = RequestRejected
-```
-
-</details>
-
-### MessageHeader
-
 <details><summary><b>InventorySystem.Items.Firearms.Modules.AutomaticActionModule+MessageHeader</b></summary>
 
 ```
@@ -2797,6 +2988,7 @@ Last Update (13.5.0.1)
  [3] = RpcFire
  [4] = RpcDryFire
  [5] = RpcNewPlayerSync
+ [6] = RpcRejectionReason
 ```
 
 </details>
@@ -2814,6 +3006,18 @@ Last Update (13.5.0.1)
 
 </details>
 
+### MessageInterceptionResult
+
+<details><summary><b>InventorySystem.Items.Autosync.MessageInterceptionResult</b></summary>
+
+```
+ [0] = Continue
+ [1] = ResetAndContinue
+ [2] = Stop
+```
+
+</details>
+
 ### MessageType
 
 <details><summary><b>InventorySystem.Items.Firearms.Modules.DisruptorActionModule+MessageType</b></summary>
@@ -2823,9 +3027,10 @@ Last Update (13.5.0.1)
  [1] = RpcRequireReloadFalse
  [2] = RpcRequireReloadFullResync
  [3] = RpcStartFiring
- [4] = RpcOnShot
- [5] = CmdRequestStartFiring
- [6] = CmdConfirmDischarge
+ [4] = RpcStopFiring
+ [5] = RpcOnShot
+ [6] = CmdRequestStartFiring
+ [7] = CmdConfirmDischarge
 ```
 
 </details>
@@ -2848,6 +3053,32 @@ Last Update (13.5.0.1)
 
 </details>
 
+### MicroHidFiringMode
+
+<details><summary><b>InventorySystem.Items.MicroHID.Modules.MicroHidFiringMode</b></summary>
+
+```
+ [0] = PrimaryFire
+ [1] = ChargeFire
+ [2] = BrokenFire
+```
+
+</details>
+
+### MicroHidPhase
+
+<details><summary><b>InventorySystem.Items.MicroHID.Modules.MicroHidPhase</b></summary>
+
+```
+ [0] = Standby
+ [1] = WindingUp
+ [2] = WindingDown
+ [3] = WoundUpSustain
+ [4] = Firing
+```
+
+</details>
+
 ### MiscControlsSetting
 
 <details><summary><b>UserSettings.ControlsSettings.MiscControlsSetting</b></summary>
@@ -2861,6 +3092,7 @@ Last Update (13.5.0.1)
  [5] = RightClickToDrop
  [6] = InventoryToggle
  [7] = Scp079KeybindZoneSwitching
+ [8] = AutomaticSpectatorSwitch
 ```
 
 </details>
@@ -2891,6 +3123,7 @@ Last Update (13.5.0.1)
  [2] = HeadBobbing
  [3] = FlashbangDarkMode
  [4] = ShowNeedles
+ [5] = Scp939VisionBlur
 ```
 
 </details>
@@ -2905,6 +3138,7 @@ Last Update (13.5.0.1)
  [2] = Weapons
  [3] = VoiceChat
  [4] = NoDucking
+ [5] = Scp127VoiceViewmodel
 ```
 
 </details>
@@ -2961,6 +3195,19 @@ Last Update (13.5.0.1)
  [8] = Throwable
  [9] = Door
  [10] = Elevator
+```
+
+</details>
+
+### MsgType
+
+<details><summary><b>InventorySystem.Items.Keycards.KeycardItem+MsgType</b></summary>
+
+```
+ [0] = Custom
+ [1] = OnKeycardUsed
+ [2] = Inspect
+ [3] = NewPlayerFullResync
 ```
 
 </details>
@@ -3073,6 +3320,18 @@ Last Update (13.5.0.1)
 
 </details>
 
+### OptOutExportBehavior
+
+<details><summary><b>Metrics.ScpPreferencesCollector+OptOutExportBehavior</b></summary>
+
+```
+ [0] = Include
+ [1] = Exclude
+ [2] = TreatAsZero
+```
+
+</details>
+
 ### OpusApplicationType
 
 <details><summary><b>VoiceChat.Codec.Enums.OpusApplicationType</b></summary>
@@ -3152,6 +3411,18 @@ Last Update (13.5.0.1)
 
 </details>
 
+### OtherAudioSetting
+
+<details><summary><b>UserSettings.AudioSettings.OtherAudioSetting</b></summary>
+
+```
+ [0] = NoiseReduction
+ [1] = ProxVcReverbIntensity
+ [2] = SpatialAnnouncements
+```
+
+</details>
+
 ### OtherCondition
 
 <details><summary><b>InventorySystem.Items.Firearms.Extensions.ConditionalEvaluator+OtherCondition</b></summary>
@@ -3205,6 +3476,17 @@ Last Update (13.5.0.1)
  [15] = InvalidProtocol
  [16] = NatMessage
  [17] = Empty
+```
+
+</details>
+
+### PanelColliderId
+
+<details><summary><b>AlphaWarheadNukesitePanel+PanelColliderId</b></summary>
+
+```
+ [1] = Cancel
+ [2] = Lever
 ```
 
 </details>
@@ -3383,6 +3665,7 @@ Last Update (13.5.0.1)
  [134217728] = FriendlyFireDetectorImmunity
  [268435456] = FriendlyFireDetectorTempDisable
  [536870912] = ServerLogLiveFeed
+ [1073741824] = ExecuteAs
 ```
 
 </details>
@@ -3531,6 +3814,33 @@ Last Update (13.5.0.1)
 
 </details>
 
+### RejectionReason
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.AutomaticActionModule+RejectionReason</b></summary>
+
+```
+ [1] = TimedOut
+ [2] = ModuleBusy
+ [3] = NotCocked
+ [4] = BoltLocked
+```
+
+</details>
+
+### ReloaderMessageHeader
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase+ReloaderMessageHeader</b></summary>
+
+```
+ [0] = Reload
+ [1] = Unload
+ [2] = Stop
+ [3] = RequestRejected
+ [4] = Custom
+```
+
+</details>
+
 ### RemoteAdminResponseFlags
 
 <details><summary><b>RemoteAdminResponse+RemoteAdminResponseFlags</b></summary>
@@ -3575,6 +3885,7 @@ Last Update (13.5.0.1)
  [1] = ConfirmThrowWeak
  [2] = ConfirmThrowFullForce
  [3] = CancelThrow
+ [4] = ForceCancel
 ```
 
 </details>
@@ -3586,6 +3897,18 @@ Last Update (13.5.0.1)
 ```
  [0] = RespawnInterfaceVisible
  [1] = ObjectiveFeedVisible
+```
+
+</details>
+
+### RespawnTooltipTranslation
+
+<details><summary><b>Respawning.Graphics.RespawnTooltipTranslation</b></summary>
+
+```
+ [0] = TimerBarTranslation
+ [1] = InfluenceTranslation
+ [2] = RespawnsTokensTranslation
 ```
 
 </details>
@@ -3620,6 +3943,7 @@ Last Update (13.5.0.1)
  [7] = RemoteAdmin
  [8] = Destroyed
  [9] = RespawnMiniwave
+ [10] = ItemUsage
 ```
 
 </details>
@@ -3667,6 +3991,9 @@ Last Update (13.5.0.1)
  [22] = Filmmaker
  [23] = Scp3114
  [24] = Destroyed
+ [25] = Flamingo
+ [26] = AlphaFlamingo
+ [27] = ZombieFlamingo
  [-1] = None
 ```
 
@@ -3715,6 +4042,7 @@ Last Update (13.5.0.1)
  [35] = Outside
  [36] = Pocket
  [37] = HczTestroom
+ [38] = Hcz127
 ```
 
 </details>
@@ -3754,17 +4082,6 @@ Last Update (13.5.0.1)
  [0] = FullRestart
  [1] = FastRestart
  [2] = RedirectRestart
-```
-
-</details>
-
-### RpcHeader
-
-<details><summary><b>InventorySystem.Items.Firearms.Modules.AnimationToggleableReloaderModule+RpcHeader</b></summary>
-
-```
- [0] = SyncLoadable
- [1] = Cancel
 ```
 
 </details>
@@ -3820,12 +4137,48 @@ Last Update (13.5.0.1)
 
 ### RpcType
 
+<details><summary><b>InventorySystem.Items.MicroHID.Modules.BrokenSyncModule+RpcType</b></summary>
+
+```
+ [0] = BreakSpecific
+ [1] = ResyncAll
+ [2] = UnbreakSpecific
+```
+
+</details>
+
+### RpcType
+
+<details><summary><b>InventorySystem.Items.MicroHID.Modules.DrawAndInspectorModule+RpcType</b></summary>
+
+```
+ [0] = AddPickup
+ [1] = OnEquipped
+ [2] = OnHolstered
+ [3] = InspectRequested
+```
+
+</details>
+
+### RpcType
+
 <details><summary><b>InventorySystem.Items.MarshmallowMan.MarshmallowItem+RpcType</b></summary>
 
 ```
  [0] = AttackStart
  [1] = Hit
  [2] = Holster
+```
+
+</details>
+
+### RpcType
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.AnimationToggleableReloaderModule+RpcType</b></summary>
+
+```
+ [0] = LoadableAmmoSync
+ [1] = StopAnimations
 ```
 
 </details>
@@ -3865,6 +4218,17 @@ Last Update (13.5.0.1)
  [1] = ResyncAll
  [2] = Shoot
  [3] = SchedulePump
+```
+
+</details>
+
+### RpcType
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.Scp127.Scp127VoiceLineManagerModule+RpcType</b></summary>
+
+```
+ [0] = OwnerRegistered
+ [1] = PlayLine
 ```
 
 </details>
@@ -4061,6 +4425,181 @@ Last Update (13.5.0.1)
  [1] = Distressed
  [2] = Enraged
  [3] = Calming
+```
+
+</details>
+
+### Scp127Tier
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.Scp127.Scp127Tier</b></summary>
+
+```
+ [0] = Tier1
+ [1] = Tier2
+ [2] = Tier3
+```
+
+</details>
+
+### Scp127VoiceLinesTranslation
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.Scp127.Scp127VoiceLinesTranslation</b></summary>
+
+```
+ [0] = ChamberingDammitThatHurts
+ [1] = ChamberingFeelThatTmrw
+ [2] = ChamberingGrunt1
+ [3] = ChamberingGrunt2
+ [4] = ChamberingGrunt3
+ [5] = ChamberingGrunt4
+ [6] = ChamberingHateThatPart
+ [7] = ChamberingNopeNeverGettinBetter
+ [8] = ChamberingThatStings
+ [9] = ChaosSpawnDrowningConstantly
+ [10] = ChaosSpawnIDontTrustEm
+ [11] = ChaosSpawnNotHereNotAgain
+ [12] = ChaosSpawnNotJustMe
+ [13] = ChaosSpawnThemAgain
+ [14] = ChaosSpawnThisIsntGonnaEndWell
+ [15] = DrawGoodToSeeYa
+ [16] = DrawHelloAgain
+ [17] = DrawHelloThere
+ [18] = DrawHello
+ [19] = DrawHeyHey
+ [20] = DrawHowsItGoin
+ [21] = DroppedDontForgetAboutMe
+ [22] = DroppedGuessIllWaitHere
+ [23] = DroppedIllCatchUp
+ [24] = DroppedSeeyaLaterBoss
+ [25] = DroppedTakeCareBoss
+ [26] = DroppedWatchThePaint
+ [27] = HolsterBeHereIfYouNeedMe
+ [28] = HolsterByeBye
+ [29] = HolsterFairEnough
+ [30] = HolsterGoodbye
+ [31] = HolsterIsTheSafetyOn2
+ [32] = HolsterIsTheSafetyOn
+ [33] = HolsterOffIGo
+ [34] = HolsterYouKnowWhereToFindMeBoss
+ [35] = IdleChatterBarDownInQueens
+ [36] = IdleChatterDifferentFacility
+ [37] = IdleChatterGettingPaidForThisRight
+ [38] = IdleChatterSoundedLikeDeath
+ [39] = IdleChatterThoughtIHeardSomething
+ [40] = IdleChatterWhatWentWrong
+ [41] = IdleChatterYouGotAnyPlans
+ [42] = IdleChatterYouKnowWhereYoureGoin
+ [43] = MissedAlmostHitSomething
+ [44] = MissedILikeYourStyleBoss
+ [45] = MissedInvisHatFellaAround
+ [46] = MissedUhYouGoodBoss
+ [47] = MtfSpawnAhaReinforcements
+ [48] = MtfSpawnDontLetEmTakeMeAgain
+ [49] = MtfSpawnDontSayAnything
+ [50] = MtfSpawnFriendsOfYours
+ [51] = MtfSpawnGotAPlan
+ [52] = MtfSpawnThatsNotGood
+ [53] = MtfSpawnThingsAreGettingInterestingNow
+ [54] = MtfSpawnWereGettingBackup
+ [55] = OnKillBang
+ [56] = OnKillBeatItBopIt
+ [57] = OnKillGoodOneBoss
+ [58] = OnKillGoodStuff
+ [59] = OnKillGoodWorkBoss
+ [60] = OnKillNiceOneBoss
+ [61] = OnKillNiceShot
+ [62] = OnKillOooNice
+ [63] = OnKillRattleHim
+ [64] = OnKillScram
+ [65] = OnKillWhamo
+ [66] = PickupChamberNecksnapMcgee
+ [67] = PickupChamberPleasedToMeetYa
+ [68] = PickupChamberRoomForOneMore
+ [69] = PickupChamberSayWhatYearIsIt
+ [70] = PickupChamberSweetOxygen
+ [71] = PickupChamberWaterboarding
+ [72] = PickupChaosGasMask
+ [73] = PickupChaosSickGladRagsBoss
+ [74] = PickupChaosYouFellasFromOuttaTown
+ [75] = PickupDclassCouplaCorpses
+ [76] = PickupDclassNeedAHand
+ [77] = PickupDclassPartnersInCrime
+ [78] = PickupDclassTagEmBoss
+ [79] = PickupDclassUsedToOwnAJumpsuit
+ [80] = PickupDclassWooBreakout
+ [81] = PickupGenericEasyOnTheGrip
+ [82] = PickupGenericHeyBossHowsItGoin
+ [83] = PickupGenericSobbing
+ [84] = PickupGenericTakeMeWith
+ [85] = PickupMtfAnyChanceICanGo
+ [86] = PickupMtfAwJeezRick
+ [87] = PickupScientistDidntYouStickMeInThatTank
+ [88] = PickupScientistThoseGlassesBetterBe
+ [89] = PickupScientistYouDoKnowHowToShootRight
+ [90] = PickupTutorialHereToRescueMe
+ [91] = PickupTutorialOutOfPlaceHereBoss
+ [92] = RankupBetterThanExpected
+ [93] = RankupDoinPrettyGood
+ [94] = RankupFeelsGoodToBeBack
+ [95] = RankupIThinkWereWinning
+ [96] = RankupManicLaughter
+ [97] = RankupPartnersInCrimeOrJustice
+ [98] = ScpKilled049AppleADay
+ [99] = ScpKilled049BehindThatBeak
+ [100] = ScpKilled049IAmTheBlackDeath
+ [101] = ScpKilled049MsBirdface
+ [102] = ScpKilled049OverdosedOnShells
+ [103] = ScpKilled049ResurrectThis
+ [104] = ScpKilled049TakeGoodCareOfTheKids
+ [105] = ScpKilled0790101Moron
+ [106] = ScpKilled079AintDyinToAMinifridge
+ [107] = ScpKilled079KeepTheCamera
+ [108] = ScpKilled079NeverLikedThatToaster
+ [109] = ScpKilled079WarrantyRunOut
+ [110] = ScpKilled0967FeetTall
+ [111] = ScpKilled096AllTheRage
+ [112] = ScpKilled096IMayNotHaveEyes2
+ [113] = ScpKilled096IMayNotHaveEyes
+ [114] = ScpKilled096LikedTheStatue
+ [115] = ScpKilled096ThoughtHedNeverShutUp
+ [116] = ScpKilled106HaveFunInTheCage
+ [117] = ScpKilled106OldDudesGone
+ [118] = ScpKilled106PocketThisDimension
+ [119] = ScpKilled106SinkingFeeling
+ [120] = ScpKilled106StayForABit
+ [121] = ScpKilled106SunkIntoTheFloor
+ [122] = ScpKilled173EyeOpener
+ [123] = ScpKilled173PeiceThatBackTogether
+ [124] = ScpKilled173ScrapingWasGettingOnMyNerves
+ [125] = ScpKilled173ShatteredLikeGlass
+ [126] = ScpKilled939NothingToSayNow
+ [127] = ScpKilled939StayDownFreakshow
+ [128] = ScpKilled939YouAintTheFirst2
+ [129] = ScpKilled939YouAintTheFirst
+ [130] = ScpKilled3114NoMoreBones
+ [131] = ScpKilled3114OneLessSkeleton
+ [132] = ScpKilled3114WeGotTheSkinwalker
+ [133] = ScpKilledAllThoseFreakyPowers
+ [134] = ScpKilledCoupleOfRounds
+ [135] = ScpKilledGunBeatsWhateverYouAre2
+ [136] = ScpKilledGunBeatsWhateverYouAre
+ [137] = ScpKilledNotSoTough
+ [138] = ScpKilledWhyBuildAContainer
+ [139] = ScpKilledZombieAintNoPill
+ [140] = ScpKilledZombieGetHisGoons
+ [141] = ScpKilledZombieMr12FeetUnder
+ [142] = ScpKilledZombieSayGoodbyeToUrGoons
+ [143] = ScpKilledZombieStayDown
+ [144] = ScpKilledZombieTwoLivesTooMany
+ [145] = ScpKilledZombieWhatGetsUp
+ [146] = UserKilledAttacthmentIssues
+ [147] = UserKilledBooooosss
+ [148] = UserKilledHeyHeyGetUp
+ [149] = UserKilledJustStartingToLikeYou
+ [150] = UserKilledNoNotNow2
+ [151] = UserKilledNoNotNow
+ [152] = UserKilledNotAgain2
+ [153] = UserKilledNotAgain
 ```
 
 </details>
@@ -4267,6 +4806,16 @@ Last Update (13.5.0.1)
 
 </details>
 
+### ScpSetting
+
+<details><summary><b>UserSettings.OtherSettings.ScpSetting</b></summary>
+
+```
+ [0] = ScpOptOut
+```
+
+</details>
+
 ### SecurityLevel
 
 <details><summary><b>EncryptedChannelManager+SecurityLevel</b></summary>
@@ -4286,6 +4835,19 @@ Last Update (13.5.0.1)
  [0] = SensMultiplier
  [1] = AdsReductionMultiplier
  [2] = Invert
+```
+
+</details>
+
+### SequenceState
+
+<details><summary><b>Interactables.Interobjects.CheckpointDoor+SequenceState</b></summary>
+
+```
+ [0] = Idle
+ [1] = Granted
+ [2] = OpenLoop
+ [3] = ClosingWarning
 ```
 
 </details>
@@ -4400,30 +4962,16 @@ Last Update (13.5.0.1)
  [1] = EzStandardDoor
  [2] = HczStandardDoor
  [3] = LczStandardDoor
- [4] = HczOneSidedWall
- [5] = HczTwoSidedWall
  [6] = OpenHallway
- [7] = OpenHallwayClutterA
- [8] = OpenHallwayClutterB
- [9] = OpenHallwayClutterC
- [10] = OpenHallwayConstructA
+ [7] = ClutterPipesLong
+ [8] = ClutterSimpleBoxes
+ [9] = ClutterPipesShort
+ [10] = ClutterBrokenElectricalBox
  [11] = HczBulkDoor
- [12] = OpenHallwayClutterD
- [13] = OpenHallwayClutterE
- [14] = OpenHallwayClutterF
- [15] = OpenHallwayClutterG
-```
-
-</details>
-
-### SpawnableTeamType
-
-<details><summary><b>Respawning.SpawnableTeamType</b></summary>
-
-```
- [0] = None
- [1] = ChaosInsurgency
- [2] = NineTailedFox
+ [12] = ClutterBoxesLadder
+ [13] = ClutterTankSupportedShelf
+ [14] = ClutterAngledFences
+ [15] = ClutterHugeOrangePipes
 ```
 
 </details>
@@ -4452,6 +5000,20 @@ Last Update (13.5.0.1)
 
 </details>
 
+### State
+
+<details><summary><b>PlayerRoles.PlayableScps.Scp1507.Scp1507Spawner+State</b></summary>
+
+```
+ [0] = Idle
+ [1] = WaitForRespawnCycle
+ [2] = WaitForSpectators
+ [3] = Spawning
+ [4] = Spawned
+```
+
+</details>
+
 ### States
 
 <details><summary><b>Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorCore+States</b></summary>
@@ -4463,6 +5025,17 @@ Last Update (13.5.0.1)
  [3] = ClientConnecting
  [4] = ClientConnected
  [5] = Server
+```
+
+</details>
+
+### StatMessageType
+
+<details><summary><b>PlayerStatsSystem.SyncedStatMessages+StatMessageType</b></summary>
+
+```
+ [0] = CurrentValue
+ [1] = MaxValue
 ```
 
 </details>
@@ -4551,8 +5124,23 @@ Last Update (13.5.0.1)
  [25] = AlphaWarheadCancelled
  [26] = AlphaWarheadResumed
  [27] = TerminatedByMarshmallowMan
+ [28] = NTFMiniwaveEntrance
+ [29] = ChaosEntrance
+ [30] = ChaosMiniwaveEntrance
  [254] = Custom
  [255] = None
+```
+
+</details>
+
+### SyncData
+
+<details><summary><b>InventorySystem.Items.MicroHID.Modules.InputSyncModule+SyncData</b></summary>
+
+```
+ [0] = None
+ [1] = Primary
+ [2] = Secondary
 ```
 
 </details>
@@ -4614,6 +5202,7 @@ Last Update (13.5.0.1)
  [4] = ClassD
  [5] = Dead
  [6] = OtherAlive
+ [7] = Flamingos
 ```
 
 </details>
@@ -4696,6 +5285,22 @@ Last Update (13.5.0.1)
  [4] = Trigger
  [8] = Tokens
  [11] = All
+ [16] = Spawn
+```
+
+</details>
+
+### UrgencyLevel
+
+<details><summary><b>Christmas.Scp2536.UrgencyLevel</b></summary>
+
+```
+ [0] = Zero
+ [1] = Exclusive
+ [2] = One
+ [3] = Two
+ [4] = Three
+ [5] = Four
 ```
 
 </details>
@@ -4767,16 +5372,6 @@ Last Update (13.5.0.1)
 
 </details>
 
-### VcAudioSetting
-
-<details><summary><b>UserSettings.AudioSettings.VcAudioSetting</b></summary>
-
-```
- [0] = NoiseReduction
-```
-
-</details>
-
 ### VcMuteFlags
 
 <details><summary><b>VoiceChat.VcMuteFlags</b></summary>
@@ -4837,6 +5432,7 @@ Last Update (13.5.0.1)
  [7] = Mimicry
  [8] = Scp1576
  [9] = PreGameLobby
+ [9] = PreGameLobby
 ```
 
 </details>
@@ -4849,6 +5445,19 @@ Last Update (13.5.0.1)
  [0] = Unsupported
  [1] = WithoutIntercom
  [2] = FullySupported
+```
+
+</details>
+
+### VoiceLinePriority
+
+<details><summary><b>InventorySystem.Items.Firearms.Modules.Scp127.Scp127VoiceTriggerBase+VoiceLinePriority</b></summary>
+
+```
+ [0] = Low
+ [1] = Normal
+ [2] = High
+ [3] = VeryHigh
 ```
 
 </details>
@@ -4879,6 +5488,8 @@ Last Update (13.5.0.1)
  [2] = SoundEffects
  [3] = MenuMusic
  [4] = MenuUI
+ [5] = Scp127Voice
+ [6] = Scp3114Voice
 ```
 
 </details>
@@ -4897,24 +5508,26 @@ Last Update (13.5.0.1)
 
 ### WaveQueueState
 
-<details><summary><b>Respawning.WaveManager+WaveQueueState</b></summary>
+<details><summary><b>Respawning.WaveQueueState</b></summary>
 
 ```
  [0] = Idle
  [1] = WaveSelected
  [2] = WaveSpawning
+ [3] = WaveSpawned
 ```
 
 </details>
 
 ### WearableElements
 
-<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.WearableElements</b></summary>
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables.WearableElements</b></summary>
 
 ```
  [0] = None
  [1] = Scp268Hat
  [2] = Scp1344Goggles
+ [4] = Armor
 ```
 
 </details>
@@ -4985,6 +5598,9 @@ Last Update (13.5.0.1)
 | 22  | Filmmaker      | Dead             | None             | Draw            |
 | 23  | Scp3114        | SCPs             | Scp              | Anomalies       |
 | 24  | Destroyed      | Dead             | None             | Draw            |
+| 25  | Flamingo       | Dead             | None             | Draw            |
+| 26  | AlphaFlamingo  | Dead             | None             | Draw            |
+| 27  | ZombieFlamingo | Dead             | None             | Draw            |
 ```
 
 </details>
@@ -4995,14 +5611,17 @@ Last Update (13.5.0.1)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 13.5.0.1"
+```md title="Latest Updated: 14.1.0.1"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"
 * In C#, inheritance is a process in which one object acquires all the properties and behaviors of its parent object automatically.
 
 
+Scp956DamageHandler : StandardDamageHandler
+SnowballDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.CustomReasonDamageHandler : StandardDamageHandler
+PlayerStatsSystem.CustomReasonFirearmDamageHandler : FirearmDamageHandler
 PlayerStatsSystem.DisruptorDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.ExplosionDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.FirearmDamageHandler : AttackerDamageHandler
@@ -5017,6 +5636,7 @@ PlayerStatsSystem.UniversalDamageHandler : StandardDamageHandler
 PlayerStatsSystem.WarheadDamageHandler : StandardDamageHandler
 PlayerRoles.PlayableScps.Scp939.Scp939DamageHandler : AttackerDamageHandler
 PlayerRoles.PlayableScps.Scp3114.Scp3114DamageHandler : AttackerDamageHandler
+PlayerRoles.PlayableScps.Scp1507.Scp1507DamageHandler : AttackerDamageHandler
 
 ```
 </details>

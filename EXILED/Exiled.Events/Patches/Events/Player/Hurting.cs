@@ -38,8 +38,6 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
-
             Label jump = generator.DefineLabel();
             int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
@@ -48,15 +46,15 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // Player player = Player.Get(this._hub)
+                    // this._hub
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Ldfld, Field(typeof(PlayerStats), nameof(PlayerStats._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Stloc, player.LocalIndex),
 
-                    // HurtingEventArgs ev = new(player, handler)
-                    new CodeInstruction(OpCodes.Ldloc, player.LocalIndex),
+                    // handler
                     new(OpCodes.Ldarg_1),
+
+                    // HurtingEventArgs ev = new(ReferenceHub, handler)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(HurtingEventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -79,10 +77,17 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // HurtEventArgs ev = new(player, handler, handleroutput)
-                    new CodeInstruction(OpCodes.Ldloc, player.LocalIndex),
+                    // this._hub
+                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldfld, Field(typeof(PlayerStats), nameof(PlayerStats._hub))),
+
+                    // handler
                     new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldloc_2),
+
+                    // handlerOutput
+                    new(OpCodes.Ldloc_3),
+
+                    // HurtEventArgs ev = new(ReferenceHub, handler, handleroutput)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(HurtEventArgs))[0]),
                     new(OpCodes.Dup),
 

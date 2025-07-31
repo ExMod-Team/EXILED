@@ -60,11 +60,11 @@ namespace Exiled.API.Features
         /// </summary>
         public static string Name
         {
-            get => ServerConsole._serverName;
+            get => ServerConsole.ServerName;
             set
             {
-                ServerConsole._serverName = value;
-                ServerConsole.singleton.RefreshServerName();
+                ServerConsole.ServerName = value;
+                ServerConsole.Singleton.RefreshServerNameSafe();
             }
         }
 
@@ -174,7 +174,20 @@ namespace Exiled.API.Features
         /// Read the VSR for more info about its usage.
         /// </remarks>
         /// </summary>
+        [Obsolete("This field has been deleted because it used the wrong field (TransparentlyModded)")]
         public static bool IsHeavilyModded
+        {
+            get => false;
+            set => _ = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the server is marked as Transparently Modded.
+        /// <remarks>
+        /// It is not used now, wait for a new VSR update.
+        /// </remarks>
+        /// </summary>
+        public static bool IsTransparentlyModded
         {
             get => ServerConsole.TransparentlyModdedServerConfig;
             set => ServerConsole.TransparentlyModdedServerConfig = value;
@@ -226,6 +239,15 @@ namespace Exiled.API.Features
         public static void Restart() => Round.Restart(false, true, ServerStatic.NextRoundAction.Restart);
 
         /// <summary>
+        /// Restarts the server with specified options.
+        /// </summary>
+        /// <param name="fastRestart">Indicates whether the restart should be fast.</param>
+        /// <param name="overrideRestartAction">Indicates whether to override the default restart action.</param>
+        /// <param name="restartAction">Specifies the action to perform after the restart.</param>
+        public static void Restart(bool fastRestart, bool overrideRestartAction = false, ServerStatic.NextRoundAction restartAction = ServerStatic.NextRoundAction.DoNothing) =>
+            Round.Restart(fastRestart, overrideRestartAction, restartAction);
+
+        /// <summary>
         /// Shutdowns the server, disconnects all players.
         /// </summary>
         /// <seealso cref="ShutdownRedirect(ushort)"/>
@@ -254,6 +276,19 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Redirects players to a server on another port, restarts the current server.
+        /// </summary>
+        /// <param name="redirectPort">The port to redirect players to.</param>
+        /// <param name="fastRestart">Indicates whether the restart should be fast.</param>
+        /// <param name="overrideRestartAction">Indicates whether to override the default restart action.</param>
+        /// <param name="restartAction">Specifies the action to perform after the restart.</param>
+        public static void RestartRedirect(ushort redirectPort, bool fastRestart, bool overrideRestartAction = false, ServerStatic.NextRoundAction restartAction = ServerStatic.NextRoundAction.DoNothing)
+        {
+            NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.0f, redirectPort, true, false));
+            Timing.CallDelayed(0.5f, () => { Restart(fastRestart, overrideRestartAction, restartAction); });
+        }
+
+        /// <summary>
         /// Redirects players to a server on another port, shutdowns the current server.
         /// </summary>
         /// <param name="redirectPort">The port to redirect players to.</param>
@@ -265,6 +300,18 @@ namespace Exiled.API.Features
             Timing.CallDelayed(0.5f, Shutdown);
 
             return true;
+        }
+
+        /// <summary>
+        /// Redirects players to a server on another port, shutdowns the current server.
+        /// </summary>
+        /// <param name="redirectPort">The port to redirect players to.</param>
+        /// <param name="quit">Indicates whether to terminate the application after shutting down the server.</param>
+        /// <param name="suppressShutdownBroadcast">Indicates whether to suppress the broadcast notification about the shutdown.</param>
+        public static void ShutdownRedirect(ushort redirectPort, bool quit, bool suppressShutdownBroadcast = false)
+        {
+            NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.RedirectRestart, 0.0f, redirectPort, true, false));
+            Timing.CallDelayed(0.5f, () => { Shutdown(quit, suppressShutdownBroadcast); });
         }
 
         /// <summary>
