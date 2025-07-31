@@ -12,6 +12,7 @@ namespace Exiled.API.Features.DamageHandlers
     using Footprinting;
     using Items;
 
+    using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp096;
     using PlayerRoles.PlayableScps.Scp939;
 
@@ -29,6 +30,7 @@ namespace Exiled.API.Features.DamageHandlers
         private Player player;
         private DamageType damageType;
         private DamageHandlerBase.CassieAnnouncement customCassieAnnouncement;
+        private bool overrideCassieForAllRole;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericDamageHandler"/> class.
@@ -40,11 +42,13 @@ namespace Exiled.API.Features.DamageHandlers
         /// <param name="damageType"> Damage type. </param>
         /// <param name="cassieAnnouncement"> Custom cassie announcment. </param>
         /// <param name="damageText"> Text to provide to player death screen. </param>
-        public GenericDamageHandler(Player player, Player attacker, float damage, DamageType damageType, DamageHandlerBase.CassieAnnouncement cassieAnnouncement, string damageText = null)
+        /// <param name="overrideCassieForAllRole">Whether to play Cassie for non-SCPs as well.</param>
+        public GenericDamageHandler(Player player, Player attacker, float damage, DamageType damageType, DamageHandlerBase.CassieAnnouncement cassieAnnouncement, string damageText = null, bool overrideCassieForAllRole = false)
             : base(DamageTextDefault)
         {
             this.player = player;
             this.damageType = damageType;
+            this.overrideCassieForAllRole = overrideCassieForAllRole;
             cassieAnnouncement ??= DamageHandlerBase.CassieAnnouncement.Default;
             customCassieAnnouncement = cassieAnnouncement;
 
@@ -237,7 +241,7 @@ namespace Exiled.API.Features.DamageHandlers
             HandlerOutput output = base.ApplyDamage(ply);
             if (output is HandlerOutput.Death)
             {
-                if (customCassieAnnouncement?.Announcement != null)
+                if (customCassieAnnouncement?.Announcement != null && (overrideCassieForAllRole || ply.IsSCP()))
                 {
                     Cassie.Message(customCassieAnnouncement.Announcement);
                 }

@@ -13,14 +13,13 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Enums;
     using API.Features;
     using API.Features.Pools;
     using EventArgs.Player;
     using Exiled.API.Features.Roles;
     using Exiled.Events.Attributes;
     using HarmonyLib;
-    using PlayerRoles.FirstPersonControl;
+    using LabApi.Events.Arguments.PlayerEvents;
 
     using static HarmonyLib.AccessTools;
 
@@ -41,8 +40,8 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
             LocalBuilder role = generator.DeclareLocal(typeof(Role));
 
-            int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            int offset = 2;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && i.operand == (object)PropertyGetter(typeof(PlayerEscapingEventArgs), nameof(PlayerEscapingEventArgs.EscapeScenario))) + offset;
 
             newInstructions.InsertRange(
                 index,

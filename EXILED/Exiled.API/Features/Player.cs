@@ -344,6 +344,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the player's current aspect ratio type.
+        /// </summary>
+        public AspectRatioType AspectRatio => ReferenceHub.aspectRatioSync.AspectRatio.GetAspectRatioLabel();
+
+        /// <summary>
         /// Gets or sets the player's custom player info string. This string is displayed along with the player's <see cref="InfoArea"/>.
         /// </summary>
         public string CustomInfo
@@ -2144,8 +2149,20 @@ namespace Exiled.API.Features
         /// <param name="damageType">The <see cref="DamageType"/> of the damage dealt.</param>
         /// <param name="cassieAnnouncement">The <see cref="CassieAnnouncement"/> cassie announcement to make if the damage kills the player.</param>
         /// <param name="deathText"> The <see langword="string"/> death text to appear on <see cref="Player"/> screen. </param>
-        public void Hurt(Player attacker, float amount, DamageType damageType = DamageType.Unknown, CassieAnnouncement cassieAnnouncement = null, string deathText = null) =>
+        public void Hurt(Player attacker, float amount, DamageType damageType, CassieAnnouncement cassieAnnouncement, string deathText) =>
             Hurt(new GenericDamageHandler(this, attacker, amount, damageType, cassieAnnouncement, deathText));
+
+        /// <summary>
+        /// Hurts the player.
+        /// </summary>
+        /// <param name="attacker">The <see cref="Player"/> attacking player.</param>
+        /// <param name="amount">The <see langword="float"/> amount of damage to deal.</param>
+        /// <param name="damageType">The <see cref="DamageType"/> of the damage dealt.</param>
+        /// <param name="cassieAnnouncement">The <see cref="CassieAnnouncement"/> cassie announcement to make if the damage kills the player.</param>
+        /// <param name="deathText">The <see langword="string"/> death text to appear on <see cref="Player"/> screen.</param>
+        /// <param name="overrideCassieForAllRole">Whether to play Cassie for non-SCPs as well.</param>
+        public void Hurt(Player attacker, float amount, DamageType damageType, CassieAnnouncement cassieAnnouncement, string deathText, bool overrideCassieForAllRole) =>
+            Hurt(new GenericDamageHandler(this, attacker, amount, damageType, cassieAnnouncement, deathText, overrideCassieForAllRole));
 
         /// <summary>
         /// Hurts the player.
@@ -3021,8 +3038,35 @@ namespace Exiled.API.Features
         /// <param name="duration">The duration the text will be on screen.</param>
         public void ShowHint(string message, float duration = 3f)
         {
+            ShowHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration);
+        }
+
+        /// <summary>
+        /// Shows a hint to the player with the specified message, hint effects, and duration.
+        /// </summary>
+        /// <param name="message">The message to be shown as a hint.</param>
+        /// <param name="hintEffects">The array of hint effects to apply.</param>
+        /// <param name="duration">The duration the hint will be displayed, in seconds.</param>
+        public void ShowHint(string message, HintEffect[] hintEffects, float duration = 3f)
+        {
+            ShowHint(message, new HintParameter[] { new StringHintParameter(message) }, hintEffects, duration);
+        }
+
+        /// <summary>
+        /// Shows a hint to the player with the specified message, hint parameters, hint effects, and duration.
+        /// </summary>
+        /// <param name="message">The message to be shown as a hint.</param>
+        /// <param name="hintParameters">The array of hint parameters to use.</param>
+        /// <param name="hintEffects">The array of hint effects to apply.</param>
+        /// <param name="duration">The duration the hint will be displayed, in seconds.</param>
+        public void ShowHint(string message, HintParameter[] hintParameters, HintEffect[] hintEffects, float duration = 3f)
+        {
             message ??= string.Empty;
-            HintDisplay.Show(new TextHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration));
+            HintDisplay.Show(new TextHint(
+                message,
+                (!hintParameters.IsEmpty()) ? hintParameters : new HintParameter[] { new StringHintParameter(message) },
+                hintEffects,
+                duration));
         }
 
         /// <summary>

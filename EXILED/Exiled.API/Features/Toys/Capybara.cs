@@ -19,9 +19,9 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Initializes a new instance of the <see cref="Capybara"/> class.
         /// </summary>
-        /// <param name="speakerToy">The <see cref="CapybaraToy"/> of the toy.</param>
-        internal Capybara(CapybaraToy speakerToy)
-            : base(speakerToy, AdminToyType.Speaker) => Base = speakerToy;
+        /// <param name="capybaraToy">The <see cref="CapybaraToy"/> of the toy.</param>
+        internal Capybara(CapybaraToy capybaraToy)
+            : base(capybaraToy, AdminToyType.Capybara) => Base = capybaraToy;
 
         /// <summary>
         /// Gets the prefab.

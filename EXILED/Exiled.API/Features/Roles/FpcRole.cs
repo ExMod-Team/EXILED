@@ -8,12 +8,11 @@
 namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
-    using System.Reflection;
 
     using Exiled.API.Features.Pools;
-    using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.FirstPersonControl.Thirdperson;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.Spectating;
     using PlayerRoles.Visibility;
@@ -68,12 +67,30 @@ namespace Exiled.API.Features.Roles
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="CharacterModel"/> associated with the player.
+        /// </summary>
+        public CharacterModel Model
+        {
+            get => FirstPersonController.FpcModule.CharacterModelInstance;
+            set => FirstPersonController.FpcModule.CharacterModelInstance = value;
+        }
+
+        /// <summary>
         /// Gets or sets the player's gravity.
         /// </summary>
         public Vector3 Gravity
         {
             get => FirstPersonController.FpcModule.Motor.GravityController.Gravity;
             set => FirstPersonController.FpcModule.Motor.GravityController.Gravity = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the player's scale.
+        /// </summary>
+        public Vector3 Scale
+        {
+            get => FirstPersonController.FpcModule.Motor.ScaleController.Scale;
+            set => FirstPersonController.FpcModule.Motor.ScaleController.Scale = value;
         }
 
         /// <summary>

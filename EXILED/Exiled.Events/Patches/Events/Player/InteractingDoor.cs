@@ -55,10 +55,6 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // pluginRequestSent = true (which prevent the second event call)
-                    new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Stloc_2),
-
                     // Player.Get(ply)
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),

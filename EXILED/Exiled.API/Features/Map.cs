@@ -67,7 +67,7 @@ namespace Exiled.API.Features
         /// <returns>
         /// The remaining time in seconds for the decontamination process.
         /// </returns>
-        public static float RemainingDecontaminationTime => Mathf.Min(0, (float)(DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime));
+        public static float RemainingDecontaminationTime => Mathf.Max(0, (float)(DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime));
 
         /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
@@ -117,13 +117,12 @@ namespace Exiled.API.Features
         public static void StaffMessage(string message, Player player = null)
         {
             player ??= Server.Host;
-
             foreach (Player target in Player.List)
             {
                 if (!CommandProcessor.CheckPermissions(target.Sender, PlayerPermissions.AdminChat))
                     continue;
 
-                player.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
+                target.ReferenceHub.encryptedChannelManager.TrySendMessageToClient(player.NetId + "!" + message, EncryptedChannelManager.EncryptedChannel.AdminChat);
             }
         }
 

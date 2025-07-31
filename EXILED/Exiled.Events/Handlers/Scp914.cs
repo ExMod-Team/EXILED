@@ -23,9 +23,19 @@ namespace Exiled.Events.Handlers
         public static Event<UpgradingPickupEventArgs> UpgradingPickup { get; set; } = new();
 
         /// <summary>
+        /// Invoked after SCP-914 upgrades a Pickup.
+        /// </summary>
+        public static Event<UpgradedPickupEventArgs> UpgradedPickup { get; set; } = new();
+
+        /// <summary>
         /// Invoked before SCP-914 upgrades an item in a player's inventory.
         /// </summary>
         public static Event<UpgradingInventoryItemEventArgs> UpgradingInventoryItem { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after SCP-914 upgrades an item in a player's inventory.
+        /// </summary>
+        public static Event<UpgradedInventoryItemEventArgs> UpgradedInventoryItem { get; set; } = new();
 
         /// <summary>
         /// Invoked before SCP-914 upgrades a player.
@@ -49,10 +59,22 @@ namespace Exiled.Events.Handlers
         public static void OnUpgradingPickup(UpgradingPickupEventArgs ev) => UpgradingPickup.InvokeSafely(ev);
 
         /// <summary>
+        /// Called after SCP-914 upgrades a item.
+        /// </summary>
+        /// <param name="ev">The <see cref="UpgradedPickupEventArgs" /> instance.</param>
+        public static void OnUpgradedPickup(UpgradedPickupEventArgs ev) => UpgradedPickup.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before SCP-914 upgrades an item in a player's inventory.
         /// </summary>
         /// <param name="ev">The <see cref="UpgradingInventoryItemEventArgs" /> instance.</param>
         public static void OnUpgradingInventoryItem(UpgradingInventoryItemEventArgs ev) => UpgradingInventoryItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after SCP-914 upgrades an item in a player's inventory.
+        /// </summary>
+        /// <param name="ev">The <see cref="UpgradedInventoryItemEventArgs" /> instance.</param>
+        public static void OnUpgradedInventoryItem(UpgradedInventoryItemEventArgs ev) => UpgradedInventoryItem.InvokeSafely(ev);
 
         /// <summary>
         /// Called before SCP-914 upgrades a player.
