@@ -8,12 +8,11 @@
 namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
-    using System.Reflection;
 
     using Exiled.API.Features.Pools;
-    using HarmonyLib;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.FirstPersonControl.Thirdperson;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.Spectating;
     using PlayerRoles.Visibility;
