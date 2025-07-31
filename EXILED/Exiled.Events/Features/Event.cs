@@ -9,12 +9,10 @@ namespace Exiled.Events.Features
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
     using MEC;
-    using PluginAPI.Roles;
 
     /// <summary>
     /// The custom <see cref="EventHandler"/> delegate, with empty parameters.
