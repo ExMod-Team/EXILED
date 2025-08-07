@@ -123,6 +123,7 @@ namespace Exiled.API.Enums
         Hcz173ContChamber,
         [System.Obsolete("This Camera no longer exist.")]
         Hcz173Hallway,
+        [System.Obsolete("This Camera no longer exist.")]
         HczCurve,
         HczJunkMain,
         HczJunkHallway,
@@ -137,6 +138,19 @@ namespace Exiled.API.Enums
         HczWarheadPortElevator,
         HczMicroHIDLab,
         HczPipesMain,
+        HczScp127Lab,
+        HczScp127Containment,
+        HczServersUpperStorage,
+        HczLowerServerStorage,
+        HczServerStaircase,
+        #endregion
+
+        #region custom
+        EzArmCameraToy,
+        EzCameraToy,
+        HczCameraToy,
+        LczCameraToy,
+        SzCameraToy,
         #endregion
     }
 }

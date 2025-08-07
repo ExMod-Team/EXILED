@@ -937,7 +937,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalOwnerChangingRole(ChangingRoleEventArgs ev)
         {
-            if (ev.Reason is SpawnReason.Escaped or SpawnReason.Destroyed)
+            if (ev.Reason is SpawnReason.Escaped or SpawnReason.Destroyed or SpawnReason.LateJoin)
                 return;
 
             foreach (Item item in ev.Player.Items.ToList())

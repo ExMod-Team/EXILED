@@ -35,8 +35,8 @@ namespace Exiled.Events.Patches.Events.Scp0492
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 0;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_I4_0) + offset;
+            int offset = 1;
+            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Endfinally) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
@@ -47,13 +47,10 @@ namespace Exiled.Events.Patches.Events.Scp0492
                 // radgoll
                 new(OpCodes.Ldarg_1),
 
-                // ConsumeError.None
-                new(OpCodes.Ldc_I4_0),
+                // consumeError
+                new(OpCodes.Ldloc_0),
 
-                // true
-                new(OpCodes.Ldc_I4_1),
-
-                // ConsumingCorpseEventArgs ev = new(this.Owner, this.Ragdoll, ConsumeError.None, true)
+                // ConsumingCorpseEventArgs ev = new(this.Owner, this.Ragdoll, ZombieConsumeAbility.ConsumeError)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ConsumingCorpseEventArgs))[0]),
                 new(OpCodes.Dup),
 
@@ -62,7 +59,7 @@ namespace Exiled.Events.Patches.Events.Scp0492
 
                 // return new code
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ConsumingCorpseEventArgs), nameof(ConsumingCorpseEventArgs.ErrorCode))),
-                new(OpCodes.Ret),
+                new(OpCodes.Stloc_0),
             });
 
             foreach (CodeInstruction instruction in newInstructions)

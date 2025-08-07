@@ -336,5 +336,50 @@ namespace Exiled.API.Enums
 
         [Prefab(912031041, "ElevatorChamberNuke")]
         ElevatorChamberNuke,
+
+        [Prefab(3087007600, "CapybaraToy")]
+        CapybaraToy,
+
+        [Prefab(3539746802, "Sinkhole")]
+        Sinkhole,
+
+        [Prefab(1548138668, "AutoRagdoll")]
+        AutoRagdoll,
+
+        [Prefab(1323017091, "ElevatorChamberCargo")]
+        ElevatorChamberCargo,
+
+        [Prefab(359728307, "InvisibleInteractableToy")]
+        InvisibleInteractableToy,
+
+        [Prefab(1824808402, "EzArmCameraToy")]
+        EzArmCameraToy,
+
+        [Prefab(3375932423, "EzCameraToy")]
+        EzCameraToy,
+
+        [Prefab(144958943, "HczCameraToy")]
+        HczCameraToy,
+
+        [Prefab(2026969629, "LczCameraToy")]
+        LczCameraToy,
+
+        [Prefab(1548138668, "SzCameraToy")]
+        SzCameraToy,
+
+        [Prefab(2842703865, "KeycardPickup_Chaos")]
+        KeycardPickupChaos,
+
+        [Prefab(162530276, "TextToy")]
+        TextToy,
+
+        [Prefab(4046276968, "Spawnable Unsecured Pryable GateDoor")]
+        SpawnableUnsecuredPryableGateDoor,
+
+        [Prefab(2332883846, "CullableParentToy")]
+        CullableParentToy,
+
+        [Prefab(3938583646, "WaypointToy")]
+        WaypointToy,
     }
 }

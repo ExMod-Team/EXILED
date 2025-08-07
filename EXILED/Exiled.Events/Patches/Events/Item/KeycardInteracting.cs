@@ -13,8 +13,7 @@ namespace Exiled.Events.Patches.Events.Item
     using API.Features;
     using API.Features.Pickups;
     using API.Features.Pools;
-
-    using Exiled.Events;
+    using Attributes;
     using Exiled.Events.EventArgs.Item;
 
     using Footprinting;
@@ -22,9 +21,6 @@ namespace Exiled.Events.Patches.Events.Item
     using HarmonyLib;
 
     using Interactables.Interobjects.DoorUtils;
-
-    using InventorySystem.Items;
-
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
@@ -35,6 +31,7 @@ namespace Exiled.Events.Patches.Events.Item
     /// Patches <see cref="BaseKeycardPickup.ProcessCollision(Collision)"/> and adds <see cref="KeycardPickup.Permissions"/> implementation.
     /// Adds the <see cref="Handlers.Player.InteractingDoor"/> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Item), nameof(Handlers.Item.KeycardInteracting))]
     [HarmonyPatch(typeof(BaseKeycardPickup), nameof(BaseKeycardPickup.ProcessCollision))]
     internal static class KeycardInteracting
     {
@@ -43,113 +40,65 @@ namespace Exiled.Events.Patches.Events.Item
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             LocalBuilder isUnlocked = generator.DeclareLocal(typeof(bool));
-            LocalBuilder notEmptyPermissions = generator.DeclareLocal(typeof(bool));
-            LocalBuilder havePermissions = generator.DeclareLocal(typeof(bool));
+            LocalBuilder hasPermission = generator.DeclareLocal(typeof(bool));
 
-            Label skip = generator.DefineLabel();
             Label ret = generator.DefineLabel();
 
             int offset = 1;
             int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant.ActiveLocks)))) + offset;
 
+            Label continueLabel = (Label)newInstructions[index].operand;
+
             newInstructions.RemoveAt(index);
 
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
                     // check and write door lock state (isUnlocked)
                     new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Ceq),
-                    new CodeInstruction(OpCodes.Stloc_S, isUnlocked.LocalIndex),
+                    new(OpCodes.Stloc_S, isUnlocked.LocalIndex),
+                    new(OpCodes.Br, continueLabel),
                 });
 
-            index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(DoorPermissions), nameof(DoorPermissions.RequiredPermissions)))) + offset;
+            offset = 1;
+            index = newInstructions.FindIndex(i => i.Calls(Method(
+                typeof(DoorPermissionsPolicyExtensions),
+                nameof(DoorPermissionsPolicyExtensions.CheckPermissions),
+                new[] { typeof(IDoorPermissionRequester), typeof(IDoorPermissionProvider), typeof(PermissionUsed).MakeByRefType() }))) + offset;
 
             newInstructions.InsertRange(
                 index,
-                new[]
-                {
-                    // checking empty permissions
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Cgt),
+                new CodeInstruction[]
+            {
+                // hasPermission
+                new(OpCodes.Stloc_S, hasPermission.LocalIndex),
 
-                    new(OpCodes.Stloc_S, notEmptyPermissions.LocalIndex),
-                    new(OpCodes.Br_S, skip),
+                // pickup
+                new(OpCodes.Ldarg_0),
 
-                    // save original return
-                    new CodeInstruction(OpCodes.Ret).MoveLabelsFrom(newInstructions[index + 1]),
-                    new CodeInstruction(OpCodes.Nop).WithLabels(skip),
-                });
+                // PreviousOwner.Hub
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldflda, Field(typeof(BaseKeycardPickup), nameof(BaseKeycardPickup.PreviousOwner))),
+                new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Hub))),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-            // 6 new instructions
-            offset = 6;
-            index += offset;
+                // door
+                new(OpCodes.Ldloc_1),
 
-            newInstructions.RemoveRange(index, 14);
+                // isAllowed = isUnlocked && hasPermission
+                new(OpCodes.Ldloc_S, isUnlocked.LocalIndex),
+                new(OpCodes.Ldloc_S, hasPermission.LocalIndex),
+                new(OpCodes.And),
 
-            newInstructions.InsertRange(
-                index,
-                new[]
-                {
-                    // override permissions check, to implement KeycardPickup::Permissions
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldloc_1),
-                    new CodeInstruction(OpCodes.Call, Method(typeof(KeycardInteracting), nameof(KeycardInteracting.CheckPermissions))),
-                    new CodeInstruction(OpCodes.Stloc_S, havePermissions.LocalIndex),
-                });
+                // ev = new KeycardInteractingEventArgs(pickup, player, door, isAllowed)
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(KeycardInteractingEventArgs))[0]),
+                new(OpCodes.Dup),
+                new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnKeycardInteracting))),
 
-            // 4 new instructions
-            offset = 4;
-            index += offset;
-
-            newInstructions.RemoveRange(index, 2);
-
-            offset = -5;
-            index = newInstructions.FindIndex(i => i.Calls(PropertySetter(typeof(DoorVariant), nameof(DoorVariant.NetworkTargetState)))) + offset;
-
-            newInstructions.InsertRange(
-                index,
-                new[]
-                {
-                    // pickup
-                    new(OpCodes.Ldarg_0),
-
-                    // PreviousOwner.Hub
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldflda, Field(typeof(BaseKeycardPickup), nameof(BaseKeycardPickup.PreviousOwner))),
-                    new(OpCodes.Ldfld, Field(typeof(Footprint), nameof(Footprint.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-
-                    // door
-                    new(OpCodes.Ldloc_1),
-
-                    // allowed calculate
-                    new(OpCodes.Ldloc_S, isUnlocked),
-
-                    new(OpCodes.Ldloc_S, havePermissions),
-
-                    new(OpCodes.Ldloc_S, notEmptyPermissions),
-                    new(OpCodes.Call, PropertyGetter(typeof(Events), nameof(Events.Instance))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Events), nameof(Events.Config))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Config), nameof(Config.CanKeycardThrowAffectDoors))),
-                    new(OpCodes.Or),
-
-                    new(OpCodes.And),
-                    new(OpCodes.And),
-
-                    // ThrowKeycardInteractingEventArgs ev = new(pickup, player, door, isAllowed);
-                    //
-                    // Item.OnThrowKeycardInteracting(ev);
-                    //
-                    // if (!ev.IsAllowed)
-                    //     return;
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(KeycardInteractingEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnKeycardInteracting))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardInteractingEventArgs), nameof(KeycardInteractingEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, ret),
-                });
+                new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardInteractingEventArgs), nameof(KeycardInteractingEventArgs.IsAllowed))),
+            });
 
             newInstructions.InsertRange(
                 newInstructions.Count - 1,
@@ -166,27 +115,6 @@ namespace Exiled.Events.Patches.Events.Item
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
-        }
-
-        private static bool CheckPermissions(BaseKeycardPickup keycard, DoorVariant door)
-        {
-            DoorPermissions permissions = door.RequiredPermissions;
-            if (permissions.RequiredPermissions == KeycardPermissions.None)
-            {
-                return true;
-            }
-
-            if (Pickup.Get(keycard) is KeycardPickup keycardPickup)
-            {
-                if (!permissions.RequireAll)
-                {
-                    return ((KeycardPermissions)keycardPickup.Permissions & permissions.RequiredPermissions) != 0;
-                }
-
-                return ((KeycardPermissions)keycardPickup.Permissions & permissions.RequiredPermissions) == permissions.RequiredPermissions;
-            }
-
-            return InventorySystem.InventoryItemLoader.AvailableItems.TryGetValue(keycard.Info.ItemId, out ItemBase itemBase) && permissions.CheckPermissions(itemBase, null);
         }
     }
 }

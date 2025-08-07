@@ -11,6 +11,8 @@ namespace Exiled.API.Features
     using System.IO;
     using System.Linq;
 
+    using LabApi.Loader;
+
     /// <summary>
     /// A set of useful paths.
     /// </summary>
@@ -106,7 +108,7 @@ namespace Exiled.API.Features
             Dependencies = Path.Combine(Plugins, "dependencies");
             Configs = Path.Combine(Exiled, "Configs");
             IndividualConfigs = Path.Combine(Configs, "Plugins");
-            LoaderConfig = PluginAPI.Loader.AssemblyLoader.InstalledPlugins.FirstOrDefault(x => x.PluginName == "Exiled Loader")?.MainConfigPath;
+            LoaderConfig = LabApi.Loader.PluginLoader.EnabledPlugins.FirstOrDefault(x => x.Name == "Exiled Loader")?.GetConfigPath("Exiled Loader");
             Config = Path.Combine(Configs, $"{Server.Port}-config.yml");
             BackupConfig = Path.Combine(Configs, $"{Server.Port}-config.yml.old");
             IndividualTranslations = Path.Combine(Configs, "Translations");

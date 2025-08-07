@@ -20,7 +20,7 @@ namespace Exiled.Events
     using InventorySystem.Items.Usables;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.RoleAssign;
-    using PluginAPI.Events;
+
     using Respawning;
     using UnityEngine.SceneManagement;
     using UserSettings.ServerSpecific;
@@ -68,10 +68,12 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound += Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted += Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole += Handlers.Internal.Round.OnChangingRole;
+            Handlers.Player.SpawningRagdoll += Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense += Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified += Handlers.Internal.Round.OnVerified;
             Handlers.Map.ChangedIntoGrenade += Handlers.Internal.ExplodingGrenade.OnChangedIntoGrenade;
 
+            RoleAssigner.OnPlayersSpawned += Handlers.Server.OnAllPlayersSpawned;
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
             WaveManager.OnWaveSpawned += Handlers.Server.OnRespawnedTeam;
             InventorySystem.InventoryExtensions.OnItemAdded += Handlers.Player.OnItemAdded;
@@ -81,11 +83,13 @@ namespace Exiled.Events
             RagdollManager.OnRagdollRemoved += Handlers.Internal.RagdollList.OnRemovedRagdoll;
             ItemPickupBase.OnPickupAdded += Handlers.Internal.PickupEvent.OnSpawnedPickup;
             ItemPickupBase.OnPickupDestroyed += Handlers.Internal.PickupEvent.OnRemovedPickup;
-            ServerConsole.ReloadServerName();
+
+            AdminToys.AdminToyBase.OnAdded += Handlers.Internal.AdminToyList.OnAddedAdminToys;
+            AdminToys.AdminToyBase.OnRemoved += Handlers.Internal.AdminToyList.OnRemovedAdminToys;
 
             ServerSpecificSettingsSync.ServerOnSettingValueReceived += SettingBase.OnSettingUpdated;
 
-            EventManager.RegisterEvents<Handlers.Player>(this);
+            ServerConsole.ReloadServerName();
         }
 
         /// <inheritdoc/>
@@ -103,12 +107,13 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound -= Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted -= Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole -= Handlers.Internal.Round.OnChangingRole;
+            Handlers.Player.SpawningRagdoll -= Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense -= Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified -= Handlers.Internal.Round.OnVerified;
             Handlers.Map.ChangedIntoGrenade -= Handlers.Internal.ExplodingGrenade.OnChangedIntoGrenade;
 
             CharacterClassManager.OnRoundStarted -= Handlers.Server.OnRoundStarted;
-
+            RoleAssigner.OnPlayersSpawned -= Handlers.Server.OnAllPlayersSpawned;
             InventorySystem.InventoryExtensions.OnItemAdded -= Handlers.Player.OnItemAdded;
             InventorySystem.InventoryExtensions.OnItemRemoved -= Handlers.Player.OnItemRemoved;
             WaveManager.OnWaveSpawned -= Handlers.Server.OnRespawnedTeam;
@@ -118,8 +123,6 @@ namespace Exiled.Events
             ItemPickupBase.OnPickupDestroyed -= Handlers.Internal.PickupEvent.OnRemovedPickup;
 
             ServerSpecificSettingsSync.ServerOnSettingValueReceived -= SettingBase.OnSettingUpdated;
-
-            EventManager.UnregisterEvents<Handlers.Player>(this);
         }
 
         /// <summary>

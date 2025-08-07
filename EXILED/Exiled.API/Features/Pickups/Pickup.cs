@@ -150,17 +150,17 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         public Vector3 Scale
         {
-            get => GameObject.transform.localScale;
+            get => GameObject.GetWorldScale();
             set
             {
                 if (!IsSpawned)
                 {
-                    GameObject.transform.localScale = value;
+                    GameObject.SetWorldScale(value);
                     return;
                 }
 
                 UnSpawn();
-                GameObject.transform.localScale = value;
+                GameObject.SetWorldScale(value);
                 Spawn();
             }
         }
@@ -495,7 +495,7 @@ namespace Exiled.API.Features.Pickups
             ThrownProjectile thrownProjectile => thrownProjectile switch
             {
                 BaseScp018Projectile => new Projectiles.Scp018Projectile(),
-                ExplosionGrenade explosionGrenade => new ExplosionGrenadeProjectile(type),
+                ExplosionGrenade => new ExplosionGrenadeProjectile(type),
                 FlashbangGrenade => new FlashbangProjectile(),
                 BaseScp2176Projectile => new Projectiles.Scp2176Projectile(),
                 EffectGrenade => new EffectGrenadeProjectile(type),

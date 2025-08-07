@@ -115,5 +115,10 @@ namespace Exiled.API.Enums
         /// SCP-1853 pedestal.
         /// </summary>
         Scp1853Pedestal,
+
+        /// <summary>
+        /// SCP-127 pedestal.
+        /// </summary>
+        Scp127Pedestal,
     }
 }

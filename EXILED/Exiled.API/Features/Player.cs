@@ -53,7 +53,6 @@ namespace Exiled.API.Features
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
     using PlayerStatsSystem;
-    using PluginAPI.Core;
     using RelativePositioning;
     using RemoteAdmin;
     using RoundRestarting;
@@ -95,6 +94,7 @@ namespace Exiled.API.Features
         private readonly HashSet<EActor> componentsInChildren = new();
 
         private ReferenceHub referenceHub;
+
         private Role role;
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Exiled.API.Features
                 Inventory = value.inventory;
                 CameraTransform = value.PlayerCameraReference;
 
-                value.playerStats._dictionarizedTypes[typeof(HealthStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HealthStat))] = CustomHealthStat = new CustomHealthStat { Hub = value };
+                CustomHealthStat = (HealthStat)value.playerStats._dictionarizedTypes[typeof(HealthStat)];
                 value.playerStats._dictionarizedTypes[typeof(HumeShieldStat)] = value.playerStats.StatModules[Array.IndexOf(PlayerStats.DefinedModules, typeof(HumeShieldStat))] = CustomHumeShieldStat = new CustomHumeShieldStat { Hub = value };
             }
         }
@@ -344,6 +344,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the player's current aspect ratio type.
+        /// </summary>
+        public AspectRatioType AspectRatio => ReferenceHub.aspectRatioSync.AspectRatio.GetAspectRatioLabel();
+
+        /// <summary>
         /// Gets or sets the player's custom player info string. This string is displayed along with the player's <see cref="InfoArea"/>.
         /// </summary>
         public string CustomInfo
@@ -351,37 +356,9 @@ namespace Exiled.API.Features
             get => ReferenceHub.nicknameSync.Network_customPlayerInfoString;
             set
             {
-                // NW Client check.
-                if (value.Contains<char>('<'))
+                if (!NicknameSync.ValidateCustomInfo(value, out string rejectionText))
                 {
-                    foreach (string token in value.Split('<'))
-                    {
-                        if (token.StartsWith("/", StringComparison.Ordinal) ||
-                            token.StartsWith("b>", StringComparison.Ordinal) ||
-                            token.StartsWith("i>", StringComparison.Ordinal) ||
-                            token.StartsWith("size=", StringComparison.Ordinal) ||
-                            token.Length is 0)
-                            continue;
-
-                        if (token.StartsWith("color=", StringComparison.Ordinal))
-                        {
-                            if (token.Length < 14 || token[13] != '>')
-                                Log.Error($"Custom info of player {Nickname} has been REJECTED. \nreason: (Bad text reject) \ntoken: {token} \nInfo: {value}");
-                            else if (!Misc.AllowedColors.ContainsValue(token.Substring(6, 7)))
-                                Log.Error($"Custom info of player {Nickname} has been REJECTED. \nreason: (Bad color reject) \ntoken: {token} \nInfo: {value}");
-                        }
-                        else if (token.StartsWith("#", StringComparison.Ordinal))
-                        {
-                            if (token.Length < 8 || token[7] != '>')
-                                Log.Error($"Custom info of player {Nickname} has been REJECTED. \nreason: (Bad text reject) \ntoken: {token} \nInfo: {value}");
-                            else if (!Misc.AllowedColors.ContainsValue(token.Substring(0, 7)))
-                                Log.Error($"Custom info of player {Nickname} has been REJECTED. \nreason: (Bad color reject) \ntoken: {token} \nInfo: {value}");
-                        }
-                        else
-                        {
-                            Log.Error($"Custom info of player {Nickname} has been REJECTED. \nreason: (Bad color reject) \ntoken: {token} \nInfo: {value}");
-                        }
-                    }
+                    Log.Error($"Could not set CustomInfo for {Nickname}. Reason: {rejectionText}");
                 }
 
                 InfoArea = string.IsNullOrEmpty(value) ? InfoArea & ~PlayerInfoArea.CustomInfo : InfoArea |= PlayerInfoArea.CustomInfo;
@@ -424,7 +401,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <seealso cref="GiveReservedSlot(bool)"/>
         /// <seealso cref="AddReservedSlot(string, bool)"/>
-        public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId, out _);
+        public bool HasReservedSlot => ReservedSlot.HasReservedSlot(UserId);
 
         /// <summary>
         /// Gets a value indicating whether the player is in whitelist.
@@ -511,7 +488,7 @@ namespace Exiled.API.Features
         public virtual Vector3 Position
         {
             get => Transform.position;
-            set => ReferenceHub.TryOverridePosition(value, Vector3.zero);
+            set => ReferenceHub.TryOverridePosition(value);
         }
 
         /// <summary>
@@ -531,7 +508,7 @@ namespace Exiled.API.Features
         public Quaternion Rotation
         {
             get => Transform.rotation;
-            set => ReferenceHub.TryOverridePosition(Position, value.eulerAngles);
+            set => ReferenceHub.TryOverrideRotation(value.eulerAngles);
         }
 
         /// <summary>
@@ -631,9 +608,13 @@ namespace Exiled.API.Features
         public bool HasFlashlightModuleEnabled => CurrentItem is Firearm firearm && firearm.FlashlightEnabled;
 
         /// <summary>
-        /// Gets a value indicating whether the player is jumping.
+        /// Gets or sets a value indicating whether the player is jumping.
         /// </summary>
-        public bool IsJumping => Role is FpcRole fpc && fpc.FirstPersonController.FpcModule.Motor.IsJumping;
+        public bool IsJumping
+        {
+            get => Role is FpcRole fpc && fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping;
+            set => _ = Role is FpcRole fpc ? fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping = value : _ = value;
+        }
 
         /// <summary>
         /// Gets the player's IP address.
@@ -722,7 +703,7 @@ namespace Exiled.API.Features
         public Vector3 Scale
         {
             get => ReferenceHub.transform.localScale;
-            set => SetScale(value, List);
+            set => SetScale(value);
         }
 
         /// <summary>
@@ -885,7 +866,7 @@ namespace Exiled.API.Features
         public float MaxHealth
         {
             get => CustomHealthStat.MaxValue;
-            set => CustomHealthStat.CustomMaxValue = value;
+            set => CustomHealthStat.MaxValue = value;
         }
 
         /// <summary>
@@ -941,7 +922,7 @@ namespace Exiled.API.Features
         public float MaxHumeShield
         {
             get => CustomHumeShieldStat.MaxValue;
-            set => CustomHumeShieldStat.CustomMaxValue = value;
+            set => CustomHumeShieldStat.MaxValue = value;
         }
 
         /// <summary>
@@ -1019,8 +1000,8 @@ namespace Exiled.API.Features
         /// </summary>
         public string GroupName
         {
-            get => ServerStatic.PermissionsHandler._members.TryGetValue(UserId, out string groupName) ? groupName : null;
-            set => ServerStatic.PermissionsHandler._members[UserId] = value;
+            get => ServerStatic.PermissionsHandler.Members.TryGetValue(UserId, out string groupName) ? groupName : null;
+            set => ServerStatic.PermissionsHandler.Members[UserId] = value;
         }
 
         /// <summary>
@@ -1189,14 +1170,21 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a <see cref="CustomHealthStat"/>.
         /// </summary>
-        protected CustomHealthStat CustomHealthStat { get; set; }
+        protected HealthStat CustomHealthStat { get; set; }
 
         /// <summary>
-        /// Converts NwPluginAPI player to EXILED player.
+        /// Converts LabApi player to EXILED player.
         /// </summary>
-        /// <param name="player">The NwPluginAPI player.</param>
+        /// <param name="player">The LabApi player.</param>
         /// <returns>EXILED player.</returns>
-        public static implicit operator Player(PluginAPI.Core.Player player) => Get(player);
+        public static implicit operator Player(LabApi.Features.Wrappers.Player player) => Get(player);
+
+        /// <summary>
+        /// Converts LabApi player to EXILED player.
+        /// </summary>
+        /// <param name="player">The LabApi player.</param>
+        /// <returns>EXILED player.</returns>
+        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player.ReferenceHub);
 
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> filtered by side. Can be empty.
@@ -1387,11 +1375,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the <see cref="Player"/> from NwPluginAPI class.
+        /// Gets the <see cref="Player"/> from LabApi class.
         /// </summary>
-        /// <param name="apiPlayer">The <see cref="PluginAPI.Core.Player"/> class.</param>
+        /// <param name="apiPlayer">The <see cref="LabApi.Features.Wrappers.Player"/> class.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(PluginAPI.Core.Player apiPlayer) => Get(apiPlayer.ReferenceHub);
+        public static Player Get(LabApi.Features.Wrappers.Player apiPlayer) => Get(apiPlayer.ReferenceHub);
 
         /// <summary>
         /// Try-get a player given a <see cref="CommandSystem.ICommandSender"/>.
@@ -1474,12 +1462,12 @@ namespace Exiled.API.Features
         public static bool TryGet(string args, out Player player) => (player = Get(args)) is not null;
 
         /// <summary>
-        /// Try-get the <see cref="Player"/> from NwPluginAPI class.
+        /// Try-get the <see cref="Player"/> from LabApi class.
         /// </summary>
-        /// <param name="apiPlayer">The <see cref="PluginAPI.Core.Player"/> class.</param>
+        /// <param name="apiPlayer">The <see cref="LabApi.Features.Wrappers.Player"/> class.</param>
         /// <param name="player">The player found or <see langword="null"/> if not found.</param>
         /// <returns>A boolean indicating whether a player was found.</returns>
-        public static bool TryGet(PluginAPI.Core.Player apiPlayer, out Player player) => (player = Get(apiPlayer)) is not null;
+        public static bool TryGet(LabApi.Features.Wrappers.Player apiPlayer, out Player player) => (player = Get(apiPlayer)) is not null;
 
         /// <summary>
         /// Try-get player by <see cref="Collider"/>.
@@ -1518,10 +1506,10 @@ namespace Exiled.API.Features
         {
             if (isPermanent)
             {
-                if (ReservedSlots.HasReservedSlot(userId))
+                if (LabApi.Features.Wrappers.ReservedSlots.HasReservedSlot(userId))
                     return false;
 
-                ReservedSlots.Add(userId);
+                LabApi.Features.Wrappers.ReservedSlots.Add(userId);
                 return true;
             }
 
@@ -1542,7 +1530,7 @@ namespace Exiled.API.Features
                 if (WhiteList.IsOnWhitelist(userId))
                     return false;
 
-                Whitelist.Add(userId);
+                LabApi.Features.Wrappers.Whitelist.Add(userId);
                 return true;
             }
 
@@ -1834,7 +1822,7 @@ namespace Exiled.API.Features
         /// <param name="group">The group to be set.</param>
         public void SetRank(string name, UserGroup group)
         {
-            if (ServerStatic.GetPermissionsHandler()._groups.TryGetValue(name, out UserGroup userGroup))
+            if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
             {
                 userGroup.BadgeColor = group.BadgeColor;
                 userGroup.BadgeText = name;
@@ -1845,15 +1833,15 @@ namespace Exiled.API.Features
             }
             else
             {
-                ServerStatic.GetPermissionsHandler()._groups.Add(name, group);
+                ServerStatic.PermissionsHandler.Groups.Add(name, group);
 
                 ReferenceHub.serverRoles.SetGroup(group, false, false);
             }
 
-            if (ServerStatic.GetPermissionsHandler()._members.ContainsKey(UserId))
-                ServerStatic.GetPermissionsHandler()._members[UserId] = name;
+            if (ServerStatic.PermissionsHandler.Members.ContainsKey(UserId))
+                ServerStatic.PermissionsHandler.Members[UserId] = name;
             else
-                ServerStatic.GetPermissionsHandler()._members.Add(UserId, name);
+                ServerStatic.PermissionsHandler.Members.Add(UserId, name);
         }
 
         /// <summary>
@@ -2085,23 +2073,21 @@ namespace Exiled.API.Features
         /// Sets the scale of a player on the server side.
         /// </summary>
         /// <param name="scale">The scale to set.</param>
+        public void SetScale(Vector3 scale)
+        {
+            ReferenceHub.transform.localScale = scale;
+            new SyncedScaleMessages.ScaleMessage(scale, ReferenceHub).SendToAuthenticated();
+        }
+
+        /// <summary>
+        /// Sets the scale of a player on the server side.
+        /// </summary>
+        /// <param name="scale">The scale to set.</param>
         /// <param name="viewers">Who should see the updated scale.</param>
         public void SetScale(Vector3 scale, IEnumerable<Player> viewers)
         {
-            if (scale == Scale)
-                return;
-
-            try
-            {
-                ReferenceHub.transform.localScale = scale;
-
-                foreach (Player target in viewers)
-                    Server.SendSpawnMessage?.Invoke(null, new object[] { NetworkIdentity, target.Connection });
-            }
-            catch (Exception exception)
-            {
-                Log.Error($"{nameof(SetScale)} error: {exception}");
-            }
+            ReferenceHub.transform.localScale = scale;
+            new SyncedScaleMessages.ScaleMessage(scale, ReferenceHub).SendToHubsConditionally(x => x != null && viewers.Contains(Get(x)));
         }
 
         /// <summary>
@@ -2111,21 +2097,9 @@ namespace Exiled.API.Features
         /// <param name="viewers">Who should see the fake scale.</param>
         public void SetFakeScale(Vector3 fakeScale, IEnumerable<Player> viewers)
         {
-            Vector3 currentScale = Scale;
-
-            try
-            {
-                ReferenceHub.transform.localScale = fakeScale;
-
-                foreach (Player target in viewers)
-                    Server.SendSpawnMessage.Invoke(null, new object[] { NetworkIdentity, target.Connection });
-
-                ReferenceHub.transform.localScale = currentScale;
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"{nameof(SetFakeScale)}: {ex}");
-            }
+            SyncedScaleMessages.ScaleMessage scaleMessage = new(fakeScale, ReferenceHub);
+            foreach (Player player in viewers)
+                player.Connection.Send(scaleMessage, 0);
         }
 
         /// <summary>
@@ -2165,8 +2139,20 @@ namespace Exiled.API.Features
         /// <param name="damageType">The <see cref="DamageType"/> of the damage dealt.</param>
         /// <param name="cassieAnnouncement">The <see cref="CassieAnnouncement"/> cassie announcement to make if the damage kills the player.</param>
         /// <param name="deathText"> The <see langword="string"/> death text to appear on <see cref="Player"/> screen. </param>
-        public void Hurt(Player attacker, float amount, DamageType damageType = DamageType.Unknown, CassieAnnouncement cassieAnnouncement = null, string deathText = null) =>
-            Hurt(new GenericDamageHandler(this, attacker, amount, damageType, cassieAnnouncement, deathText));
+        public void Hurt(Player attacker, float amount, DamageType damageType, CassieAnnouncement cassieAnnouncement, string deathText) =>
+            Hurt(new GenericDamageHandler(this, attacker, amount, damageType, cassieAnnouncement, deathText, false));
+
+        /// <summary>
+        /// Hurts the player.
+        /// </summary>
+        /// <param name="attacker">The <see cref="Player"/> attacking player.</param>
+        /// <param name="amount">The <see langword="float"/> amount of damage to deal.</param>
+        /// <param name="damageType">The <see cref="DamageType"/> of the damage dealt.</param>
+        /// <param name="cassieAnnouncement">The <see cref="CassieAnnouncement"/> cassie announcement to make if the damage kills the player.</param>
+        /// <param name="deathText">The <see langword="string"/> death text to appear on <see cref="Player"/> screen.</param>
+        /// <param name="overrideCassieForAllRole">Whether to play Cassie for non-SCPs as well.</param>
+        public void Hurt(Player attacker, float amount, DamageType damageType, CassieAnnouncement cassieAnnouncement, string deathText, bool overrideCassieForAllRole) =>
+            Hurt(new GenericDamageHandler(this, attacker, amount, damageType, cassieAnnouncement, deathText, overrideCassieForAllRole));
 
         /// <summary>
         /// Hurts the player.
@@ -2983,9 +2969,6 @@ namespace Exiled.API.Features
         /// <seealso cref="DropItems()"/>
         public void ClearItems(bool destroy = true)
         {
-            if (CurrentArmor is Armor armor)
-                armor.RemoveExcessOnDrop = false;
-
             while (Items.Count > 0)
                 RemoveItem(Items.ElementAt(0), destroy);
         }
@@ -3045,8 +3028,35 @@ namespace Exiled.API.Features
         /// <param name="duration">The duration the text will be on screen.</param>
         public void ShowHint(string message, float duration = 3f)
         {
+            ShowHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration);
+        }
+
+        /// <summary>
+        /// Shows a hint to the player with the specified message, hint effects, and duration.
+        /// </summary>
+        /// <param name="message">The message to be shown as a hint.</param>
+        /// <param name="hintEffects">The array of hint effects to apply.</param>
+        /// <param name="duration">The duration the hint will be displayed, in seconds.</param>
+        public void ShowHint(string message, HintEffect[] hintEffects, float duration = 3f)
+        {
+            ShowHint(message, new HintParameter[] { new StringHintParameter(message) }, hintEffects, duration);
+        }
+
+        /// <summary>
+        /// Shows a hint to the player with the specified message, hint parameters, hint effects, and duration.
+        /// </summary>
+        /// <param name="message">The message to be shown as a hint.</param>
+        /// <param name="hintParameters">The array of hint parameters to use.</param>
+        /// <param name="hintEffects">The array of hint effects to apply.</param>
+        /// <param name="duration">The duration the hint will be displayed, in seconds.</param>
+        public void ShowHint(string message, HintParameter[] hintParameters, HintEffect[] hintEffects, float duration = 3f)
+        {
             message ??= string.Empty;
-            HintDisplay.Show(new TextHint(message, new HintParameter[] { new StringHintParameter(message) }, null, duration));
+            HintDisplay.Show(new TextHint(
+                message,
+                (!hintParameters.IsEmpty()) ? hintParameters : new HintParameter[] { new StringHintParameter(message) },
+                hintEffects,
+                duration));
         }
 
         /// <summary>
@@ -3507,6 +3517,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Adds a new <see cref="RegenerationProcess"/> to the player.
         /// </summary>
+        /// <param name="rate">Health points regenerated per second.</param>
+        /// <param name="duration">Total duration of the regeneration (in seconds).</param>
+        public void AddRegeneration(float rate, float duration) => AddRegeneration(0, rate, duration, 1f, 1f);
+
+        /// <summary>
+        /// Adds a new <see cref="RegenerationProcess"/> to the player.
+        /// </summary>
         /// <param name="starttime">The delay before regeneration starts (in seconds).</param>
         /// <param name="rate">Health points regenerated per second.</param>
         /// <param name="duration">Total duration of the regeneration (in seconds).</param>
@@ -3609,7 +3626,7 @@ namespace Exiled.API.Features
                     Teleport(locker.transform.position + Vector3.up + offset);
                     break;
                 case LockerChamber chamber:
-                    Teleport(chamber._spawnpoint.position + Vector3.up + offset);
+                    Teleport(chamber.Spawnpoint.position + Vector3.up + offset);
                     break;
                 case ElevatorChamber elevator:
                     Teleport(elevator.transform.position + Vector3.up + offset);

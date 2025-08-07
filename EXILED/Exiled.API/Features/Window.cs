@@ -45,7 +45,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains all the <see cref="Door"/> instances.
+        /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Window"/> which contains all the <see cref="Window"/> instances.
         /// </summary>
         public static IReadOnlyCollection<Window> List => BreakableWindowToWindow.Values;
 
@@ -225,6 +225,7 @@ namespace Exiled.API.Features
             RoomType.HczTestRoom => GlassType.TestRoom,
             RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
             RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
+            RoomType.Hcz127 => GlassType.Scp127,
             _ => GlassType.Unknown,
         };
     }

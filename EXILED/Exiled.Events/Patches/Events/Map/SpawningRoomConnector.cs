@@ -88,14 +88,14 @@ namespace Exiled.Events.Patches.Events.Map
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors)))) + offset;
+            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))));
+            List<Label> label = newInstructions[index].labels;
 
             newInstructions.RemoveAt(index);
 
-            offset = -1;
-            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(PluginAPI.Events.MapGeneratedEvent))[0]) + offset;
-            newInstructions.Insert(index, new CodeInstruction(OpCodes.Call, Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))).MoveLabelsFrom(newInstructions[index]));
+            int offset = -1;
+            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.MapGeneratedEventArgs))[0]) + offset;
+            newInstructions.Insert(index, new CodeInstruction(OpCodes.Call, Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))).WithLabels(label));
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

@@ -18,7 +18,6 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Player;
-    using InventorySystem;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
@@ -53,7 +52,7 @@ namespace Exiled.CustomItems.API.Features
         /// <summary>
         /// Gets or sets the weapon damage.
         /// </summary>
-        public abstract float Damage { get; set; }
+        public virtual float Damage { get; set; } = -1;
 
         /// <summary>
         /// Gets or sets a value indicating how big of a clip the weapon will have.
@@ -208,7 +207,7 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="ev"><see cref="HurtingEventArgs"/>.</param>
         protected virtual void OnHurting(HurtingEventArgs ev)
         {
-            if (ev.IsAllowed && Damage > 0f)
+            if (ev.IsAllowed && Damage >= 0)
                 ev.Amount = Damage;
         }
 
@@ -225,7 +224,7 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            if (ClipSize > 0 && ev.Firearm.Base.GetTotalStoredAmmo() >= ClipSize)
+            if (ClipSize > 0 && ev.Firearm.TotalAmmo >= ClipSize)
             {
                 ev.IsAllowed = false;
                 return;
@@ -241,7 +240,7 @@ namespace Exiled.CustomItems.API.Features
 
             if (ClipSize > 0)
             {
-                int ammoChambered = ((AutomaticActionModule)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
+                int ammoChambered = ((AutomaticActionModule?)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
                 int ammoToGive = ClipSize - ammoChambered;
 
                 AmmoType ammoType = ev.Firearm.AmmoType;
@@ -252,13 +251,13 @@ namespace Exiled.CustomItems.API.Features
                 if (ammoToGive < ammoInInventory)
                 {
                     ev.Firearm.MagazineAmmo = ammoToGive;
-                    int newAmmo = ev.Player.Inventory.GetCurAmmo(ammoType.GetItemType()) + ammoDrop;
-                    ev.Player.Inventory.ServerSetAmmo(ammoType.GetItemType(), newAmmo);
+                    int newAmmo = ev.Player.GetAmmo(ammoType) + ammoDrop;
+                    ev.Player.SetAmmo(ammoType, (ushort)newAmmo);
                 }
                 else
                 {
                     ev.Firearm.MagazineAmmo = ammoInInventory;
-                    ev.Player.Inventory.ServerSetAmmo(ammoType.GetItemType(), 0);
+                    ev.Player.SetAmmo(ammoType, 0);
                 }
             }
 

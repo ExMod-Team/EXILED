@@ -41,7 +41,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets a locker which is containing <see cref="Chamber"/>.
         /// </summary>
-        public API.Features.Lockers.Locker Locker => Chamber.Locker;
+        public API.Features.Lockers.Locker Locker => Chamber?.Locker;
 
         /// <summary>
         /// Gets a chamber which is filling.

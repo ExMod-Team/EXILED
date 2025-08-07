@@ -39,34 +39,23 @@ namespace Exiled.Events.Patches.Events.Player
             Label retLabel = generator.DefineLabel();
             LocalBuilder ev = generator.DeclareLocal(typeof(TogglingNoClipEventArgs));
 
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloc_0);
-
-            Label checkLabel = newInstructions[index].ExtractLabels()[0];
-
-            // Remove the base-game FpcNoclip.IsPermitted(hub) call, as we will be using that for our default value for ev.IsAllowed
-            newInstructions.RemoveRange(index, 4);
+            int offset = 0;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj) + offset;
 
             newInstructions.InsertRange(
                 index,
-                new[]
+                new CodeInstruction[]
                 {
-                    // Player.Get(hub)
-                    new CodeInstruction(OpCodes.Ldloc_0).WithLabels(checkLabel),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
+                    // steal all TogglingNoClipEventArgs.ctor argument(LabApi.Events.Arguments.PlayerEvents.PlayerTogglingNoclipEventArgs)
+                    // ReferenceHub & bool
+                    // true
+                    new(OpCodes.Ldc_I4_1),
 
-                    // GetInvertedNoClipStatus(player)
-                    new(OpCodes.Call, Method(typeof(TogglingNoClip), nameof(GetInvertedNoClipStatus))),
-
-                    // FpcNoclip.IsPermitted(hub)
-                    new(OpCodes.Ldloc_0),
-                    new(OpCodes.Call, Method(typeof(FpcNoclip), nameof(FpcNoclip.IsPermitted))),
-
-                    // TogglingNoClipEventArgs ev = new(player, GetInvertedNoClipStatus(player), FpcNoclip.IsPermitted(hub));
+                    // TogglingNoClipEventArgs ev = new(ReferenceHub, bool, bool);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TogglingNoClipEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev),
+                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Player.OnTogglingNoClip(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnTogglingNoClip))),
@@ -76,15 +65,14 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TogglingNoClipEventArgs), nameof(TogglingNoClipEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, retLabel),
 
-                    // if (ev.IsEnabled == GetNoClipStatus)
-                    //    return;
-                    // Note: If IsEnabled = true, and the player already has noclip, or IsEnabled = false and the player already doesn't have noclip, we return, since base-game code inverts the status.
-                    new(OpCodes.Ldloc_S, ev),
+                    // referenceHub
+                    new(OpCodes.Ldloc_0),
+
+                    // ev.IsEnabled
+                    new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(TogglingNoClipEventArgs), nameof(TogglingNoClipEventArgs.IsEnabled))),
-                    new(OpCodes.Ldloc_S, ev),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(TogglingNoClipEventArgs), nameof(TogglingNoClipEventArgs.Player))),
-                    new(OpCodes.Call, Method(typeof(TogglingNoClip), nameof(GetNoClipStatus))),
-                    new(OpCodes.Beq_S, retLabel),
+
+                    // Give Back to LabAPI Event
                 });
 
             newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
@@ -94,9 +82,5 @@ namespace Exiled.Events.Patches.Events.Player
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
-
-        private static bool GetInvertedNoClipStatus(Player player) => player.Role is FpcRole fpc && !fpc.IsNoclipEnabled;
-
-        private static bool GetNoClipStatus(Player player) => player.Role is FpcRole fpc && fpc.IsNoclipEnabled;
     }
 }

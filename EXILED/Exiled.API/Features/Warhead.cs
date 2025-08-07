@@ -35,7 +35,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the cached <see cref="AlphaWarheadOutsitePanel"/> component.
         /// </summary>
-        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindObjectOfType<AlphaWarheadOutsitePanel>());
+        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>());
 
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the warhead lever.
@@ -45,7 +45,11 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether DeadmanSwitch detonation is enabled.
         /// </summary>
-        public static bool DeadmanSwitchEnabled { get; set; } = true;
+        public static bool DeadmanSwitchEnabled
+        {
+            get => DeadmanSwitch.IsDeadmanSwitchEnabled;
+            set => DeadmanSwitch.IsDeadmanSwitchEnabled = value;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether automatic detonation is enabled.
@@ -84,8 +88,8 @@ namespace Exiled.API.Features
         /// </summary>
         public static bool IsKeycardActivated
         {
-            get => OutsitePanel.NetworkkeycardEntered;
-            set => OutsitePanel.NetworkkeycardEntered = value;
+            get => AlphaWarheadActivationPanel.IsUnlocked;
+            set => AlphaWarheadActivationPanel.IsUnlocked = value;
         }
 
         /// <summary>
@@ -168,7 +172,16 @@ namespace Exiled.API.Features
         public static void CloseBlastDoors()
         {
             foreach (BlastDoor door in BlastDoors)
-                door.SetClosed(false, true);
+                door.SetDoorState(true, false);
+        }
+
+        /// <summary>
+        /// Open the surface blast doors.
+        /// </summary>
+        public static void OpenBlastDoors()
+        {
+            foreach (BlastDoor door in BlastDoors)
+                door.SetDoorState(false, true);
         }
 
         /// <summary>
