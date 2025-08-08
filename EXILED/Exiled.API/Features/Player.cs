@@ -139,6 +139,19 @@ namespace Exiled.API.Features
         public static IReadOnlyCollection<Player> List => Dictionary.Values.ToList();
 
         /// <summary>
+        /// Gets an <see cref="IEnumerable{T}"/> of all <see cref="Player"/>'s on the server.
+        /// This property should be used for enumeration (e.g. LINQ) as it doesn't create a new list, improving performance.
+        /// </summary>
+        public static IEnumerable<Player> Enumerable => Dictionary.Values;
+
+        /// <summary>
+        /// Gets the number of players currently on the server.
+        /// </summary>
+        /// <seealso cref="List"/>
+        /// <seealso cref="Enumerable"/>
+        public static int Count => Dictionary.Count;
+
+        /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="Player"/> and their user ids.
         /// </summary>
         public static Dictionary<string, Player> UserIdsCache { get; } = new(20);
