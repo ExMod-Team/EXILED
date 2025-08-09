@@ -22,11 +22,13 @@ namespace Exiled.API.Extensions
     using Features.Pools;
     using InventorySystem;
     using InventorySystem.Items;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using MEC;
     using Mirror;
     using PlayerRoles;
+    using PlayerRoles.Blood;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Scp1507;
@@ -34,6 +36,7 @@ namespace Exiled.API.Extensions
     using RelativePositioning;
     using Respawning;
     using UnityEngine;
+    using Utils.Networking;
 
     /// <summary>
     /// A set of extensions for <see cref="Mirror"/> Networking.
@@ -213,6 +216,61 @@ namespace Exiled.API.Extensions
             {
                 audioModule.SendRpc(player.ReferenceHub, writer =>
                     audioModule.ServerSend(writer, clipIndex, pitch, MixerChannel.Weapons, 12f, position, false));
+
+                player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
+
+                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub));
+            });
+        }
+
+        /// <summary>
+        /// Place blood that only the <paramref name="player"/> can see.
+        /// </summary>
+        /// <param name="player">Target to play.</param>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="origin">The direction of the blood decal.</param>
+        /// <param name="roleTypeId">The RoleTypeId from who blood come from.</param>
+        /// <param name="gettingShotSoundIndex">The sound than player get when getting shot.</param>
+        public static void PlaceBlood(this Player player, Vector3 position, Vector3 origin, RoleTypeId roleTypeId, int gettingShotSoundIndex)
+        {
+            if (!roleTypeId.TryGetRoleBase(out PlayerRoleBase playerRoleBase) || playerRoleBase is not IBleedableRole)
+                return;
+
+            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[FirearmType.Com15];
+
+            if (firearm == null)
+                return;
+
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
+                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub).Write(writer);
+                writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
+                writer.WriteUShort(0);
+                player.Connection.Send(writer);
+            }
+
+            player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
+
+            if (!firearm.Base.TryGetModule(out ImpactEffectsModule impactEffectsModule))
+                return;
+
+            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
+            {
+                using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+                {
+#pragma warning disable SA1116 // Split parameters should start on line after declaration
+                    impactEffectsModule.SendRpc(writer =>
+                    {
+                        writer.WriteSubheader(ImpactEffectsModule.RpcType.PlayerHit);
+                        writer.WriteReferenceHub(Server.Host.ReferenceHub);
+                        writer.WriteRelativePosition(new RelativePosition(position));
+                        writer.WriteRelativePosition(new RelativePosition(origin));
+                        writer.WriteByte(255);
+                        writer.WriteRoleType(RoleTypeId.ClassD);
+                    }, true);
+#pragma warning restore SA1116 // Split parameters should start on line after declaration
+                }
 
                 player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
 

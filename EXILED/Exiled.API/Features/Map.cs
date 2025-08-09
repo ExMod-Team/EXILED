@@ -327,7 +327,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
         /// <param name="direction">The direction of the blood decal.</param>
-        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0; /* new GunDecalMessage(position, direction, DecalPoolType.Blood).SendToAuthenticated(0);*/ // TODO: Not finish
+        [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
+        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0;
 
         /// <summary>
         /// Gets all the near cameras.
