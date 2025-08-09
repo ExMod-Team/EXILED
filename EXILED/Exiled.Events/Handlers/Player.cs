@@ -114,6 +114,11 @@ namespace Exiled.Events.Handlers
         public static Event<InteractedEventArgs> Interacted { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> is saved from death by the Anti-SCP-207 effect.
+        /// </summary>
+        public static Event<SavingByAntiScp207EventArgs> SavingByAntiScp207 { get; set; } = new();
+
+        /// <summary>
         /// Invoked before spawning a <see cref="API.Features.Player"/> <see cref="API.Features.Ragdoll"/>.
         /// </summary>
         public static Event<SpawningRagdollEventArgs> SpawningRagdoll { get; set; } = new();
@@ -1238,6 +1243,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="HealedEventArgs"/> instance. </param>
         public static void OnHealed(HealedEventArgs ev) => Healed.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> is saved from death by the Anti-SCP-207 effect.
+        /// </summary>
+        /// <param name="ev">The <see cref="SavingByAntiScp207EventArgs"/> instance.</param>
+        public static void OnSavingByAntiScp207(SavingByAntiScp207EventArgs ev) => SavingByAntiScp207.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> dies.
