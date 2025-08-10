@@ -91,10 +91,10 @@ namespace Exiled.API.Features.Items
         /// <param name="ownerName">The name of the owner displayed on the card.</param>
         /// <param name="permissions">The door permission flags for the card.</param>
         /// <param name="levelsColor">The color representing the permission levels on the keycard.</param>
-        /// <param name="keycardTintColor">The background/tint color of the card.</param>
+        /// <param name="tintColor">The tint color of the card.</param>
         /// <param name="labelColor">The color of the label text.</param>
         /// <returns>The newly created <see cref="Keycard"/>.</returns>
-        public static Keycard CreateCustom(CustomizableKeycardType keycardType, string keycardName, string labelText, string ownerName, DoorPermissionFlags permissions, Color32 levelsColor, Color32 keycardTintColor, Color32 labelColor) => CreateCustom(keycardType, keycardName, labelText, ownerName, new KeycardLevels(permissions), levelsColor, keycardTintColor, labelColor);
+        public static Keycard CreateCustom(CustomizableKeycardType keycardType, string keycardName, string labelText, string ownerName, DoorPermissionFlags permissions, Color32 levelsColor, Color32 tintColor, Color32 labelColor) => CreateCustom(keycardType, keycardName, labelText, ownerName, new KeycardLevels(permissions), levelsColor, tintColor, labelColor);
 
         /// <summary>
         /// Creates and returns a <see cref="Keycard"/> representing the provided <see cref="CustomizableKeycardType"/>.
@@ -107,11 +107,11 @@ namespace Exiled.API.Features.Items
         /// <param name="armoryLevel">The armory access level.</param>
         /// <param name="adminLevel">The admin access level.</param>
         /// <param name="levelsColor">The color representing the permission levels on the keycard.</param>
-        /// <param name="keycardTintColor">The background/tint color of the card.</param>
+        /// <param name="tintColor">The tint color of the card.</param>
         /// <param name="labelColor">The color of the label text.</param>
         /// <param name="clampLevels">Whether to clamp the access level values to valid ranges.</param>
         /// <returns>The newly created <see cref="Keycard"/>.</returns>
-        public static Keycard CreateCustom(CustomizableKeycardType keycardType, string keycardName, string labelText, string ownerName, int containmentLevel, int armoryLevel, int adminLevel, Color32 levelsColor, Color32 keycardTintColor, Color32 labelColor, bool clampLevels = true) => CreateCustom(keycardType, keycardName, labelText, ownerName, new KeycardLevels(containmentLevel, armoryLevel, adminLevel, clampLevels), levelsColor, keycardTintColor, labelColor);
+        public static Keycard CreateCustom(CustomizableKeycardType keycardType, string keycardName, string labelText, string ownerName, int containmentLevel, int armoryLevel, int adminLevel, Color32 levelsColor, Color32 tintColor, Color32 labelColor, bool clampLevels = true) => CreateCustom(keycardType, keycardName, labelText, ownerName, new KeycardLevels(containmentLevel, armoryLevel, adminLevel, clampLevels), levelsColor, tintColor, labelColor);
 
         /// <summary>
         /// Creates and returns a <see cref="Keycard"/> representing the provided <see cref="CustomizableKeycardType"/>.
@@ -122,10 +122,10 @@ namespace Exiled.API.Features.Items
         /// <param name="ownerName">The name of the owner to display on the keycard.</param>
         /// <param name="levels">The level associated with the keycard.</param>
         /// <param name="levelsColor">The color representing the levels on the keycard.</param>
-        /// <param name="keycardTintColor">The background color of the keycard.</param>
+        /// <param name="tintColor">The tilt color of the keycard.</param>
         /// <param name="labelColor">The color of the label text on the keycard.</param>
         /// <returns>The newly created <see cref="Keycard"/>.</returns>
-        public static Keycard CreateCustom(CustomizableKeycardType keycardType, string keycardName, string labelText, string ownerName, KeycardLevels levels, Color32 levelsColor, Color32 keycardTintColor, Color32 labelColor)
+        public static Keycard CreateCustom(CustomizableKeycardType keycardType, string keycardName, string labelText, string ownerName, KeycardLevels levels, Color32 levelsColor, Color32 tintColor, Color32 labelColor)
         {
             if (!keycardType.GetItemType().TryGetTemplate(out KeycardItem keycard) || !keycard.Customizable)
                 throw new ArgumentException($"The provided ItemType {keycardType} is not a valid keycard type or cant be customizable type.", nameof(keycardType));
@@ -133,10 +133,10 @@ namespace Exiled.API.Features.Items
             NametagDetail._customNametag = ownerName;
             CustomPermsDetail._customLevels = levels;
             CustomLabelDetail._customText = labelText;
+            CustomTintDetail._customColor = tintColor;
             CustomLabelDetail._customColor = labelColor;
             CustomPermsDetail._customColor = levelsColor;
             CustomItemNameDetail._customText = keycardName;
-            CustomTintDetail._customColor = keycardTintColor;
 
             return new Keycard(keycard.ItemTypeId);
         }
