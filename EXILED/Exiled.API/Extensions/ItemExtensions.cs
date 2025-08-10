@@ -202,6 +202,20 @@ namespace Exiled.API.Extensions
         };
 
         /// <summary>
+        /// Converts an <see cref="ItemType"/> into it's corresponding <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="CustomizableKeycardType"/> to convert.</param>
+        /// <returns>The Item type of the specified customizable keycard.</returns>
+        public static ItemType GetItemType(this CustomizableKeycardType type) => type switch
+        {
+            CustomizableKeycardType.Vertical => ItemType.KeycardCustomManagement,
+            CustomizableKeycardType.Standart => ItemType.KeycardCustomSite02,
+            CustomizableKeycardType.MetalFramed => ItemType.KeycardCustomMetalCase,
+            CustomizableKeycardType.Perforated => ItemType.KeycardCustomTaskForce,
+            _ => ItemType.None,
+        };
+
+        /// <summary>
         /// Converts a <see cref="FirearmType"/> into it's corresponding <see cref="ItemType"/>.
         /// </summary>
         /// <param name="type">The <see cref="FirearmType"/> to convert.</param>
