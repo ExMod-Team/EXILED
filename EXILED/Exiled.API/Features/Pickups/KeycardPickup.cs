@@ -10,9 +10,10 @@ namespace Exiled.API.Features.Pickups
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
     using Exiled.API.Interfaces;
-
+    using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
+    using UnityEngine;
 
     using BaseKeycard = InventorySystem.Items.Keycards.KeycardPickup;
 
