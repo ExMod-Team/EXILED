@@ -30,6 +30,34 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params")]
+        public DropdownSetting(
+            int id,
+            string label,
+            IEnumerable<string> options,
+            int defaultOptionIndex,
+            SSDropdownSetting.DropdownEntryType dropdownEntryType,
+            string hintDescription,
+            HeaderSetting header,
+            Action<Player, SettingBase> onChanged)
+            : base(new SSDropdownSetting(id, label, options.ToArray(), defaultOptionIndex, dropdownEntryType, hintDescription), header, onChanged)
+        {
+            Base = (SSDropdownSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DropdownSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="options"><inheritdoc cref="Options"/></param>
+        /// <param name="defaultOptionIndex"><inheritdoc cref="DefaultOptionIndex"/></param>
+        /// <param name="dropdownEntryType"><inheritdoc cref="DropdownType"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="collectionId"><inheritdoc cref="SettingBase.CollectionId"/></param>
+        /// <param name="isServerOnly"><inheritdoc cref="SettingBase.IsServerOnly"/></param>
+        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
         public DropdownSetting(
             int id,
             string label,
@@ -37,9 +65,11 @@ namespace Exiled.API.Features.Core.UserSettings
             int defaultOptionIndex = 0,
             SSDropdownSetting.DropdownEntryType dropdownEntryType = SSDropdownSetting.DropdownEntryType.Regular,
             string hintDescription = null,
+            byte collectionId = byte.MaxValue,
+            bool isServerOnly = false,
             HeaderSetting header = null,
             Action<Player, SettingBase> onChanged = null)
-            : base(new SSDropdownSetting(id, label, options.ToArray(), defaultOptionIndex, dropdownEntryType, hintDescription), header, onChanged)
+            : base(new SSDropdownSetting(id, label, options.ToArray(), defaultOptionIndex, dropdownEntryType, hintDescription, collectionId, isServerOnly), header, onChanged)
         {
             Base = (SSDropdownSetting)base.Base;
         }
@@ -114,6 +144,30 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             get => Base.SyncSelectionText;
             set => SelectedIndex = Array.IndexOf(Base.Options, value);
+        }
+
+        /// <summary>
+        /// Sends updated values to clients.
+        /// </summary>
+        /// <param name="options"><inheritdoc cref="Options"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateSetting(string[] options, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendDropdownUpdate(options, overrideValue, hub => filter(Player.Get(hub)));
+        }
+
+        /// <summary>
+        /// If setting is server only, sends updated values to clients.
+        /// </summary>
+        /// <param name="selectedIndex"><inheritdoc cref="SelectedIndex"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateValue(int selectedIndex, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendValueUpdate(selectedIndex, overrideValue, hub => filter(Player.Get(hub)));
         }
 
         /// <summary>

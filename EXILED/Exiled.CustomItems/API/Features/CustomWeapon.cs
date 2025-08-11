@@ -17,7 +17,6 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Player;
-    using InventorySystem;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
@@ -214,7 +213,7 @@ namespace Exiled.CustomItems.API.Features
             if (!Check(ev.Player.CurrentItem))
                 return;
 
-            if (ClipSize > 0 && ev.Firearm.Base.GetTotalStoredAmmo() >= ClipSize)
+            if (ClipSize > 0 && ev.Firearm.TotalAmmo >= ClipSize)
             {
                 ev.IsAllowed = false;
                 return;
@@ -230,7 +229,7 @@ namespace Exiled.CustomItems.API.Features
 
             if (ClipSize > 0)
             {
-                int ammoChambered = ((AutomaticActionModule)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
+                int ammoChambered = ((AutomaticActionModule?)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
                 int ammoToGive = ClipSize - ammoChambered;
 
                 AmmoType ammoType = ev.Firearm.AmmoType;
@@ -241,13 +240,13 @@ namespace Exiled.CustomItems.API.Features
                 if (ammoToGive < ammoInInventory)
                 {
                     ev.Firearm.MagazineAmmo = ammoToGive;
-                    int newAmmo = ev.Player.Inventory.GetCurAmmo(ammoType.GetItemType()) + ammoDrop;
-                    ev.Player.Inventory.ServerSetAmmo(ammoType.GetItemType(), newAmmo);
+                    int newAmmo = ev.Player.GetAmmo(ammoType) + ammoDrop;
+                    ev.Player.SetAmmo(ammoType, (ushort)newAmmo);
                 }
                 else
                 {
                     ev.Firearm.MagazineAmmo = ammoInInventory;
-                    ev.Player.Inventory.ServerSetAmmo(ammoType.GetItemType(), 0);
+                    ev.Player.SetAmmo(ammoType, 0);
                 }
             }
 

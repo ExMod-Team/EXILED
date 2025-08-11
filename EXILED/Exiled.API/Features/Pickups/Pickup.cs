@@ -495,7 +495,7 @@ namespace Exiled.API.Features.Pickups
             ThrownProjectile thrownProjectile => thrownProjectile switch
             {
                 BaseScp018Projectile => new Projectiles.Scp018Projectile(),
-                ExplosionGrenade explosionGrenade => new ExplosionGrenadeProjectile(type),
+                ExplosionGrenade => new ExplosionGrenadeProjectile(type),
                 FlashbangGrenade => new FlashbangProjectile(),
                 BaseScp2176Projectile => new Projectiles.Scp2176Projectile(),
                 EffectGrenade => new EffectGrenadeProjectile(type),

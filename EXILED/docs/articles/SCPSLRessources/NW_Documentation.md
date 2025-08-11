@@ -17,7 +17,7 @@
 title: NW Documentation
 ---
 
-Last Update (14.1.0.0)
+Last Update (14.1.0.1)
 
 ### Index
 
@@ -156,7 +156,6 @@ Last Update (14.1.0.0)
 - [HitboxType](#hitboxtype)
 - [HolidayType](#holidaytype)
 - [HotkeysTranslation](#hotkeystranslation)
-- [HttpQueryMode](#httpquerymode)
 - [IcomText](#icomtext)
 - [IconType](#icontype)
 - [IndicatorType](#indicatortype)
@@ -198,6 +197,7 @@ Last Update (14.1.0.0)
 - [MixerChannel](#mixerchannel)
 - [Mode](#mode)
 - [Mode](#mode)
+- [Mode](#mode)
 - [ModifierMode](#modifiermode)
 - [Modules](#modules)
 - [MsgType](#msgtype)
@@ -234,7 +234,6 @@ Last Update (14.1.0.0)
 - [PopupState](#popupstate)
 - [PortMapper](#portmapper)
 - [PrimitiveFlags](#primitiveflags)
-- [ProcessCreationFlags](#processcreationflags)
 - [RaClipBoardType](#raclipboardtype)
 - [RadioCommand](#radiocommand)
 - [RadioRangeLevel](#radiorangelevel)
@@ -251,6 +250,7 @@ Last Update (14.1.0.0)
 - [RoleChangeReason](#rolechangereason)
 - [RoleSpawnFlags](#rolespawnflags)
 - [RoleTypeId](#roletypeid)
+- [RoomLevelName](#roomlevelname)
 - [RoomName](#roomname)
 - [RoomShape](#roomshape)
 - [RootCullablePriority](#rootcullablepriority)
@@ -322,6 +322,10 @@ Last Update (14.1.0.0)
 - [UISetting](#uisetting)
 - [UnconnectedMessageType](#unconnectedmessagetype)
 - [UpdateMessageFlags](#updatemessageflags)
+- [UpdateType](#updatetype)
+- [UpdateType](#updatetype)
+- [UpdateType](#updatetype)
+- [UpdateType](#updatetype)
 - [UrgencyLevel](#urgencylevel)
 - [UserResponseMode](#userresponsemode)
 - [ValidationError](#validationerror)
@@ -2440,19 +2444,6 @@ Last Update (14.1.0.0)
 
 </details>
 
-### HttpQueryMode
-
-<details><summary><b>HttpQueryMode</b></summary>
-
-```
- [0] = HttpClient
- [1] = HttpProxy
- [2] = UnityWebRequest
- [3] = UnityWebRequestDispatcher
-```
-
-</details>
-
 ### IcomText
 
 <details><summary><b>PlayerRoles.Voice.IntercomDisplay+IcomText</b></summary>
@@ -2943,6 +2934,7 @@ Last Update (14.1.0.0)
 
 ```
  [1] = FriendlyFire
+ [2] = DisabledAchievements
 ```
 
 </details>
@@ -3139,6 +3131,17 @@ Last Update (14.1.0.0)
  [3] = VoiceChat
  [4] = NoDucking
  [5] = Scp127VoiceViewmodel
+```
+
+</details>
+
+### Mode
+
+<details><summary><b>ManagedHttp+Mode</b></summary>
+
+```
+ [0] = HttpClient
+ [1] = UnityWebRequest
 ```
 
 </details>
@@ -3719,33 +3722,6 @@ Last Update (14.1.0.0)
 
 </details>
 
-### ProcessCreationFlags
-
-<details><summary><b>_Scripts.Utils.StartExternalProcess+ProcessCreationFlags</b></summary>
-
-```
- [0] = NONE
- [1] = DEBUG_PROCESS
- [2] = DEBUG_ONLY_THIS_PROCESS
- [4] = CREATE_SUSPENDED
- [8] = DETACHED_PROCESS
- [16] = CREATE_NEW_CONSOLE
- [512] = CREATE_NEW_PROCESS_GROUP
- [1024] = CREATE_UNICODE_ENVIRONMENT
- [2048] = CREATE_SEPARATE_WOW_VDM
- [4096] = CREATE_SHARED_WOW_VDM
- [65536] = INHERIT_PARENT_AFFINITY
- [262144] = CREATE_PROTECTED_PROCESS
- [524288] = EXTENDED_STARTUPINFO_PRESENT
- [4194304] = CREATE_SECURE_PROCESS
- [16777216] = CREATE_BREAKAWAY_FROM_JOB
- [33554432] = CREATE_PRESERVE_CODE_AUTHZ_LEVEL
- [67108864] = CREATE_DEFAULT_ERROR_MODE
- [134217728] = CREATE_NO_WINDOW
-```
-
-</details>
-
 ### RaClipBoardType
 
 <details><summary><b>RemoteAdmin.Communication.RaClipboard+RaClipBoardType</b></summary>
@@ -3995,6 +3971,18 @@ Last Update (14.1.0.0)
  [26] = AlphaFlamingo
  [27] = ZombieFlamingo
  [-1] = None
+```
+
+</details>
+
+### RoomLevelName
+
+<details><summary><b>MapGeneration.Rooms.RoomLevelName</b></summary>
+
+```
+ [0] = Main
+ [1] = NukeSilo
+ [2] = Hcz049Sublevel
 ```
 
 </details>
@@ -5290,6 +5278,55 @@ Last Update (14.1.0.0)
 
 </details>
 
+### UpdateType
+
+<details><summary><b>UserSettings.ServerSpecific.SSDropdownSetting+UpdateType</b></summary>
+
+```
+ [0] = None
+ [1] = Selection
+ [2] = Options
+```
+
+</details>
+
+### UpdateType
+
+<details><summary><b>UserSettings.ServerSpecific.SSPlaintextSetting+UpdateType</b></summary>
+
+```
+ [0] = None
+ [1] = Clear
+ [2] = Text
+ [3] = Settings
+```
+
+</details>
+
+### UpdateType
+
+<details><summary><b>UserSettings.ServerSpecific.SSSliderSetting+UpdateType</b></summary>
+
+```
+ [0] = None
+ [1] = Value
+ [2] = Constraints
+```
+
+</details>
+
+### UpdateType
+
+<details><summary><b>UserSettings.ServerSpecific.SSTwoButtonsSetting+UpdateType</b></summary>
+
+```
+ [0] = None
+ [1] = Value
+ [2] = Options
+```
+
+</details>
+
 ### UrgencyLevel
 
 <details><summary><b>Christmas.Scp2536.UrgencyLevel</b></summary>
@@ -5611,7 +5648,7 @@ Last Update (14.1.0.0)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.1.0.0"
+```md title="Latest Updated: 14.1.0.1"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"

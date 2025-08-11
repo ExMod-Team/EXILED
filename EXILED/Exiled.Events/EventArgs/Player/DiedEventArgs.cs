@@ -13,6 +13,7 @@ namespace Exiled.Events.EventArgs.Player
     using Interfaces;
 
     using PlayerRoles;
+    using PlayerRoles.Ragdolls;
 
     using CustomAttackerHandler = API.Features.DamageHandlers.AttackerDamageHandler;
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
@@ -20,7 +21,7 @@ namespace Exiled.Events.EventArgs.Player
     /// <summary>
     /// Contains all information after a player dies.
     /// </summary>
-    public class DiedEventArgs : IPlayerEvent, IAttackerEvent
+    public class DiedEventArgs : IPlayerEvent, IAttackerEvent, IRagdollEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DiedEventArgs" /> class.
@@ -32,12 +33,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="damageHandler">
         /// <inheritdoc cref="DamageHandler" />
         /// </param>
-        public DiedEventArgs(Player target, RoleTypeId targetOldRole, DamageHandlerBase damageHandler)
+        /// <param name="ragdoll">
+        /// <inheritdoc cref="Ragdoll" />
+        /// </param>
+        public DiedEventArgs(Player target, RoleTypeId targetOldRole, DamageHandlerBase damageHandler, BasicRagdoll ragdoll)
         {
             DamageHandler = new CustomDamageHandler(target, damageHandler);
             Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
             Player = target;
             TargetOldRole = targetOldRole;
+            Ragdoll = Ragdoll.Get(ragdoll);
         }
 
         /// <summary>
@@ -59,5 +64,10 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the attacker.
         /// </summary>
         public Player Attacker { get; }
+
+        /// <summary>
+        /// Gets ragdoll of the dead player.
+        /// </summary>
+        public Ragdoll Ragdoll { get; }
     }
 }

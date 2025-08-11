@@ -76,6 +76,10 @@ namespace Exiled.API.Extensions
             { EffectType.PitDeath, typeof(PitDeath) },
             { EffectType.Blurred, typeof(Blurred) },
             { EffectType.Scp1344Detected, typeof(Scp1344Detected) },
+            { EffectType.Scp1576, typeof(Scp1576) },
+            { EffectType.Lightweight, typeof(Lightweight) },
+            { EffectType.HeavyFooted, typeof(HeavyFooted) },
+            { EffectType.Fade, typeof(Fade) },
             #pragma warning disable CS0618
             { EffectType.Marshmallow, typeof(MarshmallowEffect) },
             { EffectType.BecomingFlamingo, typeof(BecomingFlamingo) },

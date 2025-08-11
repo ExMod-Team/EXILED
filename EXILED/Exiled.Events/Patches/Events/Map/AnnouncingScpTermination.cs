@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             Label ret = generator.DefineLabel();
 
-            int offset = -3;
+            int offset = -4;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.CassieQueuingScpTerminationEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(

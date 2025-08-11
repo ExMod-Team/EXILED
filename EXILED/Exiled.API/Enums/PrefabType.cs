@@ -372,5 +372,14 @@ namespace Exiled.API.Enums
 
         [Prefab(162530276, "TextToy")]
         TextToy,
+
+        [Prefab(4046276968, "Spawnable Unsecured Pryable GateDoor")]
+        SpawnableUnsecuredPryableGateDoor,
+
+        [Prefab(2332883846, "CullableParentToy")]
+        CullableParentToy,
+
+        [Prefab(3938583646, "WaypointToy")]
+        WaypointToy,
     }
 }

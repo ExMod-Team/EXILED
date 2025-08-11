@@ -19,9 +19,9 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Initializes a new instance of the <see cref="Capybara"/> class.
         /// </summary>
-        /// <param name="speakerToy">The <see cref="CapybaraToy"/> of the toy.</param>
-        internal Capybara(CapybaraToy speakerToy)
-            : base(speakerToy, AdminToyType.Speaker) => Base = speakerToy;
+        /// <param name="capybaraToy">The <see cref="CapybaraToy"/> of the toy.</param>
+        internal Capybara(CapybaraToy capybaraToy)
+            : base(capybaraToy, AdminToyType.Capybara) => Base = capybaraToy;
 
         /// <summary>
         /// Gets the prefab.
@@ -38,8 +38,8 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public bool Collidable
         {
-            get => Base.Network_collisionsEnabled;
-            set => Base.Network_collisionsEnabled = value;
+            get => Base.NetworkCollisionsEnabled;
+            set => Base.NetworkCollisionsEnabled = value;
         }
     }
 }

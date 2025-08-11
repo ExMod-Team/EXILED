@@ -288,5 +288,25 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.Scp1344Detected"/>.
         /// </summary>
         Scp1344Detected,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Scp1576"/>.
+        /// </summary>
+        Scp1576,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Lightweight"/>.
+        /// </summary>
+        Lightweight,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.HeavyFooted"/>.
+        /// </summary>
+        HeavyFooted,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Fade"/>.
+        /// </summary>
+        Fade,
     }
 }

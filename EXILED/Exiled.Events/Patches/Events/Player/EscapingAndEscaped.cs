@@ -13,14 +13,13 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Enums;
     using API.Features;
     using API.Features.Pools;
     using EventArgs.Player;
     using Exiled.API.Features.Roles;
     using Exiled.Events.Attributes;
     using HarmonyLib;
-    using PlayerRoles.FirstPersonControl;
+    using LabApi.Events.Arguments.PlayerEvents;
 
     using static HarmonyLib.AccessTools;
 
@@ -41,8 +40,8 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(EscapingEventArgs));
             LocalBuilder role = generator.DeclareLocal(typeof(Role));
 
-            int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Newobj) + offset;
+            int offset = 2;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && i.operand == (object)PropertyGetter(typeof(PlayerEscapingEventArgs), nameof(PlayerEscapingEventArgs.EscapeScenario))) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -52,10 +51,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
 
                     // roleTypeId
-                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldloc_2),
 
                     // escapeScenario
-                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldloc_3),
 
                     // EscapingEventArgs ev = new(Player, RoleTypeId, EscapeScenario)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapingEventArgs))[0]),
@@ -74,12 +73,12 @@ namespace Exiled.Events.Patches.Events.Player
                     // roleTypeId = ev.NewRole
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.NewRole))),
-                    new(OpCodes.Stloc_1),
+                    new(OpCodes.Stloc_2),
 
                     // escapeScenario = ev.EscapeScenario
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.EscapeScenario))),
-                    new(OpCodes.Stloc_2),
+                    new(OpCodes.Stloc_3),
                 });
 
             offset = 4;
@@ -88,23 +87,23 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // role = ev.Player.Role
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Ldloc, ev),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Player))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.Role))),
-                new(OpCodes.Stloc_S, role.LocalIndex),
+                new(OpCodes.Stloc, role),
             });
 
             newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
             {
                 // ev.Player
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Ldloc, ev),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(EscapingEventArgs), nameof(EscapingEventArgs.Player))),
 
                 // escapeScenario
-                new(OpCodes.Ldloc_2),
+                new(OpCodes.Ldloc_3),
 
                 // role
-                new(OpCodes.Ldloc_S, role.LocalIndex),
+                new(OpCodes.Ldloc, role),
 
                 // EscapedEventArgs ev2 = new(ev.Player, ev.EscapeScenario, role);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(EscapedEventArgs))[0]),

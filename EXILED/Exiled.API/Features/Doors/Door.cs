@@ -246,6 +246,24 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether all required permissions must be present to open the door.
+        /// </summary>
+        public bool RequireAllPermissions
+        {
+            get => Base.RequiredPermissions.RequireAll;
+            set => Base.RequiredPermissions.RequireAll = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the permissions policy used to determine access to the door.
+        /// </summary>
+        public DoorPermissionsPolicy PermissionsPolicy
+        {
+            get => Base.RequiredPermissions;
+            set => Base.RequiredPermissions = value;
+        }
+
+        /// <summary>
         /// Gets or sets the door's rotation.
         /// </summary>
         public Quaternion Rotation
@@ -600,7 +618,7 @@ namespace Exiled.API.Features.Doors
                     {
                         RoomType.EzCheckpointHallwayA => DoorType.CheckpointGateA,
                         RoomType.EzCheckpointHallwayB => DoorType.CheckpointGateB,
-                        RoomType.Hcz049 => Position.y < -805 ? DoorType.Scp049Gate : DoorType.Scp173NewGate,
+                        RoomType.Hcz049 => Position.y < -10 ? DoorType.Scp049Gate : DoorType.Scp173NewGate,
                         _ => DoorType.UnknownGate,
                     },
                     "Elevator Door" or "Nuke Elevator Door" or "Elevator Door 02" => (Base as Interactables.Interobjects.ElevatorDoor)?.Group switch

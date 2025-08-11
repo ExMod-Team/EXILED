@@ -10,13 +10,10 @@ namespace Exiled.API.Features.Pickups
     using System;
 
     using Exiled.API.Interfaces;
-
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Modules;
-
-    using UnityEngine;
 
     using BaseFirearm = InventorySystem.Items.Firearms.FirearmPickup;
 
@@ -43,11 +40,7 @@ namespace Exiled.API.Features.Pickups
             : base(type)
         {
             Base = (BaseFirearm)((Pickup)this).Base;
-
-            // TODO not finish
-            /*
-            if (type is ItemType.ParticleDisruptor && Status.Ammo == 0)
-                Status = new FirearmStatus(5, FirearmStatusFlags.MagazineInserted, 0);*/
+            Ammo = MaxAmmo;
         }
 
         /// <summary>

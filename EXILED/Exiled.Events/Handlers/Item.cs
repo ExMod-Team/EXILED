@@ -44,9 +44,14 @@ namespace Exiled.Events.Handlers
         public static Event<SwingingEventArgs> Swinging { get; set; } = new();
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Items.Jailbird"/> is charged.
+        /// Invoked when a <see cref="API.Features.Items.Jailbird"/> starts charging.
         /// </summary>
         public static Event<ChargingJailbirdEventArgs> ChargingJailbird { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a <see cref="API.Features.Items.Jailbird"/> finishes charging.
+        /// </summary>
+        public static Event<JailbirdChargeCompleteEventArgs> JailbirdChargeComplete { get; set; } = new();
 
         /// <summary>
         /// Invoked before a radio pickup is draining battery.
@@ -57,6 +62,16 @@ namespace Exiled.Events.Handlers
         /// Invoked before a <see cref="API.Features.Pickups.MicroHIDPickup"/> state is changed.
         /// </summary>
         public static Event<ChangingMicroHIDPickupStateEventArgs> ChangingMicroHIDPickupState { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before item inspection is started.
+        /// </summary>
+        public static Event<InspectingItemEventArgs> InspectingItem { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after item inspection is started.
+        /// </summary>
+        public static Event<InspectedItemEventArgs> InspectedItem { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="ItemType.ParticleDisruptor"/> firing while on the ground.
@@ -102,10 +117,16 @@ namespace Exiled.Events.Handlers
         public static void OnSwinging(SwingingEventArgs ev) => Swinging.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before a <see cref="API.Features.Items.Jailbird"/> is charged.
+        /// Called before a <see cref="API.Features.Items.Jailbird"/> that is being charged.
         /// </summary>
         /// <param name="ev">The <see cref="ChargingJailbirdEventArgs"/> instance.</param>
         public static void OnChargingJailbird(ChargingJailbirdEventArgs ev) => ChargingJailbird.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Items.Jailbird"/> finish charging.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChargingJailbirdEventArgs"/> instance.</param>
+        public static void OnJailbirdChargeComplete(JailbirdChargeCompleteEventArgs ev) => JailbirdChargeComplete.InvokeSafely(ev);
 
         /// <summary>
         /// Called before radio pickup is draining battery.
@@ -118,5 +139,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingMicroHIDPickupStateEventArgs"/> instance.</param>
         public static void OnChangingMicroHIDPickupState(ChangingMicroHIDPickupStateEventArgs ev) => ChangingMicroHIDPickupState.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before item inspection is started.
+        /// </summary>
+        /// <param name="ev">The <see cref="InspectingItemEventArgs"/> instance.</param>
+        public static void OnInspectingItem(InspectingItemEventArgs ev) => InspectingItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before item inspection is started.
+        /// </summary>
+        /// <param name="ev">The <see cref="InspectedItemEventArgs"/> instance.</param>
+        public static void OnInspectedItem(InspectedItemEventArgs ev) => InspectedItem.InvokeSafely(ev);
     }
 }

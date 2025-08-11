@@ -58,7 +58,7 @@ namespace Exiled.API.Features
         /// Gets a value indicating whether decontamination phase is in the light containment zone.
         /// </summary>
         public static DecontaminationState DecontaminationState =>
-            DecontaminationController.Singleton.NetworkDecontaminationOverride is DecontaminationController.DecontaminationStatus.Disabled ?
+            DecontaminationController.Singleton.DecontaminationOverride is DecontaminationController.DecontaminationStatus.Disabled ?
             DecontaminationState.Disabled : (DecontaminationState)DecontaminationController.Singleton._nextPhase;
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Exiled.API.Features
         /// <returns>
         /// The remaining time in seconds for the decontamination process.
         /// </returns>
-        public static float RemainingDecontaminationTime => Mathf.Min(0, (float)(DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime));
+        public static float RemainingDecontaminationTime => Mathf.Max(0, (float)(DecontaminationController.Singleton.DecontaminationPhases[DecontaminationController.Singleton.DecontaminationPhases.Length - 1].TimeTrigger - DecontaminationController.GetServerTime));
 
         /// <summary>
         /// Gets all <see cref="PocketDimensionTeleport"/> objects.
@@ -92,12 +92,17 @@ namespace Exiled.API.Features
         /// </summary>
         public static bool IsDecontaminationEnabled
         {
-            get => DecontaminationController.Singleton.NetworkDecontaminationOverride == DecontaminationController.DecontaminationStatus.None;
+            get => DecontaminationController.Singleton.DecontaminationOverride == DecontaminationController.DecontaminationStatus.None;
             set =>
-                DecontaminationController.Singleton.NetworkDecontaminationOverride = value
+                DecontaminationController.Singleton.DecontaminationOverride = value
                     ? DecontaminationController.DecontaminationStatus.None
                     : DecontaminationController.DecontaminationStatus.Disabled;
         }
+
+        /// <summary>
+        /// Gets the <see cref="Escape.EscapeZones"/> that will trigger Escape for player.
+        /// </summary>
+        public static List<Bounds> EscapeZones => Escape.EscapeZones;
 
         /// <summary>
         /// Gets the <see cref="global::AmbientSoundPlayer"/>.
@@ -182,7 +187,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Forces the light containment zone decontamination process.
         /// </summary>
-        public static void StartDecontamination() => DecontaminationController.Singleton.ForceDecontamination();
+        public static void StartDecontamination() => DecontaminationController.Singleton.FinishDecontamination();
 
         /// <summary>
         /// Turns on all lights in the facility.

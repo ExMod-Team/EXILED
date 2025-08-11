@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Warhead
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -36,7 +37,7 @@ namespace Exiled.Events.Patches.Events.Warhead
 
             Label returnLabel = generator.DefineLabel();
 
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Call);
+            int index = newInstructions.FindIndex(x => x.operand == (object)PropertySetter(typeof(AlphaWarheadNukesitePanel), nameof(AlphaWarheadNukesitePanel.Networkenabled))) - 5;
 
             newInstructions.InsertRange(
                 index,

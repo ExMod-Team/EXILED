@@ -104,6 +104,11 @@ namespace Exiled.Events.Handlers
         public static Event<CancelledItemUseEventArgs> CancelledItemUse { get; set; } = new();
 
         /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/>'s aspect ratio has changed.
+        /// </summary>
+        public static Event<ChangedRatioEventArgs> ChangedRatio { get; set; } = new();
+
+        /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> interacted with something.
         /// </summary>
         public static Event<InteractedEventArgs> Interacted { get; set; } = new();
@@ -490,6 +495,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingSpectatedPlayerEventArgs> ChangingSpectatedPlayer { get; set; } = new();
 
         /// <summary>
+        /// Invoked when a <see cref="API.Features.Player"/> changes rooms.
+        /// </summary>
+        public static Event<RoomChangedEventArgs> RoomChanged { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> toggles the NoClip mode.
         /// </summary>
         public static Event<TogglingNoClipEventArgs> TogglingNoClip { get; set; } = new();
@@ -685,6 +695,12 @@ namespace Exiled.Events.Handlers
         public static void OnCancelledItemUse(CancelledItemUseEventArgs ev) => CancelledItemUse.InvokeSafely(ev);
 
         /// <summary>
+        /// Called after a <see cref="API.Features.Player"/>'s aspect ratio changes.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangedRatioEventArgs"/> instance.</param>
+        public static void OnChangedRatio(ChangedRatioEventArgs ev) => ChangedRatio.InvokeSafely(ev);
+
+        /// <summary>
         /// Called after a <see cref="API.Features.Player"/> interacted with something.
         /// </summary>
         /// <param name="ev">The <see cref="InteractedEventArgs"/> instance.</param>
@@ -798,6 +814,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="RemovedHandcuffsEventArgs"/> instance.</param>
         public static void OnRemovedHandcuffs(RemovedHandcuffsEventArgs ev) => RemovedHandcuffs.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called when a <see cref="API.Features.Player"/> changes rooms.
+        /// </summary>
+        /// <param name="ev">The <see cref="RoomChangedEventArgs"/> instance.</param>
+        public static void OnRoomChanged(RoomChangedEventArgs ev) => RoomChanged.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> escapes.

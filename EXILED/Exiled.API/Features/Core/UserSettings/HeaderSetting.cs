@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Core.UserSettings
 {
+    using System;
+
     using Exiled.API.Interfaces;
     using global::UserSettings.ServerSpecific;
 
@@ -21,12 +23,28 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="name"><inheritdoc cref="SettingBase.Label"/></param>
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="paddling"><inheritdoc cref="ReducedPaddling"/></param>
-        public HeaderSetting(string name, string hintDescription = "", bool paddling = false)
+        [Obsolete("Use constructor with Id, old headers will use random number based on headers name")]
+        public HeaderSetting(string name, string hintDescription, bool paddling)
             : this(new SSGroupHeader(name, paddling, hintDescription))
         {
             Base = (SSGroupHeader)base.Base;
 
             Base.SetId(null, name);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeaderSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="name"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="padding"><inheritdoc cref="ReducedPaddling"/></param>
+        public HeaderSetting(int id, string name, string hintDescription = "", bool padding = false)
+            : this(new SSGroupHeader(id, name, padding, hintDescription))
+        {
+            Base = (SSGroupHeader)base.Base;
+
+            Base.SetId(id, name);
         }
 
         /// <summary>
@@ -46,6 +64,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <summary>
         /// Gets or sets a value indicating whether to reduce padding.
         /// </summary>
+        // TODO: change to ReducedPadding (thanks Valera)
         public bool ReducedPaddling
         {
             get => Base.ReducedPadding;

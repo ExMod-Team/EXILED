@@ -77,6 +77,19 @@ namespace Exiled.API.Features.Core.UserSettings
         }
 
         /// <summary>
+        /// Sends updated values to clients.
+        /// </summary>
+        /// <param name="text"><inheritdoc cref="Text"/></param>
+        /// <param name="holdTime"><inheritdoc cref="HoldTime"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateSetting(string text, float holdTime, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendButtonUpdate(text, holdTime, overrideValue, hub => filter(Player.Get(hub)));
+        }
+
+        /// <summary>
         /// Returns a representation of this <see cref="ButtonSetting"/>.
         /// </summary>
         /// <returns>A string in human-readable format.</returns>
