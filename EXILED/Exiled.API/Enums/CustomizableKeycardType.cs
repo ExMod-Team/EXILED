@@ -36,6 +36,6 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Used by <see cref="ItemType.KeycardCustomSite02"/>.
         /// </summary>
-        Standart,
+        Standard,
     }
 }
