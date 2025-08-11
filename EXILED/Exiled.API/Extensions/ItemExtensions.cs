@@ -209,7 +209,7 @@ namespace Exiled.API.Extensions
         public static ItemType GetItemType(this CustomizableKeycardType type) => type switch
         {
             CustomizableKeycardType.Vertical => ItemType.KeycardCustomManagement,
-            CustomizableKeycardType.Standart => ItemType.KeycardCustomSite02,
+            CustomizableKeycardType.Standard => ItemType.KeycardCustomSite02,
             CustomizableKeycardType.MetalFramed => ItemType.KeycardCustomMetalCase,
             CustomizableKeycardType.Perforated => ItemType.KeycardCustomTaskForce,
             _ => ItemType.None,
