@@ -25,7 +25,7 @@ namespace Exiled.API.Extensions
         {
             SpawnLocationType.InsideHczArmory,
             SpawnLocationType.Inside079First,
-            SpawnLocationType.InsideHidUpper,
+            SpawnLocationType.InsideHidLab,
             SpawnLocationType.Inside173Gate,
             SpawnLocationType.InsideGateA,
             SpawnLocationType.InsideGateB,
@@ -86,11 +86,10 @@ namespace Exiled.API.Extensions
             SpawnLocationType.InsideGateA => "GATE_A",
             SpawnLocationType.InsideGateB => "GATE_B",
             SpawnLocationType.InsideLczWc => "LCZ_WC",
-            SpawnLocationType.InsideHidLower => "HID_LOWER",
             SpawnLocationType.InsideLczCafe => "LCZ_CAFE",
             SpawnLocationType.Inside173Gate => "173_GATE",
             SpawnLocationType.InsideIntercom => "INTERCOM",
-            SpawnLocationType.InsideHidUpper => "HID_UPPER",
+            SpawnLocationType.InsideHidLab => "HID_LAB",
             SpawnLocationType.Inside079First => "079_FIRST",
             SpawnLocationType.Inside330Chamber => "330_CHAMBER",
             SpawnLocationType.Inside049Armory => "049_ARMORY",
@@ -108,6 +107,7 @@ namespace Exiled.API.Extensions
             SpawnLocationType.Inside106Secondary => "106_SECONDARY",
             SpawnLocationType.Inside939Cryo => "939_CRYO",
             SpawnLocationType.Inside079Armory => "079_ARMORY",
+            SpawnLocationType.Inside127Lab => "HCZ_127_LAB",
             _ => default,
         };
     }

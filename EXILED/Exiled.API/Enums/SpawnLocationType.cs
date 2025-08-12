@@ -132,12 +132,13 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Inside the lower door that leads to the stairs in Micro-HID room.
         /// </summary>
+        [Obsolete("This Location has been removed from the game.")]
         InsideHidLower,
 
         /// <summary>
-        /// Inside the upper door that leads into the Micro-HID room just after the stairs.
+        /// Inside the upper door that leads into the Micro-HID Lab Room.
         /// </summary>
-        InsideHidUpper,
+        InsideHidLab,
 
         /// <summary>
         /// Just inside the LCZ WC door.
@@ -168,5 +169,10 @@ namespace Exiled.API.Enums
         /// Inside SCP-079's Armory
         /// </summary>
         Inside079Armory,
+
+        /// <summary>
+        /// Inside SCP-127's Lab
+        /// </summary>
+        Inside127Lab,
     }
 }
