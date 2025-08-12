@@ -25,6 +25,7 @@ namespace Exiled.API.Extensions
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Keycards;
     using MEC;
     using Mirror;
     using PlayerRoles;
@@ -35,6 +36,8 @@ namespace Exiled.API.Extensions
     using RelativePositioning;
     using Respawning;
     using UnityEngine;
+
+    using KeycardPickup = Exiled.API.Features.Pickups.Keycards.KeycardPickup;
 
     /// <summary>
     /// A set of extensions for <see cref="Mirror"/> Networking.
@@ -399,6 +402,30 @@ namespace Exiled.API.Extensions
                 writer.WriteUInt((uint)foundIndex);
                 writer.WriteByte(intensity);
             });
+        }
+
+        /// <summary>
+        /// Makes the server resend a message to all clients updating a keycards details to current values.
+        /// </summary>
+        /// <param name="keycard">The keycard to resync.</param>
+        public static void ResyncKeycardItem(Features.Items.Keycards.Keycard keycard)
+        {
+            if (KeycardDetailSynchronizer.Database.Remove(keycard.Serial))
+            {
+                KeycardDetailSynchronizer.ServerProcessItem((KeycardItem)keycard.Base);
+            }
+        }
+
+        /// <summary>
+        /// Makes the server resend a message to all clients updating a keycards details to current values.
+        /// </summary>
+        /// <param name="keycard">The keycard to resync.</param>
+        public static void ResyncKeycardPickup(KeycardPickup keycard)
+        {
+            if (KeycardDetailSynchronizer.Database.Remove(keycard.Serial))
+            {
+                KeycardDetailSynchronizer.ServerProcessPickup((InventorySystem.Items.Keycards.KeycardPickup)keycard.Base);
+            }
         }
 
         /// <summary>
