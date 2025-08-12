@@ -35,7 +35,6 @@ namespace Exiled.Events.Handlers.Internal
         {
             Player.UserIdsCache.Clear();
             Player.Dictionary.Clear();
-            AdminToy.BaseToAdminToy.Clear();
         }
     }
 }

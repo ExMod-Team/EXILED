@@ -28,8 +28,45 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
-            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, hintDescription), header, onChanged)
+        [Obsolete("This method will be removed next major version because of a new feature. Use the constructor with \"CollectionId\" instead.")]
+        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
+            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, false, hintDescription), header, onChanged)
+        {
+            Base = (SSKeybindSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeybindSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="suggested"><inheritdoc cref="KeyCode"/></param>
+        /// <param name="preventInteractionOnGUI"><inheritdoc cref="PreventInteractionOnGUI"/></param>
+        /// <param name="allowSpectatorTrigger"><inheritdoc cref="AllowSpectatorTrigger"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
+        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI, bool allowSpectatorTrigger, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
+            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, allowSpectatorTrigger, hintDescription), header, onChanged)
+        {
+            Base = (SSKeybindSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeybindSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="suggested"><inheritdoc cref="KeyCode"/></param>
+        /// <param name="preventInteractionOnGUI"><inheritdoc cref="PreventInteractionOnGUI"/></param>
+        /// <param name="allowSpectatorTrigger"><inheritdoc cref="AllowSpectatorTrigger"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="collectionId"><inheritdoc cref="SettingBase.CollectionId"/></param>
+        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI = false, bool allowSpectatorTrigger = false, string hintDescription = "", byte collectionId = byte.MaxValue, HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, allowSpectatorTrigger, hintDescription, collectionId), header, onChanged)
         {
             Base = (SSKeybindSetting)base.Base;
         }
@@ -59,6 +96,15 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             get => Base.PreventInteractionOnGUI;
             set => Base.PreventInteractionOnGUI = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the interaction is prevented in spectator roles.
+        /// </summary>
+        public bool AllowSpectatorTrigger
+        {
+            get => Base.AllowSpectatorTrigger;
+            set => Base.AllowSpectatorTrigger = value;
         }
 
         /// <summary>

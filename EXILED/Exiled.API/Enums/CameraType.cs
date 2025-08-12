@@ -137,6 +137,19 @@ namespace Exiled.API.Enums
         HczWarheadPortElevator,
         HczMicroHIDLab,
         HczPipesMain,
+        HczScp127Lab,
+        HczScp127Containment,
+        HczServersUpperStorage,
+        HczLowerServerStorage,
+        HczServerStaircase,
+        #endregion
+
+        #region custom
+        EzArmCameraToy,
+        EzCameraToy,
+        HczCameraToy,
+        LczCameraToy,
+        SzCameraToy,
         #endregion
     }
 }

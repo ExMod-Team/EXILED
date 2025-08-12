@@ -65,7 +65,7 @@ namespace Exiled.API.Enums
         NoPower = 128, // 0x0080
 
         /// <summary>
-        /// Isloation.
+        /// Isolation.
         /// </summary>
         Isolation = 256, // 0x0100
 

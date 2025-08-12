@@ -98,7 +98,11 @@ namespace Exiled.API.Features.Items
         public float TotalDamageDealt
         {
             get => Base._hitreg.TotalMeleeDamageDealt;
-            set => Base._hitreg.TotalMeleeDamageDealt = value;
+            set
+            {
+                Base._hitreg.TotalMeleeDamageDealt = value;
+                Base._deterioration.RecheckUsage();
+            }
         }
 
         /// <summary>
@@ -107,7 +111,11 @@ namespace Exiled.API.Features.Items
         public int TotalCharges
         {
             get => Base.TotalChargesPerformed;
-            set => Base.TotalChargesPerformed = value;
+            set
+            {
+                Base.TotalChargesPerformed = value;
+                Base._deterioration.RecheckUsage();
+            }
         }
 
         /// <summary>

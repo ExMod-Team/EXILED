@@ -7,6 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Scp173
 {
+    using System;
+
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
 
@@ -39,7 +41,9 @@ namespace Exiled.Events.EventArgs.Scp173
         {
             Player = player;
             Scp173 = Player.Role.As<Scp173Role>();
+#pragma warning disable CS0618
             TantrumHazard = tantrumHazard;
+#pragma warning restore CS0618
             Cooldown = cooldown;
             IsAllowed = isAllowed;
         }
@@ -52,6 +56,7 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <summary>
         /// Gets the <see cref="TantrumEnvironmentalHazard" />.
         /// </summary>
+        [Obsolete("This propperty is always null")]
         public TantrumEnvironmentalHazard TantrumHazard { get; }
 
         /// <summary>

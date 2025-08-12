@@ -21,21 +21,15 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
     using Extensions;
-    using InventorySystem;
-    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
-    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
-    using InventorySystem.Items.Pickups;
-    using MEC;
-    using UnityEngine;
+
+    using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
     using FirearmPickup = Pickups.FirearmPickup;
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="InventorySystem.Items.Firearms.Firearm"/>.
@@ -63,20 +57,26 @@ namespace Exiled.API.Features.Items
 
             foreach (ModuleBase module in Base.Modules)
             {
-                if (module is IPrimaryAmmoContainerModule primaryAmmoModule)
+                switch (module)
                 {
-                    PrimaryMagazine ??= (PrimaryMagazine)Magazine.Get(primaryAmmoModule);
-                    continue;
-                }
+                    case IPrimaryAmmoContainerModule primaryAmmoModule:
+                        PrimaryMagazine ??= (PrimaryMagazine)Magazine.Get(primaryAmmoModule);
+                        break;
 
-                if (module is IAmmoContainerModule ammoModule)
-                {
-                    BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
-                }
+                    case IAmmoContainerModule ammoModule:
+                        BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
+                        break;
 
-                if (module is HitscanHitregModuleBase hitregModule)
-                {
-                    HitscanHitregModule = hitregModule;
+                    case HitscanHitregModuleBase hitregModule:
+                        HitscanHitregModule = hitregModule;
+                        break;
+
+                    case AnimatorReloaderModuleBase animatorReloaderModule:
+                        AnimatorReloaderModule = animatorReloaderModule;
+                        break;
+
+                    default:
+                        break;
                 }
             }
         }
@@ -145,6 +145,11 @@ namespace Exiled.API.Features.Items
         /// Gets a primaty magazine for current firearm.
         /// </summary>
         public HitscanHitregModuleBase HitscanHitregModule { get; }
+
+        /// <summary>
+        /// Gets an animator reloader module for the current firearm.
+        /// </summary>
+        public AnimatorReloaderModuleBase AnimatorReloaderModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of ammo in the firearm magazine.
@@ -715,10 +720,50 @@ namespace Exiled.API.Features.Items
         /// </remarks>
         public void Reload()
         {
-            if (Base.TryGetModule(out AnimatorReloaderModuleBase module))
-            {
-                module.StartReloading();
-            }
+            if (AnimatorReloaderModule == null)
+                return;
+
+            AnimatorReloaderModule.IsReloading = true;
+            AnimatorReloaderModule.SendRpcHeaderWithRandomByte(ReloaderMessageHeader.Reload);
+        }
+
+        /// <summary>
+        /// Attempts to reload the firearm with server-side validation.
+        /// </summary>
+        /// <returns><see langword="true"/> if the firearm was successfully reloaded. Otherwise, <see langword="false"/>.</returns>
+        public bool TryReload()
+        {
+            if (AnimatorReloaderModule == null)
+                return false;
+
+            return AnimatorReloaderModule.ServerTryReload();
+        }
+
+        /// <summary>
+        /// Attempts to unload the firearm with server-side validation.
+        /// </summary>
+        /// <returns><see langword="true"/> if the firearm was successfully unload. Otherwise, <see langword="false"/>.</returns>
+        public bool TryUnload()
+        {
+            if (AnimatorReloaderModule == null)
+                return false;
+
+            return AnimatorReloaderModule.ServerTryUnload();
+        }
+
+        /// <summary>
+        /// Forces the firearm's client-side unload animation, bypassing server-side checks.
+        /// </summary>
+        /// <remarks>
+        /// This only plays the animation and is not guaranteed to result in a successful unload. For server-validated unloading, use <see cref="Unload"/>.
+        /// </remarks>
+        public void Unload()
+        {
+            if (AnimatorReloaderModule == null)
+                return;
+
+            AnimatorReloaderModule.IsUnloading = true;
+            AnimatorReloaderModule.SendRpcHeaderWithRandomByte(ReloaderMessageHeader.Unload);
         }
 
         /// <summary>

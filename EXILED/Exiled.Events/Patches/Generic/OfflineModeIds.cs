@@ -14,8 +14,6 @@ namespace Exiled.Events.Patches.Generic
     using API.Features.Pools;
     using CentralAuth;
     using HarmonyLib;
-    using PluginAPI.Core.Interfaces;
-    using PluginAPI.Events;
 
     using static HarmonyLib.AccessTools;
 
@@ -48,8 +46,9 @@ namespace Exiled.Events.Patches.Generic
         private static string BuildUserId(string userId) => $"{userId}@offline";
     }
 
+    /* // TODO: Fix for labAPI online mode disabled
     /// <summary>
-    ///     Patches <see cref="PlayerAuthenticationManager.Start"/> to add the player's UserId to the <see cref="PluginAPI.Core.Player.PlayersUserIds"/> dictionary.
+    ///     Patches <see cref="PlayerAuthenticationManager.Start"/> to add the player's UserId to the <see cref="LabApi.Features.Wrappers.Player"/> dictionary.
     /// </summary>
     [HarmonyPatch(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.Start))]
     internal static class OfflineModePlayerIds
@@ -70,7 +69,7 @@ namespace Exiled.Events.Patches.Generic
                 new[]
                 {
                     // if (Player.PlayersUserIds.ContainsKey(this.UserId)) goto skip;
-                    new(OpCodes.Ldsfld, Field(typeof(PluginAPI.Core.Player), nameof(PluginAPI.Core.Player.PlayersUserIds))),
+                    new(OpCodes.Ldsfld, Field(typeof(LabApi.Features.Wrappers.Player), nameof(LabApi.Features.Wrappers.Player.))),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(PlayerAuthenticationManager), nameof(PlayerAuthenticationManager.UserId))),
                     new(OpCodes.Callvirt, Method(typeof(Dictionary<string, IGameComponent>), nameof(Dictionary<string, IGameComponent>.ContainsKey))),
@@ -160,5 +159,5 @@ namespace Exiled.Events.Patches.Generic
         {
             EventManager.ExecuteEvent(new PlayerJoinedEvent(hub));
         }
-    }
+    }*/
 }

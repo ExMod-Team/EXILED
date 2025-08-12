@@ -37,7 +37,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="this">The <see cref="UserGroup"/>.</param>
         /// <returns>The key of that group, or <see langword="null"/> if not found.</returns>
-        public static string GetKey(this UserGroup @this) => Server.PermissionsHandler._groups
+        public static string GetKey(this UserGroup @this) => Server.PermissionsHandler.Groups
             .FirstOrDefault(pair => pair.Value.EqualsTo(@this)).Key;
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Exiled.API.Extensions
         /// <returns>The value of that group, or <see langword="null"/> if not found.</returns>
         public static UserGroup GetValue(string groupName)
         {
-            ServerStatic.GetPermissionsHandler().GetAllGroups().TryGetValue(groupName, out UserGroup userGroup);
+            ServerStatic.PermissionsHandler.GetAllGroups().TryGetValue(groupName, out UserGroup userGroup);
             return userGroup;
         }
     }

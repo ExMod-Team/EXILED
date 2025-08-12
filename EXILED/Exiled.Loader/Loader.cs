@@ -26,7 +26,6 @@ namespace Exiled.Loader
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
-    using MEC;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NodeDeserializers;
 
@@ -46,7 +45,7 @@ namespace Exiled.Loader
             Log.Warn("You are running a public beta build. It is not compatible with another version of the game.");
 #endif
 
-            Log.SendRaw($"Exiled.API - Version {PluginAPI.Loader.AssemblyLoader.Dependencies.FirstOrDefault(x => x.GetName().Name == "Exiled.API").GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}", ConsoleColor.DarkRed);
+            Log.SendRaw($"Exiled.API - Version {LabApi.Loader.PluginLoader.Dependencies.FirstOrDefault(x => x.GetName().Name == "Exiled.API").GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}", ConsoleColor.DarkRed);
             Log.SendRaw($"{Assembly.GetExecutingAssembly().GetName().Name} - Version {Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion}", ConsoleColor.DarkRed);
 
             if (MultiAdminFeatures.MultiAdminUsed)
@@ -117,39 +116,15 @@ namespace Exiled.Loader
             .Build();
 
         /// <summary>
-        /// Loads all plugins.
+        /// Loads all plugins, both globals and locals.
         /// </summary>
         public static void LoadPlugins()
         {
             File.Delete(Path.Combine(Paths.Plugins, "Exiled.Updater.dll"));
             File.Delete(Path.Combine(Paths.Dependencies, "Exiled.API.dll"));
 
-            foreach (string assemblyPath in Directory.GetFiles(Paths.Plugins, "*.dll"))
-            {
-                Assembly assembly = LoadAssembly(assemblyPath);
-
-                if (assembly is null)
-                    continue;
-
-                Locations[assembly] = assemblyPath;
-            }
-
-            foreach (Assembly assembly in Locations.Keys)
-            {
-                if (Locations[assembly].Contains("dependencies"))
-                    continue;
-
-                IPlugin<IConfig> plugin = CreatePlugin(assembly);
-
-                if (plugin is null)
-                    continue;
-
-                AssemblyInformationalVersionAttribute attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-
-                Log.Info($"Loaded plugin {plugin.Name}@{(attribute is not null ? attribute.InformationalVersion : plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : string.Empty)}");
-                Server.PluginAssemblies.Add(assembly, plugin);
-                Plugins.Add(plugin);
-            }
+            LoadPluginsFromDirectory();
+            LoadPluginsFromDirectory(Server.Port.ToString());
         }
 
         /// <summary>
@@ -485,6 +460,51 @@ namespace Exiled.Loader
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Load every plugin inside the given directory, if null it's default EXILED one (global).
+        /// </summary>
+        /// <param name="dir">The sub-directory of the plugin - if null the default EXILED one will be used.</param>
+        private static void LoadPluginsFromDirectory(string dir = null)
+        {
+            string path = Paths.Plugins;
+            if (dir != null)
+                path = Path.Combine(path, dir);
+
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+
+            foreach (string assemblyPath in Directory.GetFiles(path, "*.dll"))
+            {
+                Assembly assembly = LoadAssembly(assemblyPath);
+
+                if (assembly == null)
+                    continue;
+
+                Locations[assembly] = assemblyPath;
+            }
+
+            foreach (Assembly assembly in Locations.Keys)
+            {
+                if (Locations[assembly].Contains("dependencies"))
+                    continue;
+
+                IPlugin<IConfig> plugin = CreatePlugin(assembly);
+
+                if (plugin == null)
+                    continue;
+
+                if (Plugins.Any(p => p.Name == plugin.Name))
+                    continue;
+
+                AssemblyInformationalVersionAttribute attribute = plugin.Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
+
+                Log.Info($"Loaded plugin {plugin.Name}@{(attribute is not null ? attribute.InformationalVersion : plugin.Version is not null ? $"{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build}" : string.Empty)}");
+
+                Server.PluginAssemblies.Add(assembly, plugin);
+                Plugins.Add(plugin);
+            }
         }
 
         /// <summary>

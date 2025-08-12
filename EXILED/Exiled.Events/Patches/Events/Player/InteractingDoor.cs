@@ -8,16 +8,16 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using Exiled.API.Features.Pools;
-    using Exiled.Events.Attributes;
-    using Exiled.Events.EventArgs.Player;
-
+    using API.Features.Pools;
+    using Attributes;
+    using EventArgs.Player;
     using HarmonyLib;
-
     using Interactables.Interobjects.DoorUtils;
+    using LabApi.Events.Arguments.PlayerEvents;
+    using LabApi.Events.Handlers;
 
     using static HarmonyLib.AccessTools;
 
@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="DoorVariant.ServerInteract(ReferenceHub, byte)" />.
     /// Adds the <see cref="Handlers.Player.InteractingDoor" /> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.InteractingDoor))]
+    [EventPatch(typeof(Handlers.Player), nameof(Player.InteractingDoor))]
     [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), typeof(ReferenceHub), typeof(byte))]
     internal static class InteractingDoor
     {
@@ -33,92 +33,162 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(InteractingDoorEventArgs));
+            LocalBuilder labEvent = generator.DeclareLocal(typeof(PlayerInteractedDoorEventArgs));
 
-            List<Label> jmp = null;
-            Label interactionAllowed = generator.DefineLabel();
-            Label permissionDenied = generator.DefineLabel();
-            Label retLabel = generator.DefineLabel();
-
-            newInstructions.InsertRange(
-                0,
-                new CodeInstruction[]
-                {
-                    // InteractingDoorEventArgs ev = new(Player.Get(ply), __instance, colliderId, false, true);
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldarg_2),
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Ldc_I4_1),
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingDoorEventArgs))[0]),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
-                });
+            Label exiledEvContinue = generator.DefineLabel();
+            Label labEvContinue = generator.DefineLabel();
 
             int offset = -3;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(DoorVariant), nameof(DoorVariant.LockBypassDenied)))) + offset;
+            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(DoorVariant), nameof(DoorVariant.AllowInteracting)))) + offset;
+
+            Label elseStatement = newInstructions[index].labels[0];
+
+            offset = -1;
+            index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(DoorVariant), nameof(DoorVariant._remainingDeniedCooldown)))) + offset;
+
+            Label bypassLock = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
+
+            newInstructions[index].labels.Add(bypassLock);
 
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
-                    // Handlers.Player.OnInteractingDoor(ev);
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).MoveLabelsFrom(newInstructions[index]),
+                    // Player.Get(ply)
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // doorVariant
+                    new(OpCodes.Ldarg_0),
+
+                    // colliderId
+                    new(OpCodes.Ldarg_2),
+
+                    // false (canOpen is false because the door is locked, but still calling the event)
+                    new(OpCodes.Ldc_I4_0),
+
+                    // ev = new InteractingDoorEventArgs(Player, DoorVariant, byte)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingDoorEventArgs))[0]),
                     new(OpCodes.Dup),
+                    new(OpCodes.Dup),
+
+                    // Player.OnInteractingDoor(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingDoor))),
 
-                    // if (!ev.CanInteract)
-                    //    go to retLabel;
+                    // if (ev.CanInteract) goto continueLabel
+                    // else return
                     new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.CanInteract))),
-                    new(OpCodes.Brfalse_S, retLabel),
+                    new(OpCodes.Brtrue_S, exiledEvContinue),
+                    new(OpCodes.Pop),
+                    new(OpCodes.Ret),
 
-                    // if (ev.IsAllowed)
-                    //    go to interactionAllowed;
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
-                    new(OpCodes.Brtrue_S, interactionAllowed),
-                });
+                    // canOpen = ev.IsAllowed
+                    new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))).WithLabels(exiledEvContinue),
+                    new(OpCodes.Stloc_0),
 
-            // attaching permission denied label
-            offset = -3;
-            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(DoorVariant), nameof(DoorVariant.PermissionsDenied)))) + offset;
-            newInstructions[index].WithLabels(permissionDenied);
+                    // hub
+                    new(OpCodes.Ldarg_1),
 
-            // replace the condition check
-            offset = -7;
-            index = newInstructions.FindIndex(instruction => instruction.Calls(PropertySetter(typeof(DoorVariant), nameof(DoorVariant.NetworkTargetState)))) + offset;
-            jmp = newInstructions[index].ExtractLabels();
-            newInstructions.RemoveRange(index, 2);
+                    // doorVariant
+                    new(OpCodes.Ldarg_0),
 
-            // insert interaction Allowed label
-            newInstructions[index].WithLabels(interactionAllowed);
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    // ev.IsAllowed = flag;
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(jmp),
+                    // canOpen
                     new(OpCodes.Ldloc_0),
-                    new(OpCodes.Callvirt, PropertySetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
 
-                    // Handlers.Player.OnInteractingDoor(ev);
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    // labEvent = new PlayerInteractingDoorEventArgs(ReferenceHub, DoorVariant, bool)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlayerInteractingDoorEventArgs))[0]),
                     new(OpCodes.Dup),
-                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingDoor))),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Stloc_S, labEvent.LocalIndex),
 
-                    // if (!ev.CanInteract)
-                    //    go to retLabel;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.CanInteract))),
-                    new(OpCodes.Brfalse_S, retLabel),
+                    // PlayerEvents.OnInteractingDoor(labEvent)
+                    new(OpCodes.Call, Method(typeof(PlayerEvents), nameof(PlayerEvents.OnInteractingDoor))),
 
-                    // if (!ev.IsAllowed)
-                    //    go to permission denied;
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, permissionDenied),
+                    // if (!labEvent.IsAllowed) goto bypassLock
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerInteractingDoorEventArgs), nameof(PlayerInteractingDoorEventArgs.IsAllowed))),
+                    new(OpCodes.Brfalse_S, bypassLock),
+
+                    // canOpen = ev.CanOpen
+                    new(OpCodes.Ldloc_S, labEvent.LocalIndex),
+                    new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(PlayerInteractingDoorEventArgs), nameof(PlayerInteractingDoorEventArgs.CanOpen))).WithLabels(labEvContinue),
+                    new(OpCodes.Stloc_0),
+                    new(OpCodes.Br_S, elseStatement),
                 });
 
-            newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
+            offset = -3;
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingDoorEventArgs))[0]) + offset;
+
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    // Player.Get(ply)
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
+
+                    // doorVariant
+                    new(OpCodes.Ldarg_0),
+
+                    // colliderId
+                    new(OpCodes.Ldarg_2),
+
+                    // canOpen
+                    new(OpCodes.Ldloc_0),
+
+                    // ev = new InteractingDoorEventArgs(Player, DoorVariant, byte)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingDoorEventArgs))[0]),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Dup),
+
+                    // Player.OnInteractingDoor(ev);
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnInteractingDoor))),
+
+                    // if (ev.CanInteract) goto continueLabel
+                    // else return
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.CanInteract))),
+                    new(OpCodes.Brtrue_S, continueLabel),
+                    new(OpCodes.Pop),
+                    new(OpCodes.Ret),
+
+                    // canOpen = ev.IsAllowed
+                    new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(InteractingDoorEventArgs), nameof(InteractingDoorEventArgs.IsAllowed))).WithLabels(continueLabel),
+                    new(OpCodes.Stloc_0),
+                });
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+
+    /// <summary>
+    /// Patches <see cref="DoorVariant.TryResolveLock" />.
+    /// </summary>
+    [EventPatch(typeof(Handlers.Player), nameof(Player.InteractingDoor))]
+    [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.TryResolveLock))]
+#pragma warning disable SA1402
+    internal static class ChangeNWLogic
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            int offset = -3;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerInteractingDoorEventArgs))[0]) + offset;
+
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    new CodeInstruction(OpCodes.Ldc_I4_0).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Ret),
+                });
+
+            // placing index after new added instructions
+            index += 2;
+            newInstructions.RemoveRange(index, newInstructions.Count - index);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

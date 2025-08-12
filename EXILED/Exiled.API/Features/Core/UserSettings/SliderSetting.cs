@@ -29,8 +29,31 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="stringFormat"><inheritdoc cref="StringFormat"/></param>
         /// <param name="displayFormat"><inheritdoc cref="DisplayFormat"/></param>
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        public SliderSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger = false, string stringFormat = "0.##", string displayFormat = "{0}", string hintDescription = null)
+        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
+        public SliderSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger, string stringFormat, string displayFormat, string hintDescription)
             : this(new SSSliderSetting(id, label, minValue, maxValue, defaultValue, isInteger, stringFormat, displayFormat, hintDescription))
+        {
+            Base = (SSSliderSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SliderSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="minValue"><inheritdoc cref="MinimumValue"/></param>
+        /// <param name="maxValue"><inheritdoc cref="MaximumValue"/></param>
+        /// <param name="defaultValue"><inheritdoc cref="DefaultValue"/></param>
+        /// <param name="isInteger"><inheritdoc cref="IsInteger"/></param>
+        /// <param name="stringFormat"><inheritdoc cref="StringFormat"/></param>
+        /// <param name="displayFormat"><inheritdoc cref="DisplayFormat"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="collectionId"><inheritdoc cref="SettingBase.CollectionId"/></param>
+        /// <param name="isServerOnly"><inheritdoc cref="SettingBase.IsServerOnly"/></param>
+        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        public SliderSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger = false, string stringFormat = "0.##", string displayFormat = "{0}", string hintDescription = null, byte collectionId = byte.MaxValue, bool isServerOnly = false, HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+            : base(new SSSliderSetting(id, label, minValue, maxValue, defaultValue, isInteger, stringFormat, displayFormat, hintDescription, collectionId, isServerOnly), header, onChanged)
         {
             Base = (SSSliderSetting)base.Base;
         }
@@ -111,6 +134,34 @@ namespace Exiled.API.Features.Core.UserSettings
 
         /// <inheritdoc/>
         public new SSSliderSetting Base { get; }
+
+        /// <summary>
+        /// Sends updated values to clients.
+        /// </summary>
+        /// <param name="min"><inheritdoc cref="MinimumValue"/></param>
+        /// <param name="max"><inheritdoc cref="MaximumValue"/></param>
+        /// <param name="isInteger"><inheritdoc cref="IsInteger"/></param>
+        /// <param name="stringFormat"><inheritdoc cref="StringFormat"/></param>
+        /// <param name="displayFormat"><inheritdoc cref="DisplayFormat"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateSetting(float min, float max, bool isInteger, string stringFormat, string displayFormat, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendSliderUpdate(min, max, isInteger, stringFormat, displayFormat, overrideValue, hub => filter(Player.Get(hub)));
+        }
+
+        /// <summary>
+        /// If setting is server only, sends updated values to clients.
+        /// </summary>
+        /// <param name="value"><inheritdoc cref="SliderValue"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateValue(float value, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendValueUpdate(value, overrideValue, hub => filter(Player.Get(hub)));
+        }
 
         /// <summary>
         /// Returns a representation of this <see cref="SliderSetting"/>.

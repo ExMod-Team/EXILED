@@ -29,8 +29,8 @@ namespace Exiled.Events.EventArgs.Scp049
             Scp049 = player.Role.As<Scp049Role>();
             Target = target;
             IsAllowed = isAllowed;
-            FailedCooldown = (float)Scp049.SenseAbilityFailCooldown;
-            Duration = (float)Scp049.SenseAbilityDuration;
+            FailedCooldown = PlayerRoles.PlayableScps.Scp049.Scp049SenseAbility.AttemptFailCooldown;
+            Duration = PlayerRoles.PlayableScps.Scp049.Scp049SenseAbility.EffectDuration;
         }
 
         /// <inheritdoc/>

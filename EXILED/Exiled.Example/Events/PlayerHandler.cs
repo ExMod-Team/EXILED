@@ -201,7 +201,7 @@ namespace Exiled.Example.Events
             if (ev.Player.Role.Type == RoleTypeId.Scientist)
             {
                 ev.Player.Position = RoleTypeId.Tutorial.GetRandomSpawnLocation().Position;
-                ev.Player.ResetInventory(new ItemType[] { ItemType.Snowball, ItemType.Jailbird, ItemType.Snowball, ItemType.Snowball, ItemType.Snowball, ItemType.Radio, ItemType.Jailbird });
+                ev.Player.ResetInventory(new ItemType[] { ItemType.Jailbird, ItemType.GunSCP127, ItemType.Radio, ItemType.Jailbird });
             }
         }
 

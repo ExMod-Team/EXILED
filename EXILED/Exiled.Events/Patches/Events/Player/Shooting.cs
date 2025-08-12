@@ -96,10 +96,6 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ShootingEventArgs), nameof(ShootingEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, continueLabel2),
 
-                // Dispose target FpcBacktracker
-                new(OpCodes.Ldloc_S, 5),
-                new(OpCodes.Callvirt, Method(typeof(IDisposable), nameof(IDisposable.Dispose))),
-
                 new(OpCodes.Leave_S, returnLabel),
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel2),
             };

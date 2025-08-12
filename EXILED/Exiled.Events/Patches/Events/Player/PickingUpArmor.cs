@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features;
@@ -35,16 +36,16 @@ namespace Exiled.Events.Patches.Events.Player
 
             Label returnLabel = generator.DefineLabel();
 
-            const int index = 0;
+            int offset = -5;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerPickingUpArmorEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // Player.Get(this.Hub)
+                    // this.Hub
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Hub))),
 
                     // this.TargetPickup
                     new(OpCodes.Ldarg_0),
@@ -53,11 +54,11 @@ namespace Exiled.Events.Patches.Events.Player
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // PickingUpArmorEventArgs ev = new(Player, ItemPickupBase, bool)
+                    // PickingUpArmorEventArgs ev = new(ReferenceHub, ItemPickupBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
 
-                    // Handlers.Player.OnPickingUpArmor(ev)
+                    // Handlers.Player.OnPickingUpItem(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)

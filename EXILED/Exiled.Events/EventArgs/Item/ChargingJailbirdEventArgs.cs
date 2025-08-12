@@ -12,20 +12,20 @@ namespace Exiled.Events.EventArgs.Item
     using Exiled.Events.EventArgs.Interfaces;
 
     /// <summary>
-    /// Contains all information before a player charges a <see cref="Jailbird"/>.
+    /// Contains all information before a player starts charging an <see cref="Jailbird"/>.
     /// </summary>
-    public class ChargingJailbirdEventArgs : IItemEvent
+    public class ChargingJailbirdEventArgs : IItemEvent, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChargingJailbirdEventArgs"/> class.
         /// </summary>
-        /// <param name="player"><inheritdoc cref="Player"/></param>
-        /// <param name="swingItem">The item being charged.</param>
-        /// <param name="isAllowed">Whether the item can be charged.</param>
-        public ChargingJailbirdEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase swingItem, bool isAllowed = true)
+        /// <param name="player">The player who is attempting to charge the Jailbird.</param>
+        /// <param name="jailbird">The jailbird being charged.</param>
+        /// <param name="isAllowed">Whether the item is allowed to be charged.</param>
+        public ChargingJailbirdEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase jailbird, bool isAllowed = true)
         {
             Player = Player.Get(player);
-            Jailbird = (Jailbird)Item.Get(swingItem);
+            Jailbird = Item.Get<Jailbird>(jailbird);
             IsAllowed = isAllowed;
         }
 

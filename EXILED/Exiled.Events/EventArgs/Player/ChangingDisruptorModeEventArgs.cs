@@ -11,6 +11,7 @@ namespace Exiled.Events.EventArgs.Player
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+    using InventorySystem.Items;
 
     /// <summary>
     /// Contains all information before disruptor's mode is changed.
@@ -22,9 +23,9 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="firearm"><inheritdoc cref="Firearm"/></param>
         /// <param name="mode"><inheritdoc cref="NewMode"/></param>
-        public ChangingDisruptorModeEventArgs(Item firearm, bool mode)
+        public ChangingDisruptorModeEventArgs(ItemBase firearm, bool mode)
         {
-            Firearm = firearm.As<Firearm>();
+            Firearm = Item.Get(firearm).As<Firearm>();
             NewMode = mode ? DisruptorMode.Disintegrator : DisruptorMode.BurstFire;
         }
 

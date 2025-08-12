@@ -30,7 +30,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public UnlockingGeneratorEventArgs(Player player, Scp079Generator generator, bool isAllowed = true)
+        public UnlockingGeneratorEventArgs(Player player, Scp079Generator generator, bool isAllowed)
         {
             Player = player;
             Generator = Generator.Get(generator);

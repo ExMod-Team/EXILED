@@ -31,6 +31,9 @@ namespace Exiled.Events.EventArgs.Player
             Door = Door.Get(door);
             Damage = damage;
             DamageType = doorDamageType;
+
+            // TODO: Remove when NW fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/817
+            IsAllowed = damage > 0;
         }
 
         /// <summary>
@@ -46,7 +49,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the door can be broken.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
+        public bool IsAllowed { get; set; }
 
         /// <summary>
         /// Gets the <see cref="DoorDamageType"/> dealt to the door.

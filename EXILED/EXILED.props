@@ -15,7 +15,7 @@
 
   <PropertyGroup>
     <!-- This is the global version and is used for all projects that don't have a version -->
-    <Version Condition="$(Version) == ''">9.5.1</Version>
+    <Version Condition="$(Version) == ''">9.8.0</Version>
     <!-- Enables public beta warning via the PUBLIC_BETA constant -->
     <PublicBeta>false</PublicBeta>
 
@@ -25,8 +25,8 @@
 
     <Copyright>Copyright © $(Authors) 2020 - $([System.DateTime]::Now.ToString("yyyy"))</Copyright>
     <RepositoryType>Git</RepositoryType>
-    <RepositoryUrl>https://github.com/ExMod-Team/EXILED</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/ExMod-Team/EXILED</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Exmod-Team/EXILED</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Exmod-Team/EXILED</PackageProjectUrl>
     <PackageLicenseExpression>CC-BY-SA-3.0</PackageLicenseExpression>
 
     <DefineConstants Condition="$(PublicBeta) == 'true'">$(DefineConstants);PUBLIC_BETA</DefineConstants>

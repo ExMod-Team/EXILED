@@ -15,21 +15,25 @@ namespace Exiled.API.Extensions
     using System.Reflection.Emit;
     using System.Text;
 
+    using AudioPooling;
+    using CustomPlayerEffects;
     using Exiled.API.Enums;
+    using Exiled.API.Features.Items;
     using Features;
     using Features.Pools;
-
+    using InventorySystem;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Firearms;
+    using InventorySystem.Items.Firearms.Modules;
+    using MEC;
     using Mirror;
-
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.Voice;
     using RelativePositioning;
-
     using Respawning;
-
     using UnityEngine;
 
     /// <summary>
@@ -168,20 +172,53 @@ namespace Exiled.API.Extensions
         /// <param name="itemType">Weapon' sound to play.</param>
         /// <param name="volume">Sound's volume to set.</param>
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
+        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
         public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
-        {
-            // TODO: Not finish
-            /*
-            GunAudioMessage message = new()
-            {
-                Weapon = itemType,
-                AudioClipId = audioClipId,
-                MaxDistance = volume,
-                ShooterHub = player.ReferenceHub,
-                ShooterPosition = new RelativePosition(position),
-            };
+            => PlayGunSound(player, position, itemType.GetFirearmType(), volume, audioClipId);
 
-            player.Connection.Send(message);*/
+        /// <summary>
+        /// Plays a gun sound that only the <paramref name="player"/> can hear.
+        /// </summary>
+        /// <param name="player">Target to play.</param>
+        /// <param name="position">Position to play on.</param>
+        /// <param name="firearmType">Weapon's sound to play.</param>
+        /// <param name="pitch">Speed of sound.</param>
+        /// <param name="clipIndex">Index of clip.</param>
+        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0)
+        {
+            if (firearmType is FirearmType.ParticleDisruptor or FirearmType.None)
+                return;
+
+            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[firearmType];
+
+            if (firearm == null)
+                return;
+
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
+                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub).Write(writer);
+                writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
+                writer.WriteUShort(0);
+                player.Connection.Send(writer);
+            }
+
+            firearm.BarrelAmmo = 1;
+            firearm.BarrelMagazine.IsCocked = true;
+            player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
+
+            if (!firearm.Base.TryGetModule(out AudioModule audioModule))
+                return;
+
+            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
+            {
+                audioModule.SendRpc(player.ReferenceHub, writer =>
+                    audioModule.ServerSend(writer, clipIndex, pitch, MixerChannel.Weapons, 12f, position, false));
+
+                player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
+
+                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub));
+            });
         }
 
         /// <summary>
@@ -307,6 +344,64 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
+        /// Resynchronizes a specific effect from the effect owner to the target player.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect to be resynchronized.</param>
+        /// <param name="target">The target player to whom the effect will be resynchronized.</param>
+        /// <param name="effect">The type of effect to be resynchronized.</param>
+        public static void ResyncEffectTo(this Player effectOwner, Player target, EffectType effect) => effectOwner.SendFakeEffectTo(target, effect, effectOwner.GetEffect(effect).Intensity);
+
+        /// <summary>
+        /// Resynchronizes a specific effect from the effect owner to the target players.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect to be resynchronized.</param>
+        /// <param name="targets">The list of target players to whom the effect will be resynchronized.</param>
+        /// <param name="effect">The type of effect to be resynchronized.</param>
+        public static void ResyncEffectTo(this Player effectOwner, IEnumerable<Player> targets, EffectType effect) => effectOwner.SendFakeEffectTo(targets, effect, effectOwner.GetEffect(effect).Intensity);
+
+        /// <summary>
+        /// Sends a fake effect to a list of target players, simulating the effect as if it originated from the effect owner.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect.</param>
+        /// <param name="targets">The list of target players to whom the effect will be sent.</param>
+        /// <param name="effect">The type of effect to be sent.</param>
+        /// <param name="intensity">The intensity of the effect.</param>
+        public static void SendFakeEffectTo(this Player effectOwner, IEnumerable<Player> targets, EffectType effect, byte intensity)
+        {
+            foreach (Player target in targets)
+            {
+                effectOwner.SendFakeEffectTo(target, effect, intensity);
+            }
+        }
+
+        /// <summary>
+        /// Sends a fake effect to a target player, simulating the effect as if it originated from the effect owner.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect.</param>
+        /// <param name="target">The target player to whom the effect will be sent.</param>
+        /// <param name="effect">The type of effect to be sent.</param>
+        /// <param name="intensity">The intensity of the effect.</param>
+        public static void SendFakeEffectTo(this Player effectOwner, Player target, EffectType effect, byte intensity)
+        {
+            SendFakeSyncObject(target, effectOwner.NetworkIdentity, typeof(PlayerEffectsController), (writer) =>
+            {
+                StatusEffectBase foundEffect = effectOwner.GetEffect(effect);
+                int foundIndex = effectOwner.ReferenceHub.playerEffectsController.AllEffects.IndexOf(foundEffect);
+                if (foundIndex == -1)
+                {
+                    Log.Error($"Effect {effect} not found in {effectOwner.Nickname}'s effects list.");
+                    return;
+                }
+
+                writer.WriteULong(0b0001);
+                writer.WriteUInt(1);
+                writer.WriteByte((byte)SyncList<byte>.Operation.OP_SET);
+                writer.WriteUInt((uint)foundIndex);
+                writer.WriteByte(intensity);
+            });
+        }
+
+        /// <summary>
         /// Send CASSIE announcement that only <see cref="Player"/> can hear.
         /// </summary>
         /// <param name="player">Target to send.</param>
@@ -331,10 +426,11 @@ namespace Exiled.API.Extensions
         /// <param name="player">Target to send.</param>
         /// <param name="words">The message to be reproduced.</param>
         /// <param name="translation">The translation should be show in the subtitles.</param>
+        /// <param name="customSubtitles">The custom subtitles to show.</param>
         /// <param name="makeHold">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isHeld.</param>
         /// <param name="makeNoise">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isNoisy.</param>
         /// <param name="isSubtitles">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isSubtitles.</param>
-        public static void MessageTranslated(this Player player, string words, string translation, bool makeHold = false, bool makeNoise = true, bool isSubtitles = true)
+        public static void MessageTranslated(this Player player, string words, string translation, string customSubtitles, bool makeHold = false, bool makeNoise = true, bool isSubtitles = true)
         {
             StringBuilder announcement = StringBuilderPool.Pool.Get();
 
@@ -350,7 +446,7 @@ namespace Exiled.API.Extensions
             {
                 if (controller != null)
                 {
-                    SendFakeTargetRpc(player, controller.netIdentity, typeof(RespawnEffectsController), nameof(RespawnEffectsController.RpcCassieAnnouncement), message, makeHold, makeNoise, isSubtitles);
+                    SendFakeTargetRpc(player, controller.netIdentity, typeof(RespawnEffectsController), nameof(RespawnEffectsController.RpcCassieAnnouncement), message, makeHold, makeNoise, isSubtitles, customSubtitles);
                 }
             }
         }
