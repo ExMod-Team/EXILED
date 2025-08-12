@@ -151,34 +151,23 @@ namespace Exiled.API.Features
             string result = "SCP " + scpNumber;
             if (info.Attacker is null)
             {
-                if (info.Type is Enums.DamageType.Warhead)
-                    result += " SUCCESSFULLY TERMINATED BY ALPHA WARHEAD";
-                else if (info.Type is Enums.DamageType.Decontamination)
-                    result += " LOST IN DECONTAMINATION SEQUENCE";
-                else if (info.Type is Enums.DamageType.Tesla)
-                    result += " SUCCESSFULLY TERMINATED BY AUTOMATIC SECURITY SYSTEM";
-                else
-                    result += " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED";
+                result += info.Type switch
+                {
+                    Enums.DamageType.Warhead => " SUCCESSFULLY TERMINATED BY ALPHA WARHEAD",
+                    Enums.DamageType.Decontamination => " LOST IN DECONTAMINATION SEQUENCE",
+                    Enums.DamageType.Tesla => " SUCCESSFULLY TERMINATED BY AUTOMATIC SECURITY SYSTEM",
+                    _ => " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED",
+                };
             }
             else
             {
-                if (info.Attacker.Role.Team is Team.SCPs)
+                result += info.Attacker.Role.Team switch
                 {
-                    string attacker_name = string.Join(" ", info.Attacker.Role.Name.Remove(0, 4).ToCharArray());
-                    result += " TERMINATED BY SCP " + attacker_name;
-                }
-                else if (info.Attacker.Role.Team is Team.Flamingos)
-                {
-                    result += " TERMINATED BY SCP 1 5 0 7";
-                }
-                else if (info.Attacker.Role.Team is Team.OtherAlive || info.Attacker.Role.Team is Team.Dead)
-                {
-                    result += " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED";
-                }
-                else
-                {
-                    result += " CONTAINEDSUCCESSFULLY " + ConvertTeam(info.Attacker.Role.Team, info.Attacker.UnitName);
-                }
+                    Team.SCPs => " TERMINATED BY SCP " + string.Join(" ", info.Attacker.Role.Name.Remove(0, 4).ToCharArray()),
+                    Team.Flamingos => " TERMINATED BY SCP 1 5 0 7",
+                    Team.OtherAlive or Team.Dead => " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED",
+                    _ => " CONTAINEDSUCCESSFULLY " + ConvertTeam(info.Attacker.Role.Team, info.Attacker.UnitName),
+                };
             }
 
             float num = AlphaWarheadController.TimeUntilDetonation <= 0f ? 3.5f : 1f;
