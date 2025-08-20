@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Items.Keycards
 {
     using Exiled.API.Interfaces.Keycards;
 
+    using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
 
@@ -99,6 +101,32 @@ namespace Exiled.API.Features.Items.Keycards
 
                 Resync();
             }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="Site02Keycard"/>.
+        /// </summary>
+        /// <param name="permissions">The permissions of the keycard.</param>
+        /// <param name="permissionsColor">The color of the permissions of the keycard.</param>
+        /// <param name="itemName">The inventory name of the keycard.</param>
+        /// <param name="color">The color of the keycard.</param>
+        /// <param name="nameTag">The name of the owner of the keycard.</param>
+        /// <param name="label">The label on the keycard.</param>
+        /// <param name="labelColor">The color of the label on the keycard.</param>
+        /// <param name="wear">How worn the keycard looks (capped from 0-5).</param>
+        /// <returns>The new <see cref="Site02Keycard"/>.</returns>
+        public static Site02Keycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear)
+        {
+            Site02Keycard keycard = (Site02Keycard)Item.Create(ItemType.KeycardCustomManagement);
+            keycard.Permissions = permissions;
+            keycard.PermissionsColor = permissionsColor;
+            keycard.ItemName = itemName;
+            keycard.Color = color;
+            keycard.NameTag = nameTag;
+            keycard.Label = label;
+            keycard.LabelColor = labelColor;
+            keycard.Wear = wear;
+            return keycard;
         }
     }
 }

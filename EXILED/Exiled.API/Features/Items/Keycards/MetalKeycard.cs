@@ -12,6 +12,8 @@ namespace Exiled.API.Features.Items.Keycards
     using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces.Keycards;
 
+    using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
 
@@ -80,7 +82,7 @@ namespace Exiled.API.Features.Items.Keycards
         }
 
         /// <inheritdoc cref="IWearKeycard.Wear"/>
-        /// <remarks>Capped from 0-4 for Site-02 keycards, returns 255 if no wear level is found.</remarks>
+        /// <remarks>Capped from 0-5 for Site-02 keycards, returns 255 if no wear level is found.</remarks>
         public byte Wear
         {
             get
@@ -154,6 +156,34 @@ namespace Exiled.API.Features.Items.Keycards
 
                 Resync();
             }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="MetalKeycard"/>.
+        /// </summary>
+        /// <param name="permissions">The permissions of the keycard.</param>
+        /// <param name="permissionsColor">The color of the permissions of the keycard.</param>
+        /// <param name="itemName">The inventory name of the keycard.</param>
+        /// <param name="color">The color of the keycard.</param>
+        /// <param name="nameTag">The name of the owner of the keycard.</param>
+        /// <param name="label">The label on the keycard.</param>
+        /// <param name="labelColor">The color of the label on the keycard.</param>
+        /// <param name="wear">How worn the keycard looks (capped from 0-5).</param>
+        /// <param name="serialLabel">The serial label of the keycard (numbers only, 12 max).</param>
+        /// <returns>The new <see cref="MetalKeycard"/>.</returns>
+        public static MetalKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear, string serialLabel)
+        {
+            MetalKeycard keycard = (MetalKeycard)Item.Create(ItemType.KeycardCustomManagement);
+            keycard.Permissions = permissions;
+            keycard.PermissionsColor = permissionsColor;
+            keycard.ItemName = itemName;
+            keycard.Color = color;
+            keycard.NameTag = nameTag;
+            keycard.Label = label;
+            keycard.LabelColor = labelColor;
+            keycard.Wear = wear;
+            keycard.SerialLabel = serialLabel;
+            return keycard;
         }
     }
 }

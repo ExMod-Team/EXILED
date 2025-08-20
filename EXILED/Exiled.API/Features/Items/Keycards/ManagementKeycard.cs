@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Items.Keycards
 {
     using Exiled.API.Interfaces.Keycards;
 
+    using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
 
@@ -59,6 +61,28 @@ namespace Exiled.API.Features.Items.Keycards
                 Gfx.KeycardLabels[0].color = value;
                 Resync();
             }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="ManagementKeycard"/>.
+        /// </summary>
+        /// <param name="permissions">The permissions of the keycard.</param>
+        /// <param name="permissionsColor">The color of the permissions of the keycard.</param>
+        /// <param name="itemName">The inventory name of the keycard.</param>
+        /// <param name="color">The color of the keycard.</param>
+        /// <param name="label">The label on the keycard.</param>
+        /// <param name="labelColor">The color of the label on the keycard.</param>
+        /// <returns>The new <see cref="ManagementKeycard"/>.</returns>
+        public static ManagementKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string label, Color labelColor)
+        {
+            ManagementKeycard keycard = (ManagementKeycard)Item.Create(ItemType.KeycardCustomManagement);
+            keycard.Permissions = permissions;
+            keycard.PermissionsColor = permissionsColor;
+            keycard.ItemName = itemName;
+            keycard.Color = color;
+            keycard.Label = label;
+            keycard.LabelColor = labelColor;
+            return keycard;
         }
     }
 }

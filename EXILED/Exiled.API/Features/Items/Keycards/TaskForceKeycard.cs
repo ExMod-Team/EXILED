@@ -12,6 +12,8 @@ namespace Exiled.API.Features.Items.Keycards
     using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces.Keycards;
 
+    using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
 
@@ -132,6 +134,30 @@ namespace Exiled.API.Features.Items.Keycards
                 Gfx.RankFilter.sharedMesh = rankDetail._options[Mathf.Clamp(value, 0, 3)];
                 Resync();
             }
+        }
+
+        /// <summary>
+        /// Creates a <see cref="TaskForceKeycard"/>.
+        /// </summary>
+        /// <param name="permissions">The permissions of the keycard.</param>
+        /// <param name="permissionsColor">The color of the permissions of the keycard.</param>
+        /// <param name="itemName">The inventory name of the keycard.</param>
+        /// <param name="color">The color of the keycard.</param>
+        /// <param name="nameTag">The name of the owner of the keycard.</param>
+        /// <param name="serialLabel">The serial label of the keycard (numbers only, 12 max).</param>
+        /// <param name="rank">The rank of the keycard (capped from 0-3).</param>
+        /// <returns>The new <see cref="TaskForceKeycard"/>.</returns>
+        public static TaskForceKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string serialLabel, int rank)
+        {
+            TaskForceKeycard keycard = (TaskForceKeycard)Item.Create(ItemType.KeycardCustomManagement);
+            keycard.Permissions = permissions;
+            keycard.PermissionsColor = permissionsColor;
+            keycard.ItemName = itemName;
+            keycard.Color = color;
+            keycard.NameTag = nameTag;
+            keycard.SerialLabel = serialLabel;
+            keycard.Rank = rank;
+            return keycard;
         }
     }
 }
