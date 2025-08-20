@@ -407,12 +407,12 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Makes the server resend a message to all clients updating a keycards details to current values.
         /// </summary>
-        /// <param name="keycard">The keycard to resync.</param>
-        public static void ResyncKeycardItem(Features.Items.Keycards.Keycard keycard)
+        /// <param name="customKeycard">The keycard to resync.</param>
+        public static void ResyncKeycardItem(Features.Items.Keycards.CustomKeycard customKeycard)
         {
-            if (KeycardDetailSynchronizer.Database.Remove(keycard.Serial))
+            if (KeycardDetailSynchronizer.Database.Remove(customKeycard.Serial))
             {
-                KeycardDetailSynchronizer.ServerProcessItem((KeycardItem)keycard.Base);
+                KeycardDetailSynchronizer.ServerProcessItem((KeycardItem)customKeycard.Base);
             }
         }
 

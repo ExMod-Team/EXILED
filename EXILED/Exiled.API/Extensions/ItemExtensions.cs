@@ -85,6 +85,14 @@ namespace Exiled.API.Extensions
         public static bool IsKeycard(this ItemType type) => GetCategory(type) == ItemCategory.Keycard;
 
         /// <summary>
+        /// Checks if an <see cref="ItemType"/> is a custom keycard.
+        /// </summary>
+        /// <param name="type">The item to be checked.</param>
+        /// <returns>Returns where the <see cref="ItemType"/> is a custom keycard.</returns>
+        /// <remarks>This just signifies whether the ItemType represents a keycard that has modifiable properties.</remarks>
+        public static bool IsCustomKeycard(this ItemType type) => type is ItemType.KeycardCustomTaskForce or ItemType.KeycardCustomSite02 or ItemType.KeycardCustomManagement or ItemType.KeycardCustomMetalCase;
+
+        /// <summary>
         /// Given an <see cref="ItemType"/>, returns the matching <see cref="ItemBase"/>.
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/>.</param>

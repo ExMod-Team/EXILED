@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Items
 
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using InventorySystem;
@@ -217,7 +218,8 @@ namespace Exiled.API.Features.Items
             return itemBase switch
             {
                 InventorySystem.Items.Firearms.Firearm firearm => new Firearm(firearm),
-                KeycardItem keycard => new Keycard(keycard),
+                KeycardItem keycard when !itemBase.ItemTypeId.IsCustomKeycard() => new Keycard(keycard),
+                KeycardItem customKeycard => CustomKeycard.GetKeycard(customKeycard),
                 UsableItem usable => usable switch
                 {
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
