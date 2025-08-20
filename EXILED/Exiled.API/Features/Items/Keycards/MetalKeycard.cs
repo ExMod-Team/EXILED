@@ -34,6 +34,15 @@ namespace Exiled.API.Features.Items.Keycards
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MetalKeycard"/> class.
+        /// </summary>
+        /// <param name="itemType">The <see cref="ItemType"/> of the item to create.</param>
+        internal MetalKeycard(ItemType itemType)
+            : base(itemType)
+        {
+        }
+
         /// <inheritdoc cref="INameTagKeycard.NameTag"/>
         public string NameTag
         {

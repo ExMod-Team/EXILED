@@ -10,7 +10,6 @@ namespace Exiled.API.Features.Items.Keycards
     using System;
     using System.Linq;
 
-    using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces.Keycards;
 
@@ -38,15 +37,24 @@ namespace Exiled.API.Features.Items.Keycards
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="CustomKeycard"/> class.
+        /// </summary>
+        /// <param name="itemType">The <see cref="ItemType"/> of the item to create.</param>
+        internal CustomKeycard(ItemType itemType)
+            : base(itemType)
+        {
+        }
+
+        /// <summary>
         /// Gets or sets the permissions this keycard has.
         /// </summary>
-        public KeycardPermissions Permissions
+        public KeycardLevels Permissions
         {
-            get => CustomPermsDetail.CustomPermissions.TryGetValue(Serial, out DoorPermissionFlags flags) ? (KeycardPermissions)flags : KeycardPermissions.None;
+            get => CustomPermsDetail.CustomPermissions.TryGetValue(Serial, out DoorPermissionFlags flags) ? new KeycardLevels(flags) : new KeycardLevels(0, 0, 0);
 
             set
             {
-                CustomPermsDetail.CustomPermissions[Serial] = (DoorPermissionFlags)value;
+                CustomPermsDetail.CustomPermissions[Serial] = value.Permissions;
 
                 Resync();
             }
@@ -124,7 +132,7 @@ namespace Exiled.API.Features.Items.Keycards
         public void Resync()
         {
             // we loveeeeeeeeeeeee NW static fields trusttttttttttttttt I'm not mad at allllllllllll
-            CustomPermsDetail._customLevels = new KeycardLevels((DoorPermissionFlags)Permissions);
+            CustomPermsDetail._customLevels = Permissions;
             CustomPermsDetail._customColor = PermissionsColor;
 
             CustomItemNameDetail._customText = ItemName;
@@ -178,6 +186,23 @@ namespace Exiled.API.Features.Items.Keycards
                 ItemType.KeycardCustomManagement => new ManagementKeycard(itemBase),
                 ItemType.KeycardCustomMetalCase => new MetalKeycard(itemBase),
                 _ => throw new ArgumentOutOfRangeException(nameof(ItemType), itemBase.ItemTypeId.ToString()),
+            };
+        }
+
+        /// <summary>
+        /// Creates a <see cref="CustomKeycard"/> based on its ItemType.
+        /// </summary>
+        /// <param name="type">The type to create the wrapper from.</param>
+        /// <returns>The newly created <see cref="CustomKeycard"/>.</returns>
+        internal static CustomKeycard GetKeycard(ItemType type)
+        {
+            return type switch
+            {
+                ItemType.KeycardCustomTaskForce => new TaskForceKeycard(type),
+                ItemType.KeycardCustomSite02 => new Site02Keycard(type),
+                ItemType.KeycardCustomManagement => new ManagementKeycard(type),
+                ItemType.KeycardCustomMetalCase => new MetalKeycard(type),
+                _ => throw new ArgumentOutOfRangeException(nameof(ItemType), type.ToString()),
             };
         }
     }

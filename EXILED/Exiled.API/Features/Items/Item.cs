@@ -306,7 +306,8 @@ namespace Exiled.API.Features.Items
         public static Item Create(ItemType type, Player owner = null) => type.GetTemplate() switch
         {
             InventorySystem.Items.Firearms.Firearm => new Firearm(type),
-            KeycardItem => new Keycard(type),
+            KeycardItem when !type.IsCustomKeycard() => new Keycard(type),
+            KeycardItem => CustomKeycard.GetKeycard(type),
             UsableItem usable => usable switch
             {
                 Scp330Bag => new Scp330(),
