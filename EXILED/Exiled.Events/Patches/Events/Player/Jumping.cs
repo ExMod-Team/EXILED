@@ -47,8 +47,8 @@ namespace Exiled.Events.Patches.Events.Player
             // after ProcessJump, store its result
             newInstructions.Insert(index, new CodeInstruction(OpCodes.Stloc, jumping));
 
-            // offset here is 0
-            index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Brfalse_S);
+            offset = 1;
+            index = newInstructions.FindIndex(instruction => instruction.StoresField(Field(typeof(FpcMotor), nameof(FpcMotor._maxFallSpeed)))) + offset;
 
             // make br_false use stored value
             newInstructions.Insert(index, new CodeInstruction(OpCodes.Ldloc, jumping));

@@ -718,7 +718,7 @@ namespace Exiled.API.Features.Items
         /// <remarks>
         /// For specific reloading logic you also can use <see cref="NormalMagazine"/> for avaible weapons.
         /// </remarks>
-        public void ForceReload()
+        public void Reload()
         {
             if (AnimatorReloaderModule == null)
                 return;
@@ -731,7 +731,7 @@ namespace Exiled.API.Features.Items
         /// Attempts to reload the firearm with server-side validation.
         /// </summary>
         /// <returns><see langword="true"/> if the firearm was successfully reloaded. Otherwise, <see langword="false"/>.</returns>
-        public bool Reload()
+        public bool TryReload()
         {
             if (AnimatorReloaderModule == null)
                 return false;
@@ -743,7 +743,7 @@ namespace Exiled.API.Features.Items
         /// Attempts to unload the firearm with server-side validation.
         /// </summary>
         /// <returns><see langword="true"/> if the firearm was successfully unload. Otherwise, <see langword="false"/>.</returns>
-        public bool Unload()
+        public bool TryUnload()
         {
             if (AnimatorReloaderModule == null)
                 return false;
@@ -757,7 +757,7 @@ namespace Exiled.API.Features.Items
         /// <remarks>
         /// This only plays the animation and is not guaranteed to result in a successful unload. For server-validated unloading, use <see cref="Unload"/>.
         /// </remarks>
-        public void ForceUnload()
+        public void Unload()
         {
             if (AnimatorReloaderModule == null)
                 return;

@@ -1811,7 +1811,7 @@ namespace Exiled.API.Features
         /// <remarks>
         /// This method does not check if the weapon can actually be reloaded. It only forces the animation and is not guaranteed to result in a successful reload.
         /// </remarks>
-        public bool ForceReloadWeapon()
+        public bool ReloadWeapon()
         {
             if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
             {
@@ -1827,7 +1827,7 @@ namespace Exiled.API.Features
         /// Forces the player to reload their current weapon.
         /// </summary>
         /// <returns><see langword="true"/> if the firearm was successfully reloaded. Otherwise, <see langword="false"/>.</returns>
-        public bool ReloadWeapon()
+        public bool TryReloadWeapon()
         {
             if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
             {
@@ -1844,7 +1844,7 @@ namespace Exiled.API.Features
         /// <remarks>
         /// This method does not check if the weapon can actually be unloaded. It only forces the animation and is not guaranteed to result in a successful unload.
         /// </remarks>
-        public bool ForceUnloadWeapon()
+        public bool UnloadWeapon()
         {
             if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
             {
@@ -1860,7 +1860,7 @@ namespace Exiled.API.Features
         /// Forces the player to unload their current weapon.
         /// </summary>
         /// <returns><see langword="true"/> if the firearm was successfully unloaded. Otherwise, <see langword="false"/>.</returns>
-        public bool UnloadWeapon()
+        public bool TryUnloadWeapon()
         {
             if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
             {
