@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="TaskForceKeycard.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -149,7 +149,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <returns>The new <see cref="TaskForceKeycard"/>.</returns>
         public static TaskForceKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string serialLabel, int rank)
         {
-            TaskForceKeycard keycard = (TaskForceKeycard)Item.Create(ItemType.KeycardCustomManagement);
+            TaskForceKeycard keycard = Create<TaskForceKeycard>(ItemType.KeycardCustomManagement);
             keycard.Permissions = permissions;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;

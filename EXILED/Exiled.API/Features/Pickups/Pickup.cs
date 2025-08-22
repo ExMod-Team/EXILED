@@ -532,7 +532,7 @@ namespace Exiled.API.Features.Pickups
         /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
         /// <returns>The created <see cref="Pickup"/>.</returns>
         /// <seealso cref="Projectile.Create(Enums.ProjectileType)"/>
-        public static Pickup Create<T>(ItemType type) // TODO modify return type to "T"
+        public static T Create<T>(ItemType type)
             where T : Pickup => Create(type) as T;
 
         /// <summary>
@@ -556,7 +556,7 @@ namespace Exiled.API.Features.Pickups
         /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
         /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
         /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion?, bool, Player)"/>
-        public static Pickup CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
+        public static T CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
             where T : Pickup => CreateAndSpawn(type, position, rotation, previousOwner) as T;
 
         /// <summary>
