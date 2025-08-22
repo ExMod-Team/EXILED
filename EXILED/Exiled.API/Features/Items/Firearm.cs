@@ -361,7 +361,7 @@ namespace Exiled.API.Features.Items
         /// <param name="type">The type of firearm to create.</param>
         /// <returns>The newly created firearm.</returns>
         public static Firearm Create(FirearmType type)
-            => type is not FirearmType.None ? (Firearm)Create(type.GetItemType()) : null;
+            => type is not FirearmType.None ? Create<Firearm>(type.GetItemType()) : null;
 
         /// <summary>
         /// Adds a <see cref="AttachmentIdentifier"/> to the firearm.

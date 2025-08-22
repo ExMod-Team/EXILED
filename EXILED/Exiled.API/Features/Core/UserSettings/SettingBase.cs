@@ -219,7 +219,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// New setting won't be synced with players.
         /// </remarks>
         public static T Create<T>(ServerSpecificSettingBase settingBase)
-            where T : SettingBase => (T)Create(settingBase);
+            where T : SettingBase => Create(settingBase) as T;
 
         /// <summary>
         /// Syncs setting with all players.
