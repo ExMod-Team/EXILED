@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="CustomKeycard.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -170,40 +170,6 @@ namespace Exiled.API.Features.Items.Keycards
                 return null;
 
             return (T)keycardItem.Details.FirstOrDefault(detail => detail is T);
-        }
-
-        /// <summary>
-        /// Creates a <see cref="CustomKeycard"/> based on its ItemType.
-        /// </summary>
-        /// <param name="itemBase">The item to create the wrapper from.</param>
-        /// <returns>The newly created <see cref="CustomKeycard"/>.</returns>
-        internal static CustomKeycard GetKeycard(KeycardItem itemBase)
-        {
-            return itemBase.ItemTypeId switch
-            {
-                ItemType.KeycardCustomTaskForce => new TaskForceKeycard(itemBase),
-                ItemType.KeycardCustomSite02 => new Site02Keycard(itemBase),
-                ItemType.KeycardCustomManagement => new ManagementKeycard(itemBase),
-                ItemType.KeycardCustomMetalCase => new MetalKeycard(itemBase),
-                _ => throw new ArgumentOutOfRangeException(nameof(ItemType), itemBase.ItemTypeId.ToString()),
-            };
-        }
-
-        /// <summary>
-        /// Creates a <see cref="CustomKeycard"/> based on its ItemType.
-        /// </summary>
-        /// <param name="type">The type to create the wrapper from.</param>
-        /// <returns>The newly created <see cref="CustomKeycard"/>.</returns>
-        internal static CustomKeycard GetKeycard(ItemType type)
-        {
-            return type switch
-            {
-                ItemType.KeycardCustomTaskForce => new TaskForceKeycard(type),
-                ItemType.KeycardCustomSite02 => new Site02Keycard(type),
-                ItemType.KeycardCustomManagement => new ManagementKeycard(type),
-                ItemType.KeycardCustomMetalCase => new MetalKeycard(type),
-                _ => throw new ArgumentOutOfRangeException(nameof(ItemType), type.ToString()),
-            };
         }
     }
 }

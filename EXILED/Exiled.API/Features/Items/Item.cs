@@ -7,9 +7,6 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Items.Keycards;
@@ -32,8 +29,10 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
-
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
 
     /// <summary>
@@ -218,8 +217,19 @@ namespace Exiled.API.Features.Items
             return itemBase switch
             {
                 InventorySystem.Items.Firearms.Firearm firearm => new Firearm(firearm),
-                KeycardItem keycard when !itemBase.ItemTypeId.IsCustomKeycard() => new Keycard(keycard),
-                KeycardItem customKeycard => CustomKeycard.GetKeycard(customKeycard),
+                KeycardItem keycard => keycard switch
+                {
+                    ChaosKeycardItem chaosKeycardItem => new Keycard(chaosKeycardItem),
+                    SingleUseKeycardItem singleUseKeycardItem => new Keycard(singleUseKeycardItem),
+                    _ => keycard.ItemTypeId switch
+                    {
+                        ItemType.KeycardCustomTaskForce => new TaskForceKeycard(keycard),
+                        ItemType.KeycardCustomSite02 => new Site02Keycard(keycard),
+                        ItemType.KeycardCustomManagement => new ManagementKeycard(keycard),
+                        ItemType.KeycardCustomMetalCase => new MetalKeycard(keycard),
+                        _ => new Keycard(keycard),
+                    }
+                },
                 UsableItem usable => usable switch
                 {
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
@@ -306,8 +316,19 @@ namespace Exiled.API.Features.Items
         public static Item Create(ItemType type, Player owner = null) => type.GetTemplate() switch
         {
             InventorySystem.Items.Firearms.Firearm => new Firearm(type),
-            KeycardItem when !type.IsCustomKeycard() => new Keycard(type),
-            KeycardItem => CustomKeycard.GetKeycard(type),
+            KeycardItem keycard => keycard switch
+            {
+                ChaosKeycardItem => new Keycard(type),
+                SingleUseKeycardItem => new Keycard(type),
+                _ => keycard.ItemTypeId switch
+                {
+                    ItemType.KeycardCustomTaskForce => new TaskForceKeycard(type),
+                    ItemType.KeycardCustomSite02 => new Site02Keycard(type),
+                    ItemType.KeycardCustomManagement => new ManagementKeycard(type),
+                    ItemType.KeycardCustomMetalCase => new MetalKeycard(type),
+                    _ => new Keycard(type),
+                }
+            },
             UsableItem usable => usable switch
             {
                 Scp330Bag => new Scp330(),
