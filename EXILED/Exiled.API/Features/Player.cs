@@ -1205,7 +1205,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="player">The LabApi player.</param>
         /// <returns>EXILED player.</returns>
-        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player.ReferenceHub);
+        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player?.ReferenceHub);
 
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> filtered by side. Can be empty.
