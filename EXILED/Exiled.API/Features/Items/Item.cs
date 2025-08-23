@@ -7,6 +7,9 @@
 
 namespace Exiled.API.Features.Items
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Items.Keycards;
@@ -29,10 +32,8 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using UnityEngine;
+
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
 
     /// <summary>
