@@ -69,19 +69,6 @@ namespace Exiled.Events
         public bool ShouldDropInventory { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the blood can be spawned.
-        /// </summary>
-        [Description("Indicates whether the blood can be spawned")]
-        public bool CanSpawnBlood { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether keycard throw can affect basic doors.
-        /// </summary>
-        /// TODO: Make a poll about removing this config. (unimplemented since 9.6.0-beta7)
-        [Description("Indicates whether thrown keycards can affect doors that don't require any permissions")]
-        public bool CanKeycardThrowAffectDoors { get; set; } = false;
-
-        /// <summary>
         /// Gets or sets a value indicating whether the SCP079 will recontained if there are no SCPs left.
         /// </summary>
         [Description("Indicates whether the SCP079 will recontained if there are no SCPs left.")]
