@@ -290,6 +290,37 @@ namespace Exiled.CustomRoles.API.Features
         /// <summary>
         /// Registers all the <see cref="CustomRole"/>'s present in the current assembly.
         /// </summary>
+        /// <param name="byAttribute">Whether to register by attribute.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="CustomRole"/> which contains all registered <see cref="CustomRole"/>'s.</returns>
+        /// <remarks>
+        /// This is just a dumbed down version of <see cref="RegisterRoles(bool, object?)"/> for QoL, if you actually use <see cref="CustomRoleAttribute"/>, do not use this overload.
+        /// </remarks>
+        public static IEnumerable<CustomRole> RegisterRoles(bool byAttribute = false)
+        {
+            if (byAttribute)
+            {
+                return RegisterRoles(false, null);
+            }
+
+            List<CustomRole> roles = new();
+
+            foreach (Type type in Assembly.GetCallingAssembly().GetTypes())
+            {
+                if (type.IsAbstract || !type.IsSubclassOf(typeof(CustomRole)))
+                    continue;
+
+                CustomRole role = (CustomRole)Activator.CreateInstance(type);
+
+                if (role.TryRegister())
+                    roles.Add(role);
+            }
+
+            return roles;
+        }
+
+        /// <summary>
+        /// Registers all the <see cref="CustomRole"/>'s present in the current assembly.
+        /// </summary>
         /// <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
         /// <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="CustomRole"/> which contains all registered <see cref="CustomRole"/>'s.</returns>
