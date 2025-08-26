@@ -33,20 +33,20 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Initializes a new instance of the <see cref="Site02Keycard"/> class.
         /// </summary>
-        /// <param name="itemType">The <see cref="ItemType"/> of the item to create.</param>
-        internal Site02Keycard(ItemType itemType)
-            : base(itemType)
+        /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
+        internal Site02Keycard(ItemType type)
+            : base(type)
         {
         }
 
         /// <inheritdoc cref="INameTagKeycard.NameTag"/>
         public string NameTag
         {
-            get => Gfx.NameFields[0].text;
+            get => NameTagDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                Gfx.NameFields[0].text = value;
+                NameTagDict[Serial] = value;
                 Resync();
             }
         }
@@ -54,11 +54,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.Label"/>
         public string Label
         {
-            get => Gfx.KeycardLabels[0].text;
+            get => LabelDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                Gfx.KeycardLabels[0].text = value;
+                LabelDict[Serial] = value;
                 Resync();
             }
         }
@@ -66,11 +66,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color LabelColor
         {
-            get => Gfx.KeycardLabels[0].color;
+            get => LabelColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
 
             set
             {
-                Gfx.KeycardLabels[0].color = value;
+                LabelColorDict[Serial] = value;
                 Resync();
             }
         }
@@ -79,25 +79,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <remarks>Capped from 0-4 for Site-02 keycards, returns 255 if no wear level is found.</remarks>
         public byte Wear
         {
-            get
-            {
-                for (byte i = 0; i < Gfx.ElementVariants.Length; i++)
-                {
-                    GameObject obj = Gfx.ElementVariants[i];
-
-                    if (obj.activeSelf)
-                        return i;
-                }
-
-                return byte.MaxValue;
-            }
+            get => WearDict.TryGetValue(Serial, out byte value) ? value : (byte)255;
 
             set
             {
-                for (byte i = 0; i < Gfx.ElementVariants.Length; i++)
-                {
-                    Gfx.ElementVariants[i].SetActive(i == value);
-                }
+                WearDict[Serial] = value;
 
                 Resync();
             }

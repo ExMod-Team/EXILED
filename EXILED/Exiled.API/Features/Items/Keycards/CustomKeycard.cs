@@ -7,13 +7,15 @@
 
 namespace Exiled.API.Features.Items.Keycards
 {
-    using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Exiled.API.Extensions;
+    using Exiled.API.Interfaces;
     using Exiled.API.Interfaces.Keycards;
 
     using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
 
@@ -22,7 +24,7 @@ namespace Exiled.API.Features.Items.Keycards
     /// <summary>
     /// A base class for all keycard items.
     /// </summary>
-    public abstract class CustomKeycard : Item
+    public abstract class CustomKeycard : Item, IWrapper<KeycardItem>
     {
         private CustomItemNameDetail itemNameDetail;
         private bool itemNameSet;
@@ -34,16 +36,22 @@ namespace Exiled.API.Features.Items.Keycards
         internal CustomKeycard(KeycardItem itemBase)
             : base(itemBase)
         {
+            Base = itemBase;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomKeycard"/> class.
         /// </summary>
-        /// <param name="itemType">The <see cref="ItemType"/> of the item to create.</param>
-        internal CustomKeycard(ItemType itemType)
-            : base(itemType)
+        /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
+        internal CustomKeycard(ItemType type)
+            : this((KeycardItem)Server.Host.Inventory.CreateItemInstance(new(type, 0), false))
         {
         }
+
+        /// <summary>
+        /// Gets the <see cref="KeycardItem"/> this encapsulates.
+        /// </summary>
+        public new KeycardItem Base { get; }
 
         /// <summary>
         /// Gets or sets the permissions this keycard has.
@@ -65,11 +73,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color PermissionsColor
         {
-            get => Gfx.Material.Instance.GetColor(KeycardGfx.PermsColorHash);
+            get => PermsColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
 
             set
             {
-                Gfx.Material.Instance.SetColor(KeycardGfx.PermsColorHash, value);
+                PermsColorDict[Serial] = value;
 
                 Resync();
             }
@@ -110,20 +118,55 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color Color
         {
-            get => Gfx.Material.Instance.GetColor(KeycardGfx.TintColorHash);
+            get => ColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
 
             set
             {
-                Gfx.Material.Instance.SetColor(KeycardGfx.TintColorHash, value);
+                ColorDict[Serial] = value;
 
                 Resync();
             }
         }
 
         /// <summary>
-        /// Gets the <see cref="InventorySystem.Items.Keycards.KeycardGfx"/> of this <see cref="CustomKeycard"/>.
+        /// Gets a dictionary of item serials to their permissions color.
         /// </summary>
-        public KeycardGfx Gfx => ((KeycardItem)Base).KeycardGfx;
+        internal static Dictionary<ushort, Color> PermsColorDict { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of item serials to their color.
+        /// </summary>
+        internal static Dictionary<ushort, Color> ColorDict { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of item serials to their name tag.
+        /// </summary>
+        internal static Dictionary<ushort, string> NameTagDict { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of item serials to their label.
+        /// </summary>
+        internal static Dictionary<ushort, string> LabelDict { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of item serials to their label's color.
+        /// </summary>
+        internal static Dictionary<ushort, Color> LabelColorDict { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of item serials to their wear.
+        /// </summary>
+        internal static Dictionary<ushort, byte> WearDict { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of item serials to their serial number.
+        /// </summary>
+        internal static Dictionary<ushort, string> SerialNumberDict { get; } = new();
+
+        /// <summary>
+        /// Gets a dictionary of item serials to their serial number.
+        /// </summary>
+        internal static Dictionary<ushort, byte> RankDict { get; } = new();
 
         /// <summary>
         /// Resyncs all properties of the keycard.
@@ -150,9 +193,9 @@ namespace Exiled.API.Features.Items.Keycards
             if (this is IWearKeycard wear)
                 CustomWearDetail._customWearLevel = wear.Wear;
 
-            if (this is ISerialLabelKeycard serial)
+            if (this is ISerialNumberKeycard serial)
             {
-                CustomSerialNumberDetail._customVal = serial.SerialLabel;
+                CustomSerialNumberDetail._customVal = serial.SerialNumber;
             }
 
             MirrorExtensions.ResyncKeycardItem(this);
@@ -166,10 +209,7 @@ namespace Exiled.API.Features.Items.Keycards
         public T GetDetail<T>()
             where T : DetailBase
         {
-            if (Base is not KeycardItem keycardItem)
-                return null;
-
-            return (T)keycardItem.Details.FirstOrDefault(detail => detail is T);
+            return (T)Base.Details.First(detail => detail is T);
         }
     }
 }

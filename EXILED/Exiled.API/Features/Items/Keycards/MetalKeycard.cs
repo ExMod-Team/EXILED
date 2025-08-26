@@ -7,9 +7,6 @@
 
 namespace Exiled.API.Features.Items.Keycards
 {
-    using System.Text;
-
-    using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces.Keycards;
 
     using Interactables.Interobjects.DoorUtils;
@@ -22,11 +19,8 @@ namespace Exiled.API.Features.Items.Keycards
     /// <summary>
     /// Represents the Metal Custom Keycard.
     /// </summary>
-    public class MetalKeycard : CustomKeycard, INameTagKeycard, ILabelKeycard, IWearKeycard, ISerialLabelKeycard
+    public class MetalKeycard : CustomKeycard, INameTagKeycard, ILabelKeycard, IWearKeycard, ISerialNumberKeycard
     {
-        private CustomSerialNumberDetail serialNumberDetail;
-        private bool serialNumberSet;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="MetalKeycard"/> class.
         /// </summary>
@@ -39,20 +33,20 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Initializes a new instance of the <see cref="MetalKeycard"/> class.
         /// </summary>
-        /// <param name="itemType">The <see cref="ItemType"/> of the item to create.</param>
-        internal MetalKeycard(ItemType itemType)
-            : base(itemType)
+        /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
+        internal MetalKeycard(ItemType type)
+            : base(type)
         {
         }
 
         /// <inheritdoc cref="INameTagKeycard.NameTag"/>
         public string NameTag
         {
-            get => Gfx.NameFields[0].text;
+            get => NameTagDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                Gfx.NameFields[0].text = value;
+                NameTagDict[Serial] = value;
                 Resync();
             }
         }
@@ -60,11 +54,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.Label"/>
         public string Label
         {
-            get => Gfx.KeycardLabels[0].text;
+            get => LabelDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                Gfx.KeycardLabels[0].text = value;
+                LabelDict[Serial] = value;
                 Resync();
             }
         }
@@ -72,11 +66,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color LabelColor
         {
-            get => Gfx.KeycardLabels[0].color;
+            get => LabelColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
 
             set
             {
-                Gfx.KeycardLabels[0].color = value;
+                LabelColorDict[Serial] = value;
                 Resync();
             }
         }
@@ -85,74 +79,24 @@ namespace Exiled.API.Features.Items.Keycards
         /// <remarks>Capped from 0-5 for Site-02 keycards, returns 255 if no wear level is found.</remarks>
         public byte Wear
         {
-            get
-            {
-                for (byte i = 0; i < Gfx.ElementVariants.Length; i++)
-                {
-                    GameObject obj = Gfx.ElementVariants[i];
-
-                    if (obj.activeSelf)
-                        return i;
-                }
-
-                return byte.MaxValue;
-            }
+            get => WearDict.TryGetValue(Serial, out byte value) ? value : (byte)255;
 
             set
             {
-                for (byte i = 0; i < Gfx.ElementVariants.Length; i++)
-                {
-                    Gfx.ElementVariants[i].SetActive(i == value);
-                }
+                WearDict[Serial] = value;
 
                 Resync();
             }
         }
 
-        /// <inheritdoc cref="ISerialLabelKeycard.SerialLabel"/>
-        public string SerialLabel
+        /// <inheritdoc cref="ISerialNumberKeycard.SerialNumber"/>
+        public string SerialNumber
         {
-            get
-            {
-                if (!serialNumberSet)
-                {
-                    serialNumberDetail = GetDetail<CustomSerialNumberDetail>();
-                    serialNumberSet = true;
-                }
-
-                StringBuilder builder = StringBuilderPool.Pool.Get(12);
-
-                foreach (Renderer digit in Gfx.SerialNumberDigits)
-                {
-                    int index = SerialNumberDetail.DigitMats[serialNumberDetail._sourceMaterial].IndexOf(digit.sharedMaterial);
-
-                    if (index is 10)
-                    {
-                        builder.Append('-');
-                        continue;
-                    }
-
-                    builder.Append(index);
-                }
-
-                return StringBuilderPool.Pool.ToStringReturn(builder);
-            }
+            get => SerialNumberDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                if (!serialNumberSet)
-                {
-                    serialNumberDetail = GetDetail<CustomSerialNumberDetail>();
-                    serialNumberSet = true;
-                }
-
-                if (value.Length > 12)
-                    value = value.Substring(0, 12);
-
-                foreach (Renderer digit in Gfx.SerialNumberDigits)
-                {
-                    digit.sharedMaterial = serialNumberDetail.GetDigitMaterial(value[0] - 48);
-                }
+                SerialNumberDict[Serial] = value;
 
                 Resync();
             }
@@ -169,9 +113,9 @@ namespace Exiled.API.Features.Items.Keycards
         /// <param name="label">The label on the keycard.</param>
         /// <param name="labelColor">The color of the label on the keycard.</param>
         /// <param name="wear">How worn the keycard looks (capped from 0-5).</param>
-        /// <param name="serialLabel">The serial label of the keycard (numbers only, 12 max).</param>
+        /// <param name="serialNumber">The serial number of the keycard (numbers only, 12 max).</param>
         /// <returns>The new <see cref="MetalKeycard"/>.</returns>
-        public static MetalKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear, string serialLabel)
+        public static MetalKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear, string serialNumber)
         {
             MetalKeycard keycard = (MetalKeycard)Item.Create(ItemType.KeycardCustomManagement);
             keycard.Permissions = permissions;
@@ -182,7 +126,7 @@ namespace Exiled.API.Features.Items.Keycards
             keycard.Label = label;
             keycard.LabelColor = labelColor;
             keycard.Wear = wear;
-            keycard.SerialLabel = serialLabel;
+            keycard.SerialNumber = serialNumber;
             return keycard;
         }
     }

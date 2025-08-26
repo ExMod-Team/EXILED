@@ -33,20 +33,20 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Initializes a new instance of the <see cref="ManagementKeycard"/> class.
         /// </summary>
-        /// <param name="itemType">The <see cref="ItemType"/> of the item to create.</param>
-        internal ManagementKeycard(ItemType itemType)
-            : base(itemType)
+        /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
+        internal ManagementKeycard(ItemType type)
+            : base(type)
         {
         }
 
         /// <inheritdoc cref="ILabelKeycard.Label"/>
         public string Label
         {
-            get => Gfx.KeycardLabels[0].text;
+            get => LabelDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                Gfx.KeycardLabels[0].text = value;
+                LabelDict[Serial] = value;
                 Resync();
             }
         }
@@ -54,11 +54,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color LabelColor
         {
-            get => Gfx.KeycardLabels[0].color;
+            get => LabelColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
 
             set
             {
-                Gfx.KeycardLabels[0].color = value;
+                LabelColorDict[Serial] = value;
                 Resync();
             }
         }

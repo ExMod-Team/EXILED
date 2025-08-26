@@ -7,9 +7,6 @@
 
 namespace Exiled.API.Features.Items.Keycards
 {
-    using System.Text;
-
-    using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces.Keycards;
 
     using Interactables.Interobjects.DoorUtils;
@@ -22,14 +19,8 @@ namespace Exiled.API.Features.Items.Keycards
     /// <summary>
     /// Represents the Task Force Custom Keycard.
     /// </summary>
-    public class TaskForceKeycard : CustomKeycard, INameTagKeycard, ISerialLabelKeycard, IRankKeycard
+    public class TaskForceKeycard : CustomKeycard, INameTagKeycard, ISerialNumberKeycard, IRankKeycard
     {
-        private CustomSerialNumberDetail serialNumberDetail;
-        private bool serialNumberSet;
-
-        private CustomRankDetail rankDetail;
-        private bool rankDetailSet;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskForceKeycard"/> class.
         /// </summary>
@@ -42,96 +33,46 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskForceKeycard"/> class.
         /// </summary>
-        /// <param name="itemType">The <see cref="ItemType"/> of the item to create.</param>
-        internal TaskForceKeycard(ItemType itemType)
-            : base(itemType)
+        /// <param name="type">The <see cref="ItemType"/> of the item to create.</param>
+        internal TaskForceKeycard(ItemType type)
+            : base(type)
         {
         }
 
         /// <inheritdoc cref="INameTagKeycard.NameTag"/>
         public string NameTag
         {
-            get => Gfx.NameFields[0].text;
+            get => NameTagDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                Gfx.NameFields[0].text = value;
+                NameTagDict[Serial] = value;
                 Resync();
             }
         }
 
-        /// <inheritdoc cref="ISerialLabelKeycard.SerialLabel"/>
-        public string SerialLabel
+        /// <inheritdoc cref="ISerialNumberKeycard.SerialNumber"/>
+        public string SerialNumber
         {
-            get
-            {
-                if (!serialNumberSet)
-                {
-                    serialNumberDetail = GetDetail<CustomSerialNumberDetail>();
-                    serialNumberSet = true;
-                }
-
-                StringBuilder builder = StringBuilderPool.Pool.Get(12);
-
-                foreach (Renderer digit in Gfx.SerialNumberDigits)
-                {
-                    int index = SerialNumberDetail.DigitMats[serialNumberDetail._sourceMaterial].IndexOf(digit.sharedMaterial);
-
-                    if (index is 10)
-                    {
-                        builder.Append('-');
-                        continue;
-                    }
-
-                    builder.Append(index);
-                }
-
-                return StringBuilderPool.Pool.ToStringReturn(builder);
-            }
+            get => SerialNumberDict.TryGetValue(Serial, out string value) ? value : string.Empty;
 
             set
             {
-                if (!serialNumberSet)
-                {
-                    serialNumberDetail = GetDetail<CustomSerialNumberDetail>();
-                    serialNumberSet = true;
-                }
-
-                if (value.Length > 12)
-                    value = value.Substring(0, 12);
-
-                foreach (Renderer digit in Gfx.SerialNumberDigits)
-                {
-                    digit.sharedMaterial = serialNumberDetail.GetDigitMaterial(value[0] - 48);
-                }
+                SerialNumberDict[Serial] = value;
 
                 Resync();
             }
         }
 
         /// <inheritdoc cref="IRankKeycard.Rank"/>
-        public int Rank
+        public byte Rank
         {
-            get
-            {
-                if (!rankDetailSet)
-                {
-                    rankDetail = GetDetail<CustomRankDetail>();
-                    rankDetailSet = true;
-                }
-
-                return rankDetail._options.IndexOf(Gfx.RankFilter.sharedMesh);
-            }
+            get => RankDict.TryGetValue(Serial, out byte value) ? value : (byte)255;
 
             set
             {
-                if (!rankDetailSet)
-                {
-                    rankDetail = GetDetail<CustomRankDetail>();
-                    rankDetailSet = true;
-                }
+                RankDict[Serial] = value;
 
-                Gfx.RankFilter.sharedMesh = rankDetail._options[Mathf.Clamp(value, 0, 3)];
                 Resync();
             }
         }
@@ -144,10 +85,10 @@ namespace Exiled.API.Features.Items.Keycards
         /// <param name="itemName">The inventory name of the keycard.</param>
         /// <param name="color">The color of the keycard.</param>
         /// <param name="nameTag">The name of the owner of the keycard.</param>
-        /// <param name="serialLabel">The serial label of the keycard (numbers only, 12 max).</param>
+        /// <param name="serialNumber">The serial number of the keycard (numbers only, 12 max).</param>
         /// <param name="rank">The rank of the keycard (capped from 0-3).</param>
         /// <returns>The new <see cref="TaskForceKeycard"/>.</returns>
-        public static TaskForceKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string serialLabel, int rank)
+        public static TaskForceKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string serialNumber, byte rank)
         {
             TaskForceKeycard keycard = Create<TaskForceKeycard>(ItemType.KeycardCustomManagement);
             keycard.Permissions = permissions;
@@ -155,7 +96,7 @@ namespace Exiled.API.Features.Items.Keycards
             keycard.ItemName = itemName;
             keycard.Color = color;
             keycard.NameTag = nameTag;
-            keycard.SerialLabel = serialLabel;
+            keycard.SerialNumber = serialNumber;
             keycard.Rank = rank;
             return keycard;
         }

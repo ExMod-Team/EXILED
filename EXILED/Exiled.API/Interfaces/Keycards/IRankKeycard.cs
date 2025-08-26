@@ -17,7 +17,7 @@ namespace Exiled.API.Interfaces.Keycards
         /// <summary>
         /// Gets or sets the rank of this <see cref="CustomKeycard"/>.
         /// </summary>
-        /// <remarks>Capped from 0-3.</remarks>
-        public int Rank { get; set; }
+        /// <remarks>Capped from 0-3, returns 255 if no value was found.</remarks>
+        public byte Rank { get; set; }
     }
 }
