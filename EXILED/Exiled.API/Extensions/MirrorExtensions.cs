@@ -412,7 +412,7 @@ namespace Exiled.API.Extensions
         {
             if (KeycardDetailSynchronizer.Database.Remove(customKeycard.Serial))
             {
-                KeycardDetailSynchronizer.ServerProcessItem((KeycardItem)customKeycard.Base);
+                KeycardDetailSynchronizer.ServerProcessItem(customKeycard.Base);
             }
         }
 
