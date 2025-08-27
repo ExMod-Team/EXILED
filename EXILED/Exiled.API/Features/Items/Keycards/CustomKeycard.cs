@@ -85,9 +85,9 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets or sets the color of this keycard's permissions.
         /// </summary>
-        public Color PermissionsColor
+        public Color32? PermissionsColor
         {
-            get => PermsColorDict.TryGetValue(Serial, out Color32 value) ? value : Color.black;
+            get => PermsColorDict.TryGetValue(Serial, out Color32? value) ? value : null;
 
             set
             {
@@ -130,9 +130,9 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets or sets the color of this keycard.
         /// </summary>
-        public Color Color
+        public Color32? Color
         {
-            get => ColorDict.TryGetValue(Serial, out Color32 value) ? value : Color.black;
+            get => ColorDict.TryGetValue(Serial, out Color32? value) ? value : null;
 
             set
             {
@@ -145,12 +145,12 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets a dictionary of item serials to their permissions color.
         /// </summary>
-        internal static Dictionary<ushort, Color32> PermsColorDict { get; } = new();
+        internal static Dictionary<ushort, Color32?> PermsColorDict { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of item serials to their color.
         /// </summary>
-        internal static Dictionary<ushort, Color32> ColorDict { get; } = new();
+        internal static Dictionary<ushort, Color32?> ColorDict { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of item serials to their name tag.
@@ -165,7 +165,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets a dictionary of item serials to their label's color.
         /// </summary>
-        internal static Dictionary<ushort, Color32> LabelColorDict { get; } = new();
+        internal static Dictionary<ushort, Color32?> LabelColorDict { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of item serials to their wear.
@@ -193,12 +193,12 @@ namespace Exiled.API.Features.Items.Keycards
             CustomPermsDetail._customColor = PermissionsColor;
 
             CustomItemNameDetail._customText = ItemName;
-            CustomTintDetail._customColor = Color;
+            CustomTintDetail._customColor = Color.GetValueOrDefault();
 
             if (this is ILabelKeycard label)
             {
                 CustomLabelDetail._customText = label.Label;
-                CustomLabelDetail._customColor = label.LabelColor;
+                CustomLabelDetail._customColor = label.LabelColor.GetValueOrDefault();
             }
 
             if (this is INameTagKeycard holder)

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ILabelKeycard.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -23,6 +23,6 @@ namespace Exiled.API.Interfaces.Keycards
         /// <summary>
         /// Gets or sets the <see cref="Color"/> of this <see cref="CustomKeycard"/>.
         /// </summary>
-        public Color LabelColor { get; set; }
+        public Color32? LabelColor { get; set; }
     }
 }

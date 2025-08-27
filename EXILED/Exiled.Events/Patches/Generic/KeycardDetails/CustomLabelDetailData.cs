@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="CustomLabelDetailData.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,17 +7,9 @@
 
 namespace Exiled.Events.Patches.Generic.KeycardDetails
 {
-    using System.Collections.Generic;
-    using System.Reflection.Emit;
-
     using Exiled.API.Features.Items.Keycards;
-    using Exiled.API.Features.Pools;
     using HarmonyLib;
-    using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
-    using UnityEngine;
-
-    using static HarmonyLib.AccessTools;
 
     /// <summary>
     /// Patch for storing label and label color from custom keycards.
@@ -26,59 +18,19 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
     public class CustomLabelDetailData
     {
         [HarmonyPatch(nameof(CustomLabelDetail.WriteNewItem))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler1(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPrefix]
+        private static void Prefix(KeycardItem item)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-            newInstructions.InsertRange(0, new CodeInstruction[]
-            {
-                new(OpCodes.Call, PropertyGetter(typeof(CustomKeycard), nameof(CustomKeycard.LabelDict))),
-                new(OpCodes.Ldarg_1),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardItem), nameof(KeycardItem.ItemSerial))),
-                new(OpCodes.Ldsfld, Field(typeof(CustomLabelDetail), nameof(CustomLabelDetail._customText))),
-                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, string>), "set_Item")),
-
-                new(OpCodes.Call, PropertyGetter(typeof(CustomKeycard), nameof(CustomKeycard.LabelColorDict))),
-                new(OpCodes.Ldarg_1),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardItem), nameof(KeycardItem.ItemSerial))),
-                new(OpCodes.Ldsfld, Field(typeof(CustomLabelDetail), nameof(CustomLabelDetail._customColor))),
-                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color32>), "set_Item")),
-            });
-
-            for (int i = 0; i < newInstructions.Count; i++)
-                yield return newInstructions[i];
-
-            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+            CustomKeycard.LabelDict[item.ItemSerial] = CustomLabelDetail._customText;
+            CustomKeycard.LabelColorDict[item.ItemSerial] = CustomLabelDetail._customColor;
         }
 
         [HarmonyPatch(nameof(CustomLabelDetail.WriteNewPickup))]
-        [HarmonyTranspiler]
-        private static IEnumerable<CodeInstruction> Transpiler2(IEnumerable<CodeInstruction> instructions)
+        [HarmonyPrefix]
+        private static void Prefix(KeycardPickup pickup)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-            newInstructions.InsertRange(0, new CodeInstruction[]
-            {
-                new(OpCodes.Call, PropertyGetter(typeof(CustomKeycard), nameof(CustomKeycard.LabelDict))),
-                new(OpCodes.Ldarg_1),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardPickup), nameof(KeycardPickup.ItemId))),
-                new(OpCodes.Ldfld, Field(typeof(ItemIdentifier), nameof(ItemIdentifier.SerialNumber))),
-                new(OpCodes.Ldsfld, Field(typeof(CustomLabelDetail), nameof(CustomLabelDetail._customText))),
-                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, string>), "set_Item")),
-
-                new(OpCodes.Call, PropertyGetter(typeof(CustomKeycard), nameof(CustomKeycard.LabelColorDict))),
-                new(OpCodes.Ldarg_1),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardPickup), nameof(KeycardPickup.ItemId))),
-                new(OpCodes.Ldfld, Field(typeof(ItemIdentifier), nameof(ItemIdentifier.SerialNumber))),
-                new(OpCodes.Ldsfld, Field(typeof(CustomLabelDetail), nameof(CustomLabelDetail._customColor))),
-                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color32>), "set_Item")),
-            });
-
-            for (int i = 0; i < newInstructions.Count; i++)
-                yield return newInstructions[i];
-
-            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+            CustomKeycard.LabelDict[pickup.ItemId.SerialNumber] = CustomLabelDetail._customText;
+            CustomKeycard.LabelColorDict[pickup.ItemId.SerialNumber] = CustomLabelDetail._customColor;
         }
     }
 }
