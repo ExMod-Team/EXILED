@@ -191,5 +191,11 @@ namespace Exiled.API.Features.Items.Keycards
         {
             return (T)Base.Details.First(detail => detail is T);
         }
+
+        /// <summary>
+        /// Returns the Keycard in a human readable format.
+        /// </summary>
+        /// <returns>A string containing Keycard-related data.</returns>
+        public override string ToString() => $"{Type} ={ItemName}= ({Serial}) [{Weight}] *{Scale}* |{Permissions}|";
     }
 }
