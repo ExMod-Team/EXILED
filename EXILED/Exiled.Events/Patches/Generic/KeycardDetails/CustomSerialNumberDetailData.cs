@@ -17,14 +17,14 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
     [HarmonyPatch(typeof(CustomSerialNumberDetail))]
     public class CustomSerialNumberDetailData
     {
-        [HarmonyPatch(nameof(NametagDetail.WriteNewItem))]
+        [HarmonyPatch(nameof(CustomSerialNumberDetail.WriteNewItem))]
         [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
             CustomKeycard.SerialNumberDict[item.ItemSerial] = CustomSerialNumberDetail._customVal;
         }
 
-        [HarmonyPatch(nameof(NametagDetail.WriteNewPickup))]
+        [HarmonyPatch(nameof(CustomSerialNumberDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
