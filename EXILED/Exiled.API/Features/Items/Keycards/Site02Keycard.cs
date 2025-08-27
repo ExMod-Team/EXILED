@@ -92,7 +92,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Creates a <see cref="Site02Keycard"/>.
         /// </summary>
-        /// <param name="permissions">The permissions of the keycard.</param>
+        /// <param name="keycardLevels">The permissions of the keycard.</param>
         /// <param name="permissionsColor">The color of the permissions of the keycard.</param>
         /// <param name="itemName">The inventory name of the keycard.</param>
         /// <param name="color">The color of the keycard.</param>

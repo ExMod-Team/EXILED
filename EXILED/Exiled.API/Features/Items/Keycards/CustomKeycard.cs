@@ -7,15 +7,15 @@
 
 namespace Exiled.API.Features.Items.Keycards
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
-    using Exiled.API.Interfaces;
     using Exiled.API.Interfaces.Keycards;
     using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
-    using System.Collections.Generic;
-    using System.Linq;
     using UnityEngine;
 
     /// <summary>
