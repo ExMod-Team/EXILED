@@ -88,10 +88,10 @@ namespace Exiled.API.Features.Items.Keycards
         /// <param name="serialNumber">The serial number of the keycard (numbers only, 12 max).</param>
         /// <param name="rank">The rank of the keycard (capped from 0-3).</param>
         /// <returns>The new <see cref="TaskForceKeycard"/>.</returns>
-        public static TaskForceKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string serialNumber, byte rank)
+        public static TaskForceKeycard Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string serialNumber, byte rank)
         {
             TaskForceKeycard keycard = Create<TaskForceKeycard>(ItemType.KeycardCustomManagement);
-            keycard.Permissions = permissions;
+            keycard.KeycardLevels = keycardLevels;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;
             keycard.Color = color;

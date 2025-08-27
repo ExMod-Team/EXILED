@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ManagementKeycard.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -66,17 +66,17 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Creates a <see cref="ManagementKeycard"/>.
         /// </summary>
-        /// <param name="permissions">The permissions of the keycard.</param>
+        /// <param name="keycardLevels">The permissions of the keycard.</param>
         /// <param name="permissionsColor">The color of the permissions of the keycard.</param>
         /// <param name="itemName">The inventory name of the keycard.</param>
         /// <param name="color">The color of the keycard.</param>
         /// <param name="label">The label on the keycard.</param>
         /// <param name="labelColor">The color of the label on the keycard.</param>
         /// <returns>The new <see cref="ManagementKeycard"/>.</returns>
-        public static ManagementKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string label, Color labelColor)
+        public static ManagementKeycard Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string label, Color labelColor)
         {
-            ManagementKeycard keycard = (ManagementKeycard)Item.Create(ItemType.KeycardCustomManagement);
-            keycard.Permissions = permissions;
+            ManagementKeycard keycard = Create<ManagementKeycard>(ItemType.KeycardCustomManagement);
+            keycard.KeycardLevels = keycardLevels;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;
             keycard.Color = color;

@@ -7,24 +7,21 @@
 
 namespace Exiled.API.Features.Items.Keycards
 {
-    using System.Collections.Generic;
-    using System.Linq;
-
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
     using Exiled.API.Interfaces.Keycards;
-
     using Interactables.Interobjects.DoorUtils;
-
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
-
+    using System.Collections.Generic;
+    using System.Linq;
     using UnityEngine;
 
     /// <summary>
     /// A base class for all keycard items.
     /// </summary>
-    public abstract class CustomKeycard : Item, IWrapper<KeycardItem>
+    public abstract class CustomKeycard : Keycard
     {
         private CustomItemNameDetail itemNameDetail;
         private bool itemNameSet;
@@ -58,9 +55,24 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets or sets the permissions this keycard has.
         /// </summary>
-        public KeycardLevels Permissions
+        public override KeycardPermissions Permissions
         {
-            get => CustomPermsDetail.CustomPermissions.TryGetValue(Serial, out DoorPermissionFlags flags) ? new KeycardLevels(flags) : new KeycardLevels(0, 0, 0);
+            get => CustomPermsDetail.CustomPermissions.TryGetValue(Serial, out DoorPermissionFlags flags) ? (KeycardPermissions)flags : KeycardPermissions.None;
+
+            set
+            {
+                CustomPermsDetail.CustomPermissions[Serial] = (DoorPermissionFlags)value;
+
+                Resync();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the permissions this keycard has.
+        /// </summary>
+        public KeycardLevels KeycardLevels
+        {
+            get => new((DoorPermissionFlags)Permissions);
 
             set
             {
@@ -177,7 +189,7 @@ namespace Exiled.API.Features.Items.Keycards
         public void Resync()
         {
             // we loveeeeeeeeeeeee NW static fields trusttttttttttttttt I'm not mad at allllllllllll
-            CustomPermsDetail._customLevels = Permissions;
+            CustomPermsDetail._customLevels = KeycardLevels;
             CustomPermsDetail._customColor = PermissionsColor;
 
             CustomItemNameDetail._customText = ItemName;

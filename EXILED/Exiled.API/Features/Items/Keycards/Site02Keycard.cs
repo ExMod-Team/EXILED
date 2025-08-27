@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Site02Keycard.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -101,10 +101,10 @@ namespace Exiled.API.Features.Items.Keycards
         /// <param name="labelColor">The color of the label on the keycard.</param>
         /// <param name="wear">How worn the keycard looks (capped from 0-5).</param>
         /// <returns>The new <see cref="Site02Keycard"/>.</returns>
-        public static Site02Keycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear)
+        public static Site02Keycard Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear)
         {
-            Site02Keycard keycard = (Site02Keycard)Item.Create(ItemType.KeycardCustomManagement);
-            keycard.Permissions = permissions;
+            Site02Keycard keycard = Create<Site02Keycard>(ItemType.KeycardCustomManagement);
+            keycard.KeycardLevels = keycardLevels;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;
             keycard.Color = color;

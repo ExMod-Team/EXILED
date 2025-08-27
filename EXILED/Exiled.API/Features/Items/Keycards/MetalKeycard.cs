@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="MetalKeycard.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -105,7 +105,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Creates a <see cref="MetalKeycard"/>.
         /// </summary>
-        /// <param name="permissions">The permissions of the keycard.</param>
+        /// <param name="keycardLevels">The permissions of the keycard.</param>
         /// <param name="permissionsColor">The color of the permissions of the keycard.</param>
         /// <param name="itemName">The inventory name of the keycard.</param>
         /// <param name="color">The color of the keycard.</param>
@@ -115,10 +115,10 @@ namespace Exiled.API.Features.Items.Keycards
         /// <param name="wear">How worn the keycard looks (capped from 0-5).</param>
         /// <param name="serialNumber">The serial number of the keycard (numbers only, 12 max).</param>
         /// <returns>The new <see cref="MetalKeycard"/>.</returns>
-        public static MetalKeycard Create(KeycardLevels permissions, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear, string serialNumber)
+        public static MetalKeycard Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear, string serialNumber)
         {
-            MetalKeycard keycard = (MetalKeycard)Item.Create(ItemType.KeycardCustomManagement);
-            keycard.Permissions = permissions;
+            MetalKeycard keycard = Create<MetalKeycard>(ItemType.KeycardCustomManagement);
+            keycard.KeycardLevels = keycardLevels;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;
             keycard.Color = color;

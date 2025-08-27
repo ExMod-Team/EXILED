@@ -45,7 +45,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
-        public KeycardPermissions Permissions
+        public virtual KeycardPermissions Permissions
         {
             get
             {
@@ -63,8 +63,9 @@ namespace Exiled.API.Features.Items
                 return KeycardPermissions.None;
             }
 
-            [Obsolete("Not functional anymore", true)]
-            set => _ = value;
+            set
+            {
+            }
         }
 
         /// <summary>
