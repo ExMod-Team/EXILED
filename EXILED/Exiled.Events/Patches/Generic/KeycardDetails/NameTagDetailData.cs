@@ -20,14 +20,14 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
     public class NameTagDetailData
     {
         [HarmonyPatch(nameof(NametagDetail.WriteNewItem))]
-        [HarmonyTranspiler]
+        [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
             CustomKeycard.NameTagDict[item.ItemSerial] = NametagDetail._customNametag;
         }
 
         [HarmonyPatch(nameof(NametagDetail.WriteNewPickup))]
-        [HarmonyTranspiler]
+        [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
             CustomKeycard.NameTagDict[pickup.ItemId.SerialNumber] = NametagDetail._customNametag;
