@@ -42,11 +42,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.Label"/>
         public string Label
         {
-            get => LabelDict.TryGetValue(Serial, out string value) ? value : string.Empty;
+            get => DataDict[Serial].Label;
 
             set
             {
-                LabelDict[Serial] = value;
+                DataDict[Serial].Label = value;
                 Resync();
             }
         }
@@ -54,11 +54,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color32? LabelColor
         {
-            get => LabelColorDict.TryGetValue(Serial, out Color32? value) ? value : null;
+            get => DataDict[Serial].LabelColor;
 
             set
             {
-                LabelColorDict[Serial] = value;
+                DataDict[Serial].LabelColor = value;
                 Resync();
             }
         }

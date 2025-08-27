@@ -11,7 +11,6 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using Exiled.API.Extensions;
-    using Exiled.API.Features;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pools;
     using HarmonyLib;

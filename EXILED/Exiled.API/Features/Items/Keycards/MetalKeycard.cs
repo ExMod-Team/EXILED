@@ -42,11 +42,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="INameTagKeycard.NameTag"/>
         public string NameTag
         {
-            get => NameTagDict.TryGetValue(Serial, out string value) ? value : string.Empty;
+            get => DataDict[Serial].NameTag;
 
             set
             {
-                NameTagDict[Serial] = value;
+                DataDict[Serial].NameTag = value;
                 Resync();
             }
         }
@@ -54,11 +54,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.Label"/>
         public string Label
         {
-            get => LabelDict.TryGetValue(Serial, out string value) ? value : string.Empty;
+            get => DataDict[Serial].Label;
 
             set
             {
-                LabelDict[Serial] = value;
+                DataDict[Serial].Label = value;
                 Resync();
             }
         }
@@ -66,11 +66,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color32? LabelColor
         {
-            get => LabelColorDict.TryGetValue(Serial, out Color32? value) ? value : null;
+            get => DataDict[Serial].LabelColor;
 
             set
             {
-                LabelColorDict[Serial] = value;
+                DataDict[Serial].LabelColor = value;
                 Resync();
             }
         }
@@ -79,11 +79,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <remarks>Capped from 0-5 for Site-02 keycards, returns 255 if no wear level is found.</remarks>
         public byte Wear
         {
-            get => WearDict.TryGetValue(Serial, out byte value) ? value : byte.MaxValue;
+            get => DataDict[Serial].Wear;
 
             set
             {
-                WearDict[Serial] = value;
+                DataDict[Serial].Wear = value;
 
                 Resync();
             }
@@ -92,11 +92,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ISerialNumberKeycard.SerialNumber"/>
         public string SerialNumber
         {
-            get => SerialNumberDict.TryGetValue(Serial, out string value) ? value : string.Empty;
+            get => DataDict[Serial].SerialNumber;
 
             set
             {
-                SerialNumberDict[Serial] = value;
+                DataDict[Serial].SerialNumber = value;
 
                 Resync();
             }

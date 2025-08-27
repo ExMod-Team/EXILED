@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Generic.KeycardDetails
 {
     using Exiled.API.Features.Items.Keycards;
-    using Exiled.Events.Patches.Fixes;
     using HarmonyLib;
     using InventorySystem.Items.Keycards;
 
@@ -23,14 +22,14 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
-            CustomKeycard.NameTagDict[item.ItemSerial] = NametagDetail._customNametag;
+            CustomKeycard.DataDict[item.ItemSerial].NameTag = NametagDetail._customNametag;
         }
 
         [HarmonyPatch(nameof(NametagDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
-            CustomKeycard.NameTagDict[pickup.ItemId.SerialNumber] = NametagDetail._customNametag;
+            CustomKeycard.DataDict[pickup.ItemId.SerialNumber].NameTag = NametagDetail._customNametag;
         }
     }
 }

@@ -21,14 +21,14 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
-            CustomKeycard.ColorDict[item.ItemSerial] = CustomTintDetail._customColor;
+            CustomKeycard.DataDict[item.ItemSerial].Color = CustomTintDetail._customColor;
         }
 
         [HarmonyPatch(nameof(CustomTintDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
-            CustomKeycard.ColorDict[pickup.ItemId.SerialNumber] = CustomTintDetail._customColor;
+            CustomKeycard.DataDict[pickup.ItemId.SerialNumber].Color = CustomTintDetail._customColor;
         }
     }
 }

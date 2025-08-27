@@ -21,16 +21,16 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void Prefix(KeycardItem item)
         {
-            CustomKeycard.LabelDict[item.ItemSerial] = CustomLabelDetail._customText;
-            CustomKeycard.LabelColorDict[item.ItemSerial] = CustomLabelDetail._customColor;
+            CustomKeycard.DataDict[item.ItemSerial].Label = CustomLabelDetail._customText;
+            CustomKeycard.DataDict[item.ItemSerial].LabelColor = CustomLabelDetail._customColor;
         }
 
         [HarmonyPatch(nameof(CustomLabelDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void Prefix(KeycardPickup pickup)
         {
-            CustomKeycard.LabelDict[pickup.ItemId.SerialNumber] = CustomLabelDetail._customText;
-            CustomKeycard.LabelColorDict[pickup.ItemId.SerialNumber] = CustomLabelDetail._customColor;
+            CustomKeycard.DataDict[pickup.ItemId.SerialNumber].Label = CustomLabelDetail._customText;
+            CustomKeycard.DataDict[pickup.ItemId.SerialNumber].LabelColor = CustomLabelDetail._customColor;
         }
     }
 }

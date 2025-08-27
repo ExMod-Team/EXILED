@@ -21,14 +21,14 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
-            CustomKeycard.WearDict[item.ItemSerial] = CustomWearDetail._customWearLevel;
+            CustomKeycard.DataDict[item.ItemSerial].Wear = CustomWearDetail._customWearLevel;
         }
 
         [HarmonyPatch(nameof(CustomWearDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
-            CustomKeycard.WearDict[pickup.ItemId.SerialNumber] = CustomWearDetail._customWearLevel;
+            CustomKeycard.DataDict[pickup.ItemId.SerialNumber].Wear = CustomWearDetail._customWearLevel;
         }
     }
 }

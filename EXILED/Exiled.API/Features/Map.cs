@@ -5,6 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Exiled.API.Features.Items.Keycards;
 namespace Exiled.API.Features
 {
 #pragma warning disable SA1401
@@ -416,6 +417,8 @@ namespace Exiled.API.Features
             Firearm.ItemTypeToFirearmInstance.Clear();
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
+
+            CustomKeycard.DataDict.Clear();
 
 #pragma warning disable CS0618
             Scp559.CakeToWrapper.Clear();

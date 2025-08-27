@@ -42,11 +42,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="INameTagKeycard.NameTag"/>
         public string NameTag
         {
-            get => NameTagDict.TryGetValue(Serial, out string value) ? value : string.Empty;
+            get => DataDict[Serial].NameTag;
 
             set
             {
-                NameTagDict[Serial] = value;
+                DataDict[Serial].NameTag = value;
                 Resync();
             }
         }
@@ -54,11 +54,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ISerialNumberKeycard.SerialNumber"/>
         public string SerialNumber
         {
-            get => SerialNumberDict.TryGetValue(Serial, out string value) ? value : string.Empty;
+            get => DataDict[Serial].SerialNumber;
 
             set
             {
-                SerialNumberDict[Serial] = value;
+                DataDict[Serial].SerialNumber = value;
 
                 Resync();
             }
@@ -67,11 +67,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="IRankKeycard.Rank"/>
         public byte Rank
         {
-            get => RankDict.TryGetValue(Serial, out byte value) ? value : byte.MaxValue;
+            get => DataDict[Serial].Rank;
 
             set
             {
-                RankDict[Serial] = value;
+                DataDict[Serial].Rank = value;
 
                 Resync();
             }

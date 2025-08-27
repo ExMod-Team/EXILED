@@ -34,6 +34,7 @@ namespace Exiled.API.Features.Items.Keycards
             : base(itemBase)
         {
             Base = itemBase;
+            DataDict.Add(Serial, new KeycardData());
 
             Resync();
         }
@@ -87,11 +88,11 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color32? PermissionsColor
         {
-            get => PermsColorDict.TryGetValue(Serial, out Color32? value) ? value : null;
+            get => DataDict[Serial].PermissionsColor;
 
             set
             {
-                PermsColorDict[Serial] = value;
+                DataDict[Serial].PermissionsColor = value;
 
                 Resync();
             }
@@ -132,55 +133,20 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color32? Color
         {
-            get => ColorDict.TryGetValue(Serial, out Color32? value) ? value : null;
+            get => DataDict[Serial].Color;
 
             set
             {
-                ColorDict[Serial] = value;
+                DataDict[Serial].Color = value;
 
                 Resync();
             }
         }
 
         /// <summary>
-        /// Gets a dictionary of item serials to their permissions color.
+        /// Gets a dictionary of item serials to their keycards data.
         /// </summary>
-        internal static Dictionary<ushort, Color32?> PermsColorDict { get; } = new();
-
-        /// <summary>
-        /// Gets a dictionary of item serials to their color.
-        /// </summary>
-        internal static Dictionary<ushort, Color32?> ColorDict { get; } = new();
-
-        /// <summary>
-        /// Gets a dictionary of item serials to their name tag.
-        /// </summary>
-        internal static Dictionary<ushort, string> NameTagDict { get; } = new();
-
-        /// <summary>
-        /// Gets a dictionary of item serials to their label.
-        /// </summary>
-        internal static Dictionary<ushort, string> LabelDict { get; } = new();
-
-        /// <summary>
-        /// Gets a dictionary of item serials to their label's color.
-        /// </summary>
-        internal static Dictionary<ushort, Color32?> LabelColorDict { get; } = new();
-
-        /// <summary>
-        /// Gets a dictionary of item serials to their wear.
-        /// </summary>
-        internal static Dictionary<ushort, byte> WearDict { get; } = new();
-
-        /// <summary>
-        /// Gets a dictionary of item serials to their serial number.
-        /// </summary>
-        internal static Dictionary<ushort, string> SerialNumberDict { get; } = new();
-
-        /// <summary>
-        /// Gets a dictionary of item serials to their serial number.
-        /// </summary>
-        internal static Dictionary<ushort, byte> RankDict { get; } = new();
+        internal static Dictionary<ushort, KeycardData> DataDict { get; } = new();
 
         /// <summary>
         /// Resyncs all properties of the keycard.

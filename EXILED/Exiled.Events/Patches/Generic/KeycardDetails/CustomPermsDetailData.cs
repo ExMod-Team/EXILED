@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
     {
         private static void Prefix(IIdentifierProvider target)
         {
-            CustomKeycard.PermsColorDict[target.ItemId.SerialNumber] = CustomPermsDetail._customColor;
+            CustomKeycard.DataDict[target.ItemId.SerialNumber].PermissionsColor = CustomPermsDetail._customColor;
         }
     }
 }
