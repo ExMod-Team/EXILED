@@ -22,14 +22,16 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
-            CustomKeycard.DataDict[item.ItemSerial].NameTag = NametagDetail._customNametag;
+            if (CustomKeycard.DataDict.TryGetValue(item.ItemSerial, out KeycardData data))
+                data.NameTag = NametagDetail._customNametag;
         }
 
         [HarmonyPatch(nameof(NametagDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
-            CustomKeycard.DataDict[pickup.ItemId.SerialNumber].NameTag = NametagDetail._customNametag;
+            if (CustomKeycard.DataDict.TryGetValue(pickup.ItemId.SerialNumber, out KeycardData data))
+                data.NameTag = NametagDetail._customNametag;
         }
     }
 }
