@@ -34,7 +34,9 @@ namespace Exiled.API.Features.Items.Keycards
             : base(itemBase)
         {
             Base = itemBase;
-            DataDict.Add(Serial, new KeycardData());
+
+            if (!DataDict.ContainsKey(Serial))
+                DataDict[Serial] = new KeycardData();
 
             Resync();
         }

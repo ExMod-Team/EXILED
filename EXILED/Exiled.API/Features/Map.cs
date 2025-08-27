@@ -5,7 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.API.Features.Items.Keycards;
 namespace Exiled.API.Features
 {
 #pragma warning disable SA1401
@@ -20,6 +19,7 @@ namespace Exiled.API.Features
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Toys;
     using InventorySystem;
