@@ -36,7 +36,7 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
                 new(OpCodes.Callvirt, PropertyGetter(typeof(IIdentifierProvider), nameof(IIdentifierProvider.ItemId))),
                 new(OpCodes.Ldfld, Field(typeof(ItemIdentifier), nameof(ItemIdentifier.SerialNumber))),
                 new(OpCodes.Ldsfld, Field(typeof(CustomPermsDetail), nameof(CustomPermsDetail._customColor))),
-                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color>), "set_Item")),
+                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color32>), "set_Item")),
             });
 
             for (int i = 0; i < newInstructions.Count; i++)

@@ -66,7 +66,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color LabelColor
         {
-            get => LabelColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
+            get => LabelColorDict.TryGetValue(Serial, out Color32 value) ? value : Color.black;
 
             set
             {
@@ -79,7 +79,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <remarks>Capped from 0-4 for Site-02 keycards, returns 255 if no wear level is found.</remarks>
         public byte Wear
         {
-            get => WearDict.TryGetValue(Serial, out byte value) ? value : (byte)255;
+            get => WearDict.TryGetValue(Serial, out byte value) ? value : byte.MaxValue;
 
             set
             {

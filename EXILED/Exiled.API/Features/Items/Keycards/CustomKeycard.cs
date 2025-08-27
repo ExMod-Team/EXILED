@@ -37,6 +37,8 @@ namespace Exiled.API.Features.Items.Keycards
             : base(itemBase)
         {
             Base = itemBase;
+
+            Resync();
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color PermissionsColor
         {
-            get => PermsColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
+            get => PermsColorDict.TryGetValue(Serial, out Color32 value) ? value : Color.black;
 
             set
             {
@@ -118,7 +120,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color Color
         {
-            get => ColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
+            get => ColorDict.TryGetValue(Serial, out Color32 value) ? value : Color.black;
 
             set
             {
@@ -131,12 +133,12 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets a dictionary of item serials to their permissions color.
         /// </summary>
-        internal static Dictionary<ushort, Color> PermsColorDict { get; } = new();
+        internal static Dictionary<ushort, Color32> PermsColorDict { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of item serials to their color.
         /// </summary>
-        internal static Dictionary<ushort, Color> ColorDict { get; } = new();
+        internal static Dictionary<ushort, Color32> ColorDict { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of item serials to their name tag.
@@ -151,7 +153,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets a dictionary of item serials to their label's color.
         /// </summary>
-        internal static Dictionary<ushort, Color> LabelColorDict { get; } = new();
+        internal static Dictionary<ushort, Color32> LabelColorDict { get; } = new();
 
         /// <summary>
         /// Gets a dictionary of item serials to their wear.
@@ -194,9 +196,7 @@ namespace Exiled.API.Features.Items.Keycards
                 CustomWearDetail._customWearLevel = wear.Wear;
 
             if (this is ISerialNumberKeycard serial)
-            {
                 CustomSerialNumberDetail._customVal = serial.SerialNumber;
-            }
 
             MirrorExtensions.ResyncKeycardItem(this);
         }

@@ -54,7 +54,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color LabelColor
         {
-            get => LabelColorDict.TryGetValue(Serial, out Color value) ? value : Color.black;
+            get => LabelColorDict.TryGetValue(Serial, out Color32 value) ? value : Color.black;
 
             set
             {

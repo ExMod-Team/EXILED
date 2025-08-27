@@ -67,7 +67,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <inheritdoc cref="IRankKeycard.Rank"/>
         public byte Rank
         {
-            get => RankDict.TryGetValue(Serial, out byte value) ? value : (byte)255;
+            get => RankDict.TryGetValue(Serial, out byte value) ? value : byte.MaxValue;
 
             set
             {

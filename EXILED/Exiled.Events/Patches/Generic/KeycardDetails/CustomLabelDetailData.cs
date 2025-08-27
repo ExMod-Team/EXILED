@@ -43,7 +43,7 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardItem), nameof(KeycardItem.ItemSerial))),
                 new(OpCodes.Ldsfld, Field(typeof(CustomLabelDetail), nameof(CustomLabelDetail._customColor))),
-                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color>), "set_Item")),
+                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color32>), "set_Item")),
             });
 
             for (int i = 0; i < newInstructions.Count; i++)
@@ -72,7 +72,7 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
                 new(OpCodes.Callvirt, PropertyGetter(typeof(KeycardPickup), nameof(KeycardPickup.ItemId))),
                 new(OpCodes.Ldfld, Field(typeof(ItemIdentifier), nameof(ItemIdentifier.SerialNumber))),
                 new(OpCodes.Ldsfld, Field(typeof(CustomLabelDetail), nameof(CustomLabelDetail._customColor))),
-                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color>), "set_Item")),
+                new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, Color32>), "set_Item")),
             });
 
             for (int i = 0; i < newInstructions.Count; i++)
