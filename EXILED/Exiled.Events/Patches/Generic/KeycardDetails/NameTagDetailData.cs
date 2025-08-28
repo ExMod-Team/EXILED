@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
-            if (CustomKeycard.DataDict.TryGetValue(item.ItemSerial, out KeycardData data))
+            if (CustomKeycardItem.DataDict.TryGetValue(item.ItemSerial, out KeycardData data))
                 data.NameTag = NametagDetail._customNametag;
         }
 
@@ -30,7 +30,7 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
-            if (CustomKeycard.DataDict.TryGetValue(pickup.ItemId.SerialNumber, out KeycardData data))
+            if (CustomKeycardItem.DataDict.TryGetValue(pickup.ItemId.SerialNumber, out KeycardData data))
                 data.NameTag = NametagDetail._customNametag;
         }
     }

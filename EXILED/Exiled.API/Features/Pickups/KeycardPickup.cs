@@ -29,6 +29,10 @@ namespace Exiled.API.Features.Pickups
             : base(pickupBase)
         {
             Base = pickupBase;
+            if (Base is null)
+            {
+                Log.Info(GetType());
+            }
         }
 
         /// <summary>
@@ -42,9 +46,9 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Gets the <see cref="KeycardPermissions"/> of the keycard.
+        /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
-        public KeycardPermissions Permissions { get; private set; }
+        public virtual KeycardPermissions Permissions { get; set; }
 
         /// <summary>
         /// Gets the <see cref="BaseKeycard"/> that this class is encapsulating.

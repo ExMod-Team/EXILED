@@ -418,7 +418,7 @@ namespace Exiled.API.Features
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
 
-            CustomKeycard.DataDict.Clear();
+            CustomKeycardItem.DataDict.Clear();
 
 #pragma warning disable CS0618
             Scp559.CakeToWrapper.Clear();

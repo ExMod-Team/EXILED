@@ -19,7 +19,7 @@ namespace Exiled.API.Features.Items.Keycards
     /// <summary>
     /// Represents the Management Custom Keycard.
     /// </summary>
-    public class ManagementKeycard : CustomKeycard, ILabelKeycard
+    public class ManagementKeycard : CustomKeycardItem, ILabelKeycard
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ManagementKeycard"/> class.
@@ -52,9 +52,9 @@ namespace Exiled.API.Features.Items.Keycards
         }
 
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
-        public Color32? LabelColor
+        public Color LabelColor
         {
-            get => DataDict[Serial].LabelColor;
+            get => DataDict[Serial].LabelColor ?? new Color32(0, 0, 0, 0);
 
             set
             {

@@ -20,6 +20,11 @@ namespace Exiled.API.Features.Items.Keycards
         public Color32? PermissionsColor { get; set; }
 
         /// <summary>
+        /// Gets or sets the item name of this <see cref="KeycardData"/>.
+        /// </summary>
+        public string ItemName { get; set; }
+
+        /// <summary>
         /// Gets or sets the color of this <see cref="KeycardData"/>.
         /// </summary>
         public Color32? Color { get; set; }

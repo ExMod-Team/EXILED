@@ -19,7 +19,7 @@ namespace Exiled.API.Features.Items.Keycards
     /// <summary>
     /// Represents the Metal Custom Keycard.
     /// </summary>
-    public class MetalKeycard : CustomKeycard, INameTagKeycard, ILabelKeycard, IWearKeycard, ISerialNumberKeycard
+    public class MetalKeycard : CustomKeycardItem, INameTagKeycard, ILabelKeycard, IWearKeycard, ISerialNumberKeycard
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MetalKeycard"/> class.
@@ -64,10 +64,9 @@ namespace Exiled.API.Features.Items.Keycards
         }
 
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
-        public Color32? LabelColor
+        public Color LabelColor
         {
-            get => DataDict[Serial].LabelColor;
-
+            get => DataDict[Serial].LabelColor ?? new Color32(0, 0, 0, 0);
             set
             {
                 DataDict[Serial].LabelColor = value;

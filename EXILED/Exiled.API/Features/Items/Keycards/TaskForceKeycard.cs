@@ -19,7 +19,7 @@ namespace Exiled.API.Features.Items.Keycards
     /// <summary>
     /// Represents the Task Force Custom Keycard.
     /// </summary>
-    public class TaskForceKeycard : CustomKeycard, INameTagKeycard, ISerialNumberKeycard, IRankKeycard
+    public class TaskForceKeycard : CustomKeycardItem, INameTagKeycard, ISerialNumberKeycard, IRankKeycard
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TaskForceKeycard"/> class.

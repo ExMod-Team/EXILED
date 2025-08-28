@@ -10,12 +10,12 @@ namespace Exiled.API.Interfaces.Keycards
     using Exiled.API.Features.Items.Keycards;
 
     /// <summary>
-    /// An interface for <see cref="CustomKeycard"/>'s with the <see cref="SerialNumber"/> property.
+    /// An interface for <see cref="CustomKeycardItem"/>'s with the <see cref="SerialNumber"/> property.
     /// </summary>
     public interface ISerialNumberKeycard
     {
         /// <summary>
-        /// Gets or sets the serial number of this <see cref="CustomKeycard"/>.
+        /// Gets or sets the serial number of this <see cref="CustomKeycardItem"/>.
         /// </summary>
         /// <remarks>Can only hold 12 numbers. Non-numerical chars will be replaced with "-".</remarks>
         public string SerialNumber { get; set; }

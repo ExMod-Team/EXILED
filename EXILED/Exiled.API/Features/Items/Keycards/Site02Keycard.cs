@@ -19,7 +19,7 @@ namespace Exiled.API.Features.Items.Keycards
     /// <summary>
     /// Represents the Site-02 Custom Keycard.
     /// </summary>
-    public class Site02Keycard : CustomKeycard, INameTagKeycard, ILabelKeycard, IWearKeycard
+    public class Site02Keycard : CustomKeycardItem, INameTagKeycard, ILabelKeycard, IWearKeycard
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Site02Keycard"/> class.
@@ -64,9 +64,9 @@ namespace Exiled.API.Features.Items.Keycards
         }
 
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
-        public Color32? LabelColor
+        public Color LabelColor
         {
-            get => DataDict[Serial].LabelColor;
+            get => DataDict[Serial].LabelColor ?? new Color32(0, 0, 0, 0);
 
             set
             {

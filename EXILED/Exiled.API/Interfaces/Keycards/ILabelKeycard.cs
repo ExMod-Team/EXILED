@@ -11,18 +11,18 @@ namespace Exiled.API.Interfaces.Keycards
     using UnityEngine;
 
     /// <summary>
-    /// An interface for <see cref="CustomKeycard"/>'s with the <see cref="Label"/> property.
+    /// An interface for <see cref="CustomKeycardItem"/>'s with the <see cref="Label"/> property.
     /// </summary>
     public interface ILabelKeycard
     {
         /// <summary>
-        /// Gets or sets the label of this <see cref="CustomKeycard"/>.
+        /// Gets or sets the label of this <see cref="CustomKeycardItem"/>.
         /// </summary>
         public string Label { get; set; }
 
         /// <summary>
-        /// Gets or sets the <see cref="Color"/> of this <see cref="CustomKeycard"/>.
+        /// Gets or sets the <see cref="Color"/> of this <see cref="CustomKeycardItem"/>.
         /// </summary>
-        public Color32? LabelColor { get; set; }
+        public Color LabelColor { get; set; }
     }
 }

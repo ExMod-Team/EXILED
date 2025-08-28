@@ -10,12 +10,12 @@ namespace Exiled.API.Interfaces.Keycards
     using Exiled.API.Features.Items.Keycards;
 
     /// <summary>
-    /// An interface for <see cref="CustomKeycard"/>'s with the <see cref="Wear"/> property.
+    /// An interface for <see cref="CustomKeycardItem"/>'s with the <see cref="Wear"/> property.
     /// </summary>
     public interface IWearKeycard
     {
         /// <summary>
-        /// Gets or sets the wear on this <see cref="CustomKeycard"/>.
+        /// Gets or sets the wear on this <see cref="CustomKeycardItem"/>.
         /// </summary>
         public byte Wear { get; set; }
     }

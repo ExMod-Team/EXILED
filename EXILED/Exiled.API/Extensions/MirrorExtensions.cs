@@ -19,6 +19,8 @@ namespace Exiled.API.Extensions
     using CustomPlayerEffects;
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
+    using Exiled.API.Features.Items.Keycards;
+    using Exiled.API.Features.Pickups.Keycards;
     using Features;
     using Features.Pools;
     using InventorySystem;
@@ -36,8 +38,6 @@ namespace Exiled.API.Extensions
     using RelativePositioning;
     using Respawning;
     using UnityEngine;
-
-    using KeycardPickup = Exiled.API.Features.Pickups.Keycards.KeycardPickup;
 
     /// <summary>
     /// A set of extensions for <see cref="Mirror"/> Networking.
@@ -407,24 +407,24 @@ namespace Exiled.API.Extensions
         /// <summary>
         /// Makes the server resend a message to all clients updating a keycards details to current values.
         /// </summary>
-        /// <param name="customKeycard">The keycard to resync.</param>
-        public static void ResyncKeycardItem(Features.Items.Keycards.CustomKeycard customKeycard)
+        /// <param name="customKeycardItem">The keycard to resync.</param>
+        public static void ResyncKeycardItem(CustomKeycardItem customKeycardItem)
         {
-            if (KeycardDetailSynchronizer.Database.Remove(customKeycard.Serial))
+            if (KeycardDetailSynchronizer.Database.Remove(customKeycardItem.Serial))
             {
-                KeycardDetailSynchronizer.ServerProcessItem(customKeycard.Base);
+                KeycardDetailSynchronizer.ServerProcessItem(customKeycardItem.Base);
             }
         }
 
         /// <summary>
         /// Makes the server resend a message to all clients updating a keycards details to current values.
         /// </summary>
-        /// <param name="keycard">The keycard to resync.</param>
-        public static void ResyncKeycardPickup(KeycardPickup keycard)
+        /// <param name="customKeycard">The keycard to resync.</param>
+        public static void ResyncKeycardPickup(CustomKeycardPickup customKeycard)
         {
-            if (KeycardDetailSynchronizer.Database.Remove(keycard.Serial))
+            if (KeycardDetailSynchronizer.Database.Remove(customKeycard.Serial))
             {
-                KeycardDetailSynchronizer.ServerProcessPickup((InventorySystem.Items.Keycards.KeycardPickup)keycard.Base);
+                KeycardDetailSynchronizer.ServerProcessPickup(customKeycard.Base);
             }
         }
 

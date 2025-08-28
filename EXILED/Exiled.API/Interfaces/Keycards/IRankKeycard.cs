@@ -10,12 +10,12 @@ namespace Exiled.API.Interfaces.Keycards
     using Exiled.API.Features.Items.Keycards;
 
     /// <summary>
-    /// An interface for <see cref="CustomKeycard"/>'s with the <see cref="Rank"/> property.
+    /// An interface for <see cref="CustomKeycardItem"/>'s with the <see cref="Rank"/> property.
     /// </summary>
     public interface IRankKeycard
     {
         /// <summary>
-        /// Gets or sets the rank of this <see cref="CustomKeycard"/>.
+        /// Gets or sets the rank of this <see cref="CustomKeycardItem"/>.
         /// </summary>
         /// <remarks>Capped from 0-3, returns 255 if no value was found.</remarks>
         public byte Rank { get; set; }
