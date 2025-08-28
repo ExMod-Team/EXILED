@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="CustomKeycardPickup.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -85,7 +85,7 @@ namespace Exiled.API.Features.Pickups.Keycards
         /// </summary>
         public Color PermissionsColor
         {
-            get => CustomKeycardItem.DataDict[Serial].PermissionsColor ?? new Color32(0, 0, 0, 0);
+            get => CustomKeycardItem.DataDict[Serial].PermissionsColor ?? Color.clear;
 
             set
             {
@@ -115,7 +115,7 @@ namespace Exiled.API.Features.Pickups.Keycards
         /// </summary>
         public Color Color
         {
-            get => CustomKeycardItem.DataDict[Serial].Color ?? new Color32(0, 0, 0, 0);
+            get => CustomKeycardItem.DataDict[Serial].Color ?? Color.clear;
 
             set
             {

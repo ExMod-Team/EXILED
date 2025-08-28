@@ -87,7 +87,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color PermissionsColor
         {
-            get => DataDict[Serial].PermissionsColor ?? new Color32(0, 0, 0, 0);
+            get => DataDict[Serial].PermissionsColor ?? Color.clear;
 
             set
             {
@@ -117,7 +117,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         public Color Color
         {
-            get => DataDict[Serial].Color ?? new Color32(0, 0, 0, 0);
+            get => DataDict[Serial].Color ?? Color.clear;
 
             set
             {

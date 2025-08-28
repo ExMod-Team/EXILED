@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Site02KeycardPickup.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -64,7 +64,7 @@ namespace Exiled.API.Features.Pickups.Keycards
         /// <inheritdoc cref="ILabelKeycard.LabelColor"/>
         public Color LabelColor
         {
-            get => CustomKeycardItem.DataDict[Serial].LabelColor ?? new Color32(0, 0, 0, 0);
+            get => CustomKeycardItem.DataDict[Serial].LabelColor ?? Color.clear;
 
             set
             {
