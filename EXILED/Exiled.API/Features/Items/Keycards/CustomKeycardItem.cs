@@ -174,7 +174,7 @@ namespace Exiled.API.Features.Items.Keycards
 
             ItemType[] toIterate = Type switch
             {
-                _ when matchDesign => AllKeycards,
+                _ when !matchDesign => AllKeycards,
                 ItemType.KeycardCustomSite02 => AllSite02,
                 ItemType.KeycardCustomManagement => AllManagement,
                 ItemType.KeycardCustomMetalCase => AllMetalCase,
@@ -192,22 +192,16 @@ namespace Exiled.API.Features.Items.Keycards
                     if (detail is PredefinedPermsDetail permsDetail)
                     {
                         if (matchPerms && permsDetail.Levels.Permissions != KeycardLevels.Permissions)
-                            goto cont;
+                            continue;
                     }
 
                     if (label1 is not null && detail is TranslatedLabelDetail label2)
                     {
                         if (matchColors && label1.LabelColor != label2._textColor)
-                            goto cont;
+                            continue;
                     }
                 }
 
-                goto add;
-
-                cont:
-                continue;
-
-                add:
                 matches.Add(type);
             }
 

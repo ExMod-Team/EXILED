@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="KeycardData.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -47,7 +47,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets or sets the wear of this <see cref="KeycardData"/>.
         /// </summary>
-        public byte Wear { get; set; } = 255;
+        public byte Wear { get; set; } = byte.MaxValue;
 
         /// <summary>
         /// Gets or sets the serial number of this <see cref="KeycardData"/>.
@@ -57,6 +57,6 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets or sets the rank of this <see cref="KeycardData"/>.
         /// </summary>
-        public byte Rank { get; set; } = 255;
+        public byte Rank { get; set; } = byte.MaxValue;
     }
 }
