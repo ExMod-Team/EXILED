@@ -21,14 +21,18 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixItem(KeycardItem item)
         {
-            CustomKeycardItem.DataDict[item.ItemSerial].SerialNumber = CustomSerialNumberDetail._customVal;
+            if (!CustomKeycardItem.DataDict.TryGetValue(item.ItemSerial, out KeycardData data))
+                CustomKeycardItem.DataDict[item.ItemSerial] = data = new KeycardData();
+            data.SerialNumber = CustomSerialNumberDetail._customVal;
         }
 
         [HarmonyPatch(nameof(CustomSerialNumberDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void PrefixPickup(KeycardPickup pickup)
         {
-            CustomKeycardItem.DataDict[pickup.ItemId.SerialNumber].SerialNumber = CustomSerialNumberDetail._customVal;
+            if (!CustomKeycardItem.DataDict.TryGetValue(pickup.ItemId.SerialNumber, out KeycardData data))
+                CustomKeycardItem.DataDict[pickup.ItemId.SerialNumber] = data = new KeycardData();
+            data.SerialNumber = CustomSerialNumberDetail._customVal;
         }
     }
 }

@@ -24,14 +24,18 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
         [HarmonyPrefix]
         private static void PrefixItem(CustomRankDetail __instance, KeycardItem item)
         {
-            CustomKeycardItem.DataDict[item.ItemSerial].Rank = (byte)(Mathf.Abs(CustomRankDetail._index) % __instance._options.Length);
+            if (!CustomKeycardItem.DataDict.TryGetValue(item.ItemSerial, out KeycardData data))
+                CustomKeycardItem.DataDict[item.ItemSerial] = data = new KeycardData();
+            data.Rank = (byte)(Mathf.Abs(CustomRankDetail._index) % __instance._options.Length);
         }
 
         [HarmonyPatch(nameof(CustomRankDetail.WriteNewPickup))]
         [HarmonyPrefix]
         private static void PrefixPickup(CustomRankDetail __instance, KeycardPickup pickup)
         {
-            CustomKeycardItem.DataDict[pickup.ItemId.SerialNumber].Rank = (byte)(Mathf.Abs(CustomRankDetail._index) % __instance._options.Length);
+            if (!CustomKeycardItem.DataDict.TryGetValue(pickup.ItemId.SerialNumber, out KeycardData data))
+                CustomKeycardItem.DataDict[pickup.ItemId.SerialNumber] = data = new KeycardData();
+            data.Rank = (byte)(Mathf.Abs(CustomRankDetail._index) % __instance._options.Length);
         }
     }
 }
