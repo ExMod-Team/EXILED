@@ -221,7 +221,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalReloading(ReloadingWeaponEventArgs ev)
         {
-            if (!Check(ev.Player.CurrentItem))
+            if (!Check(ev.Item))
                 return;
 
             if (ClipSize > 0 && ev.Firearm.TotalAmmo >= ClipSize)
@@ -266,7 +266,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalShooting(ShootingEventArgs ev)
         {
-            if (!Check(ev.Player.CurrentItem))
+            if (!Check(ev.Item))
                 return;
 
             OnShooting(ev);
@@ -274,7 +274,7 @@ namespace Exiled.CustomItems.API.Features
 
         private void OnInternalShot(ShotEventArgs ev)
         {
-            if (!Check(ev.Player.CurrentItem))
+            if (!Check(ev.Item))
                 return;
 
             OnShot(ev);
