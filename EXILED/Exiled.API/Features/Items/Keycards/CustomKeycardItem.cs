@@ -192,16 +192,22 @@ namespace Exiled.API.Features.Items.Keycards
                     if (detail is PredefinedPermsDetail permsDetail)
                     {
                         if (matchPerms && permsDetail.Levels.Permissions != KeycardLevels.Permissions)
-                            continue;
+                            goto cont;
                     }
 
                     if (label1 is not null && detail is TranslatedLabelDetail label2)
                     {
                         if (matchColors && label1.LabelColor != label2._textColor)
-                            continue;
+                            goto cont;
                     }
                 }
 
+                goto add;
+
+                cont:
+                continue;
+
+                add:
                 matches.Add(type);
             }
 
