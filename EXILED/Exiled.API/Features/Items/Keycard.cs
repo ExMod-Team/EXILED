@@ -32,8 +32,9 @@ namespace Exiled.API.Features.Items
         /// Initializes a new instance of the <see cref="Keycard"/> class.
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> of the keycard.</param>
-        internal Keycard(ItemType type)
-            : this((KeycardItem)Server.Host.Inventory.CreateItemInstance(new(type, 0), false))
+        /// <param name="owner">The owner of the grenade. Leave <see langword="null"/> for no owner.</param>
+        internal Keycard(ItemType type, Player owner = null)
+            : this((KeycardItem)(owner ?? Server.Host).Inventory.CreateItemInstance(new(type, 0), false))
         {
         }
 

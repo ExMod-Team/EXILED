@@ -220,8 +220,8 @@ namespace Exiled.API.Features.Items
                 InventorySystem.Items.Firearms.Firearm firearm => new Firearm(firearm),
                 KeycardItem keycard => keycard switch
                 {
-                    ChaosKeycardItem chaosKeycardItem => new Keycard(chaosKeycardItem),
-                    SingleUseKeycardItem singleUseKeycardItem => new Keycard(singleUseKeycardItem),
+                    ChaosKeycardItem chaosKeycardItem => new ChaosKeycard(chaosKeycardItem),
+                    SingleUseKeycardItem singleUseKeycardItem => new SingleUseKeycard(singleUseKeycardItem),
                     _ => keycard.ItemTypeId switch
                     {
                         ItemType.KeycardCustomTaskForce => new TaskForceKeycard(keycard),
@@ -319,15 +319,15 @@ namespace Exiled.API.Features.Items
             InventorySystem.Items.Firearms.Firearm => new Firearm(type),
             KeycardItem keycard => keycard switch
             {
-                ChaosKeycardItem => new Keycard(type),
-                SingleUseKeycardItem => new Keycard(type),
+                ChaosKeycardItem => new ChaosKeycard(type),
+                SingleUseKeycardItem => new SingleUseKeycard(type),
                 _ => keycard.ItemTypeId switch
                 {
                     ItemType.KeycardCustomTaskForce => new TaskForceKeycard(type),
                     ItemType.KeycardCustomSite02 => new Site02Keycard(type),
                     ItemType.KeycardCustomManagement => new ManagementKeycard(type),
                     ItemType.KeycardCustomMetalCase => new MetalKeycard(type),
-                    _ => new Keycard(type),
+                    _ => new Keycard(type, owner),
                 }
             },
             UsableItem usable => usable switch

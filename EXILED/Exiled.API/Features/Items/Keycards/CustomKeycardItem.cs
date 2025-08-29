@@ -21,7 +21,7 @@ namespace Exiled.API.Features.Items.Keycards
     using UnityEngine;
 
     /// <summary>
-    /// A base class for all keycard items.
+    /// A base class for all custom keycard items.
     /// </summary>
     public abstract class CustomKeycardItem : Keycard
     {
