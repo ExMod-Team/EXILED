@@ -68,7 +68,7 @@ namespace Exiled.API.Features.Items.Keycards
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the Keycard allow the closing of Doors.
+        /// Gets or sets a value indicating whether the Keycard is destroyed.
         /// </summary>
         public bool IsDestroyed
         {
