@@ -12,7 +12,7 @@ namespace Exiled.API.Features.Items.Keycards
     using InventorySystem.Items.Keycards.Snake;
 
     /// <summary>
-    /// A base class for SingleUse keycard items.
+    /// A base class for chaos keycard items.
     /// </summary>
     public class ChaosKeycard : Keycard
     {
