@@ -13,6 +13,7 @@ namespace Exiled.API.Features.Pickups
 
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
+    using Exiled.API.Features.Pickups.Keycards;
     using Exiled.API.Features.Pickups.Projectiles;
     using Exiled.API.Interfaces;
 
@@ -317,7 +318,14 @@ namespace Exiled.API.Features.Pickups
                     _ => new GrenadePickup(timeGrenade),
                 },
                 BaseFirearmPickup firearmPickup => new FirearmPickup(firearmPickup),
-                BaseKeycardPickup keycardPickup => new KeycardPickup(keycardPickup),
+                BaseKeycardPickup keycardPickup => keycardPickup.ItemId.TypeId switch
+                {
+                    ItemType.KeycardCustomTaskForce => new TaskForceKeycardPickup(keycardPickup),
+                    ItemType.KeycardCustomSite02 => new Site02KeycardPickup(keycardPickup),
+                    ItemType.KeycardCustomManagement => new ManagementKeycardPickup(keycardPickup),
+                    ItemType.KeycardCustomMetalCase => new MetalKeycardPickup(keycardPickup),
+                    _ => new KeycardPickup(keycardPickup),
+                },
                 BaseBodyArmorPickup bodyArmorPickup => new BodyArmorPickup(bodyArmorPickup),
                 BaseScp330Pickup scp330Pickup => new Scp330Pickup(scp330Pickup),
                 BaseScp1576Pickup scp1576Pickup => new Scp1576Pickup(scp1576Pickup),
@@ -487,7 +495,14 @@ namespace Exiled.API.Features.Pickups
                 _ => new GrenadePickup(type),
             },
             BaseFirearmPickup => new FirearmPickup(type),
-            BaseKeycardPickup => new KeycardPickup(type),
+            BaseKeycardPickup keycardPickup => type switch
+            {
+                ItemType.KeycardCustomTaskForce => new TaskForceKeycardPickup(type),
+                ItemType.KeycardCustomSite02 => new Site02KeycardPickup(type),
+                ItemType.KeycardCustomManagement => new ManagementKeycardPickup(type),
+                ItemType.KeycardCustomMetalCase => new MetalKeycardPickup(type),
+                _ => new KeycardPickup(keycardPickup),
+            },
             BaseBodyArmorPickup => new BodyArmorPickup(type),
             BaseScp330Pickup => new Scp330Pickup(),
             BaseScp1576Pickup => new Scp1576Pickup(),
