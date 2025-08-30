@@ -7,21 +7,9 @@
 
 namespace Exiled.API.Features.Pickups.Keycards
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-
-    using Exiled.API.Enums;
-    using Exiled.API.Extensions;
-    using Exiled.API.Features.Items.Keycards;
-    using Exiled.API.Features.Pools;
-    using Exiled.API.Interfaces.Keycards;
-    using Interactables.Interobjects.DoorUtils;
-    using InventorySystem;
-    using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
+    using InventorySystem.Items.Keycards.Snake;
     using InventorySystem.Items.Pickups;
-    using UnityEngine;
 
     /// <summary>
     /// A base class for all keycard pickups.
@@ -45,6 +33,11 @@ namespace Exiled.API.Features.Pickups.Keycards
             : base(type)
         {
         }
+
+        /// <summary>
+        /// Gets the <see cref="InventorySystem.Items.Keycards.Snake.SnakeEngine"/> this encapsulates.
+        /// </summary>
+        public SnakeEngine SnakeEngine => ChaosKeycardItem.GetEngineForSerial(Serial);
 
         /// <summary>
         /// Returns the Keycard in a human readable format.

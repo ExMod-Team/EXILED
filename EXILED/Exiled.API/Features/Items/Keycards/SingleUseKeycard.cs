@@ -8,10 +8,11 @@
 namespace Exiled.API.Features.Items.Keycards
 {
     using Exiled.API.Enums;
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Features.Pickups.Keycards;
     using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
-    using UnityEngine;
 
     /// <summary>
     /// A base class for SingleUse keycard items.
@@ -81,5 +82,16 @@ namespace Exiled.API.Features.Items.Keycards
         /// </summary>
         /// <returns>A string containing Keycard-related data.</returns>
         public override string ToString() => $"{Type} ={AllowClosingDoors}= ({Serial}) [{Weight}] *{Scale}* |{Permissions}|";
+
+        /// <inheritdoc/>
+        internal override void ReadPickupInfoBefore(Pickup pickup)
+        {
+            if (pickup is SingleUseKeycardPickup singleUseKeycard)
+            {
+                TimeToDestroy = singleUseKeycard.TimeToDestroy;
+                Permissions = singleUseKeycard.Permissions;
+                AllowClosingDoors = singleUseKeycard.AllowClosingDoors;
+            }
+        }
     }
 }
