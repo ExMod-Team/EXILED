@@ -465,9 +465,14 @@ namespace Exiled.Events.Handlers
         public static Event<DryfiringWeaponEventArgs> DryfiringWeapon { get; set; } = new();
 
         /// <summary>
-        /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
+        /// Invoked before a <see cref="API.Features.Player"/> sending a voice message.
         /// </summary>
-        public static Event<VoiceChattingEventArgs> VoiceChatting { get; set; } = new();
+        public static Event<SendingVoiceMessageEventArgs> SendingVoiceMessage { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> receiving a voice message.
+        /// </summary>
+        public static Event<ReceivingVoiceMessageEventArgs> ReceivingVoiceMessage { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> makes noise.
@@ -1019,10 +1024,16 @@ namespace Exiled.Events.Handlers
         public static void OnDryfiringWeapon(DryfiringWeaponEventArgs ev) => DryfiringWeapon.InvokeSafely(ev);
 
         /// <summary>
-        /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
+        /// Invoked before a <see cref="API.Features.Player"/> sending a voice message.
         /// </summary>
-        /// <param name="ev">The <see cref="VoiceChattingEventArgs"/> instance.</param>
-        public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="SendingVoiceMessageEventArgs"/> instance.</param>
+        public static void OnSendingVoiceMessage(SendingVoiceMessageEventArgs ev) => SendingVoiceMessage.InvokeSafely(ev);
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> receiving a voice message.
+        /// </summary>
+        /// <param name="ev">The <see cref="ReceivingVoiceMessageEventArgs"/> instance.</param>
+        public static void OnReceivingVoiceMessage(ReceivingVoiceMessageEventArgs ev) => ReceivingVoiceMessage.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> makes noise.
