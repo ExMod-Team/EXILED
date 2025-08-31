@@ -490,11 +490,6 @@ namespace Exiled.Events.Handlers
         public static Event<LandingEventArgs> Landing { get; set; } = new();
 
         /// <summary>
-        /// Invoked after a <see cref="API.Features.Player"/> presses the transmission key.
-        /// </summary>
-        public static Event<TransmittingEventArgs> Transmitting { get; set; } = new();
-
-        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> changes move state.
         /// </summary>
         public static Event<ChangingMoveStateEventArgs> ChangingMoveState { get; set; } = new();
@@ -1052,12 +1047,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="LandingEventArgs"/> instance.</param>
         public static void OnLanding(LandingEventArgs ev) => Landing.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called after a <see cref="API.Features.Player"/> presses the transmission key.
-        /// </summary>
-        /// <param name="ev">The <see cref="TransmittingEventArgs"/> instance.</param>
-        public static void OnTransmitting(TransmittingEventArgs ev) => Transmitting.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> changes move state.
