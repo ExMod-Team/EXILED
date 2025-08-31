@@ -7,11 +7,12 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+    using System;
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
-    using API.Features.Roles;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
@@ -21,18 +22,18 @@ namespace Exiled.Events.Patches.Events.Player
 
     using PlayerRoles.Voice;
 
-    using VoiceChat;
     using VoiceChat.Networking;
 
     using static HarmonyLib.AccessTools;
+    using static VoiceChat.Networking.VoiceTransceiver;
 
     /// <summary>
     /// Patches <see cref="VoiceTransceiver.ServerReceiveMessage(NetworkConnection, VoiceMessage)"/>.
-    /// Adds the <see cref="Handlers.Player.VoiceChatting"/> event.
-    /// Adds the <see cref="Handlers.Player.Transmitting"/> event.
+    /// Adds the <see cref="Handlers.Player.SendingVoiceMessage"/> event.
+    /// Adds the <see cref="Handlers.Player.ReceivingVoiceMessage"/> event.
     /// </summary>
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.VoiceChatting))]
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Transmitting))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingVoiceMessage))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingVoiceMessage))]
     [HarmonyPatch(typeof(VoiceTransceiver), nameof(VoiceTransceiver.ServerReceiveMessage))]
     internal static class VoiceChatting
     {
@@ -40,105 +41,73 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            LocalBuilder evSending = generator.DeclareLocal(typeof(SendingVoiceMessageEventArgs));
+            LocalBuilder evReceiving = generator.DeclareLocal(typeof(ReceivingVoiceMessageEventArgs));
+
             Label retLabel = generator.DefineLabel();
-            Label isMutedLabel = generator.DefineLabel();
             Label skipLabel = generator.DefineLabel();
-            List<Label> labels;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(VoiceChattingEventArgs));
-            LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
-            LocalBuilder voiceModule = generator.DeclareLocal(typeof(VoiceModuleBase));
-
-            const int offset = 3;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(VoiceModuleBase), nameof(VoiceModuleBase.CheckRateLimit)))) + offset;
-
-            // retrieve the base game jump label
-            labels = newInstructions[index].ExtractLabels();
-            newInstructions[index].labels.Add(isMutedLabel);
+            const int offset = 1;
+            int index = newInstructions.FindIndex(i => i.Calls(PropertySetter(typeof(VoiceModuleBase), nameof(VoiceModuleBase.CurrentChannel)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // Player.Get(msg.Speaker);
-                new CodeInstruction(OpCodes.Ldarg_1).WithLabels(labels),
-                new(OpCodes.Ldfld, Field(typeof(VoiceMessage), nameof(VoiceMessage.Speaker))),
-                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, player.LocalIndex),
-
-                // if (player is null)
-                //      go to base game logic
-                new(OpCodes.Ldnull),
-                new(OpCodes.Cgt_Un),
-                new(OpCodes.Brfalse_S, isMutedLabel),
-
-                // Player.Get(msg.Speaker);
-                new(OpCodes.Ldloc_S, player.LocalIndex),
-
                 // msg
                 new(OpCodes.Ldarg_1),
 
-                // voiceModule
-                new(OpCodes.Ldloc_S, player.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
-                new(OpCodes.Isinst, typeof(API.Features.Roles.IVoiceRole)),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Roles.IVoiceRole), nameof(API.Features.Roles.IVoiceRole.VoiceModule))),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, voiceModule.LocalIndex),
-
-                // true
-                new(OpCodes.Ldc_I4_1),
-
-                // VoiceChattingEventArgs ev = new(Player, VoiceMessage, VoiceModuleBase, true);
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(VoiceChattingEventArgs))[0]),
+                // SendingVoiceMessageEventArgs ev = new(VoiceMessage);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingVoiceMessageEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, ev.LocalIndex),
+                new(OpCodes.Stloc_S, evSending.LocalIndex),
 
-                // Handlers.Player.OnVoiceChatting(ev);
-                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnVoiceChatting))),
+                // Handlers.Player.OnSendingVoiceMessage(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingVoiceMessage))),
 
                 // if (!ev.IsAllowed)
                 //    return;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceChattingEventArgs), nameof(VoiceChattingEventArgs.IsAllowed))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(SendingVoiceMessageEventArgs), nameof(SendingVoiceMessageEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
 
                 // msg = ev.VoiceMessage;
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceChattingEventArgs), nameof(VoiceChattingEventArgs.VoiceMessage))),
+                new(OpCodes.Ldloc_S, evSending.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(SendingVoiceMessageEventArgs), nameof(SendingVoiceMessageEventArgs.VoiceMessage))),
                 new(OpCodes.Starg_S, 1),
-
-                // if(voiceModule.CurrentChannel != VoiceChatChannel.Radio)
-                //     goto skipLabel;
-                new(OpCodes.Ldloc_S, voiceModule.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceModuleBase), nameof(VoiceModuleBase.CurrentChannel))),
-                new(OpCodes.Ldc_I4_S, (sbyte)VoiceChatChannel.Radio),
-                new(OpCodes.Ceq),
-                new(OpCodes.Brfalse_S, skipLabel),
-
-                // player
-                new(OpCodes.Ldloc_S, player.LocalIndex),
-
-                // voiceModule
-                new(OpCodes.Ldloc_S, voiceModule.LocalIndex),
-
-                // true
-                new(OpCodes.Ldc_I4_1),
-
-                // TransmittingEventArgs ev = new TransmittingEventArgs(Player, VoiceModuleBase, bool)
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TransmittingEventArgs))[0]),
-                new(OpCodes.Dup),
-
-                // Handlers.Player.OnTransmitting(ev);
-                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnTransmitting))),
-
-                // if(!ev.IsAllowed)
-                //     return;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(TransmittingEventArgs), nameof(TransmittingEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse_S, retLabel),
-
-                new CodeInstruction(OpCodes.Nop).WithLabels(skipLabel),
             });
 
+            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(VoiceMessageReceiving), nameof(VoiceMessageReceiving.Invoke)))) + offset;
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
+            {
+                // msg
+                new(OpCodes.Ldarg_1),
+
+                // allHub;
+                new(OpCodes.Ldloc_S, 4),
+
+                // ReceivingVoiceMessageEventArgs ev = new(msg, allHub);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReceivingVoiceMessageEventArgs))[0]),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, evReceiving.LocalIndex),
+
+                // Handlers.Player.OnReceivingVoiceMessage(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnReceivingVoiceMessage))),
+
+                // if (!ev.IsAllowed)
+                //    return;
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingVoiceMessageEventArgs), nameof(ReceivingVoiceMessageEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse_S, skipLabel),
+
+                // msg = ev.VoiceMessage;
+                new(OpCodes.Ldloc_S, evReceiving.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingVoiceMessageEventArgs), nameof(ReceivingVoiceMessageEventArgs.VoiceMessage))),
+                new(OpCodes.Starg_S, 1),
+            });
+
+            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Callvirt && i.operand is MethodInfo mi && mi.Name == nameof(NetworkConnection.Send) && mi.IsGenericMethod) + offset;
+
+            newInstructions[index].labels.Add(skipLabel);
             newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
