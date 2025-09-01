@@ -37,6 +37,9 @@ namespace Exiled.API.Features.Pickups.Keycards
         {
         }
 
+        /// <inheritdoc cref="SingleUseKeycard.Uses"/>
+        public int Uses { get; set; } = 1;
+
         /// <summary>
         /// Gets or sets the time delay to destroy the Keycard after being used.
         /// </summary>
@@ -62,6 +65,7 @@ namespace Exiled.API.Features.Pickups.Keycards
             base.ReadItemInfo(item);
             if (item is SingleUseKeycard singleUseKeycardItem)
             {
+                Uses = singleUseKeycardItem.Uses;
                 TimeToDestroy = singleUseKeycardItem.TimeToDestroy;
                 Permissions = singleUseKeycardItem.Permissions;
                 AllowClosingDoors = singleUseKeycardItem.AllowClosingDoors;

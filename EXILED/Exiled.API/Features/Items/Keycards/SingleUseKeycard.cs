@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Items.Keycards
 {
+    using System.Collections.Generic;
+
     using Exiled.API.Enums;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pickups.Keycards;
@@ -44,6 +46,27 @@ namespace Exiled.API.Features.Items.Keycards
         public new SingleUseKeycardItem Base { get; }
 
         /// <summary>
+        /// Gets or sets the amount of uses remaining on the keycard.
+        /// </summary>
+        /// <remarks>Multiple uses can look strange for clients (they'll run the discard animation, but can reselect the keycard)
+        /// <br/><br/>
+        /// Setting this to 0 or lower will destroy the keycard.
+        /// </remarks>
+        public int Uses
+        {
+            get => RemainingUses.TryGetValue(Serial, out int value) ? value : 1;
+            set
+            {
+                if (value <= 0)
+                {
+                    IsDestroyed = true;
+                }
+
+                RemainingUses[Serial] = value;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the time delay to destroy the Keycard after being used.
         /// </summary>
         public float TimeToDestroy
@@ -78,6 +101,11 @@ namespace Exiled.API.Features.Items.Keycards
         }
 
         /// <summary>
+        /// Gets a dictionary storing all remaining uses for every <see cref="SingleUseKeycard"/>.
+        /// </summary>
+        internal static Dictionary<ushort, int> RemainingUses { get; } = new();
+
+        /// <summary>
         /// Returns the Keycard in a human readable format.
         /// </summary>
         /// <returns>A string containing Keycard-related data.</returns>
@@ -88,6 +116,7 @@ namespace Exiled.API.Features.Items.Keycards
         {
             if (pickup is SingleUseKeycardPickup singleUseKeycard)
             {
+                Uses = singleUseKeycard.Uses;
                 TimeToDestroy = singleUseKeycard.TimeToDestroy;
                 Permissions = singleUseKeycard.Permissions;
                 AllowClosingDoors = singleUseKeycard.AllowClosingDoors;

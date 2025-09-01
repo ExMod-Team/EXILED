@@ -420,6 +420,8 @@ namespace Exiled.API.Features
 
             CustomKeycardItem.DataDict.Clear();
 
+            SingleUseKeycard.RemainingUses.Clear();
+
 #pragma warning disable CS0618
             Scp559.CakeToWrapper.Clear();
 
