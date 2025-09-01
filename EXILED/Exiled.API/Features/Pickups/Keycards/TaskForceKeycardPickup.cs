@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="TaskForceKeycardPickup.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -88,7 +88,7 @@ namespace Exiled.API.Features.Pickups.Keycards
         /// <returns>The new <see cref="TaskForceKeycardPickup"/>.</returns>
         public static TaskForceKeycardPickup Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string serialNumber, byte rank)
         {
-            TaskForceKeycardPickup keycardPickup = Create<TaskForceKeycardPickup>(ItemType.KeycardCustomManagement);
+            TaskForceKeycardPickup keycardPickup = Create<TaskForceKeycardPickup>(ItemType.KeycardCustomTaskForce);
             keycardPickup.KeycardLevels = keycardLevels;
             keycardPickup.PermissionsColor = permissionsColor;
             keycardPickup.ItemName = itemName;

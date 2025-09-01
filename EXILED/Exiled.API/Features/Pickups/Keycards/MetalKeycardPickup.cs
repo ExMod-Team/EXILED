@@ -115,7 +115,7 @@ namespace Exiled.API.Features.Pickups.Keycards
         /// <returns>The new <see cref="MetalKeycardPickup"/>.</returns>
         public static MetalKeycardPickup Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear, string serialNumber)
         {
-            MetalKeycardPickup keycardPickup = Create<MetalKeycardPickup>(ItemType.KeycardCustomManagement);
+            MetalKeycardPickup keycardPickup = Create<MetalKeycardPickup>(ItemType.KeycardCustomMetalCase);
             keycardPickup.KeycardLevels = keycardLevels;
             keycardPickup.PermissionsColor = permissionsColor;
             keycardPickup.ItemName = itemName;

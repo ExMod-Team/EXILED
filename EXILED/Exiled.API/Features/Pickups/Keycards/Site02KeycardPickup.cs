@@ -101,7 +101,7 @@ namespace Exiled.API.Features.Pickups.Keycards
         /// <returns>The new <see cref="Site02KeycardPickup"/>.</returns>
         public static Site02KeycardPickup Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear)
         {
-            Site02KeycardPickup keycardPickup = Create<Site02KeycardPickup>(ItemType.KeycardCustomManagement);
+            Site02KeycardPickup keycardPickup = Create<Site02KeycardPickup>(ItemType.KeycardCustomSite02);
             keycardPickup.KeycardLevels = keycardLevels;
             keycardPickup.PermissionsColor = permissionsColor;
             keycardPickup.ItemName = itemName;
