@@ -14,7 +14,7 @@ namespace Exiled.API.Features.Pickups.Keycards
     /// <summary>
     /// A base class for all keycard pickups.
     /// </summary>
-    public abstract class ChaosKeycardPickup : Pickups.KeycardPickup
+    public class ChaosKeycardPickup : Pickups.KeycardPickup
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChaosKeycardPickup"/> class.
