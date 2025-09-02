@@ -1041,13 +1041,27 @@ namespace Exiled.Events.Handlers
         /// Invoked before a <see cref="API.Features.Player"/> sending a voice message.
         /// </summary>
         /// <param name="ev">The <see cref="SendingVoiceMessageEventArgs"/> instance.</param>
-        public static void OnSendingVoiceMessage(SendingVoiceMessageEventArgs ev) => SendingVoiceMessage.InvokeSafely(ev);
+        public static void OnSendingVoiceMessage(PlayerSendingVoiceMessageEventArgs ev)
+        {
+            SendingVoiceMessageEventArgs evExiled = new(ev.Player, ev.Message, ev.IsAllowed);
+            SendingVoiceMessage.InvokeSafely(evExiled);
+
+            ev.IsAllowed = evExiled.IsAllowed;
+            ev.Message = evExiled.VoiceMessage;
+        }
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> receiving a voice message.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingVoiceMessageEventArgs"/> instance.</param>
-        public static void OnReceivingVoiceMessage(ReceivingVoiceMessageEventArgs ev) => ReceivingVoiceMessage.InvokeSafely(ev);
+        public static void OnReceivingVoiceMessage(PlayerReceivingVoiceMessageEventArgs ev)
+        {
+            ReceivingVoiceMessageEventArgs evExiled = new(ev.Message, ev.Player, ev.Sender, ev.IsAllowed);
+            ReceivingVoiceMessage.InvokeSafely(evExiled);
+
+            ev.IsAllowed = evExiled.IsAllowed;
+            ev.Message = evExiled.VoiceMessage;
+        }
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> makes noise.
