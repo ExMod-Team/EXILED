@@ -22,18 +22,20 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingVoiceMessageEventArgs" /> class.
         /// </summary>
-        /// <param name="voiceMessage">
-        /// <inheritdoc cref="VoiceMessage" />
-        /// </param>
-        public SendingVoiceMessageEventArgs(VoiceMessage voiceMessage)
+        /// <param name="player">The player who's sending the voice message.</param>
+        /// <param name="voiceMessage">The voice message being sent.</param>
+        /// <param name="isAllowed">Indicates whether the player is allowed to send the voice message.</param>
+        public SendingVoiceMessageEventArgs(Player player, VoiceMessage voiceMessage, bool isAllowed)
         {
-            Player = Player.Get(voiceMessage.Speaker);
+            Player = player;
             VoiceMessage = voiceMessage;
 
             if (Player.Role is IVoiceRole iVR)
             {
                 VoiceModule = iVR.VoiceModule;
             }
+
+            IsAllowed = isAllowed;
         }
 
         /// <summary>
