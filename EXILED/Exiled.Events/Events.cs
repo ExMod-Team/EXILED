@@ -89,6 +89,9 @@ namespace Exiled.Events
 
             ServerSpecificSettingsSync.ServerOnSettingValueReceived += SettingBase.OnSettingUpdated;
 
+            LabApi.Events.Handlers.PlayerEvents.SendingVoiceMessage += Handlers.Player.OnSendingVoiceMessage;
+            LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage += Handlers.Player.OnReceivingVoiceMessage;
+
             ServerConsole.ReloadServerName();
         }
 
@@ -123,6 +126,9 @@ namespace Exiled.Events
             ItemPickupBase.OnPickupDestroyed -= Handlers.Internal.PickupEvent.OnRemovedPickup;
 
             ServerSpecificSettingsSync.ServerOnSettingValueReceived -= SettingBase.OnSettingUpdated;
+
+            LabApi.Events.Handlers.PlayerEvents.SendingVoiceMessage -= Handlers.Player.OnSendingVoiceMessage;
+            LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage -= Handlers.Player.OnReceivingVoiceMessage;
         }
 
         /// <summary>
