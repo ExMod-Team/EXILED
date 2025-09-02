@@ -22,22 +22,22 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="ReceivingVoiceMessageEventArgs" /> class.
         /// </summary>
-        /// <param name="voiceMessage">
-        /// <inheritdoc cref="VoiceMessage" />
-        /// </param>
-        /// <param name="receiver">
-        /// The player receiving the voice message.
-        /// </param>
-        public ReceivingVoiceMessageEventArgs(VoiceMessage voiceMessage, ReferenceHub receiver)
+        /// <param name="voiceMessage">The voice message being sent.</param>
+        /// <param name="receiver">The player receiving the voice message.</param>
+        /// <param name="sender">The player sending the voice message.</param>
+        /// <param name="isAllowed">A value indicating whether the player is allowed to receive the voice message.</param>
+        public ReceivingVoiceMessageEventArgs(VoiceMessage voiceMessage, Player receiver, Player sender, bool isAllowed)
         {
-            Player = Player.Get(receiver);
+            Player = receiver;
             VoiceMessage = voiceMessage;
-            Sender = Player.Get(voiceMessage.Speaker);
+            Sender = sender;
 
             if (Sender.Role is IVoiceRole iVR)
             {
                 VoiceModule = iVR.VoiceModule;
             }
+
+            IsAllowed = isAllowed;
         }
 
         /// <summary>
@@ -63,6 +63,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the player can receive the voice message.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
+        public bool IsAllowed { get; set; }
     }
 }
