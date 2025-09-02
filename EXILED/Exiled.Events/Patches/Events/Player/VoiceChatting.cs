@@ -43,8 +43,6 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(VoiceChattingEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
             LocalBuilder voiceModule = generator.DeclareLocal(typeof(VoiceModuleBase));
-            LocalBuilder evSending = generator.DeclareLocal(typeof(SendingVoiceMessageEventArgs));
-            LocalBuilder evReceiving = generator.DeclareLocal(typeof(ReceivingVoiceMessageEventArgs));
 
             Label retLabel = generator.DefineLabel();
             Label skipLabel = generator.DefineLabel();
