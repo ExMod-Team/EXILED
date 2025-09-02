@@ -16,6 +16,7 @@ namespace Exiled.Events.Handlers
     using Exiled.Events.EventArgs.Player;
 
     using Exiled.Events.Features;
+    using LabApi.Events.Arguments.PlayerEvents;
 
     /// <summary>
     /// Player related events.
