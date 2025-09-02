@@ -485,15 +485,15 @@ namespace Exiled.Events.Handlers
         public static Event<JumpingEventArgs> Jumping { get; set; } = new();
 
         /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> lands.
+        /// </summary>
+        public static Event<LandingEventArgs> Landing { get; set; } = new();
+
+        /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> presses the transmission key.
         /// </summary>
         [Obsolete("Use Sending Voice Message event and check channel is radio instead of this")]
         public static Event<TransmittingEventArgs> Transmitting { get; set; } = new();
-
-        /// <summary>
-        /// Invoked after a <see cref="API.Features.Player"/> lands.
-        /// </summary>
-        public static Event<LandingEventArgs> Landing { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> changes move state.
