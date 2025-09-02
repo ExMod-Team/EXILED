@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceChattingEventArgs), nameof(VoiceChattingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
 
-                 // msg = ev.VoiceMessage;
+                // msg = ev.VoiceMessage;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceChattingEventArgs), nameof(VoiceChattingEventArgs.VoiceMessage))),
                 new(OpCodes.Starg_S, 1),
