@@ -1061,17 +1061,17 @@ namespace Exiled.Events.Handlers
         public static void OnChangingMoveState(ChangingMoveStateEventArgs ev) => ChangingMoveState.InvokeSafely(ev);
 
         /// <summary>
-        /// Called after a <see cref="API.Features.Player"/> changes spectated player.
-        /// </summary>
-        /// <param name="ev">The <see cref="ChangingSpectatedPlayerEventArgs"/> instance.</param>
-        public static void OnChangingSpectatedPlayer(ChangingSpectatedPlayerEventArgs ev) => ChangingSpectatedPlayer.InvokeSafely(ev);
-
-        /// <summary>
         /// Called after a <see cref="API.Features.Player"/> presses the transmission key.
         /// </summary>
         /// <param name="ev">The <see cref="TransmittingEventArgs"/> instance.</param>
         [Obsolete("Use Sending Voice Message event and check channel is radio instead of this")]
         public static void OnTransmitting(TransmittingEventArgs ev) => Transmitting.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Player"/> changes spectated player.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingSpectatedPlayerEventArgs"/> instance.</param>
+        public static void OnChangingSpectatedPlayer(ChangingSpectatedPlayerEventArgs ev) => ChangingSpectatedPlayer.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> toggles the NoClip mode.
