@@ -465,6 +465,12 @@ namespace Exiled.Events.Handlers
         public static Event<DryfiringWeaponEventArgs> DryfiringWeapon { get; set; } = new();
 
         /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
+        /// </summary>
+        [Obsolete("Use SendingVoiceMessage instead of this")]
+        public static Event<VoiceChattingEventArgs> VoiceChatting { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> sending a voice message.
         /// </summary>
         public static Event<SendingVoiceMessageEventArgs> SendingVoiceMessage { get; set; } = new();
@@ -1023,6 +1029,13 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="DryfiringWeaponEventArgs"/> instance.</param>
         public static void OnDryfiringWeapon(DryfiringWeaponEventArgs ev) => DryfiringWeapon.InvokeSafely(ev);
+
+        /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
+        /// </summary>
+        /// <param name="ev">The <see cref="VoiceChattingEventArgs"/> instance.</param>
+        [Obsolete("Use OnSendingVoiceMessage instead of this")]
+        public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> sending a voice message.
