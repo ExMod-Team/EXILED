@@ -485,6 +485,12 @@ namespace Exiled.Events.Handlers
         public static Event<JumpingEventArgs> Jumping { get; set; } = new();
 
         /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> presses the transmission key.
+        /// </summary>
+        [Obsolete("Use Sending Voice Message event and check channel is radio instead of this")]
+        public static Event<TransmittingEventArgs> Transmitting { get; set; } = new();
+
+        /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> lands.
         /// </summary>
         public static Event<LandingEventArgs> Landing { get; set; } = new();
@@ -1059,6 +1065,13 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ChangingSpectatedPlayerEventArgs"/> instance.</param>
         public static void OnChangingSpectatedPlayer(ChangingSpectatedPlayerEventArgs ev) => ChangingSpectatedPlayer.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Player"/> presses the transmission key.
+        /// </summary>
+        /// <param name="ev">The <see cref="TransmittingEventArgs"/> instance.</param>
+        [Obsolete("Use Sending Voice Message event and check channel is radio instead of this")]
+        public static void OnTransmitting(TransmittingEventArgs ev) => Transmitting.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> toggles the NoClip mode.
