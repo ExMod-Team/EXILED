@@ -586,10 +586,14 @@ namespace Exiled.CustomRoles.API.Features
             player.Scale = Scale;
             if (Gravity.HasValue && player.Role is FpcRole fpcRole)
                 fpcRole.Gravity = Gravity.Value;
-            Vector3 position = GetSpawnPosition();
-            if (position != Vector3.zero)
+
+            if (!KeepPositionOnSpawn)
             {
-                player.Position = position;
+                Vector3 position = GetSpawnPosition();
+                if (position != Vector3.zero)
+                {
+                    player.Position = position;
+                }
             }
 
             Log.Debug($"{Name}: Setting player info");
