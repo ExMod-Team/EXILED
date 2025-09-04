@@ -321,7 +321,7 @@ namespace Exiled.API.Features.Items
             {
                 ChaosKeycardItem => new ChaosKeycard(type),
                 SingleUseKeycardItem => new SingleUseKeycard(type),
-                _ => keycard.ItemTypeId switch
+                _ => type switch
                 {
                     ItemType.KeycardCustomTaskForce => new TaskForceKeycard(type),
                     ItemType.KeycardCustomSite02 => new Site02Keycard(type),

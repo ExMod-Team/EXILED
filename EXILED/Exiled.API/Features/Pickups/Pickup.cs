@@ -318,7 +318,7 @@ namespace Exiled.API.Features.Pickups
                     _ => new GrenadePickup(timeGrenade),
                 },
                 BaseFirearmPickup firearmPickup => new FirearmPickup(firearmPickup),
-                BaseKeycardPickup keycardPickup => keycardPickup.ItemId.TypeId switch
+                BaseKeycardPickup keycardPickup => keycardPickup.NetworkInfo.ItemId switch
                 {
                     ItemType.KeycardCustomTaskForce => new TaskForceKeycardPickup(keycardPickup),
                     ItemType.KeycardCustomSite02 => new Site02KeycardPickup(keycardPickup),
