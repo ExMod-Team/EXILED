@@ -28,8 +28,6 @@ namespace Exiled.API.Features.Pickups.Keycards
     /// </summary>
     public abstract class CustomKeycardPickup : Pickups.KeycardPickup
     {
-        private static readonly ItemType[] AllKeycards = { ItemType.KeycardJanitor, ItemType.KeycardScientist, ItemType.KeycardResearchCoordinator, ItemType.KeycardZoneManager };
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomKeycardPickup"/> class.
         /// </summary>
@@ -139,7 +137,7 @@ namespace Exiled.API.Features.Pickups.Keycards
 
             ItemType[] toIterate = Type switch
             {
-                _ when matchDesign => AllKeycards,
+                _ when !matchDesign => CustomKeycardItem.AllKeycards,
                 ItemType.KeycardCustomSite02 => CustomKeycardItem.AllSite02,
                 ItemType.KeycardCustomManagement => CustomKeycardItem.AllManagement,
                 ItemType.KeycardCustomMetalCase => CustomKeycardItem.AllMetalCase,
