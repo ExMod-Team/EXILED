@@ -209,6 +209,9 @@ namespace Exiled.API.Features.Pickups.Keycards
             if (this is ISerialNumberKeycard serial)
                 CustomSerialNumberDetail._customVal = serial.SerialNumber;
 
+            if (this is IRankKeycard rank)
+                CustomRankDetail._index = rank.Rank;
+
             // can happen if a dev does the big dumb
             if (Base is null)
             {

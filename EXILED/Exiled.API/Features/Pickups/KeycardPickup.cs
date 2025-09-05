@@ -9,6 +9,7 @@ namespace Exiled.API.Features.Pickups
 {
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items;
@@ -59,7 +60,7 @@ namespace Exiled.API.Features.Pickups
         internal override void ReadItemInfo(Item item)
         {
             base.ReadItemInfo(item);
-            if (item is Keycard keycarditem)
+            if (item is Keycard keycarditem and not CustomKeycardItem)
             {
                 Permissions = keycarditem.Permissions;
             }

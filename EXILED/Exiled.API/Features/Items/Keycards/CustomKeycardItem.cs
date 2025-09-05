@@ -246,6 +246,9 @@ namespace Exiled.API.Features.Items.Keycards
             if (this is ISerialNumberKeycard serial)
                 CustomSerialNumberDetail._customVal = serial.SerialNumber;
 
+            if (this is IRankKeycard rank)
+                CustomRankDetail._index = rank.Rank;
+
             MirrorExtensions.ResyncKeycardItem(this);
         }
 
