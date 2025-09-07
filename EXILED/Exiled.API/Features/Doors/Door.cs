@@ -606,7 +606,10 @@ namespace Exiled.API.Features.Doors
                     "LCZ PortallessBreakableDoor" => Room?.Type switch
                     {
                         RoomType.Hcz106 => DoorType.Scp106Checkpoint,
+                        RoomType.HczTestRoom => DoorType.TestRoom,
+                        RoomType.LczPlants => DoorType.PlantsCloset,
                         RoomType.LczAirlock => DoorType.Airlock,
+                        RoomType.HczEzCheckpointA or RoomType.HczEzCheckpointB or RoomType.LczCheckpointA or RoomType.LczCheckpointB => DoorType.Checkpoint,
                         _ => DoorType.UnknownDoor,
                     },
                     "LCZ BreakableDoor" => DoorType.LightContainmentDoor,

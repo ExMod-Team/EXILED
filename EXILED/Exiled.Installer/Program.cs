@@ -89,6 +89,28 @@ namespace Exiled.Installer
                     GitHubClient.Credentials = new Credentials(args.GitHubToken, AuthenticationType.Bearer);
                 }
 
+                if (string.IsNullOrEmpty(args.TargetVersion) && !args.PreReleases)
+                {
+                    Console.WriteLine(Resources.Program_MainSafe_Which_version_would_you_like_to_install_);
+                    Console.WriteLine(Resources.Program_MainSafe__1___Latest_stable_release);
+                    Console.WriteLine(Resources.Program_MainSafe__2___Latest_prerelease__beta_dev_);
+
+                    Console.Write(Resources.Program_MainSafe_Your_choice__1_2___);
+                    ConsoleKeyInfo key = Console.ReadKey(intercept: true);
+                    Console.WriteLine(key.KeyChar);
+
+                    if (key.KeyChar == '2')
+                    {
+                        args.PreReleases = true;
+                        Console.WriteLine(Resources.Program_MainSafe_);
+                    }
+                    else
+                    {
+                        args.PreReleases = false;
+                        Console.WriteLine(Resources.Program_MainSafe_);
+                    }
+                }
+
                 Console.WriteLine(Resources.Program_MainSafe_Receiving_releases___);
                 Console.WriteLine(Resources.Program_MainSafe_Prereleases_included____0_, args.PreReleases);
                 Console.WriteLine(Resources.Program_MainSafe_Target_release_version____0_, string.IsNullOrEmpty(args.TargetVersion) ? "(null)" : args.TargetVersion);

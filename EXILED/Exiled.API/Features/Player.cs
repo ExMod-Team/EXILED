@@ -64,6 +64,7 @@ namespace Exiled.API.Features
     using VoiceChat.Playbacks;
 
     using static DamageHandlers.DamageHandlerBase;
+    using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
 
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
     using Firearm = Items.Firearm;
@@ -137,6 +138,19 @@ namespace Exiled.API.Features
         /// Gets a list of all <see cref="Player"/>'s on the server.
         /// </summary>
         public static IReadOnlyCollection<Player> List => Dictionary.Values.ToList();
+
+        /// <summary>
+        /// Gets an <see cref="IEnumerable{T}"/> of all <see cref="Player"/>'s on the server.
+        /// This property should be used for enumeration (e.g. LINQ) as it doesn't create a new list, improving performance.
+        /// </summary>
+        public static IEnumerable<Player> Enumerable => Dictionary.Values;
+
+        /// <summary>
+        /// Gets the number of players currently on the server.
+        /// </summary>
+        /// <seealso cref="List"/>
+        /// <seealso cref="Enumerable"/>
+        public static int Count => Dictionary.Count;
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="Player"/> and their user ids.
@@ -1191,7 +1205,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="player">The LabApi player.</param>
         /// <returns>EXILED player.</returns>
-        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player.ReferenceHub);
+        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player?.ReferenceHub);
 
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> filtered by side. Can be empty.
@@ -1791,22 +1805,69 @@ namespace Exiled.API.Features
         public bool TryRemoveCustomeRoleFriendlyFire(string role) => CustomRoleFriendlyFireMultiplier.Remove(role);
 
         /// <summary>
-        /// Forces the player to reload their current weapon.
+        /// Forces the player's client to play the weapon reload animation, bypassing server-side checks.
         /// </summary>
-        /// <returns><see langword="true"/> if firearm was successfully reloaded. Otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if the command to start reloading was sent. Otherwise, <see langword="false"/>.</returns>
+        /// <remarks>
+        /// This method does not check if the weapon can actually be reloaded. It only forces the animation and is not guaranteed to result in a successful reload.
+        /// </remarks>
         public bool ReloadWeapon()
         {
-            if (CurrentItem is Firearm firearm)
+            if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
             {
-                // TODO not finish
-                /*
-                bool result = firearm.Base.Ammo.ServerTryReload();
-                Connection.Send(new RequestMessage(firearm.Serial, RequestType.Reload));
-                return result;
-                */
+                return false;
             }
 
-            return false;
+            firearm.AnimatorReloaderModule.IsReloading = true;
+            firearm.AnimatorReloaderModule.SendRpcHeaderWithRandomByte(ReloaderMessageHeader.Reload);
+            return true;
+        }
+
+        /// <summary>
+        /// Forces the player to reload their current weapon.
+        /// </summary>
+        /// <returns><see langword="true"/> if the firearm was successfully reloaded. Otherwise, <see langword="false"/>.</returns>
+        public bool TryReloadWeapon()
+        {
+            if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
+            {
+                return false;
+            }
+
+            return firearm.AnimatorReloaderModule.ServerTryReload();
+        }
+
+        /// <summary>
+        /// Forces the player's client to play the weapon unload animation, bypassing server-side checks.
+        /// </summary>
+        /// <returns><see langword="true"/> if the command to start unloading was sent. Otherwise, <see langword="false"/>.</returns>
+        /// <remarks>
+        /// This method does not check if the weapon can actually be unloaded. It only forces the animation and is not guaranteed to result in a successful unload.
+        /// </remarks>
+        public bool UnloadWeapon()
+        {
+            if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
+            {
+                return false;
+            }
+
+            firearm.AnimatorReloaderModule.IsUnloading = true;
+            firearm.AnimatorReloaderModule.SendRpcHeaderWithRandomByte(ReloaderMessageHeader.Unload);
+            return true;
+        }
+
+        /// <summary>
+        /// Forces the player to unload their current weapon.
+        /// </summary>
+        /// <returns><see langword="true"/> if the firearm was successfully unloaded. Otherwise, <see langword="false"/>.</returns>
+        public bool TryUnloadWeapon()
+        {
+            if (CurrentItem is not Firearm firearm || firearm.AnimatorReloaderModule == null)
+            {
+                return false;
+            }
+
+            return firearm.AnimatorReloaderModule.ServerTryUnload();
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace Exiled.API.Extensions
     using System.Text;
 
     using AudioPooling;
+    using CustomPlayerEffects;
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
     using Features;
@@ -398,6 +399,64 @@ namespace Exiled.API.Extensions
             // To counter a bug that makes the player invisible until they move after changing their appearance, we will teleport them upwards slightly to force a new position update for all clients.
             if (!skipJump)
                 player.Position += Vector3.up * 0.25f;
+        }
+
+        /// <summary>
+        /// Resynchronizes a specific effect from the effect owner to the target player.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect to be resynchronized.</param>
+        /// <param name="target">The target player to whom the effect will be resynchronized.</param>
+        /// <param name="effect">The type of effect to be resynchronized.</param>
+        public static void ResyncEffectTo(this Player effectOwner, Player target, EffectType effect) => effectOwner.SendFakeEffectTo(target, effect, effectOwner.GetEffect(effect).Intensity);
+
+        /// <summary>
+        /// Resynchronizes a specific effect from the effect owner to the target players.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect to be resynchronized.</param>
+        /// <param name="targets">The list of target players to whom the effect will be resynchronized.</param>
+        /// <param name="effect">The type of effect to be resynchronized.</param>
+        public static void ResyncEffectTo(this Player effectOwner, IEnumerable<Player> targets, EffectType effect) => effectOwner.SendFakeEffectTo(targets, effect, effectOwner.GetEffect(effect).Intensity);
+
+        /// <summary>
+        /// Sends a fake effect to a list of target players, simulating the effect as if it originated from the effect owner.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect.</param>
+        /// <param name="targets">The list of target players to whom the effect will be sent.</param>
+        /// <param name="effect">The type of effect to be sent.</param>
+        /// <param name="intensity">The intensity of the effect.</param>
+        public static void SendFakeEffectTo(this Player effectOwner, IEnumerable<Player> targets, EffectType effect, byte intensity)
+        {
+            foreach (Player target in targets)
+            {
+                effectOwner.SendFakeEffectTo(target, effect, intensity);
+            }
+        }
+
+        /// <summary>
+        /// Sends a fake effect to a target player, simulating the effect as if it originated from the effect owner.
+        /// </summary>
+        /// <param name="effectOwner">The player who owns the effect.</param>
+        /// <param name="target">The target player to whom the effect will be sent.</param>
+        /// <param name="effect">The type of effect to be sent.</param>
+        /// <param name="intensity">The intensity of the effect.</param>
+        public static void SendFakeEffectTo(this Player effectOwner, Player target, EffectType effect, byte intensity)
+        {
+            SendFakeSyncObject(target, effectOwner.NetworkIdentity, typeof(PlayerEffectsController), (writer) =>
+            {
+                StatusEffectBase foundEffect = effectOwner.GetEffect(effect);
+                int foundIndex = effectOwner.ReferenceHub.playerEffectsController.AllEffects.IndexOf(foundEffect);
+                if (foundIndex == -1)
+                {
+                    Log.Error($"Effect {effect} not found in {effectOwner.Nickname}'s effects list.");
+                    return;
+                }
+
+                writer.WriteULong(0b0001);
+                writer.WriteUInt(1);
+                writer.WriteByte((byte)SyncList<byte>.Operation.OP_SET);
+                writer.WriteUInt((uint)foundIndex);
+                writer.WriteByte(intensity);
+            });
         }
 
         /// <summary>

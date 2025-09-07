@@ -143,11 +143,8 @@ namespace Exiled.API.Features
             }
         }
 
-        /// <summary>
-        /// Gets the number of players currently on the server.
-        /// </summary>
-        /// <seealso cref="Player.List"/>
-        public static int PlayerCount => Player.Dictionary.Count;
+        /// <inheritdoc cref="Player.Count"/>
+        public static int PlayerCount => Player.Count;
 
         /// <summary>
         /// Gets or sets the maximum number of players able to be on the server.

@@ -12,6 +12,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features.Pools;
     using CentralAuth;
+    using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
     using HarmonyLib;
     using UnityEngine;
@@ -22,6 +23,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="AspectRatioSync.UserCode_CmdSetAspectRatio__Single" />.
     /// Adds the <see cref="Handlers.Player.ChangedRatio" /> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ChangedRatio))]
     [HarmonyPatch(typeof(AspectRatioSync), nameof(AspectRatioSync.UserCode_CmdSetAspectRatio__Single))]
     internal class ChangedAspectRatio
     {
@@ -29,17 +31,17 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder oldratio = generator.DeclareLocal(typeof(float));
+            LocalBuilder oldRatio = generator.DeclareLocal(typeof(float));
             LocalBuilder hub = generator.DeclareLocal(typeof(ReferenceHub));
 
             Label retLabel = generator.DefineLabel();
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
-                // float OldRatio = this.AspectRatio;
+                // float oldRatio = this.AspectRatio;
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(AspectRatioSync), nameof(AspectRatioSync.AspectRatio))),
-                new(OpCodes.Stloc_S, oldratio.LocalIndex),
+                new(OpCodes.Stloc_S, oldRatio.LocalIndex),
             });
 
             int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ret);
@@ -60,14 +62,13 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Bne_Un_S, retLabel),
 
                 // hub
-                new(OpCodes.Ldloc, hub.LocalIndex),
+                new(OpCodes.Ldloc_S, hub.LocalIndex),
 
-                // OldRatio
-                new(OpCodes.Ldloc, oldratio.LocalIndex),
+                // oldRatio
+                new(OpCodes.Ldloc_S, oldRatio.LocalIndex),
 
-                // this.AspectRatio
-                new(OpCodes.Ldarg_0),
-                new(OpCodes.Call, PropertyGetter(typeof(AspectRatioSync), nameof(AspectRatioSync.AspectRatio))),
+                // aspectRatio
+                new(OpCodes.Ldarg_1),
 
                 // ChangedRatioEventArgs ev = new ChangedRatioEventArgs(ReferenceHub, float, float)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangedRatioEventArgs))[0]),

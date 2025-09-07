@@ -43,6 +43,16 @@ namespace Exiled.Events.Handlers
         public static Event<BeingObservedEventArgs> BeingObserved { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a player starts looking at SCP-173.
+        /// </summary>
+        public static Event<AddingObserverEventArgs> AddingObserver { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a player stops looking at SCP-173.
+        /// </summary>
+        public static Event<RemovedObserverEventArgs> RemovedObserver { get; set; } = new();
+
+        /// <summary>
         /// Called before players near SCP-173 blink.
         /// </summary>
         /// <param name="ev">The <see cref="BlinkingEventArgs" /> instance.</param>
@@ -71,5 +81,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="BeingObservedEventArgs" /> instance.</param>
         public static void OnBeingObserved(BeingObservedEventArgs ev) => BeingObserved.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before player starts looking at SCP-173.
+        /// </summary>
+        /// <param name="ev">The <see cref="AddingObserverEventArgs" /> instance.</param>
+        public static void OnAddingObserver(AddingObserverEventArgs ev) => AddingObserver.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a player stops looking at SCP-173.
+        /// </summary>
+        /// <param name="ev">The <see cref="AddingObserverEventArgs" /> instance.</param>
+        public static void OnRemovedObserver(RemovedObserverEventArgs ev) => RemovedObserver.InvokeSafely(ev);
     }
 }

@@ -120,6 +120,7 @@ namespace Exiled.API.Features
             ["TUNNEL ENTRANCE"] = CameraType.TunnelEntrance,
 
             // new
+            ["HCZ CURVE"] = CameraType.HczCurve,
             ["JUNK MAIN"] = CameraType.HczJunkMain,
             ["JUNK HALLWAY"] = CameraType.HczJunkHallway,
             ["CORNER DEEP"] = CameraType.HczCornerDeep,

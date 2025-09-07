@@ -349,5 +349,20 @@ namespace Exiled.API.Enums
         /// Represents the checkpoint that handle door for <see cref="DoorType.Scp106Primary"/> and <see cref="DoorType.Scp106Secondary"/>.
         /// </summary>
         Scp106Checkpoint,
+
+        /// <summary>
+        /// Represents the door in the <see cref="RoomType.HczTestRoom"/>.
+        /// </summary>
+        TestRoom,
+
+        /// <summary>
+        /// Represents the door in the <see cref="RoomType.LczPlants"/> Closet.
+        /// </summary>
+        PlantsCloset,
+
+        /// <summary>
+        /// Represents the door used for Checkpoint.
+        /// </summary>
+        Checkpoint,
     }
 }
