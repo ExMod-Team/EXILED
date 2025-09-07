@@ -24,16 +24,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="pocketDimensionTeleport">
         /// <inheritdoc cref="Teleporter" />
         /// </param>
-        /// <param name="player">
+        /// <param name="hub">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="position">
         /// <inheritdoc cref="TeleportPosition" />
         /// </param>
-        public EscapingPocketDimensionEventArgs(PocketDimensionTeleport pocketDimensionTeleport, Player player, Vector3 position)
+        public EscapingPocketDimensionEventArgs(PocketDimensionTeleport pocketDimensionTeleport, ReferenceHub hub, Vector3 position)
         {
             Teleporter = pocketDimensionTeleport;
-            Player = player;
+            Player = Player.Get(hub);
             TeleportPosition = position;
         }
 

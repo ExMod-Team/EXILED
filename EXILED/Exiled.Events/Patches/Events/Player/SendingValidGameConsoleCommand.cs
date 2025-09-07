@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-
+    using LabApi.Features.Enums;
     using RemoteAdmin;
 
     using static HarmonyLib.AccessTools;
@@ -67,8 +67,8 @@ namespace Exiled.Events.Patches.Events.Player
                    // command
                    new (OpCodes.Ldloc_S, 4),
 
-                   // commandtype client
-                   new(OpCodes.Ldc_I4_2),
+                   // CommandType.Client
+                   new(OpCodes.Ldc_I4_S, (sbyte)CommandType.Client),
 
                    // query
                    new(OpCodes.Ldarg_1),
@@ -130,25 +130,20 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             offset = 1;
-            index = newInstructions.FindIndex(instrction => instrction.Calls(Method(typeof(GameConsoleTransmission), nameof(GameConsoleTransmission.SendToClient)))) + offset;
+            index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(GameConsoleTransmission), nameof(GameConsoleTransmission.SendToClient)))) + offset;
             newInstructions.InsertRange(
                 index,
                 new CodeInstruction[]
                 {
-                    // this
-                    new(OpCodes.Ldarg_0),
-
-                    // this._hub
-                    new(OpCodes.Ldfld, Field(typeof(QueryProcessor), nameof(QueryProcessor._hub))),
-
-                    // Player.Get(Hub)
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(ReferenceHub) })),
+                    // Player.Get(sender)
+                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(CommandSender) })),
 
                     // command
-                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldloc_S, 4),
 
-                    // commandtype CLIENT
-                    new(OpCodes.Ldc_I4_2),
+                    // CommandType.Client
+                    new (OpCodes.Ldc_I4_S, (sbyte)CommandType.Client),
 
                     // query
                     new(OpCodes.Ldarg_1),

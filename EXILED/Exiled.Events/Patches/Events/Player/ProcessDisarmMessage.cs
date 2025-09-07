@@ -38,9 +38,9 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
             Label returnLabel = generator.DefineLabel();
 
-            int offset = -3;
+            int offset = -6;
             int index = newInstructions.FindIndex(
-                instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerCuffingEventArgs))[0]) + offset;
+                instruction => instruction.opcode == OpCodes.Newobj && (ConstructorInfo)instruction.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerUncuffingEventArgs))[0]) + offset;
 
             newInstructions.InsertRange(
                 index,

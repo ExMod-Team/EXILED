@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-
+    using LabApi.Features.Enums;
     using RemoteAdmin;
 
     using static HarmonyLib.AccessTools;
@@ -66,8 +66,8 @@ namespace Exiled.Events.Patches.Events.Player
                    // command
                    new (OpCodes.Ldloc_2),
 
-                   // commandtype
-                   new (OpCodes.Ldc_I4_4),
+                   // CommandType.RemoteAdmin
+                   new (OpCodes.Ldc_I4_S, (sbyte)CommandType.RemoteAdmin),
 
                    // query
                    new (OpCodes.Ldarg_0),
@@ -128,22 +128,22 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             offset = 1;
-            index = newInstructions.FindIndex(instrction => instrction.Calls(Method(typeof(CommandSender), nameof(CommandSender.RaReply)))) + offset;
+            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(CommandSender), nameof(CommandSender.RaReply)))) + offset;
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // sender
-                    new (OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
 
                     // Player.get(sender)
-                    new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(CommandSender) })),
+                    new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(CommandSender) })),
 
                     // command
                     new (OpCodes.Ldloc_2),
 
-                    // commandtype
-                    new (OpCodes.Ldc_I4_4),
+                    // CommandType.RemoteAdmin
+                    new (OpCodes.Ldc_I4_S, (sbyte)CommandType.RemoteAdmin),
 
                     // query
                     new (OpCodes.Ldarg_0),

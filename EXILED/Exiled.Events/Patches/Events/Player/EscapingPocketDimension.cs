@@ -48,10 +48,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new[]
                 {
                     // pocketDimensionTeleport
-                    new CodeInstruction(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
 
                     // referenceHub
-                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldarg_1),
 
                     // Scp106PocketExitFinder.GetBestExitPosition(fpcRole)
                     new(OpCodes.Ldloc_0),
