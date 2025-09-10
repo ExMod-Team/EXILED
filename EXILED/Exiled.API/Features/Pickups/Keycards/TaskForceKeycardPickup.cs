@@ -41,7 +41,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public string NameTag
         {
             get => CustomKeycardItem.DataDict[Serial].NameTag;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].NameTag = value;
@@ -53,7 +52,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public string SerialNumber
         {
             get => CustomKeycardItem.DataDict[Serial].SerialNumber;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].SerialNumber = value;
@@ -66,7 +64,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public byte Rank
         {
             get => CustomKeycardItem.DataDict[Serial].Rank;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].Rank = value;

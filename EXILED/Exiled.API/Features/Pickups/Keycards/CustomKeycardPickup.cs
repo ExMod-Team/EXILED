@@ -54,7 +54,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public override KeycardPermissions Permissions
         {
             get => CustomPermsDetail.CustomPermissions.TryGetValue(Serial, out DoorPermissionFlags flags) ? (KeycardPermissions)flags : KeycardPermissions.None;
-
             set
             {
                 CustomPermsDetail.CustomPermissions[Serial] = (DoorPermissionFlags)value;
@@ -69,7 +68,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public KeycardLevels KeycardLevels
         {
             get => new((DoorPermissionFlags)Permissions);
-
             set
             {
                 CustomPermsDetail.CustomPermissions[Serial] = value.Permissions;
@@ -84,7 +82,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public Color PermissionsColor
         {
             get => CustomKeycardItem.DataDict[Serial].PermissionsColor ?? Color.clear;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].PermissionsColor = value;
@@ -99,7 +96,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public string ItemName
         {
             get => CustomKeycardItem.DataDict[Serial].ItemName;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].ItemName = value;
@@ -114,7 +110,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public Color Color
         {
             get => CustomKeycardItem.DataDict[Serial].Color ?? Color.clear;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].Color = value;

@@ -43,7 +43,6 @@ namespace Exiled.API.Features.Items.Keycards
         public string NameTag
         {
             get => DataDict[Serial].NameTag;
-
             set
             {
                 DataDict[Serial].NameTag = value;
@@ -55,7 +54,6 @@ namespace Exiled.API.Features.Items.Keycards
         public string SerialNumber
         {
             get => DataDict[Serial].SerialNumber;
-
             set
             {
                 DataDict[Serial].SerialNumber = value;
@@ -68,7 +66,6 @@ namespace Exiled.API.Features.Items.Keycards
         public byte Rank
         {
             get => DataDict[Serial].Rank;
-
             set
             {
                 DataDict[Serial].Rank = value;

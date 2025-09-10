@@ -41,7 +41,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public string NameTag
         {
             get => CustomKeycardItem.DataDict[Serial].NameTag;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].NameTag = value;
@@ -53,7 +52,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public string Label
         {
             get => CustomKeycardItem.DataDict[Serial].Label;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].Label = value;
@@ -65,7 +63,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public Color LabelColor
         {
             get => CustomKeycardItem.DataDict[Serial].LabelColor ?? Color.clear;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].LabelColor = value;
@@ -78,7 +75,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public byte Wear
         {
             get => CustomKeycardItem.DataDict[Serial].Wear;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].Wear = value;
@@ -91,7 +87,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public string SerialNumber
         {
             get => CustomKeycardItem.DataDict[Serial].SerialNumber;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].SerialNumber = value;

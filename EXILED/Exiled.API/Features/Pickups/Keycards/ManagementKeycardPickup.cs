@@ -41,7 +41,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public string Label
         {
             get => CustomKeycardItem.DataDict[Serial].Label;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].Label = value;
@@ -53,7 +52,6 @@ namespace Exiled.API.Features.Pickups.Keycards
         public Color LabelColor
         {
             get => CustomKeycardItem.DataDict[Serial].LabelColor ?? Color.clear;
-
             set
             {
                 CustomKeycardItem.DataDict[Serial].LabelColor = value;
