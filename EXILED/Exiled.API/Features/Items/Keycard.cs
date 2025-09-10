@@ -7,10 +7,9 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System;
-
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
+    using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items.Keycards;
 
     /// <summary>
@@ -52,13 +51,8 @@ namespace Exiled.API.Features.Items
             {
                 foreach (DetailBase detail in Base.Details)
                 {
-                    switch (detail)
-                    {
-                        case PredefinedPermsDetail predefinedPermsDetail:
-                            return (KeycardPermissions)predefinedPermsDetail.Levels.Permissions;
-                        case CustomPermsDetail customPermsDetail:
-                            return (KeycardPermissions)customPermsDetail.GetPermissions(null);
-                    }
+                    if (detail is IDoorPermissionProvider doorPermissionProvider)
+                        return (KeycardPermissions)doorPermissionProvider.GetPermissions(null);
                 }
 
                 return KeycardPermissions.None;
@@ -66,6 +60,16 @@ namespace Exiled.API.Features.Items
 
             set
             {
+                foreach (DetailBase detail in Base.Details)
+                {
+                    if (detail is PredefinedPermsDetail doorPermissionProvider)
+                    {
+                        KeycardLevels keycardLevels = new((DoorPermissionFlags)value);
+                        doorPermissionProvider._containmentLevel = keycardLevels.Containment;
+                        doorPermissionProvider._armoryLevel = keycardLevels.Armory;
+                        doorPermissionProvider._adminLevel = keycardLevels.Admin;
+                    }
+                }
             }
         }
 
