@@ -38,12 +38,7 @@ namespace Exiled.Events.EventArgs.Map
         /// </summary>
         public Projectile Projectile { get; }
 
-#pragma warning disable SA1623 // Property summary documentation should match accessors. It match i take it from the interface.
-        /// <summary>
-        /// <inheritdoc path="/summary"/>
-        /// This property is equivalent to <see cref="Pickup"/>.
-        /// </summary>
+        /// <inheritdoc/>
         Pickup IPickupEvent.Pickup => Pickup;
-#pragma warning restore SA1623 // Property summary documentation should match accessors
     }
 }
