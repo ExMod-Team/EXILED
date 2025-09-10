@@ -191,4 +191,19 @@
   <data name="Program_MainSafe_Exiled_folder___0_" xml:space="preserve">
     <value>Exiled folder: {0}</value>
   </data>
+    <data name="Program_MainSafe_Which_version_would_you_like_to_install_" xml:space="preserve">
+      <value>Which version would you like to install?</value>
+  </data>
+    <data name="Program_MainSafe__1___Latest_stable_release" xml:space="preserve">
+      <value>1 - Latest stable release</value>
+  </data>
+    <data name="Program_MainSafe__2___Latest_prerelease__beta_dev_" xml:space="preserve">
+      <value>2 - Latest prerelease (beta/dev)</value>
+  </data>
+    <data name="Program_MainSafe_Your_choice__1_2___" xml:space="preserve">
+      <value>Your choice (1/2): </value>
+  </data>
+    <data name="Program_MainSafe_" xml:space="preserve">
+      <value>→ Prerelease selected.</value>
+  </data>
 </root>

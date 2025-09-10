@@ -40,10 +40,9 @@ namespace Exiled.Events.Patches.Events.Item
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_2) + offset;
 
             LocalBuilder ev = generator.DeclareLocal(typeof(ReceivingPreferenceEventArgs));
-            LocalBuilder curCode = generator.DeclareLocal(typeof(uint));
 
             Label cdc = generator.DefineLabel();
             Label ret = generator.DefineLabel();
@@ -54,14 +53,6 @@ namespace Exiled.Events.Patches.Events.Item
                 index,
                 new CodeInstruction[]
                 {
-                    // dictionary::TryGetValue(AttachmentsSetupPreference::Weapon, *mem_0x02)
-                    new(OpCodes.Ldloc_1),
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldfld, Field(typeof(AttachmentsSetupPreference), nameof(AttachmentsSetupPreference.Weapon))),
-                    new(OpCodes.Ldloca_S, curCode.LocalIndex),
-                    new(OpCodes.Callvirt, Method(typeof(Dictionary<ItemType, uint>), nameof(Dictionary<ItemType, uint>.TryGetValue))),
-                    new(OpCodes.Brfalse_S, cdc),
-
                     // API::Features::Player::Get(referenceHub)
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
@@ -70,12 +61,11 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Ldfld, Field(typeof(AttachmentsSetupPreference), nameof(AttachmentsSetupPreference.Weapon))),
 
-                    // currentCode
-                    new(OpCodes.Ldloc_S, curCode.LocalIndex),
+                    // playerPreference (old attachments)
+                    new(OpCodes.Ldloc_1),
 
-                    // AttachmentsSetupPreference::AttachmentsCode
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldfld, Field(typeof(AttachmentsSetupPreference), nameof(AttachmentsSetupPreference.AttachmentsCode))),
+                    // attachmentsCode (new attachments)
+                    new(OpCodes.Ldloc_2),
 
                     // true
                     new(OpCodes.Ldc_I4_1),
@@ -84,18 +74,18 @@ namespace Exiled.Events.Patches.Events.Item
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReceivingPreferenceEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
+                    new(OpCodes.Stloc, ev),
 
                     // Handlers::Item::OnReceivingPreference(ev)
                     new(OpCodes.Call, Method(typeof(Item), nameof(Item.OnReceivingPreference))),
 
                     // ev.IsAllowed
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingPreferenceEventArgs), nameof(ReceivingPreferenceEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, ret),
+                    new(OpCodes.Brfalse, ret),
 
                     // **AttachmentSetupPreference::AttachmentsCode = ev::NewCode
-                    new(OpCodes.Ldarga_S, 1),
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    new(OpCodes.Ldarga, 1),
+                    new(OpCodes.Ldloc, ev),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingPreferenceEventArgs), nameof(ReceivingPreferenceEventArgs.NewCode))),
                     new(OpCodes.Stfld, Field(typeof(AttachmentsSetupPreference), nameof(AttachmentsSetupPreference.AttachmentsCode))),
                 });

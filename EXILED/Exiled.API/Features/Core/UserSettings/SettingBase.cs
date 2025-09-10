@@ -109,6 +109,33 @@ namespace Exiled.API.Features.Core.UserSettings
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the setting receives updates from server (and client stops sending updates).
+        /// </summary>
+        /// <remarks>
+        /// Useful for displaying information, you cannot receive updates from a setting with this enabled.
+        /// </remarks>
+        public bool IsServerOnly
+        {
+            get => Base.IsServerOnly;
+            set => Base.IsServerOnly = value;
+        }
+
+        /// <summary>
+        /// Gets or sets a value controlling if this setting is shared across servers with <b>same Ip address!</b>. Default value is 255.
+        /// </summary>
+        /// <remarks>
+        /// Settings with this value between 0 and 20 will store the servers Ip (or other unique identifier) instead of port, meaning the client treats a setting between 1.1.1.1:7777 and 1.1.1.1:7778 the same.
+        /// <br/>
+        /// <br/>
+        /// If this value is above 20, the aforementioned behavior will not occur and the setting will behave as normal.
+        /// </remarks>
+        public byte CollectionId
+        {
+            get => Base.CollectionId;
+            set => Base.CollectionId = value;
+        }
+
+        /// <summary>
         /// Gets the response mode of this setting.
         /// </summary>
         public ServerSpecificSettingBase.UserResponseMode ResponseMode => Base.ResponseMode;
@@ -192,7 +219,7 @@ namespace Exiled.API.Features.Core.UserSettings
         /// New setting won't be synced with players.
         /// </remarks>
         public static T Create<T>(ServerSpecificSettingBase settingBase)
-            where T : SettingBase => (T)Create(settingBase);
+            where T : SettingBase => Create(settingBase) as T;
 
         /// <summary>
         /// Syncs setting with all players.
@@ -217,6 +244,14 @@ namespace Exiled.API.Features.Core.UserSettings
         /// </summary>
         /// <param name="player">Target player.</param>
         public static void SendToPlayer(Player player) => ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub);
+
+        /// <summary>
+        /// Syncs specific settings with the specified target.
+        /// </summary>
+        /// <param name="player">Target player.</param>
+        /// <param name="settings">Settings to send to the player.</param>
+        public static void SendToPlayer(Player player, IEnumerable<SettingBase> settings) =>
+            ServerSpecificSettingsSync.SendToPlayer(player.ReferenceHub, settings.Select(setting => setting.Base).ToArray());
 
         /// <summary>
         /// Registers all settings from the specified collection.
@@ -252,12 +287,42 @@ namespace Exiled.API.Features.Core.UserSettings
         }
 
         /// <summary>
+        /// Registers all settings from the specified collection to player.
+        /// </summary>
+        /// <param name="player">A player that will receive settings.</param>
+        /// <param name="settings">A collection of settings to register.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully registered.</returns>
+        /// <remarks>This method is used to sync new settings with players.</remarks>
+        public static IEnumerable<SettingBase> Register(Player player, IEnumerable<SettingBase> settings)
+        {
+            IEnumerable<IGrouping<HeaderSetting, SettingBase>> grouped = settings.Where(s => s != null).GroupBy(s => s.Header);
+
+            List<SettingBase> result = new();
+
+            // Group settings by headers
+            foreach (IGrouping<HeaderSetting, SettingBase> grouping in grouped)
+            {
+                if (grouping.Key != null)
+                    result.Add(grouping.Key);
+
+                result.AddRange(grouping);
+            }
+
+            ServerSpecificSettingsSync.DefinedSettings = (ServerSpecificSettingsSync.DefinedSettings ?? Array.Empty<ServerSpecificSettingBase>()).Concat(result.Select(s => s.Base)).ToArray();
+            Settings.AddRange(result);
+
+            SendToPlayer(player);
+
+            return result;
+        }
+
+        /// <summary>
         /// Removes settings from players.
         /// </summary>
         /// <param name="predicate">Determines which players will receive this update.</param>
         /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
-        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register"/> provides an opportunity to update synced settings.</remarks>
+        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(IEnumerable{SettingBase},Func{Player,bool})"/> provides an opportunity to update synced settings.</remarks>
         public static IEnumerable<SettingBase> Unregister(Func<Player, bool> predicate = null, IEnumerable<SettingBase> settings = null)
         {
             List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
@@ -273,6 +338,40 @@ namespace Exiled.API.Features.Core.UserSettings
             ListPool<ServerSpecificSettingBase>.Pool.Return(list);
 
             return list2;
+        }
+
+        /// <summary>
+        /// Removes settings from players.
+        /// </summary>
+        /// <param name="player">Determines which player will receive this update.</param>
+        /// <param name="settings">Settings to remove. If <c>null</c>, all settings will be removed.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="SettingBase"/> instances that were successfully removed.</returns>
+        /// <remarks>This method is used to unsync settings from players. Using it with <see cref="Register(Player,IEnumerable{SettingBase})"/> provides an opportunity to update synced settings.</remarks>
+        public static IEnumerable<SettingBase> Unregister(Player player, IEnumerable<SettingBase> settings = null)
+        {
+            List<ServerSpecificSettingBase> list = ListPool<ServerSpecificSettingBase>.Pool.Get(ServerSpecificSettingsSync.DefinedSettings);
+            List<SettingBase> list2 = new((settings ?? Settings).Where(setting => list.Remove(setting.Base)));
+
+            ServerSpecificSettingsSync.DefinedSettings = list.ToArray();
+
+            SendToPlayer(player);
+
+            ListPool<ServerSpecificSettingBase>.Pool.Return(list);
+
+            return list2;
+        }
+
+        /// <summary>
+        /// Sends an updated label and hint to clients.
+        /// </summary>
+        /// <param name="label"><inheritdoc cref="Label"/></param>
+        /// <param name="hint"><inheritdoc cref="Hint"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateLabelAndHint(string label, string hint, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendUpdate(label, hint, overrideValue, hub => filter(Player.Get(hub)));
         }
 
         /// <summary>

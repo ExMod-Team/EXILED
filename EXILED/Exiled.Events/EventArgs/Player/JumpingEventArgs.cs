@@ -57,7 +57,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the client data can be synchronized with the server.
+        /// Gets or sets a value indicating whether or not the player can jump.
         /// </summary>
         public bool IsAllowed { get; set; }
     }

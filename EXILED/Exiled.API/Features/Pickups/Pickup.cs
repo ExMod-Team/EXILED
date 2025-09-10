@@ -150,17 +150,17 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         public Vector3 Scale
         {
-            get => GameObject.transform.localScale;
+            get => GameObject.GetWorldScale();
             set
             {
                 if (!IsSpawned)
                 {
-                    GameObject.transform.localScale = value;
+                    GameObject.SetWorldScale(value);
                     return;
                 }
 
                 UnSpawn();
-                GameObject.transform.localScale = value;
+                GameObject.SetWorldScale(value);
                 Spawn();
             }
         }
@@ -495,7 +495,7 @@ namespace Exiled.API.Features.Pickups
             ThrownProjectile thrownProjectile => thrownProjectile switch
             {
                 BaseScp018Projectile => new Projectiles.Scp018Projectile(),
-                ExplosionGrenade explosionGrenade => new ExplosionGrenadeProjectile(type),
+                ExplosionGrenade => new ExplosionGrenadeProjectile(type),
                 FlashbangGrenade => new FlashbangProjectile(),
                 BaseScp2176Projectile => new Projectiles.Scp2176Projectile(),
                 EffectGrenade => new EffectGrenadeProjectile(type),
@@ -532,7 +532,7 @@ namespace Exiled.API.Features.Pickups
         /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
         /// <returns>The created <see cref="Pickup"/>.</returns>
         /// <seealso cref="Projectile.Create(Enums.ProjectileType)"/>
-        public static Pickup Create<T>(ItemType type) // TODO modify return type to "T"
+        public static T Create<T>(ItemType type)
             where T : Pickup => Create(type) as T;
 
         /// <summary>
@@ -556,7 +556,7 @@ namespace Exiled.API.Features.Pickups
         /// <typeparam name="T">The specified <see cref="Pickup"/> type.</typeparam>
         /// <returns>The <see cref="Pickup"/>. See documentation of <see cref="Create(ItemType)"/> for more information on casting.</returns>
         /// <seealso cref="Projectile.CreateAndSpawn(Enums.ProjectileType, Vector3, Quaternion?, bool, Player)"/>
-        public static Pickup CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
+        public static T CreateAndSpawn<T>(ItemType type, Vector3 position, Quaternion? rotation = null, Player previousOwner = null)
             where T : Pickup => CreateAndSpawn(type, position, rotation, previousOwner) as T;
 
         /// <summary>

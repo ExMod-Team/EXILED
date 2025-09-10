@@ -123,6 +123,28 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Creates a new <see cref="Speaker"/>.
+        /// </summary>
+        /// <param name="transform">The transform to create this <see cref="Speaker"/> on.</param>
+        /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
+        /// <param name="worldPositionStays">Whether the <see cref="Speaker"/> should keep the same world position.</param>
+        /// <returns>The new <see cref="Speaker"/>.</returns>
+        public static Speaker Create(Transform transform, bool spawn, bool worldPositionStays = true)
+        {
+            Speaker speaker = new(Object.Instantiate(Prefab, transform, worldPositionStays))
+            {
+                Position = transform.position,
+                Rotation = transform.rotation,
+                Scale = transform.localScale.normalized,
+            };
+
+            if(spawn)
+                speaker.Spawn();
+
+            return speaker;
+        }
+
+        /// <summary>
         /// Plays audio through this speaker.
         /// </summary>
         /// <param name="message">An <see cref="AudioMessage"/> instance.</param>

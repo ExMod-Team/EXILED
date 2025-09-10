@@ -235,7 +235,7 @@ namespace Exiled.API.Enums
         EzGateB,
 
         /// <summary>
-        /// Entrance Zone's Shelter rfoom.
+        /// Entrance Zone's Shelter room.
         /// </summary>
         EzShelter,
 
@@ -328,5 +328,15 @@ namespace Exiled.API.Enums
         /// Entrance Zone's straight hall with Dr.L's and conference room 9b locked room.
         /// </summary>
         EzSmallrooms,
+
+        /// <summary>
+        /// Heavy Containment Zone's SCP-330 room.
+        /// </summary>
+        Hcz127,
+
+        /// <summary>
+        /// Heavy Containment Zone's storage / server room.
+        /// </summary>
+        HczServerRoom,
     }
 }

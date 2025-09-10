@@ -38,25 +38,24 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(FlippingCoinEventArgs));
 
-            int offset = -5;
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Brtrue_S) + offset;
+            int offset = 1;
+            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Stloc_0) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(ReferenceHub)
+                    // this.Owner
                     new CodeInstruction(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ItemBase), nameof(ItemBase.Owner))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // this
                     new CodeInstruction(OpCodes.Ldarg_0),
 
                     // isTails
-                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldloc_0),
 
-                    // FlippingCoinEventArgs ev = new(Player, bool)
+                    // FlippingCoinEventArgs ev = new(ReferenceHub, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(FlippingCoinEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),

@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
-
+    using LabApi.Features.Enums;
     using RemoteAdmin;
 
     using static HarmonyLib.AccessTools;
@@ -64,16 +64,16 @@ namespace Exiled.Events.Patches.Events.Player
                    new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(CommandSender) })),
 
                    // command
-                   new (OpCodes.Ldloc_1),
+                   new (OpCodes.Ldloc_2),
 
-                   // commandtype
-                   new (OpCodes.Ldc_I4_4),
+                   // CommandType.RemoteAdmin
+                   new (OpCodes.Ldc_I4_S, (sbyte)CommandType.RemoteAdmin),
 
                    // query
                    new (OpCodes.Ldarg_0),
 
                    // response
-                   new (OpCodes.Ldloc_S, 6),
+                   new (OpCodes.Ldloc_S, 9),
 
                    // new SendingValidCommandEventArgs
                    new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingValidCommandEventArgs))[0]),
@@ -97,14 +97,14 @@ namespace Exiled.Events.Patches.Events.Player
                    // response = ev.Response
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
                    new (OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
-                   new (OpCodes.Stloc_S, 6),
+                   new (OpCodes.Stloc_S, 9),
 
                    // goto sendreply
                    new (OpCodes.Br, sendreply),
 
                    // response = "The Command Execution Was Prevented By Plugin."
                    new CodeInstruction(OpCodes.Ldstr, "The Command Execution Was Prevented By Plugin.").WithLabels(setptroperresp),
-                   new (OpCodes.Stloc_S, 6),
+                   new (OpCodes.Stloc_S, 9),
                    new (OpCodes.Br, sendreply),
                 });
             offset = -4;
@@ -124,35 +124,35 @@ namespace Exiled.Events.Patches.Events.Player
                    // response = ev.Response
                    new (OpCodes.Ldloc_S, ev.LocalIndex),
                    new (OpCodes.Callvirt, PropertyGetter(typeof (SendingValidCommandEventArgs), nameof(SendingValidCommandEventArgs.Response))),
-                   new (OpCodes.Stloc_S, 6),
+                   new (OpCodes.Stloc_S, 9),
                 });
 
-            offset = 0;
-            index = newInstructions.FindIndex(instrction => instrction.Calls(Method(typeof(CommandSender), nameof(CommandSender.RaReply)))) + offset;
+            offset = 1;
+            index = newInstructions.FindIndex(i => i.Calls(Method(typeof(CommandSender), nameof(CommandSender.RaReply)))) + offset;
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
+                new[]
                 {
                     // sender
-                    new (OpCodes.Ldarg_1),
+                    new CodeInstruction(OpCodes.Ldarg_1).MoveLabelsFrom(newInstructions[index]),
 
                     // Player.get(sender)
-                    new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new Type[] { typeof(CommandSender) })),
+                    new (OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(CommandSender) })),
 
                     // command
-                    new (OpCodes.Ldloc_1),
+                    new (OpCodes.Ldloc_2),
 
-                    // commandtype
-                    new (OpCodes.Ldc_I4_4),
+                    // CommandType.RemoteAdmin
+                    new (OpCodes.Ldc_I4_S, (sbyte)CommandType.RemoteAdmin),
 
                     // query
                     new (OpCodes.Ldarg_0),
 
                     // response
-                    new (OpCodes.Ldloc_S, 6),
+                    new (OpCodes.Ldloc_S, 9),
 
                     // result
-                    new (OpCodes.Ldloc_S, 5),
+                    new (OpCodes.Ldloc_S, 8),
 
                     // new SentValidCommandEventArgs
                     new (OpCodes.Newobj, GetDeclaredConstructors(typeof(SentValidCommandEventArgs))[0]),

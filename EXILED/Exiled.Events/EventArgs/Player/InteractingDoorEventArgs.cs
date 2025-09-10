@@ -33,17 +33,14 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        /// <param name="canInteract">
-        /// <inheritdoc cref="CanInteract" />
-        /// </param>
-        public InteractingDoorEventArgs(Player player, DoorVariant door, byte colliderId, bool isAllowed = true, bool canInteract = true)
+        public InteractingDoorEventArgs(Player player, DoorVariant door, byte colliderId, bool isAllowed)
         {
             Player = player;
             Door = Door.Get(door);
             ColliderId = colliderId;
             Collider = InteractableCollider.TryGetCollider(door, colliderId, out InteractableCollider interactableCollider) ? interactableCollider : null;
             IsAllowed = isAllowed;
-            CanInteract = canInteract;
+            CanInteract = true;
         }
 
         /// <summary>

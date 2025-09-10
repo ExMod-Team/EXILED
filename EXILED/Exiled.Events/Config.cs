@@ -77,6 +77,7 @@ namespace Exiled.Events
         /// <summary>
         /// Gets or sets a value indicating whether keycard throw can affect basic doors.
         /// </summary>
+        /// TODO: Make a poll about removing this config. (unimplemented since 9.6.0-beta7)
         [Description("Indicates whether thrown keycards can affect doors that don't require any permissions")]
         public bool CanKeycardThrowAffectDoors { get; set; } = false;
 

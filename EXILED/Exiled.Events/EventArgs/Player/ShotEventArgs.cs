@@ -25,15 +25,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="hitInfo">Raycast hit info.</param>
         /// <param name="firearm">The firearm used.</param>
         /// <param name="destructible">The IDestructible that was hit. Can be null.</param>
-        public ShotEventArgs(HitscanHitregModuleBase hitregModule, RaycastHit hitInfo, InventorySystem.Items.Firearms.Firearm firearm, IDestructible destructible)
+        /// <param name="damage"><inheritdoc cref="Damage"/></param>
+        public ShotEventArgs(HitscanHitregModuleBase hitregModule, RaycastHit hitInfo, InventorySystem.Items.Firearms.Firearm firearm, IDestructible destructible, float damage)
         {
             HitregModule = hitregModule;
             RaycastHit = hitInfo;
             Destructible = destructible;
             Firearm = Item.Get<Firearm>(firearm);
+            Damage = damage;
 
             Player = Firearm.Owner;
-            Damage = Destructible is not null ? HitregModule.DamageAtDistance(hitInfo.distance) : 0f;
 
             if (Destructible is HitboxIdentity hitboxIdentity)
             {

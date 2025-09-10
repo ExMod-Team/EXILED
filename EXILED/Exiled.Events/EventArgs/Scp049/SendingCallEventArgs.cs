@@ -25,7 +25,7 @@ namespace Exiled.Events.EventArgs.Scp049
         {
             Player = player;
             Scp049 = Player.Role.As<Scp049Role>();
-            Duration = (float)Scp049.CallAbilityBaseCooldown;
+            Duration = PlayerRoles.PlayableScps.Scp049.Scp049CallAbility.BaseCooldown;
             IsAllowed = isAllowed;
         }
 

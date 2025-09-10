@@ -4,7 +4,7 @@ title: Automatic Linux Installation
 
 # Automatic Linux Installation
 
-Download `Exiled.Installer-Linux` from [here](https://github.com/ExMod-Team/EXILED/releases).
+Download `Exiled.Installer-Linux` from [here](https://github.com/Exmod-Team/EXILED/releases).
 
 Move it into your **server directory** and run it using `./Exiled.Installer-Linux`
 - Make sure the server directory is the one where LocalAdmin executable is found.

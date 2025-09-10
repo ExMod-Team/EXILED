@@ -33,6 +33,11 @@ namespace Exiled.Events.Handlers
         public static Event<AddingTargetEventArgs> AddingTarget { get; set; } = new();
 
         /// <summary>
+        /// Invoked before removing a target from SCP-096.
+        /// </summary>
+        public static Event<RemovingTargetEventArgs> RemovingTarget { get; set; } = new();
+
+        /// <summary>
         /// Invoked before SCP-096 begins prying open a gate.
         /// </summary>
         public static Event<StartPryingGateEventArgs> StartPryingGate { get; set; } = new();
@@ -64,6 +69,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="AddingTargetEventArgs" /> instance.</param>
         public static void OnAddingTarget(AddingTargetEventArgs ev) => AddingTarget.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before removing a target from SCP-096.
+        /// </summary>
+        /// <param name="ev">The <see cref="RemovingTargetEventArgs" /> instance.</param>
+        public static void OnRemovingTarget(RemovingTargetEventArgs ev) => RemovingTarget.InvokeSafely(ev);
 
         /// <summary>
         /// Called before SCP-096 begins prying open a gate.

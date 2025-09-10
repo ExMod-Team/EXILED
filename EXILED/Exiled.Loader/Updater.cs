@@ -69,7 +69,7 @@ namespace Exiled.Loader
             name != Assembly.GetExecutingAssembly().GetName().Name
             select new ExiledLib(a);
 
-        private string Folder => File.Exists($"{PluginAPI.Helpers.Paths.GlobalPlugins.Plugins}/Exiled.Loader.dll") ? "global" : Server.Port.ToString();
+        private string Folder => File.Exists(Path.Combine(LabApi.Loader.Features.Paths.PathManager.Plugins.FullName, "global", "Exiled.Loader.dll")) ? "global" : Server.Port.ToString();
 
         private string InstallerName
         {
@@ -116,7 +116,7 @@ namespace Exiled.Loader
             try
             {
                 using HttpClient client = CreateHttpClient();
-                if (Busy = FindUpdate(client, !PluginAPI.Loader.AssemblyLoader.Dependencies.Exists(x => x.GetName().Name == "Exiled.API"), out NewVersion newVersion))
+                if (Busy = FindUpdate(client, !LabApi.Loader.PluginLoader.Dependencies.Any(x => x.GetName().Name == "Exiled.API"), out NewVersion newVersion))
                     Update(client, newVersion);
             }
             catch (Exception e)
@@ -136,7 +136,7 @@ namespace Exiled.Loader
                 Timeout = TimeSpan.FromSeconds(480),
             };
 
-            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/ExMod-Team/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
+            client.DefaultRequestHeaders.Add("User-Agent", $"Exiled.Loader (https://github.com/Exmod-Team/EXILED, {Assembly.GetExecutingAssembly().GetName().Version.ToString(3)})");
 
             return client;
         }
@@ -167,8 +167,11 @@ namespace Exiled.Loader
                     }
                     else
                     {
+                        bool isPrerelease = targetRelease.PreRelease;
+                        Log.Info($"Release type: {(isPrerelease ? "Prerelease" : "Stable")}");
+
                         Log.Info($"Found asset - Name: {asset.Name} | Size: {asset.Size} Download: {asset.BrowserDownloadUrl}");
-                        newVersion = new NewVersion(targetRelease, asset);
+                        newVersion = new NewVersion(targetRelease, asset, isPrerelease);
                         return true;
                     }
                 }
@@ -226,7 +229,7 @@ namespace Exiled.Loader
                     FileName = installerPath,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    Arguments = $"--exit {(Folder == "global" ? string.Empty : $"--target-port {Folder}")} --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\" --exiled \"{Path.Combine(Paths.Exiled, "..")}\"",
+                    Arguments = $"--exit {(Folder == "global" ? string.Empty : $"--target-port {Folder}")} --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\" --exiled \"{Path.Combine(Paths.Exiled, "..")}\" {(newVersion.IsPrerelease ? "--pre-releases" : string.Empty)}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     StandardErrorEncoding = ProcessEncoding,

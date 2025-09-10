@@ -42,7 +42,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             LocalBuilder ev = generator.DeclareLocal(typeof(AnnouncingChaosEntranceEventArgs));
 
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Ldloca_S);
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Pop) + 1;
 
             newInstructions.InsertRange(index, new[]
             {

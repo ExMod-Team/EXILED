@@ -28,8 +28,28 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
         /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
         /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond = false, string hintDescription = "", HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
+        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
             : base(new SSTwoButtonsSetting(id, label, firstOption, secondOption, defaultIsSecond, hintDescription), header, onChanged)
+        {
+            Base = (SSTwoButtonsSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TwoButtonsSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="firstOption"><inheritdoc cref="FirstOption"/></param>
+        /// <param name="secondOption"><inheritdoc cref="SecondOption"/></param>
+        /// <param name="defaultIsSecond"><inheritdoc cref="IsSecondDefault"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="collectionId"><inheritdoc cref="SettingBase.CollectionId"/></param>
+        /// <param name="isServerOnly"><inheritdoc cref="SettingBase.IsServerOnly"/></param>
+        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond = false, string hintDescription = "", byte collectionId = byte.MaxValue, bool isServerOnly = false, HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+            : base(new SSTwoButtonsSetting(id, label, firstOption, secondOption, defaultIsSecond, hintDescription, collectionId, isServerOnly), header, onChanged)
         {
             Base = (SSTwoButtonsSetting)base.Base;
         }
@@ -96,6 +116,31 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             get => Base.OptionB;
             set => Base.OptionB = value;
+        }
+
+        /// <summary>
+        /// Sends updated values to clients.
+        /// </summary>
+        /// <param name="firstOption"><inheritdoc cref="FirstOption"/></param>
+        /// <param name="secondOption"><inheritdoc cref="SecondOption"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateSetting(string firstOption, string secondOption, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendTwoButtonUpdate(firstOption, secondOption, overrideValue, hub => filter(Player.Get(hub)));
+        }
+
+        /// <summary>
+        /// If setting is server only, sends updated values to clients.
+        /// </summary>
+        /// <param name="isSecond"><inheritdoc cref="IsSecond"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateValue(bool isSecond, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendValueUpdate(isSecond, overrideValue, hub => filter(Player.Get(hub)));
         }
 
         /// <summary>

@@ -17,16 +17,16 @@ namespace Exiled.CustomRoles.API.Features
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
+    using Exiled.API.Features.Roles;
     using Exiled.API.Features.Spawn;
     using Exiled.API.Interfaces;
     using Exiled.CustomItems.API.Features;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Loader;
     using InventorySystem.Configs;
-
     using MEC;
-
     using PlayerRoles;
 
     using UnityEngine;
@@ -38,6 +38,11 @@ namespace Exiled.CustomRoles.API.Features
     /// </summary>
     public abstract class CustomRole
     {
+        private const float AddRoleDelay = 0.25f;
+
+        // used in AddRole and InternalChangingRole
+        private static bool skipChangingCheck;
+
         private static Dictionary<Type, CustomRole?> typeLookupTable = new();
 
         private static Dictionary<string, CustomRole?> stringLookupTable = new();
@@ -156,6 +161,11 @@ namespace Exiled.CustomRoles.API.Features
         public virtual Vector3 Scale { get; set; } = Vector3.one;
 
         /// <summary>
+        /// Gets or sets a value indicating the <see cref="Player"/>'s gravity.
+        /// </summary>
+        public virtual Vector3? Gravity { get; set; }
+
+        /// <summary>
         /// Gets or sets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="string"/> and their  <see cref="Dictionary{TKey, TValue}"/> which is cached Role with FF multiplier.
         /// </summary>
         public virtual Dictionary<RoleTypeId, float> CustomRoleFFMultiplier { get; set; } = new();
@@ -169,6 +179,12 @@ namespace Exiled.CustomRoles.API.Features
         /// Gets or sets a <see cref="string"/> for the ability usage help sent to players in the player console.
         /// </summary>
         public virtual string AbilityUsage { get; set; } = "Enter \".special\" in the console to use your ability. If you have multiple abilities, you can use this command to cycle through them, or specify the one to use with \".special ROLENAME AbilityNum\"";
+
+        /// <summary>
+        /// Gets or sets the number of players that naturally spawned with this custom role.
+        /// </summary>
+        [YamlIgnore]
+        public int SpawnedPlayers { get; set; }
 
         /// <summary>
         /// Gets a <see cref="CustomRole"/> by ID.
@@ -499,31 +515,39 @@ namespace Exiled.CustomRoles.API.Features
         public virtual void AddRole(Player player)
         {
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
-            TrackedPlayers.Add(player);
+            player.UniqueRole = Name;
 
             if (Role != RoleTypeId.None)
             {
-                switch (KeepPositionOnSpawn)
+                try
                 {
-                    case true when KeepInventoryOnSpawn:
-                        player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.None);
-                        break;
-                    case true:
-                        player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.AssignInventory);
-                        break;
-                    default:
-                        {
-                            if (KeepInventoryOnSpawn && player.IsAlive)
-                                player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.UseSpawnpoint);
-                            else
-                                player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.All);
-                            break;
-                        }
+                    skipChangingCheck = true;
+                    if (KeepPositionOnSpawn)
+                    {
+                        if (KeepInventoryOnSpawn)
+                            player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.None);
+                        else
+                            player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.AssignInventory);
+                    }
+                    else
+                    {
+                        if (KeepInventoryOnSpawn && player.IsAlive)
+                            player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.UseSpawnpoint);
+                        else
+                            player.Role.Set(Role, SpawnReason.ForceClass, RoleSpawnFlags.All);
+                    }
+                }
+                finally
+                {
+                    skipChangingCheck = false;
                 }
             }
 
+            player.UniqueRole = Name;
+            TrackedPlayers.Add(player);
+
             Timing.CallDelayed(
-                0.25f,
+                AddRoleDelay,
                 () =>
                 {
                     if (!KeepInventoryOnSpawn)
@@ -535,7 +559,14 @@ namespace Exiled.CustomRoles.API.Features
                     foreach (string itemName in Inventory)
                     {
                         Log.Debug($"{Name}: Adding {itemName} to inventory.");
-                        TryAddItem(player, itemName);
+                        if (TryAddItem(player, itemName) && CustomItem.TryGet(itemName, out CustomItem? customItem) && customItem is CustomWeapon customWeapon)
+                        {
+                            if (player.CurrentItem is Firearm firearm && !customWeapon.Attachments.IsEmpty())
+                            {
+                                firearm.AddAttachment(customWeapon.Attachments);
+                                Log.Debug($"{Name}: Applied attachments to {itemName}.");
+                            }
+                        }
                     }
 
                     if (Ammo.Count > 0)
@@ -553,11 +584,16 @@ namespace Exiled.CustomRoles.API.Features
             player.Health = MaxHealth;
             player.MaxHealth = MaxHealth;
             player.Scale = Scale;
+            if (Gravity.HasValue && player.Role is FpcRole fpcRole)
+                fpcRole.Gravity = Gravity.Value;
 
-            Vector3 position = GetSpawnPosition();
-            if (position != Vector3.zero)
+            if (!KeepPositionOnSpawn)
             {
-                player.Position = position;
+                Vector3 position = GetSpawnPosition();
+                if (position != Vector3.zero)
+                {
+                    player.Position = position;
+                }
             }
 
             Log.Debug($"{Name}: Setting player info");
@@ -571,10 +607,11 @@ namespace Exiled.CustomRoles.API.Features
                     ability.AddAbility(player);
             }
 
-            ShowMessage(player);
+            if (CustomRoles.Instance!.Config.GotRoleHint.Show)
+                ShowMessage(player);
+
             ShowBroadcast(player);
             RoleAdded(player);
-            player.UniqueRole = Name;
             player.TryAddCustomRoleFriendlyFire(Name, CustomRoleFFMultiplier);
 
             if (!string.IsNullOrEmpty(ConsoleMessage))
@@ -808,46 +845,68 @@ namespace Exiled.CustomRoles.API.Features
         protected Vector3 GetSpawnPosition()
         {
             if (SpawnProperties is null || SpawnProperties.Count() == 0)
+            {
                 return Vector3.zero;
+            }
 
-            if (SpawnProperties.StaticSpawnPoints.Count > 0)
+            float totalchance = 0f;
+            List<(float chance, Vector3 pos)> spawnPointPool = new(4);
+
+            void Add(Vector3 pos, float chance)
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.StaticSpawnPoints)
+                if (chance <= 0f)
+                    return;
+
+                spawnPointPool.Add((chance, pos));
+                totalchance += chance;
+            }
+
+            if (!SpawnProperties.StaticSpawnPoints.IsEmpty())
+            {
+                foreach (StaticSpawnPoint sp in SpawnProperties.StaticSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
-                    if (r <= chance)
-                        return pos;
+                    Add(sp.Position, sp.Chance);
                 }
             }
 
-            if (SpawnProperties.DynamicSpawnPoints.Count > 0)
+            if (!SpawnProperties.DynamicSpawnPoints.IsEmpty())
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.DynamicSpawnPoints)
+                foreach (DynamicSpawnPoint sp in SpawnProperties.DynamicSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
-                    if (r <= chance)
-                        return pos;
+                    Add(sp.Position, sp.Chance);
                 }
             }
 
-            if (SpawnProperties.RoleSpawnPoints.Count > 0)
+            if (!SpawnProperties.RoleSpawnPoints.IsEmpty())
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.RoleSpawnPoints)
+                foreach (RoleSpawnPoint sp in SpawnProperties.RoleSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
-                    if (r <= chance)
-                        return pos;
+                    Add(sp.Position, sp.Chance);
                 }
             }
 
-            if (SpawnProperties.RoomSpawnPoints.Count > 0)
+            if (!SpawnProperties.RoomSpawnPoints.IsEmpty())
             {
-                foreach ((float chance, Vector3 pos) in SpawnProperties.RoomSpawnPoints)
+                foreach (RoomSpawnPoint sp in SpawnProperties.RoomSpawnPoints)
                 {
-                    double r = Loader.Random.NextDouble() * 100;
-                    if (r <= chance)
-                        return pos;
+                    Add(sp.Position, sp.Chance);
                 }
+            }
+
+            if (spawnPointPool.Count == 0 || totalchance <= 0f)
+            {
+                return Vector3.zero;
+            }
+
+            float randomRoll = (float)(Loader.Random.NextDouble() * totalchance);
+            foreach ((float chance, Vector3 pos) in spawnPointPool)
+            {
+                if (randomRoll < chance)
+                {
+                    return pos;
+                }
+
+                randomRoll -= chance;
             }
 
             return Vector3.zero;
@@ -861,7 +920,6 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Loading events.");
             Exiled.Events.Handlers.Player.ChangingNickname += OnInternalChangingNickname;
             Exiled.Events.Handlers.Player.ChangingRole += OnInternalChangingRole;
-            Exiled.Events.Handlers.Player.Spawned += OnInternalSpawned;
             Exiled.Events.Handlers.Player.SpawningRagdoll += OnSpawningRagdoll;
             Exiled.Events.Handlers.Player.Destroying += OnDestroying;
         }
@@ -877,7 +935,6 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Unloading events.");
             Exiled.Events.Handlers.Player.ChangingNickname -= OnInternalChangingNickname;
             Exiled.Events.Handlers.Player.ChangingRole -= OnInternalChangingRole;
-            Exiled.Events.Handlers.Player.Spawned -= OnInternalSpawned;
             Exiled.Events.Handlers.Player.SpawningRagdoll -= OnSpawningRagdoll;
             Exiled.Events.Handlers.Player.Destroying -= OnDestroying;
         }
@@ -912,32 +969,21 @@ namespace Exiled.CustomRoles.API.Features
 
         private void OnInternalChangingNickname(ChangingNicknameEventArgs ev)
         {
-            if (!Check(ev.Player))
-                return;
-
-            ev.Player.CustomInfo = $"{ev.NewName}\n{CustomInfo}";
-        }
-
-        private void OnInternalSpawned(SpawnedEventArgs ev)
-        {
-            if (!IgnoreSpawnSystem && SpawnChance > 0 && !Check(ev.Player) && ev.Player.Role.Type == Role && Loader.Random.NextDouble() * 100 <= SpawnChance)
-                AddRole(ev.Player);
+            if (Check(ev.Player))
+                ev.Player.CustomInfo = $"{ev.NewName}\n{CustomInfo}";
         }
 
         private void OnInternalChangingRole(ChangingRoleEventArgs ev)
         {
-            if(ev.Reason == SpawnReason.Destroyed)
-                return;
-
-            if (Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && ev.NewRole != Role && !KeepRoleOnChangingRole)))
-            {
+            if (!skipChangingCheck && ev.IsAllowed && ev.Reason != SpawnReason.Destroyed && Check(ev.Player) && ((ev.NewRole == RoleTypeId.Spectator && !KeepRoleOnDeath) || (ev.NewRole != RoleTypeId.Spectator && !KeepRoleOnChangingRole)))
                 RemoveRole(ev.Player);
-            }
+            else
+                skipChangingCheck = false;
         }
 
         private void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
         {
-            if (Check(ev.Player))
+            if (Check(ev.Player) && Role.IsFpcRole())
                 ev.Role = Role;
         }
 

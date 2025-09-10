@@ -16,16 +16,18 @@ namespace Exiled.Events.Handlers
     using Exiled.Events.EventArgs.Player;
 
     using Exiled.Events.Features;
-
-    using PluginAPI.Core.Attributes;
-    using PluginAPI.Enums;
-    using PluginAPI.Events;
+    using LabApi.Events.Arguments.PlayerEvents;
 
     /// <summary>
     /// Player related events.
     /// </summary>
     public class Player
     {
+        /// <summary>
+        /// Invoked after a player triggers the attack as an SCP.
+        /// </summary>
+        public static Event<HitEventArgs> Hit { get; set; } = new ();
+
         /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
@@ -103,9 +105,19 @@ namespace Exiled.Events.Handlers
         public static Event<CancelledItemUseEventArgs> CancelledItemUse { get; set; } = new();
 
         /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/>'s aspect ratio has changed.
+        /// </summary>
+        public static Event<ChangedRatioEventArgs> ChangedRatio { get; set; } = new();
+
+        /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> interacted with something.
         /// </summary>
         public static Event<InteractedEventArgs> Interacted { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> is saved from death by the Anti-SCP-207 effect.
+        /// </summary>
+        public static Event<SavingByAntiScp207EventArgs> SavingByAntiScp207 { get; set; } = new();
 
         /// <summary>
         /// Invoked before spawning a <see cref="API.Features.Player"/> <see cref="API.Features.Ragdoll"/>.
@@ -489,6 +501,11 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingSpectatedPlayerEventArgs> ChangingSpectatedPlayer { get; set; } = new();
 
         /// <summary>
+        /// Invoked when a <see cref="API.Features.Player"/> changes rooms.
+        /// </summary>
+        public static Event<RoomChangedEventArgs> RoomChanged { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> toggles the NoClip mode.
         /// </summary>
         public static Event<TogglingNoClipEventArgs> TogglingNoClip { get; set; } = new();
@@ -584,6 +601,16 @@ namespace Exiled.Events.Handlers
         public static Event<ChangingDisruptorModeEventArgs> ChangingDisruptorMode { get; set; } = new();
 
         /// <summary>
+        /// Invoked before the player explode with the micro HID.
+        /// </summary>
+        public static Event<ExplodingMicroHIDEventArgs> ExplodingMicroHID { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before the micro HID opens a door.
+        /// </summary>
+        public static Event<MicroHIDOpeningDoorEventArgs> MicroHIDOpeningDoor { get; set; } = new();
+
+        /// <summary>
         /// Invoked before player interacts with coffee cup.
         /// </summary>
         [Obsolete("Never available (for now).")]
@@ -672,6 +699,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="CancelledItemUseEventArgs"/> instance.</param>
         public static void OnCancelledItemUse(CancelledItemUseEventArgs ev) => CancelledItemUse.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Player"/>'s aspect ratio changes.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangedRatioEventArgs"/> instance.</param>
+        public static void OnChangedRatio(ChangedRatioEventArgs ev) => ChangedRatio.InvokeSafely(ev);
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> interacted with something.
@@ -789,6 +822,12 @@ namespace Exiled.Events.Handlers
         public static void OnRemovedHandcuffs(RemovedHandcuffsEventArgs ev) => RemovedHandcuffs.InvokeSafely(ev);
 
         /// <summary>
+        /// Called when a <see cref="API.Features.Player"/> changes rooms.
+        /// </summary>
+        /// <param name="ev">The <see cref="RoomChangedEventArgs"/> instance.</param>
+        public static void OnRoomChanged(RoomChangedEventArgs ev) => RoomChanged.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before a <see cref="API.Features.Player"/> escapes.
         /// </summary>
         /// <param name="ev">The <see cref="EscapingEventArgs"/> instance.</param>
@@ -846,7 +885,12 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> reloads a weapon.
         /// </summary>
         /// <param name="ev">The <see cref="ReloadingWeaponEventArgs"/> instance.</param>
-        public static void OnReloadingWeapon(ReloadingWeaponEventArgs ev) => ReloadingWeapon.InvokeSafely(ev);
+        public static void OnReloadingWeapon(PlayerReloadingWeaponEventArgs ev)
+        {
+            ReloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
+            ReloadingWeapon.InvokeSafely(exiledEv);
+            ev.IsAllowed = exiledEv.IsAllowed;
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> reloads a weapon.
@@ -954,7 +998,12 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> unloads a weapon.
         /// </summary>
         /// <param name="ev">The <see cref="UnloadingWeaponEventArgs"/> instance.</param>
-        public static void OnUnloadingWeapon(UnloadingWeaponEventArgs ev) => UnloadingWeapon.InvokeSafely(ev);
+        public static void OnUnloadingWeapon(PlayerUnloadingWeaponEventArgs ev)
+        {
+            UnloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
+            UnloadingWeapon.InvokeSafely(exiledEv);
+            ev.IsAllowed = exiledEv.IsAllowed;
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> unloads a weapon.
@@ -1207,6 +1256,12 @@ namespace Exiled.Events.Handlers
         public static void OnHealed(HealedEventArgs ev) => Healed.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> is saved from death by the Anti-SCP-207 effect.
+        /// </summary>
+        /// <param name="ev">The <see cref="SavingByAntiScp207EventArgs"/> instance.</param>
+        public static void OnSavingByAntiScp207(SavingByAntiScp207EventArgs ev) => SavingByAntiScp207.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before a <see cref="API.Features.Player"/> dies.
         /// </summary>
         /// <param name="ev">The <see cref="DyingEventArgs"/> instance. </param>
@@ -1261,6 +1316,18 @@ namespace Exiled.Events.Handlers
         public static void OnChangingDisruptorMode(ChangingDisruptorModeEventArgs ev) => ChangingDisruptorMode.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before disruptor's mode is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="ExplodingMicroHIDEventArgs"/> instance.</param>
+        public static void OnExplodingMicroHID(ExplodingMicroHIDEventArgs ev) => ExplodingMicroHID.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before the micro HID opens a door.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingDisruptorModeEventArgs"/> instance.</param>
+        public static void OnMicroHIDOpeningDoor(MicroHIDOpeningDoorEventArgs ev) => MicroHIDOpeningDoor.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before player interacts with coffee cup.
         /// </summary>
         /// <param name="ev">The <see cref="DrinkingCoffeeEventArgs"/> instance.</param>
@@ -1272,5 +1339,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev"><The cref="PreAuthenticatingEventArgs"/> instance.</param>
         public static void OnPreAuthenticating(PreAuthenticatingEventArgs ev) => PreAuthenticating.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a player triggers the melee attack as an SCP.
+        /// </summary>
+        /// <param name="ev">The <see cref="HitEventArgs"/> instance.</param>
+        public static void OnHit(HitEventArgs ev) => Hit.InvokeSafely(ev);
     }
 }

@@ -50,7 +50,7 @@ namespace Exiled.Events.Patches.Events.Item
             IL_0040: ldc.i4.1
             IL_0041: call         void InventorySystem.Items.Firearms.Attachments.AttachmentsUtils::ApplyAttachmentsCode(class InventorySystem.Items.Firearms.Firearm, unsigned int32, bool)
              */
-            int index = newInstructions.FindIndex(i => i.IsLdarg(1)) - 1;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_2) - 2;
             List<Label> jumpLabels = newInstructions[index].ExtractLabels();
 
             newInstructions.InsertRange(
@@ -69,7 +69,7 @@ namespace Exiled.Events.Patches.Events.Item
                     // if (!ev.IsAllowed) return;
                     new(OpCodes.Ldloc, ev),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingAttachmentsEventArgs), nameof(ChangingAttachmentsEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, returnLabel),
+                    new(OpCodes.Brfalse, returnLabel),
 
                     // msg.AttachmentsCode = ev.NewCode;
                     new(OpCodes.Ldarga, 1),

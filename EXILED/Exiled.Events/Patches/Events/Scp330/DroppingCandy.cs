@@ -17,7 +17,7 @@ namespace Exiled.Events.Patches.Events.Scp330
     using Handlers;
 
     using HarmonyLib;
-
+    using InventorySystem.Items;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables.Scp330;
 
@@ -28,11 +28,11 @@ namespace Exiled.Events.Patches.Events.Scp330
     using Player = API.Features.Player;
 
     /// <summary>
-    /// Patches the <see cref="Scp330NetworkHandler.ServerSelectMessageReceived(NetworkConnection, SelectScp330Message)" /> method to add the
+    /// Patches the <see cref="Scp330NetworkHandler.ServerDropCandy" /> method to add the
     /// <see cref="Scp330.DroppingScp330" /> event.
     /// </summary>
     [EventPatch(typeof(Scp330), nameof(Scp330.DroppingScp330))]
-    [HarmonyPatch(typeof(Scp330NetworkHandler), nameof(Scp330NetworkHandler.ServerSelectMessageReceived))]
+    [HarmonyPatch(typeof(Scp330NetworkHandler), nameof(Scp330NetworkHandler.ServerDropCandy))]
     internal static class DroppingCandy
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -44,25 +44,23 @@ namespace Exiled.Events.Patches.Events.Scp330
             LocalBuilder ev = generator.DeclareLocal(typeof(DroppingScp330EventArgs));
 
             const int offset = -1;
-            int index = newInstructions.FindLastIndex(instruction => instruction.LoadsField(Field(typeof(ReferenceHub), nameof(ReferenceHub.inventory)))) + offset;
+            int index = newInstructions.FindLastIndex(instruction => instruction.Calls(PropertyGetter(typeof(ItemBase), nameof(ItemBase.OwnerInventory)))) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(referenceHub)
-                    new(OpCodes.Ldloc_0),
+                    // Player.Get(bag.Owner)
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ItemBase), nameof(ItemBase.Owner))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // scp330Bag
-                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Dup),
 
-                    // msg.CandyID
+                    // candyKindID = GetCandyID(bag, index)
                     new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldfld, Field(typeof(SelectScp330Message), nameof(SelectScp330Message.CandyID))),
-
-                    // CandyKindID
                     new(OpCodes.Call, Method(typeof(DroppingCandy), nameof(DroppingCandy.GetCandyID))),
 
                     // DroppingScp330EventArgs ev = new(Player, Scp330Bag, CandyKindID)
@@ -80,21 +78,16 @@ namespace Exiled.Events.Patches.Events.Scp330
                     new CodeInstruction(OpCodes.Brfalse_S, returnLabel),
                 });
 
-            // Set our location of previous owner
-            int jumpOverOffset = 1;
-            int jumpOverIndex = newInstructions.FindLastIndex(
-                instruction => instruction.StoresField(Field(typeof(ItemPickupBase), nameof(ItemPickupBase.PreviousOwner)))) + jumpOverOffset;
-
-            int candyKindIdIndex = 4;
+            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_2);
 
             newInstructions.InsertRange(
-                jumpOverIndex,
-                new[]
+                index,
+                new CodeInstruction[]
                 {
                     // candyKindID = ev.Candy, save locally.
-                    new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Pop),
+                    new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingScp330EventArgs), nameof(DroppingScp330EventArgs.Candy))),
-                    new(OpCodes.Stloc, candyKindIdIndex),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

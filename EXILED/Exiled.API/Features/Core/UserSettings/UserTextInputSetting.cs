@@ -26,9 +26,29 @@ namespace Exiled.API.Features.Core.UserSettings
         /// <param name="placeHolder"><inheritdoc cref="PlaceHolder"/></param>
         /// <param name="characterLimit"><inheritdoc cref="CharacterLimit"/></param>
         /// <param name="contentType"><inheritdoc cref="ContentType"/></param>
-        /// /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        public UserTextInputSetting(int id, string label, string placeHolder = "", int characterLimit = 64, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, string hintDescription = null)
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
+        public UserTextInputSetting(int id, string label, string placeHolder, int characterLimit, TMP_InputField.ContentType contentType, string hintDescription)
             : this(new SSPlaintextSetting(id, label, placeHolder, characterLimit, contentType, hintDescription))
+        {
+            Base = (SSPlaintextSetting)base.Base;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserTextInputSetting"/> class.
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
+        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
+        /// <param name="placeHolder"><inheritdoc cref="PlaceHolder"/></param>
+        /// <param name="characterLimit"><inheritdoc cref="CharacterLimit"/></param>
+        /// <param name="contentType"><inheritdoc cref="ContentType"/></param>
+        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
+        /// <param name="collectionId"><inheritdoc cref="SettingBase.CollectionId"/></param>
+        /// <param name="isServerOnly"><inheritdoc cref="SettingBase.IsServerOnly"/></param>
+        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
+        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
+        public UserTextInputSetting(int id, string label, string placeHolder = "", int characterLimit = 64, TMP_InputField.ContentType contentType = TMP_InputField.ContentType.Standard, string hintDescription = null, byte collectionId = byte.MaxValue, bool isServerOnly = false, HeaderSetting header = null, Action<Player, SettingBase> onChanged = null)
+            : base(new SSPlaintextSetting(id, label, placeHolder, characterLimit, contentType, hintDescription, collectionId, isServerOnly), header, onChanged)
         {
             Base = (SSPlaintextSetting)base.Base;
         }
@@ -76,6 +96,42 @@ namespace Exiled.API.Features.Core.UserSettings
         {
             get => Base.CharacterLimit;
             set => Base.CharacterLimit = value;
+        }
+
+        /// <summary>
+        /// Requests clients TextInputs to be cleared.
+        /// </summary>
+        /// <param name="filter">Who to send the request to.</param>
+        public void RequestClear(Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendClearRequest(hub => filter(Player.Get(hub)));
+        }
+
+        /// <summary>
+        /// Sends updated values to clients.
+        /// </summary>
+        /// <param name="placeholder"><inheritdoc cref="PlaceHolder"/></param>
+        /// <param name="characterLimit"><inheritdoc cref="CharacterLimit"/></param>
+        /// <param name="contentType"><inheritdoc cref="ContentType"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateSetting(string placeholder, ushort characterLimit, TMP_InputField.ContentType contentType, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendPlaintextUpdate(placeholder, characterLimit, contentType, overrideValue, hub => filter(Player.Get(hub)));
+        }
+
+        /// <summary>
+        /// If setting is server only, sends updated values to clients.
+        /// </summary>
+        /// <param name="value"><inheritdoc cref="Text"/></param>
+        /// <param name="overrideValue">If false, sends fake values.</param>
+        /// <param name="filter">Who to send the update to.</param>
+        public void UpdateValue(string value, bool overrideValue = true, Predicate<Player> filter = null)
+        {
+            filter ??= _ => true;
+            Base.SendValueUpdate(value, overrideValue, hub => filter(Player.Get(hub)));
         }
 
         /// <summary>

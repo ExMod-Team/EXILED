@@ -75,6 +75,11 @@ namespace Exiled.API.Extensions
             { EffectType.SeveredEyes, typeof(SeveredEyes) },
             { EffectType.PitDeath, typeof(PitDeath) },
             { EffectType.Blurred, typeof(Blurred) },
+            { EffectType.Scp1344Detected, typeof(Scp1344Detected) },
+            { EffectType.Scp1576, typeof(Scp1576) },
+            { EffectType.Lightweight, typeof(Lightweight) },
+            { EffectType.HeavyFooted, typeof(HeavyFooted) },
+            { EffectType.Fade, typeof(Fade) },
             #pragma warning disable CS0618
             { EffectType.Marshmallow, typeof(MarshmallowEffect) },
             { EffectType.BecomingFlamingo, typeof(BecomingFlamingo) },
@@ -175,7 +180,7 @@ namespace Exiled.API.Extensions
         /// <seealso cref="IsHealing(EffectType)"/>
         public static bool IsPositive(this EffectType effect) => effect is EffectType.BodyshotReduction or EffectType.DamageReduction
             or EffectType.Invigorated or EffectType.Invisible or EffectType.MovementBoost or EffectType.RainbowTaste
-            or EffectType.Scp207 or EffectType.Scp1853 or EffectType.Vitality or EffectType.AntiScp207 or EffectType.Ghostly;
+            or EffectType.Scp207 or EffectType.Scp1853 or EffectType.Vitality or EffectType.AntiScp207 or EffectType.Ghostly or EffectType.Scp1344;
 
         /// <summary>
         /// Returns whether the provided <paramref name="effect"/> affects the player's movement speed.

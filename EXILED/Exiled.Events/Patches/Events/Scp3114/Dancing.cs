@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.Patches.Events.Scp3114
 {
-#pragma warning disable SA1402 // File may only contain a single type
-
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection.Emit;
@@ -35,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse_S);
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse);
 
             Label continueLabel = generator.DefineLabel();
 
@@ -58,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DancingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
+                    new(OpCodes.Stloc, ev),
 
                     // Handlers.Scp3114.OnDancing(ev);
                     new(OpCodes.Call, Method(typeof(Handlers.Scp3114), nameof(Handlers.Scp3114.OnDancing))),
@@ -66,47 +64,26 @@ namespace Exiled.Events.Patches.Events.Scp3114
                     // if (ev.IsAllowed)
                     //   goto continueLabel;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DancingEventArgs), nameof(DancingEventArgs.IsAllowed))),
-                    new(OpCodes.Brtrue_S, continueLabel),
+                    new(OpCodes.Brtrue, continueLabel),
 
                     // return
                     new(OpCodes.Ret),
 
                     // ev.NewState
-                    new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex).WithLabels(continueLabel),
+                    new CodeInstruction(OpCodes.Ldloc, ev).WithLabels(continueLabel),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DancingEventArgs), nameof(DancingEventArgs.IsDancing))),
                 });
 
-            for (int z = 0; z < newInstructions.Count; z++)
-                yield return newInstructions[z];
+            index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_I4_0);
 
-            ListPool<CodeInstruction>.Pool.Return(newInstructions);
-        }
-    }
+            newInstructions.RemoveRange(index, 3);
 
-    /// <summary>
-    /// Patches <see cref="Scp3114Dance.ServerProcessCmd"/>
-    /// to add <see cref="Handlers.Scp3114.Dancing"/> event.
-    /// </summary>
-    [HarmonyPatch(typeof(Scp3114Dance), nameof(Scp3114Dance.ServerWriteRpc))]
-    internal class ChooseDanceType
-    {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-        {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-
-            int offset = -4;
-            int index = newInstructions.FindIndex(x => x.operand == (object)Method(typeof(NetworkWriter), nameof(NetworkWriter.WriteByte))) + offset;
-
-            newInstructions.RemoveRange(index, 4);
-
-            // replace "writer.WriteByte((byte)UnityEngine.Random.Range(0, 255))"
-            // with "writer.WriteByte(ChooseDanceType.DanceType)"
-            newInstructions.InsertRange(index, new CodeInstruction[]
+            newInstructions.InsertRange(
+                index,
+                new[]
                 {
-                    // Handle(Player.Get(this.Owner));
-                    new(OpCodes.Ldarg_0),
-
-                    new(OpCodes.Call, Method(typeof(ChooseDanceType), nameof(Handle))),
+                    new CodeInstruction(OpCodes.Ldloc, ev),
+                    new(OpCodes.Call, PropertyGetter(typeof(DancingEventArgs), nameof(DancingEventArgs.DanceType))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -114,8 +91,5 @@ namespace Exiled.Events.Patches.Events.Scp3114
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
-
-        private static byte Handle(Scp3114Dance scp3114Dance)
-            => (byte)Player.Get(scp3114Dance.Owner).Role.As<API.Features.Roles.Scp3114Role>().DanceType;
     }
 }

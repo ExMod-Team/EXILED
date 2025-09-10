@@ -25,9 +25,8 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patch the <see cref="BreakableDoor.ServerDamage" />.
-    /// Adds the <see cref="Player.DamagingDoor" /> event.
+    /// Adds the <see cref="Player.DamagingDoor" /> event and fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/817 in the EventArgs.
     /// </summary>
-    [EventPatch(typeof(Player), nameof(Player.DamagingDoor))]
     [HarmonyPatch(typeof(BreakableDoor), nameof(BreakableDoor.ServerDamage))]
     internal static class DamagingDoor
     {

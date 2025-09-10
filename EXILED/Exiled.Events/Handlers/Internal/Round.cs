@@ -27,8 +27,12 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
+    using UnityEngine;
+    using Utils.Networking;
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -81,6 +85,13 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.Inventory.ServerDropEverything();
         }
 
+        /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
+        public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
+        {
+            if (ev.Role.IsDead() || !ev.Role.IsFpcRole())
+                ev.IsAllowed = false;
+        }
+
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />
         public static void OnActivatingSense(ActivatingSenseEventArgs ev)
         {
@@ -104,6 +115,12 @@ namespace Exiled.Events.Handlers.Internal
             {
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), true);
                 ev.Player.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkLightsEnabled), false);
+            }
+
+            // Fix bug that player that Join do not receive information about other players Scale
+            foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
+            {
+                player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
             }
         }
 

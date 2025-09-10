@@ -25,14 +25,21 @@ namespace Exiled.Loader.Models
         public readonly ReleaseAsset Asset;
 
         /// <summary>
+        /// Indicates if the release is a prerelease.
+        /// </summary>
+        public readonly bool IsPrerelease;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="NewVersion"/> struct.
         /// </summary>
         /// <param name="release"><inheritdoc cref="Release"/></param>
         /// <param name="asset"><inheritdoc cref="Asset"/></param>
-        public NewVersion(Release release, ReleaseAsset asset)
+        /// <param name="isPrerelease"><inheritdoc cref="IsPrerelease"/></param>
+        public NewVersion(Release release, ReleaseAsset asset, bool isPrerelease)
         {
             Release = release;
             Asset = asset;
+            IsPrerelease = isPrerelease;
         }
     }
 }

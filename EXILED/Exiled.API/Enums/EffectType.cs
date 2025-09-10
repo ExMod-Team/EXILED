@@ -24,12 +24,12 @@ namespace Exiled.API.Enums
         None,
 
         /// <summary>
-        /// The player isn't able to open their inventory or reload a weapon.
+        /// Prevents the player from reloading weapons and using medical items.
         /// </summary>
         AmnesiaItems,
 
         /// <summary>
-        /// The player isn't able to see properly.
+        /// Makes SCP-939 invisible to players under its effect. Visibility is temporarily restored when SCP-939 takes damage or attacks.
         /// </summary>
         AmnesiaVision,
 
@@ -283,5 +283,30 @@ namespace Exiled.API.Enums
         /// </summary>
         [Obsolete("Only availaible for Christmas and AprilFools.")]
         Snowed,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Scp1344Detected"/>.
+        /// </summary>
+        Scp1344Detected,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Scp1576"/>.
+        /// </summary>
+        Scp1576,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Lightweight"/>.
+        /// </summary>
+        Lightweight,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.HeavyFooted"/>.
+        /// </summary>
+        HeavyFooted,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Fade"/>.
+        /// </summary>
+        Fade,
     }
 }

@@ -23,7 +23,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="HurtEventArgs" /> class.
         /// </summary>
-        /// <param name="target">
+        /// <param name="referenceHub">
         /// <inheritdoc cref="Player" />
         /// </param>
         /// <param name="damageHandler">
@@ -32,12 +32,18 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="handlerOutput">
         /// <inheritdoc cref="HandlerOutput" />
         /// </param>
-        public HurtEventArgs(Player target, DamageHandlerBase damageHandler, DamageHandlerBase.HandlerOutput handlerOutput)
+        public HurtEventArgs(ReferenceHub referenceHub, DamageHandlerBase damageHandler, DamageHandlerBase.HandlerOutput handlerOutput)
         {
-            DamageHandler = new CustomDamageHandler(target, damageHandler);
-            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
-            Player = target;
+            Player = Player.Get(referenceHub);
+            DamageHandler = new CustomDamageHandler(Player, damageHandler);
             HandlerOutput = handlerOutput;
+
+            if (DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler))
+                Attacker = attackerDamageHandler.Attacker;
+            else if (damageHandler is GenericDamageHandler genericDamageHandler)
+                Attacker = Player.Get(genericDamageHandler.Attacker);
+            else
+                Attacker = null;
         }
 
         /// <inheritdoc/>
