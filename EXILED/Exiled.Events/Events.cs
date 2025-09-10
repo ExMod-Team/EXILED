@@ -91,6 +91,8 @@ namespace Exiled.Events
 
             LabApi.Events.Handlers.PlayerEvents.SendingVoiceMessage += Handlers.Player.OnSendingVoiceMessage;
             LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage += Handlers.Player.OnReceivingVoiceMessage;
+            LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon += Handlers.Player.OnReloadingWeapon;
+            LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon += Handlers.Player.OnUnloadingWeapon;
 
             ServerConsole.ReloadServerName();
         }
@@ -129,6 +131,8 @@ namespace Exiled.Events
 
             LabApi.Events.Handlers.PlayerEvents.SendingVoiceMessage -= Handlers.Player.OnSendingVoiceMessage;
             LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage -= Handlers.Player.OnReceivingVoiceMessage;
+            LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon -= Handlers.Player.OnReloadingWeapon;
+            LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon -= Handlers.Player.OnUnloadingWeapon;
         }
 
         /// <summary>

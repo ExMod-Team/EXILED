@@ -36,8 +36,14 @@ namespace Exiled.Events.EventArgs.Player
         {
             Player = Player.Get(referenceHub);
             DamageHandler = new CustomDamageHandler(Player, damageHandler);
-            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
             HandlerOutput = handlerOutput;
+
+            if (DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler))
+                Attacker = attackerDamageHandler.Attacker;
+            else if (damageHandler is GenericDamageHandler genericDamageHandler)
+                Attacker = Player.Get(genericDamageHandler.Attacker);
+            else
+                Attacker = null;
         }
 
         /// <inheritdoc/>

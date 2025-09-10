@@ -29,7 +29,7 @@ namespace Exiled.Events.EventArgs.Player
         {
             MicroHID = Item.Get<MicroHid>(item);
             Player = MicroHID.Owner;
-            IsAllowed = isAllowed;
+            IsAllowed = !isAllowed;
             Door = Door.Get(door);
         }
 
