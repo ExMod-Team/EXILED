@@ -468,13 +468,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
         /// </summary>
-        [Obsolete("Use SendingVoiceMessage instead of this")]
         public static Event<VoiceChattingEventArgs> VoiceChatting { get; set; } = new();
-
-        /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> sending a voice message.
-        /// </summary>
-        public static Event<SendingVoiceMessageEventArgs> SendingVoiceMessage { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> receiving a voice message.
@@ -499,7 +493,6 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> presses the transmission key.
         /// </summary>
-        [Obsolete("Use Sending Voice Message event and check channel is radio instead of this")]
         public static Event<TransmittingEventArgs> Transmitting { get; set; } = new();
 
         /// <summary>
@@ -1044,21 +1037,20 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> presses the voicechat key.
         /// </summary>
-        /// <param name="ev">The <see cref="VoiceChattingEventArgs"/> instance.</param>
-        [Obsolete("Use OnSendingVoiceMessage instead of this")]
-        public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);
-
-        /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> sending a voice message.
-        /// </summary>
-        /// <param name="ev">The <see cref="SendingVoiceMessageEventArgs"/> instance.</param>
-        public static void OnSendingVoiceMessage(PlayerSendingVoiceMessageEventArgs ev)
+        /// <param name="ev">The <see cref="PlayerSendingVoiceMessageEventArgs"/> instance.</param>
+        public static void OnVoiceChatting(PlayerSendingVoiceMessageEventArgs ev)
         {
-            SendingVoiceMessageEventArgs evExiled = new(ev.Player, ev.Message, ev.IsAllowed);
-            SendingVoiceMessage.InvokeSafely(evExiled);
-
+            VoiceChattingEventArgs evExiled = new(ev.Player, ev.Message, ev.IsAllowed);
+            VoiceChatting.InvokeSafely(evExiled);
             ev.IsAllowed = evExiled.IsAllowed;
             ev.Message = evExiled.VoiceMessage;
+
+            if(ev.Message.Channel == VoiceChat.VoiceChatChannel.Radio)
+            {
+                TransmittingEventArgs evTransmitting = new(evExiled.Player, evExiled.IsAllowed);
+                OnTransmitting(evTransmitting);
+                ev.IsAllowed = evTransmitting.IsAllowed;
+            }
         }
 
         /// <summary>
@@ -1096,7 +1088,6 @@ namespace Exiled.Events.Handlers
         /// Called after a <see cref="API.Features.Player"/> presses the transmission key.
         /// </summary>
         /// <param name="ev">The <see cref="TransmittingEventArgs"/> instance.</param>
-        [Obsolete("Use Sending Voice Message event and check channel is radio instead of this")]
         public static void OnTransmitting(TransmittingEventArgs ev) => Transmitting.InvokeSafely(ev);
 
         /// <summary>
