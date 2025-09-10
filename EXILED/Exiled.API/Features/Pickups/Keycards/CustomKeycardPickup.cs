@@ -210,9 +210,7 @@ namespace Exiled.API.Features.Pickups.Keycards
             // can happen if a dev does the big dumb
             if (Base is null)
             {
-                Log.Error("Base of CustomKeycardPickup was null! See StackTrace to fix problem.");
-                Log.Info(GetType());
-                Log.Info(new StackTrace());
+                Log.Error($"Base of CustomKeycardPickup was null! See StackTrace to fix problem.\n{GetType()}\n{new StackTrace()}");
             }
 
             MirrorExtensions.ResyncKeycardPickup(this);
