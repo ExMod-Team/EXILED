@@ -28,15 +28,21 @@ namespace Exiled.Events.Patches.Events.Map
     [HarmonyPatch(typeof(WaveAnnouncementBase), nameof(WaveAnnouncementBase.PlayAnnouncement))]
     internal static class AnnouncingTeamEntrance
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instruction, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instruction);
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel = generator.DefineLabel();
 
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldsfld);
+            // the instruction that sends subtitles is called before stringReturn is created (and thus checked) so we need to move it so that empty (or disallowed) message's subtitles are not sent.
+            // this removes the Ldarg_0 and the CallVirt
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(WaveAnnouncementBase), nameof(WaveAnnouncementBase.SendSubtitles))));
+            CodeInstruction sendSubtitlesInstruction = newInstructions[index];
+            newInstructions.RemoveRange(index - 1, 2);
 
-            newInstructions.InsertRange(index, new CodeInstruction[]
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldsfld);
+
+            newInstructions.InsertRange(index, new[]
             {
                 // if (stringReturn == "")
                 //     return;
@@ -44,6 +50,10 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Ldstr, string.Empty),
                 new(OpCodes.Ceq),
                 new(OpCodes.Brtrue_S, returnLabel),
+
+                // send subtitles before cassie message, but after our check.
+                new(OpCodes.Ldarg_0),
+                sendSubtitlesInstruction,
             });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

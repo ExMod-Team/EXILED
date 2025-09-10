@@ -234,6 +234,11 @@ namespace Exiled.API.Features.DamageHandlers
         public PlayerStatsSystem.DamageHandlerBase Base { get; set; }
 
         /// <summary>
+        /// Gets the <see cref="PlayerStatsSystem.DamageHandlerBase.CassieAnnouncement"/> the base game uses when a player dies.
+        /// </summary>
+        public override CassieAnnouncement CassieDeathAnnouncement => customCassieAnnouncement;
+
+        /// <summary>
         /// Gets or sets the current attacker.
         /// </summary>
         public Footprint Attacker { get; set; }

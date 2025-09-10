@@ -289,7 +289,7 @@ namespace Exiled.API.Features.DamageHandlers
                 new()
                 {
                     Announcement = cassieAnnouncement.Announcement,
-                    SubtitleParts = cassieAnnouncement.SubtitleParts.ToArray(),
+                    SubtitleParts = cassieAnnouncement.SubtitleParts?.ToArray() ?? Array.Empty<Subtitles.SubtitlePart>(),
                 };
 
             /// <summary>
