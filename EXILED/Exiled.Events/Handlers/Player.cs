@@ -1042,12 +1042,13 @@ namespace Exiled.Events.Handlers
         {
             VoiceChattingEventArgs evExiled = new(ev.Player, ev.Message, ev.IsAllowed);
             VoiceChatting.InvokeSafely(evExiled);
+
             ev.IsAllowed = evExiled.IsAllowed;
             ev.Message = evExiled.VoiceMessage;
 
             if(ev.Message.Channel == VoiceChat.VoiceChatChannel.Radio)
             {
-                TransmittingEventArgs evTransmitting = new(evExiled.Player, evExiled.IsAllowed);
+                TransmittingEventArgs evTransmitting = new(ev.Player, ev.IsAllowed);
                 OnTransmitting(evTransmitting);
                 ev.IsAllowed = evTransmitting.IsAllowed;
             }
