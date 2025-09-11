@@ -19,7 +19,7 @@ namespace Exiled.Events.Patches.Fixes
 
     /// <summary>
     /// Patches the <see cref="Scp914ItemProcessor.UpgradeInventoryItem"/> delegate.
-    /// Fix than SCP-106 regenerates slower in SCP-244 even if they are in stalk.
+    /// Fix items upgraded in SCP-914 being duplicated.
     /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/1770).
     /// </summary>
     [HarmonyPatch(typeof(Scp914ItemProcessor), nameof(Scp914ItemProcessor.UpgradeInventoryItem))]
