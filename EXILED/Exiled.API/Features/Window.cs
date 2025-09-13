@@ -62,7 +62,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the window's <see cref="UnityEngine.Transform"/>.
         /// </summary>
-        public Transform Transform => Base._transform;
+        public Transform Transform => Base.transform;
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> the window is in.
@@ -91,15 +91,15 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether this window is breakable.
         /// </summary>
-        public bool IsBreakable => !Base.isBroken;
+        public bool IsBreakable => !Base.IsBroken;
 
         /// <summary>
         /// Gets or sets a value indicating whether this window is broken.
         /// </summary>
         public bool IsBroken
         {
-            get => Base.isBroken;
-            set => Base.isBroken = value;
+            get => Base.IsBroken;
+            set => Base.IsBroken = value;
         }
 
         /// <summary>
@@ -107,8 +107,8 @@ namespace Exiled.API.Features
         /// </summary>
         public float Health
         {
-            get => Base.health;
-            set => Base.health = value;
+            get => Base.Health;
+            set => Base.Health = value;
         }
 
         /// <summary>
@@ -132,10 +132,11 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether this window is broken.
         /// </summary>
+        [Obsolete("You should use IsBroken Propperty now", true)]
         public bool SyncStatus
         {
-            get => Base.prevStatus;
-            set => Base.prevStatus = value;
+            get => Base._prevStatus;
+            set => Base._prevStatus = value;
         }
 
         /// <summary>
