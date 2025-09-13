@@ -60,7 +60,7 @@ namespace Exiled.API.Features.Pickups.Keycards
         }
 
         /// <summary>
-        /// Creates a <see cref="ManagementKeycardPickup"/>.
+        /// Creates an UnSpawned <see cref="ManagementKeycardPickup"/>, to spawn the pickup, call <see cref="Pickup.Spawn(Vector3, Quaternion?, Player)"/> on the returned instance.
         /// </summary>
         /// <param name="keycardLevels">The permissions of the keycard.</param>
         /// <param name="permissionsColor">The color of the permissions of the keycard.</param>

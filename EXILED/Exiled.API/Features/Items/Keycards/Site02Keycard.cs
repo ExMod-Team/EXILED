@@ -99,7 +99,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <returns>The new <see cref="Site02Keycard"/>.</returns>
         public static Site02Keycard Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear)
         {
-            Site02Keycard keycard = Create<Site02Keycard>(ItemType.KeycardCustomManagement);
+            Site02Keycard keycard = Create<Site02Keycard>(ItemType.KeycardCustomSite02);
             keycard.KeycardLevels = keycardLevels;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;

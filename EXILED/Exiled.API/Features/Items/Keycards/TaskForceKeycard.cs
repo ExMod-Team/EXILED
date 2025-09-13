@@ -87,7 +87,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <returns>The new <see cref="TaskForceKeycard"/>.</returns>
         public static TaskForceKeycard Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string serialNumber, byte rank)
         {
-            TaskForceKeycard keycard = Create<TaskForceKeycard>(ItemType.KeycardCustomManagement);
+            TaskForceKeycard keycard = Create<TaskForceKeycard>(ItemType.KeycardCustomTaskForce);
             keycard.KeycardLevels = keycardLevels;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;

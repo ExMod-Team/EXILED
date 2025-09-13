@@ -46,6 +46,8 @@ namespace Exiled.API.Features.Pickups.Keycards
         internal CustomKeycardPickup(ItemType type)
             : base(type)
         {
+            if (!CustomKeycardItem.DataDict.ContainsKey(Serial))
+                CustomKeycardItem.DataDict[Serial] = new KeycardData();
         }
 
         /// <summary>
