@@ -497,7 +497,7 @@ namespace Exiled.API.Features.Pickups
                 _ => new GrenadePickup(type),
             },
             BaseFirearmPickup => new FirearmPickup(type),
-            BaseKeycardPickup keycardPickup => type switch
+            BaseKeycardPickup => type switch
             {
                 ItemType.KeycardCustomTaskForce => new TaskForceKeycardPickup(type),
                 ItemType.KeycardCustomSite02 => new Site02KeycardPickup(type),
@@ -505,7 +505,7 @@ namespace Exiled.API.Features.Pickups
                 ItemType.KeycardCustomMetalCase => new MetalKeycardPickup(type),
                 ItemType.SurfaceAccessPass => new SingleUseKeycardPickup(type),
                 ItemType.KeycardChaosInsurgency => new ChaosKeycardPickup(type),
-                _ => new KeycardPickup(keycardPickup),
+                _ => new KeycardPickup(type),
             },
             BaseBodyArmorPickup => new BodyArmorPickup(type),
             BaseScp330Pickup => new Scp330Pickup(),

@@ -112,7 +112,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <returns>The new <see cref="MetalKeycard"/>.</returns>
         public static MetalKeycard Create(KeycardLevels keycardLevels, Color permissionsColor, string itemName, Color color, string nameTag, string label, Color labelColor, byte wear, string serialNumber)
         {
-            MetalKeycard keycard = Create<MetalKeycard>(ItemType.KeycardCustomManagement);
+            MetalKeycard keycard = Create<MetalKeycard>(ItemType.KeycardCustomMetalCase);
             keycard.KeycardLevels = keycardLevels;
             keycard.PermissionsColor = permissionsColor;
             keycard.ItemName = itemName;
