@@ -36,6 +36,7 @@ namespace Exiled.API.Extensions
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Scp1507;
+    using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
     using RelativePositioning;
     using Respawning;
@@ -461,6 +462,14 @@ namespace Exiled.API.Extensions
                 writer.WriteByte(intensity);
             });
         }
+
+        /// <summary>
+        /// Makes a player not spectatable to another player.
+        /// </summary>
+        /// <param name="target">The player who will become not spectatable.</param>
+        /// <param name="viewer">The viewer who will see this change.</param>
+        /// <param name="value">The faked value.</param>
+        public static void SetFakeSpectatable(Player target, Player viewer, bool value) => viewer.Connection.Send(new SpectatableVisibilityMessages.SpectatableVisibilityMessage(target.ReferenceHub, value));
 
         /// <summary>
         /// Makes the server resend a message to all clients updating a keycards details to current values.
