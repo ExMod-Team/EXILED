@@ -89,6 +89,21 @@ namespace Exiled.API.Features
         public static void PlaySound(bool isStarting) => GameIntercom._singleton.RpcPlayClip(isStarting);
 
         /// <summary>
+        /// Modify if the player is overriding the Player intercom Speak.
+        /// </summary>
+        /// <param name="player">The <see cref="Player"/> who will be change for Intercom Global Override.</param>
+        /// <param name="newState">Sets a value indicating whether the player will be overide Intercom speaking or not.</param>
+        /// <returns><see langword="true"/> if player was correctly modified on overide list; otherwise, <see langword="false"/>.</returns>
+        public static bool TrySetOverride(Player player, bool newState) => GameIntercom.TrySetOverride(player?.ReferenceHub, newState);
+
+        /// <summary>
+        /// Modify if the player is overriding the Player intercom Speak.
+        /// </summary>
+        /// <param name="player">Check what <see cref="Player"/> is using Intercom Global Override.</param>
+        /// <returns><see langword="true"/> if player is in the Override list for using Intercom global, <see langword="false"/>.</returns>
+        public static bool HasOverride(Player player) => GameIntercom.HasOverride(player?.ReferenceHub);
+
+        /// <summary>
         /// Reset the intercom's cooldown.
         /// </summary>
         public static void Reset() => State = IntercomState.Ready;
