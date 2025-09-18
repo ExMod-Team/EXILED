@@ -89,18 +89,18 @@ namespace Exiled.API.Features
         public static void PlaySound(bool isStarting) => GameIntercom._singleton.RpcPlayClip(isStarting);
 
         /// <summary>
-        /// Modify if the player is overriding the Player intercom Speak.
+        /// Modifies whether the player is overriding the intercom to speak globally.
         /// </summary>
-        /// <param name="player">The <see cref="Player"/> who will be change for Intercom Global Override.</param>
-        /// <param name="newState">Sets a value indicating whether the player will be overide Intercom speaking or not.</param>
-        /// <returns><see langword="true"/> if player was correctly modified on overide list; otherwise, <see langword="false"/>.</returns>
+        /// <param name="player">The <see cref="Player"/> whose intercom override state will be changed.</param>
+        /// <param name="newState">Indicates whether the player should be given the global intercom override.</param>
+        /// <returns><see langword="true"/> if the player was successfully added or removed from the override list; otherwise, <see langword="false"/>.</returns>
         public static bool TrySetOverride(Player player, bool newState) => GameIntercom.TrySetOverride(player?.ReferenceHub, newState);
 
         /// <summary>
-        /// Modify if the player is overriding the Player intercom Speak.
+        /// Checks whether the player is currently overriding the intercom to speak globally.
         /// </summary>
-        /// <param name="player">Check what <see cref="Player"/> is using Intercom Global Override.</param>
-        /// <returns><see langword="true"/> if player is in the Override list for using Intercom global, <see langword="false"/>.</returns>
+        /// <param name="player">The <see cref="Player"/> to check for a global intercom override.</param>
+        /// <returns><see langword="true"/> if the player has global intercom override; otherwise, <see langword="false"/>.</returns>
         public static bool HasOverride(Player player) => GameIntercom.HasOverride(player?.ReferenceHub);
 
         /// <summary>
