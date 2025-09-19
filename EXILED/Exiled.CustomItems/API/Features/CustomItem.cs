@@ -23,6 +23,7 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features.Spawn;
     using Exiled.API.Interfaces;
     using Exiled.CustomItems.API.EventArgs;
+    using Exiled.Events.EventArgs.Map;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp914;
     using Exiled.Loader;
@@ -779,16 +780,21 @@ namespace Exiled.CustomItems.API.Features
         protected virtual void SubscribeEvents()
         {
             Exiled.Events.Handlers.Player.Dying += OnInternalOwnerDying;
-            Exiled.Events.Handlers.Player.DroppingItem += OnInternalDroppingItem;
-            Exiled.Events.Handlers.Player.DroppingAmmo += OnInternalDroppingAmmo;
+            Exiled.Events.Handlers.Player.ItemAdded += OnInternalItemAdded;
             Exiled.Events.Handlers.Player.ChangingItem += OnInternalChanging;
             Exiled.Events.Handlers.Player.Escaping += OnInternalOwnerEscaping;
             Exiled.Events.Handlers.Player.PickingUpItem += OnInternalPickingUp;
-            Exiled.Events.Handlers.Player.ItemAdded += OnInternalItemAdded;
-            Exiled.Events.Handlers.Scp914.UpgradingPickup += OnInternalUpgradingPickup;
-            Exiled.Events.Handlers.Server.WaitingForPlayers += OnWaitingForPlayers;
+            Exiled.Events.Handlers.Player.DroppingItem += OnInternalDroppingItem;
+            Exiled.Events.Handlers.Player.DroppingAmmo += OnInternalDroppingAmmo;
             Exiled.Events.Handlers.Player.Handcuffing += OnInternalOwnerHandcuffing;
             Exiled.Events.Handlers.Player.ChangingRole += OnInternalOwnerChangingRole;
+
+            Exiled.Events.Handlers.Map.PickupAdded += OnInternalPickupSpawned;
+            Exiled.Events.Handlers.Map.PickupDestroyed += OnInternalPickupDestroyed;
+
+            Exiled.Events.Handlers.Server.WaitingForPlayers += OnWaitingForPlayers;
+
+            Exiled.Events.Handlers.Scp914.UpgradingPickup += OnInternalUpgradingPickup;
             Exiled.Events.Handlers.Scp914.UpgradingInventoryItem += OnInternalUpgradingInventoryItem;
         }
 
@@ -798,16 +804,21 @@ namespace Exiled.CustomItems.API.Features
         protected virtual void UnsubscribeEvents()
         {
             Exiled.Events.Handlers.Player.Dying -= OnInternalOwnerDying;
-            Exiled.Events.Handlers.Player.DroppingItem -= OnInternalDroppingItem;
-            Exiled.Events.Handlers.Player.DroppingAmmo -= OnInternalDroppingAmmo;
+            Exiled.Events.Handlers.Player.ItemAdded -= OnInternalItemAdded;
             Exiled.Events.Handlers.Player.ChangingItem -= OnInternalChanging;
             Exiled.Events.Handlers.Player.Escaping -= OnInternalOwnerEscaping;
             Exiled.Events.Handlers.Player.PickingUpItem -= OnInternalPickingUp;
-            Exiled.Events.Handlers.Player.ItemAdded -= OnInternalItemAdded;
-            Exiled.Events.Handlers.Scp914.UpgradingPickup -= OnInternalUpgradingPickup;
-            Exiled.Events.Handlers.Server.WaitingForPlayers -= OnWaitingForPlayers;
+            Exiled.Events.Handlers.Player.DroppingItem -= OnInternalDroppingItem;
+            Exiled.Events.Handlers.Player.DroppingAmmo -= OnInternalDroppingAmmo;
             Exiled.Events.Handlers.Player.Handcuffing -= OnInternalOwnerHandcuffing;
             Exiled.Events.Handlers.Player.ChangingRole -= OnInternalOwnerChangingRole;
+
+            Exiled.Events.Handlers.Map.PickupAdded -= OnInternalPickupSpawned;
+            Exiled.Events.Handlers.Map.PickupDestroyed -= OnInternalPickupDestroyed;
+
+            Exiled.Events.Handlers.Server.WaitingForPlayers -= OnWaitingForPlayers;
+
+            Exiled.Events.Handlers.Scp914.UpgradingPickup -= OnInternalUpgradingPickup;
             Exiled.Events.Handlers.Scp914.UpgradingInventoryItem -= OnInternalUpgradingInventoryItem;
         }
 
@@ -844,10 +855,18 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <summary>
-        /// Handles tracking items when they are dropped by a player.
+        /// Handles tracking custom items when their pickups are spawned in the scene.
         /// </summary>
-        /// <param name="ev"><see cref="DroppingItemEventArgs"/>.</param>
-        protected virtual void OnDroppingItem(DroppingItemEventArgs ev)
+        /// <param name="ev"><see cref="PickupAddedEventArgs"/>.</param>
+        protected virtual void OnPickupSpawned(PickupAddedEventArgs ev)
+        {
+        }
+
+        /// <summary>
+        /// Handles untracking custom items when their pickups are destroyed in the scene.
+        /// </summary>
+        /// <param name="ev"><see cref="PickupDestroyedEventArgs"/>.</param>
+        protected virtual void OnPickupDestroyed(PickupDestroyedEventArgs ev)
         {
         }
 
@@ -855,8 +874,7 @@ namespace Exiled.CustomItems.API.Features
         /// Handles tracking items when they are dropped by a player.
         /// </summary>
         /// <param name="ev"><see cref="DroppingItemEventArgs"/>.</param>
-        [Obsolete("Use OnDroppingItem instead.", false)]
-        protected virtual void OnDropping(DroppingItemEventArgs ev)
+        protected virtual void OnDroppingItem(DroppingItemEventArgs ev)
         {
         }
 
@@ -1025,17 +1043,28 @@ namespace Exiled.CustomItems.API.Features
             }
         }
 
+        private void OnInternalPickupSpawned(PickupAddedEventArgs ev)
+        {
+            if (!Check(ev.Pickup))
+                return;
+
+            OnPickupSpawned(ev);
+        }
+
+        private void OnInternalPickupDestroyed(PickupDestroyedEventArgs ev)
+        {
+            if (!Check(ev.Pickup))
+                return;
+
+            OnPickupDestroyed(ev);
+        }
+
         private void OnInternalDroppingItem(DroppingItemEventArgs ev)
         {
             if (!Check(ev.Item))
                 return;
 
             OnDroppingItem(ev);
-
-            // TODO: Don't forget to remove this with next update
-#pragma warning disable CS0618
-            OnDropping(ev);
-#pragma warning restore CS0618
         }
 
         private void OnInternalDroppingAmmo(DroppingAmmoEventArgs ev)
