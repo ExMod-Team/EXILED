@@ -28,17 +28,15 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="voiceMessage">
         /// <inheritdoc cref="VoiceMessage" />
         /// </param>
-        /// <param name="voiceModule">
-        /// <inheritdoc cref="VoiceModule" />
-        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public VoiceChattingEventArgs(Player player, VoiceMessage voiceMessage, VoiceModuleBase voiceModule, bool isAllowed = true)
+        public VoiceChattingEventArgs(Player player, VoiceMessage voiceMessage, bool isAllowed)
         {
             Player = player;
             VoiceMessage = voiceMessage;
-            VoiceModule = voiceModule;
+            if (player.Role is IVoiceRole voiceRole)
+            VoiceModule = voiceRole.VoiceModule;
             IsAllowed = isAllowed;
         }
 

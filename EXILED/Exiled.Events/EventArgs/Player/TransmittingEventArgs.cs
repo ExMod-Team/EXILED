@@ -23,16 +23,14 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="voiceModule">
-        /// <inheritdoc cref="VoiceModule" />
-        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public TransmittingEventArgs(Player player, VoiceModuleBase voiceModule, bool isAllowed = true)
+        public TransmittingEventArgs(Player player, bool isAllowed)
         {
             Player = player;
-            VoiceModule = voiceModule;
+            if (player.Role is IVoiceRole voiceRole)
+                VoiceModule = voiceRole.VoiceModule;
             IsAllowed = isAllowed;
         }
 
