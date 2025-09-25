@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ChangingSpeakerStatusAndVoiceChatting.cs" company="ExMod Team">
+// <copyright file="ChangingSpeakerStatus.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -26,12 +26,11 @@ namespace Exiled.Events.Patches.Events.Scp079
 
     /// <summary>
     /// Patches Scp079VoiceModule.ServerIsSending />.
-    /// Adds the <see cref="Scp079.ChangingSpeakerStatus" /> and the <see cref="Handlers.Player.VoiceChatting"/> events.
+    /// Adds the <see cref="Scp079.ChangingSpeakerStatus" /> event.
     /// </summary>
     [EventPatch(typeof(Scp079), nameof(Scp079.ChangingSpeakerStatus))]
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.VoiceChatting))]
     [HarmonyPatch(typeof(VoiceModuleBase), nameof(VoiceModuleBase.ServerIsSending), MethodType.Setter)]
-    internal static class ChangingSpeakerStatusAndVoiceChatting
+    internal static class ChangingSpeakerStatus
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
