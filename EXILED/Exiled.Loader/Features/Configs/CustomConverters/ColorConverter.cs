@@ -22,7 +22,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
     using YamlDotNet.Serialization;
 
     /// <summary>
-    /// Converts <see cref="Color"/> to Yaml configs and vice versa.
+    /// Converts <see cref="Color"/> (including nullable) to Yaml configs and vice versa.
     /// </summary>
     public sealed class ColorConverter : IYamlTypeConverter
     {
