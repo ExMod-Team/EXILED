@@ -21,8 +21,7 @@ namespace Exiled.API.Features
 
     using Respawning;
 
-    using CustomFirearmHandler = DamageHandlers.FirearmDamageHandler;
-    using CustomHandlerBase = DamageHandlers.DamageHandlerBase;
+    using CustomHandler = DamageHandlers.CustomDamageHandler;
 
     /// <summary>
     /// A set of tools to use in-game C.A.S.S.I.E.
@@ -140,25 +139,36 @@ namespace Exiled.API.Features
             => NineTailedFoxAnnouncer.AnnounceScpTermination(scp.ReferenceHub, info);
 
         /// <summary>
-        /// Announces the termination of a custom SCP name.
+        /// Announces the termination of a custom SCP Number.
         /// </summary>
-        /// <param name="scpName">SCP Name. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
+        /// <param name="scpNumber">SCP Number. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
         /// <param name="info">Hit Information.</param>
-        public static void CustomScpTermination(string scpName, CustomHandlerBase info)
+        public static void CustomScpTermination(string scpNumber, CustomHandler info)
         {
-            string result = scpName;
-            if (info.Is(out MicroHidDamageHandler _))
-                result += " SUCCESSFULLY TERMINATED BY AUTOMATIC SECURITY SYSTEM";
-            else if (info.Is(out WarheadDamageHandler _))
-                result += " SUCCESSFULLY TERMINATED BY ALPHA WARHEAD";
-            else if (info.Is(out UniversalDamageHandler _))
-                result += " LOST IN DECONTAMINATION SEQUENCE";
-            else if (info.BaseIs(out CustomFirearmHandler firearmDamageHandler) && firearmDamageHandler.Attacker is Player attacker)
-                result += " CONTAINEDSUCCESSFULLY " + ConvertTeam(attacker.Role.Team, attacker.UnitName);
+            if (info is null)
+                throw new System.ArgumentNullException(nameof(info));
 
-            // result += "To be changed";
+            string result = "SCP " + scpNumber;
+            if (info.Attacker is null)
+            {
+                result += info.Type switch
+                {
+                    Enums.DamageType.Warhead => " SUCCESSFULLY TERMINATED BY ALPHA WARHEAD",
+                    Enums.DamageType.Decontamination => " LOST IN DECONTAMINATION SEQUENCE",
+                    Enums.DamageType.Tesla => " SUCCESSFULLY TERMINATED BY AUTOMATIC SECURITY SYSTEM",
+                    _ => " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED",
+                };
+            }
             else
-                result += " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED";
+            {
+                result += info.Attacker.Role.Team switch
+                {
+                    Team.SCPs => " TERMINATED BY SCP " + string.Join(" ", info.Attacker.Role.Name.Remove(0, 4).ToCharArray()),
+                    Team.Flamingos => " TERMINATED BY SCP 1 5 0 7",
+                    Team.OtherAlive or Team.Dead => " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED",
+                    _ => " CONTAINEDSUCCESSFULLY " + ConvertTeam(info.Attacker.Role.Team, info.Attacker.UnitName),
+                };
+            }
 
             float num = AlphaWarheadController.TimeUntilDetonation <= 0f ? 3.5f : 1f;
             GlitchyMessage(result, UnityEngine.Random.Range(0.1f, 0.14f) * num, UnityEngine.Random.Range(0.07f, 0.08f) * num);
