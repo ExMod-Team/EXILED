@@ -150,7 +150,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <seealso cref="List"/>
         /// <seealso cref="Enumerable"/>
-        public static int Count => Dictionary.Count;
+        public static int Count => global::ReferenceHub.GetPlayerCount(CentralAuth.ClientInstanceMode.ReadyClient, CentralAuth.ClientInstanceMode.Host);
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="Player"/> and their user ids.
