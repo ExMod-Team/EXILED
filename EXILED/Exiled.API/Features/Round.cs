@@ -122,9 +122,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets  the number of surviving SCPs.
+        /// Gets or sets the number of surviving SCPs.
         /// </summary>
-        public static int SurvivingSCPs => RoundSummary.SurvivingSCPs;
+        public static int SurvivingSCPs
+        {
+            get => RoundSummary.SurvivingSCPs;
+            set => RoundSummary.SurvivingSCPs = value;
+        }
 
         /// <summary>
         /// Gets or sets the number of kills made by SCPs.
@@ -163,9 +167,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the number of rounds since the server started.
+        /// Gets or sets the number of rounds since the server started.
         /// </summary>
-        public static int UptimeRounds => RoundRestart.UptimeRounds;
+        public static int UptimeRounds
+        {
+            get => RoundRestart.UptimeRounds;
+            set => RoundRestart.UptimeRounds = value;
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> indicating the sides that are currently alive.
