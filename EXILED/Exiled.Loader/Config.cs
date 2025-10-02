@@ -88,5 +88,11 @@ namespace Exiled.Loader
         /// </summary>
         [Description("Indicates whether Exiled should auto-update itself as soon as a new release is available.")]
         public bool EnableAutoUpdates { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether config validator should check all properties inside config values' types.
+        /// </summary>
+        [Description("Indicating whether config validator should check all properties inside config values' types.")]
+        public bool EnableDeepValidation { get; set; } = true;
     }
 }

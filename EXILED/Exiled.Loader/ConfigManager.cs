@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System.Reflection;
+
 namespace Exiled.Loader
 {
     using System;
@@ -66,6 +68,59 @@ namespace Exiled.Loader
         }
 
         /// <summary>
+        /// Validates plugin config.
+        /// </summary>
+        /// <param name="plugin">Plugin which config is validated.</param>
+        /// <param name="config">Validated config.</param>
+        /// <returns>Config after validation is passed.</returns>
+        public static IConfig ValidateConfig(this IPlugin<IConfig> plugin, IConfig config)
+        {
+            int validated = 0;
+            foreach (PropertyInfo propertyInfo in config.GetType().GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
+                plugin.ValidateType(config, propertyInfo, ref validated);
+
+            Log.Info($"Config has successfully passed {validated} validations!");
+            return config;
+        }
+
+        /// <summary>
+        /// Performs a validation for property and all its properties in <paramref name="propertyInfo"/>'s type.
+        /// </summary>
+        /// <param name="plugin">Plugin which config is validated.</param>
+        /// <param name="config">Validated config.</param>
+        /// <param name="propertyInfo">Property which will be validated.</param>
+        /// <param name="validated">Amount of successfully passed validations.</param>
+        public static void ValidateType(this IPlugin<IConfig> plugin, IConfig config, PropertyInfo propertyInfo, ref int validated)
+        {
+            foreach (Attribute attribute in propertyInfo.GetCustomAttributes())
+            {
+                if (attribute is not IValidator validator)
+                    continue;
+
+                object value = propertyInfo.GetValue(config, null);
+                object defaultValue = propertyInfo.GetValue(plugin.Config, null);
+                if (!validator.Check(value))
+                {
+                    Log.Error($"Value {value} ({propertyInfo.Name.ToSnakeCase()}) hasn't pass validation {attribute.GetType().Name}." +
+                              $"Default value ({defaultValue}) will be used instead.");
+                    propertyInfo.SetValue(config, defaultValue);
+                    continue;
+                }
+
+                validated++;
+            }
+
+            if (!LoaderPlugin.Config.EnableDeepValidation)
+                return;
+
+            if (!(propertyInfo.PropertyType.Namespace?.Contains("System") ?? false))
+            {
+                foreach (PropertyInfo property in propertyInfo.PropertyType.GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
+                    plugin.ValidateType(config, property, ref validated);
+            }
+        }
+
+        /// <summary>
         /// Loads the config of a plugin using the distribution.
         /// </summary>
         /// <param name="plugin">The plugin which config will be loaded.</param>
@@ -99,7 +154,7 @@ namespace Exiled.Loader
             try
             {
                 string rawConfigString = Loader.Serializer.Serialize(rawDeserializedConfig);
-                config = (IConfig)Loader.Deserializer.Deserialize(rawConfigString, plugin.Config.GetType());
+                config = ValidateConfig(plugin, (IConfig)Loader.Deserializer.Deserialize(rawConfigString, plugin.Config.GetType()));
                 plugin.Config.CopyProperties(config);
             }
             catch (YamlException yamlException)
@@ -128,7 +183,7 @@ namespace Exiled.Loader
 
             try
             {
-                config = (IConfig)Loader.Deserializer.Deserialize(File.ReadAllText(plugin.ConfigPath), plugin.Config.GetType());
+                config = ValidateConfig(plugin, (IConfig)Loader.Deserializer.Deserialize(File.ReadAllText(plugin.ConfigPath), plugin.Config.GetType()));
                 plugin.Config.CopyProperties(config);
             }
             catch (YamlException yamlException)
