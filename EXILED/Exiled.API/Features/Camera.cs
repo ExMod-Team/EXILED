@@ -160,7 +160,16 @@ namespace Exiled.API.Features
             Camera079ToCamera.Add(camera079, this);
             Type = GetCameraType();
             if (Base != null && Type is CameraType.Unknown)
-                Log.Error($"[CameraType] Room: {Room?.Type ?? RoomType.Unknown} Name:{Name}");
+            {
+                if (Base.IsToy)
+                {
+                    // If NW gives a way to tell CameraType by game object, set Type here, otherwise we cant tell what CameraType is.
+                }
+                else
+                {
+                    Log.Error($"[Camera] Add CameraType entry for: [Room: {Room?.Type ?? RoomType.Unknown} Name: {Name}]");
+                }
+            }
         }
 
         /// <summary>
