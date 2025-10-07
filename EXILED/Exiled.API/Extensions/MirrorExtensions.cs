@@ -15,6 +15,7 @@ namespace Exiled.API.Extensions
     using System.Reflection.Emit;
     using System.Text;
 
+    using AdminToys;
     using AudioPooling;
     using CustomPlayerEffects;
     using Exiled.API.Enums;
@@ -56,6 +57,7 @@ namespace Exiled.API.Extensions
         private static readonly ReadOnlyDictionary<string, string> ReadOnlyRpcFullNamesValue = new(RpcFullNamesValue);
         private static MethodInfo setDirtyBitsMethodInfoValue;
         private static MethodInfo sendSpawnMessageMethodInfoValue;
+        private static string[] adminToyBaseSyncVarsValue;
 
         /// <summary>
         /// Gets <see cref="MethodInfo"/> corresponding to <see cref="Type"/>.
@@ -156,6 +158,11 @@ namespace Exiled.API.Extensions
         /// Gets a NetworkServer.SendSpawnMessage's <see cref="MethodInfo"/>.
         /// </summary>
         public static MethodInfo SendSpawnMessageMethodInfo => sendSpawnMessageMethodInfoValue ??= typeof(NetworkServer).GetMethod("SendSpawnMessage", BindingFlags.NonPublic | BindingFlags.Static);
+
+        /// <summary>
+        /// Gets all <see cref="AdminToyBase"/> sync var names.
+        /// </summary>
+        public static string[] AdminToyBaseSyncVars => adminToyBaseSyncVarsValue ??= typeof(AdminToyBase).GetProperties().Where(property => property.Name.Contains("Network")).Select(property => property.Name).ToArray();
 
         /// <summary>
         /// Plays a beep sound that only the target <paramref name="player"/> can hear.
@@ -677,8 +684,25 @@ namespace Exiled.API.Extensions
             NetworkWriterPool.Return(writer2);
             void CustomSyncVarGenerator(NetworkWriter targetWriter)
             {
+                bool isAdminToy = targetType.BaseType == typeof(AdminToyBase);
+
+                // all admin toys have toy-specific sync vars, so we need to write correct dirty bits for both the toys DeserializeSyncVars, but also AdminToyBase.DeserializeSyncVars in correct order
+                bool isBase = AdminToyBaseSyncVars.Contains(propertyName);
+
+                if (isAdminToy && !isBase)
+                {
+                    // no base sync var changes
+                    targetWriter.WriteULong(0);
+                }
+
                 targetWriter.WriteULong(SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"]);
                 WriterExtensions[typeof(T)]?.Invoke(null, new object[2] { targetWriter, value });
+
+                if (isAdminToy && isBase)
+                {
+                    // no sub-toy sync var changes
+                    targetWriter.WriteULong(0);
+                }
             }
         }
 
@@ -795,6 +819,9 @@ namespace Exiled.API.Extensions
                     break;
                 }
             }
+
+            if (!behaviour)
+                throw new InvalidOperationException($"Failed to find a valid NetworkBehaviour for NetworkIdentity: [{behaviorOwner.name}], type: [{targetType.FullName}]. Please verify you are using the correct Type in SendFakeSync Var/Object methods.");
 
             // Write target NetworkBehavior's dirty
             Compression.CompressVarUInt(owner, value);
