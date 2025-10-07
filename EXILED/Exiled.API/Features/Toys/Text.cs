@@ -20,9 +20,9 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Initializes a new instance of the <see cref="Text"/> class.
         /// </summary>
-        /// <param name="speakerToy">The <see cref="TextToy"/> of the toy.</param>
-        internal Text(TextToy speakerToy)
-            : base(speakerToy, AdminToyType.TextToy) => Base = speakerToy;
+        /// <param name="textToy">The <see cref="TextToy"/> of the toy.</param>
+        internal Text(TextToy textToy)
+            : base(textToy, AdminToyType.TextToy) => Base = textToy;
 
         /// <summary>
         /// Gets the prefab.

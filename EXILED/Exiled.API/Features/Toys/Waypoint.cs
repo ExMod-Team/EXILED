@@ -20,9 +20,9 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Initializes a new instance of the <see cref="Waypoint"/> class.
         /// </summary>
-        /// <param name="speakerToy">The <see cref="WaypointToy"/> of the toy.</param>
-        internal Waypoint(WaypointToy speakerToy)
-            : base(speakerToy, AdminToyType.WaypointToy) => Base = speakerToy;
+        /// <param name="waypointToy">The <see cref="WaypointToy"/> of the toy.</param>
+        internal Waypoint(WaypointToy waypointToy)
+            : base(waypointToy, AdminToyType.WaypointToy) => Base = waypointToy;
 
         /// <summary>
         /// Gets the prefab.
@@ -39,8 +39,8 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public float Priority
         {
-            get => Base.Priority;
-            set => Base.Priority = value;
+            get => Base.NetworkPriority;
+            set => Base.NetworkPriority = value;
         }
 
         /// <summary>
@@ -53,7 +53,16 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets the id of the Waypoint use for <see cref="RelativePositioning.RelativePosition.WaypointId"/>.
+        /// Gets or sets the bounds this waypoint encapsulates.
+        /// </summary>
+        public Bounds Bounds
+        {
+            get => new(Position, Base.NetworkBoundsSize);
+            set => Base.NetworkBoundsSize = value.size;
+        }
+
+        /// <summary>
+        /// Gets the id of the Waypoint used for <see cref="RelativePositioning.RelativePosition.WaypointId"/>.
         /// </summary>
         public byte WaypointId => Base._waypointId;
     }
