@@ -92,13 +92,13 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingAmmoEventArgs"/> instance.</param>
+        /// <param name="ev">The <see cref="JailbirdChangingStateEventArgs"/> instance.</param>
         public static void OnJailbirdStateChanging(JailbirdChangingStateEventArgs ev) => JailbirdChangingWearState.InvokeSafely(ev);
 
         /// <summary>
         /// Called after the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
         /// </summary>
-        /// <param name="ev">The <see cref="ChangingAmmoEventArgs"/> instance.</param>
+        /// <param name="ev">The <see cref="JailbirdChangedStateEventArgs"/> instance.</param>
         public static void OnJailbirdStateChanged(JailbirdChangedStateEventArgs ev) => JailbirdChangedWearState.InvokeSafely(ev);
 
         /// <summary>
