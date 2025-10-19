@@ -111,6 +111,11 @@ namespace Exiled.CustomRoles.API.Features
         public virtual SpawnProperties SpawnProperties { get; set; } = new();
 
         /// <summary>
+        /// Gets or sets the minimum number of players connected needed in order to add the role.
+        /// </summary>
+        public virtual int MinPlayers { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether players keep their current position when gaining this role.
         /// </summary>
         public virtual bool KeepPositionOnSpawn { get; set; }
@@ -548,7 +553,7 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
             player.UniqueRole = Name;
 
-            if (Role != RoleTypeId.None)
+            if (Role != RoleTypeId.None && (MinPlayers == 0 || MinPlayers == Server.PlayerCount))
             {
                 try
                 {
