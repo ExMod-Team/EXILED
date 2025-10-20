@@ -334,7 +334,7 @@ namespace Exiled.Loader
             if (type is null)
                 return;
 
-            Type configType = pluginType.BaseType?.GetGenericArguments().FirstOrDefault();
+            Type configType = type.GetGenericArguments().FirstOrDefault();
             if (configType is null)
             {
                 Log.Error($"Failed to load config for LabAPI plugin {plugin.Name}, could not get the generic of TConfig!");
