@@ -337,7 +337,7 @@ namespace Exiled.Loader
                 }
             }
 
-            foreach (LabPlugin plugin in LabAPIPlugins.Keys)
+            foreach (LabPlugin plugin in LabAPIPlugins.Keys.OrderBy(plugin => plugin.Priority))
             {
                 try
                 {
