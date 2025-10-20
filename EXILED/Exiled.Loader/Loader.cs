@@ -278,7 +278,6 @@ namespace Exiled.Loader
                     FilePathSetter?.Invoke(instance, new object[] { path });
 
                     plugin = instance;
-                    Log.Info("Successfully loaded LabAPI plugin " + instance.Name);
                 }
             }
             catch (Exception ex)
@@ -622,6 +621,7 @@ namespace Exiled.Loader
                 if (Plugins.Any(p => p.Name == plugin.Name) || LabAPIPlugins.Keys.Any(p => p.Name == plugin.Name))
                     continue;
 
+                Log.Info("Successfully loaded LabAPI plugin " + plugin.Name);
                 LabAPIPlugins.Add(plugin, attempt);
             }
 
