@@ -468,6 +468,15 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the player has noclip enabled.
+        /// </summary>
+        public bool IsNoclipEnabled
+        {
+            get => ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
+            set => ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating the <see cref="Player"/> that currently has the player cuffed.
         /// <para>
         /// This value will be <see langword="null"/> if the player is not cuffed. Setting this value to <see langword="null"/> will uncuff the player if they are cuffed.
