@@ -41,6 +41,7 @@ namespace Exiled.CustomRoles.Commands
             RegisterCommand(Give.Instance);
             RegisterCommand(Info.Instance);
             RegisterCommand(List.List.Instance);
+            RegisterCommand(Get.Instance);
         }
 
         /// <inheritdoc/>

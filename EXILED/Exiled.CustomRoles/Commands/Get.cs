@@ -8,6 +8,7 @@
 namespace Exiled.CustomRoles.Commands
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Text;
 
@@ -17,10 +18,9 @@ namespace Exiled.CustomRoles.Commands
     using Exiled.CustomRoles.API;
     using Exiled.CustomRoles.API.Features;
     using Exiled.Permissions.Extensions;
-    using RemoteAdmin;
 
     /// <summary>
-    /// The command to get player's current custom role.
+    /// The command to get specified player(s) current custom roles.
     /// </summary>
     internal sealed class Get : ICommand
     {
@@ -40,57 +40,78 @@ namespace Exiled.CustomRoles.Commands
         public string[] Aliases { get; } = Array.Empty<string>();
 
         /// <inheritdoc/>
-        public string Description { get; } = "Gets the specified player's current custom role.";
+        public string Description { get; } = "Gets the specified player(s)' current custom role(s).";
 
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             try
             {
-                if (!sender.CheckPermission("customroles.get"))
+                Player? playerSender = sender as Player;
+                if (!playerSender.CheckPermission("customroles.get"))
                 {
                     response = "Permission Denied, required: customroles.get";
                     return false;
                 }
 
-                if (sender is not PlayerCommandSender playerSender)
-                {
-                    response = "Command can be used in game only.";
-                    return false;
-                }
-
-                Player target;
+                List<Player> targets = new();
 
                 if (arguments.Count == 0)
                 {
-                    target = Player.Get(playerSender.ReferenceHub);
+                    if (playerSender == null)
+                    {
+                        response = "You can't check your customroles if you're not connected to the server.";
+                        return false;
+                    }
+
+                    targets.Add(Player.Get(playerSender.ReferenceHub));
                 }
                 else
                 {
                     string identifier = string.Join(" ", arguments);
-                    target = Player.List.FirstOrDefault(p =>
-                        p.Nickname.Equals(identifier, StringComparison.OrdinalIgnoreCase));
 
-                    if (target is null)
+                    switch (identifier.ToLower())
                     {
-                        response = $"No player found with nickname \"{identifier}\".";
-                        return false;
+                        case "*":
+                        case "all":
+                            targets.AddRange(Player.List);
+                            break;
+
+                        default:
+                            IEnumerable<Player> foundPlayers = Player.GetProcessedData(arguments, 0);
+                            if (foundPlayers.IsEmpty())
+                            {
+                                response = "No players found! Try using player ID or UserID.";
+                                return false;
+                            }
+
+                            targets.AddRange(foundPlayers);
+                            break;
                     }
                 }
 
-                CustomRole role = target.GetCustomRoles().FirstOrDefault();
+                StringBuilder builder = StringBuilderPool.Pool.Get();
 
-                if (role is null)
+                foreach (Player target in targets)
                 {
-                    response = $"{target.Nickname} has no active custom role.";
-                    return true;
+                    CustomRole role = target.GetCustomRoles().FirstOrDefault();
+                    if (role is null)
+                    {
+                        builder.AppendLine($"{target.Nickname.PadRight(30)} | None");
+                    }
+                    else
+                    {
+                        builder.AppendLine($"{target.Nickname.PadRight(30)} | {role.Name} [{role.Id}]");
+                    }
                 }
 
-                StringBuilder builder = StringBuilderPool.Pool.Get();
-                builder.AppendLine($"{target.Nickname}'s custom role:");
-                builder.Append("- ").Append(role.Name).Append(" [").Append(role.Id).Append(']');
+                string formattedList = new StringBuilder()
+                    .AppendLine("===== Custom Roles =====")
+                    .Append(builder.ToString())
+                    .AppendLine("========================")
+                    .ToString();
 
-                response = StringBuilderPool.Pool.ToStringReturn(builder);
+                response = formattedList;
                 return true;
             }
             catch (Exception e)
