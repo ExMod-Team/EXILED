@@ -276,7 +276,7 @@ namespace Exiled.API.Enums
         UnknownElevator,
 
         /// <summary>
-        /// Represents the Elevator door for <see cref="ElevatorGroup.GateA"/>.
+        /// Represents the Elevator door for <see cref="ElevatorGroup.GateA01"/> or <see cref="ElevatorGroup.GateA02"/>.
         /// </summary>
         ElevatorGateA,
 
