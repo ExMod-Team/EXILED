@@ -243,11 +243,11 @@ namespace Exiled.API.Features
             },
             "Glass" => Room?.Type switch
             {
-                RoomType.Hcz079 => GlassType.Scp079,
+                RoomType.Hcz079 => GlassType.Scp079Trigger,
                 RoomType.HczHid => GlassType.MicroHid,
                 _ => GlassType.Unknown,
             },
-            "glass" => GlassType.Scp079Trigger,
+            "glass" => GlassType.Scp079,
             "HCZ_IncineratorWayside" => GlassType.Incinerator,
             "VTGLASS" => GlassType.Plants,
             _ => GlassType.Unknown,
