@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
@@ -33,28 +34,24 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Brtrue_S);
-            Label continueLabel = (Label)newInstructions[index].operand;
+            Label transpilerLabel = generator.DefineLabel();
 
-            LocalBuilder isAllowed = generator.DeclareLocal(typeof(bool));
+            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Brtrue_S) + 2;
+            Label continueLabel = (Label)newInstructions[index - 2].operand;
+            newInstructions[index - 2].operand = transpilerLabel;
 
-            newInstructions.RemoveAt(index);
-
-            newInstructions.InsertRange(index, new CodeInstruction[]
+            newInstructions.InsertRange(index, new[]
             {
-                new(OpCodes.Ldloc_S, isAllowed.LocalIndex),
-
-                new(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(transpilerLabel),
 
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(typeof(EmergencyDoorRelease), nameof(EmergencyDoorRelease._controlledDoor))),
-                new(OpCodes.Call, Method(typeof(Door), nameof(Door.Get), new[] { typeof(DoorVariant) })),
+                new(OpCodes.Call, typeof(Door).GetMethods().Single(method => method.Name is "Get" && !method.IsGenericMethod && method.GetParameters().All(parameter => parameter.ParameterType == typeof(DoorVariant)))),
 
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                new(OpCodes.Ldloc_S, isAllowed.LocalIndex),
-
+                new(OpCodes.Ldc_I4_1),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingEmergencyButtonEventArgs))[0]),
                 new(OpCodes.Dup),
 
@@ -62,6 +59,7 @@ namespace Exiled.Events.Patches.Events.Player
 
                 new(OpCodes.Callvirt, PropertyGetter(typeof(InteractingEmergencyButtonEventArgs), nameof(InteractingEmergencyButtonEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, continueLabel),
+                new(OpCodes.Ret),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
