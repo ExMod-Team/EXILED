@@ -33,8 +33,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(SavingByAntiScp207EventArgs));
 
-            int offset = -1;
-            int index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(StatusEffectBase), nameof(StatusEffectBase.DisableEffect)))) + offset;
+            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
 
             Label skipLabel = generator.DefineLabel();
             Label gotoEventLabel = newInstructions[index].labels[0];
