@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="JailbirdState.cs" company="ExMod Team">
+// <copyright file="JailbirdWearState.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -25,14 +25,14 @@ namespace Exiled.Events.Patches.Events.Item
     [EventPatch(typeof(Handlers.Item), nameof(Handlers.Item.JailbirdChangingWearState))]
     [EventPatch(typeof(Handlers.Item), nameof(Handlers.Item.JailbirdChangedWearState))]
     [HarmonyPatch(typeof(JailbirdDeteriorationTracker), nameof(JailbirdDeteriorationTracker.RecheckUsage))]
-    internal static class JailbirdState
+    internal static class JailbirdWearState
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             LocalBuilder oldState = generator.DeclareLocal(typeof(JailbirdWearState));
-            LocalBuilder evChanging = generator.DeclareLocal(typeof(JailbirdChangingStateEventArgs));
+            LocalBuilder evChanging = generator.DeclareLocal(typeof(JailbirdChangingWearStateEventArgs));
 
             Label skipChangedEventLabel = generator.DefineLabel();
             Label retLabel = generator.DefineLabel();
@@ -71,12 +71,12 @@ namespace Exiled.Events.Patches.Events.Item
 
                     // this._jailbird.Owner
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), "_jailbird")),
+                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), nameof(JailbirdDeteriorationTracker._jailbird))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(JailbirdItem), nameof(JailbirdItem.Owner))),
 
                     // this._jailbird
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), "_jailbird")),
+                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), nameof(JailbirdDeteriorationTracker._jailbird))),
 
                     // newWearState
                     new(OpCodes.Ldloc_2),
@@ -87,8 +87,8 @@ namespace Exiled.Events.Patches.Events.Item
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // JailbirdChangingStateEventArgs ev = new(...)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(JailbirdChangingStateEventArgs))[0]),
+                    // JailbirdChangingWearStateEventArgs ev = new(...)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(JailbirdChangingWearStateEventArgs))[0]),
                     new(OpCodes.Stloc_S, evChanging.LocalIndex),
 
                     // Handlers.Item.OnJailbirdStateChanging(ev)
@@ -98,16 +98,16 @@ namespace Exiled.Events.Patches.Events.Item
                     // if (!IsAllowed)
                     //    return;
                     new(OpCodes.Ldloc_S, evChanging.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(JailbirdChangingStateEventArgs), nameof(JailbirdChangingStateEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(JailbirdChangingWearStateEventArgs), nameof(JailbirdChangingWearStateEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, retLabel),
 
                     // Update local 2
                     new(OpCodes.Ldloc_S, evChanging.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(JailbirdChangingStateEventArgs), nameof(JailbirdChangingStateEventArgs.NewWearState))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(JailbirdChangingWearStateEventArgs), nameof(JailbirdChangingWearStateEventArgs.NewWearState))),
                     new(OpCodes.Stloc_2),
                 });
 
-            int dictSetIndex = newInstructions.FindIndex(x => x.Calls(Method(typeof(Dictionary<ushort, JailbirdWearState>), "set_Item")));
+            int dictSetIndex = newInstructions.FindIndex(x => x.Calls(Method(typeof(Dictionary<ushort, InventorySystem.Items.Jailbird.JailbirdWearState>), "set_Item")));
             if (dictSetIndex == -1)
             {
                 for (int i = 0; i < newInstructions.Count; i++)
@@ -133,12 +133,12 @@ namespace Exiled.Events.Patches.Events.Item
 
                     // this._jailbird.Owner
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), "_jailbird")),
+                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), nameof(JailbirdDeteriorationTracker._jailbird))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(JailbirdItem), nameof(JailbirdItem.Owner))),
 
                     // this._jailbird
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), "_jailbird")),
+                    new(OpCodes.Ldfld, Field(typeof(JailbirdDeteriorationTracker), nameof(JailbirdDeteriorationTracker._jailbird))),
 
                     // newWearState
                     new(OpCodes.Ldloc_2),
@@ -146,9 +146,9 @@ namespace Exiled.Events.Patches.Events.Item
                     // oldWearState
                     new(OpCodes.Ldloc_S, oldState.LocalIndex),
 
-                    // JailbirdChangedStateEventArgs ev = new(...)
+                    // JailbirdChangedWearStateEventArgs ev = new(...)
                     // Handlers.Item.OnJailbirdStateChanged(ev)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(JailbirdChangedStateEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(JailbirdChangedWearStateEventArgs))[0]),
                     new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnJailbirdStateChanged))),
                 });
 

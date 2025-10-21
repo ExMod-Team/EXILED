@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="JailbirdChangedStateEventArgs.cs" company="ExMod Team">
+// <copyright file="JailbirdChangedWearStateEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -15,16 +15,16 @@ namespace Exiled.Events.EventArgs.Item
     /// <summary>
     /// Contains all information when a <see cref="JailbirdItem"/> changes its state.
     /// </summary>
-    public class JailbirdChangedStateEventArgs : IItemEvent
+    public class JailbirdChangedWearStateEventArgs : IItemEvent, IPlayerEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="JailbirdChangedStateEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="JailbirdChangedWearStateEventArgs"/> class.
         /// </summary>
         /// <param name="player">The player who owns the jailbird.</param>
         /// <param name="jailbird">The Jailbird item whose state is changing.</param>
         /// <param name="newWearState">The <see cref="JailbirdWearState"/> the Jailbird switched to.</param>
         /// <param name="oldWearState">The current <see cref="JailbirdWearState"/> the Jailbird was at.</param>
-        public JailbirdChangedStateEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase jailbird, JailbirdWearState newWearState, JailbirdWearState oldWearState)
+        public JailbirdChangedWearStateEventArgs(ReferenceHub player, InventorySystem.Items.ItemBase jailbird, JailbirdWearState newWearState, JailbirdWearState oldWearState)
         {
             Player = Player.Get(player);
             Jailbird = Item.Get<Jailbird>(jailbird);
