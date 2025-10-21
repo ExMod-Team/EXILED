@@ -37,9 +37,13 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(DamagingDoorEventArgs));
 
             Label ret = generator.DefineLabel();
+            int offset = -1;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
-            int offset = -3;
-            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_1) + offset;
+            newInstructions[index].labels.Add(ret);
+
+            offset = -3;
+            index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_1) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -54,7 +58,10 @@ namespace Exiled.Events.Patches.Events.Player
                     // DoorDamageType
                     new(OpCodes.Ldarg_2),
 
-                    // DamagingDoorEventArgs ev = new(player, this, doorDamageType);
+                    // attacker
+                    new(OpCodes.Ldarg_3),
+
+                    // DamagingDoorEventArgs ev = new(doorVariant, this, doorDamageType, Footprint);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DamagingDoorEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -64,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnDamagingDoor))),
 
                     // if (!ev.IsAllowed)
-                    //    return;
+                    //    return false;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DamagingDoorEventArgs), nameof(DamagingDoorEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse, ret),
 
@@ -73,8 +80,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DamagingDoorEventArgs), nameof(DamagingDoorEventArgs.Damage))),
                     new(OpCodes.Starg_S, 1),
                 });
-
-            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
