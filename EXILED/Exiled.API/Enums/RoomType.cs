@@ -295,6 +295,11 @@ namespace Exiled.API.Enums
         HczCrossRoomWater,
 
         /// <summary>
+        /// Heavy Containment Zone's cross room with waterfall.
+        /// </summary>
+        Dss08 = HczCrossRoomWater,
+
+        /// <summary>
         /// Heavy Containment Zone's corner.
         /// </summary>
         HczCornerDeep,
@@ -338,5 +343,15 @@ namespace Exiled.API.Enums
         /// Heavy Containment Zone's storage / server room.
         /// </summary>
         HczServerRoom,
+
+        /// <summary>
+        /// Heavy Containment Zone's straight hall room with lava.
+        /// </summary>
+        HczIncineratorWayside,
+
+        /// <summary>
+        /// Heavy Containment Zone's straight hall room with lava.
+        /// </summary>
+        HczDss12 = HczIncineratorWayside,
     }
 }

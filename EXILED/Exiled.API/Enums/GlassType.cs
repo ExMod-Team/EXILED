@@ -74,5 +74,15 @@ namespace Exiled.API.Enums
         /// Represents the window in <see cref="RoomType.Hcz127"/>.
         /// </summary>
         Scp127,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.EzGateA"/>.
+        /// </summary>
+        GateAPit,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.EzGateA"/>.
+        /// </summary>
+        GateAArmory,
     }
 }

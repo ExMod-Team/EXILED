@@ -364,5 +364,10 @@ namespace Exiled.API.Enums
         /// Represents the door used for Checkpoint.
         /// </summary>
         Checkpoint,
+
+        /// <summary>
+        /// Represents the door in the <see cref="RoomType.EzGateA"/> Armory.
+        /// </summary>
+        GateAArmory,
     }
 }

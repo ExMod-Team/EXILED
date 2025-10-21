@@ -39,8 +39,7 @@ namespace Exiled.API.Features
             Room = room;
             Type = GetGlassType();
 
-            if (Type is GlassType.Unknown)
-                Log.Warn($"[GLASSTYPE UNKNOWN] Room = ({Room}) BASE = [{Base}]");
+            Log.Warn($"[GLASSTYPE UNKNOWN] Room = ({Room}) BASE = [{Base}]");
         }
 
         /// <summary>
@@ -226,6 +225,8 @@ namespace Exiled.API.Features
             RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
             RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
             RoomType.Hcz127 => GlassType.Scp127,
+            RoomType.EzGateA when false => GlassType.GateAArmory,
+            RoomType.EzGateA => GlassType.GateAPit,
             _ => GlassType.Unknown,
         };
     }

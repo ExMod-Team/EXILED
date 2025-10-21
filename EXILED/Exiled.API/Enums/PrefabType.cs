@@ -381,5 +381,11 @@ namespace Exiled.API.Enums
 
         [Prefab(3938583646, "WaypointToy")]
         WaypointToy,
+
+        [Prefab(1891631329, "PrismaticCloud")]
+        PrismaticCloud,
+
+        [Prefab(3938583646, "TantrumObj (Brown Candy)")]
+        TantrumObjBrownCandy,
     }
 }

@@ -151,5 +151,13 @@ namespace Exiled.API.Enums
         LczCameraToy,
         SzCameraToy,
         #endregion
+
+        #region new
+        HczDss12,
+        EzGateAInterior,
+        EzGateAElevators,
+        EzGateBInterior,
+        EzGateBSide,
+        #endregion
     }
 }
