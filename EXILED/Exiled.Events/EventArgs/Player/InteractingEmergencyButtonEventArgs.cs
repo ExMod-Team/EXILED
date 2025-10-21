@@ -20,22 +20,22 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="InteractingEmergencyButtonEventArgs"/> class.
         /// </summary>
-        /// <param name="emergencyDoorRelease"><inheritdoc cref="EmergencyDoorRelease"/></param>
+        /// <param name="emergencyDoorRelease"><inheritdoc cref="EmergencyReleaseButton"/></param>
         /// <param name="door"><inheritdoc cref="Door"/></param>
         /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
         public InteractingEmergencyButtonEventArgs(EmergencyDoorRelease emergencyDoorRelease, Door door, Player player, bool isAllowed = true)
         {
-            EmergencyDoorRelease = emergencyDoorRelease;
+            EmergencyReleaseButton = EmergencyReleaseButton.Get(emergencyDoorRelease);
             Door = door;
             Player = player;
             IsAllowed = isAllowed;
         }
 
         /// <summary>
-        /// Gets the <see cref="Interactables.Interobjects.EmergencyDoorRelease"/> that's being pressed.
+        /// Gets the <see cref="API.Features.Doors.EmergencyReleaseButton"/> that's being pressed.
         /// </summary>
-        public EmergencyDoorRelease EmergencyDoorRelease { get; }
+        public EmergencyReleaseButton EmergencyReleaseButton { get; }
 
         /// <inheritdoc/>
         public Door Door { get; }
