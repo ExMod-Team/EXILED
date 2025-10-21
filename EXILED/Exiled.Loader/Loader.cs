@@ -393,12 +393,14 @@ namespace Exiled.Loader
             }
 
             Plugins.Clear();
+            LabAPIPlugins.Clear();
             Server.PluginAssemblies.Clear();
             Locations.Clear();
 
             LoadPlugins();
 
             ConfigManager.Reload();
+            ConfigManager.ReloadLabAPIConfigs();
             TranslationManager.Reload();
 
             EnablePlugins();
@@ -421,6 +423,12 @@ namespace Exiled.Loader
                     Log.Error($"Plugin \"{plugin.Name}\" threw an exception while disabling: {exception}");
                 }
             }
+
+            foreach (LabPlugin plugin in LabAPIPlugins.Keys)
+            {
+                plugin.UnregisterCommands();
+                plugin.Disable();
+            }
         }
 
         /// <summary>
@@ -429,6 +437,14 @@ namespace Exiled.Loader
         /// <param name="args">The name or prefix of the plugin (Using the prefix is recommended).</param>
         /// <returns>The desired plugin, null if not found.</returns>
         public static IPlugin<IConfig> GetPlugin(string args) => Plugins.FirstOrDefault(x => x.Name == args || x.Prefix == args);
+
+        /// <summary>
+        /// Gets a LabAPI plugin Exiled loaded by its name.
+        /// </summary>
+        /// <param name="args">The name of the plugin.</param>
+        /// <returns>The desired plugin, null if not found.</returns>
+        /// <remarks>This method does not check LabAPI's loaded plugins, only LabAPI plugins EXILED loaded.</remarks>
+        public static LabPlugin GetLabAPIPlugin(string args) => LabAPIPlugins.Keys.FirstOrDefault(x => x.Name == args);
 
         /// <summary>
         /// Runs the plugin manager, by loading all dependencies, plugins, configs and then enables all plugins.
