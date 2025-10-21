@@ -13,6 +13,7 @@ namespace Exiled.API.Features
 
     using DamageHandlers;
     using Enums;
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Doors;
     using Exiled.API.Interfaces;
     using UnityEngine;
@@ -39,7 +40,8 @@ namespace Exiled.API.Features
             Room = room;
             Type = GetGlassType();
 
-            Log.Warn($"[GLASSTYPE UNKNOWN] Room = ({Room}) BASE = [{Base}]");
+            if (Type is GlassType.Unknown)
+                Log.Warn($"[GLASSTYPE UNKNOWN] Room = ({Room}) BASE = [{Base}] HP = {{{Base?.Health}}}");
         }
 
         /// <summary>
@@ -213,20 +215,41 @@ namespace Exiled.API.Features
         /// <returns>A string containing Window-related data.</returns>
         public override string ToString() => $"{Type} ({Health}) [{IsBroken}] *{DisableScpDamage}*";
 
-        private GlassType GetGlassType() => Room?.Type switch
+        private GlassType GetGlassType() => Base.name.RemoveBracketsOnEndOfName() switch
         {
-            RoomType.Lcz330 => GlassType.Scp330,
-            RoomType.LczGlassBox => GlassType.GR18,
-            RoomType.LczPlants => GlassType.Plants,
-            RoomType.Hcz049 => GlassType.Scp049,
-            RoomType.Hcz079 => Base._preventScpDamage ? GlassType.Scp079Trigger : GlassType.Scp079,
-            RoomType.HczHid => GlassType.MicroHid,
-            RoomType.HczTestRoom => GlassType.TestRoom,
-            RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
-            RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
-            RoomType.Hcz127 => GlassType.Scp127,
-            RoomType.EzGateA when false => GlassType.GateAArmory,
-            RoomType.EzGateA => GlassType.GateAPit,
+            "B272sa" => Room?.Type switch
+            {
+                RoomType.LczGlassBox => GlassType.GR18,
+                RoomType.Lcz330 => GlassType.Scp330,
+                _ => GlassType.Unknown,
+            },
+            "GLASS" => Room?.Type switch
+            {
+                RoomType.Hcz079 => GlassType.Scp079,
+                RoomType.HczHid => GlassType.MicroHid,
+                RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
+                RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
+                RoomType.EzGateA when Base.name[7] == '5' => GlassType.GateAArmory,
+                RoomType.EzGateA => GlassType.GateAPit,
+                _ => GlassType.Unknown,
+            },
+            "Window" => Room?.Type switch
+            {
+                RoomType.Hcz049 => GlassType.Scp049,
+                RoomType.Hcz127 => GlassType.Scp127,
+                RoomType.HczHid => GlassType.MicroHid,
+                RoomType.HczTestRoom => GlassType.TestRoom,
+                _ => GlassType.Unknown,
+            },
+            "Glass" => Room?.Type switch
+            {
+                RoomType.Hcz079 => GlassType.Scp079,
+                RoomType.HczHid => GlassType.MicroHid,
+                _ => GlassType.Unknown,
+            },
+            "glass" => GlassType.Scp079Trigger,
+            "HCZ_IncineratorWayside" => GlassType.Incinerator,
+            "VTGLASS" => GlassType.Plants,
             _ => GlassType.Unknown,
         };
     }
