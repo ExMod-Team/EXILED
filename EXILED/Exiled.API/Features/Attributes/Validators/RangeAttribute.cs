@@ -12,7 +12,7 @@ namespace Exiled.API.Features.Attributes.Validators
     using Exiled.API.Interfaces;
 
     /// <summary>
-    /// Check if <see cref="IComparable"/> is inside a specific range.
+    /// Check if an <see cref="IComparable"/> is inside a specific range.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
     public class RangeAttribute : Attribute, IValidator
