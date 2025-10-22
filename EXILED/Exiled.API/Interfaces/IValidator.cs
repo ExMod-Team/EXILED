@@ -13,7 +13,7 @@ namespace Exiled.API.Interfaces
     public interface IValidator
     {
         /// <summary>
-        /// Checks if <paramref name="value"/> is satisfying condition.
+        /// Checks if <paramref name="value"/> is satisfying this attributes condition.
         /// </summary>
         /// <param name="value">Value to check.</param>
         /// <returns>Whether the value has passed check.</returns>
