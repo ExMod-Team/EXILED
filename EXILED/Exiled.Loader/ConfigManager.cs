@@ -101,8 +101,7 @@ namespace Exiled.Loader
                 object defaultValue = propertyInfo.GetValue(plugin.Config, null);
                 if (!validator.Check(value))
                 {
-                    Log.Error($"Value {value} ({propertyInfo.Name.ToSnakeCase()}) hasn't pass validation {attribute.GetType().Name}." +
-                              $"Default value ({defaultValue}) will be used instead.");
+                    Log.Error($"Value {value} in config ({propertyInfo.Name.ToSnakeCase()}) has failed validation for attribute {attribute.GetType().Name}. Default value ({defaultValue}) will be used instead.");
                     propertyInfo.SetValue(config, defaultValue);
                     continue;
                 }
