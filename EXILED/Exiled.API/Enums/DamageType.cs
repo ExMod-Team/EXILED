@@ -273,5 +273,10 @@ namespace Exiled.API.Enums
         /// Damage caused by <see cref="ItemType.GunSCP127"/>.
         /// </summary>
         Scp127,
+
+        /// <summary>
+        /// Damage type for <see cref="PlayerStatsSystem.SilentDamageHandler"/>.
+        /// </summary>
+        Silent,
     }
 }
