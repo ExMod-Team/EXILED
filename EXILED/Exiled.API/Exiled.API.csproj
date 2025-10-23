@@ -40,6 +40,8 @@
         <Reference Include="UnityEngine.AudioModule" HintPath="$(EXILED_REFERENCES)\UnityEngine.AudioModule.dll" Private="false" />
         <Reference Include="UnityEngine.UI" HintPath="$(EXILED_REFERENCES)\UnityEngine.UI.dll" Private="false" />
         <Reference Include="YamlDotNet" HintPath="$(EXILED_REFERENCES)\YamlDotNet.dll" Private="false" />
+        <Reference Include="mscorlib" HintPath="$(EXILED_REFERENCES)\mscorlib.dll" Private="false" />
+        <Reference Include="System" HintPath="$(EXILED_REFERENCES)\System.dll" Private="false" />
     </ItemGroup>
 
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
