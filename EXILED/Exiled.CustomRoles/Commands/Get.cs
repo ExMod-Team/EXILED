@@ -48,19 +48,19 @@ namespace Exiled.CustomRoles.Commands
             try
             {
                 Player? playerSender = sender as Player;
-                if (!playerSender.CheckPermission("customroles.get"))
+                if (playerSender is not null && !playerSender.CheckPermission("customroles.get"))
                 {
                     response = "Permission Denied, required: customroles.get";
                     return false;
                 }
 
-                List<Player> targets = new();
+                List<Player> targets = ListPool<Player>.Pool.Get();
 
                 if (arguments.Count == 0)
                 {
                     if (playerSender == null)
                     {
-                        response = "You can't check your customroles if you're not connected to the server.";
+                        response = "You need to provide arguments (ID/Nickname) in order to use this command.";
                         return false;
                     }
 
@@ -105,13 +105,11 @@ namespace Exiled.CustomRoles.Commands
                     }
                 }
 
-                string formattedList = new StringBuilder()
-                    .AppendLine("===== Custom Roles =====")
-                    .Append(builder.ToString())
-                    .AppendLine("========================")
-                    .ToString();
+                builder.Insert(0, "===== Custom Roles =====\n");
+                builder.AppendLine("========================");
 
-                response = formattedList;
+                response = StringBuilderPool.Pool.ToStringReturn(builder);
+                ListPool<Player>.Pool.Return(targets);
                 return true;
             }
             catch (Exception e)
