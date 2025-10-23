@@ -553,7 +553,7 @@ namespace Exiled.CustomRoles.API.Features
             Log.Debug($"{Name}: Adding role to {player.Nickname}.");
             player.UniqueRole = Name;
 
-            if (Role != RoleTypeId.None && (MinPlayers is 0 || Server.PlayerCount == MinPlayers))
+            if (Role != RoleTypeId.None)
             {
                 try
                 {
