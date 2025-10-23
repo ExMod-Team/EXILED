@@ -135,7 +135,7 @@ namespace Exiled.API.Features
         public ElevatorType Type => Group switch
         {
             ElevatorGroup.Scp049 => ElevatorType.Scp049,
-            ElevatorGroup.GateA => ElevatorType.GateA,
+            ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => ElevatorType.GateA,
             ElevatorGroup.GateB => ElevatorType.GateB,
             ElevatorGroup.ServerRoom => ElevatorType.ServerRoom,
             ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => ElevatorType.LczA,

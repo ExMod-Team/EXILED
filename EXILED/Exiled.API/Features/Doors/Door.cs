@@ -492,6 +492,7 @@ namespace Exiled.API.Features.Doors
                 case Interactables.Interobjects.BasicDoor basic when beep is not DoorBeepType.InteractionAllowed:
                     basic.RpcPlayBeepSound();
                     break;
+
                 case Interactables.Interobjects.CheckpointDoor chkPt when beep is not DoorBeepType.InteractionAllowed:
                     chkPt.RpcPlayDeniedBeep();
                     break;
@@ -638,7 +639,7 @@ namespace Exiled.API.Features.Doors
                     {
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
-                        ElevatorGroup.GateA => DoorType.ElevatorGateA,
+                        ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => DoorType.ElevatorGateA,
                         ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => DoorType.ElevatorLczA,
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
                         _ => DoorType.UnknownElevator,
