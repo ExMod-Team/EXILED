@@ -429,15 +429,14 @@ namespace Exiled.API.Features
             RoomIdentifierToRoom.Add(Identifier, this);
 
             Zone = Identifier.Zone.GetZone();
-#if DEBUG
+
             if (Zone is ZoneType.Unspecified)
-                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
-#endif
+                Log.Warn($"[ZONETYPE UNKNOWN] {Identifier} Zone : {Identifier?.Zone}");
+
             Type = FindType(gameObject);
-#if DEBUG
+
             if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
-#endif
+                Log.Warn($"[ROOMTYPE UNKNOWN] {Identifier} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 
@@ -485,6 +484,7 @@ namespace Exiled.API.Features
                 "HCZ_TArmory" => RoomType.HczArmory,
                 "HCZ_MicroHID_New" => RoomType.HczHid,
                 "HCZ_Crossroom_Water" => RoomType.HczCrossRoomWater,
+                "HCZ_IncineratorWayside" => RoomType.HczIncineratorWayside,
                 "HCZ_Testroom" => RoomType.HczTestRoom,
                 "HCZ_049" => RoomType.Hcz049,
                 "HCZ_079" => RoomType.Hcz079,

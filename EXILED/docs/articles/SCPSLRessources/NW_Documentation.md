@@ -17,7 +17,7 @@
 title: NW Documentation
 ---
 
-Last Update (14.1.0.4)
+Last Update (14.2.0.0)
 
 ### Index
 
@@ -231,6 +231,7 @@ Last Update (14.1.0.4)
 - [PlayerInfoColorTypes](#playerinfocolortypes)
 - [PlayerMovementState](#playermovementstate)
 - [PlayerPermissions](#playerpermissions)
+- [PlayerPermissionType](#playerpermissiontype)
 - [PlayerSorting](#playersorting)
 - [PopupState](#popupstate)
 - [PortMapper](#portmapper)
@@ -238,6 +239,7 @@ Last Update (14.1.0.4)
 - [RaClipBoardType](#raclipboardtype)
 - [RadioCommand](#radiocommand)
 - [RadioRangeLevel](#radiorangelevel)
+- [RefpointType](#refpointtype)
 - [RejectionReason](#rejectionreason)
 - [RejectionReason](#rejectionreason)
 - [ReloaderMessageHeader](#reloadermessageheader)
@@ -245,6 +247,7 @@ Last Update (14.1.0.4)
 - [RemovalMode](#removalmode)
 - [ReproProjectAssetType](#reproprojectassettype)
 - [RequestType](#requesttype)
+- [ResizeDirection](#resizedirection)
 - [RespawnSetting](#respawnsetting)
 - [RespawnTooltipTranslation](#respawntooltiptranslation)
 - [ResurrectError](#resurrecterror)
@@ -315,9 +318,11 @@ Last Update (14.1.0.4)
 - [SyncData](#syncdata)
 - [SyncDataFlags](#syncdataflags)
 - [SyncMode](#syncmode)
+- [SystemCursorID](#systemcursorid)
 - [TargetButton](#targetbutton)
 - [Team](#team)
 - [TrackerMessage](#trackermessage)
+- [TrackType](#tracktype)
 - [TransitionStatus](#transitionstatus)
 - [TurnStatus](#turnstatus)
 - [UISetting](#uisetting)
@@ -928,6 +933,12 @@ Last Update (14.1.0.4)
  [5] = Green
  [6] = Blue
  [7] = Pink
+ [8] = Orange
+ [9] = White
+ [10] = Gray
+ [11] = Black
+ [12] = Brown
+ [13] = Evil
 ```
 
 </details>
@@ -1308,7 +1319,7 @@ Last Update (14.1.0.4)
 
 ### ConsoleLogType
 
-<details><summary><b>GameCore.Console+ConsoleLogType</b></summary>
+<details><summary><b>GameCore.ConsoleLogType</b></summary>
 
 ```
  [0] = DoNotLog
@@ -1699,7 +1710,7 @@ Last Update (14.1.0.4)
 <details><summary><b>Interactables.Interobjects.ElevatorGroup</b></summary>
 
 ```
- [0] = GateA
+ [0] = GateA01
  [1] = GateB
  [2] = LczA01
  [3] = LczA02
@@ -1709,6 +1720,7 @@ Last Update (14.1.0.4)
  [7] = Scp049
  [8] = Nuke02
  [9] = ServerRoom
+ [10] = GateA02
 ```
 
 </details>
@@ -2740,6 +2752,7 @@ Last Update (14.1.0.4)
  [64] = KeycardCustomSite02
  [65] = KeycardCustomManagement
  [66] = KeycardCustomMetalCase
+ [67] = MarshmallowItem
  [-1] = None
 ```
 
@@ -3125,7 +3138,7 @@ Last Update (14.1.0.4)
 <details><summary><b>UserSettings.VideoSettings.MiscVideoSetting</b></summary>
 
 ```
- [0] = Brightness
+ [0] = BrightnessBoost
  [1] = ExplosionShake
  [2] = HeadBobbing
  [3] = FlashbangDarkMode
@@ -3690,6 +3703,18 @@ Last Update (14.1.0.4)
 
 </details>
 
+### PlayerPermissionType
+
+<details><summary><b>PlayerPermissionType</b></summary>
+
+```
+ [0] = RaAccess
+ [1] = ViewAccess
+ [2] = Misc
+```
+
+</details>
+
 ### PlayerSorting
 
 <details><summary><b>RemoteAdmin.Communication.RaPlayerList+PlayerSorting</b></summary>
@@ -3773,6 +3798,18 @@ Last Update (14.1.0.4)
  [2] = HighRange
  [3] = UltraRange
  [-1] = RadioDisabled
+```
+
+</details>
+
+### RefpointType
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.RefpointType</b></summary>
+
+```
+ [0] = None
+ [1] = LineOfSightPoint
+ [2] = Hitbox
 ```
 
 </details>
@@ -3878,6 +3915,20 @@ Last Update (14.1.0.4)
  [1] = ConfirmThrowWeak
  [2] = ConfirmThrowFullForce
  [3] = CancelThrow
+```
+
+</details>
+
+### ResizeDirection
+
+<details><summary><b>GameCore.ResizableWindow+ResizeDirection</b></summary>
+
+```
+ [0] = None
+ [1] = Left
+ [2] = Right
+ [3] = Top
+ [4] = Bottom
 ```
 
 </details>
@@ -4047,6 +4098,8 @@ Last Update (14.1.0.4)
  [36] = Pocket
  [37] = HczTestroom
  [38] = Hcz127
+ [39] = HczAcroamaticAbatement
+ [40] = HczWaysideIncinerator
 ```
 
 </details>
@@ -4172,6 +4225,8 @@ Last Update (14.1.0.4)
  [0] = AttackStart
  [1] = Hit
  [2] = Holster
+ [3] = Evil
+ [4] = Cackle
 ```
 
 </details>
@@ -5131,6 +5186,7 @@ Last Update (14.1.0.4)
  [28] = NTFMiniwaveEntrance
  [29] = ChaosEntrance
  [30] = ChaosMiniwaveEntrance
+ [31] = DeadMansSwitch
  [254] = Custom
  [255] = None
 ```
@@ -5178,6 +5234,31 @@ Last Update (14.1.0.4)
 
 </details>
 
+### SystemCursorID
+
+<details><summary><b>GameCore.SystemCursorID</b></summary>
+
+```
+ [32512] = Default
+ [32513] = TextSelectBeam
+ [32514] = WaitingCircle
+ [32515] = Cross
+ [32516] = UpArrow
+ [32642] = SizeDiagonalTopBottom
+ [32643] = SizeDiagonalBottomTop
+ [32644] = SizeHorizontal
+ [32645] = SizeVertical
+ [32646] = SizeAll
+ [32648] = Block
+ [32649] = LinkSelect
+ [32650] = AppStarting
+ [32651] = Help
+ [32671] = Pin
+ [32672] = Person
+```
+
+</details>
+
 ### TargetButton
 
 <details><summary><b>AdminToys.ShootingTarget+TargetButton</b></summary>
@@ -5221,6 +5302,19 @@ Last Update (14.1.0.4)
  [2] = ScanTimeSync
  [3] = ScanNoResults
  [4] = ScanSuccessful
+```
+
+</details>
+
+### TrackType
+
+<details><summary><b>PlayerRoles.PlayableScps.Scp939.Scp939ChaseThemeProvider+TrackType</b></summary>
+
+```
+ [0] = None
+ [1] = Quiet
+ [2] = MadeSound
+ [3] = Detected
 ```
 
 </details>
@@ -5543,6 +5637,7 @@ Last Update (14.1.0.4)
  [4] = MenuUI
  [5] = Scp127Voice
  [6] = Scp3114Voice
+ [7] = ChaseThemes
 ```
 
 </details>
@@ -5664,7 +5759,7 @@ Last Update (14.1.0.4)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.1.0.4"
+```md title="Latest Updated: 14.2.0.0"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"
@@ -5685,6 +5780,7 @@ PlayerStatsSystem.Scp018DamageHandler : AttackerDamageHandler
 PlayerStatsSystem.Scp049DamageHandler : ScpDamageHandler
 PlayerStatsSystem.Scp096DamageHandler : ScpDamageHandler
 PlayerStatsSystem.ScpDamageHandler : AttackerDamageHandler
+PlayerStatsSystem.SilentDamageHandler : StandardDamageHandler
 PlayerStatsSystem.UniversalDamageHandler : StandardDamageHandler
 PlayerStatsSystem.WarheadDamageHandler : StandardDamageHandler
 PlayerRoles.PlayableScps.Scp939.Scp939DamageHandler : AttackerDamageHandler

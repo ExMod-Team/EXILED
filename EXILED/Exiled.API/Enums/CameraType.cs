@@ -77,6 +77,7 @@ namespace Exiled.API.Enums
         HczWarheadArmory,
         HczWarheadControl,
         HczWarheadHallway,
+        [System.Obsolete("This Camera no longer exist.")]
         HczWarheadTop,
         #endregion
         #region Lcz
@@ -150,6 +151,14 @@ namespace Exiled.API.Enums
         HczCameraToy,
         LczCameraToy,
         SzCameraToy,
+        #endregion
+
+        #region new
+        HczDss12,
+        EzGateAInterior,
+        EzGateAElevators,
+        EzGateBInterior,
+        EzGateBSide,
         #endregion
     }
 }
