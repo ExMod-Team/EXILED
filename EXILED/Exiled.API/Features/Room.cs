@@ -17,6 +17,7 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using MapGeneration;
+    using MapGeneration.Holidays;
     using MapGeneration.Rooms;
     using MEC;
     using Mirror;
@@ -436,7 +437,7 @@ namespace Exiled.API.Features
             Type = FindType(gameObject);
 
             if (Type is RoomType.Unknown)
-                Log.Warn($"[ROOMTYPE UNKNOWN] {Identifier} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
+                Log.Warn($"[ROOMTYPE UNKNOWN] {Identifier} Name : {gameObject?.name.RemoveBracketsOnEndOfName()} Shape : {Identifier?.Shape}");
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 
@@ -460,7 +461,7 @@ namespace Exiled.API.Features
         private static RoomType FindType(GameObject gameObject)
         {
             // Try to remove brackets if they exist.
-            return gameObject.name.RemoveBracketsOnEndOfName() switch
+            return TryRemovePostfixes(gameObject.name.RemoveBracketsOnEndOfName()) switch
             {
                 "PocketWorld" => RoomType.Pocket,
                 "Outside" => RoomType.Surface,
@@ -535,6 +536,19 @@ namespace Exiled.API.Features
                 },
                 _ => RoomType.Unknown,
             };
+        }
+
+        private static string TryRemovePostfixes(string str)
+        {
+            // renamed Hcz rooms :sob:
+            if (HolidayUtils.IsHolidayActive(HolidayType.Halloween))
+            {
+                return str.Replace(" Halloween", string.Empty);
+            }
+            else
+            {
+                return str;
+            }
         }
     }
 }
