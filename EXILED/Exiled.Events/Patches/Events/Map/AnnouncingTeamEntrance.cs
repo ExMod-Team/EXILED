@@ -38,7 +38,7 @@ namespace Exiled.Events.Patches.Events.Map
             // this removes the Ldarg_0 and the CallVirt
             int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(WaveAnnouncementBase), nameof(WaveAnnouncementBase.SendSubtitles))));
             CodeInstruction sendSubtitlesInstruction = newInstructions[index];
-            newInstructions.RemoveRange(index - 1, 2);
+            newInstructions.RemoveRange(index - 2, 3);
 
             index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldsfld);
 
@@ -53,6 +53,7 @@ namespace Exiled.Events.Patches.Events.Map
 
                 // send subtitles before cassie message, but after our check.
                 new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldarg_1),
                 sendSubtitlesInstruction,
             });
 

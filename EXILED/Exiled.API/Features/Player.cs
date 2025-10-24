@@ -146,11 +146,17 @@ namespace Exiled.API.Features
         public static IEnumerable<Player> Enumerable => Dictionary.Values;
 
         /// <summary>
-        /// Gets the number of players currently on the server.
+        /// Gets the number of players (Count Dummy with it) currently on the server.
         /// </summary>
         /// <seealso cref="List"/>
         /// <seealso cref="Enumerable"/>
-        public static int Count => global::ReferenceHub.GetPlayerCount(CentralAuth.ClientInstanceMode.ReadyClient, CentralAuth.ClientInstanceMode.Host);
+        /// <seealso cref="ConnectedCount"/>
+        public static int Count => List.Count;
+
+        /// <summary>
+        /// Gets the number of connected players currently on the server.
+        /// </summary>
+        public static int ConnectedCount => ReferenceHub.GetPlayerCount(CentralAuth.ClientInstanceMode.ReadyClient);
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="Player"/> and their user ids.
@@ -373,7 +379,7 @@ namespace Exiled.API.Features
             {
                 if (!NicknameSync.ValidateCustomInfo(value, out string rejectionText))
                 {
-                    Log.Error($"Could not set CustomInfo for {Nickname}. Reason: {rejectionText}");
+                    Log.Warn($"Could not set CustomInfo for {Nickname}. Reason: {rejectionText}");
                 }
 
                 InfoArea = string.IsNullOrEmpty(value) ? InfoArea & ~PlayerInfoArea.CustomInfo : InfoArea |= PlayerInfoArea.CustomInfo;
@@ -465,6 +471,15 @@ namespace Exiled.API.Features
                 else
                     FpcNoclip.UnpermitPlayer(ReferenceHub);
             }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the player has noclip enabled.
+        /// </summary>
+        public bool IsNoclipEnabled
+        {
+            get => ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
+            set => ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
         }
 
         /// <summary>
@@ -2580,7 +2595,6 @@ namespace Exiled.API.Features
         {
             if (!HasCustomAmmoLimit(ammoType))
             {
-                Log.Error($"{nameof(Player)}.{nameof(ResetAmmoLimit)}(AmmoType): AmmoType.{ammoType} does not have a custom limit.");
                 return;
             }
 
@@ -2673,7 +2687,6 @@ namespace Exiled.API.Features
 
             if (!HasCustomCategoryLimit(category))
             {
-                Log.Error($"{nameof(Player)}.{nameof(ResetCategoryLimit)}(ItemCategory): ItemCategory.{category} does not have a custom limit.");
                 return;
             }
 

@@ -81,7 +81,6 @@ namespace Exiled.API.Features
             ["WARHEAD ARMORY"] = CameraType.HczWarheadArmory,
             ["WARHEAD CONTROL"] = CameraType.HczWarheadControl,
             ["WARHEAD HALLWAY"] = CameraType.HczWarheadHallway,
-            ["WARHEAD TOP"] = CameraType.HczWarheadTop,
 
             // Light Containment Zone
             ["173 BOTTOM"] = CameraType.Lcz173Bottom,
@@ -139,6 +138,11 @@ namespace Exiled.API.Features
             ["HCZ SERVERS UPPER STORAGE"] = CameraType.HczServersUpperStorage,
             ["HCZ LOWER SERVER STORAGE"] = CameraType.HczLowerServerStorage,
             ["HCZ SERVERS STAIRCASE"] = CameraType.HczServerStaircase,
+            ["DSS-12"] = CameraType.HczDss12,
+            ["GATE A INTERIOR"] = CameraType.EzGateAInterior,
+            ["GATE A ELEVATORS"] = CameraType.EzGateAElevators,
+            ["GATE B INTERIOR"] = CameraType.EzGateBInterior,
+            ["GATE B SIDE"] = CameraType.EzGateBSide,
 
             // CustomCamera
             ["EZ ARM CAMERA TOY"] = CameraType.EzArmCameraToy,
@@ -167,7 +171,7 @@ namespace Exiled.API.Features
                 }
                 else
                 {
-                    Log.Error($"[Camera] Add CameraType entry for: [Room: {Room?.Type ?? RoomType.Unknown} Name: {Name}]");
+                    Log.Warn($"[Camera] Add CameraType entry for: [Room: {Room?.Type ?? RoomType.Unknown} Name: {Name}]");
                 }
             }
         }
@@ -209,7 +213,7 @@ namespace Exiled.API.Features
         public ushort Id => Base.SyncId;
 
         /// <summary>
-        /// Gets the generator's <see cref="Room"/>.
+        /// Gets the camera's <see cref="Room"/>.
         /// </summary>
         public Room Room => room ??= Room.Get(Base.Room);
 
