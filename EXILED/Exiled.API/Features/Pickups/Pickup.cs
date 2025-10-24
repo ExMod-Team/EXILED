@@ -523,7 +523,7 @@ namespace Exiled.API.Features.Pickups
                 TimeGrenade => new TimeGrenadeProjectile(type),
                 _ => new Projectile(type),
             },
-            BaseScp1509Pickup => new Scp1509Pickup();
+            BaseScp1509Pickup => new Scp1509Pickup(),
             _ => new Pickup(type),
         };
 

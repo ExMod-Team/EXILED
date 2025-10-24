@@ -7,10 +7,10 @@
 
 namespace Exiled.API.Features.Pickups
 {
-    using Exiled.API.Enums;
     using Exiled.API.Features.Items;
-    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Interfaces;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Scp1509;
 
     using BaseScp1509 = InventorySystem.Items.Scp1509.Scp1509Pickup;
 
@@ -63,14 +63,22 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         public float UnequipDecayDelay { get; set; }
 
+        /// <summary>
+        /// Returns the RadioPickup in a human readable format.
+        /// </summary>
+        /// <returns>A string containing RadioPickup related data.</returns>
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{ShieldRegenRate}| -{ShieldDecayRate}- /{ShieldOnDamagePause}/ ^{UnequipDecayDelay}^";
 
         /// <inheritdoc/>
         internal override void ReadItemInfo(Item item)
         {
             base.ReadItemInfo(item);
-            if (item is Scp1509 scp1509item)
+            if (item is Scp1509 scp1509Item)
             {
-                Permissions = scp1509item.Permissions;
+                ShieldRegenRate = scp1509Item.ShieldRegenRate;
+                ShieldDecayRate = scp1509Item.ShieldDecayRate;
+                ShieldOnDamagePause = scp1509Item.ShieldOnDamagePause;
+                UnequipDecayDelay = scp1509Item.UnequipDecayDelay;
             }
         }
 
@@ -78,16 +86,13 @@ namespace Exiled.API.Features.Pickups
         protected override void InitializeProperties(ItemBase itemBase)
         {
             base.InitializeProperties(itemBase);
-            if (itemBase is Scp1509Pickup scp1509Pickup)
+            if (itemBase is Scp1509Item scp1509Item)
             {
-
+                ShieldRegenRate = scp1509Item.ShieldRegenRate;
+                ShieldDecayRate = scp1509Item.ShieldDecayRate;
+                ShieldOnDamagePause = scp1509Item.ShieldOnDamagePause;
+                UnequipDecayDelay = scp1509Item.UnequipDecayDelay;
             }
         }
-
-        /// <summary>
-        /// Returns the RadioPickup in a human readable format.
-        /// </summary>
-        /// <returns>A string containing RadioPickup related data.</returns>
-        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}* |{BatteryLevel}| -{Range}- /{IsEnabled}/";
     }
 }

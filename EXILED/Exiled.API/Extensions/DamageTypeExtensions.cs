@@ -7,13 +7,14 @@
 
 namespace Exiled.API.Extensions
 {
+    using System.Collections.Generic;
+
     using Enums;
     using Features;
     using InventorySystem.Items.Scp1509;
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
     using PlayerStatsSystem;
-    using System.Collections.Generic;
 
     /// <summary>
     /// A set of extensions for <see cref="DamageType"/>.
@@ -53,6 +54,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Scp1509.Id, DamageType.Scp1509 },
         };
 
+        // TODO: make equality comparer by Id
         private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
         {
             { DeathTranslations.Asphyxiated, DamageType.Asphyxiation },
