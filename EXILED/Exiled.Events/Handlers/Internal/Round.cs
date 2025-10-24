@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Handlers.Internal
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -28,6 +29,7 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
+    using Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
@@ -85,6 +87,23 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.Inventory.ServerDropEverything();
         }
 
+        /// <inheritdoc cref="Handlers.Player.OnSpawned(SpawnedEventArgs)" />
+        public static void OnSpawned(SpawnedEventArgs ev)
+        {
+            foreach (Player viewer in Player.Enumerable.Except(new[] { ev.Player }))
+            {
+                foreach (Func<Player, RoleData> generator in viewer.FakeRoleGenerator)
+                {
+                    RoleData data = generator(ev.Player);
+                    if (data.Role != RoleTypeId.None)
+                    {
+                        viewer.FakeRoles[ev.Player] = data;
+                        ev.Player.ChangeAppearance(data.Role, new[] { viewer }, false, data.UnitId);
+                    }
+                }
+            }
+        }
+
         /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
         public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
         {
@@ -122,6 +141,30 @@ namespace Exiled.Events.Handlers.Internal
             {
                 player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
             }
+        }
+
+        /// <summary>
+        /// Makes fake role API work.
+        /// </summary>
+        /// <param name="viewerHub">The <see cref="ReferenceHub"/> of the viewer.</param>
+        /// <param name="ownerHub">The <see cref="ReferenceHub"/> of the player.</param>
+        /// <param name="actualRole">The actual <see cref="RoleTypeId"/>.</param>
+        /// <param name="writer">The pooled <see cref="NetworkWriter"/>.</param>
+        /// <returns>A role, fake if needed.</returns>
+        public static RoleTypeId OnRoleSyncEvent(ReferenceHub viewerHub, ReferenceHub ownerHub, RoleTypeId actualRole, NetworkWriter writer)
+        {
+            Player viewer = Player.Get(viewerHub);
+            Player owner = Player.Get(ownerHub);
+
+            if (viewer.FakeRoles.TryGetValue(owner, out RoleData data))
+            {
+                if (data.UnitId != 0)
+                    writer.WriteByte(data.UnitId);
+
+                return data.Role;
+            }
+
+            return actualRole;
         }
 
         private static void GenerateAttachments()
