@@ -540,15 +540,9 @@ namespace Exiled.API.Features
 
         private static string TryRemovePostfixes(string str)
         {
-            // renamed Hcz rooms :sob:
-            if (HolidayUtils.IsHolidayActive(HolidayType.Halloween))
-            {
-                return str.Replace(" Halloween", string.Empty);
-            }
-            else
-            {
-                return str;
-            }
+            if (HolidayUtils.IsAnyHolidayActive())
+                str.Replace(HolidayUtils.GetActiveHoliday().ToString(), string.Empty).TrimEnd();
+            return str;
         }
     }
 }
