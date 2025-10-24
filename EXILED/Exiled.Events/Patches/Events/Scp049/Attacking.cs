@@ -53,7 +53,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // AttackingEventArgs ev = new(player, target, true);
+                    // TriggeringAttackEventArgs ev = new(player, target, true);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AttackingEventArgs))[0]),
                     new(OpCodes.Dup),
 

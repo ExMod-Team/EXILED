@@ -7,8 +7,13 @@
 
 namespace Exiled.API.Features.Items
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Exiled.API.Enums;
     using Exiled.API.Interfaces;
     using InventorySystem.Items.Scp1509;
+    using PlayerRoles;
 
     /// <summary>
     /// A wrapper class for <see cref="Scp1509Item"/>.
@@ -37,6 +42,11 @@ namespace Exiled.API.Features.Items
         /// Gets the <see cref="Scp1509Item"/> that this class is encapsulating.
         /// </summary>
         public new Scp1509Item Base { get; }
+
+        /// <summary>
+        /// Gets the <see cref="Scp1509RespawnEligibility"/> instance.
+        /// </summary>
+        public Scp1509RespawnEligibility RespawnEligibility => Base._respawnEligibility;
 
         /// <summary>
         /// Gets or sets the shield regeneration rate.
@@ -73,6 +83,82 @@ namespace Exiled.API.Features.Items
             get => Base.UnequipDecayDelay;
             set => Base.UnequipDecayDelay = value;
         }
+
+        /// <summary>
+        /// Gets or sets the time when resurrection ability will be available again.
+        /// </summary>
+        public double NextResurrectTime
+        {
+            get => Base._nextResurrectTime;
+            set => Base._nextResurrectTime = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the cooldown for a melee attack.
+        /// </summary>
+        public float MeleeCooldown
+        {
+            get => Base._meleeCooldown;
+            set => Base._meleeCooldown = value; // TODO not syned with clients, tests required
+        }
+
+        /// <summary>
+        /// Gets or sets the amount of AHP bonus that all revived players are receiving.
+        /// </summary>
+        public float RevivedAhpBonus
+        {
+            get => Base._revivedPlayerAOEBonusAHP;
+            set => Base._revivedPlayerAOEBonusAHP = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the distance in which all revived players will receive AHP bonus.
+        /// </summary>
+        public float RevivedAhpBonusDistance
+        {
+            get => Base._revivedPlayerAOEBonusAHPDistance;
+            set => Base._revivedPlayerAOEBonusAHPDistance = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the max amount of HumeShield that can owner receive.
+        /// </summary>
+        public float MaxHs
+        {
+            get => Base._equippedHS;
+            set => Base._equippedHS = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="EffectType.Blurred"/> duration for a revived player.
+        /// </summary>
+        public float RevivedBlurTime
+        {
+            get => Base._revivedPlayerBlurTime;
+            set => Base._revivedPlayerBlurTime = value;
+        }
+
+        /// <summary>
+        /// Gets or sets all revived players.
+        /// </summary>
+        public IEnumerable<Player> RevivedPlayers
+        {
+            get => Base._revivedPlayers.Select(Player.Get);
+            set => Base._revivedPlayers = value.Select(x => x.ReferenceHub).ToList();
+        }
+
+        /// <summary>
+        /// Gets a player that is eligible for respawn as a <paramref name="roleTypeId"/>.
+        /// </summary>
+        /// <param name="roleTypeId">Role to respawn.</param>
+        /// <returns>Found player or <c>null</c>.</returns>
+        public Player GetEligibleSpectator(RoleTypeId roleTypeId) => Player.Get(RespawnEligibility.GetEligibleSpectator(roleTypeId));
+
+        /// <summary>
+        /// Checks if there is any eligible spectator for spawn.
+        /// </summary>
+        /// <returns><c>true</c> if any spectator is found. Otherwise, <c>false</c>.</returns>
+        public bool IsAnyEligibleSpectators() => RespawnEligibility.IsAnyEligibleSpectators();
 
         /// <summary>
         /// Clones current <see cref="Scp1509"/> object.
