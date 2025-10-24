@@ -78,6 +78,8 @@ namespace Exiled.Events.Handlers.Internal
                     prefabs.Remove(value.Value.Key);
                     continue;
                 }
+
+                Log.Warn($"Useless prefab {prefabType}: {attribute.Name} ({attribute.AssetId})");
             }
 
             foreach (KeyValuePair<uint, (GameObject, Component)> missing in prefabs)
