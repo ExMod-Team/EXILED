@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Attacking.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -55,8 +55,9 @@ namespace Exiled.Events.Patches.Events.Scp1509
                 // damage
                 new(OpCodes.Ldloc_S, 12),
 
-                // this
+                // this._item
                 new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(typeof(Scp1509Hitreg), nameof(Scp1509Hitreg._item))),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
