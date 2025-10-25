@@ -25,15 +25,12 @@ namespace Exiled.Events.EventArgs.Scp3114
         /// <param name="ragdoll">
         /// <inheritdoc cref="Ragdoll" />
         /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public DisguisingEventArgs(Player player, Ragdoll ragdoll, bool isAllowed = true)
+        public DisguisingEventArgs(Player player, Ragdoll ragdoll)
         {
             Player = player;
             Scp3114 = Player.Role.As<Scp3114Role>();
             Ragdoll = ragdoll;
-            IsAllowed = isAllowed;
+            IsAllowed = Scp3114.Disguise.Cooldown.IsReady;
         }
 
         /// <inheritdoc/>

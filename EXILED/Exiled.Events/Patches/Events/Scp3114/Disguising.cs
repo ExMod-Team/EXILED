@@ -26,8 +26,8 @@ namespace Exiled.Events.Patches.Events.Scp3114
     /// Patches <see cref="Scp3114Disguise.ServerComplete()" />.
     /// Adds the <see cref="Scp3114.Disguising" /> and <see cref="Scp3114.Disguised" /> events.
     /// </summary>
-    [EventPatch(typeof(Scp3114), nameof(Scp3114.Disguising))]
-    [EventPatch(typeof(Scp3114), nameof(Scp3114.Disguised))]
+    // [EventPatch(typeof(Scp3114), nameof(Scp3114.Disguising))] // Prevent cheat in Disguising without limit
+    // [EventPatch(typeof(Scp3114), nameof(Scp3114.Disguised))]
     [HarmonyPatch(typeof(Scp3114Disguise), nameof(Scp3114Disguise.ServerComplete))]
     internal class Disguising
     {
@@ -55,9 +55,6 @@ namespace Exiled.Events.Patches.Events.Scp3114
                 new(OpCodes.Call, Method(typeof(API.Features.Ragdoll), nameof(API.Features.Ragdoll.Get), new[] { typeof(BasicRagdoll) })),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, ragdoll.LocalIndex),
-
-                // true
-                new(OpCodes.Ldc_I4_1),
 
                 // DisguisingEventArgs ev = new DisguisingEventArgs(Player, Ragdoll, bool)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DisguisingEventArgs))[0]),

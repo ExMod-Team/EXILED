@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
     /// <summary>
     /// Patches <see cref="Scp3114Strangle.ProcessAttackRequest"/> to add the <see cref="Scp3114.Strangling"/> event.
     /// </summary>
-    [EventPatch(typeof(Scp3114), nameof(Scp3114.Strangling))]
+    // [EventPatch(typeof(Scp3114), nameof(Scp3114.Strangling))] // Fix for preventing cheater Exploit
     [HarmonyPatch(typeof(Scp3114Strangle), nameof(Scp3114Strangle.ProcessAttackRequest))]
     internal class Strangling
     {
