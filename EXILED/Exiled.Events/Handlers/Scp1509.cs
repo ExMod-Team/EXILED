@@ -27,21 +27,10 @@ namespace Exiled.Events.Handlers
         public static Event<TriggeringAttackEventArgs> TriggeringAttack { get; set; } = new();
 
         /// <summary>
-        /// Invoked before SCP-1509 attacks.
-        /// </summary>
-        public static Event<AttackingEventArgs> Attacking { get; set; } = new();
-
-        /// <summary>
         /// Called before SCP-1509 melee attack is triggered.
         /// </summary>
         /// <param name="ev">The <see cref="TriggeringAttackEventArgs"/> instance.</param>
         public static void OnTriggeringAttack(TriggeringAttackEventArgs ev) => TriggeringAttack.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before SCP-1509 attacks.
-        /// </summary>
-        /// <param name="ev">The <see cref="ResurrectingEventArgs"/> instance.</param>
-        public static void OnAttacking(AttackingEventArgs ev) => Attacking.InvokeSafely(ev);
 
         /// <summary>
         /// Called before player is resurrected.
