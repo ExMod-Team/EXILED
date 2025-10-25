@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Scp1509.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -22,11 +22,6 @@ namespace Exiled.Events.Handlers
         public static Event<ResurrectingEventArgs> Resurrecting { get; set; } = new();
 
         /// <summary>
-        /// Invoked before SCP-1508 is inspected.
-        /// </summary>
-        public static Event<InspectingEventArgs> Inspecting { get; set; } = new();
-
-        /// <summary>
         /// Invoked before SCP-1509 melee attack is triggered.
         /// </summary>
         public static Event<TriggeringAttackEventArgs> TriggeringAttack { get; set; } = new();
@@ -39,7 +34,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before SCP-1509 melee attack is triggered.
         /// </summary>
-        /// <param name="ev">The <see cref="InspectingEventArgs"/> instance.</param>
+        /// <param name="ev">The <see cref="TriggeringAttackEventArgs"/> instance.</param>
         public static void OnTriggeringAttack(TriggeringAttackEventArgs ev) => TriggeringAttack.InvokeSafely(ev);
 
         /// <summary>
@@ -47,12 +42,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ResurrectingEventArgs"/> instance.</param>
         public static void OnAttacking(AttackingEventArgs ev) => Attacking.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before SCP-1509 is inspected.
-        /// </summary>
-        /// <param name="ev">The <see cref="InspectingEventArgs"/> instance.</param>
-        public static void OnInspecting(InspectingEventArgs ev) => Inspecting.InvokeSafely(ev);
 
         /// <summary>
         /// Called before player is resurrected.

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="InspectingAndTriggeringAttack.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -12,6 +12,7 @@ namespace Exiled.Events.Patches.Events.Scp1509
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
+    using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Scp1509;
     using HarmonyLib;
     using InventorySystem.Items.Scp1509;
@@ -20,9 +21,10 @@ namespace Exiled.Events.Patches.Events.Scp1509
 
     /// <summary>
     /// Patches <see cref="Scp1509Item.ServerProcessCmd"/>
-    /// to add <see cref="Handlers.Scp1509.Inspecting"/> and <see cref="Handlers.Scp1509.TriggeringAttack"/> events.
+    /// to add <see cref="Handlers.Item.InspectingItem"/>, <see cref="Handlers.Item.InspectedItem"/>  and <see cref="Handlers.Scp1509.TriggeringAttack"/> events.
     /// </summary>
-    [EventPatch(typeof(Handlers.Scp1509), nameof(Handlers.Scp1509.Inspecting))]
+    [EventPatch(typeof(Handlers.Scp1509), nameof(Handlers.Item.InspectingItem))]
+    [EventPatch(typeof(Handlers.Scp1509), nameof(Handlers.Item.InspectedItem))]
     [EventPatch(typeof(Handlers.Scp1509), nameof(Handlers.Scp1509.TriggeringAttack))]
     [HarmonyPatch(typeof(Scp1509Item), nameof(Scp1509Item.ServerProcessCmd))]
     internal class InspectingAndTriggeringAttack
@@ -57,28 +59,22 @@ namespace Exiled.Events.Patches.Events.Scp1509
                 new(OpCodes.Brfalse_S, retLabel),
             });
 
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
+            offset = 1;
+            index = newInstructions.FindLastIndex(x => x.Calls(Method(typeof(Scp1509Item), nameof(Scp1509Item.SendRpc))));
 
             newInstructions.InsertRange(index, new[]
             {
                 // this
-                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                new CodeInstruction(OpCodes.Ldarg_0),
 
-                // true
-                new(OpCodes.Ldc_I4_1),
-
-                // InspectingEventArgs ev = new(this, true);
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InspectingEventArgs))[0]),
-                new(OpCodes.Dup),
+                // new InspectedItemEventArgs(this);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InspectedItemEventArgs))[0]),
 
                 // Handlers.Scp1509.OnInspecting(ev);
-                new(OpCodes.Call, Method(typeof(Handlers.Scp1509), nameof(Handlers.Scp1509.OnInspecting))),
-
-                // if (!ev.IsAllowed)
-                //     return;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(InspectingEventArgs), nameof(InspectingEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse_S, retLabel),
+                new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnInspectedItem))),
             });
+
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
 
             newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
 
