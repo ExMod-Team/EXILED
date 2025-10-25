@@ -59,8 +59,31 @@ namespace Exiled.Events.Patches.Events.Scp1509
                 new(OpCodes.Brfalse_S, retLabel),
             });
 
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
+
+            newInstructions.InsertRange(index, new[]
+            {
+                // this
+                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+
+                // true
+                new(OpCodes.Ldc_I4_1),
+
+                // InspectingItemEventArgs ev = new(this, true);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InspectingItemEventArgs))[0]),
+                new(OpCodes.Dup),
+
+                // Handlers.Item.OnInspectingItem(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnInspectingItem))),
+
+                // if (!ev.IsAllowed)
+                //     return;
+                new(OpCodes.Callvirt, PropertyGetter(typeof(InspectingItemEventArgs), nameof(InspectingItemEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse_S, retLabel),
+            });
+
             offset = 1;
-            index = newInstructions.FindLastIndex(x => x.Calls(Method(typeof(Scp1509Item), nameof(Scp1509Item.SendRpc))));
+            index = newInstructions.FindLastIndex(x => x.Calls(Method(typeof(Scp1509Item), nameof(Scp1509Item.SendRpc)))) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -73,8 +96,6 @@ namespace Exiled.Events.Patches.Events.Scp1509
                 // Handlers.Scp1509.OnInspecting(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnInspectedItem))),
             });
-
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
 
             newInstructions[newInstructions.Count - 1].labels.Add(retLabel);
 
