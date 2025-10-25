@@ -22,8 +22,6 @@ namespace Exiled.API.Extensions
     /// </summary>
     public static class DamageTypeExtensions
     {
-        private static readonly Dictionary<byte, DamageType> TranslationIdConversionInternal = TranslationConversionInternal.ToDictionary(x => x.Key.Id, x => x.Value);
-
         private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
         {
             { DeathTranslations.Asphyxiated, DamageType.Asphyxiation },
@@ -56,6 +54,8 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Scp1344, DamageType.SeveredEyes },
             { DeathTranslations.Scp1509, DamageType.Scp1509 },
         };
+
+        private static readonly Dictionary<byte, DamageType> TranslationIdConversionInternal = TranslationConversionInternal.ToDictionary(x => x.Key.Id, x => x.Value);
 
         private static readonly Dictionary<ItemType, DamageType> ItemConversionInternal = new()
         {

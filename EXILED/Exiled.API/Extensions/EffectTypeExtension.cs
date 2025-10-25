@@ -99,6 +99,7 @@ namespace Exiled.API.Extensions
             { EffectType.TemporaryBypass, typeof(TemporaryBypass) },
             { EffectType.TraumatizedByEvil, typeof(TraumatizedByEvil) },
             { EffectType.WhiteCandy, typeof(WhiteCandy) },
+            { EffectType.Scp1509Resurrected, typeof(Scp1509Resurrected) },
             #pragma warning restore CS0618
         });
 
