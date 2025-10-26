@@ -33,7 +33,7 @@ namespace Exiled.Events.EventArgs.Scp3114
             Scp3114 = Player.Role.As<Scp3114Role>();
             Target = Player.Get(target);
             Scp3114Strangle strangle = Scp3114.Slap._strangle;
-            IsAllowed = (strangle._strangleTimer > 0.3f) && (strangle.ClientCooldown.Remaining <= 0.3f);
+            IsAllowed = (strangle._strangleTimer > 0) && (strangle.ClientCooldown.Remaining <= 0.3f);
         }
 
         /// <inheritdoc/>
