@@ -21,7 +21,7 @@ namespace Exiled.API.Features.Toys
     /// <summary>
     /// A wrapper class for <see cref="AdminToys.AdminToyBase"/>.
     /// </summary>
-    internal class CameraToy : AdminToy, IWrapper<Scp079CameraToy>
+    public class CameraToy : AdminToy, IWrapper<Scp079CameraToy>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CameraToy"/> class.

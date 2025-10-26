@@ -110,6 +110,16 @@ namespace Exiled.API.Features.Roles
         public Scp096ChargeAbility ChargeAbility { get; }
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets a value indicating SCP-096's ability state.
         /// </summary>
         public Scp096AbilityState AbilityState => Base.StateController.AbilityState;

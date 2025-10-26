@@ -145,6 +145,16 @@ namespace Exiled.API.Features.Roles
         public MimicryRecorder MimicryRecorder { get; }
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets or sets the amount of time before SCP-939 can attack again.
         /// </summary>
         public float AttackCooldown

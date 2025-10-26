@@ -111,6 +111,16 @@ namespace Exiled.API.Features.Roles
         public Scp106MovementModule MovementModule { get; }
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets or sets SCP-106's Vigor Level.
         /// </summary>
         public float Vigor

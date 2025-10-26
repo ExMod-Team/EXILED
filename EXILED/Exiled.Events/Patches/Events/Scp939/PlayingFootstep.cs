@@ -37,8 +37,8 @@ namespace Exiled.Events.Patches.Events.Scp939
 
             Label ret = generator.DefineLabel();
 
-            int offset = 3;
-            int index = newInstructions.FindLastIndex(i => i.Calls(Method(typeof(RippleTriggerBase), nameof(RippleTriggerBase.CheckVisibility)))) + offset;
+            int offset = 1;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ret) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {

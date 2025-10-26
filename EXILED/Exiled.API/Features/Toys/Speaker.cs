@@ -48,7 +48,7 @@ namespace Exiled.API.Features.Toys
         public float Volume
         {
             get => Base.NetworkVolume;
-            set => Base.NetworkVolume = Mathf.Clamp01(value);
+            set => Base.NetworkVolume = value;
         }
 
         /// <summary>

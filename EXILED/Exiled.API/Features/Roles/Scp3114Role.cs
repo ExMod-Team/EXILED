@@ -132,6 +132,16 @@ namespace Exiled.API.Features.Roles
         public new Scp3114GameRole Base { get; }
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets the damage amount of SCP-3114's slap ability.
         /// </summary>
         public float SlapDamage => Slap.DamageAmount;

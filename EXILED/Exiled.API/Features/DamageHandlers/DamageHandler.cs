@@ -50,9 +50,23 @@ namespace Exiled.API.Features.DamageHandlers
             : base(baseHandler)
         {
             Target = target;
-            Attacker = baseHandler is PlayerStatsSystem.AttackerDamageHandler handler ? Player.Get(handler.Attacker.Hub) : null;
             TargetFootprint = target?.Footprint ?? default;
-            AttackerFootprint = baseHandler is PlayerStatsSystem.AttackerDamageHandler handle ? handle.Attacker : Attacker?.Footprint ?? default;
+
+            if (baseHandler is PlayerStatsSystem.AttackerDamageHandler attackerDamageHandler)
+            {
+                Attacker = Player.Get(attackerDamageHandler.Attacker.Hub);
+                AttackerFootprint = attackerDamageHandler.Attacker;
+            }
+            else if (baseHandler is GenericDamageHandler genericDamageHandler)
+            {
+                Attacker = Player.Get(genericDamageHandler.Attacker.Hub);
+                AttackerFootprint = genericDamageHandler.Attacker;
+            }
+            else
+            {
+                Attacker = null;
+                AttackerFootprint = default;
+            }
         }
 
         /// <summary>
