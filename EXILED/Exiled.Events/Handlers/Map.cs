@@ -53,7 +53,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before influence got changed.
         /// </summary>
-        public static Event<ModifyingFactionInfluenceEventArgs> ModifyingFactionInfluence { get; set; } = new();
+        public static Event<ObjectiveCompletingEventArgs> ObjectiveCompleting { get; set; } = new();
 
         /// <summary>
         /// Invoked before decontaminating the light containment zone.
@@ -169,8 +169,8 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before influence got modified.
         /// </summary>
-        /// <param name="ev">The <see cref="ModifyingFactionInfluenceEventArgs"/> instance.</param>
-        public static void OnModifyingFactionInfluence(ModifyingFactionInfluenceEventArgs ev) => ModifyingFactionInfluence.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="ObjectiveCompletingEventArgs"/> instance.</param>
+        public static void OnObjectiveCompleting(ObjectiveCompletingEventArgs ev) => ObjectiveCompleting.InvokeSafely(ev);
 
         /// <summary>
         /// Called before decontaminating the light containment zone.

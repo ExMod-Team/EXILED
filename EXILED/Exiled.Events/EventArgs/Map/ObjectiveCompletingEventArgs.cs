@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ModifyingFactionInfluenceEventArgs.cs" company="ExMod Team">
+// <copyright file="ObjectiveCompletingEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -18,10 +18,10 @@ namespace Exiled.Events.EventArgs.Map
     /// <summary>
     /// Contains all information after activating a generator.
     /// </summary>
-    public class ModifyingFactionInfluenceEventArgs : IDeniableEvent
+    public class ObjectiveCompletingEventArgs : IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ModifyingFactionInfluenceEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="ObjectiveCompletingEventArgs" /> class.
         /// </summary>
         /// <param name="team">
         /// <inheritdoc cref="Team" />
@@ -32,19 +32,11 @@ namespace Exiled.Events.EventArgs.Map
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ModifyingFactionInfluenceEventArgs(Team team, float influence, bool isAllowed = true)
+        public ObjectiveCompletingEventArgs(Team team, float influence, bool isAllowed = true)
         {
             Team = team;
             Influence = influence;
             IsAllowed = isAllowed;
-            _ = new StackFrame(4)?.GetMethod()?.Name;
-            /*
-            OnServerRoleSet (Escaping)
-            OnPlayerDamaged
-            OnKill
-            OnGeneratorEngaged
-            OnItemAdded
-            */
         }
 
         /// <summary>

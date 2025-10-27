@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="ModifyingFactionInfluence.cs" company="ExMod Team">
+// <copyright file="ObjectiveCompleting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -19,18 +19,17 @@ namespace Exiled.Events.Patches.Events.Map
 
     using HarmonyLib;
 
-    using MapGeneration.Distributors;
     using Respawning;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
     /// Patches <see cref="FactionInfluenceManager.Set(PlayerRoles.Faction, float)" />.
-    /// Adds the <see cref="Map.ModifyingFactionInfluence" /> event.
+    /// Adds the <see cref="Map.ObjectiveCompleting" /> event.
     /// </summary>
-    [EventPatch(typeof(Map), nameof(Map.ModifyingFactionInfluence))]
+    [EventPatch(typeof(Map), nameof(Map.ObjectiveCompleting))]
     [HarmonyPatch(typeof(FactionInfluenceManager), nameof(FactionInfluenceManager.Set))]
-    internal static class ModifyingFactionInfluence
+    internal static class ObjectiveCompleting
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
@@ -39,9 +38,9 @@ namespace Exiled.Events.Patches.Events.Map
             Label retModLabel = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(ModifyingFactionInfluenceEventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(ObjectiveCompletingEventArgs));
 
-            // ModifyingFactionInfluenceEventArgs ev = new(this, true);
+            // ObjectiveCompletingEventArgs ev = new(this, true);
             //
             // Map.OnGeneratorActivated(ev);
             //
@@ -60,18 +59,18 @@ namespace Exiled.Events.Patches.Events.Map
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // ModifyingFactionInfluenceEventArgs ev = new(Team, float, bool)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ModifyingFactionInfluenceEventArgs))[0]),
+                    // ObjectiveCompletingEventArgs ev = new(Team, float, bool)
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ObjectiveCompletingEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Map.OnGeneratorActivated(ev)
-                    new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnModifyingFactionInfluence))),
+                    new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnObjectiveCompleting))),
 
                     // if (!ev.IsAllowed)
                     //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ModifyingFactionInfluenceEventArgs), nameof(ModifyingFactionInfluenceEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ObjectiveCompletingEventArgs), nameof(ObjectiveCompletingEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, returnLabel),
                 });
 
