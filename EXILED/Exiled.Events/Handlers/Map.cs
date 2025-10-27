@@ -51,11 +51,6 @@ namespace Exiled.Events.Handlers
         public static Event<GeneratorActivatingEventArgs> GeneratorActivating { get; set; } = new();
 
         /// <summary>
-        /// Invoked before influence got changed.
-        /// </summary>
-        public static Event<ObjectiveCompletingEventArgs> ObjectiveCompleting { get; set; } = new();
-
-        /// <summary>
         /// Invoked before decontaminating the light containment zone.
         /// </summary>
         public static Event<DecontaminatingEventArgs> Decontaminating { get; set; } = new();
@@ -165,12 +160,6 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="GeneratorActivatingEventArgs"/> instance.</param>
         public static void OnGeneratorActivating(GeneratorActivatingEventArgs ev) => GeneratorActivating.InvokeSafely(ev);
-
-        /// <summary>
-        /// Called before influence got modified.
-        /// </summary>
-        /// <param name="ev">The <see cref="ObjectiveCompletingEventArgs"/> instance.</param>
-        public static void OnObjectiveCompleting(ObjectiveCompletingEventArgs ev) => ObjectiveCompleting.InvokeSafely(ev);
 
         /// <summary>
         /// Called before decontaminating the light containment zone.

@@ -55,7 +55,7 @@ namespace Exiled.Events.Patches.Events.Server
 
                 // if (!ev.IsAllowed)
                 //    return;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(ObjectiveCompletingEventArgs), nameof(ObjectiveCompletingEventArgs.IsAllowed))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(CompletingObjectiveEventArgs), nameof(CompletingObjectiveEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retModLabel),
             });
 
