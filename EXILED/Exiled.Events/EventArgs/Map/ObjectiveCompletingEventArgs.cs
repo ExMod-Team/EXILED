@@ -7,13 +7,10 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using System.Diagnostics;
-
-    using API.Features;
-
+    using Exiled.API.Features.Objectives;
     using Interfaces;
-
     using PlayerRoles;
+    using Respawning.Objectives;
 
     /// <summary>
     /// Contains all information after activating a generator.
@@ -23,36 +20,22 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Initializes a new instance of the <see cref="ObjectiveCompletingEventArgs" /> class.
         /// </summary>
-        /// <param name="team">
-        /// <inheritdoc cref="Team" />
-        /// </param>
-        /// <param name="influence">
-        /// <inheritdoc cref="Influence" />
+        /// <param name="factionObjectiveBase">
+        /// <inheritdoc cref="Objective" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public ObjectiveCompletingEventArgs(Team team, float influence, bool isAllowed = true)
+        public ObjectiveCompletingEventArgs(FactionObjectiveBase factionObjectiveBase, bool isAllowed = true)
         {
-            Team = team;
-            Influence = influence;
+            Objective = Objective.Get(factionObjectiveBase);
             IsAllowed = isAllowed;
         }
 
         /// <summary>
         /// Gets a value indicating where the Modification has been taken from.
         /// </summary>
-        public string StackFrame { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether team will get this influence.
-        /// </summary>
-        public Team Team { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating how much Influence will be changed.
-        /// </summary>
-        public float Influence { get; set; }
+        public Objective Objective { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the generator can be activated.
