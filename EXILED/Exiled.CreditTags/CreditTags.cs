@@ -83,7 +83,7 @@ namespace Exiled.CreditTags
             void ShowRank(RankType rank)
             {
                 bool canReceiveCreditBadge = force ||
-                                             (((string.IsNullOrEmpty(player.RankName) &&
+                                             (((string.IsNullOrEmpty(player.BadgeText) &&
                                                 string.IsNullOrEmpty(player.ReferenceHub.serverRoles.HiddenBadge)) ||
                                                Config.BadgeOverride) && player.GlobalBadge is null);
                 bool canReceiveCreditCustomInfo = string.IsNullOrEmpty(player.CustomInfo) || Config.CustomPlayerInfoOverride;
@@ -111,8 +111,8 @@ namespace Exiled.CreditTags
 
         private void SetCreditBadge(Player player, Rank value)
         {
-            player.RankName = value.Name;
-            player.RankColor = value.Color;
+            player.BadgeText = value.Name;
+            player.BadgeColor = value.Color;
             Log.Debug($"Updated {player.Nickname} badge to {value.Name}.");
         }
 

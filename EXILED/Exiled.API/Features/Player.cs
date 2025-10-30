@@ -564,7 +564,12 @@ namespace Exiled.API.Features
         public PlayerPermissions RemoteAdminPermissions
         {
             get => (PlayerPermissions)ReferenceHub.serverRoles.Permissions;
-            set => ReferenceHub.serverRoles.Permissions = (ulong)value;
+            set
+            {
+                ReferenceHub.serverRoles.Permissions = (ulong)value;
+                Group.Permissions = (ulong)value;
+                ReferenceHub.serverRoles.FinalizeSetGroup();
+            }
         }
 
         /// <summary>
@@ -1033,12 +1038,11 @@ namespace Exiled.API.Features
         public bool IsStaffBypassEnabled => ReferenceHub.authManager.BypassBansFlagSet;
 
         /// <summary>
-        /// Gets or sets the player's group name.
+        /// Gets the player's group name.
         /// </summary>
         public string GroupName
         {
             get => ServerStatic.PermissionsHandler.Members.TryGetValue(UserId, out string groupName) ? groupName : null;
-            set => ServerStatic.PermissionsHandler.Members[UserId] = value;
         }
 
         /// <summary>
@@ -1082,18 +1086,18 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the player's rank color.
+        /// Gets or sets the player's badge color.
         /// </summary>
-        public string RankColor
+        public string BadgeColor
         {
             get => ReferenceHub.serverRoles.Network_myColor;
             set => ReferenceHub.serverRoles.SetColor(value);
         }
 
         /// <summary>
-        /// Gets or sets the player's rank name.
+        /// Gets or sets the player's badge name.
         /// </summary>
-        public string RankName
+        public string BadgeText
         {
             get => ReferenceHub.serverRoles.Network_myText;
             set => ReferenceHub.serverRoles.SetText(value);
@@ -1915,25 +1919,19 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Sets the player's rank.
+        /// Receives an existing rank(group) or, if it doesn't exist, creates a new one and assigns it to this player.
         /// </summary>
         /// <param name="name">The rank name to be set.</param>
         /// <param name="group">The group to be set.</param>
-        public void SetRank(string name, UserGroup group)
+        public void SetGroup(string name, UserGroup group)
         {
             if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
             {
-                userGroup.BadgeColor = group.BadgeColor;
-                userGroup.BadgeText = name;
-                userGroup.HiddenByDefault = !group.Cover;
-                userGroup.Cover = group.Cover;
-
                 ReferenceHub.serverRoles.SetGroup(userGroup, false, false);
             }
             else
             {
                 ServerStatic.PermissionsHandler.Groups.Add(name, group);
-
                 ReferenceHub.serverRoles.SetGroup(group, false, false);
             }
 
