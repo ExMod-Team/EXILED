@@ -1919,7 +1919,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="name">The rank name to be set.</param>
         /// <param name="group">The group to be set.</param>
-        public void SetGroup(string name, UserGroup group)
+        public void SetRank(string name, UserGroup group)
         {
             if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
             {
