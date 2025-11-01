@@ -1915,25 +1915,19 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Sets the player's rank.
+        /// Receives an existing rank(group) or, if it doesn't exist, creates a new one and assigns it to this player.
         /// </summary>
         /// <param name="name">The rank name to be set.</param>
         /// <param name="group">The group to be set.</param>
-        public void SetRank(string name, UserGroup group)
+        public void SetGroup(string name, UserGroup group)
         {
             if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
             {
-                userGroup.BadgeColor = group.BadgeColor;
-                userGroup.BadgeText = name;
-                userGroup.HiddenByDefault = !group.Cover;
-                userGroup.Cover = group.Cover;
-
                 ReferenceHub.serverRoles.SetGroup(userGroup, false, false);
             }
             else
             {
                 ServerStatic.PermissionsHandler.Groups.Add(name, group);
-
                 ReferenceHub.serverRoles.SetGroup(group, false, false);
             }
 
