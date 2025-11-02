@@ -155,6 +155,7 @@ Last Update (14.2.0.0)
 - [HintTranslations](#hinttranslations)
 - [HintType](#hinttype)
 - [HitboxType](#hitboxtype)
+- [HitResult](#hitresult)
 - [HolidayType](#holidaytype)
 - [HotkeysTranslation](#hotkeystranslation)
 - [IcomText](#icomtext)
@@ -282,9 +283,11 @@ Last Update (14.2.0.0)
 - [Scp127Tier](#scp127tier)
 - [Scp127VoiceLinesTranslation](#scp127voicelinestranslation)
 - [Scp1344Status](#scp1344status)
+- [Scp1509MessageType](#scp1509messagetype)
 - [Scp173SoundId](#scp173soundid)
 - [Scp244State](#scp244state)
 - [Scp3114HudTranslation](#scp3114hudtranslation)
+- [Scp3114MaterialType](#scp3114materialtype)
 - [Scp914InteractCode](#scp914interactcode)
 - [Scp914KnobSetting](#scp914knobsetting)
 - [Scp914Mode](#scp914mode)
@@ -337,7 +340,6 @@ Last Update (14.2.0.0)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
-- [VariantType](#varianttype)
 - [VcMuteFlags](#vcmuteflags)
 - [VcPrivacyFlags](#vcprivacyflags)
 - [VersionType](#versiontype)
@@ -2408,6 +2410,19 @@ Last Update (14.2.0.0)
 
 </details>
 
+### HitResult
+
+<details><summary><b>InventorySystem.Items.Scp1509.Scp1509Hitreg+HitResult</b></summary>
+
+```
+ [0] = HitPlayer
+ [1] = KilledPlayer
+ [2] = HitWall
+ [3] = Missed
+```
+
+</details>
+
 ### HolidayType
 
 <details><summary><b>MapGeneration.Holidays.HolidayType</b></summary>
@@ -2753,6 +2768,7 @@ Last Update (14.2.0.0)
  [65] = KeycardCustomManagement
  [66] = KeycardCustomMetalCase
  [67] = MarshmallowItem
+ [68] = SCP1509
  [-1] = None
 ```
 
@@ -3987,6 +4003,7 @@ Last Update (14.2.0.0)
  [8] = Destroyed
  [9] = RespawnMiniwave
  [10] = ItemUsage
+ [11] = Resurrected
 ```
 
 </details>
@@ -4681,6 +4698,27 @@ Last Update (14.2.0.0)
 
 </details>
 
+### Scp1509MessageType
+
+<details><summary><b>InventorySystem.Items.Scp1509.Scp1509MessageType</b></summary>
+
+```
+ [0] = Holstered
+ [1] = AttackTriggered
+ [2] = AttackPreformedHitWall
+ [3] = AttackPreformedHitFlesh
+ [4] = AttackPreformedHitMissed
+ [5] = SpawnResurrectParticles
+ [6] = AttackPerformed
+ [7] = Inspect
+ [8] = CanResurrect
+ [9] = CanNotResurrect
+ [10] = KilledPlayer
+ [11] = NewPlayerFullResync
+```
+
+</details>
+
 ### Scp173SoundId
 
 <details><summary><b>PlayerRoles.PlayableScps.Scp173.Scp173AudioPlayer+Scp173SoundId</b></summary>
@@ -4727,6 +4765,18 @@ Last Update (14.2.0.0)
  [13] = HelpMenuStrangulation
  [14] = HelpMenuUnderTheirSkin
  [15] = RevealKeyHoldLongerWarning
+```
+
+</details>
+
+### Scp3114MaterialType
+
+<details><summary><b>PlayerRoles.PlayableScps.Scp3114.Scp3114MaterialType</b></summary>
+
+```
+ [0] = Original
+ [1] = Disguise
+ [2] = Reveal
 ```
 
 </details>
@@ -5507,18 +5557,6 @@ Last Update (14.2.0.0)
 
 </details>
 
-### VariantType
-
-<details><summary><b>PlayerRoles.PlayableScps.Scp3114.Scp3114FakeModelManager+VariantType</b></summary>
-
-```
- [0] = Original
- [1] = Disguise
- [2] = Reveal
-```
-
-</details>
-
 ### VcMuteFlags
 
 <details><summary><b>VoiceChat.VcMuteFlags</b></summary>
@@ -5773,6 +5811,7 @@ PlayerStatsSystem.CustomReasonFirearmDamageHandler : FirearmDamageHandler
 PlayerStatsSystem.DisruptorDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.ExplosionDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.FirearmDamageHandler : AttackerDamageHandler
+PlayerStatsSystem.GrayCandyDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.JailbirdDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.MicroHidDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.RecontainmentDamageHandler : AttackerDamageHandler
@@ -5786,6 +5825,7 @@ PlayerStatsSystem.WarheadDamageHandler : StandardDamageHandler
 PlayerRoles.PlayableScps.Scp939.Scp939DamageHandler : AttackerDamageHandler
 PlayerRoles.PlayableScps.Scp3114.Scp3114DamageHandler : AttackerDamageHandler
 PlayerRoles.PlayableScps.Scp1507.Scp1507DamageHandler : AttackerDamageHandler
+InventorySystem.Items.Scp1509.Scp1509DamageHandler : AttackerDamageHandler
 
 ```
 </details>
