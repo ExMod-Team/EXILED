@@ -135,7 +135,7 @@ namespace Exiled.API.Extensions
         {
             if (!TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType type))
             {
-                Log.Error($"Missing EffectType for Type {statusEffectBase.GetType()}!!! This issue likely originates from a new update, please fix!");
+                Log.Warn($"Missing EffectType for Type {statusEffectBase.GetType()}!!! This issue likely originates from a new update or a CustomEffect on your Server");
                 return EffectType.None;
             }
 
