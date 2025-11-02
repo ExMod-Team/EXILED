@@ -50,6 +50,16 @@ namespace Exiled.API.Features.Roles
         public new Scp1507GameRole Base { get; }
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets the Spawn Chance of SCP-939.
         /// </summary>
         /// <param name="alreadySpawned">The List of Roles already spawned.</param>

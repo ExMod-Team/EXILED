@@ -381,5 +381,41 @@ namespace Exiled.API.Enums
 
         [Prefab(3938583646, "WaypointToy")]
         WaypointToy,
+
+        [Prefab(1891631329, "PrismaticCloud")]
+        PrismaticCloud,
+
+        [Prefab(3938583646, "TantrumObj (Brown Candy)")]
+        TantrumObjBrownCandy,
+
+        [Prefab(1145481038, "Scp1509Pickup")]
+        Scp1509Pickup,
+
+        [Prefab(1359696107, "Hubert Moon")]
+        HubertMoon,
+
+        [Prefab(4075838184, "Scp018Projectile Halloween")]
+        Scp018ProjectileHalloween,
+
+        [Prefab(3262457219, "JailbirdPickup Halloween")]
+        JailbirdPickupHalloween,
+
+        [Prefab(1712001893, "Scp1509PedestalStructure Variant")]
+        Scp1509PedestalStructureVariant,
+
+        [Prefab(517392265, "SCP-173 Ragdoll - MrNutty Sombrero Variant")]
+        Scp173RagdollMrNuttySombreroVariant,
+
+        [Prefab(2174094462, "SCP-049 Ragdoll Halloween")]
+        Scp049RagdollHalloween,
+
+        [Prefab(4255002108, "SCP-096 Ragdoll Halloween")]
+        Scp096RagdollHalloween,
+
+        [Prefab(2556293836, "Zombie Ragdoll Halloween")]
+        ZombieRagdollHalloween,
+
+        [Prefab(213466224, "SCP-939 Ragdoll Halloween")]
+        Scp939RagdollHalloween,
     }
 }

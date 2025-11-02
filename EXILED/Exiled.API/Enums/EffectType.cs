@@ -308,5 +308,87 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.Fade"/>.
         /// </summary>
         Fade,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.NightVision"/>.
+        /// </summary>
+        NightVision,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Metal"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        Metal,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.OrangeCandy"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        OrangeCandy,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.OrangeWitness"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        OrangeWitness,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Prismatic"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        Prismatic,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SlowMetabolism"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        SlowMetabolism,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Spicy"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        Spicy,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SugarCrave"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        SugarCrave,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SugarHigh"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        SugarHigh,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.SugarRush"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        SugarRush,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.TemporaryBypass"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        TemporaryBypass,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.TraumatizedByEvil"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        TraumatizedByEvil,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.WhiteCandy"/>.
+        /// </summary>
+        // [Obsolete("Only availaible for Halloween.")]
+        WhiteCandy,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Scp1509Resurrected"/>.
+        /// </summary>
+        Scp1509Resurrected,
     }
 }

@@ -43,7 +43,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <value>
         /// A <see cref="float"/> representing the volume level of the audio source,
-        /// where 0.0 is silent and 1.0 is full volume.
+        /// where 0.0 is silent and 1.0 is full volume if it's more it's will amplify it.
         /// </value>
         public float Volume
         {

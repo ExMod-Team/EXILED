@@ -81,7 +81,6 @@ namespace Exiled.API.Features
             ["WARHEAD ARMORY"] = CameraType.HczWarheadArmory,
             ["WARHEAD CONTROL"] = CameraType.HczWarheadControl,
             ["WARHEAD HALLWAY"] = CameraType.HczWarheadHallway,
-            ["WARHEAD TOP"] = CameraType.HczWarheadTop,
 
             // Light Containment Zone
             ["173 BOTTOM"] = CameraType.Lcz173Bottom,
@@ -139,6 +138,11 @@ namespace Exiled.API.Features
             ["HCZ SERVERS UPPER STORAGE"] = CameraType.HczServersUpperStorage,
             ["HCZ LOWER SERVER STORAGE"] = CameraType.HczLowerServerStorage,
             ["HCZ SERVERS STAIRCASE"] = CameraType.HczServerStaircase,
+            ["DSS-12"] = CameraType.HczDss12,
+            ["GATE A INTERIOR"] = CameraType.EzGateAInterior,
+            ["GATE A ELEVATORS"] = CameraType.EzGateAElevators,
+            ["GATE B INTERIOR"] = CameraType.EzGateBInterior,
+            ["GATE B SIDE"] = CameraType.EzGateBSide,
 
             // CustomCamera
             ["EZ ARM CAMERA TOY"] = CameraType.EzArmCameraToy,

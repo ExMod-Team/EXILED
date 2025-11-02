@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Features.Pools;
@@ -268,6 +269,7 @@ namespace Exiled.API.Features.Roles
         /// <returns><see cref="bool"/> indicating status.</returns>
         /// <remarks>For permitting a player to enter and exit noclip freely, see <see cref="Player.IsNoclipPermitted"/>.</remarks>
         /// <seealso cref="Player.IsNoclipPermitted"/>
+        [Obsolete("Use Player::IsNoclipEnabled instead")]
         public bool IsNoclipEnabled
         {
             get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);

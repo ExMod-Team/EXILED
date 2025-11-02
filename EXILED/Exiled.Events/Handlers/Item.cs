@@ -80,6 +80,28 @@ namespace Exiled.Events.Handlers
         public static Event<DisruptorFiringEventArgs> DisruptorFiring { get; set; } = new();
 
         /// <summary>
+        /// Invoked before the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        public static Event<JailbirdChangingWearStateEventArgs> JailbirdChangingWearState { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        public static Event<JailbirdChangedWearStateEventArgs> JailbirdChangedWearState { get; set; } = new();
+
+        /// <summary>
+        /// Called before the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="JailbirdChangingWearStateEventArgs"/> instance.</param>
+        public static void OnJailbirdStateChanging(JailbirdChangingWearStateEventArgs ev) => JailbirdChangingWearState.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="JailbirdChangedWearStateEventArgs"/> instance.</param>
+        public static void OnJailbirdStateChanged(JailbirdChangedWearStateEventArgs ev) => JailbirdChangedWearState.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before a <see cref="ItemType.ParticleDisruptor"/> firing while on the ground.
         /// WARNING: Client still receive the shoot sound AND the ammo is still removed. (even if <see cref="DisruptorFiringEventArgs.IsAllowed"/> = false).
         /// </summary>
