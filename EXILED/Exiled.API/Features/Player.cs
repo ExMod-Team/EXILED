@@ -564,7 +564,11 @@ namespace Exiled.API.Features
         public PlayerPermissions RemoteAdminPermissions
         {
             get => (PlayerPermissions)ReferenceHub.serverRoles.Permissions;
-            set => ReferenceHub.serverRoles.Permissions = (ulong)value;
+            set
+            {
+                ReferenceHub.serverRoles.Permissions = (ulong)value;
+                ReferenceHub.serverRoles.FinalizeSetGroup();
+            }
         }
 
         /// <summary>
