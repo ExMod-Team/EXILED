@@ -53,7 +53,7 @@ namespace Exiled.Events.EventArgs.Scp127
         public Scp127Tier Tier
         {
             get => Scp127.TierManagerModule.GetTierForExp(Experience + Scp127.Experience);
-            set => Experience = Scp127.TierManagerModule.GetExpForTier(value);
+            set => Experience = Scp127.TierManagerModule.GetExpForTier(value) - Scp127.Experience;
         }
     }
 }
