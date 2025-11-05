@@ -335,7 +335,7 @@ namespace Exiled.API.Enums
         EzSmallrooms,
 
         /// <summary>
-        /// Heavy Containment Zone's SCP-330 room.
+        /// Heavy Containment Zone's SCP-127 room.
         /// </summary>
         Hcz127,
 
