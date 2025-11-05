@@ -1866,11 +1866,12 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="viewers">The players to affect.</param>
         /// <param name="fakeRole">The fake role.</param>
-        public void SetAppearance(IEnumerable<Player> viewers, RoleTypeId fakeRole)
+        /// /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
+        public void SetAppearance(IEnumerable<Player> viewers, RoleTypeId fakeRole, byte unitId = 0)
         {
             foreach (Player player in viewers)
             {
-                player.SetAppearance(this, fakeRole);
+                player.SetAppearance(this, fakeRole, unitId);
             }
         }
 
@@ -1883,7 +1884,6 @@ namespace Exiled.API.Features
         public void SetAppearance(Player player, RoleTypeId fakeRole, byte unitId = 0)
         {
             FakeRoles[player] = new RoleData(fakeRole, unitId);
-            player.ChangeAppearance(fakeRole, new[] { this });
         }
 
         /// <summary>

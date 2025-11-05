@@ -98,7 +98,6 @@ namespace Exiled.Events.Handlers.Internal
                     if (data.Role != RoleTypeId.None)
                     {
                         viewer.FakeRoles[ev.Player] = data;
-                        ev.Player.ChangeAppearance(data.Role, new[] { viewer }, false, data.UnitId);
                     }
                 }
             }
@@ -137,9 +136,21 @@ namespace Exiled.Events.Handlers.Internal
             }
 
             // Fix bug that player that Join do not receive information about other players Scale
-            foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
+            foreach (Player player in Player.Enumerable)
             {
                 player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
+
+                if (player != ev.Player)
+                {
+                    foreach (Func<Player, RoleData> generator in player.FakeRoleGenerator)
+                    {
+                        RoleData data = generator(ev.Player);
+                        if (data.Role != RoleTypeId.None)
+                        {
+                            ev.Player.FakeRoles[player] = data;
+                        }
+                    }
+                }
             }
         }
 
