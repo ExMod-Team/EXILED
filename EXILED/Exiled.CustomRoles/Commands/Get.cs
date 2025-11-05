@@ -9,6 +9,7 @@ namespace Exiled.CustomRoles.Commands
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Text;
 
@@ -18,6 +19,7 @@ namespace Exiled.CustomRoles.Commands
     using Exiled.CustomRoles.API;
     using Exiled.CustomRoles.API.Features;
     using Exiled.Permissions.Extensions;
+    using HarmonyLib;
 
     /// <summary>
     /// The command to get specified player(s) current custom roles.
@@ -45,79 +47,45 @@ namespace Exiled.CustomRoles.Commands
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            try
+            if (!sender.CheckPermission("customroles.get"))
             {
-                Player? playerSender = sender as Player;
-                if (playerSender is not null && !playerSender.CheckPermission("customroles.get"))
+                response = "Permission Denied, required: customroles.get";
+                return false;
+            }
+
+            IEnumerable<Player> players = Player.GetProcessedData(arguments);
+            if (players.IsEmpty())
+            {
+                if (arguments.Count > 0 || !Player.TryGet(sender, out Player player))
                 {
-                    response = "Permission Denied, required: customroles.get";
+                    response = $"Player not found: {arguments.ElementAtOrDefault(0)}";
                     return false;
                 }
 
-                List<Player> targets = ListPool<Player>.Pool.Get();
+                players.AddItem(player);
+            }
 
-                if (arguments.Count == 0)
+            StringBuilder builder = StringBuilderPool.Pool.Get();
+
+            builder.AppendLine("===== Custom Roles =====");
+
+            foreach (Player target in players)
+            {
+                ReadOnlyCollection<CustomRole> role = target.GetCustomRoles();
+                if (role.IsEmpty())
                 {
-                    if (playerSender == null)
-                    {
-                        response = "You need to provide arguments (ID/Nickname) in order to use this command.";
-                        return false;
-                    }
-
-                    targets.Add(Player.Get(playerSender.ReferenceHub));
+                    builder.AppendLine($"{target.DisplayNickname.PadRight(30)} | None");
                 }
                 else
                 {
-                    string identifier = string.Join(" ", arguments);
-
-                    switch (identifier.ToLower())
-                    {
-                        case "*":
-                        case "all":
-                            targets.AddRange(Player.List);
-                            break;
-
-                        default:
-                            IEnumerable<Player> foundPlayers = Player.GetProcessedData(arguments, 0);
-                            if (foundPlayers.IsEmpty())
-                            {
-                                response = "No players found! Try using player ID or UserID.";
-                                return false;
-                            }
-
-                            targets.AddRange(foundPlayers);
-                            break;
-                    }
+                    builder.AppendLine($"{target.DisplayNickname.PadRight(30)} ({target.Id}) | {string.Join("-", role.ToString())}]");
                 }
-
-                StringBuilder builder = StringBuilderPool.Pool.Get();
-
-                foreach (Player target in targets)
-                {
-                    CustomRole role = target.GetCustomRoles().FirstOrDefault();
-                    if (role is null)
-                    {
-                        builder.AppendLine($"{target.Nickname.PadRight(30)} | None");
-                    }
-                    else
-                    {
-                        builder.AppendLine($"{target.Nickname.PadRight(30)} | {role.Name} [{role.Id}]");
-                    }
-                }
-
-                builder.Insert(0, "===== Custom Roles =====\n");
-                builder.AppendLine("========================");
-
-                response = StringBuilderPool.Pool.ToStringReturn(builder);
-                ListPool<Player>.Pool.Return(targets);
-                return true;
             }
-            catch (Exception e)
-            {
-                Log.Error(e);
-                response = "An error occurred while executing the command.";
-                return false;
-            }
+
+            builder.AppendLine("========================");
+
+            response = StringBuilderPool.Pool.ToStringReturn(builder);
+            return true;
         }
     }
 }
