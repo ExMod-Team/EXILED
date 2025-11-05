@@ -23,19 +23,13 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch the <see cref="NtfWaveAnnouncement.CreateAnnouncementString" /> and <see cref="NtfMiniwaveAnnouncement.CreateAnnouncementString"/>.
+    /// Patch the <see cref="NtfWaveAnnouncement.CreateAnnouncementString" />
     /// Adds the <see cref="Map.AnnouncingNtfEntrance" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.AnnouncingNtfEntrance))]
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(NtfWaveAnnouncement), nameof(NtfWaveAnnouncement.CreateAnnouncementString))]
     internal static class AnnouncingNtfEntrance
     {
-        private static IEnumerable<MethodBase> TargetMethods()
-        {
-            yield return Method(typeof(NtfWaveAnnouncement), nameof(NtfWaveAnnouncement.CreateAnnouncementString));
-            yield return Method(typeof(NtfMiniwaveAnnouncement), nameof(NtfMiniwaveAnnouncement.CreateAnnouncementString));
-        }
-
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);

@@ -23,17 +23,25 @@ namespace Exiled.Loader
     using CommandSystem.Commands.Shared;
 
     using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
+    using LabApi.Loader;
+    using LabApi.Loader.Features.Misc;
+    using LabApi.Loader.Features.Plugins.Configuration;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NodeDeserializers;
+
+    using LabPlugin = LabApi.Loader.Features.Plugins.Plugin;
 
     /// <summary>
     /// Used to handle plugins.
     /// </summary>
     public class Loader
     {
+        private static readonly MethodInfo FilePathSetter = typeof(LabPlugin).GetProperty("FilePath", BindingFlags.Public | BindingFlags.Instance)?.GetSetMethod(true);
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Loader"/> class.
         /// </summary>
@@ -66,6 +74,11 @@ namespace Exiled.Loader
         /// Gets the plugins list.
         /// </summary>
         public static SortedSet<IPlugin<IConfig>> Plugins { get; } = new(PluginPriorityComparer.Instance);
+
+        /// <summary>
+        /// Gets the plugins list.
+        /// </summary>
+        public static Dictionary<LabPlugin, Assembly> LabAPIPlugins { get; } = new();
 
         /// <summary>
         /// Gets a dictionary containing the file paths of assemblies.
@@ -227,6 +240,60 @@ namespace Exiled.Loader
         }
 
         /// <summary>
+        /// Create a plugin instance.
+        /// </summary>
+        /// <param name="assembly">The plugin assembly.</param>
+        /// <param name="path">The path of the assembly.</param>
+        /// <returns>Returns the created plugin instance or <see langword="null"/>.</returns>
+        public static LabPlugin CreateLabAPIPlugin(Assembly assembly, string path)
+        {
+            try
+            {
+                AssemblyUtils.ResolveEmbeddedResources(assembly);
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Failed to resolve embedded resources for assembly '" + path + "'");
+                string[] missingDependencies = AssemblyUtils.GetMissingDependencies(assembly).ToArray();
+                if (!missingDependencies.Any())
+                    return null;
+                Log.Error("Missing dependencies:\n" + string.Join("\n", missingDependencies.Select(x => "-\t " + x)));
+                Log.Error(ex);
+            }
+
+            LabPlugin plugin = null;
+
+            if (FilePathSetter is null)
+            {
+                Log.Error("FilePath setter for LabAPI Plugin type is null!");
+            }
+
+            try
+            {
+                foreach (Type type in assembly.GetTypes())
+                {
+                    if (!type.IsSubclassOf(typeof(LabPlugin)) || type.IsAbstract || Activator.CreateInstance(type) is not LabPlugin instance)
+                        continue;
+
+                    FilePathSetter?.Invoke(instance, new object[] { path });
+
+                    plugin = instance;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(" Couldn't load the LabAPI plugin inside '" + path + "'");
+                string[] missingDependencies = AssemblyUtils.GetMissingDependencies(assembly).ToArray();
+                if (!missingDependencies.Any())
+                    return null;
+                Log.Error("Missing dependencies:\n" + string.Join("\n", missingDependencies.Select(x => "-\t " + x)));
+                Log.Error(ex);
+            }
+
+            return plugin;
+        }
+
+        /// <summary>
         /// Enables all plugins.
         /// </summary>
         public static void EnablePlugins()
@@ -268,6 +335,38 @@ namespace Exiled.Loader
                     Log.Error($"Plugin \"{plugin.Name}\" threw an exception while enabling: {exception}");
                 }
             }
+
+            foreach (LabPlugin plugin in LabAPIPlugins.Keys.OrderBy(plugin => plugin.Priority))
+            {
+                try
+                {
+                    if (ConfigManager.LoadLabAPIProperties(plugin))
+                    {
+                        Properties properties = plugin.Properties;
+                        if (properties is { IsEnabled: true })
+                        {
+                            // copy pasted from LabAPI plugin enabling
+                            try
+                            {
+                                CustomNetworkManager.Modded = true;
+                                plugin.RegisterCommands();
+                                plugin.Enable();
+
+                                Log.Info($"LabAPI plugin {plugin.Name} v{plugin.Version.Major}.{plugin.Version.Minor}.{plugin.Version.Build} by {plugin.Author} has been enabled!");
+                            }
+                            catch (Exception ex)
+                            {
+                                Log.Error($"Couldn't enable the LabAPI plugin {plugin}");
+                                Log.Error(ex);
+                            }
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Log.Error($"Plugin \"{plugin.Name}\" threw an exception while enabling: {exception}");
+                }
+            }
         }
 
         /// <summary>
@@ -294,12 +393,14 @@ namespace Exiled.Loader
             }
 
             Plugins.Clear();
+            LabAPIPlugins.Clear();
             Server.PluginAssemblies.Clear();
             Locations.Clear();
 
             LoadPlugins();
 
             ConfigManager.Reload();
+            ConfigManager.ReloadLabAPIConfigs();
             TranslationManager.Reload();
 
             EnablePlugins();
@@ -322,6 +423,12 @@ namespace Exiled.Loader
                     Log.Error($"Plugin \"{plugin.Name}\" threw an exception while disabling: {exception}");
                 }
             }
+
+            foreach (LabPlugin plugin in LabAPIPlugins.Keys)
+            {
+                plugin.UnregisterCommands();
+                plugin.Disable();
+            }
         }
 
         /// <summary>
@@ -330,6 +437,14 @@ namespace Exiled.Loader
         /// <param name="args">The name or prefix of the plugin (Using the prefix is recommended).</param>
         /// <returns>The desired plugin, null if not found.</returns>
         public static IPlugin<IConfig> GetPlugin(string args) => Plugins.FirstOrDefault(x => x.Name == args || x.Prefix == args);
+
+        /// <summary>
+        /// Gets a LabAPI plugin Exiled loaded by its name.
+        /// </summary>
+        /// <param name="args">The name of the plugin.</param>
+        /// <returns>The desired plugin, null if not found.</returns>
+        /// <remarks>This method does not check LabAPI's loaded plugins, only LabAPI plugins EXILED loaded.</remarks>
+        public static LabPlugin GetLabAPIPlugin(string args) => LabAPIPlugins.Keys.FirstOrDefault(x => x.Name == args);
 
         /// <summary>
         /// Runs the plugin manager, by loading all dependencies, plugins, configs and then enables all plugins.
@@ -391,6 +506,7 @@ namespace Exiled.Loader
             LoadPlugins();
 
             ConfigManager.Reload();
+            ConfigManager.ReloadLabAPIConfigs();
             TranslationManager.Reload();
 
             EnablePlugins();
@@ -485,6 +601,7 @@ namespace Exiled.Loader
                 Locations[assembly] = assemblyPath;
             }
 
+            List<Assembly> failed = ListPool<Assembly>.Pool.Get();
             foreach (Assembly assembly in Locations.Keys)
             {
                 if (Locations[assembly].Contains("dependencies"))
@@ -493,7 +610,10 @@ namespace Exiled.Loader
                 IPlugin<IConfig> plugin = CreatePlugin(assembly);
 
                 if (plugin == null)
+                {
+                    failed.Add(assembly);
                     continue;
+                }
 
                 if (Plugins.Any(p => p.Name == plugin.Name))
                     continue;
@@ -505,6 +625,23 @@ namespace Exiled.Loader
                 Server.PluginAssemblies.Add(assembly, plugin);
                 Plugins.Add(plugin);
             }
+
+            // inefficient enumeration (could be forced inside earlier foreach), but a lot easier to read.
+            foreach (Assembly attempt in failed)
+            {
+                LabPlugin plugin = CreateLabAPIPlugin(attempt, Locations[attempt]);
+
+                if (plugin == null)
+                    continue;
+
+                if (PluginLoader.EnabledPlugins.Any(p => p.Name == plugin.Name) || Plugins.Any(p => p.Name == plugin.Name) || LabAPIPlugins.Keys.Any(p => p.Name == plugin.Name))
+                    continue;
+
+                Log.Info("Successfully loaded LabAPI plugin " + plugin.Name);
+                LabAPIPlugins.Add(plugin, attempt);
+            }
+
+            ListPool<Assembly>.Pool.Return(failed);
         }
 
         /// <summary>

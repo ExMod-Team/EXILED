@@ -623,6 +623,7 @@ namespace Exiled.API.Features.Doors
                     {
                         RoomType.HczEzCheckpointA => DoorType.CheckpointArmoryA,
                         RoomType.HczEzCheckpointB => DoorType.CheckpointArmoryB,
+                        RoomType.EzGateA => DoorType.GateAArmory,
                         _ => DoorType.UnknownDoor,
                     },
                     "Unsecured Pryable GateDoor" => Room?.Type switch
@@ -638,7 +639,7 @@ namespace Exiled.API.Features.Doors
                     {
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
-                        ElevatorGroup.GateA => DoorType.ElevatorGateA,
+                        ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => DoorType.ElevatorGateA,
                         ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => DoorType.ElevatorLczA,
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
                         _ => DoorType.UnknownElevator,
