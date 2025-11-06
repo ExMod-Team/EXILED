@@ -1935,10 +1935,24 @@ namespace Exiled.API.Features
                 ReferenceHub.serverRoles.SetGroup(group, false, false);
             }
 
-            if (ServerStatic.PermissionsHandler.Members.ContainsKey(UserId))
+            ServerStatic.PermissionsHandler.Members[UserId] = name;
+        }
+
+        /// <summary>
+        /// If the rank(group) exists in the remote admin config, it will assign it to the player.
+        /// </summary>
+        /// <param name="name">The rank name to be set.</param>
+        /// <returns><see langword="true"/> if the rank(group) was found and successfully assigned, <see langword="false"/> otherwise.</returns>
+        public bool TrySetRank(string name)
+        {
+            if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
+            {
+                ReferenceHub.serverRoles.SetGroup(userGroup, false, false);
                 ServerStatic.PermissionsHandler.Members[UserId] = name;
-            else
-                ServerStatic.PermissionsHandler.Members.Add(UserId, name);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
