@@ -92,6 +92,11 @@ namespace Exiled.Events
             LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon += Handlers.Player.OnReloadingWeapon;
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon += Handlers.Player.OnUnloadingWeapon;
 
+            LabApi.Events.Handlers.Scp127Events.Talking += Handlers.Scp127.OnTalking;
+            LabApi.Events.Handlers.Scp127Events.Talked += Handlers.Scp127.OnTalked;
+            LabApi.Events.Handlers.Scp127Events.GainingExperience += Handlers.Scp127.OnGainingExperience;
+            LabApi.Events.Handlers.Scp127Events.GainExperience += Handlers.Scp127.OnGainedExperience;
+
             ServerConsole.ReloadServerName();
         }
 
@@ -129,6 +134,11 @@ namespace Exiled.Events
 
             LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon -= Handlers.Player.OnReloadingWeapon;
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon -= Handlers.Player.OnUnloadingWeapon;
+
+            LabApi.Events.Handlers.Scp127Events.Talking -= Handlers.Scp127.OnTalking;
+            LabApi.Events.Handlers.Scp127Events.Talked -= Handlers.Scp127.OnTalked;
+            LabApi.Events.Handlers.Scp127Events.GainingExperience -= Handlers.Scp127.OnGainingExperience;
+            LabApi.Events.Handlers.Scp127Events.GainExperience -= Handlers.Scp127.OnGainedExperience;
         }
 
         /// <summary>
