@@ -2014,10 +2014,12 @@ namespace Exiled.API.Features
         /// <returns>Dropped item's <see cref="Pickup"/>.</returns>
         public Pickup DropHeldItem()
         {
-            if (CurrentItem is null)
+            Item item = CurrentItem;
+
+            if (item is null)
                 return null;
 
-            return DropItem(CurrentItem);
+            return DropItem(item);
         }
 
         /// <summary>
