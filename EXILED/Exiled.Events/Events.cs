@@ -18,9 +18,9 @@ namespace Exiled.Events
     using HarmonyLib;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables;
+    using PlayerRoles.FirstPersonControl.NetworkMessages;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.RoleAssign;
-
     using Respawning;
     using UnityEngine.SceneManagement;
     using UserSettings.ServerSpecific;
@@ -68,6 +68,7 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound += Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted += Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole += Handlers.Internal.Round.OnChangingRole;
+            Handlers.Player.Spawned += Handlers.Internal.Round.OnSpawned;
             Handlers.Player.SpawningRagdoll += Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense += Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified += Handlers.Internal.Round.OnVerified;
@@ -92,6 +93,8 @@ namespace Exiled.Events
             LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon += Handlers.Player.OnReloadingWeapon;
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon += Handlers.Player.OnUnloadingWeapon;
 
+            FpcServerPositionDistributor.RoleSyncEvent += Handlers.Internal.Round.OnRoleSyncEvent;
+
             ServerConsole.ReloadServerName();
         }
 
@@ -110,6 +113,7 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound -= Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted -= Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole -= Handlers.Internal.Round.OnChangingRole;
+            Handlers.Player.Spawned -= Handlers.Internal.Round.OnSpawned;
             Handlers.Player.SpawningRagdoll -= Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense -= Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified -= Handlers.Internal.Round.OnVerified;
@@ -129,6 +133,8 @@ namespace Exiled.Events
 
             LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon -= Handlers.Player.OnReloadingWeapon;
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon -= Handlers.Player.OnUnloadingWeapon;
+
+            FpcServerPositionDistributor.RoleSyncEvent -= Handlers.Internal.Round.OnRoleSyncEvent;
         }
 
         /// <summary>
