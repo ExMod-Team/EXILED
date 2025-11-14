@@ -16,6 +16,8 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp096;
     using PlayerRoles.Subroutines;
 
+    using UnityEngine;
+
     using Scp096GameRole = PlayerRoles.PlayableScps.Scp096.Scp096Role;
 
     /// <summary>
@@ -138,6 +140,20 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating whether SCP-096 can attack.
         /// </summary>
         public bool AttackPossible => AttackAbility.AttackPossible;
+
+        /// <summary>
+        /// Gets the head transform of SCP-096's character model.
+        /// </summary>
+        public Transform HeadTransform
+        {
+            get
+            {
+                if (Model is not Scp096CharacterModel scp96AnimatedCharacterModel)
+                    return null;
+
+                return scp96AnimatedCharacterModel.Head;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the Charge Ability Cooldown.
