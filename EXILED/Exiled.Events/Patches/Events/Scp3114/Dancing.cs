@@ -15,7 +15,9 @@ namespace Exiled.Events.Patches.Events.Scp3114
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Roles;
+    using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp3114;
+
     using HarmonyLib;
     using Mirror;
     using PlayerRoles.PlayableScps.Scp3114;
@@ -26,6 +28,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
     /// Patches <see cref="Scp3114Dance.ServerProcessCmd"/>
     /// to add <see cref="Handlers.Scp3114.Dancing"/> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Scp3114), nameof(Handlers.Scp3114.Dancing))]
     [HarmonyPatch(typeof(Scp3114Dance), nameof(Scp3114Dance.ServerProcessCmd))]
     internal class Dancing
     {

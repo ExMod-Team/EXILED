@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="WaitingForPlayers.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,12 +11,15 @@ namespace Exiled.Events.Patches.Events.Server
 
     using API.Features;
 
+    using Exiled.Events.Attributes;
+
     using HarmonyLib;
 
     /// <summary>
     ///     Patches <see cref="CharacterClassManager.Start" />.
     ///     Adds the <see cref="Handlers.Server.WaitingForPlayers" /> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Server), nameof(Handlers.Server.WaitingForPlayers))]
     [HarmonyPatch(typeof(ReferenceHub), nameof(ReferenceHub.Start))]
     internal static class WaitingForPlayers
     {

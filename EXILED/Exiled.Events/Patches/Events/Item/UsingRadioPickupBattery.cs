@@ -11,8 +11,11 @@ namespace Exiled.Events.Patches.Events.Item
     using System.Reflection.Emit;
 
     using Exiled.API.Features.Pools;
+    using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Radio;
 
     using static HarmonyLib.AccessTools;
@@ -21,6 +24,7 @@ namespace Exiled.Events.Patches.Events.Item
     /// Patches <see cref="RadioPickup.LateUpdate"/>
     /// to add <see cref="Handlers.Item.UsingRadioPickupBattery"/> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Item), nameof(Handlers.Item.UsingRadioPickupBattery))]
     [HarmonyPatch(typeof(RadioPickup), nameof(RadioPickup.LateUpdate))]
     internal class UsingRadioPickupBattery
     {

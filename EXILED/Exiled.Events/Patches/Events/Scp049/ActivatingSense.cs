@@ -29,6 +29,7 @@ namespace Exiled.Events.Patches.Events.Scp049
     /// Patches <see cref="Scp049SenseAbility.ServerProcessCmd" />.
     /// Adds the <see cref="Handlers.Scp049.ActivatingSense" /> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Scp049), nameof(Handlers.Scp049.ActivatingSense))]
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.ServerProcessCmd))]
     public class ActivatingSense
     {
@@ -70,7 +71,7 @@ namespace Exiled.Events.Patches.Events.Scp049
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc_S, ev.LocalIndex),
 
-                    // Handlers.Scp049.OnFinishingRecall(ev)
+                    // Handlers.Scp049.OnActivatingSense(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Scp049), nameof(Handlers.Scp049.OnActivatingSense))),
 
                     // if (!ev.IsAllowed)

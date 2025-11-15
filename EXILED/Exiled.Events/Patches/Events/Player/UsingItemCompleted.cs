@@ -13,6 +13,7 @@ namespace Exiled.Events.Patches.Events.Player
     using API.Features;
     using API.Features.Pools;
 
+    using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
@@ -28,6 +29,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="UsableItemsController.Update" />
     /// Adds the <see cref="Handlers.Player.UsedItem" /> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.UsingItemCompleted))]
     [HarmonyPatch(typeof(UsableItemsController), nameof(UsableItemsController.Update))]
     internal static class UsingItemCompleted
     {

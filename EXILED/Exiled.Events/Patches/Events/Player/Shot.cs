@@ -107,6 +107,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="HitscanHitregModuleBase.ServerAppendPrescan" />.
     /// Adds the <see cref="Handlers.Player.Shot" /> event.
     /// </summary>
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.Shot))]
     [HarmonyPatch(typeof(HitscanHitregModuleBase), nameof(HitscanHitregModuleBase.ServerAppendPrescan))]
     internal static class ShotMiss
     {
