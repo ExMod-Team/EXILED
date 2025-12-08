@@ -15,6 +15,7 @@ namespace Exiled.API.Extensions
     using CustomPlayerEffects;
     using CustomRendering;
     using Enums;
+    using Exiled.API.Features;
     using InventorySystem.Items.MarshmallowMan;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using PlayerRoles.FirstPersonControl;
@@ -131,7 +132,15 @@ namespace Exiled.API.Extensions
         /// <param name="statusEffectBase">The <see cref="StatusEffectBase"/> enum.</param>
         /// <returns>The <see cref="EffectType"/>.</returns>
         public static EffectType GetEffectType(this StatusEffectBase statusEffectBase)
-            => TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType effect) ? effect : throw new InvalidOperationException("Invalid effect status base provided");
+        {
+            if (!TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType type))
+            {
+                Log.Warn($"Missing EffectType for Type {statusEffectBase.GetType()}!!! This issue likely originates from a new update or a CustomEffect on your Server");
+                return EffectType.None;
+            }
+
+            return type;
+        }
 
         /// <summary>
         /// Gets the <see cref="EffectType"/> of the specified <see cref="StatusEffectBase"/>.
