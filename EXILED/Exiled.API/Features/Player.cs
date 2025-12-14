@@ -1983,7 +1983,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Broadcasts the given <see cref="global::Cassie.CassieAnnouncement"/> to the player.
+        /// Send an <see cref="global::Cassie.CassieAnnouncement"/> to the player.
         /// </summary>
         /// <param name="cassieAnnouncement">The <see cref="global::Cassie.CassieAnnouncement"/> to be broadcasted.</param>
         /// <returns><see langword="0"/> if Cassie failed to play it or it's play nothing, otherwise it's return the duration of the annoucement.</returns>
