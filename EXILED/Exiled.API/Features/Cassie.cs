@@ -103,16 +103,38 @@ namespace Exiled.API.Features
         /// Calculates the duration of a C.A.S.S.I.E message.
         /// </summary>
         /// <param name="message">The message, which duration will be calculated.</param>
-        /// <param name="rawNumber">Determines if a number won't be converted to its full pronunciation.</param>
-        /// <param name="speed">The speed of the message.</param>
+        /// <param name="obsolete1">An obsolete parameter.</param>
+        /// <param name="obsolete2">Another obsolete parameter.</param>
         /// <returns>Duration (in seconds) of specified message.</returns>
-        [Obsolete("Use CalculateDuration(string message, CassiePlaybackModifiers playbackModifiers) instead.", true)]
-        public static float CalculateDuration(string message, bool rawNumber = false, float speed = 1f)
+        public static float CalculateDuration(string message, bool obsolete1, float obsolete2)
         {
-            CassiePlaybackModifiers cassiePlaybackModifiers = default;
-            cassiePlaybackModifiers.Pitch = speed;
-            CassiePlaybackModifiers playbackModifiers = cassiePlaybackModifiers;
-            return (float)LabApi.Features.Wrappers.Cassie.CalculateDuration(message, playbackModifiers);
+            if (!CassieTtsAnnouncer.TryGetDatabase(out CassieLineDatabase cassieLineDatabase))
+            {
+                return 0;
+            }
+
+            float value = 0;
+            string[] lines = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            CassiePlaybackModifiers modifiers = new();
+            StringBuilder builder = StringBuilderPool.Pool.Get();
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                foreach (CassieInterpreter interpreter in CassieTtsAnnouncer.Interpreters)
+                {
+                    bool halt;
+                    foreach (CassieInterpreter.Result result in interpreter.GetResults(cassieLineDatabase, ref modifiers, lines[i], builder, out halt))
+                    {
+                        value += (float)result.Modifiers.GetTimeUntilNextWord(result.Line);
+                    }
+
+                    if (halt)
+                        break;
+                }
+            }
+
+            return value;
         }
 
         /// <summary>
