@@ -23,11 +23,11 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch the <see cref="NtfWaveAnnouncement.CreateAnnouncementString" />
+    /// Patch the <see cref="NtfWaveAnnouncement.CreateAnnouncement" />
     /// Adds the <see cref="Map.AnnouncingNtfEntrance" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.AnnouncingNtfEntrance))]
-    [HarmonyPatch(typeof(NtfWaveAnnouncement), nameof(NtfWaveAnnouncement.CreateAnnouncementString))]
+    [HarmonyPatch(typeof(NtfWaveAnnouncement), nameof(NtfWaveAnnouncement.CreateAnnouncement))]
     internal static class AnnouncingNtfEntrance
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Map
             Label ret = generator.DefineLabel();
 
             int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_3) + offset;
+            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_S && instruction.OperandIs(4)) + offset;
 
             newInstructions.InsertRange(
                 index,
@@ -50,10 +50,10 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Ldarg_0),
 
                     // scpsLeft
-                    new(OpCodes.Ldloc_2),
+                    new(OpCodes.Ldloc_3),
 
-                    // string[] unitInformation = unitNameClear.Split('-');
-                    new(OpCodes.Ldloc_1),
+                    // string[] unitInformation = lastGeneratedName.Split('-');
+                    new(OpCodes.Ldloc_2),
                     new(OpCodes.Ldstr, "<[^>]*?>"),
                     new(OpCodes.Ldsfld, Field(typeof(string), nameof(string.Empty))),
                     new(OpCodes.Call, Method(typeof(Regex), nameof(Regex.Replace), new System.Type[] { typeof(string), typeof(string), typeof(string) })),
@@ -98,14 +98,14 @@ namespace Exiled.Events.Patches.Events.Map
                     new(OpCodes.Box, typeof(int)),
                     new(OpCodes.Call, Method(typeof(string), nameof(string.Format), new[] { typeof(string), typeof(object), typeof(object) })),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_1),
-                    new(OpCodes.Callvirt, Method(typeof(UnitNamingRule), nameof(UnitNamingRule.TranslateToCassie))),
                     new(OpCodes.Stloc_2),
+                    new(OpCodes.Callvirt, Method(typeof(UnitNamingRule), nameof(UnitNamingRule.TranslateToCassie))),
+                    new(OpCodes.Stloc_3),
 
                     // scpsLeft = ev.ScpsLeft;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.ScpsLeft))),
-                    new(OpCodes.Stloc_2),
+                    new(OpCodes.Stloc_3),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
