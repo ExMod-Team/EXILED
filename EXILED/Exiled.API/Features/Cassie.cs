@@ -106,7 +106,7 @@ namespace Exiled.API.Features
         /// <param name="obsolete1">An obsolete parameter.</param>
         /// <param name="obsolete2">Another obsolete parameter.</param>
         /// <returns>Duration (in seconds) of specified message.</returns>
-        public static float CalculateDuration(string message, bool obsolete1, float obsolete2)
+        public static float CalculateDuration(string message, bool obsolete1 = false, float obsolete2 = 0f)
         {
             if (!CassieTtsAnnouncer.TryGetDatabase(out CassieLineDatabase cassieLineDatabase))
             {
