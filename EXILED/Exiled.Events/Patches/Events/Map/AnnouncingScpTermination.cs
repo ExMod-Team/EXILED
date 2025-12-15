@@ -35,12 +35,10 @@ namespace Exiled.Events.Patches.Events.Map
     [HarmonyPatch(typeof(CassieScpTerminationAnnouncement), nameof(CassieScpTerminationAnnouncement.OnStartedPlaying))]
     internal static class AnnouncingScpTermination
     {
-        [HarmonyDebug]
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(AnnouncingScpTerminationEventArgs));
             LocalBuilder cause = generator.DeclareLocal(typeof(string));
             LocalBuilder enumerator = generator.DeclareLocal(typeof(IEnumerator<Footprint>));
 
@@ -81,7 +79,6 @@ namespace Exiled.Events.Patches.Events.Map
                 new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(loopLabel),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(IEnumerator<Footprint>), nameof(IEnumerator<Footprint>.Current))),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(Footprint) })),
-                new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldloc_S, cause),
                 new(OpCodes.Newobj, Constructor(typeof(AnnouncingScpTerminationEventArgs), new[] { typeof(Player), typeof(string) })),
                 new(OpCodes.Dup),

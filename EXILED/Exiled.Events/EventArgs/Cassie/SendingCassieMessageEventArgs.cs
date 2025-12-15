@@ -21,6 +21,7 @@ namespace Exiled.Events.EventArgs.Cassie
     public class SendingCassieMessageEventArgs : IDeniableEvent
     {
         private CassieTtsPayload.SubtitleMode subtitleSource;
+        private CassieAnnouncement announcement;
         private CassieTtsPayload payload;
         private string customSubtitles;
 
@@ -59,13 +60,14 @@ namespace Exiled.Events.EventArgs.Cassie
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingCassieMessageEventArgs" /> class.
         /// </summary>
-        /// <param name="announcement">The announcement to populate all properties from.</param>
+        /// <param name="annc">The announcement to populate all properties from.</param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed"/>
         /// </param>
-        public SendingCassieMessageEventArgs(CassieAnnouncement announcement, bool isAllowed = true)
+        public SendingCassieMessageEventArgs(CassieAnnouncement annc, bool isAllowed = true)
         {
-            payload = announcement.Payload;
+            announcement = annc;
+            payload = annc.Payload;
 
             Words = payload.Content;
             switch (payload.SubtitleSource)
@@ -96,8 +98,8 @@ namespace Exiled.Events.EventArgs.Cassie
             }
 
             MakeHold = payload.PlayBackground;
-            GlitchScale = announcement.GlitchScale;
-            MakeNoise = announcement.GlitchScale is not 0;
+            GlitchScale = annc.GlitchScale;
+            MakeNoise = annc.GlitchScale is not 0;
             SubtitleSource = payload.SubtitleSource;
 
             IsAllowed = isAllowed;
@@ -187,7 +189,17 @@ namespace Exiled.Events.EventArgs.Cassie
                         newPayload = new CassieTtsPayload(Words, CustomSubtitles, MakeHold);
                 }
 
-                return new CassieAnnouncement(newPayload, 0, GlitchScale / (API.Features.Warhead.IsDetonated ? 2f : 1f));
+                return announcement switch
+                {
+                    CassieScpTerminationAnnouncement =>
+
+                        // this is disabled via patch b/c termination messages are not modifiable at the stage the SendCassieMessage patch is in.
+                        throw new InvalidOperationException("SendCassieMessage was called for a SCP termination message!"),
+
+                    CassieWaveAnnouncement waveAnnc => new CassieWaveAnnouncement(waveAnnc.Wave, newPayload),
+                    Cassie079RecontainAnnouncement recontainAnnc => new Cassie079RecontainAnnouncement(recontainAnnc._callback, false, newPayload),
+                    _ => new CassieAnnouncement(newPayload, 0, GlitchScale / (API.Features.Warhead.IsDetonated ? 2f : 1f)),
+                };
             }
         }
     }

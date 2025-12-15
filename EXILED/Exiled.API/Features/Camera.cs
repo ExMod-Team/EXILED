@@ -143,6 +143,8 @@ namespace Exiled.API.Features
             ["GATE A ELEVATORS"] = CameraType.EzGateAElevators,
             ["GATE B INTERIOR"] = CameraType.EzGateBInterior,
             ["GATE B SIDE"] = CameraType.EzGateBSide,
+            ["GATE A STAIRWELL"] = CameraType.EzGateAStairwell,
+            ["GATE A UPPER"] = CameraType.EzGateAUpper,
 
             // CustomCamera
             ["EZ ARM CAMERA TOY"] = CameraType.EzArmCameraToy,

@@ -33,12 +33,19 @@ namespace Exiled.Events.Patches.Events.Cassie
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            Label skipLabel = generator.DefineLabel();
             Label returnLabel = generator.DefineLabel();
+
+            newInstructions[0].WithLabels(skipLabel);
 
             newInstructions.InsertRange(
                 0,
                 new CodeInstruction[]
                 {
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Isinst, typeof(CassieScpTerminationAnnouncement)),
+                    new(OpCodes.Brtrue_S, skipLabel),
+
                     new(OpCodes.Ldarg_0),
 
                     // isAllowed
