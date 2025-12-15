@@ -20,42 +20,11 @@ namespace Exiled.Events.EventArgs.Cassie
     /// </summary>
     public class SendingCassieMessageEventArgs : IDeniableEvent
     {
-        private CassieTtsPayload.SubtitleMode subtitleSource;
-        private CassieAnnouncement announcement;
-        private CassieTtsPayload payload;
-        private string customSubtitles;
+        private readonly CassieAnnouncement announcement;
+        private readonly CassieTtsPayload payload;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SendingCassieMessageEventArgs" /> class.
-        /// </summary>
-        /// <param name="words">
-        /// <inheritdoc cref="Words" />
-        /// </param>
-        /// <param name="makeHold">
-        /// <inheritdoc cref="MakeHold" />
-        /// </param>
-        /// <param name="makeNoise">
-        /// <inheritdoc cref="MakeNoise" />
-        /// </param>
-        /// <param name="customAnnouncement">
-        /// <inheritdoc cref="IsCustomAnnouncement" />
-        /// </param>
-        /// <param name="customSubtitles">
-        /// <inheritdoc cref="CustomSubtitles" />
-        /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed"/>
-        /// </param>
-        [Obsolete("Will be removed in Exiled 10.")]
-        public SendingCassieMessageEventArgs(string words, bool makeHold, bool makeNoise, bool customAnnouncement, string customSubtitles, bool isAllowed = true)
-        {
-            Words = words;
-            CustomSubtitles = customSubtitles;
-            MakeHold = makeHold;
-            MakeNoise = makeNoise;
-            IsCustomAnnouncement = customAnnouncement;
-            IsAllowed = isAllowed;
-        }
+        private string customSubtitles;
+        private float glitchScale;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingCassieMessageEventArgs" /> class.
@@ -133,7 +102,17 @@ namespace Exiled.Events.EventArgs.Cassie
         /// <summary>
         /// Gets or sets a value controlling how glitchy this CASSIE message is.
         /// </summary>
-        public float GlitchScale { get; set; }
+        public float GlitchScale
+        {
+            get => glitchScale;
+            set
+            {
+                if (!MakeNoise && value is not 0)
+                    MakeNoise = true;
+
+                glitchScale = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the message should make noise.
@@ -154,18 +133,7 @@ namespace Exiled.Events.EventArgs.Cassie
         /// <summary>
         /// Gets or sets a value indicating where the subtitles for this message came from.
         /// </summary>
-        public CassieTtsPayload.SubtitleMode SubtitleSource
-        {
-            get
-            {
-                if (subtitleSource is CassieTtsPayload.SubtitleMode.Automatic && !string.IsNullOrEmpty(CustomSubtitles))
-                    return CassieTtsPayload.SubtitleMode.Custom;
-
-                return subtitleSource;
-            }
-
-            set => subtitleSource = value;
-        }
+        public CassieTtsPayload.SubtitleMode SubtitleSource { get; set; }
 
         /// <summary>
         /// Gets a <see cref="CassieAnnouncement"/> consisting of all properties in this event.
@@ -198,7 +166,7 @@ namespace Exiled.Events.EventArgs.Cassie
 
                     CassieWaveAnnouncement waveAnnc => new CassieWaveAnnouncement(waveAnnc.Wave, newPayload),
                     Cassie079RecontainAnnouncement recontainAnnc => new Cassie079RecontainAnnouncement(recontainAnnc._callback, false, newPayload),
-                    _ => new CassieAnnouncement(newPayload, 0, GlitchScale / (API.Features.Warhead.IsDetonated ? 2f : 1f)),
+                    _ => new CassieAnnouncement(newPayload, 0, GlitchScale / (API.Features.Warhead.IsDetonated ? 2F : 1F) * (MakeNoise ? 1F : 0F)),
                 };
             }
         }
