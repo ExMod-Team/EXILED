@@ -159,6 +159,8 @@ namespace Exiled.API.Enums
         EzGateAElevators,
         EzGateBInterior,
         EzGateBSide,
+        EzGateAStairwell,
+        EzGateAUpper,
         #endregion
     }
 }

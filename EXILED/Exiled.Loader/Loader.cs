@@ -634,7 +634,7 @@ namespace Exiled.Loader
                 if (plugin == null)
                     continue;
 
-                if (Plugins.Any(p => p.Name == plugin.Name) || LabAPIPlugins.Keys.Any(p => p.Name == plugin.Name))
+                if (PluginLoader.EnabledPlugins.Any(p => p.Name == plugin.Name) || Plugins.Any(p => p.Name == plugin.Name) || LabAPIPlugins.Keys.Any(p => p.Name == plugin.Name))
                     continue;
 
                 Log.Info("Successfully loaded LabAPI plugin " + plugin.Name);
