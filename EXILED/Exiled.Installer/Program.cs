@@ -172,7 +172,7 @@ namespace Exiled.Installer
                     r => Version.TryParse(r.TagName, out Version version)
                          && version > VersionLimit);
 
-            return releases.OrderByDescending(r => r.Id);
+            return releases.OrderByDescending(r => r.PublishedAt);
         }
 
         private static string FormatRelease(Release r)
