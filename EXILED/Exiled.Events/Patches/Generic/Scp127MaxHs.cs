@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Scp127MaxHs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -18,15 +18,15 @@ namespace Exiled.Events.Patches.Generic
     [HarmonyPatch(typeof(Scp127HumeModule), nameof(Scp127HumeModule.HsMax), MethodType.Getter)]
     internal class Scp127MaxHs
     {
-        private static bool Prefix(Scp127HumeModule __instance, ref float __result)
+        private static void Postfix(Scp127HumeModule __instance, ref float __result)
         {
             Scp127 item = Item.Get<Scp127>(__instance.ItemSerial);
 
             if (item == null || !item.CustomHsMax.HasValue)
-                return true;
+                return;
 
             __result = item.CustomHsMax.Value;
-            return false;
+            return;
         }
     }
 }
