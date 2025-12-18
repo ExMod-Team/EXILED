@@ -145,6 +145,9 @@ namespace Exiled.API.Features
             ["GATE B SIDE"] = CameraType.EzGateBSide,
             ["GATE A STAIRWELL"] = CameraType.EzGateAStairwell,
             ["GATE A UPPER"] = CameraType.EzGateAUpper,
+            ["LOADING BAY"] = CameraType.HczRampIntersectionBay,
+            ["HCZ LOADING RAMP"] = CameraType.HczRampIntersectionRamp,
+            ["STAIRWELL"] = CameraType.HczRampIntersectionStairwell,
 
             // CustomCamera
             ["EZ ARM CAMERA TOY"] = CameraType.EzArmCameraToy,

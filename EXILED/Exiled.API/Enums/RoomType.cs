@@ -353,5 +353,11 @@ namespace Exiled.API.Enums
         /// Heavy Containment Zone's straight hall room with lava.
         /// </summary>
         HczDss12 = HczIncineratorWayside,
+
+        /// <summary>
+        /// A new room that hasn't been seen yet
+        /// TODO: update these docs
+        /// </summary>
+        HczRampIntersection,
     }
 }

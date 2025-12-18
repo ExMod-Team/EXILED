@@ -15,7 +15,6 @@ namespace Exiled.Events.Commands
     /// <summary>
     /// Command for showing current server TPS.
     /// </summary>
-    [CommandHandler(typeof(RemoteAdminCommandHandler))]
     [CommandHandler(typeof(GameConsoleCommandHandler))]
     public class TpsCommand : ICommand
     {
