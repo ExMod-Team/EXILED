@@ -390,5 +390,20 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.Scp1509Resurrected"/>.
         /// </summary>
         Scp1509Resurrected,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.FocusedVision"/>.
+        /// </summary>
+        FocusedVision,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.AnomalousRegeneration"/>.
+        /// </summary>
+        AnomalousRegeneration,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.AnomalousTarget"/>.
+        /// </summary>
+        AnomalousTarget,
     }
 }
