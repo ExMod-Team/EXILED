@@ -17,7 +17,7 @@
 title: NW Documentation
 ---
 
-Last Update (14.2.0.3)
+Last Update (14.2.0.4)
 
 ### Index
 
@@ -2772,6 +2772,7 @@ Last Update (14.2.0.3)
  [66] = KeycardCustomMetalCase
  [67] = MarshmallowItem
  [68] = SCP1509
+ [69] = Scp021J
  [-1] = None
 ```
 
@@ -4080,6 +4081,8 @@ Last Update (14.2.0.3)
  [25] = Flamingo
  [26] = AlphaFlamingo
  [27] = ZombieFlamingo
+ [28] = NtfFlamingo
+ [29] = ChaosFlamingo
  [-1] = None
 ```
 
@@ -4143,6 +4146,7 @@ Last Update (14.2.0.3)
  [38] = Hcz127
  [39] = HczAcroamaticAbatement
  [40] = HczWaysideIncinerator
+ [41] = HczRampTunnel
 ```
 
 </details>
@@ -5540,6 +5544,8 @@ Last Update (14.2.0.3)
  [3] = Two
  [4] = Three
  [5] = Four
+ [6] = Five
+ [7] = Six
 ```
 
 </details>
@@ -5718,6 +5724,7 @@ Last Update (14.2.0.3)
  [5] = Scp127Voice
  [6] = Scp3114Voice
  [7] = ChaseThemes
+ [8] = SoundEffectsWhileSpectating
 ```
 
 </details>
@@ -5826,9 +5833,11 @@ Last Update (14.2.0.3)
 | 22  | Filmmaker      | Dead             | None             | Draw            |
 | 23  | Scp3114        | SCPs             | Scp              | Anomalies       |
 | 24  | Destroyed      | Dead             | None             | Draw            |
-| 25  | Flamingo       | Dead             | None             | Draw            |
-| 26  | AlphaFlamingo  | Dead             | None             | Draw            |
-| 27  | ZombieFlamingo | Dead             | None             | Draw            |
+| 25  | Flamingo       | Flamingos        | Flamingos        | Flamingo        |
+| 26  | AlphaFlamingo  | Flamingos        | Flamingos        | Flamingo        |
+| 27  | ZombieFlamingo | SCPs             | Scp              | Anomalies       |
+| 28  | NtfFlamingo    | FoundationForces | Mtf              | FacilityForces  |
+| 29  | ChaosFlamingo  | ChaosInsurgency  | ChaosInsurgency  | ChaosInsurgency |
 ```
 
 </details>
@@ -5839,7 +5848,7 @@ Last Update (14.2.0.3)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.2.0.3"
+```md title="Latest Updated: 14.2.0.4"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"
