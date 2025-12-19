@@ -218,7 +218,11 @@ namespace Exiled.API.Features.Items
 
             return itemBase switch
             {
-                InventorySystem.Items.Firearms.Firearm firearm => new Firearm(firearm),
+                InventorySystem.Items.Firearms.Firearm firearm => firearm.ItemTypeId switch
+                {
+                    ItemType.GunSCP127 => new Scp127(firearm),
+                    _ => new Firearm(firearm),
+                },
                 KeycardItem keycard => keycard switch
                 {
                     ChaosKeycardItem chaosKeycardItem => new ChaosKeycard(chaosKeycardItem),
@@ -318,7 +322,11 @@ namespace Exiled.API.Features.Items
         /// <returns>The <see cref="Item"/> created. This can be cast as a subclass.</returns>
         public static Item Create(ItemType type, Player owner = null) => type.GetTemplate() switch
         {
-            InventorySystem.Items.Firearms.Firearm => new Firearm(type),
+            InventorySystem.Items.Firearms.Firearm => type switch
+            {
+                ItemType.GunSCP127 => new Scp127(),
+                _ => new Firearm(type),
+            },
             KeycardItem keycard => keycard switch
             {
                 ChaosKeycardItem => new ChaosKeycard(type),
