@@ -534,7 +534,7 @@ namespace Exiled.API.Features
                     > 95 => RoomType.HczEzCheckpointA,
                     _ => RoomType.HczEzCheckpointB
                 },
-                "HCZ_Intersection_Ramp" => RoomType.HczRampIntersection,
+                "HCZ_Intersection_Ramp" => RoomType.HczLoadingBay,
                 _ => RoomType.Unknown,
             };
         }

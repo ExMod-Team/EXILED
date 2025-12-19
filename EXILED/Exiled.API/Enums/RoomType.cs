@@ -355,9 +355,8 @@ namespace Exiled.API.Enums
         HczDss12 = HczIncineratorWayside,
 
         /// <summary>
-        /// A new room that hasn't been seen yet
-        /// TODO: update these docs
+        /// Heavy Containment Zone's T-intersection with a ramp in it.
         /// </summary>
-        HczRampIntersection,
+        HczLoadingBay,
     }
 }

@@ -451,9 +451,11 @@ namespace Exiled.API.Enums
         [Prefab(2405470903, "Scp2536Projectile")]
         Scp2536Projectile,
 
-        [Prefab(619537810, "SCP-173 Ragdoll Christmas")]
+        [Prefab(1496232901, "SCP-173 Ragdoll Variant")]
         Scp173RagdollChristmas,
 
+        [Prefab(6069361, "SnowPoop - TantrumObj")]
+        SnowTantrum,
         [Prefab(3654754970, "SCP-1507 Ragdoll")]
         Scp1507Ragdoll,
     }

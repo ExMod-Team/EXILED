@@ -371,8 +371,8 @@ namespace Exiled.API.Enums
         GateAArmory,
 
         /// <summary>
-        /// Represents the door in <see cref="RoomType.HczRampIntersection"/>.
+        /// Represents the door in <see cref="RoomType.HczLoadingBay"/>.
         /// </summary>
-        HczRampIntersection,
+        HczLoadingBay,
     }
 }
