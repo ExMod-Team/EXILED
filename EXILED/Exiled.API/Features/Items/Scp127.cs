@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Scp127.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -14,16 +14,17 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Firearms.Modules.Scp127;
     using UnityEngine;
 
-#pragma warning disable SA1401
     /// <summary>
     /// Represents SCP-127.
     /// </summary>
     public class Scp127 : Firearm
     {
+        #pragma warning disable SA1401
         /// <summary>
         /// Custom amount of max HS.
         /// </summary>
         internal float? CustomHsMax;
+        #pragma warning restore SA1401
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp127"/> class.
