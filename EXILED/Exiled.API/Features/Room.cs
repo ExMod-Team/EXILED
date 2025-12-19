@@ -506,6 +506,7 @@ namespace Exiled.API.Features
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
                 "HCZ_127" => RoomType.Hcz127,
                 "HCZ_ServerRoom" => RoomType.HczServerRoom,
+                "HCZ_Intersection_Ramp" => RoomType.HczLoadingBay,
                 "EZ_GateA" => RoomType.EzGateA,
                 "EZ_GateB" => RoomType.EzGateB,
                 "EZ_ThreeWay" => RoomType.EzTCross,
@@ -534,7 +535,6 @@ namespace Exiled.API.Features
                     > 95 => RoomType.HczEzCheckpointA,
                     _ => RoomType.HczEzCheckpointB
                 },
-                "HCZ_Intersection_Ramp" => RoomType.HczLoadingBay,
                 _ => RoomType.Unknown,
             };
         }

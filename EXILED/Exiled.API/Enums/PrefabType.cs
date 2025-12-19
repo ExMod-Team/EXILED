@@ -456,6 +456,7 @@ namespace Exiled.API.Enums
 
         [Prefab(6069361, "SnowPoop - TantrumObj")]
         SnowTantrum,
+
         [Prefab(3654754970, "SCP-1507 Ragdoll")]
         Scp1507Ragdoll,
     }
