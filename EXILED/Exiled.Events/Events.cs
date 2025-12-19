@@ -72,6 +72,7 @@ namespace Exiled.Events
             Handlers.Scp049.ActivatingSense += Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified += Handlers.Internal.Round.OnVerified;
             Handlers.Map.ChangedIntoGrenade += Handlers.Internal.ExplodingGrenade.OnChangedIntoGrenade;
+            Handlers.Warhead.Detonated += Handlers.Internal.Round.OnWarheadDetonated;
 
             RoleAssigner.OnPlayersSpawned += Handlers.Server.OnAllPlayersSpawned;
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;

@@ -28,6 +28,7 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
+    using InventorySystem.Items.Usables.Scp330;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
@@ -122,6 +123,13 @@ namespace Exiled.Events.Handlers.Internal
             {
                 player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
             }
+        }
+
+        /// <inheritdoc cref="Handlers.Warhead.OnDetonated()"/>
+        public static void OnWarheadDetonated()
+        {
+            // fix for black candy
+            CandyBlack.Outcomes.RemoveAll(outcome => outcome is TeleportOutcome);
         }
 
         private static void GenerateAttachments()
