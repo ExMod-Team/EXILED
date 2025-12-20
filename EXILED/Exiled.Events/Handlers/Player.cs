@@ -16,6 +16,7 @@ namespace Exiled.Events.Handlers
     using Exiled.Events.EventArgs.Player;
 
     using Exiled.Events.Features;
+    using LabApi.Events.Arguments.PlayerEvents;
 
     /// <summary>
     /// Player related events.
@@ -616,6 +617,11 @@ namespace Exiled.Events.Handlers
         public static Event<DrinkingCoffeeEventArgs> DrinkingCoffee { get; set; } = new();
 
         /// <summary>
+        /// Invoked before Emergency Release Button is pressed.
+        /// </summary>
+        public static Event<InteractingEmergencyButtonEventArgs> InteractingEmergencyButton { get; set; } = new();
+
+        /// <summary>
         /// Called before a player's emotion changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingEmotionEventArgs"/> instance.</param>
@@ -884,7 +890,12 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> reloads a weapon.
         /// </summary>
         /// <param name="ev">The <see cref="ReloadingWeaponEventArgs"/> instance.</param>
-        public static void OnReloadingWeapon(ReloadingWeaponEventArgs ev) => ReloadingWeapon.InvokeSafely(ev);
+        public static void OnReloadingWeapon(PlayerReloadingWeaponEventArgs ev)
+        {
+            ReloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
+            ReloadingWeapon.InvokeSafely(exiledEv);
+            ev.IsAllowed = exiledEv.IsAllowed;
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> reloads a weapon.
@@ -992,7 +1003,12 @@ namespace Exiled.Events.Handlers
         /// Called before a <see cref="API.Features.Player"/> unloads a weapon.
         /// </summary>
         /// <param name="ev">The <see cref="UnloadingWeaponEventArgs"/> instance.</param>
-        public static void OnUnloadingWeapon(UnloadingWeaponEventArgs ev) => UnloadingWeapon.InvokeSafely(ev);
+        public static void OnUnloadingWeapon(PlayerUnloadingWeaponEventArgs ev)
+        {
+            UnloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
+            UnloadingWeapon.InvokeSafely(exiledEv);
+            ev.IsAllowed = exiledEv.IsAllowed;
+        }
 
         /// <summary>
         /// Called after a <see cref="API.Features.Player"/> unloads a weapon.
@@ -1334,5 +1350,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="HitEventArgs"/> instance.</param>
         public static void OnHit(HitEventArgs ev) => Hit.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before Emergency Release Button is pressed.
+        /// </summary>
+        /// <param name="ev">The <see cref="InteractingEmergencyButtonEventArgs"/> instance.</param>
+        public static void OnInteractingEmergencyButton(InteractingEmergencyButtonEventArgs ev) => InteractingEmergencyButton.InvokeSafely(ev);
     }
 }

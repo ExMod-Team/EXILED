@@ -7,78 +7,102 @@
 
 namespace Exiled.Events.Patches.Events.Map
 {
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Features.DamageHandlers;
     using API.Features.Pools;
+    using Exiled.API.Features;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Map;
     using Exiled.Events.Handlers;
-
+    using Footprinting;
+    using global::Cassie;
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
 
+    using Map = Exiled.Events.Handlers.Map;
     using Player = API.Features.Player;
 
     /// <summary>
     /// Patches
-    /// <see cref="NineTailedFoxAnnouncer.AnnounceScpTermination(ReferenceHub, PlayerStatsSystem.DamageHandlerBase)" />.
+    /// <see cref="CassieScpTerminationAnnouncement.OnStartedPlaying()" />.
     /// Adds the <see cref="Map.AnnouncingScpTermination" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.AnnouncingScpTermination))]
-    [HarmonyPatch(typeof(NineTailedFoxAnnouncer), nameof(NineTailedFoxAnnouncer.AnnounceScpTermination))]
+    [HarmonyPatch(typeof(CassieScpTerminationAnnouncement), nameof(CassieScpTerminationAnnouncement.OnStartedPlaying))]
     internal static class AnnouncingScpTermination
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(AnnouncingScpTerminationEventArgs));
+            LocalBuilder cause = generator.DeclareLocal(typeof(string));
+            LocalBuilder enumerator = generator.DeclareLocal(typeof(IEnumerator<Footprint>));
+
+            ExceptionBlock beginTry = new(ExceptionBlockType.BeginExceptionBlock);
+            ExceptionBlock beginFinally = new(ExceptionBlockType.BeginFinallyBlock);
+            ExceptionBlock endFinally = new(ExceptionBlockType.EndExceptionBlock);
 
             Label ret = generator.DefineLabel();
+            Label entryLabel = generator.DefineLabel();
+            Label loopLabel = generator.DefineLabel();
+            Label leaveLabel = generator.DefineLabel();
+            Label endFinallyLabel = generator.DefineLabel();
 
-            int offset = -4;
-            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.CassieQueuingScpTerminationEventArgs))[0]) + offset;
+            int offset = -1;
+            int index = newInstructions.FindIndex(i => i.LoadsField(Field(typeof(CassieScpTerminationAnnouncement), nameof(CassieScpTerminationAnnouncement._announcementTts)))) + offset;
+
+            newInstructions.RemoveRange(index, 2);
+            newInstructions.Insert(index, new CodeInstruction(OpCodes.Ldloc_S, cause));
+
+            newInstructions[0].WithLabels(leaveLabel);
 
             newInstructions.InsertRange(
-                index,
+                0,
                 new[]
-                {
-                    // Player.Get(scp)
-                    new CodeInstruction(OpCodes.Ldarg_0),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+            {
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(typeof(CassieScpTerminationAnnouncement), nameof(CassieScpTerminationAnnouncement._announcementTts))),
+                new(OpCodes.Stloc_S, cause),
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(CassieScpTerminationAnnouncement), nameof(CassieScpTerminationAnnouncement.Victims))),
+                new(OpCodes.Callvirt, Method(typeof(IEnumerable<Footprint>), nameof(IEnumerable<Footprint>.GetEnumerator))),
+                new(OpCodes.Stloc_S, enumerator),
 
-                    // hit
-                    new(OpCodes.Ldarg_1),
+                // start of try
+                new CodeInstruction(OpCodes.Br_S, entryLabel).WithBlocks(beginTry),
 
-                    // AnnouncingScpTerminationEventArgs ev = new(Player, DamageHandlerBase)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(AnnouncingScpTerminationEventArgs))[0]),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
+                // start of loop
+                new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(loopLabel),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(IEnumerator<Footprint>), nameof(IEnumerator<Footprint>.Current))),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(Footprint) })),
+                new(OpCodes.Ldloc_S, cause),
+                new(OpCodes.Newobj, Constructor(typeof(AnnouncingScpTerminationEventArgs), new[] { typeof(Player), typeof(string) })),
+                new(OpCodes.Dup),
+                new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnAnnouncingScpTermination))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.TerminationCause))),
+                new(OpCodes.Stloc_S, cause),
 
-                    // Map.OnAnnouncingScpTermination(ev)
-                    new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnAnnouncingScpTermination))),
+                // entry point
+                new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(entryLabel),
+                new(OpCodes.Callvirt, Method(typeof(IEnumerator), nameof(IEnumerator.MoveNext))),
+                new(OpCodes.Brtrue_S, loopLabel),
 
-                    // if (!ev.IsAllowed)
-                    //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse_S, ret),
+                // end of loop
+                new(OpCodes.Leave, leaveLabel),
 
-                    // hit = ev.DamageHandler.Base
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.DamageHandler))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(CustomDamageHandler), nameof(CustomDamageHandler.Base))),
-                    new(OpCodes.Starg, 1),
+                // begin finally
+                new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithBlocks(beginFinally),
+                new(OpCodes.Brfalse, endFinallyLabel),
+                new(OpCodes.Ldloc_S, enumerator),
+                new(OpCodes.Callvirt, Method(typeof(IDisposable), nameof(IDisposable.Dispose))),
 
-                    // announcement = ev.TerminationCause
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.TerminationCause))),
-                    new(OpCodes.Stloc_0),
-                });
+                // end of finally
+                new CodeInstruction(OpCodes.Endfinally).WithLabels(endFinallyLabel).WithBlocks(endFinally),
+            });
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);
 

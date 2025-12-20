@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Items
 
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using InventorySystem;
@@ -24,6 +25,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.MicroHID;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Radio;
+    using InventorySystem.Items.Scp1509;
     using InventorySystem.Items.ThrowableProjectiles;
     using InventorySystem.Items.ToggleableLights;
     using InventorySystem.Items.Usables;
@@ -165,7 +167,7 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets a value indicating whether this item is a weapon.
         /// </summary>
-        public bool IsWeapon => this is Firearm || Type is ItemType.Jailbird or ItemType.MicroHID;
+        public bool IsWeapon => this is Firearm || Type is ItemType.Jailbird or ItemType.MicroHID or ItemType.SCP1509;
 
         /// <summary>
         /// Gets a value indicating whether or not this item is a firearm.
@@ -216,8 +218,24 @@ namespace Exiled.API.Features.Items
 
             return itemBase switch
             {
-                InventorySystem.Items.Firearms.Firearm firearm => new Firearm(firearm),
-                KeycardItem keycard => new Keycard(keycard),
+                InventorySystem.Items.Firearms.Firearm firearm => firearm.ItemTypeId switch
+                {
+                    ItemType.GunSCP127 => new Scp127(firearm),
+                    _ => new Firearm(firearm),
+                },
+                KeycardItem keycard => keycard switch
+                {
+                    ChaosKeycardItem chaosKeycardItem => new ChaosKeycard(chaosKeycardItem),
+                    SingleUseKeycardItem singleUseKeycardItem => new SingleUseKeycard(singleUseKeycardItem),
+                    _ => keycard.ItemTypeId switch
+                    {
+                        ItemType.KeycardCustomTaskForce => new TaskForceKeycard(keycard),
+                        ItemType.KeycardCustomSite02 => new Site02Keycard(keycard),
+                        ItemType.KeycardCustomManagement => new ManagementKeycard(keycard),
+                        ItemType.KeycardCustomMetalCase => new MetalKeycard(keycard),
+                        _ => new Keycard(keycard),
+                    }
+                },
                 UsableItem usable => usable switch
                 {
                     Scp330Bag scp330Bag => new Scp330(scp330Bag),
@@ -241,6 +259,7 @@ namespace Exiled.API.Features.Items
                     Scp018Projectile => new Scp018(throwable),
                     _ => new Throwable(throwable),
                 },
+                Scp1509Item scp1509 => new Scp1509(scp1509),
                 _ => new(itemBase),
             };
         }
@@ -303,8 +322,24 @@ namespace Exiled.API.Features.Items
         /// <returns>The <see cref="Item"/> created. This can be cast as a subclass.</returns>
         public static Item Create(ItemType type, Player owner = null) => type.GetTemplate() switch
         {
-            InventorySystem.Items.Firearms.Firearm => new Firearm(type),
-            KeycardItem => new Keycard(type),
+            InventorySystem.Items.Firearms.Firearm => type switch
+            {
+                ItemType.GunSCP127 => new Scp127(),
+                _ => new Firearm(type),
+            },
+            KeycardItem keycard => keycard switch
+            {
+                ChaosKeycardItem => new ChaosKeycard(type),
+                SingleUseKeycardItem => new SingleUseKeycard(type),
+                _ => type switch
+                {
+                    ItemType.KeycardCustomTaskForce => new TaskForceKeycard(type),
+                    ItemType.KeycardCustomSite02 => new Site02Keycard(type),
+                    ItemType.KeycardCustomManagement => new ManagementKeycard(type),
+                    ItemType.KeycardCustomMetalCase => new MetalKeycard(type),
+                    _ => new Keycard(type, owner),
+                }
+            },
             UsableItem usable => usable switch
             {
                 Scp330Bag => new Scp330(),
@@ -328,6 +363,7 @@ namespace Exiled.API.Features.Items
                 Scp018Projectile => new Scp018(type, owner),
                 _ => new Throwable(type, owner),
             },
+            Scp1509Item => new Scp1509(),
             _ => new(type),
         };
 
@@ -363,7 +399,7 @@ namespace Exiled.API.Features.Items
         /// <param name="owner">The <see cref="Player"/> who owns the item by default.</param>
         /// <typeparam name="T">The specified <see cref="Item"/> type.</typeparam>
         /// <returns>The <see cref="Item"/> created. This can be cast as a subclass.</returns>
-        public static Item Create<T>(ItemType type, Player owner = null) // TODO modify return type to "T"
+        public static T Create<T>(ItemType type, Player owner = null)
             where T : Item => Create(type, owner) as T;
 
         /// <summary>

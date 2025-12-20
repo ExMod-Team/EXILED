@@ -17,7 +17,7 @@
 title: NW Documentation
 ---
 
-Last Update (14.1.0.1)
+Last Update (14.2.0.4)
 
 ### Index
 
@@ -28,6 +28,7 @@ Last Update (14.1.0.1)
 - [ActionName](#actionname)
 - [Activity](#activity)
 - [AdminFlags](#adminflags)
+- [AnimationQuality](#animationquality)
 - [AnimItemLayer3p](#animitemlayer3p)
 - [AnimState3p](#animstate3p)
 - [AttachmentDescriptiveAdvantages](#attachmentdescriptiveadvantages)
@@ -55,6 +56,7 @@ Last Update (14.1.0.1)
 - [CallType](#calltype)
 - [CandyKindID](#candykindid)
 - [CassieAnnouncementType](#cassieannouncementtype)
+- [CassieClipCategory](#cassieclipcategory)
 - [Category](#category)
 - [CentralAuthPreauthFlags](#centralauthpreauthflags)
 - [ChallengeState](#challengestate)
@@ -88,7 +90,6 @@ Last Update (14.1.0.1)
 - [DecalPoolType](#decalpooltype)
 - [DecontaminationStatus](#decontaminationstatus)
 - [DeliveryMethod](#deliverymethod)
-- [DetectionStatus](#detectionstatus)
 - [DiodeType](#diodetype)
 - [DisconnectReason](#disconnectreason)
 - [DisconnectResult](#disconnectresult)
@@ -154,6 +155,7 @@ Last Update (14.1.0.1)
 - [HintTranslations](#hinttranslations)
 - [HintType](#hinttype)
 - [HitboxType](#hitboxtype)
+- [HitResult](#hitresult)
 - [HolidayType](#holidaytype)
 - [HotkeysTranslation](#hotkeystranslation)
 - [IcomText](#icomtext)
@@ -204,6 +206,7 @@ Last Update (14.1.0.1)
 - [NatAddressType](#nataddresstype)
 - [NetLogLevel](#netloglevel)
 - [NetworkProtocolType](#networkprotocoltype)
+- [NextAction](#nextaction)
 - [NextRoundAction](#nextroundaction)
 - [NotificationSound](#notificationsound)
 - [NtpLeapIndicator](#ntpleapindicator)
@@ -218,6 +221,7 @@ Last Update (14.1.0.1)
 - [OtherAudioSetting](#otheraudiosetting)
 - [OtherCondition](#othercondition)
 - [OutputCodes](#outputcodes)
+- [OverwatchSettings](#overwatchsettings)
 - [PacketProperty](#packetproperty)
 - [PanelColliderId](#panelcolliderid)
 - [ParameterMixingMode](#parametermixingmode)
@@ -230,6 +234,7 @@ Last Update (14.1.0.1)
 - [PlayerInfoColorTypes](#playerinfocolortypes)
 - [PlayerMovementState](#playermovementstate)
 - [PlayerPermissions](#playerpermissions)
+- [PlayerPermissionType](#playerpermissiontype)
 - [PlayerSorting](#playersorting)
 - [PopupState](#popupstate)
 - [PortMapper](#portmapper)
@@ -237,6 +242,7 @@ Last Update (14.1.0.1)
 - [RaClipBoardType](#raclipboardtype)
 - [RadioCommand](#radiocommand)
 - [RadioRangeLevel](#radiorangelevel)
+- [RefpointType](#refpointtype)
 - [RejectionReason](#rejectionreason)
 - [RejectionReason](#rejectionreason)
 - [ReloaderMessageHeader](#reloadermessageheader)
@@ -244,6 +250,7 @@ Last Update (14.1.0.1)
 - [RemovalMode](#removalmode)
 - [ReproProjectAssetType](#reproprojectassettype)
 - [RequestType](#requesttype)
+- [ResizeDirection](#resizedirection)
 - [RespawnSetting](#respawnsetting)
 - [RespawnTooltipTranslation](#respawntooltiptranslation)
 - [ResurrectError](#resurrecterror)
@@ -278,9 +285,11 @@ Last Update (14.1.0.1)
 - [Scp127Tier](#scp127tier)
 - [Scp127VoiceLinesTranslation](#scp127voicelinestranslation)
 - [Scp1344Status](#scp1344status)
+- [Scp1509MessageType](#scp1509messagetype)
 - [Scp173SoundId](#scp173soundid)
 - [Scp244State](#scp244state)
 - [Scp3114HudTranslation](#scp3114hudtranslation)
+- [Scp3114MaterialType](#scp3114materialtype)
 - [Scp914InteractCode](#scp914interactcode)
 - [Scp914KnobSetting](#scp914knobsetting)
 - [Scp914Mode](#scp914mode)
@@ -310,13 +319,16 @@ Last Update (14.1.0.1)
 - [SteamLobbyPrivacy](#steamlobbyprivacy)
 - [StorageLocation](#storagelocation)
 - [StructureType](#structuretype)
+- [SubtitleMode](#subtitlemode)
 - [SubtitleType](#subtitletype)
 - [SyncData](#syncdata)
 - [SyncDataFlags](#syncdataflags)
 - [SyncMode](#syncmode)
+- [SystemCursorID](#systemcursorid)
 - [TargetButton](#targetbutton)
 - [Team](#team)
 - [TrackerMessage](#trackermessage)
+- [TrackType](#tracktype)
 - [TransitionStatus](#transitionstatus)
 - [TurnStatus](#turnstatus)
 - [UISetting](#uisetting)
@@ -331,7 +343,6 @@ Last Update (14.1.0.1)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
 - [ValidationError](#validationerror)
-- [VariantType](#varianttype)
 - [VcMuteFlags](#vcmuteflags)
 - [VcPrivacyFlags](#vcprivacyflags)
 - [VersionType](#versiontype)
@@ -487,6 +498,20 @@ Last Update (14.1.0.1)
  [1] = Noclip
  [2] = GodMode
  [4] = BypassMode
+```
+
+</details>
+
+### AnimationQuality
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.CullingSubcontroller+AnimationQuality</b></summary>
+
+```
+ [0] = VeryLow
+ [1] = Low
+ [2] = Medium
+ [3] = High
+ [4] = Ultra
 ```
 
 </details>
@@ -913,6 +938,12 @@ Last Update (14.1.0.1)
  [5] = Green
  [6] = Blue
  [7] = Pink
+ [8] = Orange
+ [9] = White
+ [10] = Gray
+ [11] = Black
+ [12] = Brown
+ [13] = Evil
 ```
 
 </details>
@@ -926,6 +957,18 @@ Last Update (14.1.0.1)
  [1] = Normal
  [2] = Decontamination
  [3] = Detonation
+```
+
+</details>
+
+### CassieClipCategory
+
+<details><summary><b>Cassie.CassieClipCategory</b></summary>
+
+```
+ [0] = Word
+ [1] = Glitch
+ [2] = Other
 ```
 
 </details>
@@ -1293,7 +1336,7 @@ Last Update (14.1.0.1)
 
 ### ConsoleLogType
 
-<details><summary><b>GameCore.Console+ConsoleLogType</b></summary>
+<details><summary><b>GameCore.ConsoleLogType</b></summary>
 
 ```
  [0] = DoNotLog
@@ -1419,18 +1462,6 @@ Last Update (14.1.0.1)
  [2] = ReliableOrdered
  [3] = ReliableSequenced
  [4] = Unreliable
-```
-
-</details>
-
-### DetectionStatus
-
-<details><summary><b>InventorySystem.Items.Firearms.Modules.Scp127.Scp127CassieBasedVoiceTriggerBase+DetectionStatus</b></summary>
-
-```
- [0] = Idle
- [1] = WaitingForTrigger
- [2] = AnnouncementStartedPlaying
 ```
 
 </details>
@@ -1684,7 +1715,7 @@ Last Update (14.1.0.1)
 <details><summary><b>Interactables.Interobjects.ElevatorGroup</b></summary>
 
 ```
- [0] = GateA
+ [0] = GateA01
  [1] = GateB
  [2] = LczA01
  [3] = LczA02
@@ -1694,6 +1725,7 @@ Last Update (14.1.0.1)
  [7] = Scp049
  [8] = Nuke02
  [9] = ServerRoom
+ [10] = GateA02
 ```
 
 </details>
@@ -2381,6 +2413,19 @@ Last Update (14.1.0.1)
 
 </details>
 
+### HitResult
+
+<details><summary><b>InventorySystem.Items.Autosync.MeleeAutoSync+HitResult</b></summary>
+
+```
+ [0] = HitPlayer
+ [1] = KilledPlayer
+ [2] = HitWall
+ [3] = Missed
+```
+
+</details>
+
 ### HolidayType
 
 <details><summary><b>MapGeneration.Holidays.HolidayType</b></summary>
@@ -2725,6 +2770,9 @@ Last Update (14.1.0.1)
  [64] = KeycardCustomSite02
  [65] = KeycardCustomManagement
  [66] = KeycardCustomMetalCase
+ [67] = MarshmallowItem
+ [68] = SCP1509
+ [69] = Scp021J
  [-1] = None
 ```
 
@@ -3110,7 +3158,7 @@ Last Update (14.1.0.1)
 <details><summary><b>UserSettings.VideoSettings.MiscVideoSetting</b></summary>
 
 ```
- [0] = Brightness
+ [0] = BrightnessBoost
  [1] = ExplosionShake
  [2] = HeadBobbing
  [3] = FlashbangDarkMode
@@ -3246,6 +3294,17 @@ Last Update (14.1.0.1)
 ```
  [0] = Tcp
  [1] = Udp
+```
+
+</details>
+
+### NextAction
+
+<details><summary><b>Cassie.Interpreters.CassieInterpreter+NextAction</b></summary>
+
+```
+ [0] = Continue
+ [1] = Halt
 ```
 
 </details>
@@ -3456,6 +3515,18 @@ Last Update (14.1.0.1)
 
 </details>
 
+### OverwatchSettings
+
+<details><summary><b>PlayerRoles.Spectating.OverwatchSettings</b></summary>
+
+```
+ [0] = PlayerInfoToggle
+ [1] = HitRegisterToggle
+ [2] = DebugLines
+```
+
+</details>
+
 ### PacketProperty
 
 <details><summary><b>LiteNetLib.PacketProperty</b></summary>
@@ -3544,6 +3615,7 @@ Last Update (14.1.0.1)
  [7] = BulletDecalsEnabled
  [8] = BloodDecalsLimit
  [9] = BulletDecalsLimits
+ [10] = AnimationQuality
 ```
 
 </details>
@@ -3669,6 +3741,19 @@ Last Update (14.1.0.1)
  [268435456] = FriendlyFireDetectorTempDisable
  [536870912] = ServerLogLiveFeed
  [1073741824] = ExecuteAs
+ [2147483648] = Vanish
+```
+
+</details>
+
+### PlayerPermissionType
+
+<details><summary><b>PlayerPermissionType</b></summary>
+
+```
+ [0] = RaAccess
+ [1] = ViewAccess
+ [2] = Misc
 ```
 
 </details>
@@ -3756,6 +3841,18 @@ Last Update (14.1.0.1)
  [2] = HighRange
  [3] = UltraRange
  [-1] = RadioDisabled
+```
+
+</details>
+
+### RefpointType
+
+<details><summary><b>PlayerRoles.FirstPersonControl.Thirdperson.RefpointType</b></summary>
+
+```
+ [0] = None
+ [1] = LineOfSightPoint
+ [2] = Hitbox
 ```
 
 </details>
@@ -3861,7 +3958,20 @@ Last Update (14.1.0.1)
  [1] = ConfirmThrowWeak
  [2] = ConfirmThrowFullForce
  [3] = CancelThrow
- [4] = ForceCancel
+```
+
+</details>
+
+### ResizeDirection
+
+<details><summary><b>GameCore.ResizableWindow+ResizeDirection</b></summary>
+
+```
+ [0] = None
+ [1] = Left
+ [2] = Right
+ [3] = Top
+ [4] = Bottom
 ```
 
 </details>
@@ -3920,6 +4030,7 @@ Last Update (14.1.0.1)
  [8] = Destroyed
  [9] = RespawnMiniwave
  [10] = ItemUsage
+ [11] = Resurrected
 ```
 
 </details>
@@ -3970,6 +4081,8 @@ Last Update (14.1.0.1)
  [25] = Flamingo
  [26] = AlphaFlamingo
  [27] = ZombieFlamingo
+ [28] = NtfFlamingo
+ [29] = ChaosFlamingo
  [-1] = None
 ```
 
@@ -4031,6 +4144,9 @@ Last Update (14.1.0.1)
  [36] = Pocket
  [37] = HczTestroom
  [38] = Hcz127
+ [39] = HczAcroamaticAbatement
+ [40] = HczWaysideIncinerator
+ [41] = HczRampTunnel
 ```
 
 </details>
@@ -4095,7 +4211,9 @@ Last Update (14.1.0.1)
  [0] = TargetResync
  [1] = TargetKilled
  [2] = AttackInterrupted
- [3] = OutOfRange
+ [3] = AttackCancelled
+ [4] = OutOfRange
+ [5] = StrangleTimer
 ```
 
 </details>
@@ -4156,6 +4274,8 @@ Last Update (14.1.0.1)
  [0] = AttackStart
  [1] = Hit
  [2] = Holster
+ [3] = Evil
+ [4] = Cackle
 ```
 
 </details>
@@ -4610,6 +4730,27 @@ Last Update (14.1.0.1)
 
 </details>
 
+### Scp1509MessageType
+
+<details><summary><b>InventorySystem.Items.Scp1509.Scp1509MessageType</b></summary>
+
+```
+ [0] = Holstered
+ [1] = AttackTriggered
+ [2] = AttackPreformedHitWall
+ [3] = AttackPreformedHitFlesh
+ [4] = AttackPreformedHitMissed
+ [5] = SpawnResurrectParticles
+ [6] = AttackPerformed
+ [7] = Inspect
+ [8] = CanResurrect
+ [9] = CanNotResurrect
+ [10] = KilledPlayer
+ [11] = NewPlayerFullResync
+```
+
+</details>
+
 ### Scp173SoundId
 
 <details><summary><b>PlayerRoles.PlayableScps.Scp173.Scp173AudioPlayer+Scp173SoundId</b></summary>
@@ -4656,6 +4797,18 @@ Last Update (14.1.0.1)
  [13] = HelpMenuStrangulation
  [14] = HelpMenuUnderTheirSkin
  [15] = RevealKeyHoldLongerWarning
+```
+
+</details>
+
+### Scp3114MaterialType
+
+<details><summary><b>PlayerRoles.PlayableScps.Scp3114.Scp3114MaterialType</b></summary>
+
+```
+ [0] = Original
+ [1] = Disguise
+ [2] = Reveal
 ```
 
 </details>
@@ -5079,6 +5232,19 @@ Last Update (14.1.0.1)
 
 </details>
 
+### SubtitleMode
+
+<details><summary><b>Cassie.CassieTtsPayload+SubtitleMode</b></summary>
+
+```
+ [0] = None
+ [1] = Automatic
+ [2] = Custom
+ [3] = FromTranslation
+```
+
+</details>
+
 ### SubtitleType
 
 <details><summary><b>Subtitles.SubtitleType</b></summary>
@@ -5115,6 +5281,7 @@ Last Update (14.1.0.1)
  [28] = NTFMiniwaveEntrance
  [29] = ChaosEntrance
  [30] = ChaosMiniwaveEntrance
+ [31] = DeadMansSwitch
  [254] = Custom
  [255] = None
 ```
@@ -5162,6 +5329,31 @@ Last Update (14.1.0.1)
 
 </details>
 
+### SystemCursorID
+
+<details><summary><b>GameCore.SystemCursorID</b></summary>
+
+```
+ [32512] = Default
+ [32513] = TextSelectBeam
+ [32514] = WaitingCircle
+ [32515] = Cross
+ [32516] = UpArrow
+ [32642] = SizeDiagonalTopBottom
+ [32643] = SizeDiagonalBottomTop
+ [32644] = SizeHorizontal
+ [32645] = SizeVertical
+ [32646] = SizeAll
+ [32648] = Block
+ [32649] = LinkSelect
+ [32650] = AppStarting
+ [32651] = Help
+ [32671] = Pin
+ [32672] = Person
+```
+
+</details>
+
 ### TargetButton
 
 <details><summary><b>AdminToys.ShootingTarget+TargetButton</b></summary>
@@ -5205,6 +5397,19 @@ Last Update (14.1.0.1)
  [2] = ScanTimeSync
  [3] = ScanNoResults
  [4] = ScanSuccessful
+```
+
+</details>
+
+### TrackType
+
+<details><summary><b>PlayerRoles.PlayableScps.Scp939.Scp939ChaseThemeProvider+TrackType</b></summary>
+
+```
+ [0] = None
+ [1] = Quiet
+ [2] = MadeSound
+ [3] = Detected
 ```
 
 </details>
@@ -5274,6 +5479,7 @@ Last Update (14.1.0.1)
  [8] = Tokens
  [11] = All
  [16] = Spawn
+ [32] = Max
 ```
 
 </details>
@@ -5338,6 +5544,8 @@ Last Update (14.1.0.1)
  [3] = Two
  [4] = Three
  [5] = Four
+ [6] = Five
+ [7] = Six
 ```
 
 </details>
@@ -5393,18 +5601,6 @@ Last Update (14.1.0.1)
  [8] = TierTooLow
  [31] = Cooldown
  [32] = NoDoors
-```
-
-</details>
-
-### VariantType
-
-<details><summary><b>PlayerRoles.PlayableScps.Scp3114.Scp3114FakeModelManager+VariantType</b></summary>
-
-```
- [0] = Original
- [1] = Disguise
- [2] = Reveal
 ```
 
 </details>
@@ -5527,6 +5723,8 @@ Last Update (14.1.0.1)
  [4] = MenuUI
  [5] = Scp127Voice
  [6] = Scp3114Voice
+ [7] = ChaseThemes
+ [8] = SoundEffectsWhileSpectating
 ```
 
 </details>
@@ -5635,9 +5833,11 @@ Last Update (14.1.0.1)
 | 22  | Filmmaker      | Dead             | None             | Draw            |
 | 23  | Scp3114        | SCPs             | Scp              | Anomalies       |
 | 24  | Destroyed      | Dead             | None             | Draw            |
-| 25  | Flamingo       | Dead             | None             | Draw            |
-| 26  | AlphaFlamingo  | Dead             | None             | Draw            |
-| 27  | ZombieFlamingo | Dead             | None             | Draw            |
+| 25  | Flamingo       | Flamingos        | Flamingos        | Flamingo        |
+| 26  | AlphaFlamingo  | Flamingos        | Flamingos        | Flamingo        |
+| 27  | ZombieFlamingo | SCPs             | Scp              | Anomalies       |
+| 28  | NtfFlamingo    | FoundationForces | Mtf              | FacilityForces  |
+| 29  | ChaosFlamingo  | ChaosInsurgency  | ChaosInsurgency  | ChaosInsurgency |
 ```
 
 </details>
@@ -5648,7 +5848,7 @@ Last Update (14.1.0.1)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.1.0.1"
+```md title="Latest Updated: 14.2.0.4"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"
@@ -5662,6 +5862,7 @@ PlayerStatsSystem.CustomReasonFirearmDamageHandler : FirearmDamageHandler
 PlayerStatsSystem.DisruptorDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.ExplosionDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.FirearmDamageHandler : AttackerDamageHandler
+PlayerStatsSystem.GrayCandyDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.JailbirdDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.MicroHidDamageHandler : AttackerDamageHandler
 PlayerStatsSystem.RecontainmentDamageHandler : AttackerDamageHandler
@@ -5669,11 +5870,13 @@ PlayerStatsSystem.Scp018DamageHandler : AttackerDamageHandler
 PlayerStatsSystem.Scp049DamageHandler : ScpDamageHandler
 PlayerStatsSystem.Scp096DamageHandler : ScpDamageHandler
 PlayerStatsSystem.ScpDamageHandler : AttackerDamageHandler
+PlayerStatsSystem.SilentDamageHandler : StandardDamageHandler
 PlayerStatsSystem.UniversalDamageHandler : StandardDamageHandler
 PlayerStatsSystem.WarheadDamageHandler : StandardDamageHandler
 PlayerRoles.PlayableScps.Scp939.Scp939DamageHandler : AttackerDamageHandler
 PlayerRoles.PlayableScps.Scp3114.Scp3114DamageHandler : AttackerDamageHandler
 PlayerRoles.PlayableScps.Scp1507.Scp1507DamageHandler : AttackerDamageHandler
+InventorySystem.Items.Scp1509.Scp1509DamageHandler : AttackerDamageHandler
 
 ```
 </details>

@@ -14,7 +14,7 @@ namespace Exiled.Events.EventArgs.Player
     using PlayerRoles;
     using PlayerRoles.Ragdolls;
     using PlayerStatsSystem;
-
+    using RelativePositioning;
     using UnityEngine;
 
     /// <summary>
@@ -48,12 +48,12 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the ragdoll's position.
         /// </summary>
-        public Vector3 Position => Info.StartPosition;
+        public Vector3 Position => Info.StartRelativePosition.Position;
 
         /// <summary>
         /// Gets the ragdoll's rotation.
         /// </summary>
-        public Quaternion Rotation => Info.StartRotation;
+        public Quaternion Rotation => WaypointBase.GetWorldRotation(Info.StartRelativePosition.WaypointId, Info.StartRelativeRotation);
 
         /// <summary>
         /// Gets the ragdoll's <see cref="RoleTypeId" />.

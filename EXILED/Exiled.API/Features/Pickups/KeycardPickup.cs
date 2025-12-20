@@ -9,6 +9,7 @@ namespace Exiled.API.Features.Pickups
 {
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items;
@@ -29,6 +30,10 @@ namespace Exiled.API.Features.Pickups
             : base(pickupBase)
         {
             Base = pickupBase;
+            if (Base is null)
+            {
+                Log.Warn($"[KeycardPickup] Base is null: {GetType()}");
+            }
         }
 
         /// <summary>
@@ -42,9 +47,9 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Gets the <see cref="KeycardPermissions"/> of the keycard.
+        /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
-        public KeycardPermissions Permissions { get; private set; }
+        public virtual KeycardPermissions Permissions { get; set; }
 
         /// <summary>
         /// Gets the <see cref="BaseKeycard"/> that this class is encapsulating.
@@ -55,7 +60,7 @@ namespace Exiled.API.Features.Pickups
         internal override void ReadItemInfo(Item item)
         {
             base.ReadItemInfo(item);
-            if (item is Keycard keycarditem)
+            if (item is Keycard keycarditem and not CustomKeycardItem)
             {
                 Permissions = keycarditem.Permissions;
             }

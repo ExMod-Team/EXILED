@@ -19,6 +19,7 @@ namespace Exiled.API.Features
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Toys;
     using InventorySystem;
@@ -327,7 +328,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
         /// <param name="direction">The direction of the blood decal.</param>
-        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0; /* new GunDecalMessage(position, direction, DecalPoolType.Blood).SendToAuthenticated(0);*/ // TODO: Not finish
+        [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
+        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0;
 
         /// <summary>
         /// Gets all the near cameras.
@@ -416,6 +418,10 @@ namespace Exiled.API.Features
             Firearm.ItemTypeToFirearmInstance.Clear();
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
+
+            CustomKeycardItem.DataDict.Clear();
+
+            SingleUseKeycard.RemainingUses.Clear();
 
 #pragma warning disable CS0618
             Scp559.CakeToWrapper.Clear();

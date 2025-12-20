@@ -7,11 +7,14 @@
 
 namespace Exiled.API.Enums
 {
+    using System;
+
     /// <summary>
     /// Unique identifier for the different types of blood decals.
     /// </summary>
     /// <seealso cref="Features.Map.PlaceBlood(UnityEngine.Vector3, UnityEngine.Vector3)"/>
     /// <seealso cref="Features.Player.PlaceBlood(UnityEngine.Vector3)"/>
+    [Obsolete("This blood decal are outdated now used DecalPoolType.Blood", true)]
     public enum BloodType
     {
         /// <summary>

@@ -276,7 +276,7 @@ namespace Exiled.API.Enums
         UnknownElevator,
 
         /// <summary>
-        /// Represents the Elevator door for <see cref="ElevatorGroup.GateA"/>.
+        /// Represents the Elevator door for <see cref="ElevatorGroup.GateA01"/> or <see cref="ElevatorGroup.GateA02"/>.
         /// </summary>
         ElevatorGateA,
 
@@ -364,5 +364,15 @@ namespace Exiled.API.Enums
         /// Represents the door used for Checkpoint.
         /// </summary>
         Checkpoint,
+
+        /// <summary>
+        /// Represents the door in the <see cref="RoomType.EzGateA"/> Armory.
+        /// </summary>
+        GateAArmory,
+
+        /// <summary>
+        /// Represents the door in <see cref="RoomType.HczLoadingBay"/>.
+        /// </summary>
+        HczLoadingBay,
     }
 }

@@ -146,11 +146,17 @@ namespace Exiled.API.Features
         public static IEnumerable<Player> Enumerable => Dictionary.Values;
 
         /// <summary>
-        /// Gets the number of players currently on the server.
+        /// Gets the number of players (Count Dummy with it) currently on the server.
         /// </summary>
         /// <seealso cref="List"/>
         /// <seealso cref="Enumerable"/>
-        public static int Count => Dictionary.Count;
+        /// <seealso cref="ConnectedCount"/>
+        public static int Count => List.Count;
+
+        /// <summary>
+        /// Gets the number of connected players currently on the server.
+        /// </summary>
+        public static int ConnectedCount => ReferenceHub.GetPlayerCount(CentralAuth.ClientInstanceMode.ReadyClient);
 
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey, TValue}"/> containing cached <see cref="Player"/> and their user ids.
@@ -373,7 +379,7 @@ namespace Exiled.API.Features
             {
                 if (!NicknameSync.ValidateCustomInfo(value, out string rejectionText))
                 {
-                    Log.Error($"Could not set CustomInfo for {Nickname}. Reason: {rejectionText}");
+                    Log.Warn($"Could not set CustomInfo for {Nickname}. Reason: {rejectionText}");
                 }
 
                 InfoArea = string.IsNullOrEmpty(value) ? InfoArea & ~PlayerInfoArea.CustomInfo : InfoArea |= PlayerInfoArea.CustomInfo;
@@ -468,6 +474,15 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the player has noclip enabled.
+        /// </summary>
+        public bool IsNoclipEnabled
+        {
+            get => ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
+            set => ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating the <see cref="Player"/> that currently has the player cuffed.
         /// <para>
         /// This value will be <see langword="null"/> if the player is not cuffed. Setting this value to <see langword="null"/> will uncuff the player if they are cuffed.
@@ -522,8 +537,15 @@ namespace Exiled.API.Features
         /// <returns>Returns the direction the player is looking at.</returns>
         public Quaternion Rotation
         {
-            get => Transform.rotation;
-            set => ReferenceHub.TryOverrideRotation(value.eulerAngles);
+            get => CameraTransform.rotation;
+            set
+            {
+                Vector2 rotation = value.eulerAngles;
+                rotation.x = Mathf.Repeat(rotation.x + 180f, 360f) - 180f; // X Rotation is limited to [-88, 88] degrees, and just clamps values like 400 even though they are in range
+                rotation.x *= -1; // X Rotation is inverted in class FpcMouseLook
+                rotation.y = Mathf.Repeat(rotation.y, 360f); // This is necessary because rotation is clamped in FpcMouseLook
+                ReferenceHub.TryOverrideRotation(rotation);
+            }
         }
 
         /// <summary>
@@ -542,7 +564,11 @@ namespace Exiled.API.Features
         public PlayerPermissions RemoteAdminPermissions
         {
             get => (PlayerPermissions)ReferenceHub.serverRoles.Permissions;
-            set => ReferenceHub.serverRoles.Permissions = (ulong)value;
+            set
+            {
+                ReferenceHub.serverRoles.Permissions = (ulong)value;
+                ReferenceHub.serverRoles.FinalizeSetGroup();
+            }
         }
 
         /// <summary>
@@ -610,7 +636,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the player is reloading a weapon.
         /// </summary>
-        public bool IsReloading => CurrentItem is Firearm firearm && !firearm.IsReloading;
+        public bool IsReloading => CurrentItem is Firearm firearm && firearm.IsReloading;
 
         /// <summary>
         /// Gets a value indicating whether the player is aiming with a weapon.
@@ -1154,6 +1180,15 @@ namespace Exiled.API.Features
         public bool AgreedToRecording => VoiceChatPrivacySettings.CheckUserFlags(ReferenceHub, VcPrivacyFlags.SettingsSelected | VcPrivacyFlags.AllowRecording | VcPrivacyFlags.AllowMicCapture);
 
         /// <summary>
+        /// Gets or sets a value indicating whether the player can be spectated by a spectator.
+        /// </summary>
+        public bool IsSpectatable
+        {
+            get => !SpectatableVisibilityManager.IsHidden(ReferenceHub);
+            set => SpectatableVisibilityManager.SetHidden(ReferenceHub, !value);
+        }
+
+        /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> of spectators that are currently spectating this <see cref="Player"/>.
         /// </summary>
         public IEnumerable<Player> CurrentSpectatingPlayers => List.Where(player => ReferenceHub.IsSpectatedBy(player.ReferenceHub));
@@ -1205,7 +1240,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="player">The LabApi player.</param>
         /// <returns>EXILED player.</returns>
-        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player.ReferenceHub);
+        public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player?.ReferenceHub);
 
         /// <summary>
         /// Gets a <see cref="Player"/> <see cref="IEnumerable{T}"/> filtered by side. Can be empty.
@@ -1884,7 +1919,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Sets the player's rank.
+        /// Receives an existing rank(group) or, if it doesn't exist, creates a new one and assigns it to this player.
         /// </summary>
         /// <param name="name">The rank name to be set.</param>
         /// <param name="group">The group to be set.</param>
@@ -1892,17 +1927,11 @@ namespace Exiled.API.Features
         {
             if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
             {
-                userGroup.BadgeColor = group.BadgeColor;
-                userGroup.BadgeText = name;
-                userGroup.HiddenByDefault = !group.Cover;
-                userGroup.Cover = group.Cover;
-
                 ReferenceHub.serverRoles.SetGroup(userGroup, false, false);
             }
             else
             {
                 ServerStatic.PermissionsHandler.Groups.Add(name, group);
-
                 ReferenceHub.serverRoles.SetGroup(group, false, false);
             }
 
@@ -1954,6 +1983,21 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Send an <see cref="global::Cassie.CassieAnnouncement"/> to the player.
+        /// </summary>
+        /// <param name="cassieAnnouncement">The <see cref="global::Cassie.CassieAnnouncement"/> to be broadcasted.</param>
+        /// <returns><see langword="0"/> if Cassie failed to play it or it's play nothing, otherwise it's return the duration of the annoucement.</returns>
+        public float CassieAnnouncement(global::Cassie.CassieAnnouncement cassieAnnouncement)
+        {
+            global::Cassie.CassieAnnouncementDispatcher.CurrentAnnouncement.OnStartedPlaying();
+            global::Cassie.CassieTtsPayload payload = cassieAnnouncement.Payload;
+            if (!global::Cassie.CassieTtsAnnouncer.TryPlay(payload, out float totalduration))
+                return 0;
+            payload.SendToHubsConditionally(x => x == ReferenceHub);
+            return totalduration;
+        }
+
+        /// <summary>
         /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The <see cref="Item"/> to be dropped.</param>
@@ -1985,10 +2029,12 @@ namespace Exiled.API.Features
         /// <returns>Dropped item's <see cref="Pickup"/>.</returns>
         public Pickup DropHeldItem()
         {
-            if (CurrentItem is null)
+            Item item = CurrentItem;
+
+            if (item is null)
                 return null;
 
-            return DropItem(CurrentItem);
+            return DropItem(item);
         }
 
         /// <summary>
@@ -2564,7 +2610,6 @@ namespace Exiled.API.Features
         {
             if (!HasCustomAmmoLimit(ammoType))
             {
-                Log.Error($"{nameof(Player)}.{nameof(ResetAmmoLimit)}(AmmoType): AmmoType.{ammoType} does not have a custom limit.");
                 return;
             }
 
@@ -2657,7 +2702,6 @@ namespace Exiled.API.Features
 
             if (!HasCustomCategoryLimit(category))
             {
-                Log.Error($"{nameof(Player)}.{nameof(ResetCategoryLimit)}(ItemCategory): ItemCategory.{category} does not have a custom limit.");
                 return;
             }
 
@@ -2897,14 +2941,14 @@ namespace Exiled.API.Features
 
                 Inventory.UserInventory.Items[item.Serial] = itemBase;
 
+                typeof(InventoryExtensions).InvokeStaticEvent(nameof(InventoryExtensions.OnItemAdded), new object[] { ReferenceHub, itemBase, null });
+
                 item.ChangeOwner(item.Owner, this);
 
                 if (itemBase is IAcquisitionConfirmationTrigger acquisitionConfirmationTrigger)
                 {
                     acquisitionConfirmationTrigger.AcquisitionAlreadyReceived = false;
                 }
-
-                typeof(InventoryExtensions).InvokeStaticEvent(nameof(InventoryExtensions.OnItemAdded), new object[] { ReferenceHub, itemBase, null });
 
                 Inventory.SendItemsNextFrame = true;
                 return item;
@@ -3629,6 +3673,7 @@ namespace Exiled.API.Features
             this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
+        [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
 
         /// <inheritdoc cref="Map.GetNearCameras(Vector3, float)"/>

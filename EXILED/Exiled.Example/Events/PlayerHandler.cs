@@ -19,6 +19,7 @@ namespace Exiled.Example.Events
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp106;
     using Exiled.Events.EventArgs.Scp914;
+    using LabApi.Events.Arguments.PlayerEvents;
 
     using MEC;
 
@@ -162,7 +163,7 @@ namespace Exiled.Example.Events
             Log.Info($"{ev.Player.Nickname} is shooting a {ev.Player.CurrentItem.Type}! Target Pos: {ev.ClaimedTarget?.Position} Direction: {ev.Direction} Allowed: {ev.IsAllowed}");
         }
 
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnReloadingWeapon(ReloadingWeaponEventArgs)"/>
+        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnReloadingWeapon(PlayerReloadingWeaponEventArgs)"/>
         public void OnReloading(ReloadingWeaponEventArgs ev)
         {
             Log.Info($"{ev.Player.Nickname} is reloading their {ev.Firearm.Type}. They have {ev.Firearm.MagazineAmmo} ammo. Using ammo type {ev.Firearm.AmmoType}");

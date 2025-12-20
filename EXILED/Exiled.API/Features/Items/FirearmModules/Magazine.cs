@@ -11,9 +11,8 @@ namespace Exiled.API.Features.Items.FirearmModules
 
     using Exiled.API.Features.Items.FirearmModules.Barrel;
     using Exiled.API.Features.Items.FirearmModules.Primary;
-
     using InventorySystem.Items.Firearms.Modules;
-
+    using InventorySystem.Items.Firearms.Modules.Scp127;
     using UnityEngine;
 
     /// <summary>
@@ -66,8 +65,12 @@ namespace Exiled.API.Features.Items.FirearmModules
                 PumpActionModule pump => new PumpBarrelMagazine(pump),
                 IPrimaryAmmoContainerModule primary => primary switch
                 {
-                    MagazineModule magazine => new NormalMagazine(magazine),
                     CylinderAmmoModule cylinder => new CylinderMagazine(cylinder),
+                    MagazineModule magazine => magazine switch
+                    {
+                        Scp127MagazineModule scp127MagazineModule => new Scp127Magazine(scp127MagazineModule),
+                        _ => new NormalMagazine(magazine)
+                    },
                     _ => null,
                 },
                 _ => null,
