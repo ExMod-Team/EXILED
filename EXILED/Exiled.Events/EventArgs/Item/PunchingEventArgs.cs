@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Item
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+    using InventorySystem.Items.MarshmallowMan;
 
     /// <summary>
     /// Contains all information before a marshmallow man punches.
@@ -22,10 +23,10 @@ namespace Exiled.Events.EventArgs.Item
         /// <param name="player">The Player attacking.</param>
         /// <param name="marshmallow">The marshmallow item of the player attacking.</param>
         /// <param name="isAllowed">Whether the player is allowed to punch.</param>
-        public PunchingEventArgs(Player player, Marshmallow marshmallow, bool isAllowed = true)
+        public PunchingEventArgs(Player player, MarshmallowItem marshmallow, bool isAllowed = true)
         {
             Player = player;
-            Marshmallow = marshmallow;
+            Marshmallow = Item.Get<Marshmallow>(marshmallow);
             IsAllowed = isAllowed;
         }
 

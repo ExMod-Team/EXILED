@@ -43,17 +43,22 @@ namespace Exiled.Events.Patches.Events.Item
 
             newInstructions.InsertRange(index, new[]
             {
+                // player = Player.Get(Owner);
                 new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(MarshmallowItem), nameof(MarshmallowItem.Owner))),
+
+                // item = this;
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Call, typeof(Item)
-                    .GetMethods()
-                    .First(method => method.Name is "Get" && method.IsGenericMethod && method.GetParameters().All(parameter => parameter.ParameterType == typeof(ItemBase)))
-                    .MakeGenericMethod(typeof(Marshmallow))),
+
+                // true
                 new(OpCodes.Ldc_I4_1),
+
+                // ev = new PunchingEventArgs(player, item, true);
                 new(OpCodes.Newobj, Constructor(typeof(PunchingEventArgs), new[] { typeof(Player), typeof(Marshmallow), typeof(bool) })),
                 new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnPunching))),
+
+                // if (!ev.IsAllowed) return
                 new(OpCodes.Callvirt, PropertyGetter(typeof(PunchingEventArgs), nameof(PunchingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
             });

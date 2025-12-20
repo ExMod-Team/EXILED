@@ -70,6 +70,7 @@ namespace Exiled.Events.Patches.Fixes
 
             int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(MarshmallowItem), nameof(MarshmallowItem.NewDamageHandler))));
 
+            // replace the getter for NewDamageHandler with ctor of FixMarshmallowManFF
             newInstructions[index] = new CodeInstruction(OpCodes.Newobj, Constructor(typeof(FixMarshmallowManFF), new[] { typeof(MarshmallowItem) }));
 
             for (int z = 0; z < newInstructions.Count; z++)

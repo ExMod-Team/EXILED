@@ -39,19 +39,41 @@ namespace Exiled.Events.Patches.Events.Scp2536
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
+                // dupe the result (true / false if found)
                 new(OpCodes.Dup),
+
+                // return w result if failed
                 new(OpCodes.Brfalse_S, retLabel),
                 new(OpCodes.Pop),
+
+                // load ADDRESS of parameter "out Scp2536Spawnpoint spawnpoint" onto stack (so not actual value but address)
+                // this is used at end of transpiler
                 new(OpCodes.Ldarg_2),
+
+                // load address of parameter "out ReferenceHub target"
                 new(OpCodes.Ldarg_1),
+
+                // load value at address
                 new(OpCodes.Ldind_Ref),
+
+                // player = Player.Get(target);
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+
+                // load address of parameter "out Scp2536Spawnpoint spawnpoint"
                 new(OpCodes.Ldarg_2),
+
+                // load value at address
                 new(OpCodes.Ldind_Ref),
+
+                // ev = new FoundPositionEventArgs(player, spawnpoint);
                 new(OpCodes.Newobj, Constructor(typeof(FoundPositionEventArgs), new[] { typeof(Player), typeof(Scp2536Spawnpoint) })),
                 new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Handlers.Scp2536), nameof(Handlers.Scp2536.OnFoundPosition))),
+
+                // spawnpoint = ev.Spawnpoint;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FoundPositionEventArgs), nameof(FoundPositionEventArgs.Spawnpoint))),
+
+                // this uses the address already on stack (see 3rd comment) with the value from the event args
                 new(OpCodes.Stind_Ref),
             });
 
