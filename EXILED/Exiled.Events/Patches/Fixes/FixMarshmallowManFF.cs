@@ -79,9 +79,10 @@ namespace Exiled.Events.Patches.Fixes
                 {
                     HitboxIdentity hitboxIdentity2 = destructible as HitboxIdentity;
                     if (hitboxIdentity2 != null && !hitboxIdentity2.TargetHub.IsAlive())
-                    {
                         __instance.Owner.playerEffectsController.GetEffect<SugarCrave>().OnKill();
-                    }
+
+                    if (__instance.EvilMode)
+                        __instance.EvilAHPProcess.CurrentAmount += 100f;
 
                     Hitmarker.SendHitmarkerDirectly(__instance.Owner, 1f, true);
                     __instance.ServerSendPublicRpc(writer =>
