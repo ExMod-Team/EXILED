@@ -204,6 +204,13 @@ namespace Exiled.API.Extensions
                         Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(UniversalDamageHandler)} with ID {translation.Id}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
                         return DamageType.Unknown;
                     }
+
+                case AttackerDamageHandler attackerDamageHandler:
+                    {
+                        if (Player.TryGet(attackerDamageHandler.Attacker, out Player attacker) && attacker.CurrentItem?.Type == ItemType.MarshmallowItem)
+                            return DamageType.Marshmallow;
+                        return DamageType.Unknown;
+                    }
             }
 
             return DamageType.Unknown;
