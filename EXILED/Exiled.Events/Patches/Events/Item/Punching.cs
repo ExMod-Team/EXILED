@@ -8,16 +8,13 @@
 namespace Exiled.Events.Patches.Events.Item
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
-    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
     using HarmonyLib;
-    using InventorySystem.Items;
     using InventorySystem.Items.MarshmallowMan;
 
     using static HarmonyLib.AccessTools;
@@ -54,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Item
                 new(OpCodes.Ldc_I4_1),
 
                 // ev = new PunchingEventArgs(player, item, true);
-                new(OpCodes.Newobj, Constructor(typeof(PunchingEventArgs), new[] { typeof(Player), typeof(Marshmallow), typeof(bool) })),
+                new(OpCodes.Newobj, Constructor(typeof(PunchingEventArgs), new[] { typeof(Player), typeof(MarshmallowItem), typeof(bool) })),
                 new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnPunching))),
 

@@ -67,8 +67,13 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Cackles for the owner even if they are not evil.
         /// </summary>
-        public void Cackle()
+        /// <param name="cooldown">How long until the player can cackle again (negative values do not affect current cooldown).</param>
+        /// <param name="duration">How long players near the marshmallow man get effected by <see cref="TraumatizedByEvil"/>.</param>
+        public void Cackle(double cooldown = -1, float duration = 5)
         {
+            if (cooldown >= 0)
+                Base._cackleCooldown.Trigger(cooldown);
+
             Base.ServerSendPublicRpc(writer =>
             {
                 writer.WriteByte(4);
@@ -78,7 +83,7 @@ namespace Exiled.API.Features.Items
             foreach (Player player in Player.List)
             {
                 if (Vector3.Distance(player.Position, Owner.Position) <= 5F && player.CurrentItem is not Marshmallow { Evil: true })
-                    player.EnableEffect<TraumatizedByEvil>(5F);
+                    player.EnableEffect<TraumatizedByEvil>(duration);
             }
         }
 
