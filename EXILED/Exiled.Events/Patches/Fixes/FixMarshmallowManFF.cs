@@ -35,7 +35,7 @@ namespace Exiled.Events.Patches.Fixes
 #pragma warning disable SA1600 // Elements should be documented
         public FixMarshmallowManFF(MarshmallowItem marshmallowItem)
         {
-            Attacker = new(marshmallowItem.Owner);
+            Attacker = new Footprint(marshmallowItem.Owner);
             Damage = marshmallowItem._attackDamage;
             AllowSelfDamage = false;
             ServerLogsText = "MarshmallowManFF Fix";
@@ -47,53 +47,35 @@ namespace Exiled.Events.Patches.Fixes
 
         public override float Damage { get; set; }
 
-        public override string RagdollInspectText { get; }
+        public override string RagdollInspectText { get; } = DeathTranslations.MarshmallowMan.RagdollTranslation;
 
-        public override CassieAnnouncement CassieDeathAnnouncement
+        public override CassieAnnouncement CassieDeathAnnouncement { get; } = new()
         {
-            get
-            {
-                return new CassieAnnouncement()
-                {
-                    Announcement = "TERMINATED BY MARSHMALLOW MAN",
-                    SubtitleParts = new SubtitlePart[]
-                    {
-                        new SubtitlePart(SubtitleType.TerminatedByMarshmallowMan, null),
-                    },
-                };
-            }
-        }
+            Announcement = "TERMINATED BY MARSHMALLOW MAN",
+            SubtitleParts =
+            [
+                new SubtitlePart(SubtitleType.TerminatedByMarshmallowMan, null),
+            ],
+        };
 
-        public override string DeathScreenText { get; }
+        public override string DeathScreenText { get; } = DeathTranslations.MarshmallowMan.DeathscreenTranslation;
 
         public override string ServerLogsText { get; }
 #pragma warning restore SA1600 // Elements should be documented
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
-        private static bool Prefix(MarshmallowItem __instance, ReferenceHub syncTarget)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            foreach (IDestructible destructible in __instance.DetectDestructibles())
-            {
-                HitboxIdentity hitboxIdentity = destructible as HitboxIdentity;
-                if ((hitboxIdentity == null || (!(hitboxIdentity.TargetHub != syncTarget) && (__instance.EvilMode || HitboxIdentity.IsDamageable(__instance.Owner, hitboxIdentity.TargetHub)))) && destructible.Damage(__instance._attackDamage, new FixMarshmallowManFF(__instance), destructible.CenterOfMass))
-                {
-                    HitboxIdentity hitboxIdentity2 = destructible as HitboxIdentity;
-                    if (hitboxIdentity2 != null && !hitboxIdentity2.TargetHub.IsAlive())
-                        __instance.Owner.playerEffectsController.GetEffect<SugarCrave>().OnKill();
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-                    if (__instance.EvilMode)
-                        __instance.EvilAHPProcess.CurrentAmount += 100f;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(MarshmallowItem), nameof(MarshmallowItem.NewDamageHandler))));
 
-                    Hitmarker.SendHitmarkerDirectly(__instance.Owner, 1f, true);
-                    __instance.ServerSendPublicRpc(writer =>
-                    {
-                        writer.WriteByte(1);
-                    });
-                    break;
-                }
-            }
+            newInstructions[index] = new CodeInstruction(OpCodes.Newobj, Constructor(typeof(FixMarshmallowManFF), new[] { typeof(MarshmallowItem) }));
 
-            return false;
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }
