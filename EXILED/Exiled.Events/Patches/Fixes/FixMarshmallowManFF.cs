@@ -37,14 +37,12 @@ namespace Exiled.Events.Patches.Fixes
         {
             Attacker = new(marshmallowItem.Owner);
             Damage = marshmallowItem._attackDamage;
-            IsFriendlyFire = isEvilMode;
-            AllowSelfDamage = false;
-            ServerLogsText = "MarshmallowManFF Fix";
+            ForceFullFriendlyFire = isEvilMode;
         }
 
         public override Footprint Attacker { get; set; }
 
-        public override bool AllowSelfDamage { get; }
+        public override bool AllowSelfDamage { get; } = false;
 
         public override float Damage { get; set; }
 
@@ -61,7 +59,7 @@ namespace Exiled.Events.Patches.Fixes
 
         public override string DeathScreenText { get; } = DeathTranslations.MarshmallowMan.DeathscreenTranslation;
 
-        public override string ServerLogsText { get; }
+        public override string ServerLogsText => "Stabbed with Marshmallow Item by " + Attacker.Nickname;
 #pragma warning restore SA1600 // Elements should be documented
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
@@ -77,7 +75,7 @@ namespace Exiled.Events.Patches.Fixes
             {
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(MarshmallowItem), nameof(MarshmallowItem.EvilMode))),
-                new(OpCodes.Newobj, Constructor(typeof(FixMarshmallowManFF), new[] { typeof(MarshmallowItem) })),
+                new(OpCodes.Newobj, Constructor(typeof(FixMarshmallowManFF), new[] { typeof(MarshmallowItem), typeof(bool) })),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
