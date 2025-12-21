@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Events.Item
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // ev = new PunchingEventArgs(item, true);
+                // ev = new PunchingEventArgs(MarshmallowItem, bool);
                 new(OpCodes.Newobj, Constructor(typeof(PunchingEventArgs), new[] { typeof(MarshmallowItem), typeof(bool) })),
                 new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnPunching))),
