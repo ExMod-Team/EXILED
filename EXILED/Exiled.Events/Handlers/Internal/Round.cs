@@ -91,6 +91,9 @@ namespace Exiled.Events.Handlers.Internal
         {
             if (ev.Role.IsDead() || !ev.Role.IsFpcRole())
                 ev.IsAllowed = false;
+
+            if (ev.DamageHandlerBase is Exiled.Events.Patches.Fixes.FixMarshmallowManFF fixMarshamllowManFf)
+                ev.DamageHandlerBase = fixMarshamllowManFf.MarshmallowItem.NewDamageHandler;
         }
 
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />

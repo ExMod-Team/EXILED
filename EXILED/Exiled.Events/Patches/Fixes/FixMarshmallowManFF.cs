@@ -20,6 +20,7 @@ namespace Exiled.Events.Patches.Fixes
     using InventorySystem.Items.ThrowableProjectiles;
     using Mirror;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl;
     using PlayerStatsSystem;
     using Respawning.NamingRules;
     using Subtitles;
@@ -35,10 +36,13 @@ namespace Exiled.Events.Patches.Fixes
 #pragma warning disable SA1600 // Elements should be documented
         public FixMarshmallowManFF(MarshmallowItem marshmallowItem, bool isEvilMode)
         {
+            MarshmallowItem = marshmallowItem;
             Attacker = new(marshmallowItem.Owner);
             Damage = marshmallowItem._attackDamage;
             ForceFullFriendlyFire = isEvilMode;
         }
+
+        public MarshmallowItem MarshmallowItem { get; set; }
 
         public override Footprint Attacker { get; set; }
 
