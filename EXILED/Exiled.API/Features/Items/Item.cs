@@ -22,6 +22,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.Keycards;
+    using InventorySystem.Items.MarshmallowMan;
     using InventorySystem.Items.MicroHID;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Radio;
@@ -260,6 +261,7 @@ namespace Exiled.API.Features.Items
                     _ => new Throwable(throwable),
                 },
                 Scp1509Item scp1509 => new Scp1509(scp1509),
+                MarshmallowItem marshmallow => new Marshmallow(marshmallow),
                 _ => new(itemBase),
             };
         }
@@ -364,6 +366,7 @@ namespace Exiled.API.Features.Items
                 _ => new Throwable(type, owner),
             },
             Scp1509Item => new Scp1509(),
+            MarshmallowItem => new Marshmallow(type, owner),
             _ => new(type),
         };
 

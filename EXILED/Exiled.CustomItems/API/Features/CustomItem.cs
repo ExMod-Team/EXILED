@@ -1013,15 +1013,6 @@ namespace Exiled.CustomItems.API.Features
                     continue;
 
                 OnOwnerHandcuffing(new OwnerHandcuffingEventArgs(item, ev));
-
-                if (!ev.IsAllowed)
-                    continue;
-
-                ev.Target.RemoveItem(item);
-
-                TrackedSerials.Remove(item.Serial);
-
-                Spawn(ev.Target, item, ev.Target);
             }
         }
 
