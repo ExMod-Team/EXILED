@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="PunchingEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -20,13 +20,12 @@ namespace Exiled.Events.EventArgs.Item
         /// <summary>
         /// Initializes a new instance of the <see cref="PunchingEventArgs"/> class.
         /// </summary>
-        /// <param name="player">The Player attacking.</param>
         /// <param name="marshmallow">The marshmallow item of the player attacking.</param>
         /// <param name="isAllowed">Whether the player is allowed to punch.</param>
-        public PunchingEventArgs(Player player, MarshmallowItem marshmallow, bool isAllowed = true)
+        public PunchingEventArgs(MarshmallowItem marshmallow, bool isAllowed = true)
         {
-            Player = player;
             Marshmallow = Item.Get<Marshmallow>(marshmallow);
+            Player = Marshmallow.Owner;
             IsAllowed = isAllowed;
         }
 

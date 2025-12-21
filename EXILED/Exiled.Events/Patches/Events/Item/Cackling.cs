@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Cackling.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -38,18 +38,14 @@ namespace Exiled.Events.Patches.Events.Item
 
             newInstructions.InsertRange(index, new[]
             {
-                // player = Player.Get(Owner);
+                // this;
                 new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(MarshmallowItem), nameof(MarshmallowItem.Owner))),
-
-                // item = this;
-                new(OpCodes.Ldarg_0),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // ev = new CacklingEventArgs(player, item, true);
-                new(OpCodes.Newobj, Constructor(typeof(CacklingEventArgs), new[] { typeof(Player), typeof(MarshmallowItem), typeof(bool) })),
+                // ev = new CacklingEventArgs(MarshmallowItem, bool);
+                new(OpCodes.Newobj, Constructor(typeof(CacklingEventArgs), new[] { typeof(MarshmallowItem), typeof(bool) })),
                 new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Handlers.Item), nameof(Handlers.Item.OnCackling))),
 

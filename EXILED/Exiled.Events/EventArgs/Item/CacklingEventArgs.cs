@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="CacklingEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -20,13 +20,12 @@ namespace Exiled.Events.EventArgs.Item
         /// <summary>
         /// Initializes a new instance of the <see cref="CacklingEventArgs"/> class.
         /// </summary>
-        /// <param name="player">The Player cackling.</param>
         /// <param name="marshmallow">The marshmallow item of the player cackling.</param>
         /// <param name="isAllowed">Whether the player is allowed to cackle.</param>
-        public CacklingEventArgs(Player player, MarshmallowItem marshmallow, bool isAllowed = true)
+        public CacklingEventArgs(MarshmallowItem marshmallow, bool isAllowed = true)
         {
-            Player = player;
             Marshmallow = Item.Get<Marshmallow>(marshmallow);
+            Player = Marshmallow.Owner;
             IsAllowed = isAllowed;
         }
 
