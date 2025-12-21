@@ -36,13 +36,13 @@ namespace Exiled.CustomRoles.Commands
         public static Get Instance { get; } = new();
 
         /// <inheritdoc/>
-        public string Command { get; } = "get";
+        public string Command => "get";
 
         /// <inheritdoc/>
         public string[] Aliases { get; } = Array.Empty<string>();
 
         /// <inheritdoc/>
-        public string Description { get; } = "Gets the specified player(s)' current custom role(s).";
+        public string Description => "Gets the specified player(s)' current custom role(s).";
 
         /// <inheritdoc/>
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
@@ -53,36 +53,61 @@ namespace Exiled.CustomRoles.Commands
                 return false;
             }
 
-            IEnumerable<Player> players = Player.GetProcessedData(arguments);
-            if (players.IsEmpty())
+            List<Player> players = ListPool<Player>.Pool.Get();
+
+            if (arguments.Count > 0)
             {
-                if (arguments.Count > 0 || !Player.TryGet(sender, out Player player))
+                string identifier = string.Join(" ", arguments);
+
+                switch (identifier)
                 {
-                    response = $"Player not found: {arguments.ElementAtOrDefault(0)}";
-                    return false;
+                    case "*":
+                    case "all":
+                        players.AddRange(Player.List);
+                        break;
+                    default:
+                        players.AddRange(Player.GetProcessedData(arguments));
+                        break;
                 }
 
-                players.AddItem(player);
+                if (players.IsEmpty())
+                {
+                    if (arguments.Count > 0 || !Player.TryGet(sender, out Player player))
+                    {
+                        response = $"Player not found: {identifier}";
+                        return false;
+                    }
+
+                    players.Add(player);
+                }
+            }
+            else
+            {
+                response = "get <Nickname/PlayerID/UserID/all/*>";
+                return false;
             }
 
             StringBuilder builder = StringBuilderPool.Pool.Get();
 
-            builder.AppendLine("===== Custom Roles =====");
+            builder.AppendLine();
+            builder.AppendLine("================= Custom Roles =================");
 
             foreach (Player target in players)
             {
-                ReadOnlyCollection<CustomRole> role = target.GetCustomRoles();
-                if (role.IsEmpty())
+                ReadOnlyCollection<CustomRole> roles = target.GetCustomRoles();
+                if (roles.IsEmpty())
                 {
                     builder.AppendLine($"{target.DisplayNickname.PadRight(30)} | None");
                 }
                 else
                 {
-                    builder.AppendLine($"{target.DisplayNickname.PadRight(30)} ({target.Id}) | {string.Join("-", role.ToString())}]");
+                    builder.AppendLine($"{target.DisplayNickname.PadRight(30)} ({target.Id}) | [{string.Join(", ", roles.Select(role => role.ToString()))}]");
                 }
             }
 
-            builder.AppendLine("========================");
+            builder.AppendLine("================================================");
+
+            ListPool<Player>.Pool.Return(players);
 
             response = StringBuilderPool.Pool.ToStringReturn(builder);
             return true;
