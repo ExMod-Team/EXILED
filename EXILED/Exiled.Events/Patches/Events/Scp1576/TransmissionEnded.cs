@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Events.Scp1576
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Scp1576Item.ServerStopTransmitting"/> to add <see cref="Handlers.Scp1576.TransmissionEnded"/> event
+    /// Patches <see cref="Scp1576Item.ServerStopTransmitting"/> to add <see cref="Handlers.Scp1576.TransmissionEnded"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Scp1576), nameof(Handlers.Scp1576.TransmissionEnded))]
     [HarmonyPatch(typeof(InventorySystem.Items.Usables.Scp1576.Scp1576Item), nameof(Scp1576Item.ServerStopTransmitting))]
@@ -34,12 +34,12 @@ namespace Exiled.Events.Patches.Events.Scp1576
 
                 newInstructions.InsertRange(
                     index,
-                    [
-
+                    new[]
+                    {
                         // Player.Get(base.Owner)
                         new CodeInstruction(OpCodes.Ldarg_0),
                         new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(Scp1576Item), nameof(Scp1576Item.Owner))),
-                        new CodeInstruction(OpCodes.Call, Method(typeof(API.Features.Player), nameof(Player.Get), [typeof(ReferenceHub)])),
+                        new CodeInstruction(OpCodes.Call, Method(typeof(API.Features.Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                         // this
                         new CodeInstruction(OpCodes.Ldarg_0),
@@ -48,8 +48,8 @@ namespace Exiled.Events.Patches.Events.Scp1576
                         new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(TransmissionEndedEventArgs))[0]),
 
                         // OnTransmisionEnded(ev)
-                        new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Scp1576), nameof(Handlers.Scp1576.OnTransmisionEnded)))
-                    ]);
+                        new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Scp1576), nameof(Handlers.Scp1576.OnTransmisionEnded))),
+                    });
 
                 foreach (CodeInstruction instruction in newInstructions)
                     yield return instruction;

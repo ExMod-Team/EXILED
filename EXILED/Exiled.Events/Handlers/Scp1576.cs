@@ -9,11 +9,12 @@ namespace Exiled.Events.Handlers
 {
     using Exiled.Events.EventArgs.Scp1576;
     using Exiled.Events.Features;
+#pragma warning disable SA1623 // Property summary documentation should match accessors
 
     /// <summary>
     /// Handles Scp1576 related events.
     /// </summary>
-    public class Scp1576
+    public static class Scp1576
     {
         /// <summary>
         /// Invoked after transmission has ended.
