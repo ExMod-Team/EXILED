@@ -34,10 +34,9 @@ namespace Exiled.Events.Patches.Events.Player
             // after ServerRemoveSelf, which lines up with before the ret
             newInstructions.InsertRange(newInstructions.Count - 2, new CodeInstruction[]
             {
-                // Player.Get(this.Owner)
+                // this.Owner
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Consumable), nameof(Consumable.Owner))),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // this (Consumable inherits UsableItem)
                 new(OpCodes.Ldarg_0),
@@ -45,8 +44,8 @@ namespace Exiled.Events.Patches.Events.Player
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // OnUsedItem(new UsedItemEventArgs(Player, UsableItem, bool));
-                new(OpCodes.Newobj, Constructor(typeof(UsedItemEventArgs), new[] { typeof(Player), typeof(UsableItem), typeof(bool) })),
+                // OnUsedItem(new UsedItemEventArgs(ReferenceHub, UsableItem, bool));
+                new(OpCodes.Newobj, Constructor(typeof(UsedItemEventArgs), new[] { typeof(ReferenceHub), typeof(UsableItem), typeof(bool) })),
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnUsedItem))),
             });
 
