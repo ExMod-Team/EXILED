@@ -30,7 +30,7 @@ namespace Exiled.Events.Patches.Events.Scp1576
         {
                 List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-                int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret);
+                int index = newInstructions.Count - 1;
 
                 newInstructions.InsertRange(
                     index,
@@ -51,8 +51,8 @@ namespace Exiled.Events.Patches.Events.Scp1576
                         new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Scp1576), nameof(Handlers.Scp1576.OnTransmisionEnded))),
                     });
 
-                foreach (CodeInstruction instruction in newInstructions)
-                    yield return instruction;
+                for (int i = 0; i < newInstructions.Count; i++)
+                    yield return newInstructions[i];
 
                 ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
