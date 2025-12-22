@@ -18,7 +18,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after transmission has ended.
         /// </summary>
-        public static Event<TransmissionEndedEventArgs> TransmissionEnded { get; set; } = new Event<TransmissionEndedEventArgs>();
+        public static Event<TransmissionEndedEventArgs> TransmissionEnded { get; set; } = new();
 
         /// <summary>
         /// Called after the transmission has ended.
