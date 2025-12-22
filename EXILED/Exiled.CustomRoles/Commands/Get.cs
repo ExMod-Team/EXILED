@@ -14,6 +14,7 @@ namespace Exiled.CustomRoles.Commands
     using System.Text;
 
     using CommandSystem;
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.CustomRoles.API;
@@ -90,22 +91,28 @@ namespace Exiled.CustomRoles.Commands
             StringBuilder builder = StringBuilderPool.Pool.Get();
 
             builder.AppendLine();
-            builder.AppendLine("================= Custom Roles =================");
+            builder.AppendLine("====================== Custom Roles ======================");
 
             foreach (Player target in players)
             {
                 ReadOnlyCollection<CustomRole> roles = target.GetCustomRoles();
+                builder.Append((target.DisplayNickname + (target.HasCustomName ? $" ({target.Nickname})" : string.Empty)).PadRight(30 + (target.HasCustomName ? 23 : 0)));
+                builder.Append(" ");
+                builder.Append($"({target.Id})".PadRight(5));
                 if (roles.IsEmpty())
                 {
-                    builder.AppendLine($"{target.DisplayNickname.PadRight(30)} | None");
+                    builder.AppendLine(" | No Custom Role");
                 }
                 else
                 {
-                    builder.AppendLine($"{target.DisplayNickname.PadRight(30)} ({target.Id}) | [{string.Join(", ", roles.Select(role => role.ToString()))}]");
+                    // builder.Append($" | [{string.Join(", ", roles.Select(role => $"<color={role.Role.GetColor().ToHex()}>{role}</color>"))}]");
+                    builder.Append(" | [");
+                    builder.Append(string.Join(", ", roles.Select(role => $"<color={role.Role.GetColor().ToHex()}>{role}</color>")));
+                    builder.AppendLine("]");
                 }
             }
 
-            builder.AppendLine("================================================");
+            builder.AppendLine("==========================================================");
 
             ListPool<Player>.Pool.Return(players);
 

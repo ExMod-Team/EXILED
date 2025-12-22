@@ -96,7 +96,7 @@ namespace Exiled.API.Features.Items
             if (Evil)
                 return;
 
-            Base.ReleaseEvil(evilProcess ?? EvilAhpProcess ?? new AhpStat.AhpProcess(450F, 450F, 0F, 1F, 0F, true));
+            Base.ReleaseEvil(evilProcess ?? EvilAhpProcess ?? Owner.GetModule<AhpStat>().ServerAddProcess(450F, 450F, 0F, 1F, 0F, true));
         }
     }
 }
