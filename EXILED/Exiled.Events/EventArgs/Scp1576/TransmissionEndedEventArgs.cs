@@ -13,7 +13,7 @@ namespace Exiled.Events.EventArgs.Scp1576
     using InventorySystem.Items.Usables.Scp1576;
 
     /// <summary>
-    /// Contains all information after transmission has ended.
+    /// Contains all information after a SCP-1576 transmission has ended.
     /// </summary>
     public class TransmissionEndedEventArgs : IPlayerEvent
     {
@@ -29,7 +29,7 @@ namespace Exiled.Events.EventArgs.Scp1576
         }
 
         /// <summary>
-        /// <see cref="Exiled.API.Features.Player"/> Gets that transmission has ended for.
+        /// Gets the <see cref="Exiled.API.Features.Player"/> that the transmission ended for.
         /// </summary>
         public Player Player { get; }
 
