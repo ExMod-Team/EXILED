@@ -60,7 +60,7 @@ namespace Exiled.CustomRoles.Commands
             {
                 string identifier = string.Join(" ", arguments);
 
-                switch (identifier)
+                switch (identifier.ToLower())
                 {
                     case "*":
                     case "all":
