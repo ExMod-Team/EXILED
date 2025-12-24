@@ -43,10 +43,10 @@ namespace Exiled.Events.Patches.Events.Player
                         // this
                         new CodeInstruction(OpCodes.Ldarg_0),
 
-                        // ServerStopTransmittingEventArgs ev = new(Player, this)
+                        // Scp1576TransmissionEndedEventArgs ev = new(Player, this)
                         new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(Scp1576TransmissionEndedEventArgs))[0]),
 
-                        // OnTransmisionEnded(ev)
+                        // OnScp1576TransmissionEnded(ev)
                         new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnScp1576TransmissionEnded))),
                     });
 
