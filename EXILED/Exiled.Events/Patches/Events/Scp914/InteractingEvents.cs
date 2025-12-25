@@ -75,7 +75,7 @@ namespace Exiled.Events.Patches.Events.Scp914
             });
 
             offset = -3;
-            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj) + offset;
+            index = newInstructions.FindLastIndex(i => i.OperandIs(GetDeclaredConstructors(typeof(LabApi.Events.Arguments.Scp914Events.Scp914ActivatingEventArgs))[0])) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
