@@ -271,6 +271,13 @@ namespace Exiled.API.Features.DamageHandlers
                         FirearmType.FRMG0 => DamageType.Frmg0,
                         _ => DamageType.Firearm
                     };
+
+                case PlayerStatsSystem.AttackerDamageHandler attackerDamageHandler:
+                    {
+                        if (Player.TryGet(attackerDamageHandler.Attacker, out Player attacker) && attacker.CurrentItem?.Type == ItemType.MarshmallowItem)
+                            return DamageType.Marshmallow;
+                        return DamageType.Unknown;
+                    }
             }
 
             return DamageType.Unknown;

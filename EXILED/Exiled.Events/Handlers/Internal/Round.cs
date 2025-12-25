@@ -42,7 +42,7 @@ namespace Exiled.Events.Handlers.Internal
     internal static class Round
     {
         /// <inheritdoc cref="Handlers.Player.OnUsedItem" />
-        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable));
+        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable, false));
 
         /// <inheritdoc cref="Handlers.Server.OnWaitingForPlayers" />
         public static void OnWaitingForPlayers()
@@ -91,6 +91,9 @@ namespace Exiled.Events.Handlers.Internal
         {
             if (ev.Role.IsDead() || !ev.Role.IsFpcRole())
                 ev.IsAllowed = false;
+
+            if (ev.DamageHandlerBase is Exiled.Events.Patches.Fixes.FixMarshmallowManFF fixMarshamllowManFf)
+                ev.DamageHandlerBase = fixMarshamllowManFf.MarshmallowItem.NewDamageHandler;
         }
 
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />

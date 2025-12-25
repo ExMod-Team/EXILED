@@ -151,7 +151,7 @@ namespace Exiled.API.Features
             Team.ChaosInsurgency => "BY CHAOSINSURGENCY",
             Team.Scientists => "BY SCIENCE PERSONNEL",
             Team.ClassD => "BY CLASSD PERSONNEL",
-            Team.Flamingos => "BY FLAMINGOS",
+            Team.Flamingos => "BY SCP 1 5 0 7",
             _ => "UNKNOWN",
         };
 
