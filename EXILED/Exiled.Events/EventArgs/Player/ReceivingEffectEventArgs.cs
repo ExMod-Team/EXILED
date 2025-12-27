@@ -34,7 +34,7 @@ namespace Exiled.Events.EventArgs.Player
             Effect = effect;
             this.intensity = intensity;
             CurrentIntensity = currentIntensity;
-            Duration = duration;
+            Duration = intensity is 0 ? 0 : duration;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Exiled.Events.EventArgs.Player
             {
                 intensity = value;
 
-                if (intensity == 0)
+                if (value == 0 && intensity != 0)
                     IsAllowed = false;
             }
         }
