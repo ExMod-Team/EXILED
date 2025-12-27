@@ -34,13 +34,15 @@ namespace Exiled.Events.Patches.Fixes
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             // Find the setter call index
-            int intensityCallIndex = newInstructions.FindIndex(ci => ci.Calls(PropertySetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Intensity))));
+            int offset = -2;
+            int intensityCallIndex = newInstructions.FindIndex(ci => ci.Calls(PropertySetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Intensity)))) + offset;
 
             // Extract: ldarg.0, ldarg.1, call set_Intensity
-            List<CodeInstruction> intensityBlock = newInstructions.GetRange(intensityCallIndex - 2, 3);
+            List<CodeInstruction> intensityBlock = newInstructions.GetRange(intensityCallIndex, 3);
 
             // Remove it from original location
-            newInstructions.RemoveRange(intensityCallIndex - 2, 3);
+            newInstructions.RemoveRange(intensityCallIndex, 3);
+            newInstructions[intensityCallIndex].WithLabels(intensityBlock[0].ExtractLabels());
 
             // Find ServerChangeDuration call
             int serverChangeIndex = newInstructions.FindIndex(ci => ci.Calls(Method(typeof(StatusEffectBase), nameof(StatusEffectBase.ServerChangeDuration))));
@@ -49,7 +51,10 @@ namespace Exiled.Events.Patches.Fixes
             newInstructions.InsertRange(serverChangeIndex + 1, intensityBlock);
 
             for (int z = 0; z < newInstructions.Count; z++)
+            {
+                Log.Info($"[{z}]{newInstructions[z].opcode} {newInstructions[z].operand} / {newInstructions[z].labels.Count}");
                 yield return newInstructions[z];
+            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
