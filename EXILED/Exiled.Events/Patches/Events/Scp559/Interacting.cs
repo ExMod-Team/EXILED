@@ -34,9 +34,9 @@ namespace Exiled.Events.Patches.Events.Scp559
 
             newInstructions.RemoveRange(index, 6);
             newInstructions[index].opcode = OpCodes.Brtrue_S;
-            int offset = 1;
+            int offset = -2;
 
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ret) + offset;
+            index = newInstructions.FindLastIndex(x => x.LoadsField(Field(typeof(Scp559Cake), nameof(Scp559Cake._remainingSlices)))) + offset;
 
             Label retLabel = generator.DefineLabel();
 
