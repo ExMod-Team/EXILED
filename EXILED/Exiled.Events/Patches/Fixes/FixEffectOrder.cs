@@ -51,10 +51,7 @@ namespace Exiled.Events.Patches.Fixes
             newInstructions.InsertRange(serverChangeIndex + 1, intensityBlock);
 
             for (int z = 0; z < newInstructions.Count; z++)
-            {
-                Log.Info($"[{z}]{newInstructions[z].opcode} {newInstructions[z].operand} / {newInstructions[z].labels.Count}");
                 yield return newInstructions[z];
-            }
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
