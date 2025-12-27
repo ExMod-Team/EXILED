@@ -51,8 +51,7 @@ namespace Exiled.Events.EventArgs.Player
         public float Duration { get; set; } = 0;
 
         /// <summary>
-        /// Gets or sets the value of the new intensity of the effect. Setting this to <c>0</c> is the same as setting IsAllowed to
-        /// <see langword="false" />.
+        /// Gets or sets the value of the new intensity of the effect.
         /// </summary>
         public byte Intensity { get; set; }
 
