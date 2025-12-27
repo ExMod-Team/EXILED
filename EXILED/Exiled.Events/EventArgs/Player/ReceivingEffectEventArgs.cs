@@ -18,8 +18,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class ReceivingEffectEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private byte intensity;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ReceivingEffectEventArgs" /> class.
         /// </summary>
@@ -32,7 +30,7 @@ namespace Exiled.Events.EventArgs.Player
         {
             Player = player;
             Effect = effect;
-            this.intensity = intensity;
+            Intensity = intensity;
             CurrentIntensity = currentIntensity;
             Duration = intensity is 0 ? 0 : duration;
         }
@@ -56,17 +54,7 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets the value of the new intensity of the effect. Setting this to <c>0</c> is the same as setting IsAllowed to
         /// <see langword="false" />.
         /// </summary>
-        public byte Intensity
-        {
-            get => intensity;
-            set
-            {
-                intensity = value;
-
-                if (value == 0 && intensity != 0)
-                    IsAllowed = false;
-            }
-        }
+        public byte Intensity { get; set; }
 
         /// <summary>
         /// Gets the value of the intensity of this effect on the player.
