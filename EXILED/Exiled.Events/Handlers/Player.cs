@@ -622,6 +622,11 @@ namespace Exiled.Events.Handlers
         public static Event<InteractingEmergencyButtonEventArgs> InteractingEmergencyButton { get; set; } = new();
 
         /// <summary>
+        /// Invoked after transmission has ended.
+        /// </summary>
+        public static Event<Scp1576TransmissionEndedEventArgs> Scp1576TransmissionEnded { get; set; } = new();
+
+        /// <summary>
         /// Called before a player's emotion changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingEmotionEventArgs"/> instance.</param>
@@ -1356,5 +1361,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="InteractingEmergencyButtonEventArgs"/> instance.</param>
         public static void OnInteractingEmergencyButton(InteractingEmergencyButtonEventArgs ev) => InteractingEmergencyButton.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a 1576 transmisiion has ended.
+        /// </summary>
+        /// <param name="ev">The <see cref="Scp1576TransmissionEndedEventArgs"/> instance.</param>
+        public static void OnScp1576TransmissionEnded(Scp1576TransmissionEndedEventArgs ev) => Scp1576TransmissionEnded.InvokeSafely(ev);
     }
 }
