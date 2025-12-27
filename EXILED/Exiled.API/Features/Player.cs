@@ -3564,8 +3564,7 @@ namespace Exiled.API.Features
         {
             if (ReferenceHub.playerEffectsController.TryGetEffect(out T statusEffect))
             {
-                statusEffect.Intensity = intensity;
-                statusEffect.ServerChangeDuration(duration, true);
+                statusEffect.ServerSetState(intensity, duration, false);
             }
         }
 
@@ -3579,8 +3578,7 @@ namespace Exiled.API.Features
         {
             if (TryGetEffect(type, out StatusEffectBase statusEffect))
             {
-                statusEffect.Intensity = intensity;
-                statusEffect.ServerChangeDuration(duration, false);
+                statusEffect.ServerSetState(intensity, duration, false);
             }
         }
 
