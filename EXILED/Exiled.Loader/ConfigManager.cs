@@ -449,8 +449,7 @@ namespace Exiled.Loader
             string directory = Path.Combine(Paths.IndividualConfigs, plugin.Name);
             string configPath = Path.Combine(directory, $"{Server.Port}-properties.yml");
 
-            if (!Directory.Exists(directory))
-                Directory.CreateDirectory(directory);
+            Directory.CreateDirectory(directory);
 
             if (!File.Exists(configPath))
             {
