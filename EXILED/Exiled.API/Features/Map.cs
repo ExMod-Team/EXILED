@@ -89,6 +89,21 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the layout of the light containment zone.
+        /// </summary>
+        public static LczFacilityLayout LczLayout { get; internal set; }
+
+        /// <summary>
+        /// Gets the layout of the heavy containment zone.
+        /// </summary>
+        public static HczFacilityLayout HczLayout { get; internal set; }
+
+        /// <summary>
+        /// Gets the layout of the entrance zone.
+        /// </summary>
+        public static EzFacilityLayout EzLayout { get; internal set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether decontamination is enabled.
         /// </summary>
         public static bool IsDecontaminationEnabled
