@@ -13,7 +13,6 @@ namespace Exiled.Events.Patches.Fixes
 
     using API.Features.Pools;
     using CustomPlayerEffects;
-    using Exiled.API.Features;
     using HarmonyLib;
     using InventorySystem.Items.Usables.Scp330;
     using PlayerRoles.PlayableScps.Scp049;
