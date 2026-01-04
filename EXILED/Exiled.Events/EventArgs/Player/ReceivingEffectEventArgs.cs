@@ -7,10 +7,10 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using API.Features;
+
     using CustomPlayerEffects;
+
     using Interfaces;
 
     /// <summary>
@@ -21,17 +21,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Initializes a new instance of the <see cref="ReceivingEffectEventArgs" /> class.
         /// </summary>
+        /// <param name="player"><inheritdoc cref="Player"/></param>
         /// <param name="effect"><inheritdoc cref="Effect"/></param>
         /// <param name="intensity">The intensity the effect is being changed to.</param>
         /// <param name="currentIntensity"><inheritdoc cref="CurrentIntensity"/></param>
         /// <param name="duration"><inheritdoc cref="Duration"/></param>
-        public ReceivingEffectEventArgs(StatusEffectBase effect, byte intensity, byte currentIntensity, float duration)
+        public ReceivingEffectEventArgs(Player player, StatusEffectBase effect, byte intensity, byte currentIntensity, float duration)
         {
-            Player = Player.Get(effect?.Hub);
-            if (Player == null)
-                Log.Error("Player is Null");
+            Player = player;
             Effect = effect;
-            Intensity = Math.Max(intensity, currentIntensity);
+            Intensity = intensity;
             CurrentIntensity = currentIntensity;
             Duration = intensity is 0 ? 0 : duration;
         }
