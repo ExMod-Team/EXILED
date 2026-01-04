@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
+#pragma warning disable SA1402 // File may only contain a single type
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
@@ -22,7 +23,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches the <see cref="StatusEffectBase.Intensity"/> method.
+    /// Patches the <see cref="StatusEffectBase.ForceIntensity"/> method.
     /// Adds the <see cref="Handlers.Player.ReceivingEffect"/> event and fix NW Duration not being correctly set to 0 when effect is Reset.
     /// </summary>
     // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingEffect))]
@@ -33,39 +34,23 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            // remove "if (this._intensity == value) return;"
+            // to make than ChangingDuration still called the event.
+            newInstructions.RemoveRange(0, 5);
+
             LocalBuilder ev = generator.DeclareLocal(typeof(ReceivingEffectEventArgs));
-            LocalBuilder player = generator.DeclareLocal(typeof(Player));
 
             Label returnLabel = generator.DefineLabel();
-            Label continueLabel = generator.DefineLabel();
 
             const int offset = 1;
             int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
-
-            List<Label> startingLabels = newInstructions[index].ExtractLabels();
-
-            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player player = Player.Get(this.Hub)
-                    //
-                    // if (player == null)
-                    //    goto continueLabel;
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(startingLabels),
-                    new(OpCodes.Call, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                    new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, player.LocalIndex),
-                    new(OpCodes.Brfalse_S, continueLabel),
-
-                    // player
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-
                     // this
-                    new(OpCodes.Ldarg_0),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
 
                     // value
                     new(OpCodes.Ldarg_1),
@@ -103,6 +88,29 @@ namespace Exiled.Events.Patches.Events.Player
                 });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+    }
+
+    /// <summary>
+    /// Patches the <see cref="StatusEffectBase.Intensity"/> Propperty setter.
+    /// Fix than above patched would not be called by modifying duration of the Effect.
+    /// </summary>
+    // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingEffect))]
+    [HarmonyPatch(typeof(StatusEffectBase), nameof(StatusEffectBase.Intensity), MethodType.Setter)]
+    internal static class FixDurationNotCallingReceivingStatusEffect
+    {
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        {
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
+
+            // remove "if (value > this._intensity) return;"
+            // to make than ChangingDuration still called the event.
+            newInstructions.RemoveRange(0, 4);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
