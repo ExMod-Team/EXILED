@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Enums
 {
+    using Exiled.API.Features;
+
     /// <summary>
     /// Represents different layouts each zone in the facility can have.
     /// </summary>
@@ -15,6 +17,11 @@ namespace Exiled.API.Enums
     /// </remarks>
     public enum HczFacilityLayout
     {
+        /// <summary>
+        /// Represents an unknown layout. This value is only used if you try to access <see cref="Map.HczLayout"/> prematurely or if an error occured.
+        /// </summary>
+        Unknown = -1,
+
         /// <summary>
         /// See <see cref="HczFacilityLayout"/> for details.
         /// </summary>
