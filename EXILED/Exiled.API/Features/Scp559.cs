@@ -18,7 +18,7 @@ namespace Exiled.API.Features
     /// <summary>
     /// Represents a cake.
     /// </summary>
-    [Obsolete("Only availaible for Christmas and AprilFools.")]
+    // [Obsolete("Only availaible for Christmas and AprilFools.")]
     public class Scp559 : IWrapper<Scp559Cake>, IPosition
     {
         /// <summary>
@@ -50,20 +50,34 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="Dictionary{TKey,TValue}"/> with spawnpoint in rooms.
         /// </summary>
-        public static Dictionary<RoomName, Vector4> SpawnPositions => Scp559Cake.Spawnpoints;
+        public static Dictionary<RoomName, Vector4> SpawnPositions { get; } = Scp559Spawnpoint.InstancesPerRoom.ToDictionary(kvp => kvp.Key.Name, kvp =>
+        {
+            Transform roomTransform = kvp.Key.transform;
+            Transform spawnTransform = kvp.Value.transform;
+
+            Vector3 localPos = roomTransform.InverseTransformPoint(spawnTransform.position);
+
+            return new Vector4(localPos.x, localPos.y, localPos.z, spawnTransform.eulerAngles.y);
+        });
 
         /// <summary>
         /// Gets the list of all available spawnpoints.
         /// </summary>
-        public static List<Vector4> AvailableSpawnpoints => Scp559Cake.PossiblePositions;
+        public static List<Vector4> AvailableSpawnpoints => Scp559Cake.PossibleSpawnpoints.Select(spawnpoint =>
+        {
+            Transform t = spawnpoint.transform;
+            return new Vector4(t.position.x, t.position.y, t.position.z, t.eulerAngles.y);
+        }).ToList();
 
         /// <summary>
         /// Gets or sets offset for spawning near pedestals.
         /// </summary>
         public static Vector3 PedestalOffset
         {
-            get => Scp559Cake.PedestalOffset;
-            set => Scp559Cake.PedestalOffset.Set(value.x, value.y, value.z);
+            get => new(0, -Scp559Spawnpoint.PedestalHeight, 0);
+
+            [Obsolete("Setter no longer works")]
+            set { }
         }
 
         /// <inheritdoc/>

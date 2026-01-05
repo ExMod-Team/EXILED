@@ -271,8 +271,7 @@ namespace Exiled.API.Features.Roles
             else
             {
                 cardiacArrest.SetAttacker(AttackAbility.Owner);
-                cardiacArrest.Intensity = 1;
-                cardiacArrest.ServerChangeDuration(AttackAbility._statusEffectDuration, false);
+                cardiacArrest.ServerSetState(1, AttackAbility._statusEffectDuration, false);
             }
 
             SenseAbility.OnServerHit(AttackAbility._target);

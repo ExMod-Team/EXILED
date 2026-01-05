@@ -15,7 +15,7 @@ namespace Exiled.API.Features.Pickups
     using BaseScp1509 = InventorySystem.Items.Scp1509.Scp1509Pickup;
 
     /// <summary>
-    /// A wrapper class for a Radio pickup.
+    /// A wrapper class for a Scp1509 pickup.
     /// </summary>
     public class Scp1509Pickup : Pickup, IWrapper<BaseScp1509>
     {

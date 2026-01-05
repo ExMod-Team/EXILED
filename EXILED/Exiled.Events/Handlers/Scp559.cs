@@ -17,7 +17,7 @@ namespace Exiled.Events.Handlers
     /// <summary>
     /// All SCP-559 related events.
     /// </summary>
-    [Obsolete("Only availaible for Christmas and AprilFools.")]
+    // [Obsolete("Only availaible for Christmas and AprilFools.")]
     public static class Scp559
     {
         /// <summary>

@@ -231,6 +231,7 @@ namespace Exiled.API.Features
                 RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
                 RoomType.EzGateA when Base.name[7] == '5' => GlassType.GateAArmory,
                 RoomType.EzGateA => GlassType.GateAPit,
+                RoomType.HczLoadingBay => GlassType.HczLoadingBay,
                 _ => GlassType.Unknown,
             },
             "Window" => Room?.Type switch
