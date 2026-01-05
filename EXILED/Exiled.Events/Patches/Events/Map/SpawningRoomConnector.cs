@@ -89,14 +89,13 @@ namespace Exiled.Events.Patches.Events.Map
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))));
-            List<Label> label = newInstructions[index].labels;
+            List<Label> labels = newInstructions[index].ExtractLabels();
+            List<CodeInstruction> codeInstructionsCopy = newInstructions.GetRange(index, 4);
+            newInstructions.RemoveRange(index, 4);
+            newInstructions[index].labels.AddRange(labels);
 
-            newInstructions.RemoveAt(index);
-
-            int offset = -1;
-            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.MapGeneratedEventArgs))[0]) + offset;
-            newInstructions.Insert(index, new CodeInstruction(OpCodes.Call, Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))).WithLabels(label));
-
+            index = newInstructions.FindIndex(x => x.OperandIs(Field(typeof(SeedSynchronizer), nameof(SeedSynchronizer.MapGenerated))));
+            newInstructions.InsertRange(index, codeInstructionsCopy);
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 

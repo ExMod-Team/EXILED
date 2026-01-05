@@ -17,7 +17,7 @@
 title: NW Documentation
 ---
 
-Last Update (14.2.0.1)
+Last Update (14.2.0.4)
 
 ### Index
 
@@ -56,6 +56,7 @@ Last Update (14.2.0.1)
 - [CallType](#calltype)
 - [CandyKindID](#candykindid)
 - [CassieAnnouncementType](#cassieannouncementtype)
+- [CassieClipCategory](#cassieclipcategory)
 - [Category](#category)
 - [CentralAuthPreauthFlags](#centralauthpreauthflags)
 - [ChallengeState](#challengestate)
@@ -89,7 +90,6 @@ Last Update (14.2.0.1)
 - [DecalPoolType](#decalpooltype)
 - [DecontaminationStatus](#decontaminationstatus)
 - [DeliveryMethod](#deliverymethod)
-- [DetectionStatus](#detectionstatus)
 - [DiodeType](#diodetype)
 - [DisconnectReason](#disconnectreason)
 - [DisconnectResult](#disconnectresult)
@@ -206,6 +206,7 @@ Last Update (14.2.0.1)
 - [NatAddressType](#nataddresstype)
 - [NetLogLevel](#netloglevel)
 - [NetworkProtocolType](#networkprotocoltype)
+- [NextAction](#nextaction)
 - [NextRoundAction](#nextroundaction)
 - [NotificationSound](#notificationsound)
 - [NtpLeapIndicator](#ntpleapindicator)
@@ -220,6 +221,7 @@ Last Update (14.2.0.1)
 - [OtherAudioSetting](#otheraudiosetting)
 - [OtherCondition](#othercondition)
 - [OutputCodes](#outputcodes)
+- [OverwatchSettings](#overwatchsettings)
 - [PacketProperty](#packetproperty)
 - [PanelColliderId](#panelcolliderid)
 - [ParameterMixingMode](#parametermixingmode)
@@ -317,6 +319,7 @@ Last Update (14.2.0.1)
 - [SteamLobbyPrivacy](#steamlobbyprivacy)
 - [StorageLocation](#storagelocation)
 - [StructureType](#structuretype)
+- [SubtitleMode](#subtitlemode)
 - [SubtitleType](#subtitletype)
 - [SyncData](#syncdata)
 - [SyncDataFlags](#syncdataflags)
@@ -958,6 +961,18 @@ Last Update (14.2.0.1)
 
 </details>
 
+### CassieClipCategory
+
+<details><summary><b>Cassie.CassieClipCategory</b></summary>
+
+```
+ [0] = Word
+ [1] = Glitch
+ [2] = Other
+```
+
+</details>
+
 ### Category
 
 <details><summary><b>PlayerRoles.PlayableScps.Scp079.Scp079KeyAbilityBase+Category</b></summary>
@@ -1447,18 +1462,6 @@ Last Update (14.2.0.1)
  [2] = ReliableOrdered
  [3] = ReliableSequenced
  [4] = Unreliable
-```
-
-</details>
-
-### DetectionStatus
-
-<details><summary><b>InventorySystem.Items.Firearms.Modules.Scp127.Scp127CassieBasedVoiceTriggerBase+DetectionStatus</b></summary>
-
-```
- [0] = Idle
- [1] = WaitingForTrigger
- [2] = AnnouncementStartedPlaying
 ```
 
 </details>
@@ -2412,7 +2415,7 @@ Last Update (14.2.0.1)
 
 ### HitResult
 
-<details><summary><b>InventorySystem.Items.Scp1509.Scp1509Hitreg+HitResult</b></summary>
+<details><summary><b>InventorySystem.Items.Autosync.MeleeAutoSync+HitResult</b></summary>
 
 ```
  [0] = HitPlayer
@@ -2769,6 +2772,7 @@ Last Update (14.2.0.1)
  [66] = KeycardCustomMetalCase
  [67] = MarshmallowItem
  [68] = SCP1509
+ [69] = Scp021J
  [-1] = None
 ```
 
@@ -3294,6 +3298,17 @@ Last Update (14.2.0.1)
 
 </details>
 
+### NextAction
+
+<details><summary><b>Cassie.Interpreters.CassieInterpreter+NextAction</b></summary>
+
+```
+ [0] = Continue
+ [1] = Halt
+```
+
+</details>
+
 ### NextRoundAction
 
 <details><summary><b>ServerStatic+NextRoundAction</b></summary>
@@ -3496,6 +3511,18 @@ Last Update (14.2.0.1)
  [21] = ExitActionSilentShutdown
  [22] = ExitActionRestart
  [23] = Heartbeat
+```
+
+</details>
+
+### OverwatchSettings
+
+<details><summary><b>PlayerRoles.Spectating.OverwatchSettings</b></summary>
+
+```
+ [0] = PlayerInfoToggle
+ [1] = HitRegisterToggle
+ [2] = DebugLines
 ```
 
 </details>
@@ -4054,6 +4081,8 @@ Last Update (14.2.0.1)
  [25] = Flamingo
  [26] = AlphaFlamingo
  [27] = ZombieFlamingo
+ [28] = NtfFlamingo
+ [29] = ChaosFlamingo
  [-1] = None
 ```
 
@@ -4117,6 +4146,7 @@ Last Update (14.2.0.1)
  [38] = Hcz127
  [39] = HczAcroamaticAbatement
  [40] = HczWaysideIncinerator
+ [41] = HczRampTunnel
 ```
 
 </details>
@@ -4181,7 +4211,9 @@ Last Update (14.2.0.1)
  [0] = TargetResync
  [1] = TargetKilled
  [2] = AttackInterrupted
- [3] = OutOfRange
+ [3] = AttackCancelled
+ [4] = OutOfRange
+ [5] = StrangleTimer
 ```
 
 </details>
@@ -5200,6 +5232,19 @@ Last Update (14.2.0.1)
 
 </details>
 
+### SubtitleMode
+
+<details><summary><b>Cassie.CassieTtsPayload+SubtitleMode</b></summary>
+
+```
+ [0] = None
+ [1] = Automatic
+ [2] = Custom
+ [3] = FromTranslation
+```
+
+</details>
+
 ### SubtitleType
 
 <details><summary><b>Subtitles.SubtitleType</b></summary>
@@ -5434,6 +5479,7 @@ Last Update (14.2.0.1)
  [8] = Tokens
  [11] = All
  [16] = Spawn
+ [32] = Max
 ```
 
 </details>
@@ -5498,6 +5544,8 @@ Last Update (14.2.0.1)
  [3] = Two
  [4] = Three
  [5] = Four
+ [6] = Five
+ [7] = Six
 ```
 
 </details>
@@ -5676,6 +5724,7 @@ Last Update (14.2.0.1)
  [5] = Scp127Voice
  [6] = Scp3114Voice
  [7] = ChaseThemes
+ [8] = SoundEffectsWhileSpectating
 ```
 
 </details>
@@ -5784,9 +5833,11 @@ Last Update (14.2.0.1)
 | 22  | Filmmaker      | Dead             | None             | Draw            |
 | 23  | Scp3114        | SCPs             | Scp              | Anomalies       |
 | 24  | Destroyed      | Dead             | None             | Draw            |
-| 25  | Flamingo       | Dead             | None             | Draw            |
-| 26  | AlphaFlamingo  | Dead             | None             | Draw            |
-| 27  | ZombieFlamingo | Dead             | None             | Draw            |
+| 25  | Flamingo       | Flamingos        | Flamingos        | Flamingo        |
+| 26  | AlphaFlamingo  | Flamingos        | Flamingos        | Flamingo        |
+| 27  | ZombieFlamingo | SCPs             | Scp              | Anomalies       |
+| 28  | NtfFlamingo    | FoundationForces | Mtf              | FacilityForces  |
+| 29  | ChaosFlamingo  | ChaosInsurgency  | ChaosInsurgency  | ChaosInsurgency |
 ```
 
 </details>
@@ -5797,7 +5848,7 @@ Last Update (14.2.0.1)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.2.0.1"
+```md title="Latest Updated: 14.2.0.4"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"

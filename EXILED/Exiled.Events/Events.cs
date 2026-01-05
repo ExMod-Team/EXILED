@@ -21,6 +21,7 @@ namespace Exiled.Events
     using PlayerRoles.FirstPersonControl.NetworkMessages;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.RoleAssign;
+
     using Respawning;
     using UnityEngine.SceneManagement;
     using UserSettings.ServerSpecific;
@@ -73,6 +74,7 @@ namespace Exiled.Events
             Handlers.Scp049.ActivatingSense += Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified += Handlers.Internal.Round.OnVerified;
             Handlers.Map.ChangedIntoGrenade += Handlers.Internal.ExplodingGrenade.OnChangedIntoGrenade;
+            Handlers.Warhead.Detonated += Handlers.Internal.Round.OnWarheadDetonated;
 
             RoleAssigner.OnPlayersSpawned += Handlers.Server.OnAllPlayersSpawned;
             CharacterClassManager.OnRoundStarted += Handlers.Server.OnRoundStarted;
@@ -94,6 +96,11 @@ namespace Exiled.Events
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon += Handlers.Player.OnUnloadingWeapon;
 
             FpcServerPositionDistributor.RoleSyncEvent += Handlers.Internal.Round.OnRoleSyncEvent;
+
+            LabApi.Events.Handlers.Scp127Events.Talking += Handlers.Scp127.OnTalking;
+            LabApi.Events.Handlers.Scp127Events.Talked += Handlers.Scp127.OnTalked;
+            LabApi.Events.Handlers.Scp127Events.GainingExperience += Handlers.Scp127.OnGainingExperience;
+            LabApi.Events.Handlers.Scp127Events.GainExperience += Handlers.Scp127.OnGainedExperience;
 
             ServerConsole.ReloadServerName();
         }
@@ -135,6 +142,11 @@ namespace Exiled.Events
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon -= Handlers.Player.OnUnloadingWeapon;
 
             FpcServerPositionDistributor.RoleSyncEvent -= Handlers.Internal.Round.OnRoleSyncEvent;
+
+            LabApi.Events.Handlers.Scp127Events.Talking -= Handlers.Scp127.OnTalking;
+            LabApi.Events.Handlers.Scp127Events.Talked -= Handlers.Scp127.OnTalked;
+            LabApi.Events.Handlers.Scp127Events.GainingExperience -= Handlers.Scp127.OnGainingExperience;
+            LabApi.Events.Handlers.Scp127Events.GainExperience -= Handlers.Scp127.OnGainedExperience;
         }
 
         /// <summary>

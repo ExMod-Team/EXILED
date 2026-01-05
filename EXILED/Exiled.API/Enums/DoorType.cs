@@ -369,5 +369,10 @@ namespace Exiled.API.Enums
         /// Represents the door in the <see cref="RoomType.EzGateA"/> Armory.
         /// </summary>
         GateAArmory,
+
+        /// <summary>
+        /// Represents the door in <see cref="RoomType.HczLoadingBay"/>.
+        /// </summary>
+        HczLoadingBay,
     }
 }

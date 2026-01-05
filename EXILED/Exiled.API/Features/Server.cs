@@ -111,7 +111,27 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the actual ticks per second of the server.
         /// </summary>
-        public static double Tps => Math.Round(1f / Time.smoothDeltaTime);
+        public static double Tps
+        {
+            get
+            {
+                double delta = Time.deltaTime;
+
+                if (delta <= 0)
+                    return MaxTps;
+
+                double tps = 1d / delta;
+
+                tps = Math.Min(tps, MaxTps);
+
+                return tps;
+            }
+        }
+
+        /// <summary>
+        /// Gets the average ticks per second of the server.
+        /// </summary>
+        public static double SmoothTps => Math.Round(1f / Time.smoothDeltaTime);
 
         /// <summary>
         /// Gets or sets the max ticks per second of the server.

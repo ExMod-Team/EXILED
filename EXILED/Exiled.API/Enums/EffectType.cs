@@ -216,7 +216,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Makes you a marshmallow guy.
         /// </summary>
-        [Obsolete("Not functional in-game")]
+        // [Obsolete("Not functional in-game")]
         Marshmallow,
 
         /// <summary>
@@ -261,27 +261,27 @@ namespace Exiled.API.Enums
         Blurred,
 
         /// <summary>
-        /// Makes you a flamingo.
+        /// Makes you a flamingo <see cref="CustomPlayerEffects.BecomingFlamingo"/>.
         /// </summary>
-        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        // [Obsolete("Only availaible for Christmas and AprilFools.")]
         BecomingFlamingo,
 
         /// <summary>
-        /// Makes you a Child after eating Cake.
+        /// Makes you a Child after eating Cake <see cref="Scp559Effect"/>.
         /// </summary>
-        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        // [Obsolete("Only availaible for Christmas and AprilFools.")]
         Scp559,
 
         /// <summary>
-        /// Scp956 found you.
+        /// Scp956 found you <see cref="global::Scp956Target"/>.
         /// </summary>
-        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        // [Obsolete("Only availaible for Christmas and AprilFools.")]
         Scp956Target,
 
         /// <summary>
-        /// you are snowed.
+        /// you are snowed <see cref="global::Snowed"/>.
         /// </summary>
-        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        // [Obsolete("Only availaible for Christmas and AprilFools.")]
         Snowed,
 
         /// <summary>
@@ -317,78 +317,93 @@ namespace Exiled.API.Enums
         /// <summary>
         /// <see cref="CustomPlayerEffects.Metal"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         Metal,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.OrangeCandy"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         OrangeCandy,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.OrangeWitness"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         OrangeWitness,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.Prismatic"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         Prismatic,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.SlowMetabolism"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         SlowMetabolism,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.Spicy"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         Spicy,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.SugarCrave"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        // [Obsolete("Only availaible for Halloween or Christmas.")]
         SugarCrave,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.SugarHigh"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         SugarHigh,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.SugarRush"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         SugarRush,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.TemporaryBypass"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         TemporaryBypass,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.TraumatizedByEvil"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         TraumatizedByEvil,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.WhiteCandy"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween.")]
+        [Obsolete("Only availaible for Halloween.")]
         WhiteCandy,
 
         /// <summary>
         /// <see cref="CustomPlayerEffects.Scp1509Resurrected"/>.
         /// </summary>
         Scp1509Resurrected,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.FocusedVision"/>.
+        /// </summary>
+        FocusedVision,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.AnomalousRegeneration"/>.
+        /// </summary>
+        AnomalousRegeneration,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.AnomalousTarget"/>.
+        /// </summary>
+        AnomalousTarget,
     }
 }

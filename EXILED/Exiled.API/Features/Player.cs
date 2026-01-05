@@ -648,7 +648,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the player is reloading a weapon.
         /// </summary>
-        public bool IsReloading => CurrentItem is Firearm firearm && !firearm.IsReloading;
+        public bool IsReloading => CurrentItem is Firearm firearm && firearm.IsReloading;
 
         /// <summary>
         /// Gets a value indicating whether the player is aiming with a weapon.
@@ -1982,10 +1982,24 @@ namespace Exiled.API.Features
                 ReferenceHub.serverRoles.SetGroup(group, false, false);
             }
 
-            if (ServerStatic.PermissionsHandler.Members.ContainsKey(UserId))
+            ServerStatic.PermissionsHandler.Members[UserId] = name;
+        }
+
+        /// <summary>
+        /// If the rank(group) exists in the remote admin config, it will assign it to the player.
+        /// </summary>
+        /// <param name="name">The rank name to be set.</param>
+        /// <returns><see langword="true"/> if the rank(group) was found and successfully assigned, <see langword="false"/> otherwise.</returns>
+        public bool TrySetRank(string name)
+        {
+            if (ServerStatic.PermissionsHandler.Groups.TryGetValue(name, out UserGroup userGroup))
+            {
+                ReferenceHub.serverRoles.SetGroup(userGroup, false, false);
                 ServerStatic.PermissionsHandler.Members[UserId] = name;
-            else
-                ServerStatic.PermissionsHandler.Members.Add(UserId, name);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -2030,6 +2044,21 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Send an <see cref="global::Cassie.CassieAnnouncement"/> to the player.
+        /// </summary>
+        /// <param name="cassieAnnouncement">The <see cref="global::Cassie.CassieAnnouncement"/> to be broadcasted.</param>
+        /// <returns><see langword="0"/> if Cassie failed to play it or it's play nothing, otherwise it's return the duration of the annoucement.</returns>
+        public float CassieAnnouncement(global::Cassie.CassieAnnouncement cassieAnnouncement)
+        {
+            global::Cassie.CassieAnnouncementDispatcher.CurrentAnnouncement.OnStartedPlaying();
+            global::Cassie.CassieTtsPayload payload = cassieAnnouncement.Payload;
+            if (!global::Cassie.CassieTtsAnnouncer.TryPlay(payload, out float totalduration))
+                return 0;
+            payload.SendToHubsConditionally(x => x == ReferenceHub);
+            return totalduration;
+        }
+
+        /// <summary>
         /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The <see cref="Item"/> to be dropped.</param>
@@ -2061,10 +2090,12 @@ namespace Exiled.API.Features
         /// <returns>Dropped item's <see cref="Pickup"/>.</returns>
         public Pickup DropHeldItem()
         {
-            if (CurrentItem is null)
+            Item item = CurrentItem;
+
+            if (item is null)
                 return null;
 
-            return DropItem(CurrentItem);
+            return DropItem(item);
         }
 
         /// <summary>
@@ -3449,10 +3480,7 @@ namespace Exiled.API.Features
         {
             if (effect.IsEnabled)
             {
-                EnableEffect(effect.Type, effect.Duration, effect.AddDurationIfActive);
-
-                if (effect.Intensity > 0)
-                    ChangeEffectIntensity(effect.Type, effect.Intensity, effect.Duration);
+                EnableEffect(effect.Type, effect.Intensity, effect.Duration, effect.AddDurationIfActive);
             }
         }
 
@@ -3580,8 +3608,7 @@ namespace Exiled.API.Features
         {
             if (ReferenceHub.playerEffectsController.TryGetEffect(out T statusEffect))
             {
-                statusEffect.Intensity = intensity;
-                statusEffect.ServerChangeDuration(duration, true);
+                statusEffect.ServerSetState(intensity, duration, false);
             }
         }
 
@@ -3595,8 +3622,7 @@ namespace Exiled.API.Features
         {
             if (TryGetEffect(type, out StatusEffectBase statusEffect))
             {
-                statusEffect.Intensity = intensity;
-                statusEffect.ServerChangeDuration(duration, false);
+                statusEffect.ServerSetState(intensity, duration, false);
             }
         }
 
