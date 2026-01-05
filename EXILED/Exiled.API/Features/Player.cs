@@ -614,7 +614,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets a <see cref="List{T}"/> of <see cref="Func{T1, T2}"/> generating a <see cref="RoleData"/> to fake the others role whenever another player changes role.
+        /// Gets a <see cref="List{T}"/> of <see cref="Func{T1, T2}"/> generating a <see cref="RoleData"/> to fake this players role whenever this player changes role.
         /// </summary>
         /// <remarks>See <see cref="SetAppearance(Func{Player,RoleData})"/> for usage.</remarks>
         public List<Func<Player, RoleData>> FakeRoleGenerator { get; } = ListPool<Func<Player, RoleData>>.Pool.Get();
@@ -1852,10 +1852,17 @@ namespace Exiled.API.Features
         public bool TryRemoveCustomeRoleFriendlyFire(string role) => CustomRoleFriendlyFireMultiplier.Remove(role);
 
         /// <summary>
-        /// Adds a <see cref="Func{Player, RoleData}"/> from a <see cref="Player"/> to a <see cref="RoleTypeId"/> that is used every time a players role changes.
+        /// Adds a <see cref="Func{Player, RoleData}"/> from a <see cref="Player"/> to a <see cref="RoleTypeId"/> that is used every time this players role changes.
         /// </summary>
-        /// <param name="generator">The function that determines if a players role will be faked (to a given viewer) after their role changes.</param>
-        /// <remarks>The first Func in <see cref="FakeRoleGenerator"/> that returns a RoleData that is not <see cref="RoleData.None"/> will be used for faking appearance.</remarks>
+        /// <param name="generator">The function that determines if this players role will be faked (to a viewer) after their role changes.</param>
+        /// <remarks>The first Func in <see cref="FakeRoleGenerator"/> that returns a RoleData that is not <see cref="RoleData.None"/> will be used for faking appearance.
+        /// <para>An example use case would be to make a scientist appear as a Class-D to all other Class-D, that Func would look like:
+        /// <code>
+        /// player => player.Role.Team is Team.ClassD ? new RoleData(RoleTypeId.ClassD) : RoleData.None
+        /// </code>
+        /// This method can be further optimized by only using static RoleData instances in your Funcs.
+        /// </para>
+        /// </remarks>
         public void SetAppearance(Func<Player, RoleData> generator)
         {
             FakeRoleGenerator.Add(generator);

@@ -93,9 +93,9 @@ namespace Exiled.Events.Handlers.Internal
         {
             foreach (Player viewer in Player.Enumerable.Except(new[] { ev.Player }))
             {
-                foreach (Func<Player, RoleData> generator in viewer.FakeRoleGenerator)
+                foreach (Func<Player, RoleData> generator in ev.Player.FakeRoleGenerator)
                 {
-                    RoleData data = generator(ev.Player);
+                    RoleData data = generator(viewer);
                     if (data.Role != RoleTypeId.None)
                     {
                         viewer.FakeRoles[ev.Player] = data;
@@ -161,15 +161,15 @@ namespace Exiled.Events.Handlers.Internal
         /// <summary>
         /// Makes fake role API work.
         /// </summary>
-        /// <param name="viewerHub">The <see cref="ReferenceHub"/> of the viewer.</param>
         /// <param name="ownerHub">The <see cref="ReferenceHub"/> of the player.</param>
+        /// <param name="viewerHub">The <see cref="ReferenceHub"/> of the viewer.</param>
         /// <param name="actualRole">The actual <see cref="RoleTypeId"/>.</param>
         /// <param name="writer">The pooled <see cref="NetworkWriter"/>.</param>
         /// <returns>A role, fake if needed.</returns>
-        public static RoleTypeId OnRoleSyncEvent(ReferenceHub viewerHub, ReferenceHub ownerHub, RoleTypeId actualRole, NetworkWriter writer)
+        public static RoleTypeId OnRoleSyncEvent(ReferenceHub ownerHub, ReferenceHub viewerHub, RoleTypeId actualRole, NetworkWriter writer)
         {
-            Player viewer = Player.Get(viewerHub);
             Player owner = Player.Get(ownerHub);
+            Player viewer = Player.Get(viewerHub);
 
             if (viewer.FakeRoles.TryGetValue(owner, out RoleData data))
             {
