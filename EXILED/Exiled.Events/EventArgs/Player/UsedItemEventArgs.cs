@@ -28,14 +28,10 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="item">
         /// <inheritdoc cref="Item" />
         /// </param>
-        /// <param name="causedByHolstering">
-        /// <inheritdoc cref="CausedByHolstering"/>
-        /// </param>
-        public UsedItemEventArgs(ReferenceHub player, UsableItem item, bool causedByHolstering)
+        public UsedItemEventArgs(ReferenceHub player, UsableItem item)
         {
             Player = Player.Get(player);
-            Usable = Item.Get(item) as Usable;
-            CausedByHolstering = causedByHolstering;
+            Usable = Item.Get(item) is Usable usable ? usable : null;
         }
 
         /// <summary>
@@ -50,11 +46,5 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the player who used the item.
         /// </summary>
         public Player Player { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether this event was triggered by a player switching items (true) or by waiting after using the item (false).
-        /// </summary>
-        /// <remarks>Use this value if you wish to keep the bug where you could switch items quickly to skip this event.</remarks>
-        public bool CausedByHolstering { get; }
     }
 }

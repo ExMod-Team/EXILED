@@ -11,7 +11,6 @@ namespace Exiled.Events.Patches.Events.Scp2536
     using System.Reflection.Emit;
 
     using Christmas.Scp2536;
-    using Christmas.Scp2536.Gifts;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
@@ -35,7 +34,6 @@ namespace Exiled.Events.Patches.Events.Scp2536
             Label retLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(GrantingGiftEventArgs));
-            LocalBuilder naughty = generator.DeclareLocal(typeof(Naughty));
 
             int offset = -1;
             int index = newInstructions.FindLastIndex(x => x.LoadsField(Field(typeof(Scp2536GiftBase), nameof(Scp2536GiftBase.ObtainedBy)))) + offset;
@@ -47,7 +45,7 @@ namespace Exiled.Events.Patches.Events.Scp2536
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // gift
-                new(OpCodes.Ldloc_2),
+                new(OpCodes.Ldloc_1),
 
                 // true
                 new(OpCodes.Ldc_I4_1),
@@ -69,45 +67,7 @@ namespace Exiled.Events.Patches.Events.Scp2536
                 // gift = ev.Gift;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(GrantingGiftEventArgs), nameof(GrantingGiftEventArgs.Gift))),
-                new(OpCodes.Stloc_2),
-            });
-
-            offset = 1;
-            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Scp2536GiftController), nameof(Scp2536GiftController.ServerGetGift), null, new[] { typeof(Naughty) }))) + offset;
-
-            newInstructions.InsertRange(index, new CodeInstruction[]
-            {
-                // naughty is already on the stack
-                // naughty = this.ServerGetGift<Naught>();
-                new(OpCodes.Stloc_S, naughty),
-
-                // Player.Get(hub);
-                new(OpCodes.Ldarg_1),
-                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-
-                // naughty
-                new(OpCodes.Ldloc_S, naughty),
-
-                // true
-                new(OpCodes.Ldc_I4_1),
-
-                // GrantingGiftEventArgs ev = new(Player, Scp2536GiftBase, true);
-                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GrantingGiftEventArgs))[0]),
-                new(OpCodes.Dup),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, ev.LocalIndex),
-
-                // Handlers.Scp2536.OnGrantingGift(ev);
-                new(OpCodes.Call, Method(typeof(Handlers.Scp2536), nameof(Handlers.Scp2536.OnGrantingGift))),
-
-                // if (!ev.IsAllowed)
-                //   goto retLabel;
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GrantingGiftEventArgs), nameof(GrantingGiftEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse_S, retLabel),
-
-                // load naughty onto stack
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GrantingGiftEventArgs), nameof(GrantingGiftEventArgs.Gift))),
+                new(OpCodes.Stloc_1),
             });
 
             newInstructions[newInstructions.Count - 1].labels.Add(retLabel);

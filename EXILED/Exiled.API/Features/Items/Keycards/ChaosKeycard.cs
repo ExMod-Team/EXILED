@@ -43,8 +43,7 @@ namespace Exiled.API.Features.Items.Keycards
         /// <summary>
         /// Gets the <see cref="InventorySystem.Items.Keycards.Snake.SnakeEngine"/> this encapsulates.
         /// </summary>
-        /// <remarks>Can be null, but shouldn't be during usage.</remarks>
-        public SnakeEngine SnakeEngine => ChaosKeycardItem.SnakeSessions.TryGetValue(Serial, out SnakeEngine engine) ? engine : null;
+        public SnakeEngine SnakeEngine => Base._localEngine;
 
         /// <summary>
         /// Returns the Keycard in a human readable format.

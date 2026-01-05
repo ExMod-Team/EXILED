@@ -20,11 +20,11 @@ namespace Exiled.Events.Patches.Events.Map
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch the <see cref="NtfMiniwaveAnnouncement.CreateAnnouncement"/>
+    /// Patch the <see cref="NtfMiniwaveAnnouncement.CreateAnnouncementString"/>
     /// Adds the <see cref="Map.AnnouncingNtfEntrance" /> event.
     /// </summary>
     [EventPatch(typeof(Map), nameof(Map.AnnouncingNtfEntrance))]
-    [HarmonyPatch(typeof(NtfMiniwaveAnnouncement), nameof(NtfMiniwaveAnnouncement.CreateAnnouncement))]
+    [HarmonyPatch(typeof(NtfMiniwaveAnnouncement), nameof(NtfMiniwaveAnnouncement.CreateAnnouncementString))]
     internal static class AnnouncingNtfMiniEntrance
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -35,17 +35,15 @@ namespace Exiled.Events.Patches.Events.Map
 
             Label ret = generator.DefineLabel();
 
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Stloc_1) + 1;
-
             newInstructions.InsertRange(
-                index,
+                0,
                 new CodeInstruction[]
                 {
                     // WaveAnnouncementBase
                     new(OpCodes.Ldarg_0),
 
                     // scpsLeft
-                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldloc_0),
 
                     // null
                     new(OpCodes.Ldnull),
@@ -68,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Map
                     // scpsLeft = ev.ScpsLeft;
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingNtfEntranceEventArgs), nameof(AnnouncingNtfEntranceEventArgs.ScpsLeft))),
-                    new(OpCodes.Stloc_1),
+                    new(OpCodes.Stloc_0),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(ret);

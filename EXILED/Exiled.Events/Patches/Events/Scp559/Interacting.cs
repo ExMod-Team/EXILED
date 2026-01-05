@@ -30,13 +30,9 @@ namespace Exiled.Events.Patches.Events.Scp559
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse_S);
 
-            newInstructions.RemoveRange(index, 6);
-            newInstructions[index].opcode = OpCodes.Brtrue_S;
-            int offset = -2;
-
-            index = newInstructions.FindLastIndex(x => x.LoadsField(Field(typeof(Scp559Cake), nameof(Scp559Cake._remainingSlices)))) + offset;
+            int offset = 1;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ret) + offset;
 
             Label retLabel = generator.DefineLabel();
 
@@ -52,7 +48,10 @@ namespace Exiled.Events.Patches.Events.Scp559
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // InteractingScp559EventArgs ev = new(Scp559, Player);
+                    // true
+                    new(OpCodes.Ldc_I4_1),
+
+                    // InteractingScp559EventArgs ev = new(Scp559, Player, true);
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(InteractingScp559EventArgs))[0]),
                     new(OpCodes.Dup),
 
@@ -69,8 +68,6 @@ namespace Exiled.Events.Patches.Events.Scp559
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
-
-            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }

@@ -193,13 +193,13 @@ namespace Exiled.API.Features.Waves
         /// Plays the announcement for this wave.
         /// </summary>
         /// <remarks>Wave must implement <see cref="IAnnouncedWave"/>.</remarks>
-        public void PlayAnnouncement() => Announcement?.PlayAnnouncement([], Base as IAnnouncedWave);
+        public void PlayAnnouncement() => Announcement?.PlayAnnouncement(new());
 
         /// <summary>
         /// Plays the announcement for this wave.
         /// </summary>
         /// <remarks>Wave must implement <see cref="IAnnouncedWave"/>.</remarks>
         /// <param name="players">The list of Player to spawn.</param>
-        public void PlayAnnouncement(IEnumerable<Player> players) => Announcement?.PlayAnnouncement(players.Select(x => x.ReferenceHub).ToList(), Base as IAnnouncedWave);
+        public void PlayAnnouncement(IEnumerable<Player> players) => Announcement?.PlayAnnouncement(players.Select(x => x.ReferenceHub).ToList());
     }
 }
