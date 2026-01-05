@@ -506,7 +506,6 @@ namespace Exiled.API.Features
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
                 "HCZ_127" => RoomType.Hcz127,
                 "HCZ_ServerRoom" => RoomType.HczServerRoom,
-                "HCZ_Intersection_Ramp" => RoomType.HczLoadingBay,
                 "EZ_GateA" => RoomType.EzGateA,
                 "EZ_GateB" => RoomType.EzGateB,
                 "EZ_ThreeWay" => RoomType.EzTCross,

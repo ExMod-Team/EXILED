@@ -29,7 +29,6 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
-    using InventorySystem.Items.Usables.Scp330;
     using Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
@@ -109,9 +108,6 @@ namespace Exiled.Events.Handlers.Internal
         {
             if (ev.Role.IsDead() || !ev.Role.IsFpcRole())
                 ev.IsAllowed = false;
-
-            if (ev.DamageHandlerBase is Exiled.Events.Patches.Fixes.FixMarshmallowManFF fixMarshamllowManFf)
-                ev.DamageHandlerBase = fixMarshamllowManFf.MarshmallowItem.NewDamageHandler;
         }
 
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />
@@ -140,7 +136,7 @@ namespace Exiled.Events.Handlers.Internal
             }
 
             // Fix bug that player that Join do not receive information about other players Scale
-            foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
+            foreach (Player player in Player.Enumerable)
             {
                 player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
 
@@ -180,13 +176,6 @@ namespace Exiled.Events.Handlers.Internal
             }
 
             return actualRole;
-        }
-
-        /// <inheritdoc cref="Handlers.Warhead.OnDetonated()"/>
-        public static void OnWarheadDetonated()
-        {
-            // fix for black candy
-            CandyBlack.Outcomes.RemoveAll(outcome => outcome is TeleportOutcome);
         }
 
         private static void GenerateAttachments()

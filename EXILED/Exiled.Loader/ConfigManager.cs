@@ -446,10 +446,7 @@ namespace Exiled.Loader
             ISerializer serializer = LabApi.Loader.Features.Yaml.YamlConfigParser.Serializer;
             IDeserializer deserializer = LabApi.Loader.Features.Yaml.YamlConfigParser.Deserializer;
 
-            string directory = Path.Combine(Paths.IndividualConfigs, plugin.Name);
-            string configPath = Path.Combine(directory, $"{Server.Port}-properties.yml");
-
-            Directory.CreateDirectory(directory);
+            string configPath = Path.Combine(Paths.IndividualConfigs, plugin.Name, $"{Server.Port}-properties.yml");
 
             if (!File.Exists(configPath))
             {

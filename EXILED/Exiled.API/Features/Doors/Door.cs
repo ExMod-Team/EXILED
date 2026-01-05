@@ -624,7 +624,6 @@ namespace Exiled.API.Features.Doors
                         RoomType.HczEzCheckpointA => DoorType.CheckpointArmoryA,
                         RoomType.HczEzCheckpointB => DoorType.CheckpointArmoryB,
                         RoomType.EzGateA => DoorType.GateAArmory,
-                        RoomType.HczLoadingBay => DoorType.HczLoadingBay,
                         _ => DoorType.UnknownDoor,
                     },
                     "Unsecured Pryable GateDoor" => Room?.Type switch

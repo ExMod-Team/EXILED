@@ -14,7 +14,9 @@ namespace Exiled.Events.Patches.Events.Scp914
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp914;
+
     using global::Scp914;
+
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
@@ -37,8 +39,8 @@ namespace Exiled.Events.Patches.Events.Scp914
 
             Label ret = generator.DefineLabel();
 
-            int offset = -3;
-            int index = newInstructions.FindLastIndex(i => i.OperandIs(GetDeclaredConstructors(typeof(LabApi.Events.Arguments.Scp914Events.Scp914KnobChangingEventArgs))[0])) + offset;
+            int offset = 1;
+            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -73,7 +75,7 @@ namespace Exiled.Events.Patches.Events.Scp914
             });
 
             offset = -3;
-            index = newInstructions.FindLastIndex(i => i.OperandIs(GetDeclaredConstructors(typeof(LabApi.Events.Arguments.Scp914Events.Scp914ActivatingEventArgs))[0])) + offset;
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj) + offset;
 
             newInstructions.InsertRange(index, new[]
             {

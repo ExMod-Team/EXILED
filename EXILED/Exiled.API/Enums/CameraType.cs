@@ -159,11 +159,6 @@ namespace Exiled.API.Enums
         EzGateAElevators,
         EzGateBInterior,
         EzGateBSide,
-        EzGateAStairwell,
-        EzGateAUpper,
-        HczLoadingBay,
-        HczLoadingBayRamp,
-        HczLoadingBayStairwell,
         #endregion
     }
 }

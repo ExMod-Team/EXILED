@@ -47,7 +47,6 @@ namespace Exiled.API.Features
         internal Lift(ElevatorChamber elevator)
         {
             Base = elevator;
-            ElevatorAutoReturn = elevator.GetComponent<ElevatorAutoReturn>();
             ElevatorChamberToLift.Add(elevator, this);
 
             internalDoorsList.AddRange(Elevator.AllElevatorDoors[Group]);
@@ -73,12 +72,6 @@ namespace Exiled.API.Features
         /// Gets the base <see cref="ElevatorChamber"/>.
         /// </summary>
         public ElevatorChamber Base { get; }
-
-        /// <summary>
-        /// Gets the base <see cref="ElevatorAutoReturn"/>.
-        /// </summary>
-        /// <remarks>Would be null for any elevator that do not used <see cref="Interactables.Interobjects.ElevatorAutoReturn"/>.</remarks>
-        public ElevatorAutoReturn ElevatorAutoReturn { get; }
 
         /// <summary>
         /// Gets a value of the internal doors list.

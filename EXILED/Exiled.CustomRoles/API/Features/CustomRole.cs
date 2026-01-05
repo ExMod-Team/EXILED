@@ -791,12 +791,6 @@ namespace Exiled.CustomRoles.API.Features
         }
 
         /// <summary>
-        /// Returns the CustomRole in a human-readable format.
-        /// </summary>
-        /// <returns>A string containing CustomRole-related data.</returns>
-        public override string ToString() => $"{Name} ({Id})";
-
-        /// <summary>
         /// Tries to register this role.
         /// </summary>
         /// <returns>True if the role registered properly.</returns>
