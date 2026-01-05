@@ -54,7 +54,6 @@ namespace Exiled.Events.Patches.Generic
 
         private static void SetLayout(Texture2D tex, int index)
         {
-            // Log.Error calls here will inform us if we need to update layout mapping
             switch (tex.name.Substring(0, 3))
             {
                 case "LC_":
