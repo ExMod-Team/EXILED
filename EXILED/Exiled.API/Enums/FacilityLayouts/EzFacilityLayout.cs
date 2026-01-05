@@ -20,7 +20,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Represents an unknown layout. This value is only used if you try to access <see cref="Map.EzLayout"/> prematurely or if an error occured.
         /// </summary>
-        Unknown = -1,
+        Unknown,
 
         /// <summary>
         /// See <see cref="EzFacilityLayout"/> for details.

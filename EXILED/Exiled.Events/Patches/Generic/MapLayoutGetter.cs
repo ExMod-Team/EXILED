@@ -59,30 +59,21 @@ namespace Exiled.Events.Patches.Generic
             {
                 case "LC_":
                     if (index > 5)
-                    {
                         Log.Error($"Unknown layout: {tex}");
-                        return;
-                    }
 
-                    Map.LczLayout = (LczFacilityLayout)index;
+                    Map.LczLayout = (LczFacilityLayout)(index + 1);
                     return;
                 case "HC_":
                     if (index > 10)
-                    {
                         Log.Error($"Unknown layout: {tex}");
-                        return;
-                    }
 
-                    Map.HczLayout = (HczFacilityLayout)index;
+                    Map.HczLayout = (HczFacilityLayout)(index + 1);
                     return;
                 case "EZ_":
                     if (index > 5)
-                    {
                         Log.Error($"Unknown layout: {tex}");
-                        return;
-                    }
 
-                    Map.EzLayout = (EzFacilityLayout)index;
+                    Map.EzLayout = (EzFacilityLayout)(index + 1);
                     return;
                 default:
                     Log.Error($"Failed to parse layout name: {tex.name}!");
