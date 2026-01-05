@@ -101,6 +101,9 @@ namespace Exiled.API.Extensions
             { EffectType.TraumatizedByEvil, typeof(TraumatizedByEvil) },
             { EffectType.WhiteCandy, typeof(WhiteCandy) },
             { EffectType.Scp1509Resurrected, typeof(Scp1509Resurrected) },
+            { EffectType.FocusedVision, typeof(FocusedVision) },
+            { EffectType.AnomalousRegeneration, typeof(AnomalousRegeneration) },
+            { EffectType.AnomalousTarget, typeof(AnomalousTarget) },
             #pragma warning restore CS0618
         });
 

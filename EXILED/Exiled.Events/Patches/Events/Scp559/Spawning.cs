@@ -76,6 +76,8 @@ namespace Exiled.Events.Patches.Events.Scp559
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }

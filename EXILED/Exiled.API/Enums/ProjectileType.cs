@@ -51,21 +51,21 @@ namespace Exiled.API.Enums
         /// Coal.
         /// Used by <see cref="ItemType.Coal"/>.
         /// </summary>
-        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        // [Obsolete("Only availaible for Christmas and AprilFools.")]
         Coal,
 
         /// <summary>
         /// SpecialCoal.
         /// Used by <see cref="ItemType.SpecialCoal"/>.
         /// </summary>
-        [Obsolete("Only availaible for Christmas and AprilFools.")]
+        // [Obsolete("Only availaible for Christmas and AprilFools.")]
         SpecialCoal,
 
         /// <summary>
         /// Snowball.
         /// Used by <see cref="ItemType.Snowball"/>.
         /// </summary>
-        [Obsolete("Only availaible for Christmas.")]
+        // [Obsolete("Only availaible for Christmas.")]
         Snowball,
     }
 }
