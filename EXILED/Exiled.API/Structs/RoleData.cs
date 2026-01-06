@@ -56,6 +56,11 @@ namespace Exiled.API.Structs
             /// Indicates that Exiled should not reset the fake role if the target of this <see cref="RoleData"/> dies.
             /// </summary>
             Persist = 4,
+
+            /// <summary>
+            /// Indicates that this <see cref="RoleData"/> can make a player view themselves as a different role.
+            /// </summary>
+            AffectSelf = 8,
         }
 
         /// <summary>

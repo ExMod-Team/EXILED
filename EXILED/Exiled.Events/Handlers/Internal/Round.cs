@@ -95,13 +95,14 @@ namespace Exiled.Events.Handlers.Internal
         {
             foreach (Player viewer in Player.Enumerable)
             {
-                if (viewer == ev.Player)
-                    continue;
-
                 foreach (Func<Player, RoleData> generator in ev.Player.FakeRoleGenerator)
                 {
                     RoleData data = generator(viewer);
-                    if (data.Role != RoleTypeId.None)
+
+                    if (data.Role == RoleTypeId.None)
+                        continue;
+
+                    if (viewer != ev.Player || (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.AffectSelf)
                     {
                         viewer.FakeRoles[ev.Player] = data;
                     }
@@ -117,9 +118,6 @@ namespace Exiled.Events.Handlers.Internal
 
             foreach (Player viewer in Player.Enumerable)
             {
-                if (viewer == ev.Player)
-                    continue;
-
                 if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && (data.DataAuthority & RoleData.Authority.Persist) == RoleData.Authority.None)
                     viewer.FakeRoles.Remove(ev.Player);
             }
@@ -165,15 +163,16 @@ namespace Exiled.Events.Handlers.Internal
             {
                 player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
 
-                if (player != ev.Player)
+                foreach (Func<Player, RoleData> generator in player.FakeRoleGenerator)
                 {
-                    foreach (Func<Player, RoleData> generator in player.FakeRoleGenerator)
+                    RoleData data = generator(ev.Player);
+
+                    if (data.Role == RoleTypeId.None)
+                        continue;
+
+                    if (player != ev.Player || (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.AffectSelf)
                     {
-                        RoleData data = generator(ev.Player);
-                        if (data.Role != RoleTypeId.None)
-                        {
-                            ev.Player.FakeRoles[player] = data;
-                        }
+                        ev.Player.FakeRoles[player] = data;
                     }
                 }
             }
@@ -196,6 +195,9 @@ namespace Exiled.Events.Handlers.Internal
             {
                 if (data.Role == actualRole)
                     return actualRole;
+
+                if (ownerHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
+                    return data.Role;
 
                 // if another plugin has written data, we can't reliably modify and expect non-breaking behavior.
                 // if we send faulty data we can accidentally soft-dc the entire server which is much worse than a plugin not working.
