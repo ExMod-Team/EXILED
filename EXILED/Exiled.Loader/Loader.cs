@@ -511,7 +511,7 @@ namespace Exiled.Loader
 
             EnablePlugins();
 
-            BuildInfoCommand.ModDescription = string.Join(
+            BuildInfoCommand.ModDescription += string.Join(
                 "\n",
                 AppDomain.CurrentDomain.GetAssemblies()
                     .Where(a => a.FullName.StartsWith("Exiled.", StringComparison.OrdinalIgnoreCase))
