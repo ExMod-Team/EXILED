@@ -1873,12 +1873,13 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="viewers">The players to affect.</param>
         /// <param name="fakeRole">The fake role.</param>
-        /// /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
-        public void SetAppearance(IEnumerable<Player> viewers, RoleTypeId fakeRole, byte unitId = 0)
+        /// <param name="authority">How to handle edge cases.</param>
+        /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
+        public void SetAppearance(IEnumerable<Player> viewers, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte unitId = 0)
         {
             foreach (Player player in viewers)
             {
-                player.SetAppearance(this, fakeRole, unitId);
+                player.SetAppearance(this, fakeRole, authority, unitId);
             }
         }
 
@@ -1887,10 +1888,11 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="player">The target.</param>
         /// <param name="fakeRole">The fake role.</param>
+        /// <param name="authority">How to handle edge cases.</param>
         /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
-        public void SetAppearance(Player player, RoleTypeId fakeRole, byte unitId = 0)
+        public void SetAppearance(Player player, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte unitId = 0)
         {
-            FakeRoles[player] = new RoleData(fakeRole, unitId);
+            FakeRoles[player] = new RoleData(fakeRole, authority, unitId);
         }
 
         /// <summary>

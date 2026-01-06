@@ -34,6 +34,8 @@ namespace Exiled.Events.Handlers.Internal
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
+    using RelativePositioning;
+    using Respawning.NamingRules;
     using UnityEngine;
     using Utils.Networking;
     using Utils.NonAllocLINQ;
@@ -91,8 +93,11 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Player.OnSpawned(SpawnedEventArgs)" />
         public static void OnSpawned(SpawnedEventArgs ev)
         {
-            foreach (Player viewer in Player.Enumerable.Except(new[] { ev.Player }))
+            foreach (Player viewer in Player.Enumerable)
             {
+                if (viewer == ev.Player)
+                    continue;
+
                 foreach (Func<Player, RoleData> generator in ev.Player.FakeRoleGenerator)
                 {
                     RoleData data = generator(viewer);
@@ -101,6 +106,22 @@ namespace Exiled.Events.Handlers.Internal
                         viewer.FakeRoles[ev.Player] = data;
                     }
                 }
+            }
+        }
+
+        /// <inheritdoc cref="Handlers.Player.OnDying(DyingEventArgs)" />
+        public static void OnDying(DyingEventArgs ev)
+        {
+            if (!ev.IsAllowed)
+                return;
+
+            foreach (Player viewer in Player.Enumerable)
+            {
+                if (viewer == ev.Player)
+                    continue;
+
+                if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && (data.DataAuthority & RoleData.Authority.Persist) == RoleData.Authority.None)
+                    viewer.FakeRoles.Remove(ev.Player);
             }
         }
 
@@ -173,8 +194,53 @@ namespace Exiled.Events.Handlers.Internal
 
             if (viewer.FakeRoles.TryGetValue(owner, out RoleData data))
             {
-                if (data.UnitId != 0)
-                    writer.WriteByte(data.UnitId);
+                if (data.Role == actualRole)
+                    return actualRole;
+
+                // if another plugin has written data, we can't reliably modify and expect non-breaking behavior.
+                // if we send faulty data we can accidentally soft-dc the entire server which is much worse than a plugin not working.
+                if (writer.Position != 0 && (data.DataAuthority & RoleData.Authority.Override) == RoleData.Authority.None)
+                    return actualRole;
+
+                writer.Position = 0;
+
+                // I doubt most devs want people who are dead to have fake roles.
+                if (actualRole.IsDead() && (data.DataAuthority & RoleData.Authority.Always) == RoleData.Authority.None)
+                    return actualRole;
+
+                if (data.CustomData != null)
+                {
+                    data.CustomData(writer);
+                }
+                else
+                {
+                    if (data.Role.GetRoleBase() is PlayerRoles.HumanRole { UsesUnitNames: true })
+                    {
+                        if (data.UnitId != 0)
+                        {
+                            writer.WriteByte(data.UnitId);
+                        }
+                        else
+                        {
+                            if (!NamingRulesManager.GeneratedNames.TryGetValue(Team.FoundationForces, out List<string> list))
+                                return actualRole;
+
+                            writer.WriteByte((byte)list.Count);
+                        }
+                    }
+
+                    if (data.Role.GetRoleBase() is PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo)
+                        writer.WriteByte((byte)flamingo.ServerSpawnReason);
+
+                    if (data.Role == RoleTypeId.Scp0492)
+                    {
+                        writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(owner.MaxHealth), 0, ushort.MaxValue));
+                        writer.WriteBool(false);
+                    }
+
+                    writer.WriteRelativePosition(new RelativePosition(owner.Position));
+                    writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0.0f, 360f, owner.Rotation.eulerAngles.y) * ushort.MaxValue));
+                }
 
                 return data.Role;
             }

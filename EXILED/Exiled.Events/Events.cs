@@ -70,6 +70,7 @@ namespace Exiled.Events
             Handlers.Server.RoundStarted += Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole += Handlers.Internal.Round.OnChangingRole;
             Handlers.Player.Spawned += Handlers.Internal.Round.OnSpawned;
+            Handlers.Player.Dying.Subscribe(Handlers.Internal.Round.OnDying, -100);
             Handlers.Player.SpawningRagdoll += Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense += Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified += Handlers.Internal.Round.OnVerified;
@@ -121,6 +122,7 @@ namespace Exiled.Events
             Handlers.Server.RoundStarted -= Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole -= Handlers.Internal.Round.OnChangingRole;
             Handlers.Player.Spawned -= Handlers.Internal.Round.OnSpawned;
+            Handlers.Player.Dying -= Handlers.Internal.Round.OnDying;
             Handlers.Player.SpawningRagdoll -= Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense -= Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified -= Handlers.Internal.Round.OnVerified;
