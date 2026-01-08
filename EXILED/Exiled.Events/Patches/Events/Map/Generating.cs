@@ -20,6 +20,7 @@ namespace Exiled.Events.Patches.Events.Map
     using HarmonyLib;
     using LabApi.Events.Arguments.ServerEvents;
     using MapGeneration;
+    using MapGeneration.Holidays;
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
@@ -32,6 +33,9 @@ namespace Exiled.Events.Patches.Events.Map
     [HarmonyPatch(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Awake))]
     public class Generating
     {
+        private static readonly List<SpawnableRoom> Candidates = new();
+        private static readonly List<AtlasZoneGenerator.SpawnedRoomData> Spawned = new();
+
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
@@ -61,8 +65,6 @@ namespace Exiled.Events.Patches.Events.Map
             LocalBuilder newSeed = generator.DeclareLocal(typeof(int));
 
             int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
-
-            newInstructions[index].WithLabels(skipLabel);
 
             /*
              * To summarize this transpiler:
@@ -94,9 +96,6 @@ namespace Exiled.Events.Patches.Events.Map
                 new CodeInstruction(OpCodes.Ldloc_1).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
 
-                // Dup on stack twice
-                new(OpCodes.Dup),
-
                 // TryDetermineLayouts(ev.Seed, out lcz, out hcz, out ez)
                 new(OpCodes.Ldloca_S, lcz),
                 new(OpCodes.Ldloca_S, hcz),
@@ -106,6 +105,10 @@ namespace Exiled.Events.Patches.Events.Map
                 // if (false) skip our code;
                 new(OpCodes.Brfalse_S, skipLabel),
 
+                // ev.Seed (from LabAPI event) again
+                new CodeInstruction(OpCodes.Ldloc_1),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
+
                 // new GeneratingEventArgs(ev.Seed, lcz, hcz, ez);
                 new(OpCodes.Ldloc_S, lcz),
                 new(OpCodes.Ldloc_S, hcz),
@@ -113,6 +116,7 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(GeneratingEventArgs))[0]),
 
                 // Dup on stack
+                new(OpCodes.Dup),
                 new(OpCodes.Dup),
 
                 // Call OnGenerating
@@ -134,9 +138,9 @@ namespace Exiled.Events.Patches.Events.Map
 
                 // {
                 // ev.Seed (LabAPI) = ev.Seed (ours)
+                new(OpCodes.Ldloc_1),
                 new(OpCodes.Ldloc_S, ev),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.Seed))),
-                new(OpCodes.Ldloc_1),
                 new(OpCodes.Callvirt, PropertySetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
 
                 // skip other event code;
@@ -198,10 +202,14 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Beq_S, skipLabel),
 
                 // ev.Seed (LabAPI) = newSeed;
-                new(OpCodes.Ldloc_S, newSeed),
                 new(OpCodes.Ldloc_1),
+                new(OpCodes.Ldloc_S, newSeed),
                 new(OpCodes.Callvirt, PropertySetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
             });
+
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
+
+            newInstructions[index].WithLabels(skipLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -251,9 +259,19 @@ namespace Exiled.Events.Patches.Events.Map
             return best;
         }
 
-        // determines what layouts will be generated from a seed
+        /// <summary>
+        /// Determines what layouts will be generated from a seed, code comes from interpreting <see cref="AtlasZoneGenerator.Generate"/> and sub-methods.
+        /// </summary>
+        /// <param name="seed">The seed to find the layouts of.</param>
+        /// <param name="lcz">The Light Containment Zone layout of the seed.</param>
+        /// <param name="hcz">The Heavy Containment Zone layout of the seed.</param>
+        /// <param name="ez">The Entrance Zone layout of the seed.</param>
+        /// <returns>Whether the method executed correctly.</returns>
         private static bool TryDetermineLayouts(int seed, out LczFacilityLayout lcz, out HczFacilityLayout hcz, out EzFacilityLayout ez)
         {
+            // (Surface gen + PD gen)
+            const int ExcludedZoneGeneratorCount = 2;
+
             lcz = LczFacilityLayout.Unknown;
             hcz = HczFacilityLayout.Unknown;
             ez = EzFacilityLayout.Unknown;
@@ -262,7 +280,7 @@ namespace Exiled.Events.Patches.Events.Map
             try
             {
                 ZoneGenerator[] gens = SeedSynchronizer._singleton._zoneGenerators;
-                for (int i = 0; i < gens.Length; i++)
+                for (int i = 0; i < gens.Length - ExcludedZoneGeneratorCount; i++)
                 {
                     ZoneGenerator generator = gens[i];
 
@@ -270,9 +288,8 @@ namespace Exiled.Events.Patches.Events.Map
                     {
                         // EntranceZoneGenerator should be the last zone generator
                         case EntranceZoneGenerator ezGen:
-                            if (i != gens.Length - 1)
+                            if (i != gens.Length - 1 - ExcludedZoneGeneratorCount)
                             {
-                                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Last zone generator processed for seed {seed} was not an EntranceZoneGenerator!");
                                 return false;
                             }
 
@@ -291,6 +308,8 @@ namespace Exiled.Events.Patches.Events.Map
                             Texture2D tex = gen.Atlases[layout];
                             AtlasInterpretation[] interpretations = MapAtlasInterpreter.Singleton.Interpret(tex, rng);
                             RandomizeInterpreted(rng, interpretations);
+                            foreach (AtlasInterpretation interpretation in interpretations)
+                                FakeSpawn(gen, interpretation, rng);
 
                             // this block "generates" them and accounts for duplicates and other things.
                             break;
@@ -348,5 +367,80 @@ namespace Exiled.Events.Patches.Events.Map
                 randomPick = currentValue;
             }
         }
+
+        private static void FakeSpawn(AtlasZoneGenerator generator, AtlasInterpretation interpretation, System.Random rng)
+        {
+            Candidates.Clear();
+            float chanceMultiplier = 0F;
+            bool flag = interpretation.SpecificRooms.Length != 0;
+            foreach (SpawnableRoom room in generator.CompatibleRooms)
+            {
+                SpawnableRoom spawnableRoom = room;
+                if (spawnableRoom.HolidayVariants.TryGetResult(out SpawnableRoom result))
+                {
+                    spawnableRoom = result;
+                }
+
+                int count = PreviouslySpawnedCount(spawnableRoom);
+                if (flag != spawnableRoom.SpecialRoom || (flag && !interpretation.SpecificRooms.Contains(spawnableRoom.Room.Name)) || spawnableRoom.Room.Shape != interpretation.RoomShape || count >= spawnableRoom.MaxAmount)
+                    continue;
+
+                if (count < spawnableRoom.MinAmount)
+                {
+                    Spawned.Add(new AtlasZoneGenerator.SpawnedRoomData
+                    {
+                        ChosenCandidate = spawnableRoom,
+                        Instance = null!,
+                        Interpretation = interpretation,
+                    });
+
+                    return;
+                }
+
+                chanceMultiplier += GetChanceWeight(interpretation.Coords, spawnableRoom);
+                Candidates.Add(spawnableRoom);
+            }
+
+            double random = rng.NextDouble() * chanceMultiplier;
+            float chance = 0F;
+            foreach (SpawnableRoom room in Candidates)
+            {
+                chance += GetChanceWeight(interpretation.Coords, room);
+                if (random > chance)
+                    continue;
+
+                Spawned.Add(new AtlasZoneGenerator.SpawnedRoomData
+                {
+                    ChosenCandidate = room,
+                    Instance = null!,
+                    Interpretation = interpretation,
+                });
+
+                return;
+            }
+        }
+
+        private static float GetChanceWeight(Vector2Int coords, SpawnableRoom candidate)
+        {
+            Vector2Int up = coords + Vector2Int.up;
+            Vector2Int down = coords + Vector2Int.down;
+            Vector2Int left = coords + Vector2Int.left;
+            Vector2Int right = coords + Vector2Int.right;
+            float chance = candidate.ChanceMultiplier;
+
+            foreach (AtlasZoneGenerator.SpawnedRoomData spawnedRoomData in Spawned)
+            {
+                if (spawnedRoomData.ChosenCandidate != candidate)
+                    continue;
+
+                Vector2Int candidateCoords = spawnedRoomData.Interpretation.Coords;
+                if (candidateCoords == up || candidateCoords == down || candidateCoords == left || candidateCoords == right)
+                    chance *= candidate.AdjacentChanceMultiplier;
+            }
+
+            return chance;
+        }
+
+        private static int PreviouslySpawnedCount(SpawnableRoom candidate) => Spawned.Count(spawnedRoomData => spawnedRoomData.ChosenCandidate == candidate);
     }
 }
