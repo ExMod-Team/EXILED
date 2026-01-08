@@ -9,6 +9,7 @@ namespace Exiled.Events.Patches.Events.Map
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection.Emit;
 
@@ -36,6 +37,103 @@ namespace Exiled.Events.Patches.Events.Map
         private static readonly List<SpawnableRoom> Candidates = new();
         private static readonly List<AtlasZoneGenerator.SpawnedRoomData> Spawned = new();
 
+        /// <summary>
+        /// Determines what layouts will be generated from a seed, code comes from interpreting <see cref="AtlasZoneGenerator.Generate"/> and sub-methods.
+        /// </summary>
+        /// <param name="seed">The seed to find the layouts of.</param>
+        /// <param name="lcz">The Light Containment Zone layout of the seed.</param>
+        /// <param name="hcz">The Heavy Containment Zone layout of the seed.</param>
+        /// <param name="ez">The Entrance Zone layout of the seed.</param>
+        /// <returns>Whether the method executed correctly.</returns>
+        internal static bool TryDetermineLayouts(int seed, out LczFacilityLayout lcz, out HczFacilityLayout hcz, out EzFacilityLayout ez)
+        {
+            // (Surface gen + PD gen)
+            const int ExcludedZoneGeneratorCount = 2;
+
+            lcz = LczFacilityLayout.Unknown;
+            hcz = HczFacilityLayout.Unknown;
+            ez = EzFacilityLayout.Unknown;
+
+            System.Random rng = new(seed);
+            try
+            {
+                ZoneGenerator[] gens = SeedSynchronizer._singleton._zoneGenerators;
+                for (int i = 0; i < gens.Length - ExcludedZoneGeneratorCount; i++)
+                {
+                    Spawned.Clear();
+                    ZoneGenerator generator = gens[i];
+
+                    switch (generator)
+                    {
+                        // EntranceZoneGenerator should be the last zone generator
+                        case EntranceZoneGenerator ezGen:
+                            if (i != gens.Length - 1 - ExcludedZoneGeneratorCount)
+                            {
+                                Log.Error("EntranceZoneGenerator was not in expected index!");
+                                return false;
+                            }
+
+                            ez = (EzFacilityLayout)(rng.Next(ezGen.Atlases.Length) + 1);
+                            break;
+                        case AtlasZoneGenerator gen:
+                            int layout = rng.Next(gen.Atlases.Length);
+
+                            if (gen is LightContainmentZoneGenerator)
+                                lcz = (LczFacilityLayout)(layout + 1);
+                            else
+                                hcz = (HczFacilityLayout)(layout + 1);
+
+                            // rng needs to be called the same amount as during map gen for next zone generator.
+                            // this block of code picks what rooms to generate.
+                            Texture2D tex = gen.Atlases[layout];
+                            AtlasInterpretation[] interpretations = MapAtlasInterpreter.Singleton.Interpret(tex, rng);
+                            RandomizeInterpreted(rng, interpretations);
+
+                            // debugs here are good for determining if the wrong # of rng.Next();'s are called.
+                            Log.Debug(interpretations.Length);
+
+                            // this block "generates" them and accounts for duplicates and other things.
+                            for (int j = 0; j < interpretations.Length; j++)
+                            {
+                                Log.Debug(interpretations[j].ToString());
+                                FakeSpawn(gen, interpretations[j], rng);
+                            }
+
+                            break;
+                        default:
+                            Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Found non AtlasZoneGenerator [{generator}] in SeedSynchronizer._singleton._zoneGenerators!");
+                            return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return false;
+            }
+
+            bool error = false;
+            if (lcz is LczFacilityLayout.Unknown)
+            {
+                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for LCZ for seed {seed}");
+                error = true;
+            }
+
+            if (hcz is HczFacilityLayout.Unknown)
+            {
+                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for HCZ for seed {seed}");
+                error = true;
+            }
+
+            if (ez is EzFacilityLayout.Unknown)
+            {
+                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for EZ for seed {seed}");
+                error = true;
+            }
+
+            return !error;
+        }
+
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
@@ -52,15 +150,6 @@ namespace Exiled.Events.Patches.Events.Map
             LocalBuilder ez = generator.DeclareLocal(typeof(EzFacilityLayout));
 
             LocalBuilder ev = generator.DeclareLocal(typeof(GeneratingEventArgs));
-
-            Label lczLabel1 = generator.DefineLabel();
-            Label lczLabel2 = generator.DefineLabel();
-
-            Label hczLabel1 = generator.DefineLabel();
-            Label hczLabel2 = generator.DefineLabel();
-
-            Label ezLabel1 = generator.DefineLabel();
-            Label ezLabel2 = generator.DefineLabel();
 
             LocalBuilder newSeed = generator.DeclareLocal(typeof(int));
 
@@ -84,11 +173,11 @@ namespace Exiled.Events.Patches.Events.Map
              *  goto skipEvent;
              * }
              *
-             * int newSeed = GenerateSeed(lcz == ev.LczLayout ? LczFacilityLayout.Unknown : ev.LczLayout, hcz == ev.HczLayout ? HczFacilityLayout.Unknown : ev.HczLayout, ez == ev.EzLayout ? EzFacilityLayout.Unknown : ev.EzLayout);
+             * int newSeed = GenerateSeed(ev.TargetLczLayout, ev.TargetHczLayout, ev.TargetEzLayout);
              * if (newSeed == -1)
              *  goto skipEvent;
              * ev2.Seed = newSeed;
-             */
+            */
 
             newInstructions.InsertRange(index, new[]
             {
@@ -147,58 +236,22 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Br_S, skipLabel),
 
                 // }
-                // load (lcz == ev.LczLayout ? LczFacilityLayout.Unknown : ev.LczLayout) onto the stack
-                new CodeInstruction(OpCodes.Ldloc_S, lcz).WithLabels(continueEventLabel),
+                new CodeInstruction(OpCodes.Ldloc_S, ev).WithLabels(continueEventLabel),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.TargetLczLayout))),
+
                 new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.LczLayout))),
-                new(OpCodes.Beq_S, lczLabel1),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.TargetHczLayout))),
 
-                // ev.LczLayout
                 new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.LczLayout))),
-                new(OpCodes.Ldind_I4),
-                new(OpCodes.Br_S, lczLabel2),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.TargetEzLayout))),
 
-                // LczFacilityLayout.Unknown
-                new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(lczLabel1),
-
-                // load (hcz == ev.HczLayout ? HczFacilityLayout.Unknown : ev.HczLayout) onto the stack
-                new CodeInstruction(OpCodes.Ldloc_S, hcz).WithLabels(lczLabel2),
-                new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.HczLayout))),
-                new(OpCodes.Beq_S, hczLabel1),
-
-                // ev.HczLayout
-                new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.HczLayout))),
-                new(OpCodes.Ldind_I4),
-                new(OpCodes.Br_S, hczLabel2),
-
-                // HczFacilityLayout.Unknown
-                new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(hczLabel1),
-
-                // load (ez == ev.EzLayout ? EzFacilityLayout.Unknown : ev.EzLayout) onto the stack
-                new CodeInstruction(OpCodes.Ldloc_S, ez).WithLabels(hczLabel2),
-                new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.EzLayout))),
-                new(OpCodes.Beq_S, ezLabel1),
-
-                // ev.EzLayout
-                new(OpCodes.Ldloc_S, ev),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.EzLayout))),
-                new(OpCodes.Ldind_I4),
-                new(OpCodes.Br_S, ezLabel2),
-
-                // EzFacilityLayout.Unknown
-                new CodeInstruction(OpCodes.Ldc_I4_0).WithLabels(ezLabel1),
-
-                // int newSeed = GenerateSeed(those 3 ternary values);
-                new CodeInstruction(OpCodes.Call, Method(typeof(Generating), nameof(GenerateSeed))).WithLabels(ezLabel2),
+                // int newSeed = GenerateSeed(ev.TargetLczLayout, ev.TargetHczLayout, ev.TargetEzLayout);
+                new CodeInstruction(OpCodes.Call, Method(typeof(Generating), nameof(GenerateSeed))),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, newSeed),
 
                 // if (newSeed == -1) skip other event code;
-                new(OpCodes.Ldc_I4_M1),
+                new CodeInstruction(OpCodes.Ldc_I4_M1),
                 new(OpCodes.Beq_S, skipLabel),
 
                 // ev.Seed (LabAPI) = newSeed;
@@ -228,123 +281,68 @@ namespace Exiled.Events.Patches.Events.Map
             int best = -1;
             int bestMatches = 0;
 
-            for (int i = 0; i < 1000; i++)
-            {
-                int matches = 0;
+            Stopwatch debug = new();
+            debug.Start();
 
-                int seed = seedGenerator.Next(1, int.MaxValue);
+            int i = 0;
 
-                if (!TryDetermineLayouts(seed, out LczFacilityLayout currLcz, out HczFacilityLayout currHcz, out EzFacilityLayout currEz))
-                {
-                    break;
-                }
-
-                if (lcz is LczFacilityLayout.Unknown || currLcz == lcz)
-                    matches++;
-                if (hcz is HczFacilityLayout.Unknown || currHcz == hcz)
-                    matches++;
-                if (ez is EzFacilityLayout.Unknown || currEz == ez)
-                    matches++;
-
-                if (matches > bestMatches)
-                {
-                    best = seed;
-                    bestMatches = matches;
-                }
-
-                if (bestMatches is 3)
-                    break;
-            }
-
-            return best;
-        }
-
-        /// <summary>
-        /// Determines what layouts will be generated from a seed, code comes from interpreting <see cref="AtlasZoneGenerator.Generate"/> and sub-methods.
-        /// </summary>
-        /// <param name="seed">The seed to find the layouts of.</param>
-        /// <param name="lcz">The Light Containment Zone layout of the seed.</param>
-        /// <param name="hcz">The Heavy Containment Zone layout of the seed.</param>
-        /// <param name="ez">The Entrance Zone layout of the seed.</param>
-        /// <returns>Whether the method executed correctly.</returns>
-        private static bool TryDetermineLayouts(int seed, out LczFacilityLayout lcz, out HczFacilityLayout hcz, out EzFacilityLayout ez)
-        {
-            // (Surface gen + PD gen)
-            const int ExcludedZoneGeneratorCount = 2;
-
-            lcz = LczFacilityLayout.Unknown;
-            hcz = HczFacilityLayout.Unknown;
-            ez = EzFacilityLayout.Unknown;
-
-            System.Random rng = new(seed);
             try
             {
-                ZoneGenerator[] gens = SeedSynchronizer._singleton._zoneGenerators;
-                for (int i = 0; i < gens.Length - ExcludedZoneGeneratorCount; i++)
+                // TODO: optimize, increase max iterations, and calculate probability of failure.
+                for (i = 0; i < 1000; i++)
                 {
-                    ZoneGenerator generator = gens[i];
+                    int matches = 0;
 
-                    switch (generator)
+                    int seed = seedGenerator.Next(1, int.MaxValue);
+
+                    if (!TryDetermineLayouts(seed, out LczFacilityLayout currLcz, out HczFacilityLayout currHcz, out EzFacilityLayout currEz))
                     {
-                        // EntranceZoneGenerator should be the last zone generator
-                        case EntranceZoneGenerator ezGen:
-                            if (i != gens.Length - 1 - ExcludedZoneGeneratorCount)
-                            {
-                                return false;
-                            }
+                        break;
+                    }
 
-                            ez = (EzFacilityLayout)(rng.Next(ezGen.Atlases.Length) + 1);
-                            break;
-                        case AtlasZoneGenerator gen:
-                            int layout = rng.Next(gen.Atlases.Length);
+                    if (lcz is LczFacilityLayout.Unknown || currLcz == lcz)
+                        matches++;
+                    if (hcz is HczFacilityLayout.Unknown || currHcz == hcz)
+                        matches++;
+                    if (ez is EzFacilityLayout.Unknown || currEz == ez)
+                        matches++;
 
-                            if (gen is LightContainmentZoneGenerator)
-                                lcz = (LczFacilityLayout)(layout + 1);
-                            else
-                                hcz = (HczFacilityLayout)(layout + 1);
+                    if (matches > bestMatches)
+                    {
+                        best = seed;
+                        bestMatches = matches;
+                    }
 
-                            // rng needs to be called the same amount as during map gen for next zone generator.
-                            // this block of code picks what rooms to generate.
-                            Texture2D tex = gen.Atlases[layout];
-                            AtlasInterpretation[] interpretations = MapAtlasInterpreter.Singleton.Interpret(tex, rng);
-                            RandomizeInterpreted(rng, interpretations);
-                            foreach (AtlasInterpretation interpretation in interpretations)
-                                FakeSpawn(gen, interpretation, rng);
+                    if (bestMatches is 3)
+                    {
+                        if (lcz != currLcz)
+                        {
+                            Log.Error($"{typeof(Generating).FullName}.{nameof(GenerateSeed)}: A logical error occured processing {seed}. Data: {matches}, {bestMatches}, {currLcz}, {currHcz}, {currEz}");
+                        }
 
-                            // this block "generates" them and accounts for duplicates and other things.
-                            break;
-                        default:
-                            Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Found non AtlasZoneGenerator [{generator}] in SeedSynchronizer._singleton._zoneGenerators!");
-                            return false;
+                        if (hcz != currHcz)
+                        {
+                            Log.Error($"{typeof(Generating).FullName}.{nameof(GenerateSeed)}: A logical error occured processing {seed}. Data: {matches}, {bestMatches}, {currLcz}, {currHcz}, {currEz}");
+                        }
+
+                        if (ez != currEz)
+                        {
+                            Log.Error($"{typeof(Generating).FullName}.{nameof(GenerateSeed)}: A logical error occured processing {seed}. Data: {matches}, {bestMatches}, {currLcz}, {currHcz}, {currEz}");
+                        }
+
+                        break;
                     }
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                return false;
             }
 
-            bool error = false;
-            if (lcz is LczFacilityLayout.Unknown)
-            {
-                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for LCZ for seed {seed}");
-                error = true;
-            }
+            debug.Stop();
+            Log.Debug($"Attempted {i} seeds in {debug.Elapsed.TotalSeconds}");
 
-            if (hcz is HczFacilityLayout.Unknown)
-            {
-                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for HCZ for seed {seed}");
-                error = true;
-            }
-
-            if (ez is EzFacilityLayout.Unknown)
-            {
-                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for EZ for seed {seed}");
-                error = true;
-            }
-
-            return !error;
+            return best;
         }
 
         /// <summary>
@@ -368,12 +366,12 @@ namespace Exiled.Events.Patches.Events.Map
             }
         }
 
-        private static void FakeSpawn(AtlasZoneGenerator generator, AtlasInterpretation interpretation, System.Random rng)
+        private static void FakeSpawn(AtlasZoneGenerator gen, AtlasInterpretation interpretation, System.Random rng)
         {
             Candidates.Clear();
             float chanceMultiplier = 0F;
             bool flag = interpretation.SpecificRooms.Length != 0;
-            foreach (SpawnableRoom room in generator.CompatibleRooms)
+            foreach (SpawnableRoom room in gen.CompatibleRooms)
             {
                 SpawnableRoom spawnableRoom = room;
                 if (spawnableRoom.HolidayVariants.TryGetResult(out SpawnableRoom result))
@@ -381,7 +379,7 @@ namespace Exiled.Events.Patches.Events.Map
                     spawnableRoom = result;
                 }
 
-                int count = PreviouslySpawnedCount(spawnableRoom);
+                int count = Spawned.Count(spawned => spawned.ChosenCandidate == spawnableRoom);
                 if (flag != spawnableRoom.SpecialRoom || (flag && !interpretation.SpecificRooms.Contains(spawnableRoom.Room.Name)) || spawnableRoom.Room.Shape != interpretation.RoomShape || count >= spawnableRoom.MaxAmount)
                     continue;
 
@@ -440,7 +438,5 @@ namespace Exiled.Events.Patches.Events.Map
 
             return chance;
         }
-
-        private static int PreviouslySpawnedCount(SpawnableRoom candidate) => Spawned.Count(spawnedRoomData => spawnedRoomData.ChosenCandidate == candidate);
     }
 }
