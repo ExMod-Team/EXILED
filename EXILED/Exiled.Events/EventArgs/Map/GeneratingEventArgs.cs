@@ -16,8 +16,6 @@ namespace Exiled.Events.EventArgs.Map
     /// </summary>
     public class GeneratingEventArgs : IDeniableEvent
     {
-        private int seed;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="GeneratingEventArgs"/> class.
         /// </summary>
@@ -76,11 +74,7 @@ namespace Exiled.Events.EventArgs.Map
         /// Gets or sets the seed of the map.
         /// </summary>
         /// <remarks>This property overrides any changes in <see cref="TargetLczLayout"/>, <see cref="TargetHczLayout"/>, or <see cref="TargetEzLayout"/>.</remarks>
-        public int Seed
-        {
-            get => seed;
-            set => seed = Mathf.Clamp(value, 0, int.MaxValue);
-        }
+        public int Seed { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the map can be generated.

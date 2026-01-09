@@ -153,37 +153,37 @@ namespace Exiled.Events.Patches.Events.Map
 
             LocalBuilder newSeed = generator.DeclareLocal(typeof(int));
 
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
+            int offset = -2;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Stloc_1) + offset;
 
             /*
              * To summarize this transpiler:
              *
-             * if (!TryDetermineLayouts(ev2.Seed, out LczFacilityLayout lcz, out HczFacilityLayout hcz, out EzFacilityLayout ez)
+             * if (!TryDetermineLayouts(SeedSynchronizer.Seed, out LczFacilityLayout lcz, out HczFacilityLayout hcz, out EzFacilityLayout ez)
              *  goto skipEvent;
              *
-             * ev = new GeneratingEventArgs(ev2.Seed, lcz, hcz, ez);
+             * ev = new GeneratingEventArgs(SeedSynchronizer.Seed, lcz, hcz, ez);
              * Handlers.Map.OnGenerating(ev);
              *
              * if (!ev.IsAllowed)
              *  goto "Map generation cancelled by a plugin." debug statement;
              *
-             * if (ev2.Seed != ev.Seed)
+             * if (SeedSynchronizer.Seed != ev.Seed)
              * {
-             *  ev2.Seed = ev.Seed;
+             *  SeedSynchronizer.Seed = ev.Seed;
              *  goto skipEvent;
              * }
              *
              * int newSeed = GenerateSeed(ev.TargetLczLayout, ev.TargetHczLayout, ev.TargetEzLayout);
              * if (newSeed == -1)
              *  goto skipEvent;
-             * ev2.Seed = newSeed;
+             * SeedSynchronizer.Seed = newSeed;
             */
 
             newInstructions.InsertRange(index, new[]
             {
-                // ev.Seed (from LabAPI event)
-                new CodeInstruction(OpCodes.Ldloc_1).MoveLabelsFrom(newInstructions[index]),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
+                // SeedSynchronizer.Seed
+                new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Seed))).MoveLabelsFrom(newInstructions[index]),
 
                 // TryDetermineLayouts(ev.Seed, out lcz, out hcz, out ez)
                 new(OpCodes.Ldloca_S, lcz),
@@ -194,9 +194,8 @@ namespace Exiled.Events.Patches.Events.Map
                 // if (false) skip our code;
                 new(OpCodes.Brfalse_S, skipLabel),
 
-                // ev.Seed (from LabAPI event) again
-                new CodeInstruction(OpCodes.Ldloc_1),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
+                // SeedSynchronizer.Seed again
+                new(OpCodes.Call, PropertyGetter(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Seed))),
 
                 // new GeneratingEventArgs(ev.Seed, lcz, hcz, ez);
                 new(OpCodes.Ldloc_S, lcz),
@@ -218,19 +217,17 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, notAllowedLabel),
 
-                // if (ev.Seed (LabAPI) != ev.Seed (ours))
-                new(OpCodes.Ldloc_1),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
+                // if (SeedSynchronizer.Seed != ev.Seed)
+                new(OpCodes.Call, PropertyGetter(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Seed))),
                 new(OpCodes.Ldloc_S, ev),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.Seed))),
                 new(OpCodes.Beq_S, continueEventLabel),
 
                 // {
-                // ev.Seed (LabAPI) = ev.Seed (ours)
-                new(OpCodes.Ldloc_1),
+                // SeedSynchronizer.Seed = ev.Seed
                 new(OpCodes.Ldloc_S, ev),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.Seed))),
-                new(OpCodes.Callvirt, PropertySetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
+                new(OpCodes.Call, PropertySetter(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Seed))),
 
                 // skip other event code;
                 new(OpCodes.Br_S, skipLabel),
@@ -246,18 +243,17 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Callvirt, PropertyGetter(typeof(GeneratingEventArgs), nameof(GeneratingEventArgs.TargetEzLayout))),
 
                 // int newSeed = GenerateSeed(ev.TargetLczLayout, ev.TargetHczLayout, ev.TargetEzLayout);
-                new CodeInstruction(OpCodes.Call, Method(typeof(Generating), nameof(GenerateSeed))),
+                new(OpCodes.Call, Method(typeof(Generating), nameof(GenerateSeed))),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, newSeed),
 
                 // if (newSeed == -1) skip other event code;
-                new CodeInstruction(OpCodes.Ldc_I4_M1),
+                new(OpCodes.Ldc_I4_M1),
                 new(OpCodes.Beq_S, skipLabel),
 
-                // ev.Seed (LabAPI) = newSeed;
-                new(OpCodes.Ldloc_1),
+                // SeedSynchronizer.Seed = newSeed;
                 new(OpCodes.Ldloc_S, newSeed),
-                new(OpCodes.Callvirt, PropertySetter(typeof(MapGeneratingEventArgs), nameof(MapGeneratingEventArgs.Seed))),
+                new(OpCodes.Call, PropertySetter(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Seed))),
             });
 
             index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
