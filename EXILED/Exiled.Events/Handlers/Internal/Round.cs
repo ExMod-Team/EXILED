@@ -82,7 +82,7 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
         public static void OnChangingRole(ChangingRoleEventArgs ev)
         {
-            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason is not(SpawnReason.Destroyed or SpawnReason.Died) && Events.Instance.Config.ShouldDropInventory)
+            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason is not SpawnReason.Destroyed && Events.Instance.Config.ShouldDropInventory)
                 ev.Player.Inventory.ServerDropEverything();
         }
 
