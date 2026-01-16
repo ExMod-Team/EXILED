@@ -39,14 +39,17 @@ namespace Exiled.Events.Patches.Fixes
 
             newInstructions.InsertRange(index, new[]
             {
+                // this.OwnerInventory.UserInventory.Items
                 new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp1344Item), nameof(Scp1344Item.OwnerInventory))),
                 new(OpCodes.Ldfld, Field(typeof(Inventory), nameof(Inventory.UserInventory))),
                 new(OpCodes.Ldfld, Field(typeof(InventoryInfo), nameof(InventoryInfo.Items))),
 
+                // this.ItemSerial
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Scp1344Item), nameof(Scp1344Item.ItemSerial))),
 
+                // if (!this.OwnerInventory.UserInventory.Items.ContainsKey(this.ItemSerial) return;
                 new(OpCodes.Callvirt, Method(typeof(Dictionary<ushort, ItemBase>), nameof(Dictionary<ushort, ItemBase>.ContainsKey))),
                 new(OpCodes.Brfalse_S, returnLabel),
             });
