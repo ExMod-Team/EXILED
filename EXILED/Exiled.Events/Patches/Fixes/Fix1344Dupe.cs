@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Fixes
 
     /// <summary>
     /// Patches the <see cref="Scp1344Item.OnPlayerInventoryDropped"/> method.
-    /// Fixes the dupe where 2 copies of SCP-1344 can be dropped at once.
+    /// Fixes the dupe where 2 copies of SCP-1344 can be created when a player dies.
     /// Bug not reported to NW yet (rare in vanilla servers).
     /// </summary>
     [HarmonyPatch(typeof(Scp1344Item), nameof(Scp1344Item.OnPlayerInventoryDropped))]
