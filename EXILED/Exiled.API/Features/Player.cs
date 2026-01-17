@@ -3115,14 +3115,10 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Throwable"/> item that was spawned.</returns>
         public Throwable ThrowGrenade(ProjectileType type, bool fullForce = true)
         {
-            Throwable throwable = type switch
-            {
-                ProjectileType.Flashbang => new FlashGrenade(),
-                ProjectileType.Scp2176 => new Scp2176(),
-                _ => new ExplosiveGrenade(type.GetItemType()),
-            };
+            Throwable throwable = Item.Create<Throwable>(type.GetItemType(), this);
 
             ThrowItem(throwable, fullForce);
+            throwable.Destroy();
             return throwable;
         }
 
