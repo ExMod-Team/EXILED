@@ -188,7 +188,7 @@ namespace Exiled.API.Features
         /// </summary>
         public ReferenceHub ReferenceHub
         {
-            get => field;
+            get;
             private set
             {
                 field = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");

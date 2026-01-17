@@ -188,7 +188,7 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public bool IsUsingStamina
         {
-            get => field;
+            get;
             set
             {
                 if (!value)

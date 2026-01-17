@@ -64,7 +64,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public RoleTypeId NewRole
         {
-            get => field;
+            get;
             set
             {
                 InventoryRoleInfo inventory = value.GetInventory();

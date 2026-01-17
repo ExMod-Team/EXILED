@@ -56,7 +56,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public Player Target
         {
-            get => field;
+            get;
             set
             {
                 if (value is null || field == value)
@@ -84,7 +84,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public bool IsAllowed
         {
-            get => field;
+            get;
             set
             {
                 if (field == value)
@@ -102,7 +102,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public Player Player
         {
-            get => field;
+            get;
             set
             {
                 if (value is null || field == value)

@@ -67,7 +67,7 @@ namespace Exiled.Events.EventArgs.Server
         /// </summary>
         public int MaximumRespawnAmount
         {
-            get => field;
+            get;
             set
             {
                 if (value < field)

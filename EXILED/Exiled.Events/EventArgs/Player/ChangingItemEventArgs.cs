@@ -41,7 +41,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public Item Item
         {
-            get => field;
+            get;
             set
             {
                 if (value != null && !Player.Inventory.UserInventory.Items.TryGetValue(value.Serial, out _))

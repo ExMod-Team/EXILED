@@ -42,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp914
         /// </summary>
         public Scp914KnobSetting KnobSetting
         {
-            get => field;
+            get;
             set => field = value > Scp914KnobSetting.VeryFine ? Scp914KnobSetting.Coarse : value;
         }
 

@@ -52,7 +52,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public ReservedSlotEventResult Result
         {
-            get => field;
+            get;
             set
             {
                 switch (value)

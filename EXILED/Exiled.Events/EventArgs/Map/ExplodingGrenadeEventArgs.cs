@@ -123,7 +123,7 @@ namespace Exiled.Events.EventArgs.Map
         /// <remarks>Explosion that are not from <see cref="ExplosionGrenadeProjectile"/> will return <see cref="ExplosionType.Custom"/> and can't be modified.</remarks>
         public ExplosionType ExplosionType
         {
-            get => field;
+            get;
             set => field = Projectile is ExplosionGrenadeProjectile ? value : ExplosionType.Custom;
         }
 

@@ -76,7 +76,7 @@ namespace Exiled.API.Features.DamageHandlers
         public virtual CassieAnnouncement CassieDeathAnnouncement
         {
             get => field ?? Base.CassieDeathAnnouncement;
-            protected set => field = value;
+            protected set;
         }
 
         /// <summary>

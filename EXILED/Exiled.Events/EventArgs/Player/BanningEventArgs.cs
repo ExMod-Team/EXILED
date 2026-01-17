@@ -38,7 +38,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public long Duration
         {
-            get => field;
+            get;
             set
             {
                 if (field == value)

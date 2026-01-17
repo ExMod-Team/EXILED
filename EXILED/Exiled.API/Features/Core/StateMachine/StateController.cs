@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Core.StateMachine
         /// </summary>
         public State CurrentState
         {
-            get => field;
+            get;
             set
             {
                 if (field.Id == value.Id)

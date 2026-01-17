@@ -54,7 +54,7 @@ namespace Exiled.Events.EventArgs.Player
         public EscapeScenario EscapeScenario
         {
             get => (field is EscapeScenario.None && IsAllowed) ? EscapeScenario.CustomEscape : field;
-            set => field = value;
+            set;
         }
 
         /// <summary>

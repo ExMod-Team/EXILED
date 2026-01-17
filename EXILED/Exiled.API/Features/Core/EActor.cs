@@ -97,7 +97,7 @@ namespace Exiled.API.Features.Core
         /// </summary>
         public virtual bool CanEverTick
         {
-            get => field;
+            get;
             set
             {
                 if (!IsEditable)
@@ -120,7 +120,7 @@ namespace Exiled.API.Features.Core
         /// </summary>
         public virtual float FixedTickRate
         {
-            get => field;
+            get;
             set
             {
                 if (!IsEditable)

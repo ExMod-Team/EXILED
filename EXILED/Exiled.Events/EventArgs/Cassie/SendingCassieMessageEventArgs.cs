@@ -80,7 +80,7 @@ namespace Exiled.Events.EventArgs.Cassie
         /// </summary>
         public string CustomSubtitles
         {
-            get => field;
+            get;
             set
             {
                 if (field != value)
@@ -100,7 +100,7 @@ namespace Exiled.Events.EventArgs.Cassie
         /// </summary>
         public float GlitchScale
         {
-            get => field;
+            get;
             set
             {
                 if (!MakeNoise && value is not 0)
@@ -165,7 +165,7 @@ namespace Exiled.Events.EventArgs.Cassie
                     _ => new CassieAnnouncement(newPayload, 0, GlitchScale / (API.Features.Warhead.IsDetonated ? 2F : 1F) * (MakeNoise ? 1F : 0F)),
                 };
             }
-            private set => field = value;
+            private set;
         }
     }
 }

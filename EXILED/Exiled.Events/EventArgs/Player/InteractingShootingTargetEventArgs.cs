@@ -70,7 +70,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public int NewMaxHp
         {
-            get => field;
+            get;
             set
             {
                 if (!ShootingTarget.IsSynced)
@@ -84,7 +84,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public int NewAutoResetTime
         {
-            get => field;
+            get;
             set
             {
                 if (!ShootingTarget.IsSynced)

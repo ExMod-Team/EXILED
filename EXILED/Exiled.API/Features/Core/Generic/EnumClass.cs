@@ -74,7 +74,7 @@ namespace Exiled.API.Features.Core.Generic
                 isDefined = true;
                 return field;
             }
-            private set => field = value;
+            private set;
         }
 
         /// <summary>
