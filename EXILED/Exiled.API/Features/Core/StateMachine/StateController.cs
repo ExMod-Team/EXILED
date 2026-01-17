@@ -19,7 +19,6 @@ namespace Exiled.API.Features.Core.StateMachine
     public abstract class StateController : EActor
     {
         private readonly List<State> states = new();
-        private State currentState;
 
         /// <summary>
         /// Gets all handled states.
@@ -31,14 +30,14 @@ namespace Exiled.API.Features.Core.StateMachine
         /// </summary>
         public State CurrentState
         {
-            get => currentState;
+            get => field;
             set
             {
-                if (currentState.Id == value.Id)
+                if (field.Id == value.Id)
                     return;
 
-                (PreviousState = currentState).OnExit(this);
-                (currentState = value).OnEnter(this);
+                (PreviousState = field).OnExit(this);
+                (field = value).OnEnter(this);
 
                 OnStateChanged();
             }
@@ -75,7 +74,7 @@ namespace Exiled.API.Features.Core.StateMachine
         protected virtual void OnStateChanged()
         {
             EndStateMulticastDispatcher.InvokeAll(PreviousState);
-            BeginStateMulticastDispatcher.InvokeAll(currentState);
+            BeginStateMulticastDispatcher.InvokeAll(CurrentState);
         }
     }
 }

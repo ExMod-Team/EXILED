@@ -24,9 +24,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class InteractingShootingTargetEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private int autoResetTime;
-        private int maxHp;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="InteractingShootingTargetEventArgs" /> class.
         /// </summary>
@@ -54,8 +51,8 @@ namespace Exiled.Events.EventArgs.Player
             ShootingTarget = ShootingTargetToy.Get(shootingTarget);
             TargetButton = targetButton;
             IsAllowed = isAllowed;
-            this.maxHp = maxHp;
-            this.autoResetTime = autoResetTime;
+            NewMaxHp = maxHp;
+            NewAutoResetTime = autoResetTime;
         }
 
         /// <summary>
@@ -73,12 +70,12 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public int NewMaxHp
         {
-            get => maxHp;
+            get => field;
             set
             {
                 if (!ShootingTarget.IsSynced)
                     throw new InvalidOperationException("Attempted to set MaxHp while target is in local mode. Set target's IsSynced to true before setting IsAllowed.");
-                maxHp = Mathf.Clamp(value, 1, 256);
+                field = Mathf.Clamp(value, 1, 256);
             }
         }
 
@@ -87,12 +84,12 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public int NewAutoResetTime
         {
-            get => autoResetTime;
+            get => field;
             set
             {
                 if (!ShootingTarget.IsSynced)
                     throw new InvalidOperationException("Attempted to set AutoResetTime while target is in local mode. Set target's IsSynced to true before setting IsAllowed.");
-                autoResetTime = Mathf.Clamp(value, 0, 10);
+                field = Mathf.Clamp(value, 0, 10);
             }
         }
 

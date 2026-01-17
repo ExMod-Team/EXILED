@@ -20,11 +20,7 @@ namespace Exiled.Events.EventArgs.Cassie
     /// </summary>
     public class SendingCassieMessageEventArgs : IDeniableEvent
     {
-        private readonly CassieAnnouncement announcement;
         private readonly CassieTtsPayload payload;
-
-        private string customSubtitles;
-        private float glitchScale;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SendingCassieMessageEventArgs" /> class.
@@ -35,7 +31,7 @@ namespace Exiled.Events.EventArgs.Cassie
         /// </param>
         public SendingCassieMessageEventArgs(CassieAnnouncement annc, bool isAllowed = true)
         {
-            announcement = annc;
+            Announcement = annc;
             payload = annc.Payload;
 
             Words = payload.Content;
@@ -84,13 +80,13 @@ namespace Exiled.Events.EventArgs.Cassie
         /// </summary>
         public string CustomSubtitles
         {
-            get => customSubtitles;
+            get => field;
             set
             {
-                if (customSubtitles != value)
+                if (field != value)
                     SubtitleSource = CassieTtsPayload.SubtitleMode.Custom;
 
-                customSubtitles = value;
+                field = value;
             }
         }
 
@@ -104,13 +100,13 @@ namespace Exiled.Events.EventArgs.Cassie
         /// </summary>
         public float GlitchScale
         {
-            get => glitchScale;
+            get => field;
             set
             {
                 if (!MakeNoise && value is not 0)
                     MakeNoise = true;
 
-                glitchScale = value;
+                field = value;
             }
         }
 
@@ -157,7 +153,7 @@ namespace Exiled.Events.EventArgs.Cassie
                         newPayload = new CassieTtsPayload(Words, CustomSubtitles, MakeHold);
                 }
 
-                return announcement switch
+                return field switch
                 {
                     CassieScpTerminationAnnouncement =>
 
@@ -169,6 +165,7 @@ namespace Exiled.Events.EventArgs.Cassie
                     _ => new CassieAnnouncement(newPayload, 0, GlitchScale / (API.Features.Warhead.IsDetonated ? 2F : 1F) * (MakeNoise ? 1F : 0F)),
                 };
             }
+            private set => field = value;
         }
     }
 }

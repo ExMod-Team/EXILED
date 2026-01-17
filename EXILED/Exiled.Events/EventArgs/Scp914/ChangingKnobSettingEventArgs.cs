@@ -18,8 +18,6 @@ namespace Exiled.Events.EventArgs.Scp914
     /// </summary>
     public class ChangingKnobSettingEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private Scp914KnobSetting knobSetting;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingKnobSettingEventArgs" /> class.
         /// </summary>
@@ -44,8 +42,8 @@ namespace Exiled.Events.EventArgs.Scp914
         /// </summary>
         public Scp914KnobSetting KnobSetting
         {
-            get => knobSetting;
-            set => knobSetting = value > Scp914KnobSetting.VeryFine ? Scp914KnobSetting.Coarse : value;
+            get => field;
+            set => field = value > Scp914KnobSetting.VeryFine ? Scp914KnobSetting.Coarse : value;
         }
 
         /// <summary>

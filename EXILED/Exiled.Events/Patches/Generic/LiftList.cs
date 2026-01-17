@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Generic
     {
         [HarmonyPatch(typeof(ElevatorChamber), nameof(ElevatorChamber.Start))]
         [HarmonyPostfix]
-        private static void Adding(ElevatorChamber __instance) => _ = new Lift(__instance);
+        private static void Adding(ElevatorChamber __instance) => new Lift(__instance);
 
         [HarmonyPatch(typeof(ElevatorChamber), nameof(ElevatorChamber.OnDestroy))]
         [HarmonyPostfix]

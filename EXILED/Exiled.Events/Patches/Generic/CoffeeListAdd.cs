@@ -19,7 +19,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(global::Coffee __instance)
         {
-            _ = new Coffee(__instance);
+            new Coffee(__instance);
         }
     }
 }

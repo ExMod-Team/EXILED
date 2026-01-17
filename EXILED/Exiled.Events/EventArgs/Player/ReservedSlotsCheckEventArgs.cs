@@ -15,8 +15,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class ReservedSlotsCheckEventArgs : IExiledEvent, IDeniableEvent
     {
-        private ReservedSlotEventResult reservedSlotEventResult = ReservedSlotEventResult.UseBaseGameSystem;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ReservedSlotsCheckEventArgs" /> class.
         /// </summary>
@@ -31,6 +29,7 @@ namespace Exiled.Events.EventArgs.Player
             UserId = userId;
             HasReservedSlot = hasReservedSlot;
             IsAllowed = hasReservedSlot;
+            Result = ReservedSlotEventResult.UseBaseGameSystem;
         }
 
         /// <summary>
@@ -53,7 +52,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public ReservedSlotEventResult Result
         {
-            get => reservedSlotEventResult;
+            get => field;
             set
             {
                 switch (value)
@@ -71,7 +70,7 @@ namespace Exiled.Events.EventArgs.Player
                         return;
                 }
 
-                reservedSlotEventResult = value;
+                field = value;
             }
         }
     }

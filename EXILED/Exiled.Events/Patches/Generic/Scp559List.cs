@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(Scp559Cake __instance)
         {
-            _ = new Scp559(__instance);
+            new Scp559(__instance);
         }
     }
 }

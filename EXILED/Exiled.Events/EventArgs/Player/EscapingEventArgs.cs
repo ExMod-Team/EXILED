@@ -18,8 +18,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class EscapingEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private EscapeScenario escapeScenario;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EscapingEventArgs" /> class.
         /// </summary>
@@ -55,8 +53,8 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public EscapeScenario EscapeScenario
         {
-            get => (escapeScenario is EscapeScenario.None && IsAllowed) ? EscapeScenario.CustomEscape : escapeScenario;
-            set => escapeScenario = value;
+            get => (field is EscapeScenario.None && IsAllowed) ? EscapeScenario.CustomEscape : field;
+            set => field = value;
         }
 
         /// <summary>

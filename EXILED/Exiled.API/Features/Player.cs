@@ -95,10 +95,6 @@ namespace Exiled.API.Features
 
         private readonly HashSet<EActor> componentsInChildren = new();
 
-        private ReferenceHub referenceHub;
-
-        private Role role;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
@@ -192,10 +188,10 @@ namespace Exiled.API.Features
         /// </summary>
         public ReferenceHub ReferenceHub
         {
-            get => referenceHub;
+            get => field;
             private set
             {
-                referenceHub = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");
+                field = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");
                 GameObject = value.gameObject;
                 HintDisplay = value.hints;
                 Inventory = value.inventory;
@@ -278,7 +274,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the player's user id.
         /// </summary>
-        public string UserId => referenceHub.authManager.UserId;
+        public string UserId => ReferenceHub.authManager.UserId;
 
         /// <summary>
         /// Gets the player's user id without the authentication.
@@ -599,11 +595,11 @@ namespace Exiled.API.Features
         /// <seealso cref="Role.Set(RoleTypeId, SpawnReason, RoleSpawnFlags)"/>
         public Role Role
         {
-            get => role ??= Role.Create(RoleManager.CurrentRole);
+            get => field ??= Role.Create(RoleManager.CurrentRole);
             internal set
             {
-                PreviousRole = role?.Type ?? RoleTypeId.None;
-                role = value;
+                PreviousRole = field?.Type ?? RoleTypeId.None;
+                field = value;
             }
         }
 
@@ -654,7 +650,7 @@ namespace Exiled.API.Features
         public bool IsJumping
         {
             get => Role is FpcRole fpc && fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping;
-            set => _ = Role is FpcRole fpc ? fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping = value : _ = value;
+            set => (Role as FpcRole)?.FirstPersonController.FpcModule.Motor.JumpController.IsJumping = value;
         }
 
         /// <summary>
@@ -863,7 +859,7 @@ namespace Exiled.API.Features
         public byte UnitId
         {
             get => Role.Base is PlayerRoles.HumanRole humanRole ? humanRole.UnitNameId : byte.MinValue;
-            set => _ = Role.Base is PlayerRoles.HumanRole humanRole ? humanRole.UnitNameId = value : _ = value;
+            set => (Role.Base as PlayerRoles.HumanRole)?.UnitNameId = value;
         }
 
         /// <summary>
@@ -1074,7 +1070,7 @@ namespace Exiled.API.Features
         /// <seealso cref="EnableEffect(string, float, bool)"/>
         /// <seealso cref="EnableEffect{T}(float, bool)"/>
         /// <seealso cref="EnableEffects(IEnumerable{EffectType}, float, bool)"/>
-        public IEnumerable<StatusEffectBase> ActiveEffects => referenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
+        public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
 
         /// <summary>
         /// Gets or sets the player's group.
@@ -1962,7 +1958,7 @@ namespace Exiled.API.Features
         {
             ReferenceHub.inventory.SetDisarmedStatus(null);
 
-            DisarmedPlayers.Entries.Add(new DisarmedPlayers.DisarmedEntry(referenceHub.networkIdentity.netId, 0U));
+            DisarmedPlayers.Entries.Add(new DisarmedPlayers.DisarmedEntry(ReferenceHub.networkIdentity.netId, 0U));
             new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated(0);
         }
 
@@ -2183,7 +2179,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="message">The message to be sent.</param>
         /// <param name="color">The message color.</param>
-        public void SendConsoleMessage(string message, string color) => referenceHub.gameConsoleTransmission.SendToClient(message, color);
+        public void SendConsoleMessage(string message, string color) => ReferenceHub.gameConsoleTransmission.SendToClient(message, color);
 
         /// <summary>
         /// Disconnects the player.
@@ -2590,7 +2586,7 @@ namespace Exiled.API.Features
                 return ServerConfigSynchronizer.Singleton.AmmoLimitsSync.FirstOrDefault(x => x.AmmoType == itemType).Limit;
             }
 
-            return InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), referenceHub);
+            return InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), ReferenceHub);
         }
 
         /// <summary>
@@ -2666,7 +2662,7 @@ namespace Exiled.API.Features
                 return ServerConfigSynchronizer.Singleton.CategoryLimits[index];
             }
 
-            sbyte limit = InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, referenceHub);
+            sbyte limit = InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, ReferenceHub);
 
             return limit == -1 ? (sbyte)1 : limit;
         }

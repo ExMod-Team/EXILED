@@ -27,8 +27,6 @@ namespace Exiled.Events.EventArgs.Map
     /// </summary>
     public class ExplodingGrenadeEventArgs : IPlayerEvent, IDeniableEvent, IPickupEvent
     {
-        private ExplosionType explosionType;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ExplodingGrenadeEventArgs"/> class.
         /// </summary>
@@ -125,8 +123,8 @@ namespace Exiled.Events.EventArgs.Map
         /// <remarks>Explosion that are not from <see cref="ExplosionGrenadeProjectile"/> will return <see cref="ExplosionType.Custom"/> and can't be modified.</remarks>
         public ExplosionType ExplosionType
         {
-            get => explosionType;
-            set => explosionType = Projectile is ExplosionGrenadeProjectile ? value : ExplosionType.Custom;
+            get => field;
+            set => field = Projectile is ExplosionGrenadeProjectile ? value : ExplosionType.Custom;
         }
 
         /// <summary>

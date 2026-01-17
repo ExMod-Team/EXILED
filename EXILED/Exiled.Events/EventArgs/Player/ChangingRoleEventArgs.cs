@@ -22,8 +22,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class ChangingRoleEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private RoleTypeId newRole;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingRoleEventArgs" /> class.
         /// </summary>
@@ -66,7 +64,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public RoleTypeId NewRole
         {
-            get => newRole;
+            get => field;
             set
             {
                 InventoryRoleInfo inventory = value.GetInventory();
@@ -80,7 +78,7 @@ namespace Exiled.Events.EventArgs.Player
                 foreach (KeyValuePair<ItemType, ushort> ammoPair in inventory.Ammo)
                     Ammo.Add(ammoPair.Key, ammoPair.Value);
 
-                newRole = value;
+                field = value;
             }
         }
 

@@ -31,8 +31,6 @@ namespace Exiled.API.Features.Core
 
         private readonly HashSet<EActor> componentsInChildren = HashSetPool<EActor>.Pool.Get();
         private CoroutineHandle serverTick;
-        private bool canEverTick;
-        private float fixedTickRate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EActor"/> class.
@@ -42,10 +40,10 @@ namespace Exiled.API.Features.Core
         {
             IsEditable = true;
             CanEverTick = true;
-            fixedTickRate = DefaultFixedTickRate;
+            FixedTickRate = DefaultFixedTickRate;
             PostInitialize();
-            Timing.CallDelayed(fixedTickRate, () => OnBeginPlay());
-            Timing.CallDelayed(fixedTickRate * 2, () => serverTick = Timing.RunCoroutine(ServerTick()));
+            Timing.CallDelayed(FixedTickRate, OnBeginPlay);
+            Timing.CallDelayed(FixedTickRate * 2, () => serverTick = Timing.RunCoroutine(ServerTick()));
         }
 
         /// <summary>
@@ -99,15 +97,15 @@ namespace Exiled.API.Features.Core
         /// </summary>
         public virtual bool CanEverTick
         {
-            get => canEverTick;
+            get => field;
             set
             {
                 if (!IsEditable)
                     return;
 
-                canEverTick = value;
+                field = value;
 
-                if (canEverTick)
+                if (field)
                 {
                     Timing.ResumeCoroutines(serverTick);
                     return;
@@ -122,13 +120,13 @@ namespace Exiled.API.Features.Core
         /// </summary>
         public virtual float FixedTickRate
         {
-            get => fixedTickRate;
+            get => field;
             set
             {
                 if (!IsEditable)
                     return;
 
-                fixedTickRate = value;
+                field = value;
             }
         }
 

@@ -19,9 +19,6 @@ namespace Exiled.Events.EventArgs.Player
     public class KickingEventArgs : IPlayerEvent, IDeniableEvent
     {
         private readonly string startkickmessage;
-        private bool isAllowed;
-        private Player issuer;
-        private Player target;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KickingEventArgs" /> class.
@@ -59,16 +56,16 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public Player Target
         {
-            get => target;
+            get => field;
             set
             {
-                if (value is null || target == value)
+                if (value is null || field == value)
                     return;
 
-                if (Events.Instance.Config.ShouldLogBans && target is not null)
-                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the banned player from user {target.Nickname} ({target.UserId}) to {value.Nickname} ({value.UserId})");
+                if (Events.Instance.Config.ShouldLogBans && field is not null)
+                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the banned player from user {field.Nickname} ({field.UserId}) to {value.Nickname} ({value.UserId})");
 
-                target = value;
+                field = value;
             }
         }
 
@@ -87,16 +84,16 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public bool IsAllowed
         {
-            get => isAllowed;
+            get => field;
             set
             {
-                if (isAllowed == value)
+                if (field == value)
                     return;
 
                 if (Events.Instance.Config.ShouldLogBans)
                     LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" {(value ? "allowed" : "denied")} banning user with ID: {Target.UserId}");
 
-                isAllowed = value;
+                field = value;
             }
         }
 
@@ -105,16 +102,16 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public Player Player
         {
-            get => issuer;
+            get => field;
             set
             {
-                if (value is null || issuer == value)
+                if (value is null || field == value)
                     return;
 
-                if (Events.Instance.Config.ShouldLogBans && issuer is not null)
-                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the ban issuer from user {issuer.Nickname} ({issuer.UserId}) to {value.Nickname} ({value.UserId})");
+                if (Events.Instance.Config.ShouldLogBans && field is not null)
+                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the ban issuer from user {field.Nickname} ({field.UserId}) to {value.Nickname} ({value.UserId})");
 
-                issuer = value;
+                field = value;
             }
         }
 

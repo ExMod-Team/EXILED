@@ -28,9 +28,6 @@ namespace Exiled.API.Features.DamageHandlers
     /// </summary>
     public abstract class DamageHandlerBase
     {
-        private DamageType damageType;
-        private CassieAnnouncement cassieAnnouncement;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DamageHandlerBase"/> class.
         /// </summary>
@@ -78,8 +75,8 @@ namespace Exiled.API.Features.DamageHandlers
         /// </summary>
         public virtual CassieAnnouncement CassieDeathAnnouncement
         {
-            get => cassieAnnouncement ?? Base.CassieDeathAnnouncement;
-            protected set => cassieAnnouncement = value;
+            get => field ?? Base.CassieDeathAnnouncement;
+            protected set => field = value;
         }
 
         /// <summary>
@@ -94,11 +91,11 @@ namespace Exiled.API.Features.DamageHandlers
         {
             get
             {
-                if (damageType != DamageType.Unknown)
-                    return damageType;
+                if (field != DamageType.Unknown)
+                    return field;
 
-                damageType = GetDamageType();
-                return damageType;
+                field = GetDamageType();
+                return field;
             }
 
             protected set
@@ -106,7 +103,7 @@ namespace Exiled.API.Features.DamageHandlers
                 if (!Enum.IsDefined(typeof(DamageType), value))
                     throw new InvalidEnumArgumentException(nameof(value), (int)value, typeof(DamageType));
 
-                damageType = value;
+                field = value;
             }
         }
 

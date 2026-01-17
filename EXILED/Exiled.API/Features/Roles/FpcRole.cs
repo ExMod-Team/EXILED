@@ -27,8 +27,6 @@ namespace Exiled.API.Features.Roles
     /// </summary>
     public abstract class FpcRole : Role, IVoiceRole
     {
-        private bool isUsingStamina = true;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FpcRole"/> class.
         /// </summary>
@@ -190,12 +188,12 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public bool IsUsingStamina
         {
-            get => isUsingStamina;
+            get => field;
             set
             {
                 if (!value)
                     Owner.ResetStamina();
-                isUsingStamina = value;
+                field = value;
             }
         }
 

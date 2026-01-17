@@ -21,8 +21,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class ChangingItemEventArgs : IPlayerEvent, IDeniableEvent, IItemEvent
     {
-        private Item newItem;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingItemEventArgs" /> class.
         /// </summary>
@@ -35,7 +33,7 @@ namespace Exiled.Events.EventArgs.Player
         public ChangingItemEventArgs(Player player, ItemBase newItem)
         {
             Player = player;
-            this.newItem = Item.Get(newItem);
+            Item = Item.Get(newItem);
         }
 
         /// <summary>
@@ -43,13 +41,13 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public Item Item
         {
-            get => newItem;
+            get => field;
             set
             {
                 if (value != null && !Player.Inventory.UserInventory.Items.TryGetValue(value.Serial, out _))
                     throw new InvalidOperationException("ev.NewItem cannot be set to an item they do not have.");
 
-                newItem = value;
+                field = value;
             }
         }
 

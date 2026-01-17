@@ -8,11 +8,12 @@
 namespace Exiled.Events.EventArgs.Warhead
 {
     using Exiled.API.Features;
+    using Exiled.Events.EventArgs.Interfaces;
 
     /// <summary>
     /// Contains all information before starting the warhead.
     /// </summary>
-    public class StartingEventArgs : StoppingEventArgs
+    public class StartingEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="StartingEventArgs" /> class.
@@ -21,14 +22,19 @@ namespace Exiled.Events.EventArgs.Warhead
         /// <param name="isAuto">Indicating whether the nuke was set off automatically.</param>
         /// <param name="isAllowed">Indicating whether the event can be executed.</param>
         public StartingEventArgs(Player player, bool isAuto, bool isAllowed = true)
-            : base(player, isAllowed)
         {
-            IsAuto = isAuto;
+            Player = player ?? Server.Host;
+            IsAllowed = isAllowed;
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the nuke was set off automatically.
+        /// Gets or sets a value indicating whether the warhead can be started.
         /// </summary>
-        public bool IsAuto { get; set; }
+        public bool IsAllowed { get; set; }
+
+        /// <summary>
+        /// Gets the player who's going to start the warhead.
+        /// </summary>
+        public Player Player { get; }
     }
 }
