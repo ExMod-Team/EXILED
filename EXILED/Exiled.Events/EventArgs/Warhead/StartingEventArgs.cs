@@ -23,9 +23,15 @@ namespace Exiled.Events.EventArgs.Warhead
         /// <param name="isAllowed">Indicating whether the event can be executed.</param>
         public StartingEventArgs(Player player, bool isAuto, bool isAllowed = true)
         {
+            IsAuto = isAuto;
             Player = player ?? Server.Host;
             IsAllowed = isAllowed;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the nuke was set off automatically.
+        /// </summary>
+        public bool IsAuto { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the warhead can be started.
