@@ -125,19 +125,10 @@ namespace Exiled.API.Features
             if (points == null || points.Length < 2)
                 return;
 
-            bool debugWas = DrawableLines.IsDebugModeEnabled;
-            DrawableLines.IsDebugModeEnabled = true;
-
             if (player != null)
-            {
                 player.Connection.Send(new DrawableLineMessage(duration, color, points));
-            }
             else
-            {
                 NetworkServer.SendToReady(new DrawableLineMessage(duration, color, points));
-            }
-
-            DrawableLines.IsDebugModeEnabled = debugWas;
         }
     }
 }
