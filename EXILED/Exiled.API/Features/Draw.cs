@@ -128,7 +128,7 @@ namespace Exiled.API.Features
 
             if (player != null)
             {
-                player.Connection.Send(new DrawableLineMessage(duration, color, positions));
+                player.Connection.Send(new DrawableLineMessage(duration, color, points));
             }
             else
             {
