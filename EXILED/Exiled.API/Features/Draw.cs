@@ -9,6 +9,8 @@ namespace Exiled.API.Features
 {
     using DrawableLine;
 
+    using Mirror;
+
     using UnityEngine;
 
     /// <summary>
