@@ -132,7 +132,7 @@ namespace Exiled.API.Features
             }
             else
             {
-                DrawableLines.ServerGenerateLine(duration, color, positions: points);
+                NetworkServer.SendToReady(new DrawableLineMessage(duration, color, points));
             }
 
             DrawableLines.IsDebugModeEnabled = debugWas;
