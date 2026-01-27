@@ -1050,16 +1050,18 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="PlayerSendingVoiceMessageEventArgs"/> instance.</param>
         public static void OnVoiceChatting(PlayerSendingVoiceMessageEventArgs ev)
         {
-            VoiceChattingEventArgs evExiled = new(ev.Player, ev.Message, ev.IsAllowed);
-            VoiceChatting.InvokeSafely(evExiled);
+            VoiceChattingEventArgs evVoiceChatting = new(ev.Player, ev.Message, ev.IsAllowed);
+            VoiceChatting.InvokeSafely(evVoiceChatting);
 
-            ev.IsAllowed = evExiled.IsAllowed;
-            ev.Message = evExiled.VoiceMessage;
+            ev.IsAllowed = evVoiceChatting.IsAllowed;
+            ev.Message = evVoiceChatting.VoiceMessage;
 
             if(ev.Message.Channel == VoiceChat.VoiceChatChannel.Radio)
             {
-                TransmittingEventArgs evTransmitting = new(ev.Player, ev.IsAllowed);
+                TransmittingEventArgs evTransmitting = new(ev.Player, ev.Message, ev.IsAllowed);
                 OnTransmitting(evTransmitting);
+
+                ev.Message = evTransmitting.VoiceMessage;
                 ev.IsAllowed = evTransmitting.IsAllowed;
             }
         }
@@ -1070,11 +1072,11 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="ReceivingVoiceMessageEventArgs"/> instance.</param>
         public static void OnReceivingVoiceMessage(PlayerReceivingVoiceMessageEventArgs ev)
         {
-            ReceivingVoiceMessageEventArgs evExiled = new(ev.Message, ev.Player, ev.Sender, ev.IsAllowed);
-            ReceivingVoiceMessage.InvokeSafely(evExiled);
+            ReceivingVoiceMessageEventArgs evReceivingVoiceMessage = new(ev.Message, ev.Player, ev.Sender, ev.IsAllowed);
+            ReceivingVoiceMessage.InvokeSafely(evReceivingVoiceMessage);
 
-            ev.IsAllowed = evExiled.IsAllowed;
-            ev.Message = evExiled.VoiceMessage;
+            ev.IsAllowed = evReceivingVoiceMessage.IsAllowed;
+            ev.Message = evReceivingVoiceMessage.VoiceMessage;
         }
 
         /// <summary>

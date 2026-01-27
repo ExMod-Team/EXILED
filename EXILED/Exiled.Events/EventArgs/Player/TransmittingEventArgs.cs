@@ -12,6 +12,8 @@ namespace Exiled.Events.EventArgs.Player
 
     using PlayerRoles.Voice;
 
+    using VoiceChat.Networking;
+
     /// <summary>
     /// Contains all information regarding the player using the radio.
     /// </summary>
@@ -23,12 +25,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
+        /// <param name="voiceMessage">
+        /// <inheritdoc cref="VoiceMessage" />
+        /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public TransmittingEventArgs(Player player, bool isAllowed)
+        public TransmittingEventArgs(Player player, VoiceMessage voiceMessage, bool isAllowed)
         {
             Player = player;
+            VoiceMessage = voiceMessage;
             if (player.Role is IVoiceRole voiceRole)
                 VoiceModule = voiceRole.VoiceModule;
             IsAllowed = isAllowed;
@@ -38,6 +44,11 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the player who's transmitting.
         /// </summary>
         public Player Player { get; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Player"/>'s <see cref="VoiceMessage" />.
+        /// </summary>
+        public VoiceMessage VoiceMessage { get; set; }
 
         /// <summary>
         /// Gets the <see cref="Player"/>'s <see cref="VoiceModuleBase" />.
