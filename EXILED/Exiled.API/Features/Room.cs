@@ -17,6 +17,7 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using MapGeneration;
+    using MapGeneration.Holidays;
     using MapGeneration.Rooms;
     using MEC;
     using Mirror;
@@ -429,15 +430,14 @@ namespace Exiled.API.Features
             RoomIdentifierToRoom.Add(Identifier, this);
 
             Zone = Identifier.Zone.GetZone();
-#if DEBUG
+
             if (Zone is ZoneType.Unspecified)
-                Log.Error($"[ZONETYPE UNKNOWN] {this} Zone : {Identifier?.Zone}");
-#endif
+                Log.Warn($"[ZONETYPE UNKNOWN] {Identifier} Zone : {Identifier?.Zone}");
+
             Type = FindType(gameObject);
-#if DEBUG
+
             if (Type is RoomType.Unknown)
-                Log.Error($"[ROOMTYPE UNKNOWN] {this} Name : {gameObject?.name} Shape : {Identifier?.Shape}");
-#endif
+                Log.Warn($"[ROOMTYPE UNKNOWN] {Identifier} Name : {gameObject?.name.RemoveBracketsOnEndOfName()} Shape : {Identifier?.Shape}");
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 
@@ -461,7 +461,7 @@ namespace Exiled.API.Features
         private static RoomType FindType(GameObject gameObject)
         {
             // Try to remove brackets if they exist.
-            return gameObject.name.RemoveBracketsOnEndOfName() switch
+            return TryRemovePostfixes(gameObject.name.RemoveBracketsOnEndOfName()) switch
             {
                 "PocketWorld" => RoomType.Pocket,
                 "Outside" => RoomType.Surface,
@@ -485,6 +485,7 @@ namespace Exiled.API.Features
                 "HCZ_TArmory" => RoomType.HczArmory,
                 "HCZ_MicroHID_New" => RoomType.HczHid,
                 "HCZ_Crossroom_Water" => RoomType.HczCrossRoomWater,
+                "HCZ_IncineratorWayside" => RoomType.HczIncineratorWayside,
                 "HCZ_Testroom" => RoomType.HczTestRoom,
                 "HCZ_049" => RoomType.Hcz049,
                 "HCZ_079" => RoomType.Hcz079,
@@ -505,6 +506,7 @@ namespace Exiled.API.Features
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
                 "HCZ_127" => RoomType.Hcz127,
                 "HCZ_ServerRoom" => RoomType.HczServerRoom,
+                "HCZ_Intersection_Ramp" => RoomType.HczLoadingBay,
                 "EZ_GateA" => RoomType.EzGateA,
                 "EZ_GateB" => RoomType.EzGateB,
                 "EZ_ThreeWay" => RoomType.EzTCross,
@@ -535,6 +537,13 @@ namespace Exiled.API.Features
                 },
                 _ => RoomType.Unknown,
             };
+        }
+
+        private static string TryRemovePostfixes(string str)
+        {
+            if (HolidayUtils.IsAnyHolidayActive())
+                return str.Replace(HolidayUtils.GetActiveHoliday().ToString(), string.Empty).TrimEnd();
+            return str;
         }
     }
 }

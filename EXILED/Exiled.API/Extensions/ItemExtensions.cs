@@ -40,7 +40,7 @@ namespace Exiled.API.Extensions
         /// <param name="type">The item to be checked.</param>
         /// <param name="checkNonFirearm">Indicates whether the MicroHID and Jailbird item should be taken into account.</param>
         /// <returns>Returns whether the <see cref="ItemType"/> is a weapon.</returns>
-        public static bool IsWeapon(this ItemType type, bool checkNonFirearm = true) => type.GetFirearmType() is not FirearmType.None || (checkNonFirearm && type is ItemType.MicroHID or ItemType.Jailbird);
+        public static bool IsWeapon(this ItemType type, bool checkNonFirearm = true) => type.GetFirearmType() is not FirearmType.None || (checkNonFirearm && type is ItemType.MicroHID or ItemType.Jailbird or ItemType.SCP1509);
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is an SCP.
@@ -83,6 +83,14 @@ namespace Exiled.API.Extensions
         /// <param name="type">The item to be checked.</param>
         /// <returns>Returns whether the <see cref="ItemType"/> is a keycard.</returns>
         public static bool IsKeycard(this ItemType type) => GetCategory(type) == ItemCategory.Keycard;
+
+        /// <summary>
+        /// Checks if an <see cref="ItemType"/> is a custom keycard.
+        /// </summary>
+        /// <param name="type">The item to be checked.</param>
+        /// <returns>Returns where the <see cref="ItemType"/> is a custom keycard.</returns>
+        /// <remarks>This just signifies whether the ItemType represents a keycard that has modifiable properties.</remarks>
+        public static bool IsCustomKeycard(this ItemType type) => type is ItemType.KeycardCustomTaskForce or ItemType.KeycardCustomSite02 or ItemType.KeycardCustomManagement or ItemType.KeycardCustomMetalCase;
 
         /// <summary>
         /// Given an <see cref="ItemType"/>, returns the matching <see cref="ItemBase"/>.

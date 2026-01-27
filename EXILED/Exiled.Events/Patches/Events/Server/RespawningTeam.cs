@@ -50,11 +50,11 @@ namespace Exiled.Events.Patches.Events.Server
                 new[]
                 {
                     // GetPlayers(list);
-                    new CodeInstruction(OpCodes.Ldloc_S, 2).MoveLabelsFrom(newInstructions[index]),
+                    new CodeInstruction(OpCodes.Ldloc_S, 3).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(GetPlayers))),
 
                     // maxWaveSize
-                    new(OpCodes.Ldloc_3),
+                    new(OpCodes.Ldloc_0),
 
                     // wave
                     new(OpCodes.Ldarg_0),
@@ -88,12 +88,12 @@ namespace Exiled.Events.Patches.Events.Server
 
                     // num = ev.MaximumRespawnAmount
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.MaximumRespawnAmount))),
-                    new(OpCodes.Stloc_3),
+                    new(OpCodes.Stloc_0),
 
                     // list = GetHubs(ev.Players)
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Players))),
                     new(OpCodes.Call, Method(typeof(RespawningTeam), nameof(GetHubs))),
-                    new(OpCodes.Stloc_S, 2),
+                    new(OpCodes.Stloc_S, 3),
 
                     // wave = ev.Wave.Base;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(RespawningTeamEventArgs), nameof(RespawningTeamEventArgs.Wave))),
@@ -118,8 +118,8 @@ namespace Exiled.Events.Patches.Events.Server
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
 
-        private static List<Player> GetPlayers(List<ReferenceHub> hubs) => hubs.Select(Player.Get).ToList();
+        private static List<Player> GetPlayers(ReferenceHub[] hubs) => hubs.Select(Player.Get).ToList();
 
-        private static List<ReferenceHub> GetHubs(List<Player> players) => players.Select(player => player.ReferenceHub).ToList();
+        private static ReferenceHub[] GetHubs(List<Player> players) => players.Select(player => player.ReferenceHub).ToArray();
     }
 }

@@ -12,6 +12,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
     using System.Globalization;
     using System.IO;
 
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
 
     using UnityEngine;
@@ -21,18 +22,37 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
     using YamlDotNet.Serialization;
 
     /// <summary>
-    /// Converts <see cref="Color"/> to Yaml configs and vice versa.
+    /// Converts <see cref="Color"/> (including nullable) to Yaml configs and vice versa.
     /// </summary>
     public sealed class ColorConverter : IYamlTypeConverter
     {
         /// <inheritdoc cref="IYamlTypeConverter" />
-        public bool Accepts(Type type) => type == typeof(Color);
+        public bool Accepts(Type type)
+        {
+            Type baseType = Nullable.GetUnderlyingType(type) ?? type;
+            return baseType == typeof(Color);
+        }
 
         /// <inheritdoc cref="IYamlTypeConverter" />
         public object ReadYaml(IParser parser, Type type)
         {
+            Type baseType = Nullable.GetUnderlyingType(type) ?? type;
+
+            if (parser.TryConsume(out Scalar scalar))
+            {
+                if (string.IsNullOrEmpty(scalar.Value) || scalar.Value.Equals("null", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (Nullable.GetUnderlyingType(type) != null)
+                        return null;
+
+                    Log.Error($"Cannot assign null to non-nullable type {baseType.FullName}.");
+                }
+
+                Log.Error($"Expected mapping, but got scalar: {scalar.Value}");
+            }
+
             if (!parser.TryConsume<MappingStart>(out _))
-                throw new InvalidDataException($"Cannot deserialize object of type {type.FullName}");
+                Log.Error($"Cannot deserialize object of type {type.FullName}.");
 
             List<object> coordinates = ListPool<object>.Pool.Get(4);
             int i = 0;
@@ -45,7 +65,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                     continue;
                 }
 
-                if (!parser.TryConsume(out Scalar scalar) || !float.TryParse(scalar.Value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out float coordinate))
+                if (!parser.TryConsume(out Scalar coordScalar) || !float.TryParse(coordScalar.Value, NumberStyles.Float, CultureInfo.GetCultureInfo("en-US"), out float coordinate))
                 {
                     ListPool<object>.Pool.Return(coordinates);
                     throw new InvalidDataException("Invalid float value.");
@@ -64,6 +84,12 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         /// <inheritdoc cref="IYamlTypeConverter" />
         public void WriteYaml(IEmitter emitter, object value, Type type)
         {
+            if (value is null)
+            {
+                emitter.Emit(new Scalar("null"));
+                return;
+            }
+
             Dictionary<string, float> coordinates = DictionaryPool<string, float>.Pool.Get();
 
             if (value is Color color)

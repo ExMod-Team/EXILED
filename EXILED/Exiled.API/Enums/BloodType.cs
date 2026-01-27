@@ -14,7 +14,7 @@ namespace Exiled.API.Enums
     /// </summary>
     /// <seealso cref="Features.Map.PlaceBlood(UnityEngine.Vector3, UnityEngine.Vector3)"/>
     /// <seealso cref="Features.Player.PlaceBlood(UnityEngine.Vector3)"/>
-    [Obsolete("This blood decal are outdated now used DealPoolType.Blood", true)]
+    [Obsolete("This blood decal are outdated now used DecalPoolType.Blood", true)]
     public enum BloodType
     {
         /// <summary>

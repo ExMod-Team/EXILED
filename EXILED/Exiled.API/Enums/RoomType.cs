@@ -292,7 +292,12 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Heavy Containment Zone's cross room with waterfall.
         /// </summary>
-        HczCrossRoomWater,
+        HczDss08,
+
+        /// <summary>
+        /// Heavy Containment Zone's cross room with waterfall.
+        /// </summary>
+        HczCrossRoomWater = HczDss08,
 
         /// <summary>
         /// Heavy Containment Zone's corner.
@@ -330,7 +335,7 @@ namespace Exiled.API.Enums
         EzSmallrooms,
 
         /// <summary>
-        /// Heavy Containment Zone's SCP-330 room.
+        /// Heavy Containment Zone's SCP-127 room.
         /// </summary>
         Hcz127,
 
@@ -338,5 +343,20 @@ namespace Exiled.API.Enums
         /// Heavy Containment Zone's storage / server room.
         /// </summary>
         HczServerRoom,
+
+        /// <summary>
+        /// Heavy Containment Zone's straight hall room with lava.
+        /// </summary>
+        HczIncineratorWayside,
+
+        /// <summary>
+        /// Heavy Containment Zone's straight hall room with lava.
+        /// </summary>
+        HczDss12 = HczIncineratorWayside,
+
+        /// <summary>
+        /// Heavy Containment Zone's T-intersection with a ramp in it.
+        /// </summary>
+        HczLoadingBay,
     }
 }

@@ -120,6 +120,11 @@ namespace Exiled.Installer
                 "--get-versions",
                 "Gets all possible versions for installation")
                 { IsRequired = false },
+
+            new Option<bool>(
+                "--skip-version-select",
+                "Skips version selecting")
+                { IsRequired = false },
         };
 
 #nullable disable
@@ -167,6 +172,11 @@ namespace Exiled.Installer
         /// Gets or sets the boolean for exiting.
         /// </summary>
         public bool Exit { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value indicating whether the version select should be skipped.
+        /// </summary>
+        public bool SkipVersionSelect { get; set; }
 
         public static async Task Parse(string[] args)
         {

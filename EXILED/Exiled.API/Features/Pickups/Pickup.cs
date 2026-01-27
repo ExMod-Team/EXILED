@@ -13,6 +13,7 @@ namespace Exiled.API.Features.Pickups
 
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
+    using Exiled.API.Features.Pickups.Keycards;
     using Exiled.API.Features.Pickups.Projectiles;
     using Exiled.API.Interfaces;
 
@@ -34,6 +35,7 @@ namespace Exiled.API.Features.Pickups
     using BaseMicroHIDPickup = InventorySystem.Items.MicroHID.MicroHIDPickup;
     using BaseRadioPickup = InventorySystem.Items.Radio.RadioPickup;
     using BaseScp018Projectile = InventorySystem.Items.ThrowableProjectiles.Scp018Projectile;
+    using BaseScp1509Pickup = InventorySystem.Items.Scp1509.Scp1509Pickup;
     using BaseScp1576Pickup = InventorySystem.Items.Usables.Scp1576.Scp1576Pickup;
     using BaseScp2176Projectile = InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile;
     using BaseScp330Pickup = InventorySystem.Items.Usables.Scp330.Scp330Pickup;
@@ -317,7 +319,16 @@ namespace Exiled.API.Features.Pickups
                     _ => new GrenadePickup(timeGrenade),
                 },
                 BaseFirearmPickup firearmPickup => new FirearmPickup(firearmPickup),
-                BaseKeycardPickup keycardPickup => new KeycardPickup(keycardPickup),
+                BaseKeycardPickup keycardPickup => keycardPickup.NetworkInfo.ItemId switch
+                {
+                    ItemType.KeycardCustomTaskForce => new TaskForceKeycardPickup(keycardPickup),
+                    ItemType.KeycardCustomSite02 => new Site02KeycardPickup(keycardPickup),
+                    ItemType.KeycardCustomManagement => new ManagementKeycardPickup(keycardPickup),
+                    ItemType.KeycardCustomMetalCase => new MetalKeycardPickup(keycardPickup),
+                    ItemType.SurfaceAccessPass => new SingleUseKeycardPickup(keycardPickup),
+                    ItemType.KeycardChaosInsurgency => new ChaosKeycardPickup(keycardPickup),
+                    _ => new KeycardPickup(keycardPickup),
+                },
                 BaseBodyArmorPickup bodyArmorPickup => new BodyArmorPickup(bodyArmorPickup),
                 BaseScp330Pickup scp330Pickup => new Scp330Pickup(scp330Pickup),
                 BaseScp1576Pickup scp1576Pickup => new Scp1576Pickup(scp1576Pickup),
@@ -332,6 +343,7 @@ namespace Exiled.API.Features.Pickups
                     TimeGrenade timeGrenade => new TimeGrenadeProjectile(timeGrenade),
                     _ => new Projectile(thrownProjectile),
                 },
+                BaseScp1509Pickup baseScp1509 => new Scp1509Pickup(baseScp1509),
                 _ => new Pickup(pickupBase),
             };
         }
@@ -487,7 +499,16 @@ namespace Exiled.API.Features.Pickups
                 _ => new GrenadePickup(type),
             },
             BaseFirearmPickup => new FirearmPickup(type),
-            BaseKeycardPickup => new KeycardPickup(type),
+            BaseKeycardPickup => type switch
+            {
+                ItemType.KeycardCustomTaskForce => new TaskForceKeycardPickup(type),
+                ItemType.KeycardCustomSite02 => new Site02KeycardPickup(type),
+                ItemType.KeycardCustomManagement => new ManagementKeycardPickup(type),
+                ItemType.KeycardCustomMetalCase => new MetalKeycardPickup(type),
+                ItemType.SurfaceAccessPass => new SingleUseKeycardPickup(type),
+                ItemType.KeycardChaosInsurgency => new ChaosKeycardPickup(type),
+                _ => new KeycardPickup(type),
+            },
             BaseBodyArmorPickup => new BodyArmorPickup(type),
             BaseScp330Pickup => new Scp330Pickup(),
             BaseScp1576Pickup => new Scp1576Pickup(),
@@ -502,6 +523,7 @@ namespace Exiled.API.Features.Pickups
                 TimeGrenade => new TimeGrenadeProjectile(type),
                 _ => new Projectile(type),
             },
+            BaseScp1509Pickup => new Scp1509Pickup(),
             _ => new Pickup(type),
         };
 

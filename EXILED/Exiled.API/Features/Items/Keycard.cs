@@ -7,10 +7,9 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System;
-
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
+    using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items.Keycards;
 
     /// <summary>
@@ -32,8 +31,9 @@ namespace Exiled.API.Features.Items
         /// Initializes a new instance of the <see cref="Keycard"/> class.
         /// </summary>
         /// <param name="type">The <see cref="ItemType"/> of the keycard.</param>
-        internal Keycard(ItemType type)
-            : this((KeycardItem)Server.Host.Inventory.CreateItemInstance(new(type, 0), false))
+        /// <param name="owner">The owner of the grenade. Leave <see langword="null"/> for no owner.</param>
+        internal Keycard(ItemType type, Player owner = null)
+            : this((KeycardItem)(owner ?? Server.Host).Inventory.CreateItemInstance(new(type, 0), false))
         {
         }
 
@@ -45,26 +45,32 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Gets or sets the <see cref="KeycardPermissions"/> of the keycard.
         /// </summary>
-        public KeycardPermissions Permissions
+        public virtual KeycardPermissions Permissions
         {
             get
             {
                 foreach (DetailBase detail in Base.Details)
                 {
-                    switch (detail)
-                    {
-                        case PredefinedPermsDetail predefinedPermsDetail:
-                            return (KeycardPermissions)predefinedPermsDetail.Levels.Permissions;
-                        case CustomPermsDetail customPermsDetail:
-                            return (KeycardPermissions)customPermsDetail.GetPermissions(null);
-                    }
+                    if (detail is IDoorPermissionProvider doorPermissionProvider)
+                        return (KeycardPermissions)doorPermissionProvider.GetPermissions(null);
                 }
 
                 return KeycardPermissions.None;
             }
 
-            [Obsolete("Not functional anymore", true)]
-            set => _ = value;
+            set
+            {
+                foreach (DetailBase detail in Base.Details)
+                {
+                    if (detail is PredefinedPermsDetail doorPermissionProvider)
+                    {
+                        KeycardLevels keycardLevels = new((DoorPermissionFlags)value);
+                        doorPermissionProvider._containmentLevel = keycardLevels.Containment;
+                        doorPermissionProvider._armoryLevel = keycardLevels.Armory;
+                        doorPermissionProvider._adminLevel = keycardLevels.Admin;
+                    }
+                }
+            }
         }
 
         /// <summary>

@@ -12,24 +12,18 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using DeathAnimations;
-
     using Enums;
-
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
-
     using Mirror;
-
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.Ragdolls;
-
     using PlayerStatsSystem;
-
+    using RelativePositioning;
     using UnityEngine;
 
     using BaseScp3114Ragdoll = PlayerRoles.PlayableScps.Scp3114.Scp3114Ragdoll;
-
     using Object = UnityEngine.Object;
 
     /// <summary>
@@ -101,7 +95,7 @@ namespace Exiled.API.Features
         public DamageHandlerBase DamageHandler
         {
             get => NetworkInfo.Handler;
-            set => NetworkInfo = new(NetworkInfo.OwnerHub, value, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, value, NetworkInfo.RoleType, NetworkInfo.StartRelativePosition, NetworkInfo.StartRelativeRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -145,7 +139,7 @@ namespace Exiled.API.Features
         public string Nickname
         {
             get => NetworkInfo.Nickname;
-            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, value, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartRelativePosition, NetworkInfo.StartRelativeRotation, NetworkInfo.Scale, value, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -154,7 +148,7 @@ namespace Exiled.API.Features
         public Vector3 Scale
         {
             get => NetworkInfo.Scale;
-            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, value, NetworkInfo.Nickname, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartRelativePosition, NetworkInfo.StartRelativeRotation, value, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -168,7 +162,7 @@ namespace Exiled.API.Features
         public Player Owner
         {
             get => Player.Get(NetworkInfo.OwnerHub);
-            set => NetworkInfo = new(value.ReferenceHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(value.ReferenceHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartRelativePosition, NetworkInfo.StartRelativeRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -180,7 +174,7 @@ namespace Exiled.API.Features
             set
             {
                 float creationTime = (float)(NetworkTime.time - (DateTime.Now - value).TotalSeconds);
-                NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, creationTime);
+                NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, NetworkInfo.RoleType, NetworkInfo.StartRelativePosition, NetworkInfo.StartRelativeRotation, NetworkInfo.Scale, NetworkInfo.Nickname, creationTime);
             }
         }
 
@@ -190,7 +184,7 @@ namespace Exiled.API.Features
         public RoleTypeId Role
         {
             get => NetworkInfo.RoleType;
-            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, value, NetworkInfo.StartPosition, NetworkInfo.StartRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
+            set => NetworkInfo = new(NetworkInfo.OwnerHub, NetworkInfo.Handler, value, NetworkInfo.StartRelativePosition, NetworkInfo.StartRelativeRotation, NetworkInfo.Scale, NetworkInfo.Nickname, NetworkInfo.CreationTime);
         }
 
         /// <summary>
@@ -334,8 +328,8 @@ namespace Exiled.API.Features
 
             ragdoll = basicRagdoll is BaseScp3114Ragdoll scp3114Ragdoll ? new Scp3114Ragdoll(scp3114Ragdoll) : new Ragdoll(basicRagdoll)
             {
-                Position = networkInfo.StartPosition,
-                Rotation = networkInfo.StartRotation,
+                Position = networkInfo.StartRelativePosition.Position,
+                Rotation = RelativePositioning.WaypointBase.GetWorldRotation(networkInfo.StartRelativePosition.WaypointId, networkInfo.StartRelativeRotation),
             };
 
             return true;
@@ -391,7 +385,11 @@ namespace Exiled.API.Features
         /// <param name="owner">The optional owner of the ragdoll.</param>
         /// <returns>The ragdoll.</returns>
         public static Ragdoll CreateAndSpawn(RoleTypeId roleType, string name, DamageHandlerBase damageHandler, Vector3 position, Quaternion? rotation = null, Player owner = null)
-            => CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, position, rotation ?? Quaternion.identity, name, NetworkTime.time));
+        {
+            RelativePosition relPos = new(position);
+            Quaternion relRot = WaypointBase.GetRelativeRotation(relPos.WaypointId, rotation ?? Quaternion.identity);
+            return CreateAndSpawn(new(owner?.ReferenceHub ?? Server.Host.ReferenceHub, damageHandler, roleType, relPos, relRot, name, NetworkTime.time));
+        }
 
         /// <summary>
         /// Creates and spawns a new ragdoll.

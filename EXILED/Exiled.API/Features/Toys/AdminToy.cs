@@ -108,13 +108,6 @@ namespace Exiled.API.Features.Toys
             get => AdminToyBase.transform.localScale;
             set
             {
-                // TODO: Remove this part of code when NW will have fix the issue
-                if (this is Waypoint)
-                {
-                    if (value.x != value.y || value.y != value.z || value.sqrMagnitude >= Vector3.one.sqrMagnitude)
-                        Log.Warn("NW WaypointToy have error when Scale is bigger than one or than x y z are not the same");
-                }
-
                 AdminToyBase.transform.localScale = value;
                 AdminToyBase.NetworkScale = value;
             }

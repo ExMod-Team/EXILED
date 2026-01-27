@@ -17,7 +17,7 @@ namespace Exiled.Events.Handlers
     /// <summary>
     /// SCP-1507 related events.
     /// </summary>
-    [Obsolete("Only availaible for Christmas and AprilFools.")]
+    // [Obsolete("Only availaible for Christmas and AprilFools.")]
     public static class Scp1507
     {
         /// <summary>

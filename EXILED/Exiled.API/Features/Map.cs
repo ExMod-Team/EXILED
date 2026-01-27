@@ -19,6 +19,7 @@ namespace Exiled.API.Features
     using Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features.Hazards;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Toys;
     using InventorySystem;
@@ -417,6 +418,10 @@ namespace Exiled.API.Features
             Firearm.ItemTypeToFirearmInstance.Clear();
             Firearm.BaseCodesValue.Clear();
             Firearm.AvailableAttachmentsValue.Clear();
+
+            CustomKeycardItem.DataDict.Clear();
+
+            SingleUseKeycard.RemainingUses.Clear();
 
 #pragma warning disable CS0618
             Scp559.CakeToWrapper.Clear();

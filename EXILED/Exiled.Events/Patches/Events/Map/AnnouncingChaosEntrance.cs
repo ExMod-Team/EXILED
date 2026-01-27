@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Patches.Events.Map
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -17,11 +18,12 @@ namespace Exiled.Events.Patches.Events.Map
     using Exiled.Events.EventArgs.Map;
     using HarmonyLib;
     using Respawning.Announcements;
+    using Subtitles;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="ChaosWaveAnnouncement.CreateAnnouncementString"/> and <see cref="ChaosMiniwaveAnnouncement.CreateAnnouncementString"/>
+    /// Patches <see cref="ChaosWaveAnnouncement.CreateAnnouncement"/> and <see cref="ChaosMiniwaveAnnouncement.CreateAnnouncement"/>
     /// to add <see cref="Handlers.Map.AnnouncingChaosEntrance"/> event.
     /// </summary>
     [EventPatch(typeof(Handlers.Map), nameof(Handlers.Map.AnnouncingChaosEntrance))]
@@ -30,8 +32,8 @@ namespace Exiled.Events.Patches.Events.Map
     {
         private static IEnumerable<MethodBase> TargetMethods()
         {
-            yield return Method(typeof(ChaosWaveAnnouncement), nameof(ChaosWaveAnnouncement.CreateAnnouncementString));
-            yield return Method(typeof(ChaosMiniwaveAnnouncement), nameof(ChaosMiniwaveAnnouncement.CreateAnnouncementString));
+            yield return Method(typeof(ChaosWaveAnnouncement), nameof(ChaosWaveAnnouncement.CreateAnnouncement));
+            yield return Method(typeof(ChaosMiniwaveAnnouncement), nameof(ChaosMiniwaveAnnouncement.CreateAnnouncement));
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instruction, ILGenerator generator)
@@ -70,6 +72,9 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Callvirt, Method(typeof(StringBuilder), nameof(StringBuilder.Clear))),
                 new(OpCodes.Pop),
+                new(OpCodes.Ldarg_3),
+                new(OpCodes.Call, Method(typeof(Array), nameof(Array.Empty), new Type[] { }, new[] { typeof(SubtitlePart) })),
+                new(OpCodes.Stind_Ref),
                 new(OpCodes.Ret),
 
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),

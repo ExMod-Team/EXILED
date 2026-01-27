@@ -20,7 +20,7 @@ namespace Exiled.API.Features.Roles
     /// <summary>
     /// Defines a role that represents SCP-1507.
     /// </summary>
-    [Obsolete("Only availaible for Christmas and AprilFools.")]
+    // [Obsolete("Only availaible for Christmas and AprilFools.")]
     public class Scp1507Role : FpcRole, ISubroutinedScpRole, IHumeShieldRole, ISpawnableScp
     {
         /// <summary>
@@ -48,6 +48,16 @@ namespace Exiled.API.Features.Roles
         /// Gets the <see cref="Scp1507GameRole"/> instance.
         /// </summary>
         public new Scp1507GameRole Base { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
 
         /// <summary>
         /// Gets the Spawn Chance of SCP-939.
