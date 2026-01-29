@@ -333,6 +333,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> interacts with a door.
         /// </summary>
+        /// <seealso cref="Handlers.Item.KeycardInteracting"/>
         public static Event<InteractingDoorEventArgs> InteractingDoor { get; set; } = new();
 
         /// <summary>
