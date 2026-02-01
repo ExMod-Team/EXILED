@@ -66,6 +66,11 @@ namespace Exiled.Events.Features
         public static IReadOnlyDictionary<Type, Event<T>> Dictionary => TypeToEvent;
 
         /// <summary>
+        /// Gets a value indicating whether this event has any subscribers.
+        /// </summary>
+        public bool HasSubscribers => innerEvent.Count > 0 || innerAsyncEvent.Count > 0;
+
+        /// <summary>
         /// Subscribes a target <see cref="CustomEventHandler{TEventArgs}"/> to the inner event and checks if patching is possible, if dynamic patching is enabled.
         /// </summary>
         /// <param name="event">The <see cref="Event{T}"/> the <see cref="CustomEventHandler{T}"/> will be subscribed to.</param>

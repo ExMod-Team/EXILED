@@ -25,6 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="CurrentRoomPlayerCache.ValidateCache"/> to add the <see cref="Player.RoomChanged"/> event.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.RoomChanged))]
+    [EventPatch(typeof(Player), nameof(Player.ZoneChanged))]
     [HarmonyPatch(typeof(CurrentRoomPlayerCache), nameof(CurrentRoomPlayerCache.ValidateCache))]
     internal class ChangedRoom
     {
@@ -40,19 +41,22 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // referenceHub
+                // player
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(typeof(CurrentRoomPlayerCache), nameof(CurrentRoomPlayerCache._roleManager))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
+                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // oldRoom
                 new(OpCodes.Ldloc_2),
+                new(OpCodes.Call, Method(typeof(API.Features.Room), nameof(API.Features.Room.Get), new[] { typeof(RoomIdentifier) })),
 
                 // newRoom
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(typeof(CurrentRoomPlayerCache), nameof(CurrentRoomPlayerCache._lastDetected))),
+                new(OpCodes.Call, Method(typeof(API.Features.Room), nameof(API.Features.Room.Get), new[] { typeof(RoomIdentifier) })),
 
-                // RoomChangedEventArgs ev = new RoomChangedEventArgs(hub, oldRoom, newRoom);
+                // RoomChangedEventArgs ev = new RoomChangedEventArgs(player, oldRoom, newRoom);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoomChangedEventArgs))[0]),
 
                 // Handlers.Player.OnRoomChanged(ev);

@@ -8,7 +8,6 @@ namespace Exiled.Events.EventArgs.Player
 {
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
-    using MapGeneration;
 
     /// <summary>
     /// Contains the information when a player changes rooms.
@@ -19,13 +18,13 @@ namespace Exiled.Events.EventArgs.Player
         /// Initializes a new instance of the <see cref="RoomChangedEventArgs"/> class.
         /// </summary>
         /// <param name="player">The player whose room has changed.</param>
-        /// <param name="oldRoom">The room identifier before the change (Can be null on round start).</param>
+        /// <param name="oldRoom">The room identifier before the change.</param>
         /// <param name="newRoom">The room identifier after the change.</param>
-        public RoomChangedEventArgs(ReferenceHub player, RoomIdentifier oldRoom, RoomIdentifier newRoom)
+        public RoomChangedEventArgs(Player player, Room oldRoom, Room newRoom)
         {
-            Player = Player.Get(player);
-            OldRoom = Room.Get(oldRoom);
-            NewRoom = Room.Get(newRoom);
+            Player = player;
+            OldRoom = oldRoom;
+            NewRoom = newRoom;
         }
 
         /// <inheritdoc/>
