@@ -66,7 +66,7 @@ namespace Exiled.Events.Features
         /// <summary>
         /// Gets a value indicating whether the Harmony patch for this event has been applied.
         /// </summary>
-        public bool Patched { get; private set; }
+        public bool Patched { get; private set; } = !Events.Instance.Config.UseDynamicPatching;
 
         /// <summary>
         /// Subscribes a target <see cref="CustomEventHandler{TEventArgs}"/> to the inner event and checks if patching is possible, if dynamic patching is enabled.
