@@ -13,19 +13,17 @@ namespace Exiled.Events.EventArgs.Player
     using VoiceChat.Networking;
 
     /// <summary>
-    /// Contains all information before player receiving a voice message.
+    /// Contains all information before a player receives a voice message.
     /// </summary>
     public class ReceivingVoiceMessageEventArgs : IPlayerEvent, IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ReceivingVoiceMessageEventArgs" /> class.
         /// </summary>
-        /// <param name="voiceMessage">The voice message being sent.</param>
         /// <param name="receiver">The player receiving the voice message.</param>
         /// <param name="sender">The player sending the voice message.</param>
-        /// <param name="voiceModule">
-        /// <inheritdoc cref="VoiceModule" />
-        /// </param>
+        /// <param name="voiceModule">The senders voice module.</param>
+        /// <param name="voiceMessage">The voice message being sent.</param>
         public ReceivingVoiceMessageEventArgs(Player receiver, Player sender, VoiceModuleBase voiceModule, VoiceMessage voiceMessage)
         {
             Sender = sender;
@@ -40,7 +38,7 @@ namespace Exiled.Events.EventArgs.Player
         public Player Player { get; }
 
         /// <summary>
-        /// Gets the player sended the voice message.
+        /// Gets the player sending the voice message.
         /// </summary>
         public Player Sender { get; }
 

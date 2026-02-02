@@ -471,7 +471,7 @@ namespace Exiled.Events.Handlers
         public static Event<VoiceChattingEventArgs> VoiceChatting { get; set; } = new();
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> receiving a voice message.
+        /// Invoked before a <see cref="API.Features.Player"/> receives a voice message.
         /// </summary>
         public static Event<ReceivingVoiceMessageEventArgs> ReceivingVoiceMessage { get; set; } = new();
 
@@ -1057,7 +1057,7 @@ namespace Exiled.Events.Handlers
         public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> receiving a voice message.
+        /// Invoked before a <see cref="API.Features.Player"/> receives a voice message.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingVoiceMessageEventArgs"/> instance.</param>
         public static void OnReceivingVoiceMessage(ReceivingVoiceMessageEventArgs ev) => ReceivingVoiceMessage.InvokeSafely(ev);
