@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static CapybaraToy Prefab => PrefabHelper.GetPrefab<CapybaraToy>(PrefabType.CapybaraToy);
+        public static CapybaraToy Prefab { get; } = PrefabHelper.GetPrefab<CapybaraToy>(PrefabType.CapybaraToy);
 
         /// <summary>
         /// Gets the base <see cref="CapybaraToy"/>.

@@ -31,7 +31,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static InvisibleInteractableToy Prefab => PrefabHelper.GetPrefab<InvisibleInteractableToy>(PrefabType.InvisibleInteractableToy);
+        public static InvisibleInteractableToy Prefab { get; } = PrefabHelper.GetPrefab<InvisibleInteractableToy>(PrefabType.InvisibleInteractableToy);
 
         /// <summary>
         /// Gets the base <see cref="InvisibleInteractableToy"/>.

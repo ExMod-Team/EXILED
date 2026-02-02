@@ -29,7 +29,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static WaypointToy Prefab => PrefabHelper.GetPrefab<WaypointToy>(PrefabType.WaypointToy);
+        public static WaypointToy Prefab { get; } = PrefabHelper.GetPrefab<WaypointToy>(PrefabType.WaypointToy);
 
         /// <summary>
         /// Gets the base <see cref="WaypointToy"/>.

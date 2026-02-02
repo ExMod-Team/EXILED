@@ -29,7 +29,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static TextToy Prefab => PrefabHelper.GetPrefab<TextToy>(PrefabType.TextToy);
+        public static TextToy Prefab { get; } = PrefabHelper.GetPrefab<TextToy>(PrefabType.TextToy);
 
         /// <summary>
         /// Gets the base <see cref="TextToy"/>.
