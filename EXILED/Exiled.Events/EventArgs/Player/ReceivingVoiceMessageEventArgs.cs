@@ -3,7 +3,7 @@
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
-// -----------------------------------------------------------------------using System;
+// -----------------------------------------------------------------------
 
 namespace Exiled.Events.EventArgs.Player
 {
