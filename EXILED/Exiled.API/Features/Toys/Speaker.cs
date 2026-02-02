@@ -582,16 +582,6 @@ namespace Exiled.API.Features.Toys
             Stop();
 
             encoder?.Dispose();
-            encoder = null;
-
-            frame = null;
-            encoded = null;
-            resampleBuffer = null;
-
-            Predicate = null;
-            TargetPlayer = null;
-            TargetPlayers = null;
-
             isPlayBackInitialized = false;
         }
     }
