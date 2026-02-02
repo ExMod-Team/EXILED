@@ -12,8 +12,6 @@ namespace Exiled.API.Features.Toys
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
 
-    using LabApi.Features.Wrappers;
-
     using UnityEngine;
 
     using static AdminToys.InvisibleInteractableToy;

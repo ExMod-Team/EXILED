@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System.Drawing;
-
     using AdminToys;
 
     using Exiled.API.Enums;
