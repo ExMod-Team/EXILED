@@ -902,7 +902,7 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="ReloadingWeaponEventArgs"/> instance.</param>
         public static void OnReloadingWeapon(PlayerReloadingWeaponEventArgs ev)
         {
-            if (!ReloadingWeapon.HasSubscribers)
+            if (!ReloadingWeapon.Patched)
                 return;
 
             ReloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
@@ -1018,7 +1018,7 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="UnloadingWeaponEventArgs"/> instance.</param>
         public static void OnUnloadingWeapon(PlayerUnloadingWeaponEventArgs ev)
         {
-            if (!UnloadingWeapon.HasSubscribers)
+            if (!UnloadingWeapon.Patched)
                 return;
 
             UnloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
