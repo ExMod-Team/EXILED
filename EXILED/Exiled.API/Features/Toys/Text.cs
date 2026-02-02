@@ -105,7 +105,7 @@ namespace Exiled.API.Features.Toys
 
             textToy.TextFormat = text;
             textToy.DisplaySize = displaySize ?? Vector2.one;
-            textToy.Transform.localPosition = position ?? Vector3.one;
+            textToy.Transform.localPosition = position ?? Vector3.zero;
             textToy.Transform.localRotation = rotation ?? Quaternion.identity;
             textToy.Transform.localScale = scale ?? Vector3.one;
 

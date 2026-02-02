@@ -83,7 +83,7 @@ namespace Exiled.API.Features.Toys
             Capybara toy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
 
             toy.Collidable = collidable;
-            toy.Transform.localPosition = position ?? Vector3.one;
+            toy.Transform.localPosition = position ?? Vector3.zero;
             toy.Transform.localRotation = rotation ?? Quaternion.identity;
             toy.Transform.localScale = scale ?? Vector3.one;
 

@@ -112,7 +112,7 @@ namespace Exiled.API.Features.Toys
 
             toy.Priority = priority;
             toy.VisualizeBounds = visualizeBounds;
-            toy.Transform.localPosition = position ?? Vector3.one;
+            toy.Transform.localPosition = position ?? Vector3.zero;
             toy.Transform.localRotation = rotation ?? Quaternion.identity;
             toy.BoundsSize = scale ?? Vector3.one * 255.9961f;
 
