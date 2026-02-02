@@ -117,11 +117,13 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
         public static InteractableToy Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, bool spawn = true)
         {
-            InteractableToy toy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
+            InteractableToy toy = new(Object.Instantiate(Prefab, parent))
+            {
+                Shape = shape,
+                IsLocked = isLocked,
+                InteractionDuration = interactionDuration,
+            };
 
-            toy.Shape = shape;
-            toy.IsLocked = isLocked;
-            toy.InteractionDuration = interactionDuration;
             toy.Transform.localPosition = position ?? Vector3.zero;
             toy.Transform.localRotation = rotation ?? Quaternion.identity;
             toy.Transform.localScale = scale ?? Vector3.one;

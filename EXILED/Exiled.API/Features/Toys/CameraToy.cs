@@ -147,9 +147,11 @@ namespace Exiled.API.Features.Toys
                 _ => EzArmCameraPrefab
             };
 
-            CameraToy toy = parent ? new(Object.Instantiate(prefab, parent)) : new(Object.Instantiate(prefab));
+            CameraToy toy = new(Object.Instantiate(prefab, parent))
+            {
+                Name = name,
+            };
 
-            toy.Name = name;
             toy.Transform.localPosition = position ?? Vector3.zero;
             toy.Transform.localRotation = rotation ?? Quaternion.identity;
             toy.Transform.localScale = scale ?? Vector3.one;

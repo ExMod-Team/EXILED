@@ -80,9 +80,11 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Capybara"/>.</returns>
         public static Capybara Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, bool collidable = true, bool spawn = true)
         {
-            Capybara toy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
+            Capybara toy = new(Object.Instantiate(Prefab, parent))
+            {
+                Collidable = collidable,
+            };
 
-            toy.Collidable = collidable;
             toy.Transform.localPosition = position ?? Vector3.zero;
             toy.Transform.localRotation = rotation ?? Quaternion.identity;
             toy.Transform.localScale = scale ?? Vector3.one;

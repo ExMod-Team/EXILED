@@ -108,13 +108,15 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Waypoint"/>.</returns>
         public static Waypoint Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, float priority = 0f, bool visualizeBounds = false, bool spawn = true)
         {
-            Waypoint toy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
+            Waypoint toy = new(Object.Instantiate(Prefab, parent))
+            {
+                Priority = priority,
+                BoundsSize = scale ?? Vector3.one * 255.9961f,
+                VisualizeBounds = visualizeBounds,
+            };
 
-            toy.Priority = priority;
-            toy.VisualizeBounds = visualizeBounds;
             toy.Transform.localPosition = position ?? Vector3.zero;
             toy.Transform.localRotation = rotation ?? Quaternion.identity;
-            toy.BoundsSize = scale ?? Vector3.one * 255.9961f;
 
             if (spawn)
                 toy.Spawn();

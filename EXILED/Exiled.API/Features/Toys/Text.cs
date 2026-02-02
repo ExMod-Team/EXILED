@@ -101,10 +101,12 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Text"/>.</returns>
         public static Text Create(Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, string text = "Default Text", Vector2? displaySize = null, Transform parent = null, bool spawn = true)
         {
-            Text textToy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
+            Text textToy = new(Object.Instantiate(Prefab, parent))
+            {
+                TextFormat = text,
+                DisplaySize = displaySize ?? new Vector3(50, 50),
+            };
 
-            textToy.TextFormat = text;
-            textToy.DisplaySize = displaySize ?? Vector2.one;
             textToy.Transform.localPosition = position ?? Vector3.zero;
             textToy.Transform.localRotation = rotation ?? Quaternion.identity;
             textToy.Transform.localScale = scale ?? Vector3.one;
