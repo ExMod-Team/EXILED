@@ -66,48 +66,33 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="transform">The transform to spawn at.</param>
         /// <returns>The new <see cref="Capybara"/>.</returns>
-        public static Capybara Create(Transform transform) => Create(transform: transform, spawn: true);
+        public static Capybara Create(Transform transform) => Create(parent: transform, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="Capybara"/>.
         /// </summary>
-        /// <param name="position">The position of the <see cref="Capybara"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Capybara"/>.</param>
-        /// <param name="scale">The scale of the <see cref="Capybara"/>.</param>
-        /// <param name="collidable">Whether the capybara has collision enabled.</param>
-        /// <param name="spawn">Whether the <see cref="Capybara"/> should be initially spawned.</param>
-        /// <returns>The new <see cref="Capybara"/>.</returns>
-        public static Capybara Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool collidable = true, bool spawn = true)
-        {
-            Capybara toy = new(Object.Instantiate(Prefab))
-            {
-                Collidable = collidable,
-            };
-
-            toy.Transform.localPosition = position ?? Vector3.zero;
-            toy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            toy.Transform.localScale = scale ?? Vector3.one;
-
-            if (spawn)
-                toy.Spawn();
-
-            return toy;
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="Capybara"/> from a Transform.
-        /// </summary>
-        /// <param name="transform">The transform to create this <see cref="Capybara"/> on.</param>
+        /// <param name="position">The local position of the <see cref="Capybara"/>.</param>
+        /// <param name="rotation">The local rotation of the <see cref="Capybara"/>.</param>
+        /// <param name="scale">The local scale of the <see cref="Capybara"/>.</param>
+        /// <param name="parent">The transform to create this <see cref="Capybara"/> on.</param>
         /// <param name="collidable">Whether the capybara has collision enabled.</param>
         /// <param name="spawn">Whether the <see cref="Capybara"/> should be initially spawned.</param>
         /// <param name="worldPositionStays">Whether the <see cref="Capybara"/> should keep the same world position.</param>
         /// <returns>The new <see cref="Capybara"/>.</returns>
-        public static Capybara Create(Transform transform, bool collidable = true, bool spawn = true, bool worldPositionStays = true)
+        public static Capybara Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, Transform parent = null, bool collidable = true, bool spawn = true, bool worldPositionStays = true)
         {
-            Capybara toy = new(Object.Instantiate(Prefab, transform, worldPositionStays))
-            {
-                Collidable = collidable,
-            };
+            Capybara toy = parent ? new(Object.Instantiate(Prefab, parent, worldPositionStays)) : new(Object.Instantiate(Prefab));
+
+            if (position.HasValue)
+                toy.Transform.localPosition = position.Value;
+
+            if (rotation.HasValue)
+                toy.Transform.localRotation = Quaternion.Euler(rotation.Value);
+
+            if (scale.HasValue)
+                toy.Transform.localScale = scale.Value;
+
+            toy.Collidable = collidable;
 
             if (spawn)
                 toy.Spawn();

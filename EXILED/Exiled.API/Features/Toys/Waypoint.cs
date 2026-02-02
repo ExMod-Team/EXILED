@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Toys
 {
+    using System.Drawing;
+
     using AdminToys;
 
     using Exiled.API.Enums;
@@ -78,13 +80,6 @@ namespace Exiled.API.Features.Toys
         public byte WaypointId => Base._waypointId;
 
         /// <summary>
-        /// Creates a new <see cref="Waypoint"/> at the specified position.
-        /// </summary>
-        /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
-        /// <returns>The new <see cref="Waypoint"/>.</returns>
-        public static Waypoint Create(Vector3 position) => Create(position: position, spawn: true);
-
-        /// <summary>
         /// Creates a new <see cref="Waypoint"/> with a specific position and size (bounds).
         /// </summary>
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
@@ -96,8 +91,9 @@ namespace Exiled.API.Features.Toys
         /// Creates a new <see cref="Waypoint"/> based on a Transform.
         /// </summary>
         /// <param name="transform">The transform to spawn at (LocalScale is applied to Bounds).</param>
+        /// <param name="size">The size of the bounds (Applied to NetworkBoundsSize).</param>
         /// <returns>The new <see cref="Waypoint"/>.</returns>
-        public static Waypoint Create(Transform transform) => Create(transform: transform, spawn: true);
+        public static Waypoint Create(Transform transform, Vector3 size) => Create(parent: transform, scale: size, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="Waypoint"/>.
@@ -105,45 +101,25 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
         /// <param name="rotation">The rotation of the <see cref="Waypoint"/>.</param>
         /// <param name="scale">The size of the bounds (This is NOT localScale, it applies to NetworkBoundsSize).</param>
-        /// <param name="priority">The priority of the waypoint.</param>
-        /// <param name="visualizeBounds">Whether to visualize the bounds.</param>
-        /// <param name="spawn">Whether the <see cref="Waypoint"/> should be initially spawned.</param>
-        /// <returns>The new <see cref="Waypoint"/>.</returns>
-        public static Waypoint Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, float priority = 0f, bool visualizeBounds = false, bool spawn = true)
-        {
-            Waypoint toy = new(Object.Instantiate(Prefab))
-            {
-                BoundsSize = scale ?? Vector3.one * 255.9961f,
-                VisualizeBounds = visualizeBounds,
-                Priority = priority,
-            };
-
-            toy.Transform.localPosition = position ?? Vector3.zero;
-            toy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
-
-            if (spawn)
-                toy.Spawn();
-
-            return toy;
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="Waypoint"/> from a Transform.
-        /// </summary>
-        /// <param name="transform">The transform to create this <see cref="Waypoint"/> on.</param>
+        /// <param name="parent">The transform to create this <see cref="Waypoint"/> on.</param>
         /// <param name="priority">The priority of the waypoint.</param>
         /// <param name="visualizeBounds">Whether to visualize the bounds.</param>
         /// <param name="spawn">Whether the <see cref="Waypoint"/> should be initially spawned.</param>
         /// <param name="worldPositionStays">Whether the <see cref="Waypoint"/> should keep the same world position.</param>
         /// <returns>The new <see cref="Waypoint"/>.</returns>
-        public static Waypoint Create(Transform transform, float priority = 0f, bool visualizeBounds = false, bool spawn = true, bool worldPositionStays = true)
+        public static Waypoint Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, Transform parent = null, float priority = 0f, bool visualizeBounds = false, bool spawn = true, bool worldPositionStays = true)
         {
-            Waypoint toy = new(Object.Instantiate(Prefab, transform, worldPositionStays))
-            {
-                BoundsSize = transform.localScale,
-                Priority = priority,
-                VisualizeBounds = visualizeBounds,
-            };
+            Waypoint toy = parent ? new(Object.Instantiate(Prefab, parent, worldPositionStays)) : new(Object.Instantiate(Prefab));
+
+            if (position.HasValue)
+                toy.Transform.localPosition = position.Value;
+
+            if (rotation.HasValue)
+                toy.Transform.localRotation = Quaternion.Euler(rotation.Value);
+
+            toy.BoundsSize = scale ?? Vector3.one * 255.9961f;
+            toy.VisualizeBounds = visualizeBounds;
+            toy.Priority = priority;
 
             if (spawn)
                 toy.Spawn();
