@@ -45,6 +45,8 @@ namespace Exiled.API.Features.Lockers
 
             Chambers = locker.Chambers.Select(x => new Chamber(x, this)).ToList();
             Type = locker.GetLockerType();
+            if (Type == LockerType.Unknown)
+                Log.Warn($"[LockerType.Unknown] {Base}");
         }
 
         /// <summary>
@@ -180,6 +182,12 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         /// <param name="type">The type of item to be added.</param>
         public void AddItem(ItemType type) => AddItem(Pickup.Create(type));
+
+        /// <summary>
+        /// Returns the Door in a human-readable format.
+        /// </summary>
+        /// <returns>A string containing Door-related data.</returns>
+        public override string ToString() => $"{Type} [{Room}] *{Chambers.Count}*";
 
         /// <summary>
         /// Clears the cached lockers in the <see cref="BaseToExiledLockers"/> dictionary.
