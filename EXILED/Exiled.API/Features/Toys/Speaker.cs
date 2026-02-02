@@ -582,7 +582,6 @@ namespace Exiled.API.Features.Toys
             Stop();
 
             encoder?.Dispose();
-            isPlayBackInitialized = false;
         }
     }
 }
