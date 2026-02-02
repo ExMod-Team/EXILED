@@ -82,7 +82,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
         /// <returns>The new <see cref="Waypoint"/>.</returns>
-        public static Waypoint Create(Vector3 position) => Create(position: position);
+        public static Waypoint Create(Vector3 position) => Create(position: position, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="Waypoint"/> with a specific position and size (bounds).
@@ -90,7 +90,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
         /// <param name="size">The size of the bounds (Applied to NetworkBoundsSize).</param>
         /// <returns>The new <see cref="Waypoint"/>.</returns>
-        public static Waypoint Create(Vector3 position, Vector3 size) => Create(position: position, scale: size);
+        public static Waypoint Create(Vector3 position, Vector3 size) => Create(position: position, scale: size, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="Waypoint"/> based on a Transform.

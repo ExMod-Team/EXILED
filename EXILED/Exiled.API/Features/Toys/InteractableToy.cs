@@ -70,7 +70,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="position">The position of the <see cref="InteractableToy"/>.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
-        public static InteractableToy Create(Vector3 position) => Create(position: position);
+        public static InteractableToy Create(Vector3 position) => Create(position: position, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/> with a specific position and shape.
@@ -78,7 +78,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the <see cref="InteractableToy"/>.</param>
         /// <param name="shape">The shape of the collider.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
-        public static InteractableToy Create(Vector3 position, ColliderShape shape) => Create(position: position, shape: shape);
+        public static InteractableToy Create(Vector3 position, ColliderShape shape) => Create(position: position, shape: shape, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/> with a specific position, shape, and interaction duration.

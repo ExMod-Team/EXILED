@@ -51,7 +51,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="position">The position of the <see cref="Capybara"/>.</param>
         /// <returns>The new <see cref="Capybara"/>.</returns>
-        public static Capybara Create(Vector3 position) => Create(position: position);
+        public static Capybara Create(Vector3 position) => Create(position: position, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="Capybara"/> with a specific position and rotation.
@@ -59,7 +59,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the <see cref="Capybara"/>.</param>
         /// <param name="rotation">The rotation of the <see cref="Capybara"/>.</param>
         /// <returns>The new <see cref="Capybara"/>.</returns>
-        public static Capybara Create(Vector3 position, Vector3 rotation) => Create(position: position, rotation: rotation);
+        public static Capybara Create(Vector3 position, Vector3 rotation) => Create(position: position, rotation: rotation, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="Capybara"/> based on a Transform.

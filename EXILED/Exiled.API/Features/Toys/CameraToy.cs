@@ -109,7 +109,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="type">The <see cref="CameraType"/> of the camera.</param>
         /// <param name="position">The position of the camera.</param>
         /// <returns>The new <see cref="CameraToy"/>.</returns>
-        public static CameraToy Create(CameraType type, Vector3 position) => Create(type: type, position: position);
+        public static CameraToy Create(CameraType type, Vector3 position) => Create(type: type, position: position, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="CameraToy"/> with a specified type and name.
@@ -118,7 +118,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the camera.</param>
         /// <param name="name">The name (label) of the camera.</param>
         /// <returns>The new <see cref="CameraToy"/>.</returns>
-        public static CameraToy Create(CameraType type, Vector3 position, string name) => Create(type: type, position: position, name: name);
+        public static CameraToy Create(CameraType type, Vector3 position, string name) => Create(type: type, position: position, name: name, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="CameraToy"/>.
