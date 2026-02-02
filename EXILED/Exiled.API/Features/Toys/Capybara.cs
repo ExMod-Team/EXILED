@@ -81,11 +81,12 @@ namespace Exiled.API.Features.Toys
         {
             Capybara toy = new(Object.Instantiate(Prefab))
             {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
-                Scale = scale ?? Vector3.one,
                 Collidable = collidable,
             };
+
+            toy.Transform.localPosition = position ?? Vector3.zero;
+            toy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
+            toy.Transform.localScale = scale ?? Vector3.one;
 
             if (spawn)
                 toy.Spawn();
@@ -105,9 +106,6 @@ namespace Exiled.API.Features.Toys
         {
             Capybara toy = new(Object.Instantiate(Prefab, transform, worldPositionStays))
             {
-                Position = transform.position,
-                Rotation = transform.rotation,
-                Scale = transform.localScale,
                 Collidable = collidable,
             };
 

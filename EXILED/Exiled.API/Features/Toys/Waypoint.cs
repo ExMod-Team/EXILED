@@ -12,6 +12,8 @@ namespace Exiled.API.Features.Toys
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
 
+    using LabApi.Features.Wrappers;
+
     using UnityEngine;
 
     /// <summary>
@@ -113,12 +115,13 @@ namespace Exiled.API.Features.Toys
         {
             Waypoint toy = new(Object.Instantiate(Prefab))
             {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
                 BoundsSize = scale ?? Vector3.one * 255.9961f,
-                Priority = priority,
                 VisualizeBounds = visualizeBounds,
+                Priority = priority,
             };
+
+            toy.Transform.localPosition = position ?? Vector3.zero;
+            toy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
 
             if (spawn)
                 toy.Spawn();
@@ -139,8 +142,6 @@ namespace Exiled.API.Features.Toys
         {
             Waypoint toy = new(Object.Instantiate(Prefab, transform, worldPositionStays))
             {
-                Position = transform.position,
-                Rotation = transform.rotation,
                 BoundsSize = transform.localScale,
                 Priority = priority,
                 VisualizeBounds = visualizeBounds,

@@ -100,6 +100,10 @@ namespace Exiled.API.Features.Toys
                 DisplaySize = displaySize ?? Vector2.one,
             };
 
+            textToy.Transform.localPosition = position ?? Vector3.zero;
+            textToy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
+            textToy.Transform.localScale = scale ?? Vector3.one;
+
             if (spawn)
                 textToy.Spawn();
 
@@ -119,9 +123,6 @@ namespace Exiled.API.Features.Toys
         {
             Text textToy = new(Object.Instantiate(Prefab, transform, worldPositionStays))
             {
-                Position = transform.position,
-                Rotation = transform.rotation,
-                Scale = transform.localScale,
                 TextFormat = text,
                 DisplaySize = displaySize ?? Vector2.one,
             };

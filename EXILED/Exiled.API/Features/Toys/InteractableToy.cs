@@ -12,6 +12,8 @@ namespace Exiled.API.Features.Toys
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
 
+    using LabApi.Features.Wrappers;
+
     using UnityEngine;
 
     using static AdminToys.InvisibleInteractableToy;
@@ -104,13 +106,14 @@ namespace Exiled.API.Features.Toys
         {
             InteractableToy toy = new(Object.Instantiate(Prefab))
             {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
-                Scale = scale ?? Vector3.one,
                 Shape = shape,
                 InteractionDuration = interactionDuration,
                 IsLocked = isLocked,
             };
+
+            toy.Transform.localPosition = position ?? Vector3.zero;
+            toy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
+            toy.Transform.localScale = scale ?? Vector3.one;
 
             if (spawn)
                 toy.Spawn();
@@ -132,9 +135,6 @@ namespace Exiled.API.Features.Toys
         {
             InteractableToy toy = new(Object.Instantiate(Prefab, transform, worldPositionStays))
             {
-                Position = transform.position,
-                Rotation = transform.rotation,
-                Scale = transform.localScale,
                 Shape = shape,
                 InteractionDuration = interactionDuration,
                 IsLocked = isLocked,

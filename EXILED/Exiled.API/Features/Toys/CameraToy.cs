@@ -148,11 +148,12 @@ namespace Exiled.API.Features.Toys
 
             CameraToy toy = new(Object.Instantiate(prefab))
             {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
-                Scale = scale ?? Vector3.one,
                 Name = name,
             };
+
+            toy.Transform.localPosition = position ?? Vector3.zero;
+            toy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
+            toy.Transform.localScale = scale ?? Vector3.one;
 
             if (verticalConstraint.HasValue)
                 toy.VerticalConstraint = verticalConstraint.Value;
