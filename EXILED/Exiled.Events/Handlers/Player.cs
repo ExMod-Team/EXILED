@@ -848,7 +848,7 @@ namespace Exiled.Events.Handlers
         {
             RoomChanged.InvokeSafely(ev);
 
-            if (!ZoneChanged.HasSubscribers)
+            if (!ZoneChanged.Patched)
                 return;
 
             ZoneType oldZone = ev.OldRoom?.Zone ?? ZoneType.Unspecified;
