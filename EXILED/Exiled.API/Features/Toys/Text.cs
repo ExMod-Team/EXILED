@@ -57,7 +57,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="Text"/> at the specified position.
         /// </summary>
-        /// <param name="position">The position of the <see cref="Text"/>.</param>
+        /// <param name="position">The local position of the <see cref="Text"/>.</param>
         /// <param name="text">The text content to display.</param>
         /// <returns>The new <see cref="Text"/>.</returns>
         public static Text Create(Vector3 position, string text) => Create(position: position, text: text, spawn: true);
@@ -65,7 +65,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="Text"/> with a specific position, text, and display size.
         /// </summary>
-        /// <param name="position">The position of the <see cref="Text"/>.</param>
+        /// <param name="position">The local position of the <see cref="Text"/>.</param>
         /// <param name="text">The text content to display.</param>
         /// <param name="displaySize">The display size of the text.</param>
         /// <returns>The new <see cref="Text"/>.</returns>
@@ -98,23 +98,16 @@ namespace Exiled.API.Features.Toys
         /// <param name="displaySize">The display size of the text.</param>
         /// <param name="parent">The transform to create this <see cref="Text"/> on.</param>
         /// <param name="spawn">Whether the <see cref="Text"/> should be initially spawned.</param>
-        /// <param name="worldPositionStays">Whether the <see cref="Text"/> should keep the same world position.</param>
         /// <returns>The new <see cref="Text"/>.</returns>
-        public static Text Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, string text = "Default Text", Vector2? displaySize = null, Transform parent = null, bool spawn = true, bool worldPositionStays = true)
+        public static Text Create(Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, string text = "Default Text", Vector2? displaySize = null, Transform parent = null, bool spawn = true)
         {
-            Text textToy = parent ? new(Object.Instantiate(Prefab, parent, worldPositionStays)) : new(Object.Instantiate(Prefab));
-
-            if (position.HasValue)
-                textToy.Transform.localPosition = position.Value;
-
-            if (rotation.HasValue)
-                textToy.Transform.localRotation = Quaternion.Euler(rotation.Value);
-
-            if (scale.HasValue)
-                textToy.Transform.localScale = scale.Value;
+            Text textToy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
 
             textToy.TextFormat = text;
             textToy.DisplaySize = displaySize ?? Vector2.one;
+            textToy.Transform.localPosition = position ?? Vector3.one;
+            textToy.Transform.localRotation = rotation ?? Quaternion.identity;
+            textToy.Transform.localScale = scale ?? Vector3.one;
 
             if (spawn)
                 textToy.Spawn();

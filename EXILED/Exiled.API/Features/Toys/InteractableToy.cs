@@ -70,14 +70,14 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/> at the specified position.
         /// </summary>
-        /// <param name="position">The position of the <see cref="InteractableToy"/>.</param>
+        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
         public static InteractableToy Create(Vector3 position) => Create(position: position, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/> with a specific position and shape.
         /// </summary>
-        /// <param name="position">The position of the <see cref="InteractableToy"/>.</param>
+        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
         /// <param name="shape">The shape of the collider.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
         public static InteractableToy Create(Vector3 position, ColliderShape shape) => Create(position: position, shape: shape, spawn: true);
@@ -85,7 +85,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/> with a specific position, shape, and interaction duration.
         /// </summary>
-        /// <param name="position">The position of the <see cref="InteractableToy"/>.</param>
+        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
         /// <param name="shape">The shape of the collider.</param>
         /// <param name="duration">How long the interaction takes.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
@@ -99,40 +99,32 @@ namespace Exiled.API.Features.Toys
         /// <param name="interactionDuration">How long the interaction takes.</param>
         /// <param name="isLocked">Whether the object is locked.</param>
         /// <param name="spawn">Whether the <see cref="InteractableToy"/> should be initially spawned.</param>
-        /// <param name="worldPositionStays">Whether the <see cref="InteractableToy"/> should keep the same world position.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
-        public static InteractableToy Create(Transform transform, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, bool spawn = true, bool worldPositionStays = true)
-            => Create(parent: transform, shape: shape, interactionDuration: interactionDuration, isLocked: isLocked, spawn: spawn, worldPositionStays: worldPositionStays);
+        public static InteractableToy Create(Transform transform, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, bool spawn = true)
+            => Create(parent: transform, shape: shape, interactionDuration: interactionDuration, isLocked: isLocked, spawn: spawn);
 
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/>.
         /// </summary>
+        /// <param name="parent">The transform to create this <see cref="InteractableToy"/> on.</param>
         /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
         /// <param name="rotation">The local rotation of the <see cref="InteractableToy"/>.</param>
         /// <param name="scale">The local scale of the <see cref="InteractableToy"/>.</param>
         /// <param name="shape">The shape of the collider.</param>
         /// <param name="interactionDuration">How long the interaction takes.</param>
         /// <param name="isLocked">Whether the object is locked.</param>
-        /// <param name="parent">The transform to create this <see cref="InteractableToy"/> on.</param>
         /// <param name="spawn">Whether the <see cref="InteractableToy"/> should be initially spawned.</param>
-        /// <param name="worldPositionStays">Whether the <see cref="InteractableToy"/> should keep the same world position.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
-        public static InteractableToy Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, Transform parent = null, bool spawn = true, bool worldPositionStays = true)
+        public static InteractableToy Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, bool spawn = true)
         {
-            InteractableToy toy = parent ? new(Object.Instantiate(Prefab, parent, worldPositionStays)) : new(Object.Instantiate(Prefab));
-
-            if (position.HasValue)
-                toy.Transform.localPosition = position.Value;
-
-            if (rotation.HasValue)
-                toy.Transform.localRotation = Quaternion.Euler(rotation.Value);
-
-            if (scale.HasValue)
-                toy.Transform.localScale = scale.Value;
+            InteractableToy toy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
 
             toy.Shape = shape;
-            toy.InteractionDuration = interactionDuration;
             toy.IsLocked = isLocked;
+            toy.InteractionDuration = interactionDuration;
+            toy.Transform.localPosition = position ?? Vector3.zero;
+            toy.Transform.localRotation = rotation ?? Quaternion.identity;
+            toy.Transform.localScale = scale ?? Vector3.one;
 
             if (spawn)
                 toy.Spawn();

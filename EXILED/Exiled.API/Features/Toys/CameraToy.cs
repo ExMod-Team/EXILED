@@ -107,7 +107,7 @@ namespace Exiled.API.Features.Toys
         /// Creates a new <see cref="CameraToy"/> with a specified type.
         /// </summary>
         /// <param name="type">The <see cref="CameraType"/> of the camera.</param>
-        /// <param name="position">The position of the camera.</param>
+        /// <param name="position">The local position of the camera.</param>
         /// <returns>The new <see cref="CameraToy"/>.</returns>
         public static CameraToy Create(CameraType type, Vector3 position) => Create(type: type, position: position, spawn: true);
 
@@ -115,7 +115,7 @@ namespace Exiled.API.Features.Toys
         /// Creates a new <see cref="CameraToy"/> with a specified type and name.
         /// </summary>
         /// <param name="type">The <see cref="CameraType"/> of the camera.</param>
-        /// <param name="position">The position of the camera.</param>
+        /// <param name="position">The local position of the camera.</param>
         /// <param name="name">The name (label) of the camera.</param>
         /// <returns>The new <see cref="CameraToy"/>.</returns>
         public static CameraToy Create(CameraType type, Vector3 position, string name) => Create(type: type, position: position, name: name, spawn: true);
@@ -123,10 +123,11 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="CameraToy"/>.
         /// </summary>
+        /// <param name="parent">The transform to create this <see cref="CameraToy"/> on.</param>
         /// <param name="type">The <see cref="CameraType"/> of the camera.</param>
-        /// <param name="position">The position of the camera.</param>
-        /// <param name="rotation">The rotation of the camera.</param>
-        /// <param name="scale">The scale of the camera.</param>
+        /// <param name="position">The local position of the camera.</param>
+        /// <param name="rotation">The local rotation of the camera.</param>
+        /// <param name="scale">The local scale of the camera.</param>
         /// <param name="name">The name (label) of the camera.</param>
         /// <param name="room">The room associated with this camera.</param>
         /// <param name="verticalConstraint">The vertical limits. Leave null to use prefab default.</param>
@@ -134,7 +135,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="zoomConstraint">The zoom limits. Leave null to use prefab default.</param>
         /// <param name="spawn">Whether the camera should be initially spawned.</param>
         /// <returns>The new <see cref="CameraToy"/>.</returns>
-        public static CameraToy Create(CameraType type, Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, string name = "New Camera", Room room = null, Vector2? verticalConstraint = null, Vector2? horizontalConstraint = null, Vector2? zoomConstraint = null, bool spawn = true)
+        public static CameraToy Create(Transform parent = null, CameraType type = CameraType.EzArmCameraToy, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, string name = "New Camera", Room room = null, Vector2? verticalConstraint = null, Vector2? horizontalConstraint = null, Vector2? zoomConstraint = null, bool spawn = true)
         {
             Scp079CameraToy prefab = type switch
             {
@@ -146,13 +147,11 @@ namespace Exiled.API.Features.Toys
                 _ => EzArmCameraPrefab
             };
 
-            CameraToy toy = new(Object.Instantiate(prefab))
-            {
-                Name = name,
-            };
+            CameraToy toy = parent ? new(Object.Instantiate(prefab, parent)) : new(Object.Instantiate(prefab));
 
+            toy.Name = name;
             toy.Transform.localPosition = position ?? Vector3.zero;
-            toy.Transform.localRotation = Quaternion.Euler(rotation ?? Vector3.zero);
+            toy.Transform.localRotation = rotation ?? Quaternion.identity;
             toy.Transform.localScale = scale ?? Vector3.one;
 
             if (verticalConstraint.HasValue)

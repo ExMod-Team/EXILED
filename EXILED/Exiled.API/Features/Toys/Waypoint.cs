@@ -98,28 +98,23 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="Waypoint"/>.
         /// </summary>
-        /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Waypoint"/>.</param>
-        /// <param name="scale">The size of the bounds (This is NOT localScale, it applies to NetworkBoundsSize).</param>
         /// <param name="parent">The transform to create this <see cref="Waypoint"/> on.</param>
+        /// <param name="position">The local position of the <see cref="Waypoint"/>.</param>
+        /// <param name="rotation">The local rotation of the <see cref="Waypoint"/>.</param>
+        /// <param name="scale">The size of the bounds (This is NOT localScale, it applies to NetworkBoundsSize).</param>
         /// <param name="priority">The priority of the waypoint.</param>
         /// <param name="visualizeBounds">Whether to visualize the bounds.</param>
         /// <param name="spawn">Whether the <see cref="Waypoint"/> should be initially spawned.</param>
-        /// <param name="worldPositionStays">Whether the <see cref="Waypoint"/> should keep the same world position.</param>
         /// <returns>The new <see cref="Waypoint"/>.</returns>
-        public static Waypoint Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, Transform parent = null, float priority = 0f, bool visualizeBounds = false, bool spawn = true, bool worldPositionStays = true)
+        public static Waypoint Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, float priority = 0f, bool visualizeBounds = false, bool spawn = true)
         {
-            Waypoint toy = parent ? new(Object.Instantiate(Prefab, parent, worldPositionStays)) : new(Object.Instantiate(Prefab));
+            Waypoint toy = parent ? new(Object.Instantiate(Prefab, parent)) : new(Object.Instantiate(Prefab));
 
-            if (position.HasValue)
-                toy.Transform.localPosition = position.Value;
-
-            if (rotation.HasValue)
-                toy.Transform.localRotation = Quaternion.Euler(rotation.Value);
-
-            toy.BoundsSize = scale ?? Vector3.one * 255.9961f;
-            toy.VisualizeBounds = visualizeBounds;
             toy.Priority = priority;
+            toy.VisualizeBounds = visualizeBounds;
+            toy.Transform.localPosition = position ?? Vector3.one;
+            toy.Transform.localRotation = rotation ?? Quaternion.identity;
+            toy.BoundsSize = scale ?? Vector3.one * 255.9961f;
 
             if (spawn)
                 toy.Spawn();
