@@ -126,6 +126,7 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
+                    // num3 = SafeGetTime(ev, this);
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, Method(typeof(SearchingPickupEvent), nameof(SafeGetTime))),
