@@ -85,7 +85,7 @@ namespace Exiled.API.Features.Toys
         /// Invoked when the audio track finishes playing.
         /// If looping is enabled, this triggers every time the track finished.
         /// </summary>
-        public event Action OnPlaybackFinished;
+        public event Action<string> OnPlaybackFinished;
 
         /// <summary>
         /// Invoked when the audio playback stops completely (either manually or end of file).
@@ -435,7 +435,7 @@ namespace Exiled.API.Features.Toys
                     if (!source.Ended)
                         continue;
 
-                    OnPlaybackFinished?.Invoke();
+                    OnPlaybackFinished?.Invoke(LastTrack);
 
                     if (Loop)
                     {
