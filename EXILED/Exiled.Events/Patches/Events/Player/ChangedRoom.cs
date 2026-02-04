@@ -25,6 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     /// Patches <see cref="CurrentRoomPlayerCache.ValidateCache"/> to add the <see cref="Player.RoomChanged"/> event.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.RoomChanged))]
+    [EventPatch(typeof(Player), nameof(Player.ZoneChanged))]
     [HarmonyPatch(typeof(CurrentRoomPlayerCache), nameof(CurrentRoomPlayerCache.ValidateCache))]
     internal class ChangedRoom
     {
@@ -40,7 +41,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // referenceHub
+                // hub
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(typeof(CurrentRoomPlayerCache), nameof(CurrentRoomPlayerCache._roleManager))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.Hub))),
