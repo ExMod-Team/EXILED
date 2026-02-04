@@ -4,14 +4,14 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
     using API.Features.Pools;
-    using API.Features.Roles;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
@@ -41,58 +41,41 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label retLabel = generator.DefineLabel();
-            Label isMutedLabel = generator.DefineLabel();
             Label skipLabel = generator.DefineLabel();
-            List<Label> labels;
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(VoiceChattingEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
             LocalBuilder voiceModule = generator.DeclareLocal(typeof(VoiceModuleBase));
+            LocalBuilder evTransmitting = generator.DeclareLocal(typeof(TransmittingEventArgs));
+            LocalBuilder evVoiceChatting = generator.DeclareLocal(typeof(VoiceChattingEventArgs));
 
-            const int offset = 3;
-            int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(VoiceModuleBase), nameof(VoiceModuleBase.CheckRateLimit)))) + offset;
+            int offset = -1;
+            int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerSendingVoiceMessageEventArgs))[0]) + offset;
 
-            // retrieve the base game jump label
-            labels = newInstructions[index].ExtractLabels();
-            newInstructions[index].labels.Add(isMutedLabel);
+            newInstructions[index].labels.Add(skipLabel);
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // Player.Get(msg.Speaker);
-                new CodeInstruction(OpCodes.Ldarg_1).WithLabels(labels),
+                new(OpCodes.Ldarg_1),
                 new(OpCodes.Ldfld, Field(typeof(VoiceMessage), nameof(VoiceMessage.Speaker))),
                 new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, player.LocalIndex),
 
-                // if (player is null)
-                //      go to base game logic
-                new(OpCodes.Ldnull),
-                new(OpCodes.Cgt_Un),
-                new(OpCodes.Brfalse_S, isMutedLabel),
-
-                // Player.Get(msg.Speaker);
-                new(OpCodes.Ldloc_S, player.LocalIndex),
+                // voiceModule
+                new(OpCodes.Ldloc_0),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(IVoiceRole), nameof(IVoiceRole.VoiceModule))),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, voiceModule.LocalIndex),
 
                 // msg
                 new(OpCodes.Ldarg_1),
 
-                // voiceModule
-                new(OpCodes.Ldloc_S, player.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.Role))),
-                new(OpCodes.Isinst, typeof(API.Features.Roles.IVoiceRole)),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Roles.IVoiceRole), nameof(API.Features.Roles.IVoiceRole.VoiceModule))),
-                new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, voiceModule.LocalIndex),
-
-                // true
-                new(OpCodes.Ldc_I4_1),
-
-                // VoiceChattingEventArgs ev = new(Player, VoiceMessage, VoiceModuleBase, true);
+                // VoiceChattingEventArgs ev = new(Player, VoiceModuleBase, VoiceMessage);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(VoiceChattingEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
-                new(OpCodes.Stloc_S, ev.LocalIndex),
+                new(OpCodes.Stloc_S, evVoiceChatting.LocalIndex),
 
                 // Handlers.Player.OnVoiceChatting(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnVoiceChatting))),
@@ -103,7 +86,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Brfalse_S, retLabel),
 
                 // msg = ev.VoiceMessage;
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Ldloc_S, evVoiceChatting.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceChattingEventArgs), nameof(VoiceChattingEventArgs.VoiceMessage))),
                 new(OpCodes.Starg_S, 1),
 
@@ -118,15 +101,17 @@ namespace Exiled.Events.Patches.Events.Player
                 // player
                 new(OpCodes.Ldloc_S, player.LocalIndex),
 
+                // msg
+                new(OpCodes.Ldarg_1),
+
                 // voiceModule
                 new(OpCodes.Ldloc_S, voiceModule.LocalIndex),
 
-                // true
-                new(OpCodes.Ldc_I4_1),
-
-                // TransmittingEventArgs ev = new TransmittingEventArgs(Player, VoiceModuleBase, bool)
+                // TransmittingEventArgs ev = new TransmittingEventArgs(Player, VoiceMessage, VoiceModuleBase)
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TransmittingEventArgs))[0]),
                 new(OpCodes.Dup),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc_S, evTransmitting.LocalIndex),
 
                 // Handlers.Player.OnTransmitting(ev);
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnTransmitting))),
@@ -136,7 +121,10 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Callvirt, PropertyGetter(typeof(TransmittingEventArgs), nameof(TransmittingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, retLabel),
 
-                new CodeInstruction(OpCodes.Nop).WithLabels(skipLabel),
+                // msg = ev.VoiceMessage;
+                new(OpCodes.Ldloc_S, evTransmitting.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(TransmittingEventArgs), nameof(TransmittingEventArgs.VoiceMessage))),
+                new(OpCodes.Starg_S, 1),
             });
 
             newInstructions[newInstructions.Count - 1].WithLabels(retLabel);

@@ -50,8 +50,6 @@ namespace Exiled.Events.Features
 
         private readonly List<AsyncRegistration> innerAsyncEvent = new();
 
-        private bool patched;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Event{T}"/> class.
         /// </summary>
@@ -64,6 +62,11 @@ namespace Exiled.Events.Features
         /// Gets a <see cref="IReadOnlyCollection{T}"/> of <see cref="Event{T}"/> which contains all the <see cref="Event{T}"/> instances.
         /// </summary>
         public static IReadOnlyDictionary<Type, Event<T>> Dictionary => TypeToEvent;
+
+        /// <summary>
+        /// Gets a value indicating whether the Harmony patch for this event has been applied.
+        /// </summary>
+        public bool Patched { get; private set; } = !Events.Instance.Config.UseDynamicPatching;
 
         /// <summary>
         /// Subscribes a target <see cref="CustomEventHandler{TEventArgs}"/> to the inner event and checks if patching is possible, if dynamic patching is enabled.
@@ -129,10 +132,10 @@ namespace Exiled.Events.Features
         {
             Log.Assert(Events.Instance is not null, $"{nameof(Events.Instance)} is null, please ensure you have exiled_events enabled!");
 
-            if (Events.Instance.Config.UseDynamicPatching && !patched)
+            if (Events.Instance.Config.UseDynamicPatching && !Patched)
             {
                 Events.Instance.Patcher.Patch(this);
-                patched = true;
+                Patched = true;
             }
 
             if (handler == null)
@@ -168,10 +171,10 @@ namespace Exiled.Events.Features
         {
             Log.Assert(Events.Instance is not null, $"{nameof(Events.Instance)} is null, please ensure you have exiled_events enabled!");
 
-            if (Events.Instance.Config.UseDynamicPatching && !patched)
+            if (Events.Instance.Config.UseDynamicPatching && !Patched)
             {
                 Events.Instance.Patcher.Patch(this);
-                patched = true;
+                Patched = true;
             }
 
             if (handler == null)
