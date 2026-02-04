@@ -18,10 +18,10 @@ namespace Exiled.API.Features
     using Decals;
     using Enums;
     using Exiled.API.Extensions;
-    using Exiled.API.Features.Hazards;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
-    using Exiled.API.Features.Toys;
+
+    using Interactables.Interobjects;
     using InventorySystem;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
@@ -193,6 +193,96 @@ namespace Exiled.API.Features
         {
             foreach (Player player in Player.List)
                 player.ShowHint(message, duration);
+        }
+
+        /// <summary>
+        /// Show the Round Summary screen globally for all players.
+        /// </summary>
+        /// <param name="initialStats">The statistics <see cref="RoundSummary.SumInfo_ClassList"/> at the beginning of the round.</param>
+        /// <param name="finalStats">The statistics <see cref="RoundSummary.SumInfo_ClassList"/> to be displayed as the final result.</param>
+        /// <param name="leadingTeam">The team to be declared as the winner <see cref="RoundSummary.LeadingTeam"/>.</param>
+        /// <param name="escapedClassDCount">The number of Class-D personnel shown as escaped.</param>
+        /// <param name="escapedScientistCount">The number of Scientists shown as escaped.</param>
+        /// <param name="totalScpKills">The total number of kills by SCPs to be displayed.</param>
+        /// <param name="nextRoundTime">The time in seconds displayed as the next round time.</param>
+        /// <param name="totalRoundDuration">The total elapsed duration of the round in seconds.</param>
+        /// <returns><c>true</c> if the RoundSummary singleton was found and the RPC was sent; otherwise, <c>false</c>.</returns>
+        public static bool ShowRoundSummary(RoundSummary.SumInfo_ClassList initialStats, RoundSummary.SumInfo_ClassList finalStats, RoundSummary.LeadingTeam leadingTeam, int escapedClassDCount, int escapedScientistCount, int totalScpKills, int nextRoundTime, int totalRoundDuration)
+        {
+            if (!RoundSummary._singletonSet)
+                return false;
+
+            RoundSummary.singleton.RpcShowRoundSummary(initialStats, finalStats, leadingTeam, escapedClassDCount, escapedScientistCount, totalScpKills, nextRoundTime, totalRoundDuration);
+            return true;
+        }
+
+        /// <summary>
+        /// Hides the Round Summary screen for all players.
+        /// </summary>
+        /// <returns><c>true</c> if the RoundSummary singleton was found and the RPC was sent; otherwise, <c>false</c>.</returns>
+        public static bool HideRoundSummary()
+        {
+            if (!RoundSummary._singletonSet)
+                return false;
+
+            RoundSummary.singleton.RpcHideRoundSummary();
+            return true;
+        }
+
+        /// <summary>
+        /// Triggers the end-of-round screen dimming effect (fade to black) globally for all players.
+        /// </summary>
+        /// <returns><c>true</c> if the RoundSummary singleton is active; otherwise, <c>false</c>.</returns>
+        public static bool DimScreens()
+        {
+            if (!RoundSummary._singletonSet)
+                return false;
+
+            RoundSummary.singleton.RpcDimScreen();
+            return true;
+        }
+
+        /// <summary>
+        /// Reverses the screen dimming effect, restoring normal visibility globally for all players.
+        /// </summary>
+        /// <returns><c>true</c> if the RoundSummary singleton is active; otherwise, <c>false</c>.</returns>
+        public static bool UndimScreens()
+        {
+            if (!RoundSummary._singletonSet)
+                return false;
+
+            RoundSummary.singleton.RpcUndimScreen();
+            return true;
+        }
+
+        /// <summary>
+        /// Triggers the Alpha Warhead atmospheric effect (orange fog/tint) globally for all players.
+        /// </summary>
+        /// <param name="achieve">If set to <c>true</c>, idk what is this maybe achivement.</param>
+        /// <returns><c>true</c> if the AlphaWarheadController is set; otherwise, <c>false</c>.</returns>
+        public static bool WarheadExplosionEffect(bool achieve = false)
+        {
+            if (!AlphaWarheadController.SingletonSet)
+                return false;
+
+            AlphaWarheadController.Singleton.RpcShake(achieve);
+            return true;
+        }
+
+        /// <summary>
+        /// Plays the elevator squish sound effect at the specified position for all players.
+        /// </summary>
+        /// <param name="position">The world position where the sound will be played.</param>
+        /// <returns><c>true</c> if an ElevatorSquish instance was found; otherwise, <c>false</c>.</returns>
+        public static bool PlaySquishSound(Vector3 position)
+        {
+            ElevatorSquish squishInstance = Object.FindFirstObjectByType<ElevatorSquish>();
+
+            if (squishInstance == null)
+                return false;
+
+            squishInstance.PlaySquishSound(position);
+            return true;
         }
 
         /// <summary>
