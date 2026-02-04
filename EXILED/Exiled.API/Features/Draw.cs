@@ -28,11 +28,10 @@ namespace Exiled.API.Features
         /// <param name="end">The ending position of the line.</param>
         /// <param name="color">The color of the lines.</param>
         /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
-        /// <param name="player">The single <see cref="Player"/> to show the line to.</param>
         /// <param name="players">A collection of <see cref="Player"/>s to show the line to.</param>
-        public static void Line(Vector3 start, Vector3 end, Color color, float duration, Player player = null, IEnumerable<Player> players = null)
+        public static void Line(Vector3 start, Vector3 end, Color color, float duration, IEnumerable<Player> players = null)
         {
-            Send(player, players, duration, color, start, end);
+            Send(players, duration, color, start, end);
         }
 
         /// <summary>
@@ -41,11 +40,10 @@ namespace Exiled.API.Features
         /// <param name="points">An array of <see cref="Vector3"/> points to connect sequentially.</param>
         /// <param name="color">The color of the lines.</param>
         /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
-        /// <param name="player">The single <see cref="Player"/> to show the path to.</param>
         /// <param name="players">A collection of <see cref="Player"/>s to show the path to.</param>
-        public static void Path(Vector3[] points, Color color, float duration, Player player = null, IEnumerable<Player> players = null)
+        public static void Path(Vector3[] points, Color color, float duration, IEnumerable<Player> players = null)
         {
-            Send(player, players, duration, color, points);
+            Send(players, duration, color, points);
         }
 
         /// <summary>
@@ -55,14 +53,13 @@ namespace Exiled.API.Features
         /// <param name="radius">The radius of the circle.</param>
         /// <param name="color">The color of the lines.</param>
         /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
-        /// <param name="player">The single <see cref="Player"/> to show the circle to.</param>
         /// <param name="players">A collection of <see cref="Player"/>s to show the circle to.</param>
         /// <param name="horizontal">Indicates whether the circle should be drawn on the horizontal plane (XZ) or vertical plane (XY).</param>
         /// <param name="segments">The number of line segments used to draw the circle. Higher values result in a smoother circle.</param>
-        public static void Circle(Vector3 origin, float radius, Color color, float duration, Player player = null, IEnumerable<Player> players = null, bool horizontal = true, int segments = 16)
+        public static void Circle(Vector3 origin, float radius, Color color, float duration, IEnumerable<Player> players = null, bool horizontal = true, int segments = 16)
         {
             Vector3[] circlePoints = DrawableLines.GetCircle(origin, radius, horizontal, segments);
-            Send(player, players, duration, color, circlePoints);
+            Send(players, duration, color, circlePoints);
         }
 
         /// <summary>
@@ -72,16 +69,15 @@ namespace Exiled.API.Features
         /// <param name="radius">The radius of the sphere.</param>
         /// <param name="color">The color of the lines.</param>
         /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
-        /// <param name="player">The single <see cref="Player"/> to show the sphere to.</param>
         /// <param name="players">A collection of <see cref="Player"/>s to show the sphere to.</param>
         /// <param name="segments">The number of segments for the circles. Higher values result in a smoother sphere.</param>
-        public static void Sphere(Vector3 origin, float radius, Color color, float duration, Player player = null, IEnumerable<Player> players = null, int segments = 16)
+        public static void Sphere(Vector3 origin, float radius, Color color, float duration, IEnumerable<Player> players = null, int segments = 16)
         {
             Vector3[] horizontal = DrawableLines.GetCircle(origin, radius, true, segments);
-            Send(player, players, duration, color, horizontal);
+            Send(players, duration, color, horizontal);
 
             Vector3[] vertical = DrawableLines.GetCircle(origin, radius, false, segments);
-            Send(player, players, duration, color, vertical);
+            Send(players, duration, color, vertical);
         }
 
         /// <summary>
@@ -90,9 +86,8 @@ namespace Exiled.API.Features
         /// <param name="bounds">The <see cref="Bounds"/> object to visualize.</param>
         /// <param name="color">The color of the lines.</param>
         /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
-        /// <param name="player">The single <see cref="Player"/> to show the bounds to.</param>
         /// <param name="players">A collection of <see cref="Player"/>s to show the bounds to.</param>
-        public static void Bounds(Bounds bounds, Color color, float duration, Player player = null, IEnumerable<Player> players = null)
+        public static void Bounds(Bounds bounds, Color color, float duration, IEnumerable<Player> players = null)
         {
             Vector3 center = bounds.center;
             Vector3 extents = bounds.extents;
@@ -112,16 +107,16 @@ namespace Exiled.API.Features
             topRect[3] = center + new Vector3(-extents.x, extents.y, extents.z);
             topRect[4] = topRect[0];
 
-            Send(player, players, duration, color, bottomRect);
-            Send(player, players, duration, color, topRect);
+            Send(players, duration, color, bottomRect);
+            Send(players, duration, color, topRect);
 
             for (int i = 0; i < 4; i++)
             {
-                Send(player, players, duration, color, bottomRect[i], topRect[i]);
+                Send(players, duration, color, bottomRect[i], topRect[i]);
             }
         }
 
-        private static void Send(Player player, IEnumerable<Player> players, float duration, Color color, params Vector3[] points)
+        private static void Send(IEnumerable<Player> players, float duration, Color color, params Vector3[] points)
         {
             if (points == null || points.Length < 2)
                 return;
@@ -138,10 +133,6 @@ namespace Exiled.API.Features
                 {
                     ply?.Connection.Send(segment);
                 }
-            }
-            else if (player != null)
-            {
-                player.Connection.Send(msg);
             }
             else
             {
