@@ -8,11 +8,13 @@
 namespace Exiled.Events.Features
 {
     using System;
+    using System.Buffers;
     using System.Collections.Generic;
     using System.Linq;
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+
     using MEC;
 
     /// <summary>
@@ -222,73 +224,111 @@ namespace Exiled.Events.Features
         /// <inheritdoc cref="InvokeSafely"/>
         internal void BlendedInvoke()
         {
-            Registration[] innerEvent = this.innerEvent.ToArray();
-            AsyncRegistration[] innerAsyncEvent = this.innerAsyncEvent.ToArray();
-            int count = innerEvent.Length + innerAsyncEvent.Length;
-            int eventIndex = 0, asyncEventIndex = 0;
+            int syncCount = innerEvent.Count;
+            int asyncCount = innerAsyncEvent.Count;
 
-            for (int i = 0; i < count; i++)
+            Registration[] localInnerEvent = ArrayPool<Registration>.Shared.Rent(syncCount);
+            AsyncRegistration[] localInnerAsyncEvent = ArrayPool<AsyncRegistration>.Shared.Rent(asyncCount);
+
+            int count = syncCount + asyncCount;
+
+            try
             {
-                if (eventIndex < innerEvent.Length && (asyncEventIndex >= innerAsyncEvent.Length || innerEvent[eventIndex].priority >= innerAsyncEvent[asyncEventIndex].priority))
-                {
-                    try
-                    {
-                        innerEvent[eventIndex].handler();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error($"Method \"{innerEvent[eventIndex].handler.Method.Name}\" of the class \"{innerEvent[eventIndex].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
-                    }
+                innerEvent.CopyTo(localInnerEvent, 0);
+                innerAsyncEvent.CopyTo(localInnerAsyncEvent, 0);
 
-                    eventIndex++;
-                }
-                else
-                {
-                    try
-                    {
-                        Timing.RunCoroutine(innerAsyncEvent[asyncEventIndex].handler());
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error($"Method \"{innerAsyncEvent[asyncEventIndex].handler.Method.Name}\" of the class \"{innerAsyncEvent[asyncEventIndex].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
-                    }
+                int eventIndex = 0, asyncEventIndex = 0;
 
-                    asyncEventIndex++;
+                for (int i = 0; i < count; i++)
+                {
+                    if (eventIndex < syncCount && (asyncEventIndex >= asyncCount || localInnerEvent[eventIndex].priority >= localInnerAsyncEvent[asyncEventIndex].priority))
+                    {
+                        try
+                        {
+                            localInnerEvent[eventIndex].handler();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error($"Method \"{localInnerEvent[eventIndex].handler.Method.Name}\" of the class \"{localInnerEvent[eventIndex].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                        }
+
+                        eventIndex++;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Timing.RunCoroutine(localInnerAsyncEvent[asyncEventIndex].handler());
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Error($"Method \"{localInnerAsyncEvent[asyncEventIndex].handler.Method.Name}\" of the class \"{localInnerAsyncEvent[asyncEventIndex].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                        }
+
+                        asyncEventIndex++;
+                    }
                 }
+            }
+            finally
+            {
+                ArrayPool<Registration>.Shared.Return(localInnerEvent, true);
+                ArrayPool<AsyncRegistration>.Shared.Return(localInnerAsyncEvent, true);
             }
         }
 
         /// <inheritdoc cref="InvokeSafely"/>
         internal void InvokeNormal()
         {
-            Registration[] innerEvent = this.innerEvent.ToArray();
-            foreach (Registration registration in innerEvent)
+            int count = innerEvent.Count;
+            Registration[] localInnerEvent = ArrayPool<Registration>.Shared.Rent(count);
+
+            try
             {
-                try
+                innerEvent.CopyTo(localInnerEvent, 0);
+
+                for (int i = 0; i < count; i++)
                 {
-                    registration.handler();
+                    try
+                    {
+                        localInnerEvent[i].handler();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Method \"{localInnerEvent[i].handler.Method.Name}\" of the class \"{localInnerEvent[i].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Log.Error($"Method \"{registration.handler.Method.Name}\" of the class \"{registration.handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
-                }
+            }
+            finally
+            {
+                ArrayPool<Registration>.Shared.Return(localInnerEvent, true);
             }
         }
 
         /// <inheritdoc cref="InvokeSafely"/>
         internal void InvokeAsync()
         {
-            AsyncRegistration[] innerAsyncEvent = this.innerAsyncEvent.ToArray();
-            foreach (AsyncRegistration registration in innerAsyncEvent)
+            int count = innerAsyncEvent.Count;
+            AsyncRegistration[] localInnerAsyncEvent = ArrayPool<AsyncRegistration>.Shared.Rent(count);
+
+            try
             {
-                try
+                innerAsyncEvent.CopyTo(localInnerAsyncEvent, 0);
+
+                for (int i = 0; i < count; i++)
                 {
-                    Timing.RunCoroutine(registration.handler());
+                    try
+                    {
+                        Timing.RunCoroutine(localInnerAsyncEvent[i].handler());
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Method \"{localInnerAsyncEvent[i].handler.Method.Name}\" of the class \"{localInnerAsyncEvent[i].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Log.Error($"Method \"{registration.handler.Method.Name}\" of the class \"{registration.handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
-                }
+            }
+            finally
+            {
+                ArrayPool<AsyncRegistration>.Shared.Return(localInnerAsyncEvent, true);
             }
         }
     }
