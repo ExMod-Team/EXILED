@@ -144,8 +144,14 @@ namespace Exiled.API.Features.Toys
                 CameraType.HczCameraToy => HczCameraPrefab,
                 CameraType.LczCameraToy => LczCameraPrefab,
                 CameraType.SzCameraToy => SzCameraPrefab,
-                _ => EzArmCameraPrefab
+                _ => null,
             };
+
+            if (prefab == null)
+            {
+                Log.Warn("Invalid Camera Type for prefab");
+                return null;
+            }
 
             CameraToy toy = new(Object.Instantiate(prefab, parent))
             {
