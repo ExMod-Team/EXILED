@@ -471,6 +471,11 @@ namespace Exiled.Events.Handlers
         public static Event<VoiceChattingEventArgs> VoiceChatting { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> receives a voice message.
+        /// </summary>
+        public static Event<ReceivingVoiceMessageEventArgs> ReceivingVoiceMessage { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> makes noise.
         /// </summary>
         public static Event<MakingNoiseEventArgs> MakingNoise { get; set; } = new();
@@ -897,6 +902,9 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="ReloadingWeaponEventArgs"/> instance.</param>
         public static void OnReloadingWeapon(PlayerReloadingWeaponEventArgs ev)
         {
+            if (!ReloadingWeapon.Patched)
+                return;
+
             ReloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
             ReloadingWeapon.InvokeSafely(exiledEv);
             ev.IsAllowed = exiledEv.IsAllowed;
@@ -1010,6 +1018,9 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="UnloadingWeaponEventArgs"/> instance.</param>
         public static void OnUnloadingWeapon(PlayerUnloadingWeaponEventArgs ev)
         {
+            if (!UnloadingWeapon.Patched)
+                return;
+
             UnloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
             UnloadingWeapon.InvokeSafely(exiledEv);
             ev.IsAllowed = exiledEv.IsAllowed;
@@ -1044,6 +1055,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="VoiceChattingEventArgs"/> instance.</param>
         public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> receives a voice message.
+        /// </summary>
+        /// <param name="ev">The <see cref="ReceivingVoiceMessageEventArgs"/> instance.</param>
+        public static void OnReceivingVoiceMessage(ReceivingVoiceMessageEventArgs ev) => ReceivingVoiceMessage.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> makes noise.
