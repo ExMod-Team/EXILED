@@ -23,12 +23,11 @@ namespace Exiled.Events.EventArgs.Scp559
         /// </summary>
         /// <param name="scp559"><inheritdoc cref="Scp559"/></param>
         /// <param name="player"><inheritdoc cref="Player"/></param>
-        /// <param name="isAllowed"><inheritdoc cref="IsAllowed"/></param>
-        public InteractingScp559EventArgs(Scp559 scp559, Player player, bool isAllowed = true)
+        public InteractingScp559EventArgs(Scp559 scp559, Player player)
         {
             Player = player;
             Scp559 = scp559;
-            IsAllowed = isAllowed;
+            IsAllowed = scp559.RemainingSlices > 0 && PlayerRoles.PlayerRolesUtils.IsHuman(player.Role.Type);
         }
 
         /// <inheritdoc/>

@@ -11,6 +11,7 @@ namespace Exiled.Loader
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Reflection;
 
     using API.Enums;
     using API.Extensions;
@@ -19,13 +20,19 @@ namespace Exiled.Loader
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
 
+    using LabApi.Loader.Features.Plugins.Configuration;
     using YamlDotNet.Core;
+    using YamlDotNet.Serialization;
+
+    using LabPlugin = LabApi.Loader.Features.Plugins.Plugin;
 
     /// <summary>
     /// Used to handle plugin configs.
     /// </summary>
     public static class ConfigManager
     {
+        private static readonly MethodInfo PropertiesSetter = typeof(LabPlugin).GetProperty("Properties", BindingFlags.Public | BindingFlags.Instance)?.GetSetMethod(true);
+
         /// <summary>
         /// Loads all the plugin configs.
         /// </summary>
@@ -280,6 +287,190 @@ namespace Exiled.Loader
                 player.ReferenceHub.serverRoles.SetGroup(null, false);
                 player.ReferenceHub.serverRoles.RefreshPermissions();
             }
+        }
+
+        /// <summary>
+        /// Reloads all LabAPI configs.
+        /// </summary>
+        public static void ReloadLabAPIConfigs()
+        {
+            try
+            {
+                // this is 10x more readable than Exileds current config management system LOL
+                foreach (LabPlugin plugin in Loader.LabAPIPlugins.Keys)
+                {
+                    LoadLabAPIConfig(plugin);
+                    SaveLabAPIConfig(plugin);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        /// <summary>
+        /// Attempts to load a config for a LabAPI plugin.
+        /// </summary>
+        /// <param name="plugin">The LabAPI plugin.</param>
+        /// <remarks>I love it when the modding framework people call the best has all plugin loading methods private and the config loading methods don't take custom directory paths.</remarks>
+        public static void LoadLabAPIConfig(LabPlugin plugin)
+        {
+            Type pluginType = plugin.GetType();
+            Type type = pluginType;
+            while (type is not null)
+            {
+                type = type.BaseType;
+
+                if (type is { IsGenericType: true })
+                {
+                    Type genericTypeDef = type.GetGenericTypeDefinition();
+
+                    if (genericTypeDef == typeof(LabApi.Loader.Features.Plugins.Plugin<>))
+                        break;
+                }
+            }
+
+            if (type is null)
+                return;
+
+            Type configType = type.GetGenericArguments().FirstOrDefault();
+            if (configType is null)
+            {
+                Log.Error($"Failed to load config for LabAPI plugin {plugin.Name}, could not get the generic of TConfig!");
+                return;
+            }
+
+            ConstructorInfo parameterless = configType.GetConstructors().FirstOrDefault(ctor => ctor.GetParameters().Length == 0);
+
+            if (parameterless is null)
+            {
+                Log.Error($"Failed to load config for LabAPI plugin {plugin.Name}, config type has no parameterless constructor!");
+                return;
+            }
+
+            MethodInfo configSetter = pluginType.GetProperty("Config")?.GetSetMethod();
+            if (configSetter is null)
+            {
+                Log.Error($"Failed to load config for LabAPI plugin {plugin.Name}, no setter for property \"Config\" was found!");
+                return;
+            }
+
+            string configPath = Paths.GetConfigPath(plugin.Name);
+
+            if (!File.Exists(configPath))
+            {
+                Log.Warn($"LabAPI Plugin {plugin.Name} doesn't have default configs, generating...");
+                configSetter.Invoke(plugin, new[] { parameterless.Invoke(null) });
+                return;
+            }
+
+            IDeserializer deserializer = LabApi.Loader.Features.Yaml.YamlConfigParser.Deserializer;
+            MethodInfo deserialize = deserializer.GetType().GetMethods().Single(method => method.Name == "Deserialize" && method.IsGenericMethod && method.GetParameters().FirstOrDefault()?.ParameterType == typeof(string)).MakeGenericMethod(configType);
+            try
+            {
+                configSetter.Invoke(plugin, new[] { deserialize.Invoke(deserializer, new object[] { File.ReadAllText(configPath) }) });
+            }
+            catch (TargetInvocationException ex)
+            {
+                if (ex.InnerException is YamlException yamlException)
+                {
+                    Log.Error($"{plugin.Name} configs could not be loaded, some of them are in a wrong format, default configs will be loaded instead!\n{yamlException}");
+                    configSetter.Invoke(plugin, new[] { parameterless.Invoke(null) });
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Saves a config for a LabAPI plugin.
+        /// </summary>
+        /// <param name="plugin">The LabAPI plugin.</param>
+        public static void SaveLabAPIConfig(LabPlugin plugin)
+        {
+            Type pluginType = plugin.GetType();
+            Type type = pluginType;
+            while (type is not null)
+            {
+                type = type.BaseType;
+
+                if (type is { IsGenericType: true })
+                {
+                    Type genericTypeDef = type.GetGenericTypeDefinition();
+
+                    if (genericTypeDef == typeof(LabApi.Loader.Features.Plugins.Plugin<>))
+                        break;
+                }
+            }
+
+            if (type is null)
+                return;
+
+            MethodInfo configGetter = pluginType.GetProperty("Config")?.GetGetMethod();
+            if (configGetter is null)
+            {
+                Log.Error($"Failed to save config for LabAPI plugin {plugin.Name}, no getter for property \"Config\" was found!");
+                return;
+            }
+
+            string config = LabApi.Loader.Features.Yaml.YamlConfigParser.Serializer.Serialize(configGetter.Invoke(plugin, null));
+            string configPath = Paths.GetConfigPath(plugin.Name);
+
+            try
+            {
+                Directory.CreateDirectory(Path.Combine(Paths.IndividualConfigs, plugin.Name));
+                File.WriteAllText(configPath, config);
+            }
+            catch (Exception exception)
+            {
+                Log.Error($"An error has occurred while saving configs to {configPath} path: {exception}");
+            }
+        }
+
+        /// <summary>
+        /// Loads the properties of a LabAPI plugin.
+        /// </summary>
+        /// <param name="plugin">The LabAPI plugin.</param>
+        /// <returns>Whether the properties were successfully retrieved.</returns>
+        public static bool LoadLabAPIProperties(LabPlugin plugin)
+        {
+            if (PropertiesSetter is null)
+            {
+                Log.Error("Cannot load LabAPI properties as the setter from reflection is null!");
+                return false;
+            }
+
+            ISerializer serializer = LabApi.Loader.Features.Yaml.YamlConfigParser.Serializer;
+            IDeserializer deserializer = LabApi.Loader.Features.Yaml.YamlConfigParser.Deserializer;
+
+            string directory = Path.Combine(Paths.IndividualConfigs, plugin.Name);
+            string configPath = Path.Combine(directory, $"{Server.Port}-properties.yml");
+
+            Directory.CreateDirectory(directory);
+
+            if (!File.Exists(configPath))
+            {
+                Log.Warn($"LabAPI Plugin {plugin.Name} doesn't have default properties, generating...");
+                PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+                return true;
+            }
+
+            try
+            {
+                PropertiesSetter.Invoke(plugin, new[] { deserializer.Deserialize(File.ReadAllText(configPath), typeof(Properties)) });
+            }
+            catch (YamlException yamlException)
+            {
+                Log.Error($"{plugin.Name} properties could not be loaded, default properties will be loaded instead!\n{yamlException}");
+                PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+            }
+
+            return true;
         }
     }
 }

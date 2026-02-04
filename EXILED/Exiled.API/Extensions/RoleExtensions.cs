@@ -70,6 +70,7 @@ namespace Exiled.API.Extensions
             Team.FoundationForces or Team.Scientists => Side.Mtf,
             Team.ChaosInsurgency or Team.ClassD => Side.ChaosInsurgency,
             Team.OtherAlive => Side.Tutorial,
+            Team.Flamingos => Side.Flamingos,
             _ => Side.None,
         };
 
@@ -80,12 +81,13 @@ namespace Exiled.API.Extensions
         /// <returns><see cref="Team"/>.</returns>
         public static Team GetTeam(this RoleTypeId roleType) => roleType switch
         {
-            RoleTypeId.ChaosConscript or RoleTypeId.ChaosMarauder or RoleTypeId.ChaosRepressor or RoleTypeId.ChaosRifleman => Team.ChaosInsurgency,
+            RoleTypeId.ChaosConscript or RoleTypeId.ChaosMarauder or RoleTypeId.ChaosRepressor or RoleTypeId.ChaosRifleman or RoleTypeId.ChaosFlamingo => Team.ChaosInsurgency,
             RoleTypeId.Scientist => Team.Scientists,
             RoleTypeId.ClassD => Team.ClassD,
-            RoleTypeId.Scp049 or RoleTypeId.Scp939 or RoleTypeId.Scp0492 or RoleTypeId.Scp079 or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp3114 => Team.SCPs,
-            RoleTypeId.FacilityGuard or RoleTypeId.NtfCaptain or RoleTypeId.NtfPrivate or RoleTypeId.NtfSergeant or RoleTypeId.NtfSpecialist => Team.FoundationForces,
+            RoleTypeId.Scp049 or RoleTypeId.Scp939 or RoleTypeId.Scp0492 or RoleTypeId.Scp079 or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp3114 or RoleTypeId.ZombieFlamingo=> Team.SCPs,
+            RoleTypeId.FacilityGuard or RoleTypeId.NtfCaptain or RoleTypeId.NtfPrivate or RoleTypeId.NtfSergeant or RoleTypeId.NtfSpecialist or RoleTypeId.NtfFlamingo => Team.FoundationForces,
             RoleTypeId.Tutorial => Team.OtherAlive,
+            RoleTypeId.Flamingo or RoleTypeId.AlphaFlamingo => Team.Flamingos,
             _ => Team.Dead,
         };
 
@@ -131,6 +133,7 @@ namespace Exiled.API.Extensions
             Team.ClassD or Team.ChaosInsurgency => LeadingTeam.ChaosInsurgency,
             Team.FoundationForces or Team.Scientists => LeadingTeam.FacilityForces,
             Team.SCPs => LeadingTeam.Anomalies,
+            Team.Flamingos => LeadingTeam.Flamingo,
             _ => LeadingTeam.Draw,
         };
 

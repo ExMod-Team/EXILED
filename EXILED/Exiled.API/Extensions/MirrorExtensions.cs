@@ -17,6 +17,7 @@ namespace Exiled.API.Extensions
 
     using AdminToys;
     using AudioPooling;
+    using Cassie;
     using CustomPlayerEffects;
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
@@ -512,13 +513,12 @@ namespace Exiled.API.Extensions
         /// <param name="isSubtitles">Same on <see cref="Cassie.Message(string, bool, bool, bool)"/>'s isSubtitles.</param>
         public static void PlayCassieAnnouncement(this Player player, string words, bool makeHold = false, bool makeNoise = true, bool isSubtitles = false)
         {
-            foreach (RespawnEffectsController controller in RespawnEffectsController.AllControllers)
-            {
-                if (controller != null)
-                {
-                    SendFakeTargetRpc(player, controller.netIdentity, typeof(RespawnEffectsController), nameof(RespawnEffectsController.RpcCassieAnnouncement), words, makeHold, makeNoise, isSubtitles);
-                }
-            }
+            CassieAnnouncement announcement = new(new CassieTtsPayload(words, isSubtitles, makeHold), 0, makeNoise ? 1 : 0);
+
+            // processes makeNoise
+            announcement.OnStartedPlaying();
+
+            announcement.Payload.SendToHubsConditionally(hub => hub == player.ReferenceHub);
         }
 
         /// <summary>
@@ -533,23 +533,12 @@ namespace Exiled.API.Extensions
         /// <param name="isSubtitles">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isSubtitles.</param>
         public static void MessageTranslated(this Player player, string words, string translation, string customSubtitles, bool makeHold = false, bool makeNoise = true, bool isSubtitles = true)
         {
-            StringBuilder announcement = StringBuilderPool.Pool.Get();
+            CassieAnnouncement announcement = new(new CassieTtsPayload(words, customSubtitles, makeHold), 0, makeNoise ? 1 : 0);
 
-            string[] cassies = words.Split('\n');
-            string[] translations = translation.Split('\n');
+            // processes makeNoise
+            announcement.OnStartedPlaying();
 
-            for (int i = 0; i < cassies.Length; i++)
-                announcement.Append($"{translations[i].Replace(' ', ' ')}<size=0> {cassies[i]} </size><split>");
-
-            string message = StringBuilderPool.Pool.ToStringReturn(announcement);
-
-            foreach (RespawnEffectsController controller in RespawnEffectsController.AllControllers)
-            {
-                if (controller != null)
-                {
-                    SendFakeTargetRpc(player, controller.netIdentity, typeof(RespawnEffectsController), nameof(RespawnEffectsController.RpcCassieAnnouncement), message, makeHold, makeNoise, isSubtitles, customSubtitles);
-                }
-            }
+            announcement.Payload.SendToHubsConditionally(hub => hub == player.ReferenceHub);
         }
 
         /// <summary>
@@ -560,6 +549,9 @@ namespace Exiled.API.Extensions
         /// <param name="pos">The position to change.</param>
         public static void MoveNetworkIdentityObject(this Player player, NetworkIdentity identity, Vector3 pos)
         {
+            if (identity == null)
+                return;
+
             identity.gameObject.transform.position = pos;
             ObjectDestroyMessage objectDestroyMessage = new()
             {
@@ -607,6 +599,9 @@ namespace Exiled.API.Extensions
         /// <param name="scale">The scale the object needs to be set to.</param>
         public static void ScaleNetworkIdentityObject(this Player player, NetworkIdentity identity, Vector3 scale)
         {
+            if (identity == null)
+                return;
+
             identity.gameObject.transform.localScale = scale;
             ObjectDestroyMessage objectDestroyMessage = new()
             {
@@ -624,6 +619,9 @@ namespace Exiled.API.Extensions
         /// <param name="pos">The position to change.</param>
         public static void MoveNetworkIdentityObject(this NetworkIdentity identity, Vector3 pos)
         {
+            if (identity == null)
+                return;
+
             identity.gameObject.transform.position = pos;
             ObjectDestroyMessage objectDestroyMessage = new()
             {
@@ -644,6 +642,9 @@ namespace Exiled.API.Extensions
         /// <param name="scale">The scale the object needs to be set to.</param>
         public static void ScaleNetworkIdentityObject(this NetworkIdentity identity, Vector3 scale)
         {
+            if (identity == null)
+                return;
+
             identity.gameObject.transform.localScale = scale;
             ObjectDestroyMessage objectDestroyMessage = new()
             {
@@ -668,7 +669,7 @@ namespace Exiled.API.Extensions
         /// <param name="value">Value of send to target.</param>
         public static void SendFakeSyncVar<T>(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, T value)
         {
-            if (!target.IsConnected)
+            if (!target.IsConnected || behaviorOwner == null)
                 return;
 
             NetworkWriterPooled writer = NetworkWriterPool.Get();
@@ -712,7 +713,12 @@ namespace Exiled.API.Extensions
         /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
         /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
         /// <param name="propertyName">Property name starting with Network.</param>
-        public static void ResyncSyncVar(NetworkIdentity behaviorOwner, Type targetType, string propertyName) => SetDirtyBitsMethodInfo.Invoke(behaviorOwner.gameObject.GetComponent(targetType), new object[] { SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"] });
+        public static void ResyncSyncVar(NetworkIdentity behaviorOwner, Type targetType, string propertyName)
+        {
+            if (behaviorOwner == null)
+                return;
+            SetDirtyBitsMethodInfo.Invoke(behaviorOwner.gameObject.GetComponent(targetType), new object[] { SyncVarDirtyBits[$"{targetType.Name}.{propertyName}"] });
+        }
 
         /// <summary>
         /// Send fake values to client's <see cref="ClientRpcAttribute"/>.
@@ -724,7 +730,7 @@ namespace Exiled.API.Extensions
         /// <param name="values">Values of send to target.</param>
         public static void SendFakeTargetRpc(Player target, NetworkIdentity behaviorOwner, Type targetType, string rpcName, params object[] values)
         {
-            if (!target.IsConnected)
+            if (!target.IsConnected || behaviorOwner == null)
                 return;
 
             NetworkWriterPooled writer = NetworkWriterPool.Get();
