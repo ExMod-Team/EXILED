@@ -98,6 +98,7 @@ namespace Exiled.Events.Patches.Events.Map
             newInstructions[index].labels.AddRange(labels);
 
             index = newInstructions.FindIndex(x => x.OperandIs(Field(typeof(SeedSynchronizer), nameof(SeedSynchronizer.OnGenerationStage))));
+            newInstructions[index].labels.Add(skip);
             const int lengthOfCodeAdded = 3;
             newInstructions.InsertRange(index, new List<CodeInstruction>()
             {
@@ -109,7 +110,6 @@ namespace Exiled.Events.Patches.Events.Map
             });
 
             newInstructions.InsertRange(index + lengthOfCodeAdded, codeInstructionsCopy);
-            newInstructions[index + lengthOfCodeAdded + codeInstructionsCopy.Count].labels.Add(skip);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
