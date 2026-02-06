@@ -14,6 +14,7 @@ namespace Exiled.Events.EventArgs.Map
     /// <summary>
     /// Contains all information after the server generates a seed, but before the map is generated.
     /// </summary>
+    /// <remarks>The target layout properties have a miniscule (but non-zero) chance of not working, make sure your event can handle the edge case of failure if you want reliability.</remarks>
     public class GeneratingEventArgs : IDeniableEvent
     {
         /// <summary>
