@@ -504,7 +504,7 @@ namespace Exiled.Events.Patches.Events.Map
                 if (!SpawnCounts.TryGetValue(spawnableRoom, out int count))
                     count = SpawnCounts[spawnableRoom] = 0;
 
-                if (hasSpecificRoom ^ spawnableRoom.SpecialRoom)
+                if (hasSpecificRoom != spawnableRoom.SpecialRoom)
                     continue;
 
                 if (spawnableRoom.Room.Shape != interpretation.RoomShape)
