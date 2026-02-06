@@ -1229,6 +1229,13 @@ namespace Exiled.API.Features
         protected HealthStat CustomHealthStat { get; set; }
 
         /// <summary>
+        /// Converts ReferenceHub to Player.
+        /// </summary>
+        /// <param name="hub">The ReferenceHub.</param>
+        /// <returns>EXILED player.</returns>
+        public static implicit operator Player(ReferenceHub hub) => Get(hub);
+
+        /// <summary>
         /// Converts LabApi player to EXILED player.
         /// </summary>
         /// <param name="player">The LabApi player.</param>
@@ -1236,10 +1243,10 @@ namespace Exiled.API.Features
         public static implicit operator Player(LabApi.Features.Wrappers.Player player) => Get(player);
 
         /// <summary>
-        /// Converts LabApi player to EXILED player.
+        /// Converts EXILED player to LabApi player.
         /// </summary>
-        /// <param name="player">The LabApi player.</param>
-        /// <returns>EXILED player.</returns>
+        /// <param name="player">The EXILED player.</param>
+        /// <returns>LabApi player.</returns>
         public static implicit operator LabApi.Features.Wrappers.Player(Player player) => LabApi.Features.Wrappers.Player.Get(player?.ReferenceHub);
 
         /// <summary>
@@ -1435,7 +1442,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="apiPlayer">The <see cref="LabApi.Features.Wrappers.Player"/> class.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(LabApi.Features.Wrappers.Player apiPlayer) => Get(apiPlayer.ReferenceHub);
+        public static Player Get(LabApi.Features.Wrappers.Player apiPlayer) => Get(apiPlayer?.ReferenceHub);
 
         /// <summary>
         /// Try-get a player given a <see cref="CommandSystem.ICommandSender"/>.
