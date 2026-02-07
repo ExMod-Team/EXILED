@@ -12,10 +12,15 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using DamageHandlers;
+
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features.Doors;
     using Exiled.API.Interfaces;
+
+    using MapGeneration;
+
     using UnityEngine;
 
     /// <summary>
@@ -149,11 +154,18 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Converts BreakableWindow to Window.
+        /// </summary>
+        /// <param name="breakableWindow">The BreakableWindow.</param>
+        /// <returns>EXILED Window.</returns>
+        public static implicit operator Window(BreakableWindow breakableWindow) => Get(breakableWindow);
+
+        /// <summary>
         /// Gets the window object associated with a specific <see cref="Window"/>, or creates a new one if there isn't one.
         /// </summary>
         /// <param name="breakableWindow">The base-game <see cref="Window"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
+        public static Window Get(BreakableWindow breakableWindow) => breakableWindow == null ? null : BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
             ? window
             : new(breakableWindow, breakableWindow.GetComponentInParent<Room>());
 

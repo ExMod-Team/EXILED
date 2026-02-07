@@ -15,10 +15,16 @@ namespace Exiled.API.Features.Doors
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
+
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
+
     using MEC;
+
     using Mirror;
+
+    using PlayerRoles.PlayableScps.Scp079.Cameras;
+
     using UnityEngine;
 
     using BaseBreakableDoor = Interactables.Interobjects.BreakableDoor;
@@ -302,6 +308,13 @@ namespace Exiled.API.Features.Doors
         /// Gets a <see cref="List{T}"/> containing all <see cref="Features.Room"/>'s that are connected with <see cref="Door"/>.
         /// </summary>
         internal List<Room> RoomsValue { get; } = new List<Room>();
+
+        /// <summary>
+        /// Converts DoorVariant to Door.
+        /// </summary>
+        /// <param name="doorVariant">The DoorVariant.</param>
+        /// <returns>EXILED Door.</returns>
+        public static implicit operator Door(DoorVariant doorVariant) => Get(doorVariant);
 
         /// <summary>
         /// Gets the door object associated with a specific <see cref="DoorVariant"/>, or creates a new one if there isn't one.

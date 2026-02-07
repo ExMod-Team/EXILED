@@ -12,8 +12,13 @@ namespace Exiled.API.Features.Toys
     using AdminToys;
 
     using Enums;
+
     using Exiled.API.Interfaces;
+
     using Footprinting;
+
+    using InventorySystem.Items.Pickups;
+
     using Mirror;
 
     using UnityEngine;
@@ -144,6 +149,13 @@ namespace Exiled.API.Features.Toys
             get => AdminToyBase.IsStatic;
             set => AdminToyBase.NetworkIsStatic = value;
         }
+
+        /// <summary>
+        /// Converts AdminToyBase to AdminToy.
+        /// </summary>
+        /// <param name="adminToyBase">The AdminToyBase.</param>
+        /// <returns>EXILED AdminToy.</returns>
+        public static implicit operator AdminToy(AdminToyBase adminToyBase) => Get(adminToyBase);
 
         /// <summary>
         /// Gets the <see cref="AdminToy"/> belonging to the <see cref="AdminToys.AdminToyBase"/>.

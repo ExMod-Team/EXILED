@@ -12,10 +12,15 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
+
     using MapGeneration;
+    using MapGeneration.Distributors;
+
     using PlayerRoles.PlayableScps.Scp079.Cameras;
+
     using UnityEngine;
 
     using CameraType = Enums.CameraType;
@@ -261,6 +266,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Converts Scp079Camera to Camera.
+        /// </summary>
+        /// <param name="camera079">The Scp079Camera.</param>
+        /// <returns>EXILED Camera.</returns>
+        public static implicit operator Camera(Scp079Camera camera079) => Get(camera079);
+
+        /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Camera"/> which contains all the <see cref="Camera"/> instances given a <see cref="IEnumerable{T}"/> of <see cref="Scp079Camera"/>.
         /// </summary>
         /// <param name="cameras">The <see cref="IEnumerable{T}"/> of <see cref="Scp079Camera"/>.</param>
@@ -272,7 +284,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="camera079">The base <see cref="Scp079Camera"/>.</param>
         /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
-        public static Camera Get(Scp079Camera camera079) => camera079 != null ? Camera079ToCamera.TryGetValue(camera079, out Camera camera) ? camera : new(camera079) : null;
+        public static Camera Get(Scp079Camera camera079) => camera079 == null ? null : Camera079ToCamera.TryGetValue(camera079, out Camera camera) ? camera : new(camera079);
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.

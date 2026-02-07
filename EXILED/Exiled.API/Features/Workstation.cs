@@ -120,11 +120,18 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Converts WorkstationController to Workstation.
+        /// </summary>
+        /// <param name="workstationController">The WorkstationController.</param>
+        /// <returns>EXILED Workstation.</returns>
+        public static implicit operator Workstation(WorkstationController workstationController) => Get(workstationController);
+
+        /// <summary>
         /// Gets a <see cref="Workstation"/> given a <see cref="WorkstationController"/> instance.
         /// </summary>
         /// <param name="workstationController">The <see cref="WorkstationController"/> instance.</param>
         /// <returns>The <see cref="Workstation"/> instance.</returns>
-        public static Workstation Get(WorkstationController workstationController) => WorkstationControllerToWorkstation.TryGetValue(workstationController, out Workstation workstation) ? workstation : new(workstationController);
+        public static Workstation Get(WorkstationController workstationController) => workstationController == null ? null : WorkstationControllerToWorkstation.TryGetValue(workstationController, out Workstation workstation) ? workstation : new(workstationController);
 
         /// <summary>
         /// Gets all <see cref="Workstation"/> instances that match the specified predicate.

@@ -205,6 +205,13 @@ namespace Exiled.API.Features.Items
         public ItemIdentifier Identifier => Base.ItemId;
 
         /// <summary>
+        /// Converts ItemBase to Item.
+        /// </summary>
+        /// <param name="itemBase">The ItemBase.</param>
+        /// <returns>EXILED Item.</returns>
+        public static implicit operator Item(ItemBase itemBase) => Get(itemBase);
+
+        /// <summary>
         /// Gets an existing <see cref="Item"/> or creates a new instance of one.
         /// </summary>
         /// <param name="itemBase">The <see cref="ItemBase"/> to convert into an item.</param>

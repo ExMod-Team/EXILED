@@ -12,8 +12,12 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
+
     using Exiled.API.Interfaces;
+
+    using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
+
     using MapGeneration.Distributors;
 
     using UnityEngine;
@@ -218,6 +222,13 @@ namespace Exiled.API.Features
             get => (KeycardPermissions)Base._requiredPermission;
             set => Base._requiredPermission = (DoorPermissionFlags)value;
         }
+
+        /// <summary>
+        /// Converts Scp079Generator to Generator.
+        /// </summary>
+        /// <param name="scp079Generator">The Scp079Generator.</param>
+        /// <returns>EXILED Generator.</returns>
+        public static implicit operator Generator(Scp079Generator scp079Generator) => Get(scp079Generator);
 
         /// <summary>
         /// Gets the <see cref="Generator"/> belonging to the <see cref="Scp079Generator"/>, if any.

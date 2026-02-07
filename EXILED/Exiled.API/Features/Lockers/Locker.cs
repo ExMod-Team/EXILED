@@ -124,6 +124,13 @@ namespace Exiled.API.Features.Lockers
         }
 
         /// <summary>
+        /// Converts BaseLocker to Locker.
+        /// </summary>
+        /// <param name="locker">The BaseLocker.</param>
+        /// <returns>EXILED Locker.</returns>
+        public static implicit operator Locker?(BaseLocker locker) => Get(locker);
+
+        /// <summary>
         /// Gets the <see cref="Locker"/> belonging to the <see cref="BaseLocker"/>, if any.
         /// </summary>
         /// <param name="locker">The <see cref="BaseLocker"/> to get.</param>

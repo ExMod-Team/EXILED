@@ -131,7 +131,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="cake">Game instance.</param>
         /// <returns><see cref="Scp559"/>.</returns>
-        public static Scp559 Get(Scp559Cake cake) => CakeToWrapper.TryGetValue(cake, out Scp559 scp559) ? scp559 : new Scp559(cake);
+        public static Scp559 Get(Scp559Cake cake) => cake == null ? null : CakeToWrapper.TryGetValue(cake, out Scp559 scp559) ? scp559 : new Scp559(cake);
 
         /// <summary>
         /// Gets the <see cref="IEnumerable{T}"/> of SCP-559 which matches the predicate.
