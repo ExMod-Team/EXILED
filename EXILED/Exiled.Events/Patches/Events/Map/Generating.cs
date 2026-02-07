@@ -34,8 +34,12 @@ namespace Exiled.Events.Patches.Events.Map
     [HarmonyPatch(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Awake))]
     public class Generating
     {
+        // (Surface gen + PD gen)
+        private const int ExcludedZoneGeneratorCount = 2;
+
         private static readonly List<SpawnableRoom> Candidates = new();
         private static readonly List<AtlasZoneGenerator.SpawnedRoomData> Spawned = new();
+        private static readonly Dictionary<SpawnableRoom, int> SpawnCounts = new();
 
         /// <summary>
         /// Determines what layouts will be generated from a seed, code comes from interpreting <see cref="AtlasZoneGenerator.Generate"/> and sub-methods.
@@ -45,11 +49,8 @@ namespace Exiled.Events.Patches.Events.Map
         /// <param name="hcz">The Heavy Containment Zone layout of the seed.</param>
         /// <param name="ez">The Entrance Zone layout of the seed.</param>
         /// <returns>Whether the method executed correctly.</returns>
-        internal static bool TryDetermineLayouts(int seed, out LczFacilityLayout lcz, out HczFacilityLayout hcz, out EzFacilityLayout ez)
+        public static bool TryDetermineLayouts(int seed, out LczFacilityLayout lcz, out HczFacilityLayout hcz, out EzFacilityLayout ez)
         {
-            // (Surface gen + PD gen)
-            const int ExcludedZoneGeneratorCount = 2;
-
             lcz = LczFacilityLayout.Unknown;
             hcz = HczFacilityLayout.Unknown;
             ez = EzFacilityLayout.Unknown;
@@ -61,6 +62,7 @@ namespace Exiled.Events.Patches.Events.Map
                 for (int i = 0; i < gens.Length - ExcludedZoneGeneratorCount; i++)
                 {
                     Spawned.Clear();
+                    SpawnCounts.Clear();
                     ZoneGenerator generator = gens[i];
 
                     switch (generator)
@@ -131,6 +133,127 @@ namespace Exiled.Events.Patches.Events.Map
                 error = true;
             }
 
+            return !error;
+        }
+
+        /// <summary>
+        /// Benchmarks <see cref="TryDetermineLayouts"/> 10000 times and prints the average ticks for each important step.
+        /// </summary>
+        /// <returns>Whether the method executed correctly.</returns>
+        internal static bool Benchmark()
+        {
+            bool error = false;
+            long hczInterpretationTicks = 0;
+            long hczFakeSpawnTicks = 0;
+            long lczInterpretationTicks = 0;
+            long lczFakeSpawnTicks = 0;
+
+            LczFacilityLayout lcz = LczFacilityLayout.Unknown;
+            HczFacilityLayout hcz = HczFacilityLayout.Unknown;
+            EzFacilityLayout ez = EzFacilityLayout.Unknown;
+
+            Stopwatch sw = new();
+
+            System.Random seedGenerator = new();
+            int k;
+            for (k = 1; k <= 10000; k++)
+            {
+                System.Random rng = new(seedGenerator.Next(1, int.MaxValue));
+                try
+                {
+                    ZoneGenerator[] gens = SeedSynchronizer._singleton._zoneGenerators;
+                    for (int i = 0; i < gens.Length - ExcludedZoneGeneratorCount; i++)
+                    {
+                        Spawned.Clear();
+                        SpawnCounts.Clear();
+                        ZoneGenerator generator = gens[i];
+
+                        switch (generator)
+                        {
+                            // EntranceZoneGenerator should be the last zone generator
+                            case EntranceZoneGenerator ezGen:
+                                if (i != gens.Length - 1 - ExcludedZoneGeneratorCount)
+                                {
+                                    Log.Error("EntranceZoneGenerator was not in expected index!");
+                                    return false;
+                                }
+
+                                ez = (EzFacilityLayout)(rng.Next(ezGen.Atlases.Length) + 1);
+                                break;
+                            case AtlasZoneGenerator gen:
+                                bool isLight = gen is LightContainmentZoneGenerator;
+
+                                int layout = rng.Next(gen.Atlases.Length);
+
+                                if (isLight)
+                                    lcz = (LczFacilityLayout)(layout + 1);
+                                else
+                                    hcz = (HczFacilityLayout)(layout + 1);
+
+                                // rng needs to be called the same amount as during map gen for next zone generator.
+                                // this block of code picks what rooms to generate.
+                                Texture2D tex = gen.Atlases[layout];
+
+                                sw.Restart();
+                                AtlasInterpretation[] interpretations = Interpret(tex, rng);
+                                if (isLight)
+                                    lczInterpretationTicks += sw.ElapsedTicks;
+                                else
+                                    hczInterpretationTicks += sw.ElapsedTicks;
+
+                                RandomizeInterpreted(rng, interpretations);
+
+                                sw.Restart();
+
+                                // this block "generates" them and accounts for duplicates and other things.
+                                for (int j = 0; j < interpretations.Length; j++)
+                                {
+                                    FakeSpawn(gen, interpretations[j], rng);
+                                }
+
+                                if (isLight)
+                                    lczFakeSpawnTicks += sw.ElapsedTicks;
+                                else
+                                    hczFakeSpawnTicks += sw.ElapsedTicks;
+                                break;
+                            default:
+                                Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Found non AtlasZoneGenerator [{generator}] in SeedSynchronizer._singleton._zoneGenerators!");
+                                return false;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                    return false;
+                }
+
+                if (lcz is LczFacilityLayout.Unknown)
+                {
+                    Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for LCZ during benchmark!");
+                    error = true;
+                }
+
+                if (hcz is HczFacilityLayout.Unknown)
+                {
+                    Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for HCZ during benchmark!");
+                    error = true;
+                }
+
+                if (ez is EzFacilityLayout.Unknown)
+                {
+                    Log.Error($"{typeof(Generating).FullName}.{nameof(TryDetermineLayouts)}: Failed to find layout for EZ during benchmark!");
+                    error = true;
+                }
+
+                if (error)
+                    break;
+            }
+
+            Log.Debug($"Average hcz interpretation ticks: {hczInterpretationTicks / (double)k}");
+            Log.Debug($"Average hcz fake spawn ticks: {hczFakeSpawnTicks / (double)k}");
+            Log.Debug($"Average lcz interpretation ticks: {lczInterpretationTicks / (double)k}");
+            Log.Debug($"Average lcz fake spawn ticks: {lczFakeSpawnTicks / (double)k}");
             return !error;
         }
 
@@ -256,9 +379,10 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Call, PropertySetter(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Seed))),
             });
 
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
+            offset = -1;
+            index = newInstructions.FindIndex(x => x.operand == (object)GetDeclaredConstructors(typeof(MapGeneratingEventArgs))[0]) + offset;
 
-            newInstructions[index].WithLabels(skipLabel);
+            newInstructions[index].labels.Add(skipLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
@@ -266,7 +390,7 @@ namespace Exiled.Events.Patches.Events.Map
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
 
-        // generates a seed for target layouts
+        // generates a seed for target layouts, at 5k attempts, failure is only 2 in a billion.
         private static int GenerateSeed(LczFacilityLayout lcz, HczFacilityLayout hcz, EzFacilityLayout ez)
         {
             if (lcz is LczFacilityLayout.Unknown && hcz is HczFacilityLayout.Unknown && ez is EzFacilityLayout.Unknown)
@@ -277,21 +401,19 @@ namespace Exiled.Events.Patches.Events.Map
             int best = -1;
             int bestMatches = 0;
 
-            Stopwatch debug = new();
-            debug.Start();
-
             int i = 0;
-
+            LczFacilityLayout currLcz = LczFacilityLayout.Unknown;
+            HczFacilityLayout currHcz = HczFacilityLayout.Unknown;
+            EzFacilityLayout currEz = EzFacilityLayout.Unknown;
             try
             {
-                // TODO: optimize, increase max iterations, and calculate probability of failure.
-                for (i = 0; i < 1000; i++)
+                for (i = 0; i < 5000; i++)
                 {
                     int matches = 0;
 
                     int seed = seedGenerator.Next(1, int.MaxValue);
 
-                    if (!TryDetermineLayouts(seed, out LczFacilityLayout currLcz, out HczFacilityLayout currHcz, out EzFacilityLayout currEz))
+                    if (!TryDetermineLayouts(seed, out currLcz, out currHcz, out currEz))
                     {
                         break;
                     }
@@ -335,8 +457,10 @@ namespace Exiled.Events.Patches.Events.Map
                 Log.Error(ex);
             }
 
-            debug.Stop();
-            Log.Debug($"Attempted {i} seeds in {debug.Elapsed.TotalSeconds}");
+            if (i is 5000 && (lcz != currLcz || hcz != currHcz || ez != currEz))
+            {
+                Log.Warn($"{typeof(Generating).FullName}.{nameof(GenerateSeed)}: Failed to generate a desired seed for {lcz}, {hcz}, {ez}.\nAccording to my calculations, this is like 2 in a billion, so maybe go hit the Casino!!!!");
+            }
 
             return best;
         }
@@ -366,17 +490,30 @@ namespace Exiled.Events.Patches.Events.Map
         {
             Candidates.Clear();
             float chanceMultiplier = 0F;
-            bool flag = interpretation.SpecificRooms.Length != 0;
+            bool hasSpecificRoom = interpretation.SpecificRooms.Length != 0;
+
+            bool isHoliday = HolidayUtils.IsAnyHolidayActive();
             foreach (SpawnableRoom room in gen.CompatibleRooms)
             {
                 SpawnableRoom spawnableRoom = room;
-                if (spawnableRoom.HolidayVariants.TryGetResult(out SpawnableRoom result))
+                if (isHoliday && spawnableRoom.HolidayVariants.TryGetResult(out SpawnableRoom result))
                 {
                     spawnableRoom = result;
                 }
 
-                int count = Spawned.Count(spawned => spawned.ChosenCandidate == spawnableRoom);
-                if (flag != spawnableRoom.SpecialRoom || (flag && !interpretation.SpecificRooms.Contains(spawnableRoom.Room.Name)) || spawnableRoom.Room.Shape != interpretation.RoomShape || count >= spawnableRoom.MaxAmount)
+                if (!SpawnCounts.TryGetValue(spawnableRoom, out int count))
+                    count = SpawnCounts[spawnableRoom] = 0;
+
+                if (hasSpecificRoom != spawnableRoom.SpecialRoom)
+                    continue;
+
+                if (spawnableRoom.Room.Shape != interpretation.RoomShape)
+                    continue;
+
+                if (count >= spawnableRoom.MaxAmount)
+                    continue;
+
+                if (hasSpecificRoom && !interpretation.SpecificRooms.Contains(spawnableRoom.Room.Name))
                     continue;
 
                 if (count < spawnableRoom.MinAmount)
@@ -388,6 +525,7 @@ namespace Exiled.Events.Patches.Events.Map
                         Interpretation = interpretation,
                     });
 
+                    SpawnCounts[spawnableRoom]++;
                     return;
                 }
 
@@ -397,8 +535,9 @@ namespace Exiled.Events.Patches.Events.Map
 
             double random = rng.NextDouble() * chanceMultiplier;
             float chance = 0F;
-            foreach (SpawnableRoom room in Candidates)
+            for (int i = 0; i < Candidates.Count; i++)
             {
+                SpawnableRoom room = Candidates[i];
                 chance += GetChanceWeight(interpretation.Coords, room);
                 if (random > chance)
                     continue;
@@ -410,29 +549,88 @@ namespace Exiled.Events.Patches.Events.Map
                     Interpretation = interpretation,
                 });
 
+                SpawnCounts[room]++;
                 return;
             }
         }
 
         private static float GetChanceWeight(Vector2Int coords, SpawnableRoom candidate)
         {
-            Vector2Int up = coords + Vector2Int.up;
-            Vector2Int down = coords + Vector2Int.down;
-            Vector2Int left = coords + Vector2Int.left;
-            Vector2Int right = coords + Vector2Int.right;
             float chance = candidate.ChanceMultiplier;
+
+            if (Math.Abs(candidate.AdjacentChanceMultiplier - 1) < 0.001F)
+                return chance;
 
             foreach (AtlasZoneGenerator.SpawnedRoomData spawnedRoomData in Spawned)
             {
                 if (spawnedRoomData.ChosenCandidate != candidate)
                     continue;
 
-                Vector2Int candidateCoords = spawnedRoomData.Interpretation.Coords;
-                if (candidateCoords == up || candidateCoords == down || candidateCoords == left || candidateCoords == right)
+                if ((spawnedRoomData.Interpretation.Coords - coords).sqrMagnitude is 1)
                     chance *= candidate.AdjacentChanceMultiplier;
             }
 
             return chance;
+        }
+
+        private static unsafe AtlasInterpretation[] Interpret(Texture2D atlas, System.Random rng)
+        {
+            MapAtlasInterpreter.ResultsBuffer.Clear();
+
+            int width = atlas.width;
+            int height = atlas.height;
+            int jump = 1;
+            int startX = 0;
+            bool flag = false;
+            byte[] pixels = atlas.GetRawTextureData();
+
+            fixed (byte* ptr = pixels)
+            {
+                int bytesPerRow = width * 3;
+                int stride = (bytesPerRow + 3) & ~3;
+
+                for (int y = 0; y < width; y += jump)
+                {
+                    byte* row = ptr + (y * stride);
+
+                    for (int x = startX; x < height; x += jump)
+                    {
+                        byte* pixel = row + (x * 3);
+
+                        GlyphShapePair? nullable = ScanPixel(pixel[0], pixel[1], pixel[2]);
+
+                        if (!nullable.HasValue)
+                            continue;
+
+                        if (!flag)
+                        {
+                            Vector2Int glyphCenterOffset = nullable.Value.GlyphCenterOffset;
+                            x += glyphCenterOffset.x;
+                            y += glyphCenterOffset.y;
+                            jump = 3;
+                            startX = x % 3;
+                            flag = true;
+
+                            row = ptr + (y * stride);
+                        }
+
+                        MapAtlasInterpreter.ResultsBuffer.Add(new AtlasInterpretation(nullable.Value, rng, x, y));
+                    }
+                }
+            }
+
+            return MapAtlasInterpreter.ResultsBuffer.ToArray();
+        }
+
+        private static GlyphShapePair? ScanPixel(byte r, byte g, byte b)
+        {
+            foreach (GlyphShapePair pairDefinition in MapAtlasInterpreter.Singleton.PairDefinitions)
+            {
+                if (Mathf.Abs(pairDefinition.GlyphColor.r - r) <= 5 && Mathf.Abs(pairDefinition.GlyphColor.g - g) <= 5 && Mathf.Abs(pairDefinition.GlyphColor.b - b) <= 5)
+                    return pairDefinition;
+            }
+
+            return null;
         }
     }
 }
