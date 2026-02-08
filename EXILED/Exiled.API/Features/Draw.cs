@@ -131,6 +131,10 @@ namespace Exiled.API.Features
                     Sphere(worldCenter2, sphere.transform.rotation, worldScale2, color, duration, players);
                     break;
 
+                case MeshCollider mesh:
+                    Mesh(mesh.sharedMesh, mesh.transform, color, duration, players);
+                    break;
+
                 case CapsuleCollider capsule:
                     Vector3 lossyScale = capsule.transform.lossyScale;
                     Quaternion directionRotation = capsule.transform.rotation;
@@ -213,6 +217,29 @@ namespace Exiled.API.Features
             Send(players, duration, color, GetArcPoints(topCenter, rotation * Quaternion.Euler(0, 90, 0), arcScaleFront, 180f));
             Send(players, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 0, 0), arcScaleSide, 180f));
             Send(players, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 90, 0), arcScaleFront, 180f));
+        }
+
+        /// <summary>
+        /// Draws a wireframe mesh.
+        /// </summary>
+        /// <param name="mesh">The <see cref="Mesh"/> to visualize.</param>
+        /// <param name="transform">The Transform of the mesh.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the capsule to.</param>
+        public static void Mesh(Mesh mesh, Transform transform, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            int[] triangles = mesh.triangles;
+            Vector3[] vertices = mesh.vertices;
+
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                Vector3 p1 = transform.TransformPoint(vertices[triangles[i]]);
+                Vector3 p2 = transform.TransformPoint(vertices[triangles[i + 1]]);
+                Vector3 p3 = transform.TransformPoint(vertices[triangles[i + 2]]);
+
+                Path([p1, p2, p3, p1], color, duration, players);
+            }
         }
 
         /// <summary>
