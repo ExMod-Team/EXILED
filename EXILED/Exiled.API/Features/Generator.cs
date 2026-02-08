@@ -202,7 +202,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the generator's position.
+        /// Gets or sets the position of the generator.
         /// </summary>
         public Vector3 Position
         {
@@ -215,8 +215,9 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets the generator's rotation.
+        /// Gets or sets the rotation of the generator.
         /// </summary>
+        /// <remarks>The setter only works in the y-axis (left to right) due to base game limitations.</remarks>
         public Quaternion Rotation
         {
             get => Base.transform.rotation;
