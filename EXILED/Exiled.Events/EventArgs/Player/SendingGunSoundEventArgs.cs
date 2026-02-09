@@ -40,7 +40,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets the player who is shooting.
+        /// Gets the playerwho owns the Firearm.
         /// </summary>
         public Player Player { get; }
 
@@ -48,7 +48,7 @@ namespace Exiled.Events.EventArgs.Player
         public Item Item => Firearm;
 
         /// <summary>
-        /// Gets the firearm being fired.
+        /// Gets the firearm that was the source of the sound.
         /// </summary>
         public Firearm Firearm { get; }
 
@@ -63,12 +63,12 @@ namespace Exiled.Events.EventArgs.Player
         public MixerChannel MixerChannel { get; set; }
 
         /// <summary>
-        /// Gets or sets the max audible distance of the gunshot sound.
+        /// Gets or sets the max audible distance of the gun sound.
         /// </summary>
         public float Range { get; set; }
 
         /// <summary>
-        /// Gets or sets the pitch of the gunshot sound.
+        /// Gets or sets the pitch of the gun sound.
         /// </summary>
         public float Pitch { get; set; }
 
@@ -78,7 +78,7 @@ namespace Exiled.Events.EventArgs.Player
         public Vector3 SendingPosition { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the gun shot sound should be sent.
+        /// Gets or sets a value indicating whether the gun sound should be sent.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
     }
