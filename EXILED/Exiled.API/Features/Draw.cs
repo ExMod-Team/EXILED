@@ -1,0 +1,351 @@
+// -----------------------------------------------------------------------
+// <copyright file="Draw.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Exiled.API.Features
+{
+    using System;
+    using System.Collections.Generic;
+
+    using DrawableLine;
+
+    using Mirror;
+
+    using UnityEngine;
+
+    using Utils;
+
+    /// <summary>
+    /// A utility class for drawing debug lines, shapes, and bounds for players or globally.
+    /// </summary>
+    public static class Draw
+    {
+        /// <summary>
+        /// Draws a line between two specified points.
+        /// </summary>
+        /// <param name="start">The starting position of the line.</param>
+        /// <param name="end">The ending position of the line.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the line to.</param>
+        public static void Line(Vector3 start, Vector3 end, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            Send(players, duration, color, start, end);
+        }
+
+        /// <summary>
+        /// Draws a connected path through a series of points.
+        /// </summary>
+        /// <param name="points">An array of <see cref="Vector3"/> points to connect sequentially.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the path to.</param>
+        public static void Path(Vector3[] points, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            Send(players, duration, color, points);
+        }
+
+        /// <summary>
+        /// Draws a circle at a specific position.
+        /// </summary>
+        /// <param name="origin">The center point of the circle.</param>
+        /// <param name="rotation">The rotation of the circle.</param>
+        /// <param name="scale">The scale of the circle.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the circle to.</param>
+        /// <param name="horizontal">Indicates whether the circle should be drawn on the horizontal plane (XZ) or vertical plane (XY).</param>
+        /// <param name="segments">The number of line segments used to draw the circle. Higher values result in a smoother circle.</param>
+        public static void Circle(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, bool horizontal = true, int segments = 16)
+        {
+            Vector3[] circlePoints = GetCirclePoints(origin, rotation, scale, segments, horizontal);
+            Send(players, duration, color, circlePoints);
+        }
+
+        /// <summary>
+        /// Draws a wireframe sphere composed of two circles (horizontal and vertical).
+        /// </summary>
+        /// <param name="origin">The center point of the sphere.</param>
+        /// <param name="rotation">The rotation of the sphere.</param>
+        /// <param name="scale">The scale of the sphere.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the sphere to.</param>
+        /// <param name="segments">The number of segments for the circles. Higher values result in a smoother sphere.</param>
+        public static void Sphere(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, int segments = 16)
+        {
+            Vector3[] horizontal = GetCirclePoints(origin, rotation, scale, segments, true);
+            Send(players, duration, color, horizontal);
+
+            Vector3[] vertical = GetCirclePoints(origin, rotation, scale, segments, false);
+            Send(players, duration, color, vertical);
+        }
+
+        /// <summary>
+        /// Draws the edges of a <see cref="Bounds"/> object.
+        /// </summary>
+        /// <param name="bounds">The <see cref="Bounds"/> object to visualize.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the bounds to.</param>
+        public static void Bounds(Bounds bounds, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            Box(bounds.center, bounds.size, Quaternion.identity, color, duration, players);
+        }
+
+        /// <summary>
+        /// Draws the edges of a <see cref="RelativeBounds"/> object.
+        /// </summary>
+        /// <param name="relativeBounds">The <see cref="RelativeBounds"/> object to visualize.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the bounds to.</param>
+        public static void RelativeBounds(RelativeBounds relativeBounds, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            Box(relativeBounds.Origin, relativeBounds.Bounds.size, relativeBounds.Rotation, color, duration, players);
+        }
+
+        /// <summary>
+        /// Draws a collider.
+        /// </summary>
+        /// <param name="collider">The <see cref="BoxCollider"/> object to visualize.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the bounds to.</param>
+        public static void Collider(Collider collider, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            switch (collider)
+            {
+                case BoxCollider box:
+                    Vector3 worldSize = Vector3.Scale(box.size, box.transform.lossyScale);
+                    Vector3 worldCenter = box.transform.TransformPoint(box.center);
+                    Box(worldCenter, worldSize, box.transform.rotation, color, duration, players);
+                    break;
+
+                case SphereCollider sphere:
+                    Vector3 worldScale2 = Vector3.Scale(Vector3.one * sphere.radius, sphere.transform.lossyScale);
+                    Vector3 worldCenter2 = sphere.transform.TransformPoint(sphere.center);
+                    Sphere(worldCenter2, sphere.transform.rotation, worldScale2, color, duration, players);
+                    break;
+
+                case MeshCollider mesh:
+                    Mesh(mesh.sharedMesh, mesh.transform, color, duration, players);
+                    break;
+
+                case CapsuleCollider capsule:
+                    Vector3 lossyScale = capsule.transform.lossyScale;
+                    Quaternion directionRotation = capsule.transform.rotation;
+                    Vector3 visualScale = lossyScale;
+
+                    switch (capsule.direction)
+                    {
+                        // X
+                        case 0:
+                            visualScale = new Vector3(lossyScale.y, lossyScale.x, lossyScale.z);
+                            directionRotation *= Quaternion.Euler(0, 0, -90);
+                            break;
+
+                        // Y
+                        case 1:
+                            visualScale = lossyScale;
+                            break;
+
+                        // Z
+                        case 2:
+                            visualScale = new Vector3(lossyScale.x, lossyScale.z, lossyScale.y);
+                            directionRotation *= Quaternion.Euler(90, 0, 0);
+                            break;
+                    }
+
+                    Vector3 finalCenter = capsule.transform.TransformPoint(capsule.center);
+                    Capsule(finalCenter, directionRotation, capsule.height, capsule.radius, visualScale, color, duration, players);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Draws a wireframe capsule.
+        /// </summary>
+        /// <param name="center">The center point of the capsule.</param>
+        /// <param name="rotation">The rotation of the capsule.</param>
+        /// <param name="height">The height of the capsule.</param>
+        /// <param name="radius">The radius of the capsule.</param>
+        /// <param name="scale">The scale of the capsule.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the capsule to.</param>
+        public static void Capsule(Vector3 center, Quaternion rotation, float height, float radius, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            float sX = Mathf.Abs(scale.x);
+            float sY = Mathf.Abs(scale.y);
+            float sZ = Mathf.Abs(scale.z);
+
+            float scaledHeight = height * sY;
+            float scaledRadiusY = radius * sY;
+
+            float cylinderHeight = Mathf.Max(0, scaledHeight - (scaledRadiusY * 2));
+            float halfCylinderHeight = cylinderHeight / 2f;
+
+            Vector3 up = rotation * Vector3.up;
+            Vector3 right = rotation * Vector3.right;
+            Vector3 forward = rotation * Vector3.forward;
+            Vector3 topCenter = center + (up * halfCylinderHeight);
+            Vector3 bottomCenter = center - (up * halfCylinderHeight);
+
+            Vector3 ringScale = new(radius * sX, 1f, radius * sZ);
+            Circle(topCenter, rotation, ringScale, color, duration, players, horizontal: true);
+            Circle(bottomCenter, rotation, ringScale, color, duration, players, horizontal: true);
+
+            float rX = radius * sX;
+            Line(topCenter + (right * rX), bottomCenter + (right * rX), color, duration, players);
+            Line(topCenter - (right * rX), bottomCenter - (right * rX), color, duration, players);
+
+            float rZ = radius * sZ;
+            Line(topCenter + (forward * rZ), bottomCenter + (forward * rZ), color, duration, players);
+            Line(topCenter - (forward * rZ), bottomCenter - (forward * rZ), color, duration, players);
+
+            Vector3 arcScaleSide = new(radius * sZ, radius * sY, 1f);
+            Vector3 arcScaleFront = new(radius * sX, radius * sY, 1f);
+
+            Send(players, duration, color, GetArcPoints(topCenter, rotation, arcScaleSide, 180f));
+            Send(players, duration, color, GetArcPoints(topCenter, rotation * Quaternion.Euler(0, 90, 0), arcScaleFront, 180f));
+            Send(players, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 0, 0), arcScaleSide, 180f));
+            Send(players, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 90, 0), arcScaleFront, 180f));
+        }
+
+        /// <summary>
+        /// Draws a wireframe mesh.
+        /// </summary>
+        /// <param name="mesh">The <see cref="Mesh"/> to visualize.</param>
+        /// <param name="transform">The Transform of the mesh.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the capsule to.</param>
+        public static void Mesh(Mesh mesh, Transform transform, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            int[] triangles = mesh.triangles;
+            Vector3[] vertices = mesh.vertices;
+
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                Vector3 p1 = transform.TransformPoint(vertices[triangles[i]]);
+                Vector3 p2 = transform.TransformPoint(vertices[triangles[i + 1]]);
+                Vector3 p3 = transform.TransformPoint(vertices[triangles[i + 2]]);
+
+                Path([p1, p2, p3, p1], color, duration, players);
+            }
+        }
+
+        /// <summary>
+        /// Draws a box using exact dimensions.
+        /// </summary>
+        /// <param name="center">The center point of the box.</param>
+        /// <param name="size">The size of the box.</param>
+        /// <param name="rotation">The rotation of the box.</param>
+        /// <param name="color">The color of the lines.</param>
+        /// <param name="duration"> How long the line should remain visible.<para><warning><b>Warning:</b> Avoid using <see cref="float.PositiveInfinity"/> or extremely large values, as these lines cannot be removed from the client once sent.</warning></para></param>
+        /// <param name="players">A collection of <see cref="Player"/>s to show the sphere to.</param>
+        public static void Box(Vector3 center, Vector3 size, Quaternion rotation, Color color, float duration, IEnumerable<Player> players = null)
+        {
+            Vector3 extents = size * 0.5f;
+
+            float width = extents.x;
+            float length = extents.z;
+            float height = extents.y;
+
+            Vector3[] bottomRect = new Vector3[5];
+            Vector3[] topRect = new Vector3[5];
+
+            bottomRect[0] = center + (rotation * new Vector3(-width, -height, -length));
+            bottomRect[1] = center + (rotation * new Vector3(width, -height, -length));
+            bottomRect[2] = center + (rotation * new Vector3(width, -height, length));
+            bottomRect[3] = center + (rotation * new Vector3(-width, -height, length));
+            bottomRect[4] = bottomRect[0];
+
+            topRect[0] = center + (rotation * new Vector3(-width, height, -length));
+            topRect[1] = center + (rotation * new Vector3(width, height, -length));
+            topRect[2] = center + (rotation * new Vector3(width, height, length));
+            topRect[3] = center + (rotation * new Vector3(-width, height, length));
+            topRect[4] = topRect[0];
+
+            Send(players, duration, color, bottomRect);
+            Send(players, duration, color, topRect);
+
+            for (int i = 0; i < 4; i++)
+            {
+                Send(players, duration, color, bottomRect[i], topRect[i]);
+            }
+        }
+
+        private static Vector3[] GetCirclePoints(Vector3 origin, Quaternion rotation, Vector3 scale, int segments, bool horizontal)
+        {
+            if (segments <= 5)
+                segments = 8;
+
+            if (segments % 2 != 0)
+                segments++;
+
+            Vector3[] array = new Vector3[segments + 1];
+            float num = MathF.PI * 2f / (float)segments;
+
+            for (int i = 0; i < segments; i++)
+            {
+                float f = (float)i * num;
+                float num2 = Mathf.Cos(f);
+                float num3 = Mathf.Sin(f);
+                Vector3 offset = horizontal ? new Vector3(num2 * scale.x, 0f, num3 * scale.z) : new Vector3(num2 * scale.x, num3 * scale.y, 0f);
+                array[i] = origin + (rotation * offset);
+            }
+
+            array[segments] = array[0];
+            return array;
+        }
+
+        private static Vector3[] GetArcPoints(Vector3 origin, Quaternion rotation, Vector3 scale, float angle, int segments = 8)
+        {
+            Vector3[] array = new Vector3[segments + 1];
+            float angleStep = (angle * Mathf.Deg2Rad) / segments;
+
+            for (int i = 0; i <= segments; i++)
+            {
+                float currentRad = i * angleStep;
+                float sin = Mathf.Sin(currentRad);
+                float cos = Mathf.Cos(currentRad);
+                Vector3 localPoint = new(cos * scale.x, sin * scale.y, 0);
+                array[i] = origin + (rotation * localPoint);
+            }
+
+            return array;
+        }
+
+        private static void Send(IEnumerable<Player> players, float duration, Color color, params Vector3[] points)
+        {
+            if (points == null || points.Length < 2)
+                return;
+
+            DrawableLineMessage msg = new(duration, color, points);
+
+            if (players != null)
+            {
+                using NetworkWriterPooled writer = NetworkWriterPool.Get();
+                NetworkMessages.Pack(msg, writer);
+                ArraySegment<byte> segment = writer.ToArraySegment();
+
+                foreach (Player ply in players)
+                {
+                    ply?.Connection.Send(segment);
+                }
+            }
+            else
+            {
+                NetworkServer.SendToReady(msg);
+            }
+        }
+    }
+}

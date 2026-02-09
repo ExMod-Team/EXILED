@@ -27,7 +27,7 @@ namespace Exiled.API.Features.Lockers
     /// <summary>
     /// The in-game Locker.
     /// </summary>
-    public class Locker : IWrapper<BaseLocker>, IWorldSpace
+    public class Locker : IWrapper<BaseLocker>, IWorldSpace, IStructureSync
     {
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BaseLocker"/>s and their corresponding <see cref="Locker"/>.
@@ -41,10 +41,13 @@ namespace Exiled.API.Features.Lockers
         public Locker(BaseLocker locker)
         {
             Base = locker;
+            PositionSync = locker.GetComponent<StructurePositionSync>();
             BaseToExiledLockers.Add(locker, this);
 
             Chambers = locker.Chambers.Select(x => new Chamber(x, this)).ToList();
             Type = locker.GetLockerType();
+            if (Type == LockerType.Unknown)
+                Log.Warn($"[LockerType.Unknown] {Base}");
         }
 
         /// <summary>
@@ -70,11 +73,35 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         public Transform Transform => Base.transform;
 
-        /// <inheritdoc/>
-        public Vector3 Position => Base.transform.position;
+        /// <summary>
+        /// Gets or sets the position of the locker.
+        /// </summary>
+        public Vector3 Position
+        {
+            get => Base.transform.position;
+            set
+            {
+                Base.transform.position = value;
+                PositionSync.Network_position = value;
+            }
+        }
 
-        /// <inheritdoc/>
-        public Quaternion Rotation => Base.transform.rotation;
+        /// <summary>
+        /// Gets or sets the rotation of the locker.
+        /// </summary>
+        /// <remarks>The setter only works in the y-axis (left to right) due to base game limitations.</remarks>
+        public Quaternion Rotation
+        {
+            get => Base.transform.rotation;
+            set
+            {
+                Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
+                PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
+            }
+        }
+
+        /// <inheritdoc cref="IStructureSync.PositionSync"/>
+        public StructurePositionSync PositionSync { get; }
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> in which the <see cref="Locker"/> is located.
@@ -180,6 +207,12 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         /// <param name="type">The type of item to be added.</param>
         public void AddItem(ItemType type) => AddItem(Pickup.Create(type));
+
+        /// <summary>
+        /// Returns the Door in a human-readable format.
+        /// </summary>
+        /// <returns>A string containing Door-related data.</returns>
+        public override string ToString() => $"{Type} [{Room}] *{Chambers.Count}*";
 
         /// <summary>
         /// Clears the cached lockers in the <see cref="BaseToExiledLockers"/> dictionary.

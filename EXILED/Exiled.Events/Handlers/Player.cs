@@ -9,6 +9,9 @@ namespace Exiled.Events.Handlers
 {
     using System;
 
+    using Exiled.API.Enums;
+    using Exiled.API.Features;
+
 #pragma warning disable IDE0079
 #pragma warning disable IDE0060
 #pragma warning disable SA1623 // Property summary documentation should match accessors
@@ -16,6 +19,7 @@ namespace Exiled.Events.Handlers
     using Exiled.Events.EventArgs.Player;
 
     using Exiled.Events.Features;
+
     using LabApi.Events.Arguments.PlayerEvents;
 
     /// <summary>
@@ -472,6 +476,11 @@ namespace Exiled.Events.Handlers
         public static Event<VoiceChattingEventArgs> VoiceChatting { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> receives a voice message.
+        /// </summary>
+        public static Event<ReceivingVoiceMessageEventArgs> ReceivingVoiceMessage { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> makes noise.
         /// </summary>
         public static Event<MakingNoiseEventArgs> MakingNoise { get; set; } = new();
@@ -505,6 +514,11 @@ namespace Exiled.Events.Handlers
         /// Invoked when a <see cref="API.Features.Player"/> changes rooms.
         /// </summary>
         public static Event<RoomChangedEventArgs> RoomChanged { get; set; } = new();
+
+        /// <summary>
+        /// Invoked when a <see cref="API.Features.Player"/> changes zones.
+        /// </summary>
+        public static Event<ZoneChangedEventArgs> ZoneChanged { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> toggles the NoClip mode.
@@ -836,7 +850,25 @@ namespace Exiled.Events.Handlers
         /// Called when a <see cref="API.Features.Player"/> changes rooms.
         /// </summary>
         /// <param name="ev">The <see cref="RoomChangedEventArgs"/> instance.</param>
-        public static void OnRoomChanged(RoomChangedEventArgs ev) => RoomChanged.InvokeSafely(ev);
+        public static void OnRoomChanged(RoomChangedEventArgs ev)
+        {
+            RoomChanged.InvokeSafely(ev);
+
+            if (!ZoneChanged.Patched)
+                return;
+
+            ZoneType oldZone = ev.OldRoom?.Zone ?? ZoneType.Unspecified;
+            ZoneType newZone = ev.NewRoom?.Zone ?? ZoneType.Unspecified;
+
+            if (oldZone != newZone)
+                OnZoneChanged(new ZoneChangedEventArgs(ev.Player, ev.OldRoom, ev.NewRoom, oldZone, newZone));
+        }
+
+        /// <summary>
+        /// Called when a <see cref="API.Features.Player"/> changes zones.
+        /// </summary>
+        /// <param name="ev">The <see cref="ZoneChangedEventArgs"/> instance.</param>
+        public static void OnZoneChanged(ZoneChangedEventArgs ev) => ZoneChanged.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> escapes.
@@ -898,6 +930,9 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="ReloadingWeaponEventArgs"/> instance.</param>
         public static void OnReloadingWeapon(PlayerReloadingWeaponEventArgs ev)
         {
+            if (!ReloadingWeapon.Patched)
+                return;
+
             ReloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
             ReloadingWeapon.InvokeSafely(exiledEv);
             ev.IsAllowed = exiledEv.IsAllowed;
@@ -1011,6 +1046,9 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="UnloadingWeaponEventArgs"/> instance.</param>
         public static void OnUnloadingWeapon(PlayerUnloadingWeaponEventArgs ev)
         {
+            if (!UnloadingWeapon.Patched)
+                return;
+
             UnloadingWeaponEventArgs exiledEv = new(ev.FirearmItem.Base, ev.IsAllowed);
             UnloadingWeapon.InvokeSafely(exiledEv);
             ev.IsAllowed = exiledEv.IsAllowed;
@@ -1045,6 +1083,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="VoiceChattingEventArgs"/> instance.</param>
         public static void OnVoiceChatting(VoiceChattingEventArgs ev) => VoiceChatting.InvokeSafely(ev);
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> receives a voice message.
+        /// </summary>
+        /// <param name="ev">The <see cref="ReceivingVoiceMessageEventArgs"/> instance.</param>
+        public static void OnReceivingVoiceMessage(ReceivingVoiceMessageEventArgs ev) => ReceivingVoiceMessage.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> makes noise.

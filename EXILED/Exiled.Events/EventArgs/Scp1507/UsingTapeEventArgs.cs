@@ -17,7 +17,7 @@ namespace Exiled.Events.EventArgs.Scp1507
     /// <summary>
     /// Contains all information before SCP-1507 screams.
     /// </summary>
-    // [Obsolete("Only availaible for Christmas and AprilFools.")]
+    [Obsolete("Only availaible for Christmas and AprilFools.")]
     public class UsingTapeEventArgs : IPlayerEvent, IItemEvent, IDeniableEvent
     {
         /// <summary>
