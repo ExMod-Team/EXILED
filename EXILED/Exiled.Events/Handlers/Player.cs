@@ -280,6 +280,16 @@ namespace Exiled.Events.Handlers
         public static Event<ShootingEventArgs> Shooting { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> sends a gun shot sound to nearby players.
+        /// </summary>
+        public static Event<SendingGunShotSoundEventArgs> SendingGunShotSound { get; set; } = new();
+
+        /*// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> receives a gun shot sound.
+        /// </summary>
+        public static Event<ReceivingGunShotSoundEventArgs> ReceivingGunShotSound { get; set; } = new();*/
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> enters the pocket dimension.
         /// </summary>
         public static Event<EnteringPocketDimensionEventArgs> EnteringPocketDimension { get; set; } = new();
@@ -899,6 +909,18 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="ShootingEventArgs"/> instance.</param>
         public static void OnShooting(ShootingEventArgs ev) => Shooting.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before the server sends a gun shot sound to nearby players.
+        /// </summary>
+        /// <param name="ev">The <see cref="SendingGunShotSoundEventArgs"/> instance.</param>
+        public static void OnSendingGunShotSound(SendingGunShotSoundEventArgs ev) => SendingGunShotSound.InvokeSafely(ev);
+
+        /*// <summary>
+        /// Called when a <see cref="API.Features.Player"/> receives a gun shot sound.
+        /// </summary>
+        /// <param name="ev">The <see cref="ReceivingGunShotSoundEventArgs"/> instance.</param>
+        public static void OnReceivingGunShotSound(ReceivingGunShotSoundEventArgs ev) => ReceivingGunShotSound.InvokeSafely(ev);*/
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> enters the pocket dimension.
