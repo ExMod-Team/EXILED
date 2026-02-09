@@ -280,14 +280,14 @@ namespace Exiled.Events.Handlers
         public static Event<ShootingEventArgs> Shooting { get; set; } = new();
 
         /// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> sends a gun shot sound to nearby players.
+        /// Invoked before a <see cref="API.Features.Player"/> sends a gun sound to nearby players.
         /// </summary>
-        public static Event<SendingGunShotSoundEventArgs> SendingGunShotSound { get; set; } = new();
+        public static Event<SendingGunSoundEventArgs> SendingGunSound { get; set; } = new();
 
         /*// <summary>
-        /// Invoked before a <see cref="API.Features.Player"/> receives a gun shot sound.
+        /// Invoked before a <see cref="API.Features.Player"/> receives a gun sound.
         /// </summary>
-        public static Event<ReceivingGunShotSoundEventArgs> ReceivingGunShotSound { get; set; } = new();*/
+        public static Event<ReceivingGunSoundEventArgs> ReceivingGunSound { get; set; } = new();*/
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> enters the pocket dimension.
@@ -911,16 +911,16 @@ namespace Exiled.Events.Handlers
         public static void OnShooting(ShootingEventArgs ev) => Shooting.InvokeSafely(ev);
 
         /// <summary>
-        /// Called before the server sends a gun shot sound to nearby players.
+        /// Called before the server sends a gun sound to nearby players.
         /// </summary>
-        /// <param name="ev">The <see cref="SendingGunShotSoundEventArgs"/> instance.</param>
-        public static void OnSendingGunShotSound(SendingGunShotSoundEventArgs ev) => SendingGunShotSound.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="SendingGunSoundEventArgs"/> instance.</param>
+        public static void OnSendingGunSound(SendingGunSoundEventArgs ev) => SendingGunSound.InvokeSafely(ev);
 
         /*// <summary>
-        /// Called when a <see cref="API.Features.Player"/> receives a gun shot sound.
+        /// Called when a <see cref="API.Features.Player"/> receives a gun sound.
         /// </summary>
-        /// <param name="ev">The <see cref="ReceivingGunShotSoundEventArgs"/> instance.</param>
-        public static void OnReceivingGunShotSound(ReceivingGunShotSoundEventArgs ev) => ReceivingGunShotSound.InvokeSafely(ev);*/
+        /// <param name="ev">The <see cref="ReceivingGunSoundEventArgs"/> instance.</param>
+        public static void OnReceivingGunSound(ReceivingGunShotSoundEventArgs ev) => ReceivingGunSound.InvokeSafely(ev);*/
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> enters the pocket dimension.

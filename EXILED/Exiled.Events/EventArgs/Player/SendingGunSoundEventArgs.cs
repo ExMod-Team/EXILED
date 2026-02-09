@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="SendingGunShotSoundEventArgs.cs" company="ExMod Team">
+// <copyright file="SendingGunSoundEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -16,19 +16,19 @@ namespace Exiled.Events.EventArgs.Player
     using UnityEngine;
 
     /// <summary>
-    /// Contains all information before a gun shot sound is sent to players.
+    /// Contains all information before a gun sound is sent to players.
     /// </summary>
-    public class SendingGunShotSoundEventArgs : IPlayerEvent, IDeniableEvent, IFirearmEvent
+    public class SendingGunSoundEventArgs : IPlayerEvent, IDeniableEvent, IFirearmEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SendingGunShotSoundEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="SendingGunSoundEventArgs"/> class.
         /// </summary>
         /// <param name="firearm">The internal firearm instance.</param>
         /// <param name="audioIndex">The index of the audio clip to be played.</param>
         /// <param name="mixerChannel">The audio mixer channel.</param>
         /// <param name="range">The audible range of the sound.</param>
         /// <param name="pitch">The pitch of the sound.</param>
-        public SendingGunShotSoundEventArgs(InventorySystem.Items.Firearms.Firearm firearm, int audioIndex, MixerChannel mixerChannel, float range, float pitch)
+        public SendingGunSoundEventArgs(InventorySystem.Items.Firearms.Firearm firearm, int audioIndex, MixerChannel mixerChannel, float range, float pitch)
         {
             Firearm = Item.Get<Firearm>(firearm);
             Player = Firearm.Owner;

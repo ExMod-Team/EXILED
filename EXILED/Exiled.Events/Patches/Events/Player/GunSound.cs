@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="GunShotSound.cs" company="ExMod Team">
+// <copyright file="GunSound.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -23,14 +23,14 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches AudioModule.ServerSendToNearbyPlayers to add <see cref="Handlers.Player.SendingGunShotSound" /> and.
+    /// Patches AudioModule.ServerSendToNearbyPlayers to add <see cref="Handlers.Player.SendingGunSound" /> and.
     /// </summary>
     // <see cref="Handlers.Player.ReceivingGunShotSound" /> events.
-    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingGunShotSound))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingGunSound))]
 
     // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingGunShotSound))]
     [HarmonyPatch(typeof(AudioModule), nameof(AudioModule.ServerSendToNearbyPlayers))]
-    public class GunShotSound
+    public class GunSound
     {
         private static Type displayClassType;
 
@@ -51,7 +51,7 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            LocalBuilder ev = generator.DeclareLocal(typeof(SendingGunShotSoundEventArgs));
+            LocalBuilder ev = generator.DeclareLocal(typeof(SendingGunSoundEventArgs));
 
             Label ret = generator.DefineLabel();
 
@@ -78,38 +78,38 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_S, 4),
 
                     // new(firearm, audioIndex, mixerChannel, range, pitch)
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingGunShotSoundEventArgs))[0]),
+                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingGunSoundEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Player.OnSendingGunShotSound(ev);
-                    new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingGunShotSound))),
+                    new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingGunSound))),
 
                     // if (!ev.IsAllowed)
                     //    return;
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunShotSoundEventArgs), nameof(SendingGunShotSoundEventArgs.IsAllowed))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.IsAllowed))),
                     new(OpCodes.Brfalse_S, ret),
 
                     // index = ev.AudioIndex;
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunShotSoundEventArgs), nameof(SendingGunShotSoundEventArgs.AudioIndex))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.AudioIndex))),
                     new(OpCodes.Stfld, Field(displayClassType, "index")),
 
                     // channel = ev.MixerChannel;
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunShotSoundEventArgs), nameof(SendingGunShotSoundEventArgs.MixerChannel))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.MixerChannel))),
                     new(OpCodes.Stfld, Field(displayClassType, "channel")),
 
                     // audioRange = ev.Range;
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunShotSoundEventArgs), nameof(SendingGunShotSoundEventArgs.Range))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.Range))),
                     new(OpCodes.Stfld, Field(displayClassType, "audioRange")),
                     new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunShotSoundEventArgs), nameof(SendingGunShotSoundEventArgs.Range))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.Range))),
                     new(OpCodes.Ldc_R4, AudioModule.SendDistanceBuffer),
                     new(OpCodes.Add),
                     new(OpCodes.Dup),
@@ -119,13 +119,13 @@ namespace Exiled.Events.Patches.Events.Player
                     // pitch = ev.Pitch;
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunShotSoundEventArgs), nameof(SendingGunShotSoundEventArgs.Pitch))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.Pitch))),
                     new(OpCodes.Stfld, Field(displayClassType, "pitch")),
 
                     // ownPos = ev.SendingPosition;
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunShotSoundEventArgs), nameof(SendingGunShotSoundEventArgs.SendingPosition))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.SendingPosition))),
                     new(OpCodes.Stfld, Field(displayClassType, "ownPos")),
                 });
 
