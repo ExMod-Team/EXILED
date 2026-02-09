@@ -29,7 +29,7 @@ namespace Exiled.API.Interfaces
         /// <remarks>Called after every position or rotation change.</remarks>
         public void Respawn()
         {
-            // not a prefab so respawning will just permanently destroy it
+            // not a prefab so respawning will just permanently destroy it and second call will disconnect clients
             if (this is Features.Lockers.Locker { Type: LockerType.MicroHid })
                 return;
 
