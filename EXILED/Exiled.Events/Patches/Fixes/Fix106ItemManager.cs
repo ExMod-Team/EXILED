@@ -10,6 +10,8 @@ namespace Exiled.Events.Patches.Fixes
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Exiled.API.Features.Pools;
+
     using HarmonyLib;
 
     using PlayerRoles.PlayableScps.Scp106;
@@ -23,20 +25,21 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            CodeMatcher matcher = new(instructions);
+            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            // change all (maxExclusive > 64) to (maxExclusive >= 64)
-            matcher
-                .MatchStartForward(new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)64))
-                .Advance(1)
-                .ThrowIfInvalid("Transpiler failed first match")
-                .SetOpcodeAndAdvance(OpCodes.Blt_S)
-                .MatchStartForward(new CodeMatch(OpCodes.Ldc_I4_S, (sbyte)64))
-                .Advance(1)
-                .ThrowIfInvalid("Transpiler failed second match")
-                .SetOpcodeAndAdvance(OpCodes.Blt_S);
+            int offset = 1;
+            int index = newInstructions.FindIndex(x => x.LoadsConstant(64)) + offset;
 
-            return matcher.Instructions();
+            newInstructions[index].opcode = OpCodes.Blt_S;
+
+            index = newInstructions.FindLastIndex(x => x.LoadsConstant(64)) + offset;
+
+            newInstructions[index].opcode = OpCodes.Blt_S;
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }
