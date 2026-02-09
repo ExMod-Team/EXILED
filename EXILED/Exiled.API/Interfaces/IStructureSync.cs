@@ -7,7 +7,11 @@
 
 namespace Exiled.API.Interfaces
 {
+    using Exiled.API.Enums;
+
     using MapGeneration.Distributors;
+
+    using Mirror;
 
     /// <summary>
     /// Represents an object with a <see cref="StructurePositionSync"/>.
@@ -18,5 +22,19 @@ namespace Exiled.API.Interfaces
         /// Gets the <see cref="StructurePositionSync"/> of this structure.
         /// </summary>
         public StructurePositionSync PositionSync { get; }
+
+        /// <summary>
+        /// Respawns the structure.
+        /// </summary>
+        /// <remarks>Called after every position or rotation change.</remarks>
+        public void Respawn()
+        {
+            // not a prefab so respawning will just permanently destroy it
+            if (this is Features.Lockers.Locker { Type: LockerType.MicroHid })
+                return;
+
+            NetworkServer.UnSpawn(PositionSync.gameObject);
+            NetworkServer.Spawn(PositionSync.gameObject);
+        }
     }
 }
