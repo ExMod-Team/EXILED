@@ -40,7 +40,7 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets the playerwho owns the Firearm.
+        /// Gets the player who owns the Firearm.
         /// </summary>
         public Player Player { get; }
 

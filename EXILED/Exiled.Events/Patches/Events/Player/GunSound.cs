@@ -25,10 +25,10 @@ namespace Exiled.Events.Patches.Events.Player
     /// <summary>
     /// Patches AudioModule.ServerSendToNearbyPlayers to add <see cref="Handlers.Player.SendingGunSound" /> and.
     /// </summary>
-    // <see cref="Handlers.Player.ReceivingGunShotSound" /> events.
+    // <see cref="Handlers.Player.ReceivingGunSound" /> events.
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingGunSound))]
 
-    // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingGunShotSound))]
+    // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingGunSound))]
     [HarmonyPatch(typeof(AudioModule), nameof(AudioModule.ServerSendToNearbyPlayers))]
     public class GunSound
     {
@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             if (displayClassType == null)
             {
-                Log.Error("<>c__DisplayClass31_0 cannot found on GunShotSound class.");
+                Log.Error("<>c__DisplayClass31_0 cannot found on GunSound class.");
                 return false;
             }
 
