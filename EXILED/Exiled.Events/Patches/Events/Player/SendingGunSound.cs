@@ -30,16 +30,14 @@ namespace Exiled.Events.Patches.Events.Player
     public class SendingGunSound
     {
         private static Type displayClassType;
-        private static Type displayClassTypeForeach;
 
         private static bool Prepare()
         {
             displayClassType = Inner(typeof(AudioModule), "<>c__DisplayClass31_0");
-            displayClassTypeForeach = Inner(typeof(AudioModule), "<>c__DisplayClass31_1");
 
-            if (displayClassType == null || displayClassTypeForeach == null)
+            if (displayClassType == null)
             {
-                Log.Error("`<>c__DisplayClass31` _1 or _0 cannot found on GunSound class. Class changed skipping patch.");
+                Log.Error("`<>c__DisplayClass31_0` cannot found on SendingGunSound class. Class changed skipping patch.");
                 return false;
             }
 
