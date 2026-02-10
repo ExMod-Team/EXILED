@@ -54,7 +54,7 @@ namespace Exiled.API.Features
         /// <param name="players">A collection of <see cref="Player"/>s to show the path to.</param>
         public static void Path(Vector3[] points, Color color, float duration, IEnumerable<Player> players = null)
         {
-            Send(players, duration, color, points);
+            Send(players, duration, color, points, points.Length);
         }
 
         /// <summary>
@@ -70,8 +70,14 @@ namespace Exiled.API.Features
         /// <param name="segments">The number of line segments used to draw the circle. Higher values result in a smoother circle.</param>
         public static void Circle(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, bool horizontal = true, int segments = 16)
         {
+            if (segments <= 5)
+                segments = 8;
+
+            if (segments % 2 != 0)
+                segments++;
+
             Vector3[] circlePoints = GetCirclePoints(origin, rotation, scale, segments, horizontal);
-            Send(players, duration, color, circlePoints);
+            Send(players, duration, color, circlePoints, segments);
         }
 
         /// <summary>
@@ -86,6 +92,12 @@ namespace Exiled.API.Features
         /// <param name="segments">The number of segments for the circles. Higher values result in a smoother sphere.</param>
         public static void Sphere(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, int segments = 16)
         {
+            if (segments <= 5)
+                segments = 8;
+
+            if (segments % 2 != 0)
+                segments++;
+
             List<Player> list = ListPool<Player>.Pool.Get(players);
 
             Vector3[] horizontal = GetCirclePoints(origin, rotation, scale, segments, true);
@@ -311,12 +323,6 @@ namespace Exiled.API.Features
 
         private static Vector3[] GetCirclePoints(Vector3 origin, Quaternion rotation, Vector3 scale, int segments, bool horizontal)
         {
-            if (segments <= 5)
-                segments = 8;
-
-            if (segments % 2 != 0)
-                segments++;
-
             Vector3[] array = segments < 17 ? ArrayNonAlloc17 : new Vector3[segments + 1];
             float num = MathF.PI * 2f / (float)segments;
 
@@ -350,9 +356,9 @@ namespace Exiled.API.Features
             return array;
         }
 
-        private static void Send(IEnumerable<Player> players, float duration, Color color, Vector3[] points, int? count = null, int offset = 0)
+        private static void Send(IEnumerable<Player> players, float duration, Color color, Vector3[] points, int count, int offset = 0)
         {
-            if (points == null || points.Length - offset < 2 || (count ??= points.Length) - offset < 2)
+            if (points == null || points.Length - offset < 2 || count - offset < 2)
                 return;
 
             ArraySegment<byte> data;
