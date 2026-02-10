@@ -21,7 +21,7 @@ namespace Exiled.API.Features
     /// <summary>
     /// Wrapper class for <see cref="Scp079Generator"/>.
     /// </summary>
-    public class Generator : IWrapper<Scp079Generator>, IWorldSpace
+    public class Generator : IWrapper<Scp079Generator>, IWorldSpace, IStructureSync
     {
         /// <summary>
         /// A <see cref="List{T}"/> of <see cref="Generator"/> on the map.
@@ -36,6 +36,7 @@ namespace Exiled.API.Features
         internal Generator(Scp079Generator scp079Generator)
         {
             Base = scp079Generator;
+            PositionSync = scp079Generator.GetComponent<StructurePositionSync>();
             Scp079GeneratorToGenerator.Add(scp079Generator, this);
         }
 
@@ -201,14 +202,34 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the generator position.
+        /// Gets or sets the position of the generator.
         /// </summary>
-        public Vector3 Position => Base.transform.position;
+        public Vector3 Position
+        {
+            get => Base.transform.position;
+            set
+            {
+                Base.transform.position = value;
+                PositionSync.Network_position = value;
+            }
+        }
 
         /// <summary>
-        /// Gets the generator rotation.
+        /// Gets or sets the rotation of the generator.
         /// </summary>
-        public Quaternion Rotation => Base.transform.rotation;
+        /// <remarks>The setter only works in the y-axis (left to right) due to base game limitations.</remarks>
+        public Quaternion Rotation
+        {
+            get => Base.transform.rotation;
+            set
+            {
+                Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
+                PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
+            }
+        }
+
+        /// <inheritdoc cref="IStructureSync.PositionSync"/>
+        public StructurePositionSync PositionSync { get; }
 
         /// <summary>
         /// Gets or sets the required permissions to interact with the generator.

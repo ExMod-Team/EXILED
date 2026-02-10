@@ -19,7 +19,7 @@ namespace Exiled.Events.EventArgs.Scp1507
     /// <summary>
     /// Contains all information before flamingos get spawned.
     /// </summary>
-    // [Obsolete("Only availaible for Christmas and AprilFools.")]
+    [Obsolete("Only availaible for Christmas and AprilFools.")]
     public class SpawningFlamingosEventArgs : IDeniableEvent, IPlayerEvent
     {
         /// <summary>
