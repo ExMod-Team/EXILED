@@ -39,7 +39,6 @@ namespace Exiled.Events.EventArgs.Player
             Pitch = pitch;
             AudioIndex = audioIndex;
             MixerChannel = mixerChannel;
-            SendingPosition = Sender.Position;
         }
 
         /// <summary>
@@ -79,18 +78,6 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets the pitch of the gun sound.
         /// </summary>
         public float Pitch { get; set; }
-
-        /// <summary>
-        /// Gets or sets the virtual origin point used for the distance validity check.
-        /// <para>
-        /// <b>Technical Detail:</b> This position is used <b>exclusively</b> to determine <i>if</i> the sound should be played.
-        /// <list type="bullet">
-        /// <item>If the local player is within the <see cref="Range"/> of this position, the client accepts the packet.</item>
-        /// <item>If accepted, the sound plays from the <b>physical weapon model</b>, not this virtual position.</item>
-        /// </list>
-        /// </para>
-        /// </summary>
-        public Vector3 SendingPosition { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the gun sound should be sent.

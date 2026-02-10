@@ -56,8 +56,8 @@ namespace Exiled.Events.Patches.Events.Player
 
             newInstructions.InsertRange(
                 index,
-                new[]
-                {
+                [
+
                     // this.Firearm
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Call, PropertyGetter(typeof(FirearmSubcomponentBase), nameof(FirearmSubcomponentBase.Firearm))),
@@ -81,7 +81,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Stloc, ev.LocalIndex),
 
                     // Handlers.Player.OnSendingGunShotSound(ev);
-                    new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingGunSound))),
+                    new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSendingGunSound))),
 
                     // if (!ev.IsAllowed)
                     //    return;
@@ -117,16 +117,10 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.Pitch))),
-                    new(OpCodes.Stfld, Field(displayClassType, "pitch")),
+                    new CodeInstruction(OpCodes.Stfld, Field(displayClassType, "pitch")),
+                ]);
 
-                    // ownPos = ev.SendingPosition;
-                    new(OpCodes.Ldloc_0),
-                    new(OpCodes.Ldloc, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.SendingPosition))),
-                    new(OpCodes.Stfld, Field(displayClassType, "ownPos")),
-                });
-
-            newInstructions[newInstructions.Count - 1].WithLabels(ret);
+            newInstructions[^1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
