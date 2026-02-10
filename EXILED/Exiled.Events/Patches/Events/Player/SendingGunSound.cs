@@ -130,7 +130,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Stfld, Field(displayClassType, "ownPos")),
                 ]);
 
-            newInstructions[^1].WithLabels(ret);
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

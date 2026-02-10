@@ -66,7 +66,7 @@ namespace Exiled.Events.Patches.Events.Player
             int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Stloc_0) + offset;
 
             newInstructions.InsertRange(
-                0,
+                index,
                 [
 
                     // this.receiver
@@ -175,7 +175,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingGunSoundEventArgs), nameof(ReceivingGunSoundEventArgs.SenderPosition))),
                 ]);
 
-            newInstructions[^1].WithLabels(ret);
+            newInstructions[newInstructions.Count - 1].WithLabels(ret);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
