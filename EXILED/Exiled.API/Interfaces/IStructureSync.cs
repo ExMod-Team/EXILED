@@ -37,7 +37,6 @@ namespace Exiled.API.Interfaces
                 return;
 
             NetworkServer.UnSpawn(PositionSync.gameObject);
-
             NetworkServer.Spawn(PositionSync.gameObject);
         }
     }
