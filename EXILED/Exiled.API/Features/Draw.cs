@@ -27,7 +27,7 @@ namespace Exiled.API.Features
     public static class Draw
     {
         // smallest array that fits the largest default segment (17 for sphere)
-        private static readonly Vector3[] ArrayNonAlloc17 = new Vector3[17];
+        private static readonly Vector3[] ArrayNonAlloc = new Vector3[17];
 
         /// <summary>
         /// Draws a line between two specified points.
@@ -39,10 +39,10 @@ namespace Exiled.API.Features
         /// <param name="players">A collection of <see cref="Player"/>s to show the line to.</param>
         public static void Line(Vector3 start, Vector3 end, Color color, float duration, IEnumerable<Player> players = null)
         {
-            ArrayNonAlloc17[0] = start;
-            ArrayNonAlloc17[1] = end;
+            ArrayNonAlloc[0] = start;
+            ArrayNonAlloc[1] = end;
 
-            Send(players, duration, color, ArrayNonAlloc17, 2);
+            Send(players, duration, color, ArrayNonAlloc, 2);
         }
 
         /// <summary>
@@ -253,12 +253,12 @@ namespace Exiled.API.Features
 
             for (int i = 0; i < triangles.Length; i += 3)
             {
-                ArrayNonAlloc17[0] = transform.TransformPoint(vertices[triangles[i]]);
-                ArrayNonAlloc17[1] = transform.TransformPoint(vertices[triangles[i + 1]]);
-                ArrayNonAlloc17[2] = transform.TransformPoint(vertices[triangles[i + 2]]);
-                ArrayNonAlloc17[3] = ArrayNonAlloc17[0];
+                ArrayNonAlloc[0] = transform.TransformPoint(vertices[triangles[i]]);
+                ArrayNonAlloc[1] = transform.TransformPoint(vertices[triangles[i + 1]]);
+                ArrayNonAlloc[2] = transform.TransformPoint(vertices[triangles[i + 2]]);
+                ArrayNonAlloc[3] = ArrayNonAlloc[0];
 
-                Send(list, duration, color, ArrayNonAlloc17, 4);
+                Send(list, duration, color, ArrayNonAlloc, 4);
             }
 
             ListPool<Player>.Pool.Return(list);
@@ -281,29 +281,29 @@ namespace Exiled.API.Features
             float length = extents.z;
             float height = extents.y;
 
-            ArrayNonAlloc17[0] = center + (rotation * new Vector3(-width, -height, -length));
-            ArrayNonAlloc17[1] = center + (rotation * new Vector3(width, -height, -length));
-            ArrayNonAlloc17[2] = center + (rotation * new Vector3(width, -height, length));
-            ArrayNonAlloc17[3] = center + (rotation * new Vector3(-width, -height, length));
-            ArrayNonAlloc17[4] = ArrayNonAlloc17[0];
+            ArrayNonAlloc[0] = center + (rotation * new Vector3(-width, -height, -length));
+            ArrayNonAlloc[1] = center + (rotation * new Vector3(width, -height, -length));
+            ArrayNonAlloc[2] = center + (rotation * new Vector3(width, -height, length));
+            ArrayNonAlloc[3] = center + (rotation * new Vector3(-width, -height, length));
+            ArrayNonAlloc[4] = ArrayNonAlloc[0];
 
-            ArrayNonAlloc17[5] = center + (rotation * new Vector3(-width, height, -length));
-            ArrayNonAlloc17[6] = center + (rotation * new Vector3(width, height, -length));
-            ArrayNonAlloc17[7] = center + (rotation * new Vector3(width, height, length));
-            ArrayNonAlloc17[8] = center + (rotation * new Vector3(-width, height, length));
-            ArrayNonAlloc17[9] = ArrayNonAlloc17[5];
+            ArrayNonAlloc[5] = center + (rotation * new Vector3(-width, height, -length));
+            ArrayNonAlloc[6] = center + (rotation * new Vector3(width, height, -length));
+            ArrayNonAlloc[7] = center + (rotation * new Vector3(width, height, length));
+            ArrayNonAlloc[8] = center + (rotation * new Vector3(-width, height, length));
+            ArrayNonAlloc[9] = ArrayNonAlloc[5];
 
             // reduce enumeration
             List<Player> list = ListPool<Player>.Pool.Get(players);
 
-            Send(list, duration, color, ArrayNonAlloc17, 5);
-            Send(list, duration, color, ArrayNonAlloc17, 5, 5);
+            Send(list, duration, color, ArrayNonAlloc, 5);
+            Send(list, duration, color, ArrayNonAlloc, 5, 5);
 
             for (int i = 0; i < 4; i++)
             {
-                ArrayNonAlloc17[10] = ArrayNonAlloc17[i];
-                ArrayNonAlloc17[11] = ArrayNonAlloc17[i + 5];
-                Send(list, duration, color, ArrayNonAlloc17, 2, 10);
+                ArrayNonAlloc[10] = ArrayNonAlloc[i];
+                ArrayNonAlloc[11] = ArrayNonAlloc[i + 5];
+                Send(list, duration, color, ArrayNonAlloc, 2, 10);
             }
 
             ListPool<Player>.Pool.Return(list);
@@ -317,7 +317,7 @@ namespace Exiled.API.Features
             if (segments % 2 != 0)
                 segments++;
 
-            Vector3[] array = segments < 17 ? ArrayNonAlloc17 : new Vector3[segments + 1];
+            Vector3[] array = segments < 17 ? ArrayNonAlloc : new Vector3[segments + 1];
             float num = MathF.PI * 2f / (float)segments;
 
             for (int i = 0; i < segments; i++)
@@ -335,7 +335,7 @@ namespace Exiled.API.Features
 
         private static Vector3[] GetArcPoints(Vector3 origin, Quaternion rotation, Vector3 scale, float angle, int segments = 8)
         {
-            Vector3[] array = segments < 17 ? ArrayNonAlloc17 : new Vector3[segments + 1];
+            Vector3[] array = segments < 17 ? ArrayNonAlloc : new Vector3[segments + 1];
             float angleStep = (angle * Mathf.Deg2Rad) / segments;
 
             for (int i = 0; i <= segments; i++)
