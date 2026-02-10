@@ -70,13 +70,7 @@ namespace Exiled.API.Features
         /// <param name="segments">The number of line segments used to draw the circle. Higher values result in a smoother circle.</param>
         public static void Circle(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, bool horizontal = true, int segments = 16)
         {
-            if (segments <= 5)
-                segments = 8;
-
-            if (segments % 2 != 0)
-                segments++;
-
-            Vector3[] circlePoints = GetCirclePoints(origin, rotation, scale, segments, horizontal);
+            Vector3[] circlePoints = GetCirclePoints(origin, rotation, scale, ref segments, horizontal);
             Send(players, duration, color, circlePoints, segments);
         }
 
@@ -92,18 +86,12 @@ namespace Exiled.API.Features
         /// <param name="segments">The number of segments for the circles. Higher values result in a smoother sphere.</param>
         public static void Sphere(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, int segments = 16)
         {
-            if (segments <= 5)
-                segments = 8;
-
-            if (segments % 2 != 0)
-                segments++;
-
             List<Player> list = ListPool<Player>.Pool.Get(players);
 
-            Vector3[] horizontal = GetCirclePoints(origin, rotation, scale, segments, true);
+            Vector3[] horizontal = GetCirclePoints(origin, rotation, scale, ref segments, true);
             Send(list, duration, color, horizontal, segments);
 
-            Vector3[] vertical = GetCirclePoints(origin, rotation, scale, segments, false);
+            Vector3[] vertical = GetCirclePoints(origin, rotation, scale, ref segments, false);
             Send(list, duration, color, vertical, segments);
 
             ListPool<Player>.Pool.Return(list);
@@ -321,8 +309,14 @@ namespace Exiled.API.Features
             ListPool<Player>.Pool.Return(list);
         }
 
-        private static Vector3[] GetCirclePoints(Vector3 origin, Quaternion rotation, Vector3 scale, int segments, bool horizontal)
+        private static Vector3[] GetCirclePoints(Vector3 origin, Quaternion rotation, Vector3 scale, ref int segments, bool horizontal)
         {
+            if (segments <= 5)
+                segments = 8;
+
+            if (segments % 2 != 0)
+                segments++;
+
             Vector3[] array = segments < 17 ? ArrayNonAlloc17 : new Vector3[segments + 1];
             float num = MathF.PI * 2f / (float)segments;
 
