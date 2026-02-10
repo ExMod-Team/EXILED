@@ -27,7 +27,7 @@ namespace Exiled.API.Features
     public static class Draw
     {
         // smallest array that fits the largest default segment (17 for sphere)
-        private static readonly Vector3[] ArrayNonAlloc17 = new Vector3[5];
+        private static readonly Vector3[] ArrayNonAlloc17 = new Vector3[17];
 
         /// <summary>
         /// Draws a line between two specified points.
