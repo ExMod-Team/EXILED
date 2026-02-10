@@ -8,9 +8,12 @@
 namespace Exiled.API.Features
 {
     using System;
+    using System.Buffers;
     using System.Collections.Generic;
 
     using DrawableLine;
+
+    using Exiled.API.Features.Pools;
 
     using Mirror;
 
@@ -23,6 +26,9 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Draw
     {
+        // smallest array that fits the largest default segment (17 for sphere)
+        private static readonly Vector3[] ArrayNonAlloc17 = new Vector3[5];
+
         /// <summary>
         /// Draws a line between two specified points.
         /// </summary>
@@ -33,7 +39,10 @@ namespace Exiled.API.Features
         /// <param name="players">A collection of <see cref="Player"/>s to show the line to.</param>
         public static void Line(Vector3 start, Vector3 end, Color color, float duration, IEnumerable<Player> players = null)
         {
-            Send(players, duration, color, start, end);
+            ArrayNonAlloc17[0] = start;
+            ArrayNonAlloc17[1] = end;
+
+            Send(players, duration, color, ArrayNonAlloc17, 2);
         }
 
         /// <summary>
@@ -77,11 +86,15 @@ namespace Exiled.API.Features
         /// <param name="segments">The number of segments for the circles. Higher values result in a smoother sphere.</param>
         public static void Sphere(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, int segments = 16)
         {
+            List<Player> list = ListPool<Player>.Pool.Get(players);
+
             Vector3[] horizontal = GetCirclePoints(origin, rotation, scale, segments, true);
-            Send(players, duration, color, horizontal);
+            Send(list, duration, color, horizontal, segments);
 
             Vector3[] vertical = GetCirclePoints(origin, rotation, scale, segments, false);
-            Send(players, duration, color, vertical);
+            Send(list, duration, color, vertical, segments);
+
+            ListPool<Player>.Pool.Return(list);
         }
 
         /// <summary>
@@ -199,24 +212,28 @@ namespace Exiled.API.Features
             Vector3 bottomCenter = center - (up * halfCylinderHeight);
 
             Vector3 ringScale = new(radius * sX, 1f, radius * sZ);
-            Circle(topCenter, rotation, ringScale, color, duration, players, horizontal: true);
-            Circle(bottomCenter, rotation, ringScale, color, duration, players, horizontal: true);
+
+            List<Player> list = ListPool<Player>.Pool.Get(players);
+
+            Circle(topCenter, rotation, ringScale, color, duration, list);
+            Circle(bottomCenter, rotation, ringScale, color, duration, list);
 
             float rX = radius * sX;
-            Line(topCenter + (right * rX), bottomCenter + (right * rX), color, duration, players);
-            Line(topCenter - (right * rX), bottomCenter - (right * rX), color, duration, players);
+            Line(topCenter + (right * rX), bottomCenter + (right * rX), color, duration, list);
+            Line(topCenter - (right * rX), bottomCenter - (right * rX), color, duration, list);
 
             float rZ = radius * sZ;
-            Line(topCenter + (forward * rZ), bottomCenter + (forward * rZ), color, duration, players);
-            Line(topCenter - (forward * rZ), bottomCenter - (forward * rZ), color, duration, players);
+            Line(topCenter + (forward * rZ), bottomCenter + (forward * rZ), color, duration, list);
+            Line(topCenter - (forward * rZ), bottomCenter - (forward * rZ), color, duration, list);
 
             Vector3 arcScaleSide = new(radius * sZ, radius * sY, 1f);
             Vector3 arcScaleFront = new(radius * sX, radius * sY, 1f);
 
-            Send(players, duration, color, GetArcPoints(topCenter, rotation, arcScaleSide, 180f));
-            Send(players, duration, color, GetArcPoints(topCenter, rotation * Quaternion.Euler(0, 90, 0), arcScaleFront, 180f));
-            Send(players, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 0, 0), arcScaleSide, 180f));
-            Send(players, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 90, 0), arcScaleFront, 180f));
+            const int segments = 8;
+            Send(list, duration, color, GetArcPoints(topCenter, rotation, arcScaleSide, 180f, segments), segments);
+            Send(list, duration, color, GetArcPoints(topCenter, rotation * Quaternion.Euler(0, 90, 0), arcScaleFront, 180f, segments), segments);
+            Send(list, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 0, 0), arcScaleSide, 180f, segments), segments);
+            Send(list, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 90, 0), arcScaleFront, 180f, segments), segments);
         }
 
         /// <summary>
@@ -232,14 +249,19 @@ namespace Exiled.API.Features
             int[] triangles = mesh.triangles;
             Vector3[] vertices = mesh.vertices;
 
+            List<Player> list = ListPool<Player>.Pool.Get(players);
+
             for (int i = 0; i < triangles.Length; i += 3)
             {
-                Vector3 p1 = transform.TransformPoint(vertices[triangles[i]]);
-                Vector3 p2 = transform.TransformPoint(vertices[triangles[i + 1]]);
-                Vector3 p3 = transform.TransformPoint(vertices[triangles[i + 2]]);
+                ArrayNonAlloc17[0] = transform.TransformPoint(vertices[triangles[i]]);
+                ArrayNonAlloc17[1] = transform.TransformPoint(vertices[triangles[i + 1]]);
+                ArrayNonAlloc17[2] = transform.TransformPoint(vertices[triangles[i + 2]]);
+                ArrayNonAlloc17[3] = ArrayNonAlloc17[0];
 
-                Path([p1, p2, p3, p1], color, duration, players);
+                Send(list, duration, color, ArrayNonAlloc17, 4);
             }
+
+            ListPool<Player>.Pool.Return(list);
         }
 
         /// <summary>
@@ -259,28 +281,32 @@ namespace Exiled.API.Features
             float length = extents.z;
             float height = extents.y;
 
-            Vector3[] bottomRect = new Vector3[5];
-            Vector3[] topRect = new Vector3[5];
+            ArrayNonAlloc17[0] = center + (rotation * new Vector3(-width, -height, -length));
+            ArrayNonAlloc17[1] = center + (rotation * new Vector3(width, -height, -length));
+            ArrayNonAlloc17[2] = center + (rotation * new Vector3(width, -height, length));
+            ArrayNonAlloc17[3] = center + (rotation * new Vector3(-width, -height, length));
+            ArrayNonAlloc17[4] = ArrayNonAlloc17[0];
 
-            bottomRect[0] = center + (rotation * new Vector3(-width, -height, -length));
-            bottomRect[1] = center + (rotation * new Vector3(width, -height, -length));
-            bottomRect[2] = center + (rotation * new Vector3(width, -height, length));
-            bottomRect[3] = center + (rotation * new Vector3(-width, -height, length));
-            bottomRect[4] = bottomRect[0];
+            ArrayNonAlloc17[5] = center + (rotation * new Vector3(-width, height, -length));
+            ArrayNonAlloc17[6] = center + (rotation * new Vector3(width, height, -length));
+            ArrayNonAlloc17[7] = center + (rotation * new Vector3(width, height, length));
+            ArrayNonAlloc17[8] = center + (rotation * new Vector3(-width, height, length));
+            ArrayNonAlloc17[9] = ArrayNonAlloc17[5];
 
-            topRect[0] = center + (rotation * new Vector3(-width, height, -length));
-            topRect[1] = center + (rotation * new Vector3(width, height, -length));
-            topRect[2] = center + (rotation * new Vector3(width, height, length));
-            topRect[3] = center + (rotation * new Vector3(-width, height, length));
-            topRect[4] = topRect[0];
+            // reduce enumeration
+            List<Player> list = ListPool<Player>.Pool.Get(players);
 
-            Send(players, duration, color, bottomRect);
-            Send(players, duration, color, topRect);
+            Send(list, duration, color, ArrayNonAlloc17, 5);
+            Send(list, duration, color, ArrayNonAlloc17, 5, 5);
 
             for (int i = 0; i < 4; i++)
             {
-                Send(players, duration, color, bottomRect[i], topRect[i]);
+                ArrayNonAlloc17[10] = ArrayNonAlloc17[i];
+                ArrayNonAlloc17[11] = ArrayNonAlloc17[i + 5];
+                Send(list, duration, color, ArrayNonAlloc17, 2, 10);
             }
+
+            ListPool<Player>.Pool.Return(list);
         }
 
         private static Vector3[] GetCirclePoints(Vector3 origin, Quaternion rotation, Vector3 scale, int segments, bool horizontal)
@@ -291,7 +317,7 @@ namespace Exiled.API.Features
             if (segments % 2 != 0)
                 segments++;
 
-            Vector3[] array = new Vector3[segments + 1];
+            Vector3[] array = segments < 17 ? ArrayNonAlloc17 : new Vector3[segments + 1];
             float num = MathF.PI * 2f / (float)segments;
 
             for (int i = 0; i < segments; i++)
@@ -309,7 +335,7 @@ namespace Exiled.API.Features
 
         private static Vector3[] GetArcPoints(Vector3 origin, Quaternion rotation, Vector3 scale, float angle, int segments = 8)
         {
-            Vector3[] array = new Vector3[segments + 1];
+            Vector3[] array = segments < 17 ? ArrayNonAlloc17 : new Vector3[segments + 1];
             float angleStep = (angle * Mathf.Deg2Rad) / segments;
 
             for (int i = 0; i <= segments; i++)
@@ -324,27 +350,38 @@ namespace Exiled.API.Features
             return array;
         }
 
-        private static void Send(IEnumerable<Player> players, float duration, Color color, params Vector3[] points)
+        private static void Send(IEnumerable<Player> players, float duration, Color color, Vector3[] points, int? count = null, int offset = 0)
         {
-            if (points == null || points.Length < 2)
+            if (points == null || points.Length - offset < 2 || (count ??= points.Length) - offset < 2)
                 return;
 
-            DrawableLineMessage msg = new(duration, color, points);
+            ArraySegment<byte> data;
+            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            {
+                writer.WriteUShort((ushort)typeof(DrawableLineMessage).FullName.GetStableHashCode());
+                writer.WriteFloatNullable(duration);
+                writer.WriteColorNullable(color);
+                for (int i = offset; i < count + offset; i++)
+                    writer.Write(points[i]);
+                data = writer.ToArraySegment();
+            }
 
             if (players != null)
             {
-                using NetworkWriterPooled writer = NetworkWriterPool.Get();
-                NetworkMessages.Pack(msg, writer);
-                ArraySegment<byte> segment = writer.ToArraySegment();
-
                 foreach (Player ply in players)
                 {
-                    ply?.Connection.Send(segment);
+                    ply.Connection.Send(data);
                 }
             }
             else
             {
-                NetworkServer.SendToReady(msg);
+                foreach (NetworkConnectionToClient connectionToClient in NetworkServer.connections.Values)
+                {
+                    if (connectionToClient.isReady)
+                    {
+                        connectionToClient.Send(data);
+                    }
+                }
             }
         }
     }
