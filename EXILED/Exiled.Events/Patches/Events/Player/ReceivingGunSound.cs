@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             if (displayClassType == null || displayClassTypeForeach == null)
             {
-                Log.Error("`<>c__DisplayClass31` _1, _0 or CS$<>8__locals1 cannot found on ReceivingGunSound class. Class changed skipping patch.");
+                Log.Error("`<>c__DisplayClass31` _1 or _0 cannot found on ReceivingGunSound class. Class changed skipping patch.");
                 return false;
             }
 
