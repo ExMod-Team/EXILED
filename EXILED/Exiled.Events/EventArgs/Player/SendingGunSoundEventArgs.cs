@@ -28,7 +28,8 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="mixerChannel">The audio mixer channel.</param>
         /// <param name="range">The audible range of the sound.</param>
         /// <param name="pitch">The pitch of the sound.</param>
-        public SendingGunSoundEventArgs(InventorySystem.Items.Firearms.Firearm firearm, int audioIndex, MixerChannel mixerChannel, float range, float pitch)
+        /// <param name="ownPos">The audio owner position.</param>
+        public SendingGunSoundEventArgs(InventorySystem.Items.Firearms.Firearm firearm, int audioIndex, MixerChannel mixerChannel, float range, float pitch, Vector3 ownPos)
         {
             Firearm = Item.Get<Firearm>(firearm);
             Player = Firearm.Owner;
@@ -36,6 +37,7 @@ namespace Exiled.Events.EventArgs.Player
             Pitch = pitch;
             AudioIndex = audioIndex;
             MixerChannel = mixerChannel;
+            SendingPosition = ownPos;
         }
 
         /// <summary>
@@ -70,6 +72,11 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets the pitch of the gun sound.
         /// </summary>
         public float Pitch { get; set; }
+
+        /// <summary>
+        /// Gets or sets the virtual origin point used(Only will work when this player not visible for sending player).
+        /// </summary>
+        public Vector3 SendingPosition { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the gun sound should be sent.

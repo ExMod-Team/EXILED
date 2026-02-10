@@ -74,7 +74,11 @@ namespace Exiled.Events.Patches.Events.Player
                     // pitch
                     new(OpCodes.Ldarg_S, 4),
 
-                    // new(firearm, audioIndex, mixerChannel, range, pitch)
+                    // ownPos
+                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Ldfld, Field(displayClassType, "ownPos")),
+
+                    // new(firearm, audioIndex, mixerChannel, range, pitch, ownPos)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SendingGunSoundEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -117,7 +121,13 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.Pitch))),
-                    new CodeInstruction(OpCodes.Stfld, Field(displayClassType, "pitch")),
+                    new(OpCodes.Stfld, Field(displayClassType, "pitch")),
+
+                    // ownPos = ev.SendingPosition;
+                    new(OpCodes.Ldloc_0),
+                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SendingGunSoundEventArgs), nameof(SendingGunSoundEventArgs.SendingPosition))),
+                    new CodeInstruction(OpCodes.Stfld, Field(displayClassType, "ownPos")),
                 ]);
 
             newInstructions[^1].WithLabels(ret);

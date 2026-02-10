@@ -30,7 +30,9 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="mixerChannel">The audio mixer channel.</param>
         /// <param name="range">The audible range of the sound.</param>
         /// <param name="pitch">The pitch of the sound.</param>
-        public ReceivingGunSoundEventArgs(ReferenceHub hub, InventorySystem.Items.Firearms.Firearm firearm, int audioIndex, MixerChannel mixerChannel, float range, float pitch)
+        /// <param name="ownPos">The audio owner position.</param>
+        /// <param name="isSenderVisible">The audio owner is visible for this player.</param>
+        public ReceivingGunSoundEventArgs(ReferenceHub hub, InventorySystem.Items.Firearms.Firearm firearm, int audioIndex, MixerChannel mixerChannel, float range, float pitch, Vector3 ownPos, bool isSenderVisible)
         {
             Player = Player.Get(hub);
             Firearm = Item.Get<Firearm>(firearm);
@@ -39,6 +41,8 @@ namespace Exiled.Events.EventArgs.Player
             Pitch = pitch;
             AudioIndex = audioIndex;
             MixerChannel = mixerChannel;
+            SenderPosition = ownPos;
+            SenderVisible = isSenderVisible;
         }
 
         /// <summary>
@@ -78,6 +82,16 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets the pitch of the gun sound.
         /// </summary>
         public float Pitch { get; set; }
+
+        /// <summary>
+        /// Gets or sets the virtual origin point used(Only works when SenderVisible is false).
+        /// </summary>
+        public Vector3 SenderPosition { get; set; }
+
+        /// <summary>
+        /// Gets a value indicating whether Sender is visible for this player.
+        /// </summary>
+        public bool SenderVisible { get; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the gun sound should be sent.

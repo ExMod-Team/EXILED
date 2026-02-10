@@ -47,7 +47,7 @@ namespace Exiled.Events.Patches.Events.Player
 
             if (displayClassType == null || displayClassTypeForeach == null)
             {
-                Log.Error("`<>c__DisplayClass31` _1, _0 or CS$<>8__locals1 cannot found on ReceivingGunSound class. Class changed skipping patch.");
+                Log.Error("`<>c__DisplayClass31` _1 or _0 cannot found on ReceivingGunSound class. Class changed skipping patch.");
                 return false;
             }
 
@@ -61,6 +61,9 @@ namespace Exiled.Events.Patches.Events.Player
             LocalBuilder ev = generator.DeclareLocal(typeof(ReceivingGunSoundEventArgs));
 
             Label ret = generator.DefineLabel();
+
+            int offset = 1;
+            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Stloc_0) + offset;
 
             newInstructions.InsertRange(
                 0,
@@ -91,13 +94,20 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldfld, Field(displayClassTypeForeach, "CS$<>8__locals1")),
                     new(OpCodes.Ldfld, Field(displayClassType, "audioRange")),
 
-                    // pitch
                     // this.locals1.pitch
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(displayClassTypeForeach, "CS$<>8__locals1")),
                     new(OpCodes.Ldfld, Field(displayClassType, "pitch")),
 
-                    // new(receiver, firearm, audioIndex, mixerChannel, range, pitch)
+                    // this.locals1.ownPos
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldfld, Field(displayClassTypeForeach, "CS$<>8__locals1")),
+                    new(OpCodes.Ldfld, Field(displayClassType, "ownPos")),
+
+                    // visibility flag
+                    new(OpCodes.Ldloc_0),
+
+                    // new(receiver, firearm, audioIndex, mixerChannel, range, pitch, ownPos, isSenderVisible)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReceivingGunSoundEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
@@ -112,11 +122,11 @@ namespace Exiled.Events.Patches.Events.Player
                     new CodeInstruction(OpCodes.Brfalse_S, ret),
                 ]);
 
+            offset = -2;
             const int count = 3;
-            const int offset = -2;
 
             // index = ev.AudioIndex;
-            int index = newInstructions.FindLastIndex(x => x.LoadsField(Field(displayClassType, "index"))) + offset;
+            index = newInstructions.FindLastIndex(x => x.LoadsField(Field(displayClassType, "index"))) + offset;
             newInstructions.RemoveRange(index, count);
             newInstructions.InsertRange(
                 index,
@@ -153,6 +163,16 @@ namespace Exiled.Events.Patches.Events.Player
                 [
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingGunSoundEventArgs), nameof(ReceivingGunSoundEventArgs.Range))),
+                ]);
+
+            // ownPos = ev.SenderPosition;
+            index = newInstructions.FindLastIndex(x => x.LoadsField(Field(displayClassType, "ownPos"))) + offset;
+            newInstructions.RemoveRange(index, count);
+            newInstructions.InsertRange(
+                index,
+                [
+                    new(OpCodes.Ldloc, ev.LocalIndex),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingGunSoundEventArgs), nameof(ReceivingGunSoundEventArgs.SenderPosition))),
                 ]);
 
             newInstructions[^1].WithLabels(ret);
