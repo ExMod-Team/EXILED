@@ -34,7 +34,9 @@ namespace Exiled.API.Interfaces
                 return;
 
             if (NetworkServer.spawned.ContainsKey(PositionSync.netId))
-                NetworkServer.UnSpawn(PositionSync.gameObject);
+                return;
+
+            NetworkServer.UnSpawn(PositionSync.gameObject);
 
             NetworkServer.Spawn(PositionSync.gameObject);
         }
