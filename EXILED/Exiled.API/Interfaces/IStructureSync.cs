@@ -33,7 +33,7 @@ namespace Exiled.API.Interfaces
             if (this is Features.Lockers.Locker { Type: LockerType.MicroHid })
                 return;
 
-            if (NetworkServer.spawned.ContainsKey(PositionSync.netId))
+            if (!NetworkServer.spawned.ContainsKey(PositionSync.netId))
                 return;
 
             NetworkServer.UnSpawn(PositionSync.gameObject);
