@@ -70,8 +70,7 @@ namespace Exiled.API.Features
         /// <param name="segments">The number of line segments used to draw the circle. Higher values result in a smoother circle.</param>
         public static void Circle(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, bool horizontal = true, int segments = 16)
         {
-            Vector3[] circlePoints = GetCirclePoints(origin, rotation, scale, ref segments, horizontal);
-            Send(players, duration, color, circlePoints, segments);
+            Send(players, duration, color, GetCirclePoints(origin, rotation, scale, ref segments, horizontal), segments);
         }
 
         /// <summary>
@@ -88,11 +87,11 @@ namespace Exiled.API.Features
         {
             List<Player> list = ListPool<Player>.Pool.Get(players);
 
-            Vector3[] horizontal = GetCirclePoints(origin, rotation, scale, ref segments, true);
-            Send(list, duration, color, horizontal, segments);
+            Vector3[] array = GetCirclePoints(origin, rotation, scale, ref segments, true);
+            Send(list, duration, color, array, segments);
 
-            Vector3[] vertical = GetCirclePoints(origin, rotation, scale, ref segments, false);
-            Send(list, duration, color, vertical, segments);
+            array = GetCirclePoints(origin, rotation, scale, ref segments, false);
+            Send(list, duration, color, array, segments);
 
             ListPool<Player>.Pool.Return(list);
         }
