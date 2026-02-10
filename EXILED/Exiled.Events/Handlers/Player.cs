@@ -284,10 +284,10 @@ namespace Exiled.Events.Handlers
         /// </summary>
         public static Event<SendingGunSoundEventArgs> SendingGunSound { get; set; } = new();
 
-        /*// <summary>
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> receives a gun sound.
         /// </summary>
-        public static Event<ReceivingGunSoundEventArgs> ReceivingGunSound { get; set; } = new();*/
+        public static Event<ReceivingGunSoundEventArgs> ReceivingGunSound { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> enters the pocket dimension.
@@ -916,11 +916,11 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="SendingGunSoundEventArgs"/> instance.</param>
         public static void OnSendingGunSound(SendingGunSoundEventArgs ev) => SendingGunSound.InvokeSafely(ev);
 
-        /*// <summary>
+        /// <summary>
         /// Called when a <see cref="API.Features.Player"/> receives a gun sound.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingGunSoundEventArgs"/> instance.</param>
-        public static void OnReceivingGunSound(ReceivingGunShotSoundEventArgs ev) => ReceivingGunSound.InvokeSafely(ev);*/
+        public static void OnReceivingGunSound(ReceivingGunSoundEventArgs ev) => ReceivingGunSound.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> enters the pocket dimension.

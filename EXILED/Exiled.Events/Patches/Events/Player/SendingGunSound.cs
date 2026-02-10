@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="GunSound.cs" company="ExMod Team">
+// <copyright file="SendingGunSound.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -23,24 +23,23 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches AudioModule.ServerSendToNearbyPlayers to add <see cref="Handlers.Player.SendingGunSound" /> and.
+    /// Patches AudioModule.ServerSendToNearbyPlayers to add <see cref="Handlers.Player.SendingGunSound" /> event.
     /// </summary>
-    // <see cref="Handlers.Player.ReceivingGunSound" /> events.
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.SendingGunSound))]
-
-    // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingGunSound))]
     [HarmonyPatch(typeof(AudioModule), nameof(AudioModule.ServerSendToNearbyPlayers))]
-    public class GunSound
+    public class SendingGunSound
     {
         private static Type displayClassType;
+        private static Type displayClassTypeForeach;
 
         private static bool Prepare()
         {
             displayClassType = Inner(typeof(AudioModule), "<>c__DisplayClass31_0");
+            displayClassTypeForeach = Inner(typeof(AudioModule), "<>c__DisplayClass31_1");
 
-            if (displayClassType == null)
+            if (displayClassType == null || displayClassTypeForeach == null)
             {
-                Log.Error("<>c__DisplayClass31_0 cannot found on GunSound class.");
+                Log.Error("`<>c__DisplayClass31` _1 or _0 cannot found on GunSound class. Class changed skipping patch.");
                 return false;
             }
 
