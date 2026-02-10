@@ -102,12 +102,14 @@ namespace Exiled.API.Features
             if (!TryGetPrefab(prefabType, out GameObject gameObject))
                 return null;
 
-            GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation ?? Quaternion.identity);
+            rotation ??= Quaternion.identity;
+
+            GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation.Value);
 
             if (newGameObject.TryGetComponent(out StructurePositionSync positionSync))
             {
                 positionSync.Network_position = position;
-                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt((rotation ?? Quaternion.identity).eulerAngles.y / 5.625F);
+                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / 5.625F);
             }
 
             NetworkServer.Spawn(newGameObject);
