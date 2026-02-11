@@ -93,7 +93,8 @@ namespace Exiled.API.Features
             array = GetCirclePoints(origin, rotation, scale, ref segments, false);
             Send(list, duration, color, array, segments);
 
-            ListPool<Player>.Pool.Return(list);
+            if (list != null)
+                ListPool<Player>.Pool.Return(list);
         }
 
         /// <summary>
@@ -233,6 +234,9 @@ namespace Exiled.API.Features
             Send(list, duration, color, GetArcPoints(topCenter, rotation * Quaternion.Euler(0, 90, 0), arcScaleFront, 180f, segments), segments);
             Send(list, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 0, 0), arcScaleSide, 180f, segments), segments);
             Send(list, duration, color, GetArcPoints(bottomCenter, rotation * Quaternion.Euler(180, 90, 0), arcScaleFront, 180f, segments), segments);
+
+            if (list != null)
+                ListPool<Player>.Pool.Return(list);
         }
 
         /// <summary>
@@ -260,7 +264,8 @@ namespace Exiled.API.Features
                 Send(list, duration, color, ArrayNonAlloc, 4);
             }
 
-            ListPool<Player>.Pool.Return(list);
+            if (list != null)
+                ListPool<Player>.Pool.Return(list);
         }
 
         /// <summary>
@@ -305,7 +310,8 @@ namespace Exiled.API.Features
                 Send(list, duration, color, ArrayNonAlloc, 2, 10);
             }
 
-            ListPool<Player>.Pool.Return(list);
+            if (list != null)
+                ListPool<Player>.Pool.Return(list);
         }
 
         private static Vector3[] GetCirclePoints(Vector3 origin, Quaternion rotation, Vector3 scale, ref int segments, bool horizontal)
