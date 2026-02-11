@@ -85,7 +85,7 @@ namespace Exiled.API.Features
         /// <param name="segments">The number of segments for the circles. Higher values result in a smoother sphere.</param>
         public static void Sphere(Vector3 origin, Quaternion rotation, Vector3 scale, Color color, float duration, IEnumerable<Player> players = null, int segments = 16)
         {
-            List<Player> list = ListPool<Player>.Pool.Get(players);
+            List<Player> list = players is null ? null : ListPool<Player>.Pool.Get(players);
 
             Vector3[] array = GetCirclePoints(origin, rotation, scale, ref segments, true);
             Send(list, duration, color, array, segments);
@@ -212,7 +212,7 @@ namespace Exiled.API.Features
 
             Vector3 ringScale = new(radius * sX, 1f, radius * sZ);
 
-            List<Player> list = ListPool<Player>.Pool.Get(players);
+            List<Player> list = players is null ? null : ListPool<Player>.Pool.Get(players);
 
             Circle(topCenter, rotation, ringScale, color, duration, list);
             Circle(bottomCenter, rotation, ringScale, color, duration, list);
@@ -248,7 +248,7 @@ namespace Exiled.API.Features
             int[] triangles = mesh.triangles;
             Vector3[] vertices = mesh.vertices;
 
-            List<Player> list = ListPool<Player>.Pool.Get(players);
+            List<Player> list = players is null ? null : ListPool<Player>.Pool.Get(players);
 
             for (int i = 0; i < triangles.Length; i += 3)
             {
@@ -293,7 +293,7 @@ namespace Exiled.API.Features
             ArrayNonAlloc[9] = ArrayNonAlloc[5];
 
             // reduce enumeration
-            List<Player> list = ListPool<Player>.Pool.Get(players);
+            List<Player> list = players is null ? null : ListPool<Player>.Pool.Get(players);
 
             Send(list, duration, color, ArrayNonAlloc, 5);
             Send(list, duration, color, ArrayNonAlloc, 5, 5);
