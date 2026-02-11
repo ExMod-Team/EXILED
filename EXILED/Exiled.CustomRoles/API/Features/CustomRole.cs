@@ -699,7 +699,7 @@ namespace Exiled.CustomRoles.API.Features
             player.UniqueRole = string.Empty;
             player.TryRemoveCustomeRoleFriendlyFire(Name);
 
-            if (RemovalKillsPlayer)
+            if (RemovalKillsPlayer && player.Role.Type != RoleTypeId.Destroyed)
                 player.Role.Set(RoleTypeId.Spectator);
         }
 
