@@ -366,6 +366,7 @@ namespace Exiled.API.Features
                 writer.WriteUShort((ushort)typeof(DrawableLineMessage).FullName.GetStableHashCode());
                 writer.WriteFloatNullable(duration);
                 writer.WriteColorNullable(color);
+                writer.WriteInt(count);
                 for (int i = offset; i < count + offset; i++)
                     writer.Write(points[i]);
                 data = writer.ToArraySegment();
