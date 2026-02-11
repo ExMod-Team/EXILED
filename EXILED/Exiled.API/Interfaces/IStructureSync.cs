@@ -30,7 +30,7 @@ namespace Exiled.API.Interfaces
         public void Respawn()
         {
             // not a prefab so respawning will just permanently destroy it and second call will disconnect clients
-            if (this is Features.Lockers.Locker { Type: LockerType.MicroHid })
+            if (this is Features.Lockers.Locker { Type: LockerType.MicroHid or LockerType.Scp127Pedestal })
                 return;
 
             if (!NetworkServer.spawned.ContainsKey(PositionSync.netId))
