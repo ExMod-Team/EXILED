@@ -55,6 +55,5 @@ namespace Exiled.API.Enums
         InteractionMask = Default | Player | InteractableNoPlayerCollision | Hitbox | Glass | Door | Fence,
 
         InteractionAnticheatMask = Default | Glass | Door | InteractableNoPlayerCollision,
-
     }
 }
