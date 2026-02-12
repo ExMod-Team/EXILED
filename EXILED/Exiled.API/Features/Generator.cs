@@ -211,6 +211,7 @@ namespace Exiled.API.Features
             {
                 Base.transform.position = value;
                 PositionSync.Network_position = value;
+                ((IStructureSync)this).Respawn();
             }
         }
 
@@ -225,6 +226,7 @@ namespace Exiled.API.Features
             {
                 Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
                 PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
+                ((IStructureSync)this).Respawn();
             }
         }
 
