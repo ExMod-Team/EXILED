@@ -28,7 +28,7 @@ namespace Exiled.API.Enums
         TransparentFX = 1 << 1,
 
         /// <summary>
-        /// Quite as it's mean ignore Raycast
+        /// All colliders that ignore raycasts.
         /// </summary>
         IgnoreRaycast = 1 << 2,
         Water = 1 << 4,
@@ -36,7 +36,7 @@ namespace Exiled.API.Enums
         Player = 1 << 8,
 
         /// <summary>
-        /// All interactable.
+        /// All interactables.
         /// </summary>
         InteractableNoPlayerCollision = 1 << 9,
         Viewmodel = 1 << 10,
@@ -55,7 +55,7 @@ namespace Exiled.API.Enums
         Ragdoll = 1 << 17,
 
         /// <summary>
-        /// All Scp079 camera.
+        /// All Scp079 cameras.
         /// </summary>
         CCTV = 1 << 18,
         Grenade = 1 << 20,
@@ -63,17 +63,17 @@ namespace Exiled.API.Enums
         OnlyWorldCollision = 1 << 25,
 
         /// <summary>
-        /// All door.
+        /// All doors.
         /// </summary>
         Door = 1 << 27,
         Skybox = 1 << 28,
 
         /// <summary>
-        /// Can be seen and shoot through, but not walk through.
+        /// Can be seen and shoot through, but not walked through.
         /// </summary>
         Fence = 1 << 29,
 
-        // Custom layers use by SCP:SL
+        // Custom layers used by SCP:SL
         Scp173Teleport = Default | Water | UI | Door | Fence,
 
         Scp049Resurect = Default,
