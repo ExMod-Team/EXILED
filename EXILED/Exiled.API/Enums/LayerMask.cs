@@ -8,10 +8,7 @@
 namespace Exiled.API.Enums
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+
 #pragma warning disable SA1602 // Enumeration items should be documented
 #pragma warning disable CS1591
 
@@ -24,25 +21,56 @@ namespace Exiled.API.Enums
         All = -1,
         None = 0,
 
+        /// <summary>
+        /// Collides with everything.
+        /// </summary>
         Default = 1 << 0,
         TransparentFX = 1 << 1,
+
+        /// <summary>
+        /// Quite as it's mean ignore Raycast
+        /// </summary>
         IgnoreRaycast = 1 << 2,
         Water = 1 << 4,
         UI = 1 << 5,
         Player = 1 << 8,
+
+        /// <summary>
+        /// All interactable.
+        /// </summary>
         InteractableNoPlayerCollision = 1 << 9,
         Viewmodel = 1 << 10,
         RenderAfterFog = 1 << 12,
+
+        /// <summary>
+        /// Any Hitbox layer, including player.
+        /// </summary>
         Hitbox = 1 << 13,
+
+        /// <summary>
+        /// Can only be seen through.
+        /// </summary>
         Glass = 1 << 14,
         InvisibleCollider = 1 << 16,
         Ragdoll = 1 << 17,
+
+        /// <summary>
+        /// All Scp079 camera.
+        /// </summary>
         CCTV = 1 << 18,
         Grenade = 1 << 20,
         Phantom = 1 << 21,
         OnlyWorldCollision = 1 << 25,
+
+        /// <summary>
+        /// All door.
+        /// </summary>
         Door = 1 << 27,
         Skybox = 1 << 28,
+
+        /// <summary>
+        /// Can be seen and shoot through, but not walk through.
+        /// </summary>
         Fence = 1 << 29,
 
         // Custom layers use by SCP:SL
