@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="LayerMask.cs" company="ExMod Team">
+// <copyright file="LayerMasks.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -16,7 +16,7 @@ namespace Exiled.API.Enums
     /// All available LayerMasks.
     /// </summary>
     [Flags]
-    public enum LayerMask
+    public enum LayerMasks
     {
         All = -1,
         None = 0,
