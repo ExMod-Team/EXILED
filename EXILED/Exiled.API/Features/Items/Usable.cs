@@ -157,6 +157,17 @@ namespace Exiled.API.Features.Items
             UsableItemsController.ServerEmulateMessage(Serial, StatusMessage.StatusType.Start);
         }
 
+        /// <summary>
+        /// Forces the item to stop being used.
+        /// </summary>
+        /// <remarks>
+        /// The <see cref="Item.Owner"/> must be holding the item.
+        /// </remarks>
+        public virtual void StopUsing()
+        {
+            UsableItemsController.ServerEmulateMessage(Serial, StatusMessage.StatusType.Cancel);
+        }
+
         /// <inheritdoc/>
         internal override void ReadPickupInfoBefore(Pickup pickup)
         {
