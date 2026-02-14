@@ -292,6 +292,12 @@ namespace Exiled.API.Features.Lockers
         }
 
         /// <summary>
+        /// Returns the Door in a human-readable format.
+        /// </summary>
+        /// <returns>A string containing Door-related data.</returns>
+        public override string ToString() => $"({string.Join(",", AcceptableTypes)}) [{string.Join(",", ToBeSpawned)}] *{Cooldown}* ={IsOpen}=";
+
+        /// <summary>
         /// Gets the chamber by its <see cref="LockerChamber"/>.
         /// </summary>
         /// <param name="chamber"><see cref="LockerChamber"/>.</param>

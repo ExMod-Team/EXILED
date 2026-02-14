@@ -534,7 +534,15 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="position">The <see cref="Vector3"/> where the <see cref="CustomItem"/> will be spawned.</param>
         /// <param name="previousOwner">The <see cref="Pickup.PreviousOwner"/> of the item. Can be null.</param>
         /// <returns>The <see cref="Pickup"/> of the spawned <see cref="CustomItem"/>.</returns>
-        public virtual Pickup? Spawn(Vector3 position, Player? previousOwner = null) => Spawn(position, Item.Create(Type), previousOwner);
+        public virtual Pickup? Spawn(Vector3 position, Player? previousOwner = null)
+        {
+            Item item = Item.Create(Type);
+
+            Pickup? pickup = Spawn(position, item, previousOwner);
+
+            UnityEngine.Object.Destroy(item.Base);
+            return pickup;
+        }
 
         /// <summary>
         /// Spawns the <see cref="CustomItem"/> in a specific position.

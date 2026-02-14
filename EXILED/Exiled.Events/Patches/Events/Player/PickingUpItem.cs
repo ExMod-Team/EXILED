@@ -35,11 +35,7 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label retLabel = generator.DefineLabel();
             Label continueLabel = generator.DefineLabel();
-
-            LocalBuilder info = generator.DeclareLocal(typeof(PickupSyncInfo));
-            LocalBuilder ev = generator.DeclareLocal(typeof(PickingUpItemEventArgs));
 
             int offset = -4;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerPickingUpItemEventArgs))[0]) + offset;
@@ -64,39 +60,26 @@ namespace Exiled.Events.Patches.Events.Player
                     // PickingUpItemEventArgs ev = new(ReferenceHub, ItemPickupBase, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PickingUpItemEventArgs))[0]),
                     new(OpCodes.Dup),
-                    new(OpCodes.Stloc_S, ev.LocalIndex),
 
                     // Handlers.Player.OnPickingUpItem(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
-                    // if (ev.IsAllowed)
-                    //    goto continueLabel;
-                    new(OpCodes.Ldloc_S, ev.LocalIndex),
+                    // if (!ev.IsAllowed)
+                    //    TargetPickup.ServerHandleAbort(hub);
+                    //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
                     new(OpCodes.Brtrue_S, continueLabel),
 
-                    // PickupSyncInfo info = this.TargetPickup.Info;
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.TargetPickup))),
-                    new(OpCodes.Ldfld, Field(typeof(ItemPickupBase), nameof(ItemPickupBase.Info))),
-                    new(OpCodes.Stloc_S, info.LocalIndex),
 
-                    // info.InUse = false;
-                    new(OpCodes.Ldloca_S, info.LocalIndex),
-                    new(OpCodes.Ldc_I4_0),
-                    new(OpCodes.Callvirt, PropertySetter(typeof(PickupSyncInfo), nameof(PickupSyncInfo.InUse))),
-
-                    // this.TargetPickup.NetworkInfo = info
+                    // this.Hub
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.TargetPickup))),
-                    new(OpCodes.Ldloc_S, info.LocalIndex),
-                    new(OpCodes.Callvirt, PropertySetter(typeof(ItemPickupBase), nameof(ItemPickupBase.NetworkInfo))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.Hub))),
 
-                    // return
-                    new(OpCodes.Br_S, retLabel),
+                    new(OpCodes.Callvirt, Method(typeof(ItemPickupBase), nameof(ItemPickupBase.ServerHandleAbort))),
+                    new(OpCodes.Ret),
                 });
-
-            newInstructions[newInstructions.Count - 1].WithLabels(retLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

@@ -15,7 +15,7 @@ namespace Exiled.Events.EventArgs.Scp559
     /// <summary>
     /// Contains all information before a player interacts with SCP-559.
     /// </summary>
-    // [Obsolete("Only availaible for Christmas and AprilFools.")]
+    [Obsolete("Only availaible for Christmas and AprilFools.")]
     public class InteractingScp559EventArgs : IScp559Event, IDeniableEvent, IPlayerEvent
     {
         /// <summary>
