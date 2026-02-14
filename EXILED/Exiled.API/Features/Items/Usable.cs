@@ -146,6 +146,14 @@ namespace Exiled.API.Features.Items
             Base.Owner = oldOwner.ReferenceHub;
         }
 
+        /// <summary>
+        /// Forces the item to be used.
+        /// </summary>
+        public virtual void StartUsing()
+        {
+            UsableItemsController.ServerEmulateMessage(Serial, StatusMessage.StatusType.Start);
+        }
+
         /// <inheritdoc/>
         internal override void ReadPickupInfoBefore(Pickup pickup)
         {
