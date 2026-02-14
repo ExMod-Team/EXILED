@@ -18,7 +18,7 @@ namespace Exiled.API.Features
     /// <summary>
     /// Represents a cake.
     /// </summary>
-    // [Obsolete("Only availaible for Christmas and AprilFools.")]
+    [Obsolete("Only availaible for Christmas and AprilFools.")]
     public class Scp559 : IWrapper<Scp559Cake>, IPosition
     {
         /// <summary>

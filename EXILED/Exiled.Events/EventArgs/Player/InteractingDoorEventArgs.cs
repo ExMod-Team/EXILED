@@ -33,6 +33,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
+        /// <seealso cref="EventArgs.Item.KeycardInteractingEventArgs"/>
         public InteractingDoorEventArgs(Player player, DoorVariant door, byte colliderId, bool isAllowed)
         {
             Player = player;
