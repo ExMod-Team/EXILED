@@ -149,6 +149,9 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Forces the item to be used.
         /// </summary>
+        /// <remarks>
+        /// The <see cref="Item.Owner"/> must be holding the item.
+        /// </remarks>
         public virtual void StartUsing()
         {
             UsableItemsController.ServerEmulateMessage(Serial, StatusMessage.StatusType.Start);
