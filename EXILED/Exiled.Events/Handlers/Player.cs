@@ -5,6 +5,8 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Mirror;
+
 namespace Exiled.Events.Handlers
 {
     using System;
@@ -650,6 +652,11 @@ namespace Exiled.Events.Handlers
         /// Invoked after transmission has ended.
         /// </summary>
         public static Event<Scp1576TransmissionEndedEventArgs> Scp1576TransmissionEnded { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before <see cref="API.Features.Player"/>'s consumable activates effects.
+        /// </summary>
+        public static Event<ConsumableActivatingEffectsEventArgs> ConsumableActivatingEffects { get; set; } = new();
 
         /// <summary>
         /// Called before a player's emotion changed.
@@ -1434,5 +1441,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="Scp1576TransmissionEndedEventArgs"/> instance.</param>
         public static void OnScp1576TransmissionEnded(Scp1576TransmissionEndedEventArgs ev) => Scp1576TransmissionEnded.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before <see cref="API.Features.Player"/>'s consumable activates its effects.
+        /// </summary>
+        /// <param name="ev">The <see cref="ConsumableActivatingEffectsEventArgs"/> instance.</param>
+        public static void OnConsumableActivatingEffects(ConsumableActivatingEffectsEventArgs ev) => ConsumableActivatingEffects.InvokeSafely(ev);
     }
 }
