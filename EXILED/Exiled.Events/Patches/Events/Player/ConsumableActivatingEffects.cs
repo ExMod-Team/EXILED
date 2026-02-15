@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Exiled.API.Features;
-
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
@@ -21,7 +19,7 @@ namespace Exiled.Events.Patches.Events.Player
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// <see cref=""/>
+    /// Patches <see cref="Consumable.ActivateEffects"/> and adds <see cref="Handlers.Player.ConsumableActivatingEffects"/> event.
     /// </summary>
     [HarmonyPatch(typeof(Consumable), nameof(Consumable.ActivateEffects))]
     [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ConsumableActivatingEffects))]
@@ -68,7 +66,6 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Brtrue_S, continueLabel),
                 new(OpCodes.Ret),
             });
-
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

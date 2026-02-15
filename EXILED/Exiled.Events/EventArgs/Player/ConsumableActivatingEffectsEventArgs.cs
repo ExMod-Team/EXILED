@@ -1,4 +1,11 @@
-﻿namespace Exiled.Events.EventArgs.Player
+﻿// -----------------------------------------------------------------------
+// <copyright file="ConsumableActivatingEffectsEventArgs.cs" company="ExMod Team">
+// Copyright (c) ExMod Team. All rights reserved.
+// Licensed under the CC BY-SA 3.0 license.
+// </copyright>
+// -----------------------------------------------------------------------
+
+namespace Exiled.Events.EventArgs.Player
 {
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
@@ -24,7 +31,7 @@
         }
 
         /// <summary>
-        /// Gets the player that consumed the <see cref="Consumable"/>
+        /// Gets the player that consumed the <see cref="Consumable"/>.
         /// </summary>
         public API.Features.Player Player { get; }
 

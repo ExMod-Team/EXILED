@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using Mirror;
-
 namespace Exiled.Events.Handlers
 {
     using System;
