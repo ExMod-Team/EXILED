@@ -67,9 +67,13 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets a value indicating whether the item is currently being used.
+        /// Gets or sets a value indicating whether the item is currently being used.
         /// </summary>
-        public bool IsUsing => Base.IsUsing;
+        public bool IsUsing
+        {
+            get => Base.IsUsing;
+            set => UsableItemsController.ServerEmulateMessage(Serial, value ? StatusMessage.StatusType.Start : StatusMessage.StatusType.Cancel);
+        }
 
         /// <summary>
         /// Gets or sets how long it takes to use the item.
@@ -144,28 +148,6 @@ namespace Exiled.API.Features.Items
             typeof(UsableItemsController).InvokeStaticEvent(nameof(UsableItemsController.ServerOnUsingCompleted), new object[] { owner.ReferenceHub, Base });
 
             Base.Owner = oldOwner.ReferenceHub;
-        }
-
-        /// <summary>
-        /// Forces the item to be used.
-        /// </summary>
-        /// <remarks>
-        /// The <see cref="Item.Owner"/> must be holding the item.
-        /// </remarks>
-        public virtual void StartUsing()
-        {
-            UsableItemsController.ServerEmulateMessage(Serial, StatusMessage.StatusType.Start);
-        }
-
-        /// <summary>
-        /// Forces the item to stop being used.
-        /// </summary>
-        /// <remarks>
-        /// The <see cref="Item.Owner"/> must be holding the item.
-        /// </remarks>
-        public virtual void StopUsing()
-        {
-            UsableItemsController.ServerEmulateMessage(Serial, StatusMessage.StatusType.Cancel);
         }
 
         /// <inheritdoc/>
