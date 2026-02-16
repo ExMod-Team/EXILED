@@ -180,7 +180,7 @@ namespace Exiled.CustomItems.API.Features
 
             if (CanBeRemoveSafely)
             {
-                player.DisableEffect(EffectType.Blinded);
+                player.DisableEffect(EffectType.Blindness);
                 player.ReferenceHub?.DisableWearables(WearableElements.Scp1344Goggles);
             }
 
