@@ -77,8 +77,10 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                 {
                     coordinates.Add((byte)Mathf.Round(Mathf.Clamp01(coordinate) * 255f));
                 }
-
-                coordinates.Add(coordinate);
+                else
+                {
+                    coordinates.Add(coordinate);
+                }
             }
 
             object color = Activator.CreateInstance(type, coordinates.ToArray());
