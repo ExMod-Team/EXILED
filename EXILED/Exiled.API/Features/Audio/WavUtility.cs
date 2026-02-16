@@ -20,6 +20,8 @@ namespace Exiled.API.Features.Audio
     /// </summary>
     public static class WavUtility
     {
+        private const float Divide = 1f / 32768f;
+
         /// <summary>
         /// Converts a WAV file at the specified path to a PCM float array.
         /// </summary>
@@ -49,7 +51,7 @@ namespace Exiled.API.Features.Audio
                 float[] pcm = new float[samples.Length];
 
                 for (int i = 0; i < samples.Length; i++)
-                    pcm[i] = samples[i] / 32768f;
+                    pcm[i] = samples[i] * Divide;
 
                 return pcm;
             }

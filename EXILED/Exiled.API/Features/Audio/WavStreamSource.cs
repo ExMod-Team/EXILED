@@ -21,6 +21,8 @@ namespace Exiled.API.Features.Audio
     /// </summary>
     public sealed class WavStreamSource : IPcmSource
     {
+        private const float Divide = 1f / 32768f;
+
         private readonly long endPosition;
         private readonly long startPosition;
         private readonly FileStream stream;
@@ -33,7 +35,7 @@ namespace Exiled.API.Features.Audio
         /// <param name="path">The path to the audio file.</param>
         public WavStreamSource(string path)
         {
-            stream = File.OpenRead(path);
+            stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 64 * 1024, FileOptions.SequentialScan);
             WavUtility.SkipHeader(stream);
             startPosition = stream.Position;
             endPosition = stream.Length;
@@ -91,7 +93,7 @@ namespace Exiled.API.Features.Audio
             int samplesToWrite = Math.Min(shortSpan.Length, samplesInDestination);
 
             for (int i = 0; i < samplesToWrite; i++)
-                buffer[offset + i] = shortSpan[i] / 32768f;
+                buffer[offset + i] = shortSpan[i] * Divide;
 
             return samplesToWrite;
         }

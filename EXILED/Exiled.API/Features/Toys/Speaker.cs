@@ -85,7 +85,7 @@ namespace Exiled.API.Features.Toys
         /// Invoked when the audio track finishes playing.
         /// If looping is enabled, this triggers every time the track finished.
         /// </summary>
-        public event Action OnPlaybackFinished;
+        public event Action<string> OnPlaybackFinished;
 
         /// <summary>
         /// Invoked when the audio playback stops completely (either manually or end of file).
@@ -191,6 +191,11 @@ namespace Exiled.API.Features.Toys
         /// Returns 0 if not playing.
         /// </summary>
         public double TotalDuration => source?.TotalDuration ?? 0.0;
+
+        /// <summary>
+        /// Gets the path to the last audio file played on this speaker.
+        /// </summary>
+        public string LastTrack { get; private set; }
 
         /// <summary>
         /// Gets or sets the playback pitch.
@@ -358,6 +363,7 @@ namespace Exiled.API.Features.Toys
             Stop();
 
             Loop = loop;
+            LastTrack = path;
             DestroyAfter = destroyAfter;
             source = stream ? new WavStreamSource(path) : new PreloadedPcmSource(path);
             playBackRoutine = Timing.RunCoroutine(PlayBackCoroutine().CancelWith(GameObject));
@@ -429,7 +435,7 @@ namespace Exiled.API.Features.Toys
                     if (!source.Ended)
                         continue;
 
-                    OnPlaybackFinished?.Invoke();
+                    OnPlaybackFinished?.Invoke(LastTrack);
 
                     if (Loop)
                     {
@@ -440,7 +446,7 @@ namespace Exiled.API.Features.Toys
                     }
 
                     if (DestroyAfter)
-                        NetworkServer.Destroy(GameObject);
+                        Destroy();
                     else
                         Stop();
 
@@ -574,12 +580,8 @@ namespace Exiled.API.Features.Toys
             AdminToyBase.OnRemoved -= OnToyRemoved;
 
             Stop();
+
             encoder?.Dispose();
-            encoder = null;
-            frame = null;
-            encoded = null;
-            resampleBuffer = null;
-            isPlayBackInitialized = false;
         }
     }
 }

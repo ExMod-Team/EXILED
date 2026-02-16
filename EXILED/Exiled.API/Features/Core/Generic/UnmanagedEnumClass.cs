@@ -29,6 +29,8 @@ namespace Exiled.API.Features.Core.Generic
         private static SortedList<TSource, TObject> values;
         private static bool isDefined;
 
+        private string name;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UnmanagedEnumClass{TSource, TObject}"/> class.
         /// </summary>
@@ -59,7 +61,7 @@ namespace Exiled.API.Features.Core.Generic
             get
             {
                 if (isDefined)
-                    return field;
+                    return name;
 
                 IEnumerable<FieldInfo> fields = typeof(TObject)
                     .GetFields(BindingFlags.Static | BindingFlags.GetField | BindingFlags.Public)
@@ -68,13 +70,12 @@ namespace Exiled.API.Features.Core.Generic
                 foreach (FieldInfo @field in fields)
                 {
                     TObject instance = (TObject)@field.GetValue(null);
-                    instance.Name = @field.Name;
+                    instance.name = @field.Name;
                 }
 
                 isDefined = true;
-                return field;
+                return name;
             }
-            private set;
         }
 
         /// <summary>
@@ -203,7 +204,7 @@ namespace Exiled.API.Features.Core.Generic
         /// Converts the <see cref="UnmanagedEnumClass{TSource, TObject}"/> instance to a human-readable <see cref="string"/> representation.
         /// </summary>
         /// <returns>A human-readable <see cref="string"/> representation of the <see cref="UnmanagedEnumClass{TSource, TObject}"/> instance.</returns>
-        public override string ToString() => Name;
+        public override string ToString() => name;
 
         /// <summary>
         /// Determines whether the specified object is equal to the current object.
