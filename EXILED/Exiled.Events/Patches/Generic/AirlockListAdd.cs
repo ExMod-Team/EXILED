@@ -21,7 +21,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(AirlockController __instance)
         {
-            _ = new API.Features.Doors.AirlockController(__instance);
+            new API.Features.Doors.AirlockController(__instance);
         }
     }
 

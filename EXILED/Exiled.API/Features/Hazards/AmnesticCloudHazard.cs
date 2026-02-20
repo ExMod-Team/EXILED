@@ -15,8 +15,6 @@ namespace Exiled.API.Features.Hazards
     /// </summary>
     public class AmnesticCloudHazard : TemporaryHazard
     {
-        private static Scp939AmnesticCloudInstance amnesticCloudPrefab;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AmnesticCloudHazard"/> class.
         /// </summary>
@@ -36,10 +34,10 @@ namespace Exiled.API.Features.Hazards
         {
             get
             {
-                if (amnesticCloudPrefab == null)
-                    amnesticCloudPrefab = PrefabHelper.GetPrefab<Scp939AmnesticCloudInstance>(PrefabType.AmnesticCloudHazard);
+                if (field == null)
+                    field = PrefabHelper.GetPrefab<Scp939AmnesticCloudInstance>(PrefabType.AmnesticCloudHazard);
 
-                return amnesticCloudPrefab;
+                return field;
             }
         }
 

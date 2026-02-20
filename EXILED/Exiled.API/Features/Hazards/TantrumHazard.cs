@@ -18,8 +18,6 @@ namespace Exiled.API.Features.Hazards
     /// </summary>
     public class TantrumHazard : TemporaryHazard
     {
-        private static TantrumEnvironmentalHazard tantrumPrefab;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TantrumHazard"/> class.
         /// </summary>
@@ -37,10 +35,10 @@ namespace Exiled.API.Features.Hazards
         {
             get
             {
-                if (tantrumPrefab == null)
-                    tantrumPrefab = PrefabHelper.GetPrefab<TantrumEnvironmentalHazard>(PrefabType.TantrumObj);
+                if (field == null)
+                    field = PrefabHelper.GetPrefab<TantrumEnvironmentalHazard>(PrefabType.TantrumObj);
 
-                return tantrumPrefab;
+                return field;
             }
         }
 
