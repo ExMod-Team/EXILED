@@ -130,6 +130,11 @@ namespace Exiled.API.Features
         public static bool IsInProgress => Controller.Info.InProgress;
 
         /// <summary>
+        /// Gets a value indicating whether the warhead detonation is on cooldown.
+        /// </summary>
+        public static bool IsOnCooldown => Controller.CooldownEndTime > NetworkTime.time;
+
+        /// <summary>
         /// Gets or sets the warhead detonation timer.
         /// </summary>
         public static float DetonationTimer
@@ -164,7 +169,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the warhead can be started.
         /// </summary>
-        public static bool CanBeStarted => !IsInProgress && !IsDetonated && Controller.CooldownEndTime <= NetworkTime.time;
+        public static bool CanBeStarted => !IsInProgress && !IsDetonated && !IsOnCooldown;
 
         /// <summary>
         /// Closes the surface blast doors.
