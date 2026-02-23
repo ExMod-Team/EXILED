@@ -7,12 +7,12 @@
 
 namespace Exiled.API.Features
 {
+    using System;
     using System.Collections.Generic;
 
     using Enums;
     using Interactables.Interobjects.DoorUtils;
     using Mirror;
-
     using UnityEngine;
 
     /// <summary>
@@ -70,6 +70,15 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the remaining cooldown before the nuke can be triggered again.
+        /// </summary>
+        public static double RemainingCooldown
+        {
+            get => Math.Max(0, Controller.NetworkCooldownEndTime - NetworkTime.time);
+            set => Controller.NetworkCooldownEndTime = NetworkTime.time + Math.Max(0, value);
+        }
+
+        /// <summary>
         /// Gets all of the warhead blast doors.
         /// </summary>
         public static IReadOnlyCollection<BlastDoor> BlastDoors => BlastDoor.Instances;
@@ -97,7 +106,23 @@ namespace Exiled.API.Features
         /// </summary>
         public static WarheadStatus Status
         {
-            get => IsInProgress ? IsDetonated ? WarheadStatus.Detonated : WarheadStatus.InProgress : LeverStatus ? WarheadStatus.Armed : WarheadStatus.NotArmed;
+            get
+            {
+                if (IsDetonated)
+                    return WarheadStatus.Detonated;
+
+                if (IsInProgress)
+                    return WarheadStatus.InProgress;
+
+                if (IsOnCooldown)
+                    return WarheadStatus.OnCooldown;
+
+                if (LeverStatus)
+                    return WarheadStatus.Armed;
+
+                return WarheadStatus.NotArmed;
+            }
+
             set
             {
                 switch (value)
@@ -114,6 +139,10 @@ namespace Exiled.API.Features
 
                     case WarheadStatus.Detonated:
                         Detonate();
+                        break;
+
+                    case WarheadStatus.OnCooldown:
+                        RemainingCooldown = Controller._cooldown;
                         break;
                 }
             }
