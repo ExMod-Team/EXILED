@@ -161,7 +161,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the warhead detonation is on cooldown.
         /// </summary>
-        public static bool IsOnCooldown => Controller.CooldownEndTime > NetworkTime.time;
+        public static bool IsOnCooldown => RemainingCooldown > 0;
 
         /// <summary>
         /// Gets or sets the warhead detonation timer.
