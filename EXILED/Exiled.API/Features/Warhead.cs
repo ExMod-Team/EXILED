@@ -108,19 +108,21 @@ namespace Exiled.API.Features
         {
             get
             {
+                WarheadStatus status = WarheadStatus.NotArmed;
+
                 if (IsDetonated)
-                    return WarheadStatus.Detonated;
+                    status |= WarheadStatus.Detonated;
 
                 if (IsInProgress)
-                    return WarheadStatus.InProgress;
+                    status |= WarheadStatus.InProgress;
 
                 if (IsOnCooldown)
-                    return WarheadStatus.OnCooldown;
+                    status |= WarheadStatus.OnCooldown;
 
                 if (LeverStatus)
-                    return WarheadStatus.Armed;
+                    status |= WarheadStatus.Armed;
 
-                return WarheadStatus.NotArmed;
+                return status;
             }
 
             set
