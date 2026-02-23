@@ -42,11 +42,6 @@
         <Reference Include="System" HintPath="$(EXILED_REFERENCES)\System.dll" Private="false" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\" />
-      <Folder Include="Patches\" />
-    </ItemGroup>
-
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
         <PostBuildEvent>if not "$(EXILED_DEV_REFERENCES)"=="" copy /y "$(OutputPath)$(AssemblyName).dll" "$(EXILED_DEV_REFERENCES)\Plugins\"</PostBuildEvent>
     </PropertyGroup>
