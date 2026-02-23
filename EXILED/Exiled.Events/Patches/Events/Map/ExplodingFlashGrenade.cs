@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Events.Map
 
     /// <summary>
     /// Patches <see cref="FlashbangGrenade.ServerFuseEnd()"/>.
-    /// Adds the <see cref="Handlers.Map.ExplodingGrenade"/> event and <see cref="Config.CanFlashbangsAffectThrower"/>.
+    /// Adds the <see cref="Handlers.Map.ExplodingGrenade"/> event"/>.
     /// </summary>
     [HarmonyPatch(typeof(FlashbangGrenade), nameof(FlashbangGrenade.ServerFuseEnd))]
     internal static class ExplodingFlashGrenade
@@ -69,10 +69,7 @@ namespace Exiled.Events.Patches.Events.Map
                 if ((instance.transform.position - player.Position).sqrMagnitude > distance)
                     continue;
 
-                if (!ExiledEvents.Instance.Config.CanFlashbangsAffectThrower && instance.PreviousOwner.CompareLife(player.ReferenceHub))
-                    continue;
-
-                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub) && !instance.PreviousOwner.CompareLife(player.ReferenceHub))
+                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub))
                     continue;
 
                 if (Physics.Linecast(instance.transform.position, player.CameraTransform.position, instance.BlindingMask))

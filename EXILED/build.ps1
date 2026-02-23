@@ -9,6 +9,7 @@ $Projects = @(
     'Exiled.API',
     'Exiled.Permissions',
     'Exiled.Events',
+    'Exiled.Utility',
     'Exiled.CreditTags',
     'Exiled.Example',
     'Exiled.CustomItems',
