@@ -32,5 +32,10 @@ namespace Exiled.API.Enums
         /// The warhead has detonated.
         /// </summary>
         Detonated,
+
+        /// <summary>
+        /// The warhead is on cooldown.
+        /// </summary>
+        OnCooldown,
     }
 }
