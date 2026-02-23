@@ -55,7 +55,7 @@ namespace Exiled.Utility
 
             watch.Stop();
 
-            Log.Info($"{(Config.UseDynamicPatching ? "Non-event" : "All")} patches completed in {watch.Elapsed}");
+            Log.Info($"patches completed in {watch.Elapsed}");
 
             ServerConsole.ReloadServerName();
         }
