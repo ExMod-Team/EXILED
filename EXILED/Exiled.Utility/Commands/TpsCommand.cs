@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.Commands
+namespace Exiled.Utility.Commands
 {
     using System;
 
