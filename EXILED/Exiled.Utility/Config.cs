@@ -27,12 +27,12 @@ namespace Exiled.Utility
         /// <summary>
         /// Gets or sets a value indicating whether SCP-173 can be blocked by the tutorial.
         /// </summary>
-        [Description("Indicates whether SCP-173 can be blocked by the tutorial")]
-        public Dictionary<string, NewEnumForAllStuffThatWasAboutTutorial> CanTutorialBlockScp173 { get; set; } =
+        [Description("Indicates whether RoleTypeId or CustomRole(Name or Id) prevented behaviours")]
+        public Dictionary<string, NewEnumForAllStuffThatWasAboutTutorial> NewStuffThatWasAboutTutorial { get; set; } =
             Events.Events.Instance.Config.CanTutorialBlockScp173 ?
             new()
             {
-                { RoleTypeId.Tutorial.ToString(), NewEnumForAllStuffThatWasAboutTutorial.CanTutorialBlockScp173 },
+                { RoleTypeId.Tutorial.ToString(), NewEnumForAllStuffThatWasAboutTutorial.CanBlockScp173 },
             }
             : new() { };
 
