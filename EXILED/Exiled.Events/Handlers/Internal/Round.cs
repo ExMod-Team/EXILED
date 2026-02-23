@@ -104,7 +104,7 @@ namespace Exiled.Events.Handlers.Internal
         {
             if (ev.Target is null)
                 return;
-            if ((Events.Instance.Config.CanScp049SenseTutorial || ev.Target.Role.Type is not RoleTypeId.Tutorial) && !Scp049Role.TurnedPlayers.Contains(ev.Target))
+            if (!Scp049Role.TurnedPlayers.Contains(ev.Target))
                 return;
             ev.Target = ev.Scp049.SenseAbility.CanFindTarget(out ReferenceHub hub) ? Player.Get(hub) : null;
         }

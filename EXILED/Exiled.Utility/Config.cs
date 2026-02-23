@@ -69,7 +69,7 @@ namespace Exiled.Utility
         public bool ShouldDropInventory { get; set; } = Events.Events.Instance.Config.ShouldDropInventory;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the blood can be spawned.
+        /// Gets or sets a value indicating whether Decal spawned.
         /// </summary>
         [Description("Indicates whether the Decal (Blood, Bullet, Buckshot, GlassCrack) can be spawned")]
         public List<DecalPoolType> PreventDecalSpawn { get; set; } = Events.Events.Instance.Config.CanSpawnBlood ? new() { DecalPoolType.Blood } : new() { };
