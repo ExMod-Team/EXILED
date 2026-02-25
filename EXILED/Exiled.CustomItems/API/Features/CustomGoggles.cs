@@ -87,6 +87,14 @@ namespace Exiled.CustomItems.API.Features
             InternalRemove(ev.Player, scp1344);
         }
 
+        /// <inheritdoc/>
+        protected override void OnAcquired(Player player, Item item, bool displayMessage)
+        {
+            if (CanBeRemoveSafely)
+                InventorySystem.InventoryExtensions.OnInventoryDropped -= ((Scp1344)item).Base.OnPlayerInventoryDropped;
+            base.OnAcquired(player, item, displayMessage);
+        }
+
         /// <summary>
         /// Called when the player equips the goggles.
         /// </summary>
@@ -175,12 +183,9 @@ namespace Exiled.CustomItems.API.Features
 
         private void InternalRemove(Player player, Scp1344 goggles)
         {
-            if (!Remove1344Effect)
-                player.DisableEffect(EffectType.Scp1344);
-
             if (CanBeRemoveSafely)
             {
-                player.DisableEffect(EffectType.Blindness);
+                player.DisableEffect(EffectType.Scp1344);
                 player.ReferenceHub?.DisableWearables(WearableElements.Scp1344Goggles);
             }
 
