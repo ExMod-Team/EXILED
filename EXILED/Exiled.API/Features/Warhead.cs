@@ -11,6 +11,7 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
 
     using Enums;
+    using Exiled.API.Extensions;
     using Interactables.Interobjects.DoorUtils;
     using Mirror;
     using UnityEngine;
@@ -127,26 +128,18 @@ namespace Exiled.API.Features
 
             set
             {
-                switch (value)
-                {
-                    case WarheadStatus.NotArmed:
-                    case WarheadStatus.Armed:
-                        Stop();
-                        LeverStatus = value is WarheadStatus.Armed;
-                        break;
+                LeverStatus = value.HasFlagFast(WarheadStatus.Armed);
 
-                    case WarheadStatus.InProgress:
-                        Start();
-                        break;
+                if (value.HasFlagFast(WarheadStatus.InProgress))
+                    Start();
+                else
+                    Stop();
 
-                    case WarheadStatus.Detonated:
-                        Detonate();
-                        break;
+                if (value.HasFlagFast(WarheadStatus.Detonated))
+                    Detonate();
 
-                    case WarheadStatus.OnCooldown:
-                        RemainingCooldown = Controller._cooldown;
-                        break;
-                }
+                if (value.HasFlagFast(WarheadStatus.OnCooldown))
+                    RemainingCooldown = Controller._cooldown;
             }
         }
 
