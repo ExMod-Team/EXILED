@@ -112,7 +112,10 @@ namespace Exiled.API.Features.Audio
                 }
 
                 if (stream.Position >= stream.Length)
+                {
                     Log.Error("[Speaker] WAV file does not contain a 'data' chunk.");
+                    throw new InvalidDataException("Missing 'data' chunk in WAV file.");
+                }
             }
         }
     }
