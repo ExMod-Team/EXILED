@@ -384,10 +384,16 @@ namespace Exiled.API.Features.Toys
         public void Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
         {
             if (!File.Exists(path))
+            {
                 Log.Warn($"[Speaker] The specified file does not exist, path: `{path}`.");
+                return;
+            }
 
             if (!path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
+            {
                 Log.Error($"[Speaker] The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
+                return;
+            }
 
             TryInitializePlayBack();
             Stop();
