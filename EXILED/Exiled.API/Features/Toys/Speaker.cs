@@ -16,6 +16,7 @@ namespace Exiled.API.Features.Toys
     using Enums;
 
     using Exiled.API.Features.Audio;
+    using Exiled.API.Features.Pools;
 
     using Interfaces;
 
@@ -29,6 +30,7 @@ namespace Exiled.API.Features.Toys
     using VoiceChat.Codec;
     using VoiceChat.Codec.Enums;
     using VoiceChat.Networking;
+    using VoiceChat.Playbacks;
 
     using Object = UnityEngine.Object;
 
@@ -288,20 +290,8 @@ namespace Exiled.API.Features.Toys
         /// <param name="scale">The scale of the <see cref="Speaker"/>.</param>
         /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Speaker"/>.</returns>
-        public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn)
-        {
-            Speaker speaker = new(Object.Instantiate(Prefab))
-            {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
-                Scale = scale ?? Vector3.one,
-            };
-
-            if (spawn)
-                speaker.Spawn();
-
-            return speaker;
-        }
+        [Obsolete("Use the Create(parent, position, scale, controllerId, spawn, worldPositonStays) methods, rotation useless.")]
+        public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn) => Create(parent: null, position: position, scale: scale, controllerId: null, spawn: spawn, worldPositionStays: true);
 
         /// <summary>
         /// Creates a new <see cref="Speaker"/>.
@@ -310,19 +300,58 @@ namespace Exiled.API.Features.Toys
         /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
         /// <param name="worldPositionStays">Whether the <see cref="Speaker"/> should keep the same world position.</param>
         /// <returns>The new <see cref="Speaker"/>.</returns>
-        public static Speaker Create(Transform transform, bool spawn, bool worldPositionStays = true)
+        public static Speaker Create(Transform transform, bool spawn, bool worldPositionStays = true) => Create(parent: transform, position: Vector3.zero, scale: transform.localScale.normalized, controllerId: null, spawn: spawn, worldPositionStays: worldPositionStays);
+
+        /// <summary>
+        /// Creates a new <see cref="Speaker"/>.
+        /// </summary>
+        /// <param name="parent">The parent transform to attach the <see cref="Speaker"/> to.</param>
+        /// <param name="position">The local position of the <see cref="Speaker"/>.</param>
+        /// <param name="scale">The scale of the <see cref="Speaker"/>.</param>
+        /// <param name="controllerId">The specific controller ID to assign. If null, the next available ID is used.</param>
+        /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
+        /// <param name="worldPositionStays">Whether the <see cref="Speaker"/> should keep the same world position when parented.</param>
+        /// <returns>The new <see cref="Speaker"/>.</returns>
+        public static Speaker Create(Transform parent = null, Vector3? position = null, Vector3? scale = null, byte? controllerId = null, bool spawn = true, bool worldPositionStays = true)
         {
-            Speaker speaker = new(Object.Instantiate(Prefab, transform, worldPositionStays))
+            Speaker speaker = new(Object.Instantiate(Prefab, parent, worldPositionStays))
             {
-                Position = transform.position,
-                Rotation = transform.rotation,
-                Scale = transform.localScale.normalized,
+                 Scale = scale ?? Vector3.one,
+                 ControllerId = controllerId ?? GetNextControllerId(),
             };
+
+            speaker.Transform.localPosition = position ?? Vector3.zero;
 
             if (spawn)
                 speaker.Spawn();
 
             return speaker;
+        }
+
+        /// <summary>
+        /// Gets the next available controller ID for a <see cref="Speaker"/>.
+        /// </summary>
+        /// <returns>The next available byte ID, or 0 if all IDs are currently in use.</returns>
+        public static byte GetNextControllerId()
+        {
+            byte id = 0;
+            HashSet<byte> usedIds = HashSetPool<byte>.Pool.Get();
+
+            foreach (SpeakerToyPlaybackBase playbackBase in SpeakerToyPlaybackBase.AllInstances)
+                usedIds.Add(playbackBase.ControllerId);
+
+            while (usedIds.Contains(id))
+            {
+                id++;
+                if (id == 255)
+                {
+                    HashSetPool<byte>.Pool.Return(usedIds);
+                    return 0;
+                }
+            }
+
+            HashSetPool<byte>.Pool.Return(usedIds);
+            return id;
         }
 
         /// <summary>
@@ -354,10 +383,10 @@ namespace Exiled.API.Features.Toys
         public void Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
         {
             if (!File.Exists(path))
-                throw new FileNotFoundException("The specified file does not exist.", path);
+                Log.Warn($"[Speaker] The specified file does not exist, path: `{path}`.");
 
             if (!path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
-                throw new NotSupportedException($"The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
+                Log.Error($"[Speaker] The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
 
             TryInitializePlayBack();
             Stop();
