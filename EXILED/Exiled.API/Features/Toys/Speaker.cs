@@ -385,7 +385,7 @@ namespace Exiled.API.Features.Toys
         {
             if (!File.Exists(path))
             {
-                Log.Warn($"[Speaker] The specified file does not exist, path: `{path}`.");
+                Log.Error($"[Speaker] The specified file does not exist, path: `{path}`.");
                 return;
             }
 
