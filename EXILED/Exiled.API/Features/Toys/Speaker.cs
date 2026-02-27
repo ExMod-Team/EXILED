@@ -290,7 +290,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="scale">The scale of the <see cref="Speaker"/>.</param>
         /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Speaker"/>.</returns>
-        [Obsolete("Use the Create(parent, position, scale, controllerId, spawn, worldPositonStays) methods, rotation useless.")]
+        [Obsolete("Use the Create(parent, position, scale, controllerId, spawn, worldPositonStays) method, rotation is useless.")]
         public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn) => Create(parent: null, position: position, scale: scale, controllerId: null, spawn: spawn, worldPositionStays: true);
 
         /// <summary>
