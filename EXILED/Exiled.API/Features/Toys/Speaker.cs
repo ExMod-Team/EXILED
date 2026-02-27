@@ -317,7 +317,7 @@ namespace Exiled.API.Features.Toys
             Speaker speaker = new(Object.Instantiate(Prefab, parent, worldPositionStays))
             {
                  Scale = scale ?? Vector3.one,
-                 ControllerId = controllerId ?? GetNextControllerId(),
+                 ControllerId = controllerId ?? GetNextFreeControllerId(),
             };
 
             speaker.Transform.localPosition = position ?? Vector3.zero;
@@ -331,8 +331,8 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the next available controller ID for a <see cref="Speaker"/>.
         /// </summary>
-        /// <returns>The next available byte ID, or 0 if all IDs are currently in use.</returns>
-        public static byte GetNextControllerId()
+        /// <returns>The next available byte ID. If all IDs are currently in use, returns a default of 0.</returns>
+        public static byte GetNextFreeControllerId()
         {
             byte id = 0;
             HashSet<byte> usedIds = HashSetPool<byte>.Pool.Get();
@@ -340,14 +340,15 @@ namespace Exiled.API.Features.Toys
             foreach (SpeakerToyPlaybackBase playbackBase in SpeakerToyPlaybackBase.AllInstances)
                 usedIds.Add(playbackBase.ControllerId);
 
+            if (usedIds.Count >= byte.MaxValue + 1)
+            {
+                HashSetPool<byte>.Pool.Return(usedIds);
+                return 0;
+            }
+
             while (usedIds.Contains(id))
             {
                 id++;
-                if (id == 255)
-                {
-                    HashSetPool<byte>.Pool.Return(usedIds);
-                    return 0;
-                }
             }
 
             HashSetPool<byte>.Pool.Return(usedIds);
