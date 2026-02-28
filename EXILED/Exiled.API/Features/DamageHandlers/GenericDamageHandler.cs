@@ -18,6 +18,7 @@ namespace Exiled.API.Features.DamageHandlers
 
     using InventorySystem;
     using InventorySystem.Items;
+    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Scp1509;
@@ -147,43 +148,43 @@ namespace Exiled.API.Features.DamageHandlers
                     break;
                 case DamageType.Firearm:
                 case DamageType.AK:
-                    GenericFirearm(damage, damageType, ItemType.GunAK);
+                    GenericFirearm(damage, ItemType.GunAK);
                     break;
                 case DamageType.Crossvec:
-                    GenericFirearm(damage, damageType, ItemType.GunCrossvec);
+                    GenericFirearm(damage, ItemType.GunCrossvec);
                     break;
                 case DamageType.Logicer:
-                    GenericFirearm(damage, damageType, ItemType.GunLogicer);
+                    GenericFirearm(damage, ItemType.GunLogicer);
                     break;
                 case DamageType.Revolver:
-                    GenericFirearm(damage, damageType, ItemType.GunRevolver);
+                    GenericFirearm(damage, ItemType.GunRevolver);
                     break;
                 case DamageType.Shotgun:
-                    GenericFirearm(damage, damageType, ItemType.GunShotgun);
+                    GenericFirearm(damage, ItemType.GunShotgun);
                     break;
                 case DamageType.Com15:
-                    GenericFirearm(damage, damageType, ItemType.GunCOM15);
+                    GenericFirearm(damage, ItemType.GunCOM15);
                     break;
                 case DamageType.Com18:
-                    GenericFirearm(damage, damageType, ItemType.GunCOM18);
+                    GenericFirearm(damage, ItemType.GunCOM18);
                     break;
                 case DamageType.Fsp9:
-                    GenericFirearm(damage, damageType, ItemType.GunFSP9);
+                    GenericFirearm(damage, ItemType.GunFSP9);
                     break;
                 case DamageType.E11Sr:
-                    GenericFirearm(damage, damageType, ItemType.GunE11SR);
+                    GenericFirearm(damage, ItemType.GunE11SR);
                     break;
                 case DamageType.Com45:
-                    GenericFirearm(damage, damageType, ItemType.GunCom45);
+                    GenericFirearm(damage, ItemType.GunCom45);
                     break;
                 case DamageType.Frmg0:
-                    GenericFirearm(damage, damageType, ItemType.GunFRMG0);
+                    GenericFirearm(damage, ItemType.GunFRMG0);
                     break;
                 case DamageType.A7:
-                    GenericFirearm(damage, damageType, ItemType.GunA7);
+                    GenericFirearm(damage, ItemType.GunA7);
                     break;
                 case DamageType.Scp127:
-                    GenericFirearm(damage, damageType, ItemType.GunSCP127);
+                    GenericFirearm(damage, ItemType.GunSCP127);
                     break;
                 case DamageType.ParticleDisruptor:
                     Base = new DisruptorDamageHandler(new DisruptorShotEvent(default, Attacker, InventorySystem.Items.Firearms.Modules.DisruptorActionModule.FiringState.FiringSingle), Vector3.up, damage);
@@ -329,22 +330,17 @@ namespace Exiled.API.Features.DamageHandlers
 
             if (InventoryItemLoader.TryGetItem(itemType, out InventorySystem.Items.Firearms.Firearm firearmTemplate))
             {
-                foreach (ModuleBase module in firearmTemplate.Modules)
-                {
-                    if (module is IPrimaryAmmoContainerModule ammoModule)
-                    {
-                        ammoType = ammoModule.AmmoType;
-                        break;
-                    }
-                }
+                Items.Firearm firearm = new(firearmTemplate);
+                ammoType = firearm.AmmoType.GetItemType();
             }
 
             Base = new PlayerStatsSystem.FirearmDamageHandler
             {
                 Damage = amount,
                 Attacker = Attacker,
-                WeaponType = itemType,
                 AmmoType = ammoType,
+                WeaponType = itemType,
+                Firearm = firearmTemplate,
             };
         }
     }
