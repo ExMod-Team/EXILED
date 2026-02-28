@@ -322,9 +322,8 @@ namespace Exiled.API.Features.DamageHandlers
         /// Generic firearm path for handle type.
         /// </summary>
         /// <param name="amount"> Damage amount. </param>
-        /// <param name="damageType"> Damage type. </param>
         /// <param name="itemType"> ItemType. </param>
-        private void GenericFirearm(float amount, DamageType damageType, ItemType itemType)
+        private void GenericFirearm(float amount, ItemType itemType)
         {
             ItemType ammoType = ItemType.None;
 
