@@ -18,9 +18,11 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Player;
+
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
+
     using UnityEngine;
 
     using Firearm = Exiled.API.Features.Items.Firearm;
@@ -69,16 +71,19 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc />
         public override Pickup? Spawn(Vector3 position, Player? previousOwner = null)
         {
-            if (Item.Create(Type) is not Firearm firearm)
+            Item item = Item.Create(Type);
+            if (item is not Firearm firearm)
             {
                 Log.Debug($"{nameof(Spawn)}: Item is not Firearm.");
+                item.Destroy();
                 return null;
             }
 
             if (!Attachments.IsEmpty())
                 firearm.AddAttachment(Attachments);
 
-            Pickup? pickup = firearm.CreatePickup(position);
+            FirearmPickup? pickup = (FirearmPickup?)firearm.CreatePickup(position, spawn: false);
+            item.Destroy();
 
             if (pickup is null)
             {
@@ -87,14 +92,18 @@ namespace Exiled.CustomItems.API.Features
             }
 
             if (ClipSize > 0)
-                firearm.MagazineAmmo = ClipSize;
+                pickup.MaxAmmo = pickup.Ammo = ClipSize;
 
             pickup.Weight = Weight;
             pickup.Scale = Scale;
+
             if (previousOwner is not null)
                 pickup.PreviousOwner = previousOwner;
 
+            pickup.Spawn();
+
             TrackedSerials.Add(pickup.Serial);
+
             return pickup;
         }
 
@@ -108,9 +117,11 @@ namespace Exiled.CustomItems.API.Features
 
                 if (ClipSize > 0)
                     firearm.MagazineAmmo = ClipSize;
+
                 int ammo = firearm.MagazineAmmo;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
+                item.Destroy();
                 pickup.Scale = Scale;
 
                 if (previousOwner is not null)
