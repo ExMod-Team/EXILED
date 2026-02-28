@@ -92,7 +92,7 @@ namespace Exiled.CustomItems.API.Features
             }
 
             if (ClipSize > 0)
-                pickup.MaxAmmo = pickup.Ammo = ClipSize;
+                pickup.Ammo = ClipSize;
 
             pickup.Weight = Weight;
             pickup.Scale = Scale;
