@@ -18,6 +18,7 @@ namespace Exiled.API.Features.DamageHandlers
 
     using InventorySystem;
     using InventorySystem.Items;
+    using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Scp1509;
 
@@ -327,9 +328,17 @@ namespace Exiled.API.Features.DamageHandlers
         {
             ItemType ammoType = ItemType.None;
 
-            ItemBase firearmIntance = itemType.GetTemplate();
-            if (Item.Get(firearmIntance) is Firearm firearm)
-                ammoType = firearm.PrimaryMagazine.AmmoType.GetItemType();
+            if (InventoryItemLoader.TryGetItem(itemType, out InventorySystem.Items.Firearms.Firearm firearmTemplate))
+            {
+                foreach (ModuleBase module in firearmTemplate.Modules)
+                {
+                    if (module is IPrimaryAmmoContainerModule ammoModule)
+                    {
+                        ammoType = ammoModule.AmmoType;
+                        break;
+                    }
+                }
+            }
 
             Base = new PlayerStatsSystem.FirearmDamageHandler
             {
