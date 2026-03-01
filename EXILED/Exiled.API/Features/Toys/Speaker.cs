@@ -335,14 +335,16 @@ namespace Exiled.API.Features.Toys
         public static byte GetNextFreeControllerId()
         {
             byte id = 0;
-            HashSet<byte> usedIds = HashSetPool<byte>.Pool.Get();
+            HashSet<byte> usedIds = NorthwoodLib.Pools.HashSetPool<byte>.Shared.Rent(256);
 
             foreach (SpeakerToyPlaybackBase playbackBase in SpeakerToyPlaybackBase.AllInstances)
+            {
                 usedIds.Add(playbackBase.ControllerId);
+            }
 
             if (usedIds.Count >= byte.MaxValue + 1)
             {
-                HashSetPool<byte>.Pool.Return(usedIds);
+                NorthwoodLib.Pools.HashSetPool<byte>.Shared.Return(usedIds);
                 return 0;
             }
 
@@ -351,7 +353,7 @@ namespace Exiled.API.Features.Toys
                 id++;
             }
 
-            HashSetPool<byte>.Pool.Return(usedIds);
+            NorthwoodLib.Pools.HashSetPool<byte>.Shared.Return(usedIds);
             return id;
         }
 
@@ -377,7 +379,7 @@ namespace Exiled.API.Features.Toys
         /// <param name="targetPlayer">The target player if PlayMode is Player.</param>
         /// <param name="targetPlayers">The list of target players if PlayMode is PlayerList.</param>
         /// <param name="predicate">The condition if PlayMode is Predicate.</param>
-        /// <returns>The created Speaker instance.</returns>
+        /// <returns>The created <see cref="Speaker"/> instance if playback started successfully; otherwise, <c>null</c>.</returns>
         public static Speaker PlayOneShot(string path, Vector3 position, Transform parent = null, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
         {
             Speaker speaker = Create(parent: parent, position: position, spawn: true);
@@ -387,7 +389,11 @@ namespace Exiled.API.Features.Toys
             speaker.TargetPlayers = targetPlayers;
             speaker.Predicate = predicate;
 
-            speaker.Play(path, stream: stream, destroyAfter: true, loop: false);
+            if (!speaker.Play(path, stream: stream, destroyAfter: true, loop: false))
+            {
+                speaker.Destroy();
+                return null;
+            }
 
             return speaker;
         }
@@ -407,18 +413,19 @@ namespace Exiled.API.Features.Toys
         /// <param name="stream">Whether to stream the audio or preload it.</param>
         /// <param name="destroyAfter">Whether to destroy the speaker after playback.</param>
         /// <param name="loop">Whether to loop the audio.</param>
-        public void Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
+        /// <returns><c>true</c> if the audio file was successfully found, loaded, and playback started; otherwise, <c>false</c>.</returns>
+        public bool Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
         {
             if (!File.Exists(path))
             {
                 Log.Error($"[Speaker] The specified file does not exist, path: `{path}`.");
-                return;
+                return false;
             }
 
             if (!path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
             {
                 Log.Error($"[Speaker] The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
-                return;
+                return false;
             }
 
             TryInitializePlayBack();
@@ -427,8 +434,19 @@ namespace Exiled.API.Features.Toys
             Loop = loop;
             LastTrack = path;
             DestroyAfter = destroyAfter;
-            source = stream ? new WavStreamSource(path) : new PreloadedPcmSource(path);
+
+            try
+            {
+                source = stream ? new WavStreamSource(path) : new PreloadedPcmSource(path);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return false;
+            }
+
             playBackRoutine = Timing.RunCoroutine(PlayBackCoroutine().CancelWith(GameObject));
+            return true;
         }
 
         /// <summary>
