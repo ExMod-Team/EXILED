@@ -363,14 +363,13 @@ namespace Exiled.API.Features.Toys
             }
             else
             {
-                speaker.Transform.SetParent(parent);
+                if (parent != null)
+                    speaker.Transform.SetParent(parent);
+
+                speaker.Volume = 1f;
                 speaker.Transform.localPosition = position;
                 speaker.ControllerId = GetNextFreeControllerId();
             }
-
-            speaker.Volume = 1f;
-            speaker.MinDistance = 1f;
-            speaker.MaxDistance = 15f;
 
             return speaker;
         }
@@ -421,20 +420,32 @@ namespace Exiled.API.Features.Toys
         /// <param name="path">The path to the wav file.</param>
         /// <param name="position">The position of the speaker.</param>
         /// <param name="parent">The parent transform, if any.</param>
+        /// <param name="isSpatial">Whether the audio source is spatialized.</param>
+        /// <param name="minDistance">The minimum distance at which the audio reaches full volume.</param>
+        /// <param name="maxDistance">The maximum distance at which the audio can be heard.</param>
         /// <param name="playMode">The play mode determining how audio is sent to players.</param>
         /// <param name="stream">Whether to stream the audio or preload it.</param>
         /// <param name="targetPlayer">The target player if PlayMode is Player.</param>
         /// <param name="targetPlayers">The list of target players if PlayMode is PlayerList.</param>
         /// <param name="predicate">The condition if PlayMode is Predicate.</param>
         /// <returns>The rented <see cref="Speaker"/> instance if playback started successfully; otherwise, <c>null</c>.</returns>
-        public static Speaker PlayFromPool(string path, Vector3 position, Transform parent = null, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
+        public static Speaker PlayFromPool(string path, Vector3 position, Transform parent = null, bool isSpatial = true, float? minDistance = null, float? maxDistance = null, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
         {
             Speaker speaker = Rent(position, parent);
 
+            if (!isSpatial)
+                speaker.IsSpatial = isSpatial;
+
+            if (minDistance != null)
+                speaker.MinDistance = (float)minDistance;
+
+            if (maxDistance != null)
+                speaker.MaxDistance = (float)maxDistance;
+
             speaker.PlayMode = playMode;
+            speaker.Predicate = predicate;
             speaker.TargetPlayer = targetPlayer;
             speaker.TargetPlayers = targetPlayers;
-            speaker.Predicate = predicate;
 
             speaker.ReturnToPoolAfter = true;
 
@@ -444,6 +455,7 @@ namespace Exiled.API.Features.Toys
                 return null;
             }
 
+            Log.Warn("pool size " + Pool.Count);
             return speaker;
         }
 
@@ -522,12 +534,12 @@ namespace Exiled.API.Features.Toys
             Stop();
 
             Transform.SetParent(null);
-            Transform.localPosition = Vector3.down * 9999;
+            Transform.localPosition = Vector3.zero;
 
             Loop = false;
-            PlayMode = default;
             DestroyAfter = false;
             ReturnToPoolAfter = false;
+            PlayMode = SpeakerPlayMode.Global;
             Channel = Channels.ReliableOrdered2;
 
             LastTrack = null;
@@ -539,8 +551,8 @@ namespace Exiled.API.Features.Toys
             Volume = 0f;
             IsSpatial = true;
 
-            MinDistance = 0;
-            MaxDistance = 0;
+            MinDistance = 1;
+            MaxDistance = 15;
 
             resampleTime = 0.0;
             resampleBufferFilled = 0;
