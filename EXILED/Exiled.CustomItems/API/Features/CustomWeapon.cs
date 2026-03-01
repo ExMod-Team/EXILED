@@ -82,6 +82,9 @@ namespace Exiled.CustomItems.API.Features
             if (!Attachments.IsEmpty())
                 firearm.AddAttachment(Attachments);
 
+            if (ClipSize > 0)
+                firearm.MagazineAmmo = ClipSize;
+
             FirearmPickup? pickup = (FirearmPickup?)firearm.CreatePickup(position, spawn: false);
             item.Destroy();
 
@@ -90,9 +93,6 @@ namespace Exiled.CustomItems.API.Features
                 Log.Debug($"{nameof(Spawn)}: Pickup is null.");
                 return null;
             }
-
-            if (ClipSize > 0)
-                pickup.Ammo = ClipSize;
 
             pickup.Weight = Weight;
             pickup.Scale = Scale;
