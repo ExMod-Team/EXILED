@@ -369,9 +369,8 @@ namespace Exiled.API.Features.Toys
             }
 
             speaker.Volume = 1f;
-
-            speaker.ReturnToPoolAfter = true;
-            speaker.DestroyAfter = false;
+            speaker.MinDistance = 1f;
+            speaker.MaxDistance = 15f;
 
             return speaker;
         }
@@ -417,7 +416,7 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Plays a wav file one time through a newly spawned speaker and destroys it afterwards. (File must be 16 bit, mono and 48khz.)
+        /// Rents a speaker from the pool, plays a wav file one time, and automatically returns it to the pool afterwards. (File must be 16 bit, mono and 48khz.)
         /// </summary>
         /// <param name="path">The path to the wav file.</param>
         /// <param name="position">The position of the speaker.</param>
@@ -427,19 +426,21 @@ namespace Exiled.API.Features.Toys
         /// <param name="targetPlayer">The target player if PlayMode is Player.</param>
         /// <param name="targetPlayers">The list of target players if PlayMode is PlayerList.</param>
         /// <param name="predicate">The condition if PlayMode is Predicate.</param>
-        /// <returns>The created <see cref="Speaker"/> instance if playback started successfully; otherwise, <c>null</c>.</returns>
-        public static Speaker PlayOneShot(string path, Vector3 position, Transform parent = null, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
+        /// <returns>The rented <see cref="Speaker"/> instance if playback started successfully; otherwise, <c>null</c>.</returns>
+        public static Speaker PlayFromPool(string path, Vector3 position, Transform parent = null, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
         {
-            Speaker speaker = Create(parent: parent, position: position, spawn: true);
+            Speaker speaker = Rent(position, parent);
 
             speaker.PlayMode = playMode;
             speaker.TargetPlayer = targetPlayer;
             speaker.TargetPlayers = targetPlayers;
             speaker.Predicate = predicate;
 
-            if (!speaker.Play(path, stream: stream, destroyAfter: true, loop: false))
+            speaker.ReturnToPoolAfter = true;
+
+            if (!speaker.Play(path, stream: stream))
             {
-                speaker.Destroy();
+                speaker.ReturnToPool();
                 return null;
             }
 
@@ -521,7 +522,7 @@ namespace Exiled.API.Features.Toys
             Stop();
 
             Transform.SetParent(null);
-            Transform.localPosition = Vector3.down * 999f;
+            Transform.localPosition = Vector3.down * 9999;
 
             Loop = false;
             PlayMode = default;
@@ -538,8 +539,8 @@ namespace Exiled.API.Features.Toys
             Volume = 0f;
             IsSpatial = true;
 
-            MinDistance = 1f;
-            MaxDistance = 15f;
+            MinDistance = 0;
+            MaxDistance = 0;
 
             resampleTime = 0.0;
             resampleBufferFilled = 0;
