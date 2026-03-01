@@ -367,6 +367,32 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Plays a wav file one time through a newly spawned speaker and destroys it afterwards. (File must be 16 bit, mono and 48khz.)
+        /// </summary>
+        /// <param name="path">The path to the wav file.</param>
+        /// <param name="position">The position of the speaker.</param>
+        /// <param name="parent">The parent transform, if any.</param>
+        /// <param name="playMode">The play mode determining how audio is sent to players.</param>
+        /// <param name="stream">Whether to stream the audio or preload it.</param>
+        /// <param name="targetPlayer">The target player if PlayMode is Player.</param>
+        /// <param name="targetPlayers">The list of target players if PlayMode is PlayerList.</param>
+        /// <param name="predicate">The condition if PlayMode is Predicate.</param>
+        /// <returns>The created Speaker instance.</returns>
+        public static Speaker PlayOneShot(string path, Vector3 position, Transform parent = null, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
+        {
+            Speaker speaker = Create(parent: parent, position: position, spawn: true);
+
+            speaker.PlayMode = playMode;
+            speaker.TargetPlayer = targetPlayer;
+            speaker.TargetPlayers = targetPlayers;
+            speaker.Predicate = predicate;
+
+            speaker.Play(path, stream: stream, destroyAfter: true, loop: false);
+
+            return speaker;
+        }
+
+        /// <summary>
         /// Plays audio through this speaker.
         /// </summary>
         /// <param name="samples">Audio samples.</param>
