@@ -555,7 +555,6 @@ namespace Exiled.CustomItems.API.Features
         {
             Pickup? pickup = item.CreatePickup(position);
 
-            item.Destroy();
             pickup.Scale = Scale;
             pickup.Weight = Weight;
 
@@ -665,7 +664,6 @@ namespace Exiled.CustomItems.API.Features
             }
             catch (Exception e)
             {
-                item.Destroy();
                 Log.Error($"{nameof(Give)}: {e}");
             }
         }
