@@ -145,8 +145,10 @@ namespace Exiled.Events.Handlers.Internal
                 if (firearmType == FirearmType.None)
                     continue;
 
-                if (Item.Create(firearmType.GetItemType()) is not Firearm firearm)
+                if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out InventorySystem.Items.Firearms.Firearm firearmTemplate))
                     continue;
+
+                Firearm firearm = new(firearmTemplate);
 
                 Firearm.ItemTypeToFirearmInstance[firearmType] = firearm;
 

@@ -2324,7 +2324,23 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
         /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
+        public bool UseItem(ItemType usableItem)
+        {
+            if (usableItem.GetTemplate() is not UsableItem)
+                return false;
+
+            Item item = Item.Create(usableItem);
+
+            if (item is not Usable usable)
+            {
+                item.Destroy();
+                return false;
+            }
+
+            UseItem(usable);
+            item.Destroy();
+            return true;
+        }
 
         /// <summary>
         /// Forces the player to use an item.
@@ -2388,7 +2404,8 @@ namespace Exiled.API.Features
             if ((Role.Side != Side.Scp) && !string.IsNullOrEmpty(cassieAnnouncement))
                 Cassie.Message(cassieAnnouncement);
 
-            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
+            Footprint footprint = attacker != null ? attacker.Footprint : Server.Host.Footprint;
+            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(default, footprint, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
         }
 
         /// <summary>
