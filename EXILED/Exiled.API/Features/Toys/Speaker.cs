@@ -455,7 +455,6 @@ namespace Exiled.API.Features.Toys
                 return null;
             }
 
-            Log.Warn("pool size " + Pool.Count);
             return speaker;
         }
 
