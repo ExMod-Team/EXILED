@@ -24,6 +24,8 @@ namespace Exiled.API.Features.Toys
 
     using Mirror;
 
+    using NorthwoodLib.Pools;
+
     using UnityEngine;
 
     using VoiceChat;
@@ -41,6 +43,8 @@ namespace Exiled.API.Features.Toys
     {
         private const int FrameSize = VoiceChatSettings.PacketSizePerChannel;
         private const float FrameTime = (float)FrameSize / VoiceChatSettings.SampleRate;
+
+        private static readonly Queue<Speaker> Pool = new();
 
         private float[] frame;
         private byte[] encoded;
@@ -283,6 +287,11 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the speaker should return to the pool after playback finishes.
+        /// </summary>
+        public bool ReturnToPoolAfter { get; set; }
+
+        /// <summary>
         /// Creates a new <see cref="Speaker"/>.
         /// </summary>
         /// <param name="position">The position of the <see cref="Speaker"/>.</param>
@@ -324,6 +333,45 @@ namespace Exiled.API.Features.Toys
 
             if (spawn)
                 speaker.Spawn();
+
+            return speaker;
+        }
+
+        /// <summary>
+        /// Rents an available speaker from the pool or creates a new one if the pool is empty.
+        /// </summary>
+        /// <param name="position">The local position of the <see cref="Speaker"/>.</param>
+        /// <param name="parent">The parent transform to attach the <see cref="Speaker"/> to.</param>
+        /// <returns>A clean <see cref="Speaker"/> instance ready for use.</returns>
+        public static Speaker Rent(Vector3 position, Transform parent = null)
+        {
+            Speaker speaker = null;
+
+            while (Pool.Count > 0)
+            {
+                speaker = Pool.Dequeue();
+
+                if (speaker != null && speaker.Base != null)
+                    break;
+
+                speaker = null;
+            }
+
+            if (speaker == null)
+            {
+                speaker = Create(parent: parent, position: position, spawn: true);
+            }
+            else
+            {
+                speaker.Transform.SetParent(parent);
+                speaker.Transform.localPosition = position;
+                speaker.ControllerId = GetNextFreeControllerId();
+            }
+
+            speaker.Volume = 1f;
+
+            speaker.ReturnToPoolAfter = true;
+            speaker.DestroyAfter = false;
 
             return speaker;
         }
@@ -465,6 +513,41 @@ namespace Exiled.API.Features.Toys
             source = null;
         }
 
+        /// <summary>
+        /// blabalbla.
+        /// </summary>
+        public void ReturnToPool()
+        {
+            Stop();
+
+            Transform.SetParent(null);
+            Transform.localPosition = Vector3.down * 999f;
+
+            Loop = false;
+            PlayMode = default;
+            DestroyAfter = false;
+            ReturnToPoolAfter = false;
+            Channel = Channels.ReliableOrdered2;
+
+            LastTrack = null;
+            Predicate = null;
+            TargetPlayer = null;
+            TargetPlayers = null;
+
+            Pitch = 1f;
+            Volume = 0f;
+            IsSpatial = true;
+
+            MinDistance = 1f;
+            MaxDistance = 15f;
+
+            resampleTime = 0.0;
+            resampleBufferFilled = 0;
+            isPitchDefault = true;
+
+            Pool.Enqueue(this);
+        }
+
         private void TryInitializePlayBack()
         {
             if (isPlayBackInitialized)
@@ -526,7 +609,9 @@ namespace Exiled.API.Features.Toys
                         continue;
                     }
 
-                    if (DestroyAfter)
+                    if (ReturnToPoolAfter)
+                        ReturnToPool();
+                    else if (DestroyAfter)
                         Destroy();
                     else
                         Stop();
