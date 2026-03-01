@@ -44,8 +44,6 @@ namespace Exiled.API.Features.Toys
         private const int FrameSize = VoiceChatSettings.PacketSizePerChannel;
         private const float FrameTime = (float)FrameSize / VoiceChatSettings.SampleRate;
 
-        private static readonly Queue<Speaker> Pool = new();
-
         private float[] frame;
         private byte[] encoded;
         private float[] resampleBuffer;
@@ -59,6 +57,8 @@ namespace Exiled.API.Features.Toys
 
         private bool isPitchDefault = true;
         private bool isPlayBackInitialized = false;
+
+        internal static readonly Queue<Speaker> Pool = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Speaker"/> class.
