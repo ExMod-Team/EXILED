@@ -41,6 +41,12 @@ namespace Exiled.API.Features.Toys
     /// </summary>
     public class Speaker : AdminToy, IWrapper<SpeakerToy>
     {
+        /// <summary>
+        /// A queue used for object pooling of <see cref="Speaker"/> instances.
+        /// Reusing idle speakers instead of constantly creating and destroying them significantly improves server performance, especially for frequent audio events.
+        /// </summary>
+        internal static readonly Queue<Speaker> Pool = new();
+
         private const int FrameSize = VoiceChatSettings.PacketSizePerChannel;
         private const float FrameTime = (float)FrameSize / VoiceChatSettings.SampleRate;
 
@@ -57,8 +63,6 @@ namespace Exiled.API.Features.Toys
 
         private bool isPitchDefault = true;
         private bool isPlayBackInitialized = false;
-
-        internal static readonly Queue<Speaker> Pool = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Speaker"/> class.
