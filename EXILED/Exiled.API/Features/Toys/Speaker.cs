@@ -16,6 +16,7 @@ namespace Exiled.API.Features.Toys
     using Enums;
 
     using Exiled.API.Features.Audio;
+    using Exiled.API.Features.Pools;
 
     using Interfaces;
 
@@ -23,12 +24,15 @@ namespace Exiled.API.Features.Toys
 
     using Mirror;
 
+    using NorthwoodLib.Pools;
+
     using UnityEngine;
 
     using VoiceChat;
     using VoiceChat.Codec;
     using VoiceChat.Codec.Enums;
     using VoiceChat.Networking;
+    using VoiceChat.Playbacks;
 
     using Object = UnityEngine.Object;
 
@@ -37,6 +41,12 @@ namespace Exiled.API.Features.Toys
     /// </summary>
     public class Speaker : AdminToy, IWrapper<SpeakerToy>
     {
+        /// <summary>
+        /// A queue used for object pooling of <see cref="Speaker"/> instances.
+        /// Reusing idle speakers instead of constantly creating and destroying them significantly improves server performance, especially for frequent audio events.
+        /// </summary>
+        internal static readonly Queue<Speaker> Pool = new();
+
         private const int FrameSize = VoiceChatSettings.PacketSizePerChannel;
         private const float FrameTime = (float)FrameSize / VoiceChatSettings.SampleRate;
 
@@ -281,6 +291,11 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the speaker should return to the pool after playback finishes.
+        /// </summary>
+        public bool ReturnToPoolAfter { get; set; }
+
+        /// <summary>
         /// Creates a new <see cref="Speaker"/>.
         /// </summary>
         /// <param name="position">The position of the <see cref="Speaker"/>.</param>
@@ -288,20 +303,8 @@ namespace Exiled.API.Features.Toys
         /// <param name="scale">The scale of the <see cref="Speaker"/>.</param>
         /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Speaker"/>.</returns>
-        public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn)
-        {
-            Speaker speaker = new(Object.Instantiate(Prefab))
-            {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
-                Scale = scale ?? Vector3.one,
-            };
-
-            if (spawn)
-                speaker.Spawn();
-
-            return speaker;
-        }
+        [Obsolete("Use the Create(parent, position, scale, controllerId, spawn, worldPositonStays) method, rotation is useless.")]
+        public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn) => Create(parent: null, position: position, scale: scale, controllerId: null, spawn: spawn, worldPositionStays: true);
 
         /// <summary>
         /// Creates a new <see cref="Speaker"/>.
@@ -310,19 +313,98 @@ namespace Exiled.API.Features.Toys
         /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
         /// <param name="worldPositionStays">Whether the <see cref="Speaker"/> should keep the same world position.</param>
         /// <returns>The new <see cref="Speaker"/>.</returns>
-        public static Speaker Create(Transform transform, bool spawn, bool worldPositionStays = true)
+        public static Speaker Create(Transform transform, bool spawn, bool worldPositionStays = true) => Create(parent: transform, position: Vector3.zero, scale: transform.localScale.normalized, controllerId: null, spawn: spawn, worldPositionStays: worldPositionStays);
+
+        /// <summary>
+        /// Creates a new <see cref="Speaker"/>.
+        /// </summary>
+        /// <param name="parent">The parent transform to attach the <see cref="Speaker"/> to.</param>
+        /// <param name="position">The local position of the <see cref="Speaker"/>.</param>
+        /// <param name="scale">The scale of the <see cref="Speaker"/>.</param>
+        /// <param name="controllerId">The specific controller ID to assign. If null, the next available ID is used.</param>
+        /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
+        /// <param name="worldPositionStays">Whether the <see cref="Speaker"/> should keep the same world position when parented.</param>
+        /// <returns>The new <see cref="Speaker"/>.</returns>
+        public static Speaker Create(Transform parent = null, Vector3? position = null, Vector3? scale = null, byte? controllerId = null, bool spawn = true, bool worldPositionStays = true)
         {
-            Speaker speaker = new(Object.Instantiate(Prefab, transform, worldPositionStays))
+            Speaker speaker = new(Object.Instantiate(Prefab, parent, worldPositionStays))
             {
-                Position = transform.position,
-                Rotation = transform.rotation,
-                Scale = transform.localScale.normalized,
+                 Scale = scale ?? Vector3.one,
+                 ControllerId = controllerId ?? GetNextFreeControllerId(),
             };
+
+            speaker.Transform.localPosition = position ?? Vector3.zero;
 
             if (spawn)
                 speaker.Spawn();
 
             return speaker;
+        }
+
+        /// <summary>
+        /// Rents an available speaker from the pool or creates a new one if the pool is empty.
+        /// </summary>
+        /// <param name="position">The local position of the <see cref="Speaker"/>.</param>
+        /// <param name="parent">The parent transform to attach the <see cref="Speaker"/> to.</param>
+        /// <returns>A clean <see cref="Speaker"/> instance ready for use.</returns>
+        public static Speaker Rent(Vector3 position, Transform parent = null)
+        {
+            Speaker speaker = null;
+
+            while (Pool.Count > 0)
+            {
+                speaker = Pool.Dequeue();
+
+                if (speaker != null && speaker.Base != null)
+                    break;
+
+                speaker = null;
+            }
+
+            if (speaker == null)
+            {
+                speaker = Create(parent: parent, position: position, spawn: true);
+            }
+            else
+            {
+                if (parent != null)
+                    speaker.Transform.SetParent(parent);
+
+                speaker.Volume = 1f;
+                speaker.Transform.localPosition = position;
+                speaker.ControllerId = GetNextFreeControllerId();
+            }
+
+            return speaker;
+        }
+
+        /// <summary>
+        /// Gets the next available controller ID for a <see cref="Speaker"/>.
+        /// </summary>
+        /// <returns>The next available byte ID. If all IDs are currently in use, returns a default of 0.</returns>
+        public static byte GetNextFreeControllerId()
+        {
+            byte id = 0;
+            HashSet<byte> usedIds = NorthwoodLib.Pools.HashSetPool<byte>.Shared.Rent(256);
+
+            foreach (SpeakerToyPlaybackBase playbackBase in SpeakerToyPlaybackBase.AllInstances)
+            {
+                usedIds.Add(playbackBase.ControllerId);
+            }
+
+            if (usedIds.Count >= byte.MaxValue + 1)
+            {
+                NorthwoodLib.Pools.HashSetPool<byte>.Shared.Return(usedIds);
+                return 0;
+            }
+
+            while (usedIds.Contains(id))
+            {
+                id++;
+            }
+
+            NorthwoodLib.Pools.HashSetPool<byte>.Shared.Return(usedIds);
+            return id;
         }
 
         /// <summary>
@@ -334,6 +416,56 @@ namespace Exiled.API.Features.Toys
         {
             foreach (Player target in targets ?? Player.List)
                 target.Connection.Send(message);
+        }
+
+        /// <summary>
+        /// Rents a speaker from the pool, plays a wav file one time, and automatically returns it to the pool afterwards. (File must be 16 bit, mono and 48khz.)
+        /// </summary>
+        /// <param name="path">The path to the wav file.</param>
+        /// <param name="position">The position of the speaker.</param>
+        /// <param name="parent">The parent transform, if any.</param>
+        /// <param name="isSpatial">Whether the audio source is spatialized.</param>
+        /// <param name="volume">The volume level of the audio source.</param>
+        /// <param name="minDistance">The minimum distance at which the audio reaches full volume.</param>
+        /// <param name="maxDistance">The maximum distance at which the audio can be heard.</param>
+        /// <param name="pitch">The playback pitch level of the audio source.</param>
+        /// <param name="playMode">The play mode determining how audio is sent to players.</param>
+        /// <param name="stream">Whether to stream the audio or preload it.</param>
+        /// <param name="targetPlayer">The target player if PlayMode is Player.</param>
+        /// <param name="targetPlayers">The list of target players if PlayMode is PlayerList.</param>
+        /// <param name="predicate">The condition if PlayMode is Predicate.</param>
+        /// <returns>The rented <see cref="Speaker"/> instance if playback started successfully; otherwise, <c>null</c>.</returns>
+        public static Speaker PlayFromPool(string path, Vector3 position, Transform parent = null, bool isSpatial = true, float? volume = null, float? minDistance = null, float? maxDistance = null, float pitch = 1f, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
+        {
+            Speaker speaker = Rent(position, parent);
+
+            if (!isSpatial)
+                speaker.IsSpatial = isSpatial;
+
+            if (volume.HasValue)
+                speaker.Volume = volume.Value;
+
+            if (minDistance.HasValue)
+                speaker.MinDistance = minDistance.Value;
+
+            if (maxDistance.HasValue)
+                speaker.MaxDistance = maxDistance.Value;
+
+            speaker.Pitch = pitch;
+            speaker.PlayMode = playMode;
+            speaker.Predicate = predicate;
+            speaker.TargetPlayer = targetPlayer;
+            speaker.TargetPlayers = targetPlayers;
+
+            speaker.ReturnToPoolAfter = true;
+
+            if (!speaker.Play(path, stream: stream))
+            {
+                speaker.ReturnToPool();
+                return null;
+            }
+
+            return speaker;
         }
 
         /// <summary>
@@ -351,13 +483,20 @@ namespace Exiled.API.Features.Toys
         /// <param name="stream">Whether to stream the audio or preload it.</param>
         /// <param name="destroyAfter">Whether to destroy the speaker after playback.</param>
         /// <param name="loop">Whether to loop the audio.</param>
-        public void Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
+        /// <returns><c>true</c> if the audio file was successfully found, loaded, and playback started; otherwise, <c>false</c>.</returns>
+        public bool Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
         {
             if (!File.Exists(path))
-                throw new FileNotFoundException("The specified file does not exist.", path);
+            {
+                Log.Error($"[Speaker] The specified file does not exist, path: `{path}`.");
+                return false;
+            }
 
             if (!path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
-                throw new NotSupportedException($"The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
+            {
+                Log.Error($"[Speaker] The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
+                return false;
+            }
 
             TryInitializePlayBack();
             Stop();
@@ -365,8 +504,20 @@ namespace Exiled.API.Features.Toys
             Loop = loop;
             LastTrack = path;
             DestroyAfter = destroyAfter;
-            source = stream ? new WavStreamSource(path) : new PreloadedPcmSource(path);
+
+            try
+            {
+                source = stream ? new WavStreamSource(path) : new PreloadedPcmSource(path);
+            }
+            catch (Exception ex)
+            {
+                string loadMode = stream ? "Stream" : "Preload";
+                Log.Error($"[Speaker] Failed to initialize audio source ({loadMode}) for file at path: '{path}'.\nException Details: {ex}");
+                return false;
+            }
+
             playBackRoutine = Timing.RunCoroutine(PlayBackCoroutine().CancelWith(GameObject));
+            return true;
         }
 
         /// <summary>
@@ -382,6 +533,41 @@ namespace Exiled.API.Features.Toys
 
             source?.Dispose();
             source = null;
+        }
+
+        /// <summary>
+        /// blabalbla.
+        /// </summary>
+        public void ReturnToPool()
+        {
+            Stop();
+
+            Transform.SetParent(null);
+            Transform.localPosition = Vector3.zero;
+
+            Loop = false;
+            DestroyAfter = false;
+            ReturnToPoolAfter = false;
+            PlayMode = SpeakerPlayMode.Global;
+            Channel = Channels.ReliableOrdered2;
+
+            LastTrack = null;
+            Predicate = null;
+            TargetPlayer = null;
+            TargetPlayers = null;
+
+            Pitch = 1f;
+            Volume = 0f;
+            IsSpatial = true;
+
+            MinDistance = 1f;
+            MaxDistance = 15f;
+
+            resampleTime = 0.0;
+            resampleBufferFilled = 0;
+            isPitchDefault = true;
+
+            Pool.Enqueue(this);
         }
 
         private void TryInitializePlayBack()
@@ -445,7 +631,9 @@ namespace Exiled.API.Features.Toys
                         continue;
                     }
 
-                    if (DestroyAfter)
+                    if (ReturnToPoolAfter)
+                        ReturnToPool();
+                    else if (DestroyAfter)
                         Destroy();
                     else
                         Stop();
