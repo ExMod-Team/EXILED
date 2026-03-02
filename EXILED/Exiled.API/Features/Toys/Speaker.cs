@@ -425,27 +425,33 @@ namespace Exiled.API.Features.Toys
         /// <param name="position">The position of the speaker.</param>
         /// <param name="parent">The parent transform, if any.</param>
         /// <param name="isSpatial">Whether the audio source is spatialized.</param>
+        /// <param name="volume">The volume level of the audio source.</param>
         /// <param name="minDistance">The minimum distance at which the audio reaches full volume.</param>
         /// <param name="maxDistance">The maximum distance at which the audio can be heard.</param>
+        /// <param name="pitch">The playback pitch level of the audio source.</param>
         /// <param name="playMode">The play mode determining how audio is sent to players.</param>
         /// <param name="stream">Whether to stream the audio or preload it.</param>
         /// <param name="targetPlayer">The target player if PlayMode is Player.</param>
         /// <param name="targetPlayers">The list of target players if PlayMode is PlayerList.</param>
         /// <param name="predicate">The condition if PlayMode is Predicate.</param>
         /// <returns>The rented <see cref="Speaker"/> instance if playback started successfully; otherwise, <c>null</c>.</returns>
-        public static Speaker PlayFromPool(string path, Vector3 position, Transform parent = null, bool isSpatial = true, float? minDistance = null, float? maxDistance = null, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
+        public static Speaker PlayFromPool(string path, Vector3 position, Transform parent = null, bool isSpatial = true, float? volume = null, float? minDistance = null, float? maxDistance = null, float pitch = 1f, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
         {
             Speaker speaker = Rent(position, parent);
 
             if (!isSpatial)
                 speaker.IsSpatial = isSpatial;
 
-            if (minDistance != null)
-                speaker.MinDistance = (float)minDistance;
+            if (volume.HasValue)
+                speaker.Volume = volume.Value;
 
-            if (maxDistance != null)
-                speaker.MaxDistance = (float)maxDistance;
+            if (minDistance.HasValue)
+                speaker.MinDistance = minDistance.Value;
 
+            if (maxDistance.HasValue)
+                speaker.MaxDistance = maxDistance.Value;
+
+            speaker.Pitch = pitch;
             speaker.PlayMode = playMode;
             speaker.Predicate = predicate;
             speaker.TargetPlayer = targetPlayer;
@@ -554,8 +560,8 @@ namespace Exiled.API.Features.Toys
             Volume = 0f;
             IsSpatial = true;
 
-            MinDistance = 1;
-            MaxDistance = 15;
+            MinDistance = 1f;
+            MaxDistance = 15f;
 
             resampleTime = 0.0;
             resampleBufferFilled = 0;
