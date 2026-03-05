@@ -128,17 +128,20 @@ namespace Exiled.API.Features
 
             set
             {
+                if (IsDetonated)
+                    return;
+
                 LeverStatus = value.HasFlagFast(WarheadStatus.Armed);
 
-                if (value.HasFlagFast(WarheadStatus.InProgress))
+                if (!IsInProgress && value.HasFlagFast(WarheadStatus.InProgress))
                     Start();
-                else
+                else if (!value.HasFlagFast(WarheadStatus.InProgress))
                     Stop();
 
                 if (value.HasFlagFast(WarheadStatus.Detonated))
                     Detonate();
 
-                if (value.HasFlagFast(WarheadStatus.OnCooldown))
+                if (!IsOnCooldown && value.HasFlagFast(WarheadStatus.OnCooldown))
                     RemainingCooldown = Controller._cooldown;
             }
         }
