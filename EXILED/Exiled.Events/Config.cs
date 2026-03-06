@@ -51,6 +51,12 @@ namespace Exiled.Events
         public bool TutorialNotAffectedByScp079Scan { get; set; } = false;
 
         /// <summary>
+        /// Gets or sets a value indicating whether the last human glowing effect is enabled.
+        /// </summary>
+        [Description("Indicates whether the last human glowing effect is enabled")]
+        public bool CanLastHumanGlow { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets a value indicating whether flashbangs flash original thrower.
         /// </summary>
         [Description("Indicates whether flashbangs flash original thrower.")]
