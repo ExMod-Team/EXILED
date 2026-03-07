@@ -90,7 +90,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
             object color;
             if (isNullable)
-                color = Activator.CreateInstance(baseType, Activator.CreateInstance(type, coordinates.ToArray()));
+                color = Activator.CreateInstance(type, Activator.CreateInstance(baseType, coordinates.ToArray()));
             else
                 color = Activator.CreateInstance(type, coordinates.ToArray());
 

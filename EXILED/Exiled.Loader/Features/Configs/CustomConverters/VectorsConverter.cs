@@ -82,7 +82,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
             object vector;
             if (isNullable)
-                vector = Activator.CreateInstance(baseType, Activator.CreateInstance(type, coordinates.ToArray()));
+                vector = Activator.CreateInstance(type, Activator.CreateInstance(baseType, coordinates.ToArray()));
             else
                 vector = Activator.CreateInstance(type, coordinates.ToArray());
 
