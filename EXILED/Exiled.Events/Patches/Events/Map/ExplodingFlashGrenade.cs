@@ -69,7 +69,7 @@ namespace Exiled.Events.Patches.Events.Map
                 if ((instance.transform.position - player.Position).sqrMagnitude > distance)
                     continue;
 
-                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub))
+                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub) && instance.PreviousOwner.LifeIdentifier == player.Footprint.LifeIdentifier)
                     continue;
 
                 if (Physics.Linecast(instance.transform.position, player.CameraTransform.position, instance.BlindingMask))
