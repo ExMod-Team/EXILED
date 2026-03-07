@@ -80,8 +80,6 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                 coordinates.Add(coordinate);
             }
 
-            Log.Info($"Type{type} BaseType {baseType} is it Nullable ? {isNullable}");
-
             object vector;
             if (isNullable)
                 vector = Activator.CreateInstance(type, Activator.CreateInstance(baseType, coordinates.ToArray()));
