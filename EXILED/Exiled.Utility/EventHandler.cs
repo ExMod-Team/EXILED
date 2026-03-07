@@ -12,9 +12,14 @@ namespace Exiled.Utility
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
     using Decals;
     using Exiled.API.Features;
+    using Exiled.API.Features.Roles;
+    using Exiled.CustomRoles.API.Features;
     using Exiled.Events.EventArgs.Map;
+    using Exiled.Events.EventArgs.Player;
+    using Exiled.Utility.Enums;
     using InventorySystem.Items.Firearms.Modules;
     using PlayerRoles;
 
@@ -28,6 +33,46 @@ namespace Exiled.Utility
         {
             if (!Config.RecontainScp079IfNoScpsLeft)
                 PlayerRoleManager.OnServerRoleSet -= Recontainer.Base.OnServerRoleChanged;
+        }
+
+        public void OnSpawned(SpawnedEventArgs ev)
+        {
+            Scp173Role.TurnedPlayers.Remove(ev.Player);
+            Scp096Role.TurnedPlayers.Remove(ev.Player);
+            Scp049Role.TurnedPlayers.Remove(ev.Player);
+            Scp0492Role.TurnedPlayers.Remove(ev.Player);
+            string role = ev.Player.Role.Type.ToString();
+            foreach (CustomRole customRole in CustomRole.Registered)
+            {
+                if (customRole.Check(ev.Player))
+                {
+                    role = customRole.Name;
+                    break;
+                }
+            }
+
+            if (Config.NewStuffThatWasAboutTutorial.TryGetValue(role, out NewEnumForAllStuffThatWasAboutTutorial bruh))
+            {
+                if (bruh.HasFlag(NewEnumForAllStuffThatWasAboutTutorial.CanBlockScp173))
+                {
+                    Scp173Role.TurnedPlayers.Add(ev.Player);
+                }
+
+                if (bruh.HasFlag(NewEnumForAllStuffThatWasAboutTutorial.CanTriggerScp096))
+                {
+                    Scp096Role.TurnedPlayers.Add(ev.Player);
+                }
+
+                if (bruh.HasFlag(NewEnumForAllStuffThatWasAboutTutorial.CanScp049Sense))
+                {
+                    Scp049Role.TurnedPlayers.Add(ev.Player);
+                }
+
+                if (bruh.HasFlag(NewEnumForAllStuffThatWasAboutTutorial.CanScp0492Sense))
+                {
+                    Scp0492Role.TurnedPlayers.Add(ev.Player);
+                }
+            }
         }
 
         public void OnPlacingBulletHole(PlacingBulletHoleEventArgs ev)

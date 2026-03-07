@@ -41,8 +41,13 @@ namespace Exiled.Utility.Enums
         CanScp049Sense = 4,
 
         /// <summary>
+        /// Prevent from being target of Scp049 and stagger Scp0492.
+        /// </summary>
+        CanScp0492Sense = 4,
+
+        /// <summary>
         /// Prevent Player to be Alarmed by Scp079.
         /// </summary>
-        NotAffectedByScp079Scan = 8,
+        NotAffectedByScp079Scan = 16,
     }
 }

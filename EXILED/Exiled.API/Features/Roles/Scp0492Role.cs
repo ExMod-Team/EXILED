@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System.Collections.Generic;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp049;
@@ -44,6 +46,11 @@ namespace Exiled.API.Features.Roles
 
             ConsumeAbility = zombieConsumeAbility492;
         }
+
+        /// <summary>
+        /// Gets a list of players who are turned away from SCP-049 Sense Ability.
+        /// </summary>
+        public static HashSet<Player> TurnedPlayers { get; } = new(20);
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp0492;
