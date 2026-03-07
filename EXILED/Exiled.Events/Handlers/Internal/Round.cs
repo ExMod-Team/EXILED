@@ -7,6 +7,7 @@
 
 namespace Exiled.Events.Handlers.Internal
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -29,9 +30,12 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using InventorySystem.Items.Usables.Scp330;
+    using Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
+    using RelativePositioning;
+    using Respawning.NamingRules;
     using UnityEngine;
     using Utils.Networking;
     using Utils.NonAllocLINQ;
@@ -89,6 +93,39 @@ namespace Exiled.Events.Handlers.Internal
                 ev.Player.Inventory.ServerDropEverything();
         }
 
+        /// <inheritdoc cref="Handlers.Player.OnSpawned(SpawnedEventArgs)" />
+        public static void OnSpawned(SpawnedEventArgs ev)
+        {
+            foreach (Player viewer in Player.Enumerable)
+            {
+                foreach (Func<Player, RoleData> generator in ev.Player.FakeRoleGenerator)
+                {
+                    RoleData data = generator(viewer);
+
+                    if (data.Role == RoleTypeId.None)
+                        continue;
+
+                    if (viewer != ev.Player || (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.AffectSelf)
+                    {
+                        viewer.FakeRoles[ev.Player] = data;
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc cref="Handlers.Player.OnDying(DyingEventArgs)" />
+        public static void OnDying(DyingEventArgs ev)
+        {
+            if (!ev.IsAllowed)
+                return;
+
+            foreach (Player viewer in Player.Enumerable)
+            {
+                if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && (data.DataAuthority & RoleData.Authority.Persist) == RoleData.Authority.None)
+                    viewer.FakeRoles.Remove(ev.Player);
+            }
+        }
+
         /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
         public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
         {
@@ -128,7 +165,92 @@ namespace Exiled.Events.Handlers.Internal
             foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
             {
                 player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
+
+                foreach (Func<Player, RoleData> generator in player.FakeRoleGenerator)
+                {
+                    RoleData data = generator(ev.Player);
+
+                    if (data.Role == RoleTypeId.None)
+                        continue;
+
+                    if (player != ev.Player || (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.AffectSelf)
+                    {
+                        ev.Player.FakeRoles[player] = data;
+                    }
+                }
             }
+        }
+
+        /// <summary>
+        /// Makes fake role API work.
+        /// </summary>
+        /// <param name="ownerHub">The <see cref="ReferenceHub"/> of the player.</param>
+        /// <param name="viewerHub">The <see cref="ReferenceHub"/> of the viewer.</param>
+        /// <param name="actualRole">The actual <see cref="RoleTypeId"/>.</param>
+        /// <param name="writer">The pooled <see cref="NetworkWriter"/>.</param>
+        /// <returns>A role, fake if needed.</returns>
+        public static RoleTypeId OnRoleSyncEvent(ReferenceHub ownerHub, ReferenceHub viewerHub, RoleTypeId actualRole, NetworkWriter writer)
+        {
+            Player owner = Player.Get(ownerHub);
+            Player viewer = Player.Get(viewerHub);
+
+            if (viewer.FakeRoles.TryGetValue(owner, out RoleData data))
+            {
+                if (data.Role == actualRole)
+                    return actualRole;
+
+                if (ownerHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
+                    return data.Role;
+
+                // if another plugin has written data, we can't reliably modify and expect non-breaking behavior.
+                // if we send faulty data we can accidentally soft-dc the entire server which is much worse than a plugin not working.
+                if (writer.Position != 0 && (data.DataAuthority & RoleData.Authority.Override) == RoleData.Authority.None)
+                    return actualRole;
+
+                writer.Position = 0;
+
+                // I doubt most devs want people who are dead to have fake roles.
+                if (actualRole.IsDead() && (data.DataAuthority & RoleData.Authority.Always) == RoleData.Authority.None)
+                    return actualRole;
+
+                if (data.CustomData != null)
+                {
+                    data.CustomData(writer);
+                }
+                else
+                {
+                    if (data.Role.GetRoleBase() is PlayerRoles.HumanRole { UsesUnitNames: true })
+                    {
+                        if (data.UnitId != 0)
+                        {
+                            writer.WriteByte(data.UnitId);
+                        }
+                        else
+                        {
+                            if (!NamingRulesManager.GeneratedNames.TryGetValue(Team.FoundationForces, out List<string> list))
+                                return actualRole;
+
+                            writer.WriteByte((byte)list.Count);
+                        }
+                    }
+
+                    if (data.Role.GetRoleBase() is PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo)
+                        writer.WriteByte((byte)flamingo.ServerSpawnReason);
+
+                    if (data.Role == RoleTypeId.Scp0492)
+                    {
+                        writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(owner.MaxHealth), 0, ushort.MaxValue));
+                        writer.WriteBool(false);
+                    }
+
+                    writer.WriteRelativePosition(new RelativePosition(owner.Position));
+                    writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0.0f, 360f, owner.Rotation.eulerAngles.y) * ushort.MaxValue));
+                }
+
+                return data.Role;
+            }
+
+            return actualRole;
         }
 
         /// <inheritdoc cref="Handlers.Warhead.OnDetonated()"/>
