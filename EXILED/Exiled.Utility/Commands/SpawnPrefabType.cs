@@ -8,6 +8,7 @@
 namespace Exiled.Utility.Commands
 {
     using System;
+    using System.Linq;
 
     using CommandSystem;
     using Exiled.API.Enums;
@@ -48,11 +49,11 @@ namespace Exiled.Utility.Commands
 
             if (arguments.Count < 1)
             {
-                response = $"Please, use: {Command} {Usage}";
+                response = $"Please, use: {Command} {string.Join(", ", EnumUtils<PrefabType>.Names)}";
                 return false;
             }
 
-            if (Enum.TryParse(arguments.At(0), out PrefabType prefabType))
+            if (!Enum.TryParse(arguments.At(0), out PrefabType prefabType))
             {
                 response = $"\"{arguments.At(0)}\" is not a valid prefab type.";
                 return false;

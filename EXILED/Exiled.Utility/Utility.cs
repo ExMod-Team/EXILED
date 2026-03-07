@@ -8,8 +8,6 @@
 namespace Exiled.Utility
 {
     using System;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
 
     using API.Enums;
     using Exiled.API.Features;
