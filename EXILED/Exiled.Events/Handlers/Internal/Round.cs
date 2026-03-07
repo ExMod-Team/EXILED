@@ -82,13 +82,6 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Server.OnRoundStarted" />
         public static void OnRoundStarted() => MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_START);
 
-        /// <inheritdoc cref="Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
-        public static void OnChangingRole(ChangingRoleEventArgs ev)
-        {
-            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason is not SpawnReason.Destroyed && Events.Instance.Config.ShouldDropInventory)
-                ev.Player.Inventory.ServerDropEverything();
-        }
-
         /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
         public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
         {

@@ -20,11 +20,9 @@ namespace Exiled.Events.Patches.Generic
 
     using static HarmonyLib.AccessTools;
 
-    using ExiledEvents = Exiled.Events.Events;
-
     /// <summary>
     /// Patches <see cref="Scp049SenseAbility.CanFindTarget(out ReferenceHub)"/>.
-    /// <see cref="Config.CanScp049SenseTutorial"/>.
+    /// <see cref="API.Features.Roles.Scp049Role.TurnedPlayers"/>.
     /// </summary>
     [HarmonyPatch(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.CanFindTarget))]
     internal static class CanScp049SenseTutorial

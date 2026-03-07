@@ -9,6 +9,7 @@ namespace Exiled.Utility
 {
     using System;
     using System.Diagnostics;
+    using System.Runtime.InteropServices;
 
     using API.Enums;
     using Exiled.API.Features;
@@ -45,7 +46,7 @@ namespace Exiled.Utility
             {
                 Config = Config,
             };
-
+            Events.Handlers.Player.ChangingRole += EventHandler.OnChangingRole;
             Events.Handlers.Server.WaitingForPlayers += EventHandler.OnWaitingForPlayers;
             Events.Handlers.Map.PlacingBulletHole += EventHandler.OnPlacingBulletHole;
 
@@ -58,7 +59,9 @@ namespace Exiled.Utility
         public override void OnDisabled()
         {
             base.OnDisabled();
-
+            Events.Handlers.Player.ChangingRole += EventHandler.OnChangingRole;
+            Events.Handlers.Server.WaitingForPlayers += EventHandler.OnWaitingForPlayers;
+            Events.Handlers.Map.PlacingBulletHole += EventHandler.OnPlacingBulletHole;
             Unpatch();
         }
 

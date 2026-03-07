@@ -14,12 +14,14 @@ namespace Exiled.Utility
     using System.Threading.Tasks;
 
     using Decals;
+    using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.CustomRoles.API.Features;
     using Exiled.Events.EventArgs.Map;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Utility.Enums;
+    using InventorySystem;
     using InventorySystem.Items.Firearms.Modules;
     using PlayerRoles;
 
@@ -35,12 +37,20 @@ namespace Exiled.Utility
                 PlayerRoleManager.OnServerRoleSet -= Recontainer.Base.OnServerRoleChanged;
         }
 
+        /// <inheritdoc cref="Events.Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
+        public void OnChangingRole(ChangingRoleEventArgs ev)
+        {
+            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason is not SpawnReason.Destroyed && Config.ShouldDropInventory)
+                ev.Player.Inventory.ServerDropEverything();
+        }
+
         public void OnSpawned(SpawnedEventArgs ev)
         {
             Scp173Role.TurnedPlayers.Remove(ev.Player);
             Scp096Role.TurnedPlayers.Remove(ev.Player);
             Scp049Role.TurnedPlayers.Remove(ev.Player);
             Scp0492Role.TurnedPlayers.Remove(ev.Player);
+            Scp079Role.TurnedPlayers.Remove(ev.Player);
             string role = ev.Player.Role.Type.ToString();
             foreach (CustomRole customRole in CustomRole.Registered)
             {
@@ -71,6 +81,11 @@ namespace Exiled.Utility
                 if (bruh.HasFlag(NewEnumForAllStuffThatWasAboutTutorial.CanScp0492Sense))
                 {
                     Scp0492Role.TurnedPlayers.Add(ev.Player);
+                }
+
+                if (bruh.HasFlag(NewEnumForAllStuffThatWasAboutTutorial.NotAffectedByScp079Scan))
+                {
+                    Scp079Role.TurnedPlayers.Add(ev.Player);
                 }
             }
         }

@@ -28,13 +28,7 @@ namespace Exiled.Utility
         /// Gets or sets a value indicating whether SCP-173 can be blocked by the tutorial.
         /// </summary>
         [Description("Indicates whether RoleTypeId or CustomRole(Name or Id) prevented behaviours")]
-        public Dictionary<string, NewEnumForAllStuffThatWasAboutTutorial> NewStuffThatWasAboutTutorial { get; set; } =
-            Events.Events.Instance.Config.CanTutorialBlockScp173 ?
-            new()
-            {
-                { RoleTypeId.Tutorial.ToString(), NewEnumForAllStuffThatWasAboutTutorial.CanBlockScp173 },
-            }
-            : new()
+        public Dictionary<string, NewEnumForAllStuffThatWasAboutTutorial> NewStuffThatWasAboutTutorial { get; set; } = new()
             {
                 { RoleTypeId.Tutorial.ToString(), NewEnumForAllStuffThatWasAboutTutorial.None },
             };
@@ -43,24 +37,24 @@ namespace Exiled.Utility
         /// Gets or sets a value indicating whether flashbangs flash original thrower.
         /// </summary>
         [Description("Indicates whether flashbangs flash original thrower.")]
-        public bool CanFlashbangsAffectThrower { get; set; } = Events.Events.Instance.Config.CanFlashbangsAffectThrower;
+        public bool CanFlashbangsAffectThrower { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether the inventory should be dropped before being set as spectator, through commands or plugins.
         /// </summary>
         [Description("Indicates whether the inventory should be dropped before being set as spectator, through commands or plugins")]
-        public bool ShouldDropInventory { get; set; } = Events.Events.Instance.Config.ShouldDropInventory;
+        public bool ShouldDropInventory { get; set; } = false;
 
         /// <summary>
         /// Gets or sets a value indicating whether Decal spawned.
         /// </summary>
         [Description("Indicates whether the Decal (Blood, Bullet, Buckshot, GlassCrack) can be spawned")]
-        public List<DecalPoolType> PreventDecalSpawn { get; set; } = Events.Events.Instance.Config.CanSpawnBlood ? new() { DecalPoolType.Blood } : new() { };
+        public List<DecalPoolType> PreventDecalSpawn { get; set; } = new() { };
 
         /// <summary>
         /// Gets or sets a value indicating whether the SCP079 will recontained if there are no SCPs left.
         /// </summary>
         [Description("Indicates whether the SCP079 will recontained if there are no SCPs left.")]
-        public bool RecontainScp079IfNoScpsLeft { get; set; } = Events.Events.Instance.Config.RecontainScp079IfNoScpsLeft;
+        public bool RecontainScp079IfNoScpsLeft { get; set; } = true;
     }
 }
