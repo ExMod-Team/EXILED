@@ -89,12 +89,6 @@ namespace Exiled.CustomItems.API.Features
             InternalRemove(ev.Player, scp1344);
         }
 
-        /// <inheritdoc/>
-        protected override void OnAcquired(Player player, Item item, bool displayMessage)
-        {
-            base.OnAcquired(player, item, displayMessage);
-        }
-
         /// <summary>
         /// Called when the player equips the goggles.
         /// </summary>
