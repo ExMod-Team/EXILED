@@ -34,13 +34,13 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         /// <inheritdoc cref="IYamlTypeConverter" />
         public object ReadYaml(IParser parser, Type type)
         {
-            Type baseType = Nullable.GetUnderlyingType(type) ?? type;
+            Type baseType = Nullable.GetUnderlyingType(type);
 
             bool isNullable = true;
             if (baseType == null)
             {
-                baseType = type;
                 isNullable = false;
+                baseType = type;
             }
 
             if (parser.TryConsume(out Scalar scalar))
@@ -79,6 +79,8 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
                 coordinates.Add(coordinate);
             }
+
+            Log.Info($"Type{type} BaseType {baseType} is it Nullable ? {isNullable}");
 
             object vector;
             if (isNullable)
@@ -119,6 +121,13 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                 coordinates["y"] = vector4.y;
                 coordinates["z"] = vector4.z;
                 coordinates["w"] = vector4.w;
+            }
+            else if (value is Quaternion quaternion)
+            {
+                coordinates["x"] = quaternion.x;
+                coordinates["y"] = quaternion.y;
+                coordinates["z"] = quaternion.z;
+                coordinates["w"] = quaternion.w;
             }
 
             emitter.Emit(new MappingStart());
