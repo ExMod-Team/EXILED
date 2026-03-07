@@ -39,26 +39,6 @@ namespace Exiled.Utility
                 { RoleTypeId.Tutorial.ToString(), NewEnumForAllStuffThatWasAboutTutorial.None },
             };
 
-        /*
-        /// <summary>
-        /// Gets or sets a value indicating whether SCP-096 can be triggered by the tutorial.
-        /// </summary>
-        [Description("Indicates whether SCP-096 can be triggered by the tutorial")]
-        public bool CanTutorialTriggerScp096 { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether SCP-049 can activate the sense ability on tutorials.
-        /// </summary>
-        [Description("Indicates whether SCP-049 can sense tutorial players")]
-        public bool CanScp049SenseTutorial { get; set; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether tutorial is affected by SCP-079 scan.
-        /// </summary>
-        [Description("Indicates whether tutorial is affected by SCP-079 scan.")]
-        public bool TutorialNotAffectedByScp079Scan { get; set; } = false;
-        */
-
         /// <summary>
         /// Gets or sets a value indicating whether flashbangs flash original thrower.
         /// </summary>
