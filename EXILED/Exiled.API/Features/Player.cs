@@ -1200,6 +1200,11 @@ namespace Exiled.API.Features
         public Footprint Footprint => new(ReferenceHub);
 
         /// <summary>
+        /// Gets the player's UniqueLifeIdentifier.
+        /// </summary>
+        public int LifeIdentifier => ReferenceHub.roleManager.CurrentRole.UniqueLifeIdentifier;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the player is spawn protected.
         /// </summary>
         public bool IsSpawnProtected
