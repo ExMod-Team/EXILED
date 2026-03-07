@@ -11,19 +11,8 @@ namespace Exiled.Utility
     using System.Diagnostics;
 
     using API.Enums;
-    using API.Features;
-    using CentralAuth;
-    using Exiled.API.Features.Core.UserSettings;
-    using Exiled.Events.Features;
+    using Exiled.API.Features;
     using HarmonyLib;
-    using InventorySystem.Items.Pickups;
-    using InventorySystem.Items.Usables;
-    using PlayerRoles.Ragdolls;
-    using PlayerRoles.RoleAssign;
-
-    using Respawning;
-    using UnityEngine.SceneManagement;
-    using UserSettings.ServerSpecific;
 
     /// <summary>
     /// Patch and unpatch events into the game.
@@ -34,6 +23,11 @@ namespace Exiled.Utility
         /// Gets the plugin instance.
         /// </summary>
         public static Utility Instance { get; private set; }
+
+        /// <summary>
+        /// Gets the eventHandler.
+        /// </summary>
+        public static EventHandler EventHandler { get; private set; }
 
         /// <summary>
         /// Gets the Harmony instance.
@@ -47,17 +41,15 @@ namespace Exiled.Utility
         public override void OnEnabled()
         {
             Instance = this;
-            base.OnEnabled();
+            EventHandler = new EventHandler
+            {
+                Config = Config,
+            };
 
-            Stopwatch watch = Stopwatch.StartNew();
-
+            Events.Handlers.Server.WaitingForPlayers += EventHandler.OnWaitingForPlayers;
+            Events.Handlers.Map.PlacingBulletHole += EventHandler.OnPlacingBulletHole;
             Patch();
-
-            watch.Stop();
-
-            Log.Info($"patches completed in {watch.Elapsed}");
-
-            ServerConsole.ReloadServerName();
+            base.OnEnabled();
         }
 
         /// <inheritdoc/>
@@ -84,10 +76,8 @@ namespace Exiled.Utility
         /// </summary>
         public void Unpatch()
         {
-            Log.Debug("Unpatching events...");
             Harmony.UnpatchAll(Harmony.Id);
             Harmony = null;
-            Log.Debug("All events have been unpatched complete. Goodbye!");
         }
     }
 }

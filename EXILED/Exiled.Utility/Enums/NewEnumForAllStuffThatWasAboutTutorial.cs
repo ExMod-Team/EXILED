@@ -16,7 +16,12 @@ namespace Exiled.Utility.Enums
     public enum NewEnumForAllStuffThatWasAboutTutorial
     {
         /// <summary>
-        /// Unknown aspect ratio.
+        /// All.
+        /// </summary>
+        All = -1,
+
+        /// <summary>
+        /// None.
         /// </summary>
         None = 0,
 
@@ -31,7 +36,7 @@ namespace Exiled.Utility.Enums
         CanTriggerScp096 = 2,
 
         /// <summary>
-        /// Prevent from being target of Scp049.
+        /// Prevent from being target of Scp049 and stagger Scp0492.
         /// </summary>
         CanScp049Sense = 4,
 

@@ -34,7 +34,10 @@ namespace Exiled.Utility
             {
                 { RoleTypeId.Tutorial.ToString(), NewEnumForAllStuffThatWasAboutTutorial.CanBlockScp173 },
             }
-            : new() { };
+            : new()
+            {
+                { RoleTypeId.Tutorial.ToString(), NewEnumForAllStuffThatWasAboutTutorial.None },
+            };
 
         /*
         /// <summary>
