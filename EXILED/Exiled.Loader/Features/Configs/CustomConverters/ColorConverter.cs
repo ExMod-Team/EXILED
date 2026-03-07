@@ -34,7 +34,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         /// <inheritdoc cref="IYamlTypeConverter" />
         public object ReadYaml(IParser parser, Type type)
         {
-            Type baseType = Nullable.GetUnderlyingType(type) ?? type;
+            Type baseType = Nullable.GetUnderlyingType(type);
 
             bool isNullable = true;
             if (baseType == null)

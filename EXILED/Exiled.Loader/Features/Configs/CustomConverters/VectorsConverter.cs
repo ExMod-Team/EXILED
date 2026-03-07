@@ -28,7 +28,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         public bool Accepts(Type type)
         {
             Type baseType = Nullable.GetUnderlyingType(type) ?? type;
-            return baseType == typeof(Vector2) || baseType == typeof(Vector3) || baseType == typeof(Vector4);
+            return baseType == typeof(Vector2) || baseType == typeof(Vector3) || baseType == typeof(Vector4) || baseType == typeof(Quaternion);
         }
 
         /// <inheritdoc cref="IYamlTypeConverter" />
