@@ -82,13 +82,6 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Server.OnRoundStarted" />
         public static void OnRoundStarted() => MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.ROUND_START);
 
-        /// <inheritdoc cref="Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
-        public static void OnChangingRole(ChangingRoleEventArgs ev)
-        {
-            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason is not SpawnReason.Destroyed && Events.Instance.Config.ShouldDropInventory)
-                ev.Player.Inventory.ServerDropEverything();
-        }
-
         /// <inheritdoc cref="Handlers.Player.OnSpawningRagdoll(SpawningRagdollEventArgs)" />
         public static void OnSpawningRagdoll(SpawningRagdollEventArgs ev)
         {
@@ -104,7 +97,7 @@ namespace Exiled.Events.Handlers.Internal
         {
             if (ev.Target is null)
                 return;
-            if ((Events.Instance.Config.CanScp049SenseTutorial || ev.Target.Role.Type is not RoleTypeId.Tutorial) && !Scp049Role.TurnedPlayers.Contains(ev.Target))
+            if (!Scp049Role.TurnedPlayers.Contains(ev.Target))
                 return;
             ev.Target = ev.Scp049.SenseAbility.CanFindTarget(out ReferenceHub hub) ? Player.Get(hub) : null;
         }

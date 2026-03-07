@@ -5,7 +5,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.Events.Patches.Generic
+namespace Exiled.Utility.Patches
 {
     using System.Collections.Generic;
     using System.Reflection.Emit;
@@ -37,8 +37,8 @@ namespace Exiled.Events.Patches.Generic
                 {
                     // if (!Events.Instance.Config.ShouldScp079RecontainedWhenNoScps)
                     //     return;
-                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Exiled.Events.Events), nameof(Exiled.Events.Events.Instance))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Exiled.Events.Events), nameof(Exiled.Events.Events.Config))),
+                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Events.Events), nameof(Exiled.Events.Events.Instance))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(Events.Events), nameof(Exiled.Events.Events.Config))),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Config), nameof(Config.RecontainScp079IfNoScpsLeft))),
                     new(OpCodes.Brfalse_S, ret),
                 });

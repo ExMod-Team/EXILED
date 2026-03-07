@@ -38,37 +38,16 @@ namespace Exiled.Events.Patches.Generic
 
             Label returnLabel = generator.DefineLabel();
 
-            // Second check pointer
-            // We use it to pass execution
-            // to the second check if the first check fails,
-            // otherwise the second check won't be executed
-            Label secondCheckPointer = generator.DefineLabel();
-
             newInstructions[0].labels.Add(continueLabel);
 
-            // if (referenceHub.roleManager.CurrentRole.RoleTypeId == RoleTypeId.Tutorial && !ExiledEvents.Instance.Config.CanTutorialTriggerScp096
-            // || Scp096Role.TurnedPlayers.Contains(Player.Get(referenceHub)))
+            // if (!Scp096Role.TurnedPlayers.Contains(Player.Get(referenceHub)))
             //      return false;
             newInstructions.InsertRange(
                 0,
                 new[]
                 {
-                    // if ((referenceHub.roleManager.CurrentRole.RoleTypeId == RoleTypeId.Tutorial &&
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.roleManager))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleBase), nameof(PlayerRoleBase.RoleTypeId))),
-                    new(OpCodes.Ldc_I4_S, (sbyte)RoleTypeId.Tutorial),
-                    new(OpCodes.Bne_Un_S, secondCheckPointer),
-
-                    // !ExiledEvents.Instance.Config.CanTutorialTriggerScp096)
-                    new(OpCodes.Call, PropertyGetter(typeof(ExiledEvents), nameof(ExiledEvents.Instance))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Plugin<Config>), nameof(Plugin<Config>.Config))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Config), nameof(Config.CanTutorialTriggerScp096))),
-                    new(OpCodes.Brfalse_S, returnLabel),
-
-                    // || Scp096Role.TurnedPlayers.Contains(Player.Get(referenceHub))
-                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Scp096Role), nameof(Scp096Role.TurnedPlayers))).WithLabels(secondCheckPointer),
+                    // if (!Scp096Role.TurnedPlayers.Contains(Player.Get(referenceHub)))
+                    new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(Scp096Role), nameof(Scp096Role.TurnedPlayers))),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Callvirt, Method(typeof(HashSet<Player>), nameof(HashSet<Player>.Contains))),

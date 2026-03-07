@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.4.33205.214
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11512.155 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.Events", "Exiled.Events\Exiled.Events.csproj", "{1E6C4350-5067-4CE7-91DB-6420D027A4FC}"
 EndProject
@@ -22,6 +22,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exiled.CustomRoles", "Exiled.CustomRoles\Exiled.CustomRoles.csproj", "{417C3309-8B93-4218-A1D1-D4BB7B09BE0F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docs", "docs\docs.csproj", "{BE130A80-6819-44C6-AA1B-BF068DEA67FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exiled.Utility", "Exiled.Utility\Exiled.Utility.csproj", "{70A4E012-0DBB-18AA-A972-770281EEF726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,12 @@ Global
 		{BE130A80-6819-44C6-AA1B-BF068DEA67FF}.Installer|Any CPU.Build.0 = Installer|Any CPU
 		{BE130A80-6819-44C6-AA1B-BF068DEA67FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE130A80-6819-44C6-AA1B-BF068DEA67FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70A4E012-0DBB-18AA-A972-770281EEF726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70A4E012-0DBB-18AA-A972-770281EEF726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70A4E012-0DBB-18AA-A972-770281EEF726}.Installer|Any CPU.ActiveCfg = Installer|Any CPU
+		{70A4E012-0DBB-18AA-A972-770281EEF726}.Installer|Any CPU.Build.0 = Installer|Any CPU
+		{70A4E012-0DBB-18AA-A972-770281EEF726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70A4E012-0DBB-18AA-A972-770281EEF726}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
