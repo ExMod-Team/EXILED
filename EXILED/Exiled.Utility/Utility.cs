@@ -48,6 +48,8 @@ namespace Exiled.Utility
 
             Events.Handlers.Server.WaitingForPlayers += EventHandler.OnWaitingForPlayers;
             Events.Handlers.Map.PlacingBulletHole += EventHandler.OnPlacingBulletHole;
+
+            // BloodDecal is Missing
             Patch();
             base.OnEnabled();
         }
