@@ -74,7 +74,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Ret),
             });
 
-            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_2);
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldc_R4);
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
