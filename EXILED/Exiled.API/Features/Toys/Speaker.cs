@@ -23,12 +23,15 @@ namespace Exiled.API.Features.Toys
 
     using Mirror;
 
+    using NorthwoodLib.Pools;
+
     using UnityEngine;
 
     using VoiceChat;
     using VoiceChat.Codec;
     using VoiceChat.Codec.Enums;
     using VoiceChat.Networking;
+    using VoiceChat.Playbacks;
 
     using Object = UnityEngine.Object;
 
@@ -37,8 +40,22 @@ namespace Exiled.API.Features.Toys
     /// </summary>
     public class Speaker : AdminToy, IWrapper<SpeakerToy>
     {
+        /// <summary>
+        /// A queue used for object pooling of <see cref="Speaker"/> instances.
+        /// Reusing idle speakers instead of constantly creating and destroying them significantly improves server performance, especially for frequent audio events.
+        /// </summary>
+        internal static readonly Queue<Speaker> Pool = new();
+
+        private const float DefaultVolume = 1f;
+        private const float DefaultMinDistance = 1f;
+        private const float DefaultMaxDistance = 15f;
+
+        private const bool DefaultSpatial = true;
+
         private const int FrameSize = VoiceChatSettings.PacketSizePerChannel;
         private const float FrameTime = (float)FrameSize / VoiceChatSettings.SampleRate;
+
+        private static readonly Vector3 SpeakerParkPosition = Vector3.down * 999;
 
         private float[] frame;
         private byte[] encoded;
@@ -118,6 +135,11 @@ namespace Exiled.API.Features.Toys
         public bool DestroyAfter { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the speaker should return to the pool after playback finishes.
+        /// </summary>
+        public bool ReturnToPoolAfter { get; set; }
+
+        /// <summary>
         /// Gets or sets the play mode for this speaker, determining how audio is sent to players.
         /// </summary>
         public SpeakerPlayMode PlayMode { get; set; }
@@ -177,12 +199,12 @@ namespace Exiled.API.Features.Toys
             get => source?.CurrentTime ?? 0.0;
             set
             {
-                if (source != null)
-                {
-                    source.CurrentTime = value;
-                    resampleTime = 0.0;
-                    resampleBufferFilled = 0;
-                }
+                if (source == null)
+                    return;
+
+                source.CurrentTime = value;
+                resampleTime = 0.0;
+                resampleBufferFilled = 0;
             }
         }
 
@@ -283,19 +305,27 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Creates a new <see cref="Speaker"/>.
         /// </summary>
-        /// <param name="position">The position of the <see cref="Speaker"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Speaker"/>.</param>
-        /// <param name="scale">The scale of the <see cref="Speaker"/>.</param>
+        /// <param name="parent">The parent transform to attach the <see cref="Speaker"/> to.</param>
+        /// <param name="position">The local position of the <see cref="Speaker"/>.</param>
+        /// <param name="volume">The volume level of the audio source.</param>
+        /// <param name="isSpatial">Whether the audio source is spatialized (3D sound).</param>
+        /// <param name="minDistance">The minimum distance at which the audio reaches full volume.</param>
+        /// <param name="maxDistance">The maximum distance at which the audio can be heard.</param>
+        /// <param name="controllerId">The specific controller ID to assign. If null, the next available ID is used.</param>
         /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Speaker"/>.</returns>
-        public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn)
+        public static Speaker Create(Transform parent = null, Vector3? position = null, float volume = 1f, bool isSpatial = true, float minDistance = 1f, float maxDistance = 15f, byte? controllerId = null, bool spawn = true)
         {
-            Speaker speaker = new(Object.Instantiate(Prefab))
+            Speaker speaker = new(Object.Instantiate(Prefab, parent))
             {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
-                Scale = scale ?? Vector3.one,
+                Volume = volume,
+                IsSpatial = isSpatial,
+                MinDistance = minDistance,
+                MaxDistance = maxDistance,
+                ControllerId = controllerId ?? GetNextFreeControllerId(),
             };
+
+            speaker.Transform.localPosition = position ?? Vector3.zero;
 
             if (spawn)
                 speaker.Spawn();
@@ -304,45 +334,121 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Creates a new <see cref="Speaker"/>.
+        /// Rents an available speaker from the pool or creates a new one if the pool is empty.
         /// </summary>
-        /// <param name="transform">The transform to create this <see cref="Speaker"/> on.</param>
-        /// <param name="spawn">Whether the <see cref="Speaker"/> should be initially spawned.</param>
-        /// <param name="worldPositionStays">Whether the <see cref="Speaker"/> should keep the same world position.</param>
-        /// <returns>The new <see cref="Speaker"/>.</returns>
-        public static Speaker Create(Transform transform, bool spawn, bool worldPositionStays = true)
+        /// <param name="position">The local position of the <see cref="Speaker"/>.</param>
+        /// <param name="parent">The parent transform to attach the <see cref="Speaker"/> to.</param>
+        /// <returns>A clean <see cref="Speaker"/> instance ready for use.</returns>
+        public static Speaker Rent(Vector3 position, Transform parent = null)
         {
-            Speaker speaker = new(Object.Instantiate(Prefab, transform, worldPositionStays))
-            {
-                Position = transform.position,
-                Rotation = transform.rotation,
-                Scale = transform.localScale.normalized,
-            };
+            Speaker speaker = null;
 
-            if (spawn)
-                speaker.Spawn();
+            while (Pool.Count > 0)
+            {
+                speaker = Pool.Dequeue();
+
+                if (speaker != null && speaker.Base != null)
+                    break;
+
+                speaker = null;
+            }
+
+            if (speaker == null)
+            {
+                speaker = Create(parent: parent, position: position, spawn: true);
+            }
+            else
+            {
+                speaker.IsStatic = false;
+
+                if (parent != null)
+                    speaker.Transform.SetParent(parent);
+
+                speaker.Transform.localPosition = position;
+                speaker.ControllerId = GetNextFreeControllerId();
+            }
 
             return speaker;
         }
 
         /// <summary>
-        /// Plays audio through this speaker.
+        /// Rents a speaker from the pool, plays a wav file one time, and automatically returns it to the pool afterwards. (File must be 16 bit, mono and 48khz.)
         /// </summary>
-        /// <param name="message">An <see cref="AudioMessage"/> instance.</param>
-        /// <param name="targets">Targets who will hear the audio. If <c>null</c>, audio will be sent to all players.</param>
-        public static void Play(AudioMessage message, IEnumerable<Player> targets = null)
+        /// <param name="path">The path to the wav file.</param>
+        /// <param name="position">The position of the speaker.</param>
+        /// <param name="parent">The parent transform, if any.</param>
+        /// <param name="isSpatial">Whether the audio source is spatialized.</param>
+        /// <param name="volume">The volume level of the audio source.</param>
+        /// <param name="minDistance">The minimum distance at which the audio reaches full volume.</param>
+        /// <param name="maxDistance">The maximum distance at which the audio can be heard.</param>
+        /// <param name="pitch">The playback pitch level of the audio source.</param>
+        /// <param name="playMode">The play mode determining how audio is sent to players.</param>
+        /// <param name="stream">Whether to stream the audio or preload it.</param>
+        /// <param name="targetPlayer">The target player if PlayMode is Player.</param>
+        /// <param name="targetPlayers">The list of target players if PlayMode is PlayerList.</param>
+        /// <param name="predicate">The condition if PlayMode is Predicate.</param>
+        /// <returns><c>true</c> if the audio file was successfully found, loaded, and playback started; otherwise, <c>false</c>.</returns>
+        public static bool PlayFromPool(string path, Vector3 position, Transform parent = null, bool isSpatial = true, float? volume = null, float? minDistance = null, float? maxDistance = null, float pitch = 1f, SpeakerPlayMode playMode = SpeakerPlayMode.Global, bool stream = false, Player targetPlayer = null, HashSet<Player> targetPlayers = null, Func<Player, bool> predicate = null)
         {
-            foreach (Player target in targets ?? Player.List)
-                target.Connection.Send(message);
+            Speaker speaker = Rent(position, parent);
+
+            if (!isSpatial)
+                speaker.IsSpatial = isSpatial;
+
+            if (volume.HasValue && volume.Value != DefaultVolume)
+                speaker.Volume = volume.Value;
+
+            if (minDistance.HasValue && minDistance.Value != DefaultMinDistance)
+                speaker.MinDistance = minDistance.Value;
+
+            if (maxDistance.HasValue && maxDistance.Value != DefaultMaxDistance)
+                speaker.MaxDistance = maxDistance.Value;
+
+            speaker.Pitch = pitch;
+            speaker.PlayMode = playMode;
+            speaker.Predicate = predicate;
+            speaker.TargetPlayer = targetPlayer;
+            speaker.TargetPlayers = targetPlayers;
+
+            speaker.ReturnToPoolAfter = true;
+
+            if (!speaker.Play(path, stream))
+            {
+                speaker.ReturnToPool();
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
-        /// Plays audio through this speaker.
+        /// Gets the next available controller ID for a <see cref="Speaker"/>.
         /// </summary>
-        /// <param name="samples">Audio samples.</param>
-        /// <param name="length">The length of the samples array.</param>
-        /// <param name="targets">Targets who will hear the audio. If <c>null</c>, audio will be sent to all players.</param>
-        public void Play(byte[] samples, int? length = null, IEnumerable<Player> targets = null) => Play(new AudioMessage(ControllerId, samples, length ?? samples.Length), targets);
+        /// <returns>The next available byte ID. If all IDs are currently in use, returns a default of 0.</returns>
+        public static byte GetNextFreeControllerId()
+        {
+            byte id = 0;
+            HashSet<byte> usedIds = HashSetPool<byte>.Shared.Rent(256);
+
+            foreach (SpeakerToyPlaybackBase playbackBase in SpeakerToyPlaybackBase.AllInstances)
+            {
+                usedIds.Add(playbackBase.ControllerId);
+            }
+
+            if (usedIds.Count >= byte.MaxValue + 1)
+            {
+                HashSetPool<byte>.Shared.Return(usedIds);
+                return 0;
+            }
+
+            while (usedIds.Contains(id))
+            {
+                id++;
+            }
+
+            HashSetPool<byte>.Shared.Return(usedIds);
+            return id;
+        }
 
         /// <summary>
         /// Plays a wav file through this speaker.(File must be 16 bit, mono and 48khz.)
@@ -351,13 +457,20 @@ namespace Exiled.API.Features.Toys
         /// <param name="stream">Whether to stream the audio or preload it.</param>
         /// <param name="destroyAfter">Whether to destroy the speaker after playback.</param>
         /// <param name="loop">Whether to loop the audio.</param>
-        public void Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
+        /// <returns><c>true</c> if the audio file was successfully found, loaded, and playback started; otherwise, <c>false</c>.</returns>
+        public bool Play(string path, bool stream = false, bool destroyAfter = false, bool loop = false)
         {
             if (!File.Exists(path))
-                throw new FileNotFoundException("The specified file does not exist.", path);
+            {
+                Log.Error($"[Speaker] The specified file does not exist, path: `{path}`.");
+                return false;
+            }
 
             if (!path.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
-                throw new NotSupportedException($"The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
+            {
+                Log.Error($"[Speaker] The file type '{Path.GetExtension(path)}' is not supported. Please use .wav file.");
+                return false;
+            }
 
             TryInitializePlayBack();
             Stop();
@@ -365,8 +478,19 @@ namespace Exiled.API.Features.Toys
             Loop = loop;
             LastTrack = path;
             DestroyAfter = destroyAfter;
-            source = stream ? new WavStreamSource(path) : new PreloadedPcmSource(path);
+
+            try
+            {
+                source = stream ? new WavStreamSource(path) : new PreloadedPcmSource(path);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[Speaker] Failed to initialize audio source for file at path: '{path}'.\nException Details: {ex}");
+                return false;
+            }
+
             playBackRoutine = Timing.RunCoroutine(PlayBackCoroutine().CancelWith(GameObject));
+            return true;
         }
 
         /// <summary>
@@ -382,6 +506,54 @@ namespace Exiled.API.Features.Toys
 
             source?.Dispose();
             source = null;
+        }
+
+        /// <summary>
+        /// Stops the current playback, resets all properties of the <see cref="Speaker"/>, and returns the instance to the object pool for future reuse.
+        /// </summary>
+        public void ReturnToPool()
+        {
+            Stop();
+
+            if (Transform.parent != null || AdminToyBase._clientParentId != 0)
+            {
+                Transform.SetParent(null);
+                Base.RpcChangeParent(0);
+            }
+
+            Position = SpeakerParkPosition;
+
+            if (Volume != DefaultVolume)
+                Volume = DefaultVolume;
+
+            if (IsSpatial != DefaultSpatial)
+                IsSpatial = DefaultSpatial;
+
+            if (MinDistance != DefaultMinDistance)
+                MinDistance = DefaultMinDistance;
+
+            if (MaxDistance != DefaultMaxDistance)
+                MaxDistance = DefaultMaxDistance;
+
+            IsStatic = true;
+
+            Loop = false;
+            DestroyAfter = false;
+            ReturnToPoolAfter = false;
+            PlayMode = SpeakerPlayMode.Global;
+            Channel = Channels.ReliableOrdered2;
+
+            LastTrack = null;
+            Predicate = null;
+            TargetPlayer = null;
+            TargetPlayers = null;
+
+            Pitch = 1f;
+            resampleTime = 0.0;
+            resampleBufferFilled = 0;
+            isPitchDefault = true;
+
+            Pool.Enqueue(this);
         }
 
         private void TryInitializePlayBack()
@@ -445,7 +617,9 @@ namespace Exiled.API.Features.Toys
                         continue;
                     }
 
-                    if (DestroyAfter)
+                    if (ReturnToPoolAfter)
+                        ReturnToPool();
+                    else if (DestroyAfter)
                         Destroy();
                     else
                         Stop();
@@ -454,6 +628,51 @@ namespace Exiled.API.Features.Toys
                 }
 
                 yield return Timing.WaitForOneFrame;
+            }
+        }
+
+        private void SendPacket(int len)
+        {
+            AudioMessage msg = new(ControllerId, encoded, len);
+
+            switch (PlayMode)
+            {
+                case SpeakerPlayMode.Global:
+                    NetworkServer.SendToReady(msg, Channel);
+                    break;
+
+                case SpeakerPlayMode.Player:
+                    TargetPlayer?.Connection.Send(msg, Channel);
+                    break;
+
+                case SpeakerPlayMode.PlayerList:
+                    using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+                    {
+                        NetworkMessages.Pack(msg, writer);
+                        ArraySegment<byte> segment = writer.ToArraySegment();
+
+                        foreach (Player ply in TargetPlayers)
+                        {
+                            ply?.Connection.Send(segment, Channel);
+                        }
+                    }
+
+                    break;
+
+                case SpeakerPlayMode.Predicate:
+                    using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+                    {
+                        NetworkMessages.Pack(msg, writer);
+                        ArraySegment<byte> segment = writer.ToArraySegment();
+
+                        foreach (Player ply in Player.List)
+                        {
+                            if (Predicate(ply))
+                                ply.Connection.Send(segment, Channel);
+                        }
+                    }
+
+                    break;
             }
         }
 
@@ -524,51 +743,6 @@ namespace Exiled.API.Features.Toys
                 frame[outputIdx++] = (float)(sample1 + ((sample2 - sample1) * frac));
 
                 resampleTime += Pitch;
-            }
-        }
-
-        private void SendPacket(int len)
-        {
-            AudioMessage msg = new(ControllerId, encoded, len);
-
-            switch (PlayMode)
-            {
-                case SpeakerPlayMode.Global:
-                    NetworkServer.SendToReady(msg, Channel);
-                    break;
-
-                case SpeakerPlayMode.Player:
-                    TargetPlayer?.Connection.Send(msg, Channel);
-                    break;
-
-                case SpeakerPlayMode.PlayerList:
-                    using (NetworkWriterPooled writer = NetworkWriterPool.Get())
-                    {
-                        NetworkMessages.Pack(msg, writer);
-                        ArraySegment<byte> segment = writer.ToArraySegment();
-
-                        foreach (Player ply in TargetPlayers)
-                        {
-                            ply?.Connection.Send(segment, Channel);
-                        }
-                    }
-
-                    break;
-
-                case SpeakerPlayMode.Predicate:
-                    using (NetworkWriterPooled writer = NetworkWriterPool.Get())
-                    {
-                        NetworkMessages.Pack(msg, writer);
-                        ArraySegment<byte> segment = writer.ToArraySegment();
-
-                        foreach (Player ply in Player.List)
-                        {
-                            if (Predicate(ply))
-                                ply.Connection.Send(segment, Channel);
-                        }
-                    }
-
-                    break;
             }
         }
 
