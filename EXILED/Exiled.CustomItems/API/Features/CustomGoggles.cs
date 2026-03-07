@@ -183,11 +183,11 @@ namespace Exiled.CustomItems.API.Features
 
         private void InternalRemove(Player player, Scp1344 goggles)
         {
-            if (!Remove1344Effect)
-                player.DisableEffect(EffectType.Scp1344);
-
             if (CanBeRemoveSafely)
             {
+                if (!Remove1344Effect)
+                    player.DisableEffect(EffectType.Scp1344);
+
                 player.DisableEffect(EffectType.Blindness);
                 player.ReferenceHub?.DisableWearables(WearableElements.Scp1344Goggles);
             }
@@ -222,19 +222,25 @@ namespace Exiled.CustomItems.API.Features
 
         private void RemoveSafely(ReferenceHub hub)
         {
-            if (Player.TryGet(hub, out Player owner))
+            if (!Player.TryGet(hub, out Player owner))
                 return;
 
             foreach (Item item in owner.Items)
             {
                 if (item.Type != ItemType.SCP1344)
                     continue;
+
                 if (item is not Scp1344 { IsWorn: true } scp1344)
                     continue;
+
                 if (!Check(item))
                     continue;
-                if (CanBeRemoveSafely)
-                    scp1344.Status = Scp1344Status.Idle;
+
+                if (!CanBeRemoveSafely)
+                    continue;
+
+                scp1344.Status = Scp1344Status.Idle;
+                InternalRemove(owner, scp1344);
             }
         }
     }
