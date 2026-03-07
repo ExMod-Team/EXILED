@@ -35,6 +35,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             FirstPersonController = baseRole;
+            IsUsingStamina = true;
         }
 
         /// <summary>
