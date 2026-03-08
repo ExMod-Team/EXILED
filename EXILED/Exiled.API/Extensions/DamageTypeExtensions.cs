@@ -153,6 +153,13 @@ namespace Exiled.API.Extensions
         public static bool IsScp3114(this DamageType type) => type is DamageType.Scp3114 or DamageType.Scp3114SkinSteal or DamageType.Strangled;
 
         /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp3114"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsMicroHid(this DamageType type) => type is DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire;
+
+        /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by a status effect.
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
