@@ -92,7 +92,10 @@ namespace Exiled.API.Features.Audio
                     short bits = BinaryPrimitives.ReadInt16LittleEndian(fmtData.Slice(14, 2));
 
                     if (format != 1 || channels != 1 || rate != VoiceChatSettings.SampleRate || bits != 16)
-                        throw new InvalidDataException($"Invalid WAV format (format={format}, channels={channels}, rate={rate}, bits={bits}). Expected PCM16, mono and {VoiceChatSettings.SampleRate}Hz.");
+                    {
+                        Log.Error($"[Speaker] Invalid WAV format (format={format}, channels={channels}, rate={rate}, bits={bits}). Expected PCM16, mono and {VoiceChatSettings.SampleRate}Hz.");
+                        throw new InvalidDataException("Unsupported WAV format.");
+                    }
 
                     if (chunkSize > 16)
                         stream.Seek(chunkSize - 16, SeekOrigin.Current);
@@ -109,7 +112,10 @@ namespace Exiled.API.Features.Audio
                 }
 
                 if (stream.Position >= stream.Length)
-                    throw new InvalidDataException("WAV file does not contain a 'data' chunk.");
+                {
+                    Log.Error("[Speaker] WAV file does not contain a 'data' chunk.");
+                    throw new InvalidDataException("Missing 'data' chunk in WAV file.");
+                }
             }
         }
     }
