@@ -15,6 +15,7 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Core.UserSettings;
+    using Exiled.API.Features.Doors;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Roles;
@@ -60,6 +61,10 @@ namespace Exiled.Events.Handlers.Internal
 
             if (Events.Instance.Config.Debug)
                 Patches.Events.Map.Generating.Benchmark();
+
+            // TODO: Remove when this has been fixed https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/1560
+            foreach (Door door in Recontainer.LockedDoors)
+                door.AllowsScp106 = false;
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRestartingRound" />
