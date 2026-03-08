@@ -123,6 +123,7 @@ namespace Exiled.API.Features
             DictionaryPool<string, object>.Pool.Return(SessionVariables);
             DictionaryPool<RoleTypeId, float>.Pool.Return(FriendlyFireMultiplier);
             DictionaryPool<string, Dictionary<RoleTypeId, float>>.Pool.Return(CustomRoleFriendlyFireMultiplier);
+            ListPool<Func<Player, RoleData>>.Pool.Return(FakeRoleGenerator);
         }
 
         /// <summary>
@@ -404,6 +405,11 @@ namespace Exiled.API.Features
         public Dictionary<string, object> SessionVariables { get; } = DictionaryPool<string, object>.Pool.Get();
 
         /// <summary>
+        /// Gets a dictionary that contains from this players POV, a dictionary containing other players and their faked roles with custom data.
+        /// </summary>
+        public Dictionary<Player, RoleData> FakeRoles { get; } = new();
+
+        /// <summary>
         /// Gets a value indicating whether the player has Do Not Track (DNT) enabled. If this value is <see langword="true"/>, data about the player unrelated to server security shouldn't be stored.
         /// </summary>
         public bool DoNotTrack => ReferenceHub.authManager.DoNotTrack;
@@ -602,6 +608,12 @@ namespace Exiled.API.Features
                 field = value;
             }
         }
+
+        /// <summary>
+        /// Gets a <see cref="List{T}"/> of <see cref="Func{T1, T2}"/> generating a <see cref="RoleData"/> to fake this players role whenever this player changes role.
+        /// </summary>
+        /// <remarks>See <see cref="SetAppearance(Func{Player,RoleData})"/> for usage.</remarks>
+        public List<Func<Player, RoleData>> FakeRoleGenerator { get; } = ListPool<Func<Player, RoleData>>.Pool.Get();
 
         /// <summary>
         /// Gets the role that player had before changing role.
@@ -1834,6 +1846,50 @@ namespace Exiled.API.Features
         /// <param name="role"> Role to add. </param>
         /// <returns> Whether the item was able to be added. </returns>
         public bool TryRemoveCustomeRoleFriendlyFire(string role) => CustomRoleFriendlyFireMultiplier.Remove(role);
+
+        /// <summary>
+        /// Adds a <see cref="Func{Player, RoleData}"/> from a <see cref="Player"/> to a <see cref="RoleTypeId"/> that is used every time this players role changes.
+        /// </summary>
+        /// <param name="generator">The function that determines if this players role will be faked (to a viewer) after their role changes.</param>
+        /// <remarks>The first Func in <see cref="FakeRoleGenerator"/> that returns a RoleData that is not <see cref="RoleData.None"/> will be used for faking appearance.
+        /// <para>An example use case would be to make a scientist appear as a Class-D to all other Class-D, that Func would look like:
+        /// <code>
+        /// player => player.Role.Team is Team.ClassD ? new RoleData(RoleTypeId.ClassD) : RoleData.None
+        /// </code>
+        /// This method can be further optimized by only using static RoleData instances in your Funcs.
+        /// </para>
+        /// </remarks>
+        public void SetAppearance(Func<Player, RoleData> generator)
+        {
+            FakeRoleGenerator.Add(generator);
+        }
+
+        /// <summary>
+        /// Fakes this players role to other viewers.
+        /// </summary>
+        /// <param name="viewers">The players to affect.</param>
+        /// <param name="fakeRole">The fake role.</param>
+        /// <param name="authority">How to handle edge cases.</param>
+        /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
+        public void SetAppearance(IEnumerable<Player> viewers, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte unitId = 0)
+        {
+            foreach (Player player in viewers)
+            {
+                player.SetAppearance(this, fakeRole, authority, unitId);
+            }
+        }
+
+        /// <summary>
+        /// Fakes another players role to this player.
+        /// </summary>
+        /// <param name="player">The target.</param>
+        /// <param name="fakeRole">The fake role.</param>
+        /// <param name="authority">How to handle edge cases.</param>
+        /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
+        public void SetAppearance(Player player, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte unitId = 0)
+        {
+            FakeRoles[player] = new RoleData(fakeRole, authority, unitId);
+        }
 
         /// <summary>
         /// Forces the player's client to play the weapon reload animation, bypassing server-side checks.
