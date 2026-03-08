@@ -127,7 +127,7 @@ namespace Exiled.API.Features.DamageHandlers
                     microHidOwner.Owner = attacker.ReferenceHub;
                     Base = new MicroHidDamageHandler(damage, microHidOwner);
                     break;
-                case DamageType.Explosion:
+                case DamageType.ExplosionGrenade:
                     Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);
                     break;
                 case DamageType.Firearm:
@@ -173,7 +173,7 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.ParticleDisruptor:
                     Base = new DisruptorDamageHandler(new (Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, InventorySystem.Items.Firearms.Modules.DisruptorActionModule.FiringState.FiringSingle), Vector3.up, damage);
                     break;
-                case DamageType.Scp096:
+                case DamageType.Scp096Other:
                     Scp096Role curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
 
                     if (curr096 != null)

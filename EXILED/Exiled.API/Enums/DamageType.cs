@@ -77,7 +77,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Damage dealt by frag grenades.
         /// </summary>
-        Explosion,
+        ExplosionGrenade,
 
         /// <summary>
         /// Damage dealt by SCP-018.
@@ -135,9 +135,9 @@ namespace Exiled.API.Enums
         Scp049,
 
         /// <summary>
-        /// Damage caused by <see cref="RoleTypeId.Scp096"/>.
+        /// Damage caused by <see cref="RoleTypeId.Scp096"/> with unspecified <see cref="PlayerStatsSystem.Scp096DamageHandler.AttackType"/>..
         /// </summary>
-        Scp096,
+        Scp096Other,
 
         /// <summary>
         /// Damage caused by <see cref="RoleTypeId.Scp173"/>.
@@ -145,7 +145,7 @@ namespace Exiled.API.Enums
         Scp173,
 
         /// <summary>
-        /// Damage caused by <see cref="RoleTypeId.Scp939"/>.
+        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.None"/>.
         /// </summary>
         Scp939,
 
@@ -288,5 +288,75 @@ namespace Exiled.API.Enums
         /// Damage caused by <see cref="ItemType.SCP1509"/>.
         /// </summary>
         Scp1509,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.Claw"/>.
+        /// </summary>
+        Scp939Claw,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.LungeTarget"/>.
+        /// </summary>
+        Scp939LungeTarget,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.LungeSecondary"/>.
+        /// </summary>
+        Scp939LungeSecondary,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp096"/> with <see cref="PlayerStatsSystem.Scp096DamageHandler.AttackType.GateKill"/>.
+        /// </summary>
+        Scp096GateKill,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp096"/> with <see cref="PlayerStatsSystem.Scp096DamageHandler.AttackType.SlapLeft"/>.
+        /// </summary>
+        Scp096SlapLeft,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp096"/> with <see cref="PlayerStatsSystem.Scp096DamageHandler.AttackType.SlapRight"/>.
+        /// </summary>
+        Scp096SlapRight,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp096"/> with <see cref="PlayerStatsSystem.Scp096DamageHandler.AttackType.Charge"/>.
+        /// </summary>
+        Scp096Charge,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp3114"/> when it's stealing the skin of a <see cref="Ragdoll"/>.
+        /// </summary>
+        Scp3114SkinSteal,
+
+        /// <summary>
+        /// Damage cause by the <see cref="ExplosionType.SCP018"/> of <see cref="ItemType.SCP018"/>."/>
+        /// </summary>
+        ExplosionScp018,
+
+        /// <summary>
+        /// Damage cause by the <see cref="ExplosionType.Cola"/> of combining <see cref="ItemType.SCP207"/> with <see cref="ItemType.AntiSCP207"/>."/>
+        /// </summary>
+        ExplosionCola,
+
+        /// <summary>
+        /// Damage cause by the <see cref="ExplosionType.PinkCandy"/> of <see cref="InventorySystem.Items.Usables.Scp330.CandyKindID.Pink"/>."/>
+        /// </summary>
+        ExplosionPinkCandy,
+
+        /// <summary>
+        /// Damage cause by the ray <see cref="ExplosionType.Disruptor"/> of <see cref="ItemType.ParticleDisruptor"/>."/>
+        /// </summary>
+        ExplosionDisruptor,
+
+        /// <summary>
+        /// Damage cause by the <see cref="ExplosionType.Jailbird"/> of <see cref="ItemType.Jailbird"/>."/>
+        /// </summary>
+        ExplosionJailbird,
+
+        /// <summary>
+        /// Damage cause by the explosion of <see cref="ExplosionType.Custom"/> or any other not valid ExplosionType."/>
+        /// </summary>
+        ExplosionCustom,
     }
 }
