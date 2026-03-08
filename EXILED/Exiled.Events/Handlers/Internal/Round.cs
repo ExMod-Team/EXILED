@@ -63,8 +63,8 @@ namespace Exiled.Events.Handlers.Internal
                 Patches.Events.Map.Generating.Benchmark();
 
             // TODO: Remove when this has been fixed https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/1560
-            foreach (Door door in Recontainer.LockedDoors)
-                door.AllowsScp106 = false;
+            Door door = Door.Get(DoorType.Scp079Armory);
+            door.AllowsScp106 = false;
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRestartingRound" />
