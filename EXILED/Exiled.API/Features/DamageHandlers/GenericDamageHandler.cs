@@ -122,7 +122,9 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.GrayCandy:
                     Base = new GrayCandyDamageHandler(Attacker.Hub, damage);
                     break;
-                case DamageType.MicroHid:
+                case DamageType.MicroHidPrimaryFire:
+                case DamageType.MicroHidChargeFire:
+                case DamageType.MicroHidBrokenFire:
                     InventorySystem.Items.MicroHID.MicroHIDItem microHidOwner = new();
                     microHidOwner.Owner = attacker.ReferenceHub;
                     Base = new MicroHidDamageHandler(damage, microHidOwner);

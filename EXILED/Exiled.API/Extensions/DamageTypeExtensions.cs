@@ -12,6 +12,7 @@ namespace Exiled.API.Extensions
 
     using Enums;
     using Features;
+    using InventorySystem.Items.MicroHID.Modules;
     using InventorySystem.Items.Scp1509;
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp1507;
@@ -201,8 +202,14 @@ namespace Exiled.API.Extensions
                         Scp096DamageHandler.AttackType.Charge => DamageType.Scp096Charge,
                         _ => DamageType.Scp096Other,
                     };
-                case MicroHidDamageHandler:
-                    return DamageType.MicroHid;
+                case MicroHidDamageHandler microHidDamageHandler:
+                    return microHidDamageHandler.FiringMode switch
+                    {
+                        MicroHidFiringMode.PrimaryFire => DamageType.MicroHidPrimaryFire,
+                        MicroHidFiringMode.ChargeFire => DamageType.MicroHidChargeFire,
+                        MicroHidFiringMode.BrokenFire => DamageType.MicroHidBrokenFire,
+                        _ => DamageType.Unknown,
+                    };
                 case DisruptorDamageHandler:
                     return DamageType.ParticleDisruptor;
                 case Scp1507DamageHandler:
