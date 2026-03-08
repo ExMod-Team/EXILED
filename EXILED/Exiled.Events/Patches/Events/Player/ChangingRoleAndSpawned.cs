@@ -23,6 +23,8 @@ namespace Exiled.Events.Patches.Events.Player
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables.Scp1344;
+    using LabApi.Events.Arguments.PlayerEvents;
+    using LabApi.Events.Handlers;
     using Mirror;
 
     using PlayerRoles;
@@ -192,7 +194,15 @@ namespace Exiled.Events.Patches.Events.Player
                 if (ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
                     return;
 
+                PlayerReceivingLoadoutEventArgs playerReceivingLoadoutEventArgs = new PlayerReceivingLoadoutEventArgs(ev.Player.ReferenceHub, ev.Items, ev.Ammo, !ev.ShouldPreserveInventory);
+                PlayerEvents.OnReceivingLoadout(playerReceivingLoadoutEventArgs);
+                if (!playerReceivingLoadoutEventArgs.IsAllowed)
+                {
+                    return;
+                }
+
                 Inventory inventory = ev.Player.Inventory;
+
                 if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
                     List<ItemPickupBase> list = new List<ItemPickupBase>();
@@ -228,6 +238,7 @@ namespace Exiled.Events.Patches.Events.Player
                 {
                     ItemBase itemBase = inventory.ServerAddItem(item, ItemAddReason.StartingItem);
                     InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, itemBase);
+                    PlayerEvents.OnReceivedLoadout(new PlayerReceivedLoadoutEventArgs(ev.Player.ReferenceHub, ev.Items, ev.Ammo, !ev.ShouldPreserveInventory));
                 }
 
                 InventoryItemProvider.InventoriesToReplenish.Enqueue(ev.Player.ReferenceHub);
