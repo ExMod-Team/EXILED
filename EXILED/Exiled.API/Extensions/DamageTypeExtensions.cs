@@ -12,9 +12,12 @@ namespace Exiled.API.Extensions
 
     using Enums;
     using Features;
+    using InventorySystem.Items.MicroHID.Modules;
     using InventorySystem.Items.Scp1509;
+    using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
+    using PlayerRoles.PlayableScps.Scp939;
     using PlayerStatsSystem;
 
     /// <summary>
@@ -24,34 +27,37 @@ namespace Exiled.API.Extensions
     {
         private static readonly Dictionary<DeathTranslation, DamageType> TranslationConversionInternal = new()
         {
+            { DeathTranslations.Recontained, DamageType.Recontainment },
+            { DeathTranslations.Warhead, DamageType.Warhead },
+            { DeathTranslations.Scp049, DamageType.Scp049 },
+            { DeathTranslations.Unknown, DamageType.Unknown },
             { DeathTranslations.Asphyxiated, DamageType.Asphyxiation },
             { DeathTranslations.Bleeding, DamageType.Bleeding },
-            { DeathTranslations.Crushed, DamageType.Crushed },
-            { DeathTranslations.Decontamination, DamageType.Decontamination },
-            { DeathTranslations.Explosion, DamageType.Explosion },
             { DeathTranslations.Falldown, DamageType.Falldown },
+            { DeathTranslations.PocketDecay, DamageType.PocketDimension },
+            { DeathTranslations.Decontamination, DamageType.Decontamination },
             { DeathTranslations.Poisoned, DamageType.Poison },
-            { DeathTranslations.Recontained, DamageType.Recontainment },
-            { DeathTranslations.Scp049, DamageType.Scp049 },
-            { DeathTranslations.Scp096, DamageType.Scp096 },
-            { DeathTranslations.Scp173, DamageType.Scp173 },
             { DeathTranslations.Scp207, DamageType.Scp207 },
-            { DeathTranslations.Scp939Lunge, DamageType.Scp939 },
-            { DeathTranslations.Scp939Other, DamageType.Scp939 },
-            { DeathTranslations.Scp3114Slap, DamageType.Scp3114 },
+            { DeathTranslations.SeveredHands, DamageType.SeveredHands },
+            { DeathTranslations.MicroHID, DamageType.MicroHidPrimaryFire },
             { DeathTranslations.Tesla, DamageType.Tesla },
-            { DeathTranslations.Unknown, DamageType.Unknown },
-            { DeathTranslations.Warhead, DamageType.Warhead },
+            { DeathTranslations.Explosion, DamageType.ExplosionCustom },
+            { DeathTranslations.Scp096, DamageType.Scp096Other },
+            { DeathTranslations.Scp173, DamageType.Scp173 },
+            { DeathTranslations.Scp939Lunge, DamageType.Scp939LungeTarget },
             { DeathTranslations.Zombie, DamageType.Scp0492 },
             { DeathTranslations.BulletWounds, DamageType.Firearm },
-            { DeathTranslations.PocketDecay, DamageType.PocketDimension },
-            { DeathTranslations.SeveredHands, DamageType.SeveredHands },
-            { DeathTranslations.FriendlyFireDetector, DamageType.FriendlyFireDetector },
+            { DeathTranslations.Crushed, DamageType.Crushed },
             { DeathTranslations.UsedAs106Bait, DamageType.FemurBreaker },
-            { DeathTranslations.MicroHID, DamageType.MicroHid },
+            { DeathTranslations.FriendlyFireDetector, DamageType.FriendlyFireDetector },
             { DeathTranslations.Hypothermia, DamageType.Hypothermia },
+            { DeathTranslations.CardiacArrest, DamageType.CardiacArrest },
+            { DeathTranslations.Scp939Other, DamageType.Scp939Claw },
+            { DeathTranslations.Scp3114Slap, DamageType.Scp3114 },
             { DeathTranslations.MarshmallowMan, DamageType.Marshmallow },
             { DeathTranslations.Scp1344, DamageType.SeveredEyes },
+            { DeathTranslations.Scp1507Peck, DamageType.Scp1507 },
+            { DeathTranslations.Scp127Bullets, DamageType.Scp127 },
             { DeathTranslations.Scp1509, DamageType.Scp1509 },
         };
 
@@ -69,7 +75,7 @@ namespace Exiled.API.Extensions
             { ItemType.GunCOM18, DamageType.Com18 },
             { ItemType.GunFSP9, DamageType.Fsp9 },
             { ItemType.GunE11SR, DamageType.E11Sr },
-            { ItemType.MicroHID, DamageType.MicroHid },
+            { ItemType.MicroHID, DamageType.MicroHidPrimaryFire },
             { ItemType.ParticleDisruptor, DamageType.ParticleDisruptor },
             { ItemType.Jailbird, DamageType.Jailbird },
             { ItemType.GunFRMG0, DamageType.Frmg0 },
@@ -101,7 +107,7 @@ namespace Exiled.API.Extensions
         public static bool IsWeapon(this DamageType type, bool checkNonFirearm = true) => type switch
         {
             DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 => true,
-            DamageType.MicroHid or DamageType.Jailbird when checkNonFirearm => true,
+            DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire or DamageType.Jailbird when checkNonFirearm => true,
             _ => false,
         };
 
@@ -113,10 +119,45 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
         public static bool IsScp(this DamageType type, bool checkItems = true) => type switch
         {
-            DamageType.Scp or DamageType.Scp049 or DamageType.Scp096 or DamageType.Scp106 or DamageType.Scp173 or DamageType.Scp939 or DamageType.Scp0492 or DamageType.Scp3114 => true,
+            DamageType.Scp or DamageType.Scp049 or DamageType.Scp096SlapLeft or DamageType.Scp096SlapRight or DamageType.Scp096Charge or DamageType.Scp096GateKill or DamageType.Scp096Other or DamageType.Scp106 or DamageType.Scp173 or DamageType.Scp939 or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary or DamageType.Scp0492 or DamageType.Scp3114 or DamageType.Scp3114SkinSteal => true,
             DamageType.Scp018 or DamageType.Scp207 when checkItems => true,
             _ => false,
         };
+
+        /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp096"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsScp096(this DamageType type) => type is DamageType.Scp096SlapLeft or DamageType.Scp096SlapRight or DamageType.Scp096Charge or DamageType.Scp096GateKill or DamageType.Scp096Other;
+
+        /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp939"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsScp939(this DamageType type) => type is DamageType.Scp939 or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary;
+
+        /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp049"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsScp049(this DamageType type) => type is DamageType.Scp049 or DamageType.CardiacArrest;
+
+        /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp3114"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsScp3114(this DamageType type) => type is DamageType.Scp3114 or DamageType.Scp3114SkinSteal or DamageType.Strangled;
+
+        /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp3114"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsMicroHid(this DamageType type) => type is DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire;
 
         /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by a status effect.
@@ -125,7 +166,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by status effect.</returns>
         public static bool IsStatusEffect(this DamageType type) => type switch
         {
-            DamageType.Asphyxiation or DamageType.Poison or DamageType.Bleeding or DamageType.Scp207 or DamageType.Hypothermia or DamageType.Strangled => true,
+            DamageType.Asphyxiation or DamageType.Poison or DamageType.Bleeding or DamageType.Scp207 or DamageType.Hypothermia or DamageType.Strangled or DamageType.SeveredHands or DamageType.SeveredEyes or DamageType.PocketDimension => true,
             _ => false,
         };
 
@@ -138,20 +179,44 @@ namespace Exiled.API.Extensions
         {
             switch (damageHandlerBase)
             {
+                case Features.DamageHandlers.GenericDamageHandler genericDamageHandler:
+                    return GetDamageType(genericDamageHandler.Base);
                 case CustomReasonDamageHandler:
                     return DamageType.Custom;
                 case WarheadDamageHandler:
                     return DamageType.Warhead;
-                case ExplosionDamageHandler:
-                    return DamageType.Explosion;
+                case ExplosionDamageHandler explosionDamageHandler:
+                    return explosionDamageHandler.ExplosionType switch
+                    {
+                        ExplosionType.Grenade => DamageType.ExplosionGrenade,
+                        ExplosionType.SCP018 => DamageType.ExplosionScp018,
+                        ExplosionType.PinkCandy => DamageType.ExplosionPinkCandy,
+                        ExplosionType.Cola => DamageType.ExplosionCola,
+                        ExplosionType.Disruptor => DamageType.ExplosionDisruptor,
+                        ExplosionType.Jailbird => DamageType.ExplosionJailbird,
+                        _ => DamageType.ExplosionCustom,
+                    };
                 case Scp018DamageHandler:
                     return DamageType.Scp018;
                 case RecontainmentDamageHandler:
                     return DamageType.Recontainment;
-                case Scp096DamageHandler:
-                    return DamageType.Scp096;
-                case MicroHidDamageHandler:
-                    return DamageType.MicroHid;
+                case Scp096DamageHandler scp096DamageHandler:
+                    return scp096DamageHandler._attackType switch
+                    {
+                        Scp096DamageHandler.AttackType.GateKill => DamageType.Scp096GateKill,
+                        Scp096DamageHandler.AttackType.SlapLeft => DamageType.Scp096SlapLeft,
+                        Scp096DamageHandler.AttackType.SlapRight => DamageType.Scp096SlapRight,
+                        Scp096DamageHandler.AttackType.Charge => DamageType.Scp096Charge,
+                        _ => DamageType.Scp096Other,
+                    };
+                case MicroHidDamageHandler microHidDamageHandler:
+                    return microHidDamageHandler.FiringMode switch
+                    {
+                        MicroHidFiringMode.PrimaryFire => DamageType.MicroHidPrimaryFire,
+                        MicroHidFiringMode.ChargeFire => DamageType.MicroHidChargeFire,
+                        MicroHidFiringMode.BrokenFire => DamageType.MicroHidBrokenFire,
+                        _ => DamageType.Unknown,
+                    };
                 case DisruptorDamageHandler:
                     return DamageType.ParticleDisruptor;
                 case Scp1507DamageHandler:
@@ -172,26 +237,45 @@ namespace Exiled.API.Extensions
                         Scp049DamageHandler.AttackType.Scp0492 => DamageType.Scp0492,
                         _ => DamageType.Unknown,
                     };
+                case Scp939DamageHandler scp939DamageHandler:
+                    return scp939DamageHandler.Scp939DamageType switch
+                    {
+                        Scp939DamageType.Claw => DamageType.Scp939Claw,
+                        Scp939DamageType.LungeTarget => DamageType.Scp939LungeTarget,
+                        Scp939DamageType.LungeSecondary => DamageType.Scp939LungeSecondary,
+                        _ => DamageType.Scp939,
+                    };
                 case Scp3114DamageHandler scp3114DamageHandler:
                     return scp3114DamageHandler.Subtype switch
                     {
                         Scp3114DamageHandler.HandlerType.Strangulation => DamageType.Strangled,
-                        Scp3114DamageHandler.HandlerType.SkinSteal => DamageType.Scp3114,
+                        Scp3114DamageHandler.HandlerType.SkinSteal => DamageType.Scp3114SkinSteal,
                         Scp3114DamageHandler.HandlerType.Slap => DamageType.Scp3114,
                         _ => DamageType.Unknown,
                     };
                 case FirearmDamageHandler firearmDamageHandler:
-                    return ItemConversion.ContainsKey(firearmDamageHandler.WeaponType) ? ItemConversion[firearmDamageHandler.WeaponType] : DamageType.Firearm;
+                    {
+                        if (ItemConversion.ContainsKey(firearmDamageHandler.WeaponType))
+                            return ItemConversion[firearmDamageHandler.WeaponType];
+
+                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
+                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(ScpDamageHandler)} with ItemType {firearmDamageHandler.WeaponType}, type will be reported as {DamageType.Firearm}. Report this to EXILED Devs.");
+
+                        return DamageType.Firearm;
+                    }
 
                 case ScpDamageHandler scpDamageHandler:
                     {
-                        DeathTranslation translation = DeathTranslations.TranslationsById[scpDamageHandler._translationId];
-                        if (translation.Id == DeathTranslations.PocketDecay.Id)
+                        if (scpDamageHandler._translationId == DeathTranslations.PocketDecay.Id)
                             return DamageType.Scp106;
 
-                        return TranslationIdConversion.ContainsKey(translation.Id)
-                            ? TranslationIdConversion[translation.Id]
-                            : DamageType.Scp;
+                        if (TranslationIdConversion.ContainsKey(scpDamageHandler._translationId))
+                            return TranslationIdConversion[scpDamageHandler._translationId];
+
+                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
+                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(ScpDamageHandler)} with ID {scpDamageHandler._translationId}, type will be reported as {DamageType.Scp}. Report this to EXILED Devs.");
+
+                        return DamageType.Scp;
                     }
 
                 case UniversalDamageHandler universal:
@@ -201,7 +285,9 @@ namespace Exiled.API.Extensions
                         if (TranslationIdConversion.ContainsKey(translation.Id))
                             return TranslationIdConversion[translation.Id];
 
-                        Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(UniversalDamageHandler)} with ID {translation.Id}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
+                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
+                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(UniversalDamageHandler)} with ID {translation.Id}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
+
                         return DamageType.Unknown;
                     }
 
@@ -209,11 +295,19 @@ namespace Exiled.API.Extensions
                     {
                         if (Player.TryGet(attackerDamageHandler.Attacker, out Player attacker) && attacker.CurrentItem?.Type == ItemType.MarshmallowItem)
                             return DamageType.Marshmallow;
+
+                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
+                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(AttackerDamageHandler)} with Type {attackerDamageHandler.GetType()}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
+                        return DamageType.Unknown;
+                    }
+
+                default:
+                    {
+                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
+                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} with Type {damageHandlerBase.GetType()}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
                         return DamageType.Unknown;
                     }
             }
-
-            return DamageType.Unknown;
         }
     }
 }
