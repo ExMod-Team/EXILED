@@ -8,7 +8,6 @@
 namespace Exiled.API.Enums
 {
     using Features;
-
     using PlayerRoles;
 
     /// <summary>
@@ -60,9 +59,9 @@ namespace Exiled.API.Enums
         Firearm,
 
         /// <summary>
-        /// Damage dealt by a <see cref="Features.Items.MicroHid"/>.
+        /// Damage dealt by a <see cref="Features.Items.MicroHid"/> when <see cref="InventorySystem.Items.MicroHID.Modules.MicroHidFiringMode.PrimaryFire"/>.
         /// </summary>
-        MicroHid,
+        MicroHidPrimaryFire,
 
         /// <summary>
         /// Damage dealt by a Tesla Gate.
@@ -358,5 +357,15 @@ namespace Exiled.API.Enums
         /// Damage cause by the explosion of <see cref="ExplosionType.Custom"/> or any other not valid ExplosionType."/>
         /// </summary>
         ExplosionCustom,
+
+        /// <summary>
+        /// Damage dealt by a <see cref="Features.Items.MicroHid"/> when <see cref="InventorySystem.Items.MicroHID.Modules.MicroHidFiringMode.ChargeFire"/>.
+        /// </summary>
+        MicroHidChargeFire,
+
+        /// <summary>
+        /// Damage dealt by a <see cref="Features.Items.MicroHid"/> when <see cref="InventorySystem.Items.MicroHID.Modules.MicroHidFiringMode.BrokenFire"/>.
+        /// </summary>
+        MicroHidBrokenFire,
     }
 }

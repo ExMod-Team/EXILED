@@ -16,6 +16,7 @@ namespace Exiled.API.Extensions
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
+    using PlayerRoles.PlayableScps.Scp939;
     using PlayerStatsSystem;
 
     /// <summary>
@@ -37,7 +38,7 @@ namespace Exiled.API.Extensions
             { DeathTranslations.Poisoned, DamageType.Poison },
             { DeathTranslations.Scp207, DamageType.Scp207 },
             { DeathTranslations.SeveredHands, DamageType.SeveredHands },
-            { DeathTranslations.MicroHID, DamageType.MicroHid },
+            { DeathTranslations.MicroHID, DamageType.MicroHidPrimaryFire },
             { DeathTranslations.Tesla, DamageType.Tesla },
             { DeathTranslations.Explosion, DamageType.ExplosionCustom },
             { DeathTranslations.Scp096, DamageType.Scp096Other },
@@ -73,7 +74,7 @@ namespace Exiled.API.Extensions
             { ItemType.GunCOM18, DamageType.Com18 },
             { ItemType.GunFSP9, DamageType.Fsp9 },
             { ItemType.GunE11SR, DamageType.E11Sr },
-            { ItemType.MicroHID, DamageType.MicroHid },
+            { ItemType.MicroHID, DamageType.MicroHidPrimaryFire },
             { ItemType.ParticleDisruptor, DamageType.ParticleDisruptor },
             { ItemType.Jailbird, DamageType.Jailbird },
             { ItemType.GunFRMG0, DamageType.Frmg0 },
@@ -105,7 +106,7 @@ namespace Exiled.API.Extensions
         public static bool IsWeapon(this DamageType type, bool checkNonFirearm = true) => type switch
         {
             DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 => true,
-            DamageType.MicroHid or DamageType.Jailbird when checkNonFirearm => true,
+            DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire or DamageType.Jailbird when checkNonFirearm => true,
             _ => false,
         };
 
@@ -222,6 +223,14 @@ namespace Exiled.API.Extensions
                         Scp049DamageHandler.AttackType.Scp0492 => DamageType.Scp0492,
                         _ => DamageType.Unknown,
                     };
+                case Scp939DamageHandler scp939DamageHandler:
+                    return scp939DamageHandler.Scp939DamageType switch
+                    {
+                        Scp939DamageType.Claw => DamageType.Scp939Claw,
+                        Scp939DamageType.LungeTarget => DamageType.Scp939LungeTarget,
+                        Scp939DamageType.LungeSecondary => DamageType.Scp939LungeSecondary,
+                        _ => DamageType.Scp939,
+                    };
                 case Scp3114DamageHandler scp3114DamageHandler:
                     return scp3114DamageHandler.Subtype switch
                     {
@@ -231,13 +240,15 @@ namespace Exiled.API.Extensions
                         _ => DamageType.Unknown,
                     };
                 case FirearmDamageHandler firearmDamageHandler:
-                    if (ItemConversion.ContainsKey(firearmDamageHandler.WeaponType))
-                        return ItemConversion[firearmDamageHandler.WeaponType];
+                    {
+                        if (ItemConversion.ContainsKey(firearmDamageHandler.WeaponType))
+                            return ItemConversion[firearmDamageHandler.WeaponType];
 
-                    if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
-                        Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(ScpDamageHandler)} with ItemType {firearmDamageHandler.WeaponType}, type will be reported as {DamageType.Firearm}. Report this to EXILED Devs.");
+                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
+                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(ScpDamageHandler)} with ItemType {firearmDamageHandler.WeaponType}, type will be reported as {DamageType.Firearm}. Report this to EXILED Devs.");
 
-                    return DamageType.Firearm;
+                        return DamageType.Firearm;
+                    }
 
                 case ScpDamageHandler scpDamageHandler:
                     {
@@ -275,9 +286,14 @@ namespace Exiled.API.Extensions
                             Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(AttackerDamageHandler)} with Type {attackerDamageHandler.GetType()}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
                         return DamageType.Unknown;
                     }
-            }
 
-            return DamageType.Unknown;
+                default:
+                    {
+                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
+                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} with Type {damageHandlerBase.GetType()}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
+                        return DamageType.Unknown;
+                    }
+            }
         }
     }
 }
