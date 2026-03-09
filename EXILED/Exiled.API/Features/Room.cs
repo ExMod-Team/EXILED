@@ -12,18 +12,27 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
     using MapGeneration;
     using MapGeneration.Holidays;
     using MapGeneration.Rooms;
+
     using MEC;
+
     using Mirror;
+
     using PlayerRoles.PlayableScps.Scp079;
+    using PlayerRoles.Ragdolls;
+
     using RelativePositioning;
+
     using UnityEngine;
+
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -226,6 +235,13 @@ namespace Exiled.API.Features
         /// Gets a <see cref="List{T}"/> containing all known <see cref="Room"/>s around that <see cref="Room"/>.
         /// </summary>
         internal List<Room> NearestRoomsValue { get; } = new();
+
+        /// <summary>
+        /// Converts RoomIdentifier to Room.
+        /// </summary>
+        /// <param name="roomIdentifier">The RoomIdentifier.</param>
+        /// <returns>EXILED Room.</returns>
+        public static implicit operator Room(RoomIdentifier roomIdentifier) => Get(roomIdentifier);
 
         /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="RoomType"/>.

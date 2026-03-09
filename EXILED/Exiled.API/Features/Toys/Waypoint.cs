@@ -109,7 +109,7 @@ namespace Exiled.API.Features.Toys
             Waypoint toy = new(Object.Instantiate(Prefab, parent))
             {
                 Priority = priority,
-                BoundsSize = scale ?? Vector3.one * 255.9961f,
+                BoundsSize = scale ?? Vector3.one * WaypointToy.MaxBounds,
                 VisualizeBounds = visualizeBounds,
             };
 

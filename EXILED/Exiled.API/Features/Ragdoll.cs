@@ -300,6 +300,13 @@ namespace Exiled.API.Features
         internal static HashSet<BasicRagdoll> IgnoredRagdolls { get; set; } = new();
 
         /// <summary>
+        /// Converts BasicRagdoll to Ragdoll.
+        /// </summary>
+        /// <param name="basicRagdoll">The BasicRagdoll.</param>
+        /// <returns>EXILED Ragdoll.</returns>
+        public static implicit operator Ragdoll(BasicRagdoll basicRagdoll) => Get(basicRagdoll);
+
+        /// <summary>
         /// Gets the last ragdoll of the player.
         /// </summary>
         /// <param name="player">The player to get the last ragdoll.</param>
