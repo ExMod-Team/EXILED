@@ -194,15 +194,7 @@ namespace Exiled.Events.Patches.Events.Player
                 if (ev.ShouldPreserveInventory || ev.Reason == API.Enums.SpawnReason.Destroyed)
                     return;
 
-                PlayerReceivingLoadoutEventArgs playerReceivingLoadoutEventArgs = new PlayerReceivingLoadoutEventArgs(ev.Player.ReferenceHub, ev.Items, ev.Ammo, !ev.ShouldPreserveInventory);
-                PlayerEvents.OnReceivingLoadout(playerReceivingLoadoutEventArgs);
-                if (!playerReceivingLoadoutEventArgs.IsAllowed)
-                {
-                    return;
-                }
-
                 Inventory inventory = ev.Player.Inventory;
-
                 if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
                     List<ItemPickupBase> list = new List<ItemPickupBase>();
