@@ -41,20 +41,6 @@ namespace Exiled.Events.Patches.Generic
                 0,
                 new[]
                 {
-                    // if (referenceHub.roleManager.CurrentRole.RoleTypeId == RoleTypeId.Tutorial)
-                    new(OpCodes.Ldarg_1),
-                    new(OpCodes.Ldfld, Field(typeof(ReferenceHub), nameof(ReferenceHub.roleManager))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleManager), nameof(PlayerRoleManager.CurrentRole))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(PlayerRoleBase), nameof(PlayerRoleBase.RoleTypeId))),
-                    new(OpCodes.Ldc_I4_S, (sbyte)RoleTypeId.Tutorial),
-                    new(OpCodes.Bne_Un_S, skip),
-
-                    // if (!ExiledEvents.Instance.Config.TutorialNotAffectedByScp079Scan)
-                    new(OpCodes.Call, PropertyGetter(typeof(ExiledEvents), nameof(ExiledEvents.Instance))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Plugin<Config>), nameof(Plugin<Config>.Config))),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Config), nameof(Config.TutorialNotAffectedByScp079Scan))),
-                    new(OpCodes.Brfalse_S, returnLabel),
-
                     // if (Scp079Role.TurnedPlayers.Contains(Player.Get(referenceHub)))
                     new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(API.Features.Roles.Scp079Role), nameof(API.Features.Roles.Scp079Role.TurnedPlayers))).WithLabels(skip),
                     new(OpCodes.Ldarg_1),
