@@ -69,7 +69,6 @@ namespace Exiled.Events.Patches.Events.Map
                 if ((instance.transform.position - player.Position).sqrMagnitude > distance)
                     continue;
 
-
                 if (!ExiledEvents.Instance.Config.CanFlashbangsAffectThrower && instance.PreviousOwner.CompareLife(player.ReferenceHub))
                     continue;
 
