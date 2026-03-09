@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="LastTarget.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -35,10 +35,11 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // Round.IgnoredPlayers.Contains(allHub)
+                // Round.IgnoredPlayers.Contains(player)
                 new(OpCodes.Call, PropertyGetter(typeof(Round), nameof(Round.IgnoredPlayers))),
                 new(OpCodes.Ldloc_3),
-                new(OpCodes.Callvirt, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                new(OpCodes.Callvirt, Method(typeof(HashSet<Player>), nameof(HashSet<Player>.Contains))),
 
                 new(OpCodes.Brtrue_S, continueLabel),
             });
