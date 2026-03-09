@@ -7,6 +7,9 @@
 
 namespace Exiled.Events.Handlers.Internal
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using CentralAuth;
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
@@ -29,8 +32,6 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Usables.Scp330;
     using PlayerRoles;
     using PlayerRoles.RoleAssign;
-    using System.Collections.Generic;
-    using System.Linq;
     using Utils.NonAllocLINQ;
 
     /// <summary>
