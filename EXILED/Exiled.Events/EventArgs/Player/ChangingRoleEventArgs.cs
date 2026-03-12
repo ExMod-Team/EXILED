@@ -74,7 +74,7 @@ namespace Exiled.Events.EventArgs.Player
                 Items.Clear();
                 Ammo.Clear();
 
-                PlayerReceivingLoadoutEventArgs playerReceivingLoadoutEventArgs = new(Player.ReferenceHub, Items, Ammo, !ShouldPreserveInventory);
+                PlayerReceivingLoadoutEventArgs playerReceivingLoadoutEventArgs = new(Player.ReferenceHub, inventory.Items, inventory.Ammo, !ShouldPreserveInventory);
                 PlayerEvents.OnReceivingLoadout(playerReceivingLoadoutEventArgs);
                 if (!playerReceivingLoadoutEventArgs.IsAllowed)
                 {
