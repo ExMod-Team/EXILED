@@ -164,6 +164,8 @@ namespace Exiled.API.Extensions
                     return DamageType.GrayCandy;
                 case Scp1509DamageHandler:
                     return DamageType.Scp1509;
+                case MarshmallowDamageHandler:
+                    return DamageType.Marshmallow;
                 case Scp049DamageHandler scp049DamageHandler:
                     return scp049DamageHandler.DamageSubType switch
                     {
@@ -207,8 +209,6 @@ namespace Exiled.API.Extensions
 
                 case AttackerDamageHandler attackerDamageHandler:
                     {
-                        if (Player.TryGet(attackerDamageHandler.Attacker, out Player attacker) && attacker.CurrentItem?.Type == ItemType.MarshmallowItem)
-                            return DamageType.Marshmallow;
                         return DamageType.Unknown;
                     }
             }
