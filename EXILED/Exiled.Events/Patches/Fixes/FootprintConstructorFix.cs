@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Fixes
     /// Patches <see cref="Footprint(ReferenceHub)"/> constructor.
     /// Fixes an issue where calling the constructor after a player disconnects throws an error.
     /// </summary>
-    // [HarmonyPatch(typeof(Footprint), MethodType.Constructor, typeof(ReferenceHub))]
+    [HarmonyPatch(typeof(Footprint), MethodType.Constructor, typeof(ReferenceHub))]
     public class FootprintConstructorFix
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
