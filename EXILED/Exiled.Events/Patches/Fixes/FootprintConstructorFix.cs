@@ -27,10 +27,11 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(Footprint), MethodType.Constructor, typeof(ReferenceHub))]
     public class FootprintConstructorFix
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            // the Ldnull next to the Stfld for IpAddress
             int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldnull);
 
             Label nullIpLabel = newInstructions[index].labels.First();
@@ -39,6 +40,7 @@ namespace Exiled.Events.Patches.Fixes
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
+                // essentially just tack on '|| !LiteNetLib4MirrorServer.Peers.ContainsKey(hub.connectionToClient.connectionId)' for the ip address connected check.
                 new(OpCodes.Ldsfld, Field(typeof(Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer), nameof(Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers))),
                 new(OpCodes.Ldarg_1),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(ReferenceHub), nameof(ReferenceHub.connectionToClient))),
