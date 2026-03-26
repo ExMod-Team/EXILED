@@ -17,6 +17,7 @@ namespace Exiled.Events.Patches.Events.Server
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.Commands.Reload;
+    using Exiled.Events.EventArgs.Server;
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
@@ -49,6 +50,37 @@ namespace Exiled.Events.Patches.Events.Server
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            int offset = -4;
+            int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.ForceRoundStart)))) + offset;
+
+            const string TimeLeft = "<timeLeft>5__3";
+            const string OriginalTimeLeft = "<originalTimeLeft>5__2";
+            const string MinimumPlayerCount = "<topPlayers>5__4";
+
+            newInstructions.InsertRange(index, new List<CodeInstruction>()
+            {
+                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                new(OpCodes.Dup),
+                new(OpCodes.Dup),
+
+                // this.TimeLeft
+                new(OpCodes.Ldfld, Field(PrivateType, TimeLeft)),
+
+                // this.OriginalTimeLeft
+                new(OpCodes.Ldfld, Field(PrivateType, OriginalTimeLeft)),
+
+                // this.MinimumPlayerCount
+                new(OpCodes.Ldfld, Field(PrivateType, MinimumPlayerCount)),
+
+                // playerCount
+                new(OpCodes.Ldloc_2),
+
+                // RoundStartingEventArgs ev = new(short, short, int, int)
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RoundStartingEventArgs))[0]),
+                new(OpCodes.Dup),
+
+                new(OpCodes.Call, Method(typeof(Handlers.Server), nameof(Handlers.Server.OnRoundStarting))),
+            });
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
