@@ -3990,8 +3990,7 @@ namespace Exiled.API.Features
         /// <returns><see cref="RaycastHit"/> if any.</returns>
         public RaycastHit? GetRaycast(float maxDistance, int layerMask)
         {
-            if (!Physics.Raycast(CameraTransform.position, CameraTransform.forward, out RaycastHit raycastHit,
-                    maxDistance, layerMask))
+            if (!Physics.Raycast(CameraTransform.position, CameraTransform.forward, out RaycastHit raycastHit, maxDistance, layerMask))
             {
                 // The raycast was out of bounds.
                 return null;
@@ -4004,7 +4003,7 @@ namespace Exiled.API.Features
         /// Gets the player hitbox currently looking at if any.
         /// </summary>
         /// <param name="maxDistance">The max distance the raycast can reach.</param>
-        /// <returns><see cref="HitboxIdentity"/> if any</returns>
+        /// <returns><see cref="HitboxIdentity"/> if any.</returns>
         public HitboxIdentity GetRaycastedHitbox(float maxDistance)
         {
             return GetRaycast(maxDistance, LayerMasks.Hitbox)?.collider.gameObject.GetComponent<HitboxIdentity>();
