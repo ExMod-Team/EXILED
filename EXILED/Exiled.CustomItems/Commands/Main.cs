@@ -33,7 +33,7 @@ namespace Exiled.CustomItems.Commands
         public override string[] Aliases { get; } = { "ci", "cis" };
 
         /// <inheritdoc/>
-        public override string Description { get; } = string.Empty;
+        public override string Description { get; } = "EXILED CustomItems command";
 
         /// <inheritdoc/>
         public override void LoadGeneratedCommands()
