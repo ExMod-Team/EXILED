@@ -409,7 +409,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Clears all active respawn waves from <see cref="WaveManager.Waves"/> 
+        /// Clears all active respawn waves from <see cref="WaveManager.Waves"/>.
         /// and stores them in <see cref="PausedWaves"/> for later restoration.
         /// </summary>
         /// <remarks>
