@@ -423,18 +423,21 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Temporarily pauses all time-based respawn waves by forcefully stopping their timers.
+        /// Forcefully pauses or resumes all time-based respawn waves by controlling their timers.
         /// </summary>
+        /// <param name="isForcePause">
+        /// If true, all time-based waves will be paused. If false, their timers will resume.
+        /// </param>
         /// <remarks>
-        /// Unlike ClearWaves, this does not remove waves, it only stops their progression.
+        /// Unlike ClearWaves, this does not remove waves from the system, it only controls their timer state.
         /// </remarks>
-        public static void PauseWaves()
+        public static void ForcePauseWaves(bool isForcePause = true)
         {
             foreach (SpawnableWaveBase wave in WaveManager.Waves)
             {
                 if (wave is TimeBasedWave timeBasedWave)
                 {
-                    timeBasedWave.Timer.IsForcefullyPaused = true;
+                    timeBasedWave.Timer.IsForcefullyPaused = isForcePause;
                 }
             }
         }
