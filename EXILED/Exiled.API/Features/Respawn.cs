@@ -409,14 +409,34 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Pauses respawn waves by removing them from <see cref="WaveManager.Waves">WaveManager.Waves</see> and storing them in <see cref="PausedWaves"/>.
+        /// Clears all active respawn waves from <see cref="WaveManager.Waves"/> 
+        /// and stores them in <see cref="PausedWaves"/> for later restoration.
         /// </summary>
-        /// <!--Beryl said this should work fine but it requires testing-->
-        public static void PauseWaves()
+        /// <remarks>
+        /// This completely removes waves from the active wave list.
+        /// </remarks>
+        public static void ClaerWaves()
         {
             PausedWaves.Clear();
             PausedWaves.AddRange(WaveManager.Waves);
             WaveManager.Waves.Clear();
+        }
+
+        /// <summary>
+        /// Temporarily pauses all time-based respawn waves by forcefully stopping their timers.
+        /// </summary>
+        /// <remarks>
+        /// Unlike ClearWaves, this does not remove waves, it only stops their progression.
+        /// </remarks>
+        public static void PauseWaves()
+        {
+            foreach (SpawnableWaveBase wave in WaveManager.Waves)
+            {
+                if (wave is TimeBasedWave timeBasedWave)
+                {
+                    timeBasedWave.Timer.IsForcefullyPaused = true;
+                }
+            }
         }
 
         /// <summary>
