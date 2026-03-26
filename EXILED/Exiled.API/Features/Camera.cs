@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using PlayerRoles.PlayableScps.Scp079;
-
 namespace Exiled.API.Features
 {
     using System;
@@ -17,6 +15,7 @@ namespace Exiled.API.Features
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
     using MapGeneration;
+    using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
     using UnityEngine;
 
