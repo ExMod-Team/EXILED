@@ -3979,6 +3979,15 @@ namespace Exiled.API.Features
         /// <param name="maxDistance">The max distance the raycast can reach.</param>
         /// <param name="layerMask">Layers that are included in the raycast.</param>
         /// <returns><see cref="RaycastHit"/> if any.</returns>
+        public RaycastHit? GetRaycast(float maxDistance, LayerMasks layerMask)
+            => GetRaycast(maxDistance, (int)layerMask);
+
+        /// <summary>
+        /// Gets the raycast hit information from player.
+        /// </summary>
+        /// <param name="maxDistance">The max distance the raycast can reach.</param>
+        /// <param name="layerMask">Layers that are included in the raycast.</param>
+        /// <returns><see cref="RaycastHit"/> if any.</returns>
         public RaycastHit? GetRaycast(float maxDistance, int layerMask)
         {
             if (!Physics.Raycast(CameraTransform.position, CameraTransform.forward, out RaycastHit raycastHit,
@@ -3992,12 +4001,22 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the player hitbox currently looking at if any.
+        /// </summary>
+        /// <param name="maxDistance">The max distance the raycast can reach.</param>
+        /// <returns><see cref="HitboxIdentity"/> if any</returns>
+        public HitboxIdentity GetRaycastedHitbox(float maxDistance)
+        {
+            return GetRaycast(maxDistance, LayerMasks.Hitbox)?.collider.gameObject.GetComponent<HitboxIdentity>();
+        }
+
+        /// <summary>
         /// Gets the player currently looking at if any.
         /// </summary>
         /// <param name="maxDistance">The max distance the raycast can reach.</param>
         /// <returns><see cref="Player"/> if any.</returns>
         public Player GetRaycastedPlayer(float maxDistance) =>
-             Get(GetRaycast(maxDistance, (int)LayerMasks.Player)?.collider);
+             Get(GetRaycast(maxDistance, LayerMasks.Player)?.collider);
 
         /// <inheritdoc/>
         public bool HasComponent<T>(bool depthInheritance = false) => depthInheritance
