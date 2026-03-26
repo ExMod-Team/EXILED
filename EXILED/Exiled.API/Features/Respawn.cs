@@ -431,7 +431,7 @@ namespace Exiled.API.Features
         /// <remarks>
         /// Unlike ClearWaves, this does not remove waves from the system, it only controls their timer state.
         /// </remarks>
-        public static void ForcePauseWaves(bool isForcePause = true)
+        public static void PauseWaves(bool isForcePause = true)
         {
             foreach (SpawnableWaveBase wave in WaveManager.Waves)
             {
