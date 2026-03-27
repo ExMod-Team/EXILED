@@ -54,7 +54,6 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
-            DummyEmulator = itemBase.DummyEmulator;
 
             foreach (ModuleBase module in Base.Modules)
             {
