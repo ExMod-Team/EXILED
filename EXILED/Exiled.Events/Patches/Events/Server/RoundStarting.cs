@@ -61,17 +61,16 @@ namespace Exiled.Events.Patches.Events.Server
 
             newInstructions.InsertRange(index, new[]
             {
-                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(labels),
-                new(OpCodes.Dup),
-                new(OpCodes.Dup),
-
                 // this.TimeLeft
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(labels),
                 new(OpCodes.Ldfld, Field(PrivateType, TimeLeft)),
 
                 // this.OriginalTimeLeft
+                new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(PrivateType, OriginalTimeLeft)),
 
                 // this.MinimumPlayerCount
+                new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(PrivateType, MinimumPlayerCount)),
 
                 // playerCount
