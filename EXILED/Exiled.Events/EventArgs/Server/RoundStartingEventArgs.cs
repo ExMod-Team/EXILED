@@ -52,9 +52,9 @@ namespace Exiled.Events.EventArgs.Server
         public int MinimumPlayerCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of Player.
+        /// Gets the number of Player.
         /// </summary>
-        public int PlayerCount { get; set; }
+        public int PlayerCount { get; }
 
         /// <inheritdoc/>
         public bool IsAllowed { get; set; }
