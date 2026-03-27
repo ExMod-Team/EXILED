@@ -282,10 +282,12 @@ namespace Exiled.API.Features
         /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
         public static Camera Get(GameObject gameObject)
         {
-            foreach (Scp079InteractableBase scp079InteractableBase in Scp079InteractableBase.AllInstances)
+            foreach (Camera camera in List)
             {
-                if (scp079InteractableBase.gameObject == gameObject)
-                    return Get((Scp079Camera)scp079InteractableBase);
+                if (camera.GameObject == gameObject)
+                {
+                    return camera;
+                }
             }
 
             return null;
