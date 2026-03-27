@@ -34,6 +34,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
+    using NetworkManagerUtils.Dummies;
     using UnityEngine;
 
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
@@ -189,6 +190,22 @@ namespace Exiled.API.Features.Items
         /// Gets the <see cref="Player"/> who owns the item.
         /// </summary>
         public Player Owner => Player.Get(Base.Owner) ?? Server.Host;
+
+        /// <summary>
+        /// Gets the emulator for dummy actions if the item is Autosync.
+        /// </summary>
+        public DummyKeyEmulator DummyEmulator
+        {
+            get
+            {
+                if (Base is AutosyncItem item)
+                {
+                    return item.DummyEmulator;
+                }
+
+                return null;
+            }
+        }
 
         /// <summary>
         /// Gets or sets a reason for adding this item to the inventory.

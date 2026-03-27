@@ -25,7 +25,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
-
+    using NetworkManagerUtils.Dummies;
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
@@ -54,6 +54,7 @@ namespace Exiled.API.Features.Items
             : base(itemBase)
         {
             Base = itemBase;
+            DummyEmulator = itemBase.DummyEmulator;
 
             foreach (ModuleBase module in Base.Modules)
             {

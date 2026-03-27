@@ -16,13 +16,19 @@ namespace Exiled.API.Features
     using CommandSystem.Commands.RemoteAdmin.Dummies;
     using Exiled.API.Enums;
     using Exiled.API.Features.CustomStats;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Roles;
     using Footprinting;
+    using InventorySystem.Items.Autosync;
+    using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp330;
     using MEC;
     using Mirror;
     using NetworkManagerUtils.Dummies;
     using PlayerRoles;
+    using PlayerRoles.Subroutines;
     using PlayerStatsSystem;
+    using RelativePositioning;
     using UnityEngine;
 
     /// <summary>
@@ -354,6 +360,128 @@ namespace Exiled.API.Features
             {
                 this?.Destroy();
             });
+        }
+
+        public bool MoveRelative(Vector3 dir, float distance)
+        {
+            if (Role is not FpcRole fpcRole)
+            {
+                return false;
+            }
+
+            Vector3 vector = ReferenceHub.PlayerCameraReference.TransformDirection(dir).NormalizeIgnoreY();
+            fpcRole.FirstPersonController.FpcModule.Motor.ReceivedPosition = new RelativePosition(Position + vector * distance);
+            return true;
+        }
+
+        public bool LookHorizontal(float amount)
+        {
+            if (Role is not FpcRole fpcRole)
+            {
+                return false;
+            }
+
+            fpcRole.FirstPersonController.FpcModule.MouseLook.CurrentHorizontal += amount;
+            return true;
+        }
+
+        public bool LookVertical(float amount)
+        {
+            if (Role is not FpcRole fpcRole)
+            {
+                return false;
+            }
+
+            fpcRole.FirstPersonController.FpcModule.MouseLook.CurrentVertical += amount;
+            return true;
+        }
+
+        public bool EatCandy(CandyKindID candyKind)
+        {
+            foreach(Item? item in Items)
+            {
+                if (item is not Scp330 scp330)
+                {
+                    continue;
+                }
+
+                return EatCandy(scp330, candyKind);
+            }
+
+            return false;
+        }
+
+        public bool EatCandy(Scp330 from, CandyKindID candyKind)
+        {
+            for (int i = 0; i < from.Candies.Count; i++)
+            {
+                if (from.Base.Candies[i] == candyKind)
+                {
+                    from.Base.ServerSelectCandy(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets actions that can be done by the Dummy.
+        /// </summary>
+        /// <returns><see cref="IReadOnlyList{DummyAction}"/></returns>
+        public IReadOnlyList<DummyAction> GetActions()
+        {
+            return DummyActionCollector.ServerGetActions(ReferenceHub);
+        }
+
+        public bool RunItemAction(Item item, ActionName name, bool isClick = true)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+
+            DummyKeyEmulator emulator = item.DummyEmulator;
+            if (emulator == null)
+            {
+                return false;
+            }
+
+            emulator.AddEntry(name, isClick);
+            return true;
+        }
+
+        public bool StopItemAction(Item item, ActionName name)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+
+            DummyKeyEmulator emulator = item.DummyEmulator;
+            if (emulator == null)
+            {
+                return false;
+            }
+
+            emulator.RemoveEntry(name);
+            return true;
+        }
+
+        public bool IsBeingDone(Item item, ActionName name)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+
+            DummyKeyEmulator emulator = item.DummyEmulator;
+            if (emulator == null)
+            {
+                return false;
+            }
+
+            return emulator.GetAction(name, false);
         }
     }
 }
