@@ -55,16 +55,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Defines if Npc is set up by Exiled <see cref="Setup"/>.
-        /// </summary>
-        private bool exiledSpawned = true;
-
-        /// <summary>
-        /// Delayed handles used in <see cref="Setup"/> so we don't have 2 recursive loops.
-        /// </summary>
-        private CoroutineHandle? setupHandle;
-
-        /// <summary>
         /// Gets a list of Npcs.
         /// </summary>
         public static new IReadOnlyCollection<Npc> List => Dictionary.Values.OfType<Npc>().ToList();
@@ -282,52 +272,6 @@ namespace Exiled.API.Features
 
             Dictionary.Add(npc.GameObject, npc);
             return npc;
-        }
-
-        /// <summary>
-        /// Setups the Npc frame by frame.
-        /// </summary>
-        /// <param name="role">The type of role Npc will have.</param>
-        /// <param name="position">The position Npc has.</param>
-        public void Setup(RoleTypeId role, Vector3 position, RoleSpawnFlags spawnFlags = RoleSpawnFlags.All)
-        {
-            if (setupHandle.HasValue)
-            {
-                Timing.KillCoroutines(setupHandle.Value);
-            }
-
-            exiledSpawned = false;
-            if (Role.Type == role && Vector3.Distance(Position, position) <= 1 && MaxHealth != 0 && Health == MaxHealth)
-            {
-                exiledSpawned = true;
-                if (setupHandle.HasValue)
-                {
-                    Timing.KillCoroutines(setupHandle.Value);
-                }
-
-                return;
-            }
-
-            if (Role.Type != role)
-            {
-                Role.Set(role, SpawnReason.ForceClass, spawnFlags);
-                setupHandle = Timing.CallDelayed(Timing.WaitForOneFrame, () => Setup(role, position));
-                return;
-            }
-
-            if (Vector3.Distance(Position, position) > 1)
-            {
-                Position = position;
-                setupHandle = Timing.CallDelayed(Timing.WaitForOneFrame, () => Setup(role, position));
-                return;
-            }
-
-            if (Health != MaxHealth)
-            {
-                Health = MaxHealth;
-                setupHandle = Timing.CallDelayed(Timing.WaitForOneFrame, () => Setup(role, position));
-                return;
-            }
         }
 
         /// <summary>
