@@ -378,7 +378,7 @@ namespace Exiled.API.Features
             }
 
             Vector3 vector = ReferenceHub.PlayerCameraReference.TransformDirection(dir).NormalizeIgnoreY();
-            fpcRole.FirstPersonController.FpcModule.Motor.ReceivedPosition = new RelativePosition(Position + vector * distance);
+            fpcRole.FirstPersonController.FpcModule.Motor.ReceivedPosition = new RelativePosition(Position + (vector * distance));
             return true;
         }
 

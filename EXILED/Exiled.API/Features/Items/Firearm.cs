@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -25,7 +24,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
-    using NetworkManagerUtils.Dummies;
+
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
