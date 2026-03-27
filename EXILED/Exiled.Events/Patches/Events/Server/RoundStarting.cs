@@ -12,16 +12,13 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
-    using System.Text;
-    using System.Threading.Tasks;
 
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
-    using Exiled.Events.Commands.Reload;
     using Exiled.Events.EventArgs.Server;
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
-    using static RoundSummary;
 
     /// <summary>
     /// Patches <see cref="CharacterClassManager.Init()" />.
@@ -53,6 +50,7 @@ namespace Exiled.Events.Patches.Events.Server
             const string TimeLeft = "<timeLeft>5__3";
             const string OriginalTimeLeft = "<originalTimeLeft>5__2";
             const string MinimumPlayerCount = "<topPlayers>5__4";
+
             LocalBuilder ev = generator.DeclareLocal(typeof(RoundStartingEventArgs));
             int offset = -4;
             int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.ForceRoundStart)))) + offset;
@@ -60,6 +58,7 @@ namespace Exiled.Events.Patches.Events.Server
             List<Label> labels = newInstructions[index].ExtractLabels();
             Label skip = (Label)newInstructions[index + 3].operand;
             newInstructions.RemoveRange(index, -offset);
+
             newInstructions.InsertRange(index, new[]
             {
                 new CodeInstruction(OpCodes.Ldarg_0).WithLabels(labels),
@@ -90,25 +89,26 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.TimeLeft))),
-                new(OpCodes.Callvirt, Field(PrivateType, TimeLeft)),
+                new(OpCodes.Stfld, Field(PrivateType, TimeLeft)),
 
                 // this.OriginalTimeLeft = ev.OriginalTimeLeft
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.OriginalTimeLeft))),
-                new(OpCodes.Callvirt, Field(PrivateType, OriginalTimeLeft)),
+                new(OpCodes.Stfld, Field(PrivateType, OriginalTimeLeft)),
 
                 // this.MinimumPlayerCount = ev.MinimumPlayerCount
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.MinimumPlayerCount))),
-                new(OpCodes.Callvirt, Field(PrivateType, MinimumPlayerCount)),
+                new(OpCodes.Stfld, Field(PrivateType, MinimumPlayerCount)),
 
                 // if (!ev.IsAllowed)
                 //   skip;
                 new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, skip),
             });
+
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
