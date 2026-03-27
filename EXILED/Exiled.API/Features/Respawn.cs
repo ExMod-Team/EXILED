@@ -389,37 +389,19 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Pauses a specific respawn wave by removing it from the active wave list and adding it to the paused wave list.
+        /// Forcefully pauses or resumes the timer of a time-based respawn wave for the specified faction.
         /// </summary>
-        /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> representing the wave to pause.</param>
-        public static void PauseWave(SpawnableFaction spawnableFaction)
+        /// <param name="spawnableFaction">The faction associated with the respawn wave.</param>
+        /// <param name="isForcePause">True to pause the wave timer, false to resume it.</param>
+        public static void PauseWave(SpawnableFaction spawnableFaction, bool isForcePause = true)
         {
             if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
             {
-                if (!PausedWaves.Contains(spawnableWaveBase))
+                if (spawnableWaveBase is TimeBasedWave timeBasedWave)
                 {
-                    PausedWaves.Add(spawnableWaveBase);
-                }
-
-                if (WaveManager.Waves.Contains(spawnableWaveBase))
-                {
-                    WaveManager.Waves.Remove(spawnableWaveBase);
+                    timeBasedWave.Timer.IsForcefullyPaused = isForcePause;
                 }
             }
-        }
-
-        /// <summary>
-        /// Clears all active respawn waves from <see cref="WaveManager.Waves"/>.
-        /// and stores them in <see cref="PausedWaves"/> for later restoration.
-        /// </summary>
-        /// <remarks>
-        /// This completely removes waves from the active wave list.
-        /// </remarks>
-        public static void ClaerWaves()
-        {
-            PausedWaves.Clear();
-            PausedWaves.AddRange(WaveManager.Waves);
-            WaveManager.Waves.Clear();
         }
 
         /// <summary>
@@ -450,6 +432,55 @@ namespace Exiled.API.Features
         /// A list of <see cref="SpawnableFaction"/> instances representing the waves to pause.
         /// </param>
         public static void PauseWaves(List<SpawnableFaction> spawnableFactions)
+        {
+            foreach (SpawnableFaction spawnableFaction in spawnableFactions)
+            {
+                PauseWave(spawnableFaction);
+            }
+        }
+
+        /// <summary>
+        /// Removes a respawn wave from the active wave list and adds it to the paused wave list.
+        /// </summary>
+        /// <param name="spawnableFaction">The faction whose respawn wave will be cleared from active waves.</param>
+        public static void ClearWave(SpawnableFaction spawnableFaction)
+        {
+            if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
+            {
+                if (!PausedWaves.Contains(spawnableWaveBase))
+                {
+                    PausedWaves.Add(spawnableWaveBase);
+                }
+
+                if (WaveManager.Waves.Contains(spawnableWaveBase))
+                {
+                    WaveManager.Waves.Remove(spawnableWaveBase);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clears all active respawn waves from <see cref="WaveManager.Waves"/>.
+        /// and stores them in <see cref="PausedWaves"/> for later restoration.
+        /// </summary>
+        /// <remarks>
+        /// This completely removes waves from the active wave list.
+        /// </remarks>
+        public static void ClearWaves()
+        {
+            PausedWaves.Clear();
+            PausedWaves.AddRange(WaveManager.Waves);
+            WaveManager.Waves.Clear();
+        }
+
+        /// <summary>
+        /// Pauses the specified list of respawn waves by iterating through each wave
+        /// and pausing it using the <see cref="PauseWave(SpawnableFaction)"/> method.
+        /// </summary>
+        /// <param name="spawnableFactions">
+        /// A list of <see cref="SpawnableFaction"/> instances representing the waves to pause.
+        /// </param>
+        public static void ClearWaves(List<SpawnableFaction> spawnableFactions)
         {
             foreach (SpawnableFaction spawnableFaction in spawnableFactions)
             {
