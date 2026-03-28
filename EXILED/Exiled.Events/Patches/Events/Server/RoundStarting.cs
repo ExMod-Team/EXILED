@@ -53,11 +53,11 @@ namespace Exiled.Events.Patches.Events.Server
 
             LocalBuilder ev = generator.DeclareLocal(typeof(RoundStartingEventArgs));
             int offset = -4;
-            int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.ForceRoundStart)))) + offset;
+            int index = newInstructions.FindLastIndex(x => x.Calls(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.ForceRoundStart)))) + offset;
 
             List<Label> labels = newInstructions[index].ExtractLabels();
             Label skip = (Label)newInstructions[index + 3].operand;
-            newInstructions.RemoveRange(index, -offset);
+            newInstructions.RemoveRange(index, 4);
 
             newInstructions.InsertRange(index, new[]
             {
@@ -104,12 +104,16 @@ namespace Exiled.Events.Patches.Events.Server
 
                 // if (!ev.IsAllowed)
                 //   skip;
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.IsAllowed))),
                 new(OpCodes.Brfalse_S, skip),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
+
+            for (int z = 0; z < newInstructions.Count; z++)
+                Log.Warn($"[{z}] {newInstructions[z].opcode} : {newInstructions[z].operand}  ({newInstructions[z].labels.Count})");
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
