@@ -69,9 +69,9 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(PrivateType, OriginalTimeLeft)),
 
-                // this.MinimumPlayerCount
+                // this.TopPlayer
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldfld, Field(PrivateType, MinimumPlayerCount)),
+                new(OpCodes.Ldfld, Field(PrivateType, TopPlayer)),
 
                 // playerCount
                 new(OpCodes.Ldloc_2),
