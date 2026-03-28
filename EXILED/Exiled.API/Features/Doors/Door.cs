@@ -90,6 +90,23 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="DoorVariant"/>'s and their corresponding <see cref="Door"/>.
+        /// </summary>
+        internal static readonly Dictionary<DoorVariant, Door> DoorVariantToDoor = new(new ComponentsEqualityComparer());
+
+        /// <summary>
+        /// Access result flags that can be set briefly when access events are triggered.
+        /// These are transient and will be reset a few seconds after being set.
+        /// </summary>
+        private bool accessDeniedFlag;
+
+        /// <summary>
+        /// Access result flags that can be set briefly when access events are triggered.
+        /// These are transient and will be reset a few seconds after being set.
+        /// </summary>
+        private bool accessGrantedFlag;
+
+        /// <summary>
         /// Event raised when a door trigger occurs (locked/unlocked/opened/closed/exploded/access denied/granted).
         /// </summary>
         public static event Action<Door, DoorTrigger> DoorTriggered;
@@ -108,23 +125,6 @@ namespace Exiled.API.Features.Doors
         /// Event raised when something passes through a door with the player responsible.
         /// </summary>
         public static event Action<Door, DoorPass, Player> DoorPassedWithPlayer;
-
-        /// <summary>
-        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="DoorVariant"/>'s and their corresponding <see cref="Door"/>.
-        /// </summary>
-        internal static readonly Dictionary<DoorVariant, Door> DoorVariantToDoor = new(new ComponentsEqualityComparer());
-
-        /// <summary>
-        /// Access result flags that can be set briefly when access events are triggered.
-        /// These are transient and will be reset a few seconds after being set.
-        /// </summary>
-        private bool accessDeniedFlag;
-
-        /// <summary>
-        /// Access result flags that can be set briefly when access events are triggered.
-        /// These are transient and will be reset a few seconds after being set.
-        /// </summary>
-        private bool accessGrantedFlag;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Door"/> class.
