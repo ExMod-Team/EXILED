@@ -23,7 +23,8 @@ namespace Exiled.API.Features.Attributes.Validators
         /// <param name="min"><inheritdoc cref="Min"/></param>
         /// <param name="max"><inheritdoc cref="Max"/></param>
         /// <param name="inclusive"><inheritdoc cref="Inclusive"/></param>
-        public RangeAttribute(IComparable min, IComparable max, bool inclusive = false)
+        /// <remarks>min and max must inherit <see cref="IComparable"/>.</remarks>
+        public RangeAttribute(object min, object max, bool inclusive = false)
         {
             Min = min;
             Max = max;
@@ -31,14 +32,14 @@ namespace Exiled.API.Features.Attributes.Validators
         }
 
         /// <summary>
-        /// Gets the minimum value.
-        /// </summary>
-        public IComparable Max { get; }
-
-        /// <summary>
         /// Gets the maximum value.
         /// </summary>
-        public IComparable Min { get; }
+        public object Max { get; }
+
+        /// <summary>
+        /// Gets the minimum value.
+        /// </summary>
+        public object Min { get; }
 
         /// <summary>
         /// Gets a value indicating whether check is inclusive.
@@ -46,12 +47,11 @@ namespace Exiled.API.Features.Attributes.Validators
         public bool Inclusive { get; }
 
         /// <inheritdoc/>
-        public bool Check(object value)
-        {
-            int minResult = Inclusive ? 0 : -1;
-            int maxResult = Inclusive ? 0 : 1;
-
-            return Max.CompareTo(value) <= minResult && Min.CompareTo(value) >= maxResult;
-        }
+        public bool Check(object other) =>
+            Convert.ChangeType(Min, other.GetType()) is IComparable min &&
+            Convert.ChangeType(Max, other.GetType()) is IComparable max &&
+            (Inclusive
+                ? min.CompareTo(other) <= 0 && max.CompareTo(other) >= 0
+                : min.CompareTo(other) < 0 && max.CompareTo(other) > 0);
     }
 }

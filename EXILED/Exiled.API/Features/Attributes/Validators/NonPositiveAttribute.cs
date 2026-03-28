@@ -9,18 +9,15 @@ namespace Exiled.API.Features.Attributes.Validators
 {
     using System;
 
+    using Exiled.API.Interfaces;
+
     /// <summary>
     /// Check if value is 0 or less.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class NonPositiveAttribute : LessOrEqualAttribute
+    public class NonPositiveAttribute : Attribute, IValidator
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NonPositiveAttribute"/> class.
-        /// </summary>
-        public NonPositiveAttribute()
-            : base(0)
-        {
-        }
+        /// <inheritdoc/>
+        public bool Check(object other) => Convert.ToDecimal(other) <= 0;
     }
 }

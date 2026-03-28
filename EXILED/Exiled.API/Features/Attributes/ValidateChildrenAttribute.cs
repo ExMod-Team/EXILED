@@ -1,23 +1,19 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="NonNegativeAttribute.cs" company="ExMod Team">
+// <copyright file="ValidateChildrenAttribute.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.API.Features.Attributes.Validators
+namespace Exiled.API.Features.Attributes
 {
     using System;
 
-    using Exiled.API.Interfaces;
-
     /// <summary>
-    /// Checks if value is 0 or greater.
+    /// Checks all properties in the target object for validators.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class NonNegativeAttribute : Attribute, IValidator
+    public class ValidateChildrenAttribute : Attribute
     {
-        /// <inheritdoc/>
-        public bool Check(object other) => Convert.ToDecimal(other) >= 0;
     }
 }

@@ -93,6 +93,6 @@ namespace Exiled.Loader
         /// Gets or sets a value indicating whether config validator should check all properties inside config values' types.
         /// </summary>
         [Description("Indicating whether config validator should check all properties inside config values' types.")]
-        public bool EnableDeepValidation { get; set; } = true;
+        public bool EnableDeepValidation { get; set; } = false;
     }
 }

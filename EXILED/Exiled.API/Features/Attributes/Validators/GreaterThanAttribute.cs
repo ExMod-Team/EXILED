@@ -21,7 +21,8 @@ namespace Exiled.API.Features.Attributes.Validators
         /// Initializes a new instance of the <see cref="GreaterThanAttribute"/> class.
         /// </summary>
         /// <param name="value"><inheritdoc cref="Value"/></param>
-        public GreaterThanAttribute(IComparable value)
+        /// <remarks>value must be able to convert to your target type via <see cref="Convert.ChangeType(object, Type)"/>.</remarks>
+        public GreaterThanAttribute(object value)
         {
             Value = value;
         }
@@ -29,12 +30,9 @@ namespace Exiled.API.Features.Attributes.Validators
         /// <summary>
         /// Gets the minimum value.
         /// </summary>
-        public IComparable Value { get; }
+        public object Value { get; }
 
         /// <inheritdoc/>
-        public bool Check(object value)
-        {
-            return Value.CompareTo(value) >= 1;
-        }
+        public bool Check(object other) => Convert.ChangeType(Value, other.GetType()) is IComparable min && min.CompareTo(other) < 0;
     }
 }

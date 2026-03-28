@@ -5,8 +5,6 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Reflection;
-
 namespace Exiled.Loader
 {
     using System;
@@ -20,6 +18,7 @@ namespace Exiled.Loader
     using API.Interfaces;
 
     using Exiled.API.Features;
+    using Exiled.API.Features.Attributes;
     using Exiled.API.Features.Pools;
 
     using LabApi.Loader.Features.Plugins.Configuration;
@@ -84,45 +83,80 @@ namespace Exiled.Loader
         {
             int validated = 0;
             foreach (PropertyInfo propertyInfo in config.GetType().GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
-                plugin.ValidateType(config, propertyInfo, ref validated);
+            {
+                try
+                {
+                    ValidateType(config, plugin.Config, propertyInfo, ref validated);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Failed to validate config: {ex}");
+                }
+            }
 
-            Log.Info($"Config has successfully passed {validated} validations!");
+            if (validated > 0)
+                Log.Info($"Plugin {plugin.Name} has successfully passed {validated} config validations!");
+
             return config;
         }
 
         /// <summary>
         /// Performs a validation for property and all its properties in <paramref name="propertyInfo"/>'s type.
         /// </summary>
-        /// <param name="plugin">Plugin which config is validated.</param>
-        /// <param name="config">Validated config.</param>
+        /// <param name="instance">Plugin which config is validated.</param>
+        /// <param name="defaultInstance">Validated config.</param>
         /// <param name="propertyInfo">Property which will be validated.</param>
         /// <param name="validated">Amount of successfully passed validations.</param>
-        public static void ValidateType(this IPlugin<IConfig> plugin, IConfig config, PropertyInfo propertyInfo, ref int validated)
+        public static void ValidateType(object instance, object defaultInstance, PropertyInfo propertyInfo, ref int validated)
         {
-            foreach (Attribute attribute in propertyInfo.GetCustomAttributes())
+            object value = propertyInfo.GetValue(instance, null);
+            object defaultValue = propertyInfo.GetValue(defaultInstance, null);
+
+            bool hasValidateChildrenAttribute = false;
+            try
             {
-                if (attribute is not IValidator validator)
-                    continue;
-
-                object value = propertyInfo.GetValue(config, null);
-                object defaultValue = propertyInfo.GetValue(plugin.Config, null);
-                if (!validator.Check(value))
+                foreach (Attribute attribute in propertyInfo.GetCustomAttributes())
                 {
-                    Log.Error($"Value {value} in config ({propertyInfo.Name.ToSnakeCase()}) has failed validation for attribute {attribute.GetType().Name}. Default value ({defaultValue}) will be used instead.");
-                    propertyInfo.SetValue(config, defaultValue);
-                    continue;
-                }
+                    hasValidateChildrenAttribute |= attribute is ValidateChildrenAttribute;
+                    if (attribute is not IValidator validator)
+                        continue;
 
-                validated++;
+                    try
+                    {
+                        if (!validator.Check(value))
+                        {
+                            Log.Error($"Value {value} in config ({propertyInfo.Name.ToSnakeCase()}) has failed validation for attribute {attribute.GetType().Name}. Default value ({defaultValue}) will be used instead.");
+                            propertyInfo.SetValue(instance, defaultValue);
+                            continue;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Value {value} in config ({propertyInfo.Name.ToSnakeCase()}) has failed validation for attribute {attribute.GetType().Name}. Default value ({defaultValue}) will be used instead.");
+                        Log.Error($"Validation error message: {ex.Message}");
+                        propertyInfo.SetValue(instance, defaultValue);
+                        continue;
+                    }
+
+                    validated++;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error while validating value of property '{propertyInfo.Name}': {ex.Message}. Default value ({defaultValue}) will be used instead.");
+                return;
             }
 
-            if (!LoaderPlugin.Config.EnableDeepValidation)
-                return;
-
-            if (!(propertyInfo.PropertyType.Namespace?.Contains("System") ?? false))
+            if (hasValidateChildrenAttribute || (!LoaderPlugin.Config.EnableDeepValidation && !(propertyInfo.PropertyType.Namespace?.Contains("System") ?? false)))
             {
                 foreach (PropertyInfo property in propertyInfo.PropertyType.GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
-                    plugin.ValidateType(config, property, ref validated);
+                {
+                    ConstructorInfo ctor = property.PropertyType.GetConstructor(Type.EmptyTypes);
+                    if (ctor is null)
+                        continue;
+
+                    ValidateType(value, ctor.Invoke(null, null), property, ref validated);
+                }
             }
         }
 

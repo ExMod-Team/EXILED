@@ -32,6 +32,6 @@ namespace Exiled.API.Features.Attributes.Validators
         public object[] Values { get; }
 
         /// <inheritdoc/>
-        public bool Check(object value) => Values.Contains(value);
+        public bool Check(object other) => Values.Contains(other);
     }
 }
