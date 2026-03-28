@@ -49,7 +49,7 @@ namespace Exiled.Events.Patches.Events.Server
 
             const string TimeLeft = "<timeLeft>5__3";
             const string OriginalTimeLeft = "<originalTimeLeft>5__2";
-            const string MinimumPlayerCount = "<topPlayers>5__4";
+            const string TopPlayer = "<topPlayers>5__4";
 
             LocalBuilder ev = generator.DeclareLocal(typeof(RoundStartingEventArgs));
             int offset = -4;
@@ -96,11 +96,11 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.OriginalTimeLeft))),
                 new(OpCodes.Stfld, Field(PrivateType, OriginalTimeLeft)),
 
-                // this.MinimumPlayerCount = ev.MinimumPlayerCount
+                // this.TopPlayer = ev.TopPlayer
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.MinimumPlayerCount))),
-                new(OpCodes.Stfld, Field(PrivateType, MinimumPlayerCount)),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.TopPlayer))),
+                new(OpCodes.Stfld, Field(PrivateType, TopPlayer)),
 
                 // if (!ev.IsAllowed)
                 //   skip;

@@ -25,13 +25,13 @@ namespace Exiled.Events.EventArgs.Server
         /// </summary>
         /// <param name="timeLeft"><inheritdoc cref="TimeLeft"/></param>
         /// <param name="playerCount"><inheritdoc cref="PlayerCount"/></param>
-        /// <param name="minimumPlayerCount"><inheritdoc cref="MinimumPlayerCount"/></param>
+        /// <param name="topPlayer"><inheritdoc cref="TopPlayer"/></param>
         /// <param name="originalTimeLeft"><inheritdoc cref="OriginalTimeLeft"/></param>
-        public RoundStartingEventArgs(short timeLeft, short originalTimeLeft, int minimumPlayerCount, int playerCount)
+        public RoundStartingEventArgs(short timeLeft, short originalTimeLeft, int topPlayer, int playerCount)
         {
             TimeLeft = timeLeft;
             OriginalTimeLeft = originalTimeLeft;
-            MinimumPlayerCount = minimumPlayerCount;
+            TopPlayer = topPlayer;
             PlayerCount = playerCount;
             IsAllowed = TimeLeft == -1;
         }
@@ -47,9 +47,9 @@ namespace Exiled.Events.EventArgs.Server
         public int OriginalTimeLeft { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of Player.
+        /// Gets or sets the maximum number of Player on the server since restart.
         /// </summary>
-        public int MinimumPlayerCount { get; set; }
+        public int TopPlayer { get; set; }
 
         /// <summary>
         /// Gets the number of Player.
