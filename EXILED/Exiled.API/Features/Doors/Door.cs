@@ -32,39 +32,99 @@ namespace Exiled.API.Features.Doors
     /// </summary>
     public class Door : TypeCastObject<Door>, IWrapper<DoorVariant>, IWorldSpace
     {
-        // Door trigger types raised by the door wrapper.
-        // These represent significant state changes on a door that plugins may want to listen for.
+        /// <summary>
+        /// Represents the types of triggers that can occur on a door.
+        /// </summary>
         public enum DoorTrigger
         {
-            Locked, // Door was locked
-            Unlocked, // Door was unlocked
-            Opened, // Door was opened (target state changed to open)
-            Closed, // Door was closed (target state changed to closed)
-            Exploded, // Door was destroyed / exploded (breakable door)
-            AccessDenied, // An access attempt was denied (keycard denied)
-            AccessGranted // An access attempt was granted (keycard accepted)
+            /// <summary>
+            /// Door was locked.
+            /// </summary>
+            Locked,
+
+            /// <summary>
+            /// Door was unlocked.
+            /// </summary>
+            Unlocked,
+
+            /// <summary>
+            /// Door was opened (target state changed to open).
+            /// </summary>
+            Opened,
+
+            /// <summary>
+            /// Door was closed (target state changed to closed).
+            /// </summary>
+            Closed,
+
+            /// <summary>
+            /// Door was destroyed or exploded (breakable door).
+            /// </summary>
+            Exploded,
+
+            /// <summary>
+            /// An access attempt was denied (keycard denied).
+            /// </summary>
+            AccessDenied,
+
+            /// <summary>
+            /// An access attempt was granted (keycard accepted).
+            /// </summary>
+            AccessGranted,
         }
 
-        // Direction when a player/object passes through a door.
+        /// <summary>
+        /// Represents the direction when a player or object passes through a door.
+        /// </summary>
         public enum DoorPass
         {
-            Front, // Passed from front side
-            Back // Passed from back side
+            /// <summary>
+            /// Passed from the front side.
+            /// </summary>
+            Front,
+
+            /// <summary>
+            /// Passed from the back side.
+            /// </summary>
+            Back,
         }
 
-        // Event raised when a door trigger occurs (locked/unlocked/opened/closed/exploded/access denied/granted).
+        /// <summary>
+        /// Event raised when a door trigger occurs (locked/unlocked/opened/closed/exploded/access denied/granted).
+        /// </summary>
         public static event Action<Door, DoorTrigger> DoorTriggered;
 
-        // Event raised when something passes through a door (front/back).
+        /// <summary>
+        /// Event raised when something passes through a door (front/back).
+        /// </summary>
         public static event Action<Door, DoorPass> DoorPassed;
 
-        // Extended events that include the player responsible when known.
+        /// <summary>
+        /// Event raised when a door trigger occurs with the player responsible.
+        /// </summary>
         public static event Action<Door, DoorTrigger, Player> DoorTriggeredWithPlayer;
+
+        /// <summary>
+        /// Event raised when something passes through a door with the player responsible.
+        /// </summary>
         public static event Action<Door, DoorPass, Player> DoorPassedWithPlayer;
+
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="DoorVariant"/>'s and their corresponding <see cref="Door"/>.
         /// </summary>
         internal static readonly Dictionary<DoorVariant, Door> DoorVariantToDoor = new(new ComponentsEqualityComparer());
+
+        /// <summary>
+        /// Access result flags that can be set briefly when access events are triggered.
+        /// These are transient and will be reset a few seconds after being set.
+        /// </summary>
+        private bool accessDeniedFlag;
+
+        /// <summary>
+        /// Access result flags that can be set briefly when access events are triggered.
+        /// These are transient and will be reset a few seconds after being set.
+        /// </summary>
+        private bool accessGrantedFlag;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Door"/> class.
@@ -138,7 +198,7 @@ namespace Exiled.API.Features.Doors
         public virtual bool IsMoving => !(IsFullyOpen || IsFullyClosed);
 
         /// <summary>
-        /// Gets a value indicating the precise state of the door, from <c>0-1</c>. A value of <c>0</c> indicates the door is fully closed, while a value of <c>1</c> indicates the door is fully open. Values in-between represent the door's animation progress.
+        /// Gets a value indicating the precise state of the door, from <c>0-1</c>. A value of <c>0</c> indicates the door is fully closed, while a value of <c>1</c> indicates the door is fully open.
         /// </summary>
         public float ExactState => Base.GetExactState();
 
@@ -153,39 +213,31 @@ namespace Exiled.API.Features.Doors
         public bool IsOpen
         {
             get => Base.NetworkTargetState;
-            set
-            {
-                Base.NetworkTargetState = value;
-            }
+            set => Base.NetworkTargetState = value;
         }
 
         /// <summary>
-        /// Convenience property indicating the door is closed (not open).
+        /// Gets a value indicating whether the door is closed (not open).
         /// </summary>
         public bool IsClosed => !IsOpen;
 
         /// <summary>
-        /// Convenience property indicating the door is unlocked.
+        /// Gets a value indicating whether the door is unlocked.
         /// </summary>
         public bool IsUnlocked => !IsLocked;
 
         /// <summary>
-        /// Indicates whether the door has been exploded/destroyed. For breakable doors this reflects the underlying breakable state.
+        /// Gets a value indicating whether the door has been exploded or destroyed.
         /// </summary>
         public bool IsExploded => Base is BaseBreakableDoor brk && brk.IsDestroyed;
 
-        // Access result flags that can be set briefly when access events are triggered.
-        // These are transient and will be reset a few seconds after being set.
-        private bool accessDeniedFlag;
-        private bool accessGrantedFlag;
-
         /// <summary>
-        /// True if a recent access attempt was denied. This flag is transient and will reset automatically.
+        /// Gets a value indicating whether a recent access attempt was denied. This flag is transient and will reset automatically.
         /// </summary>
         public bool IsAccessDenied => accessDeniedFlag;
 
         /// <summary>
-        /// True if a recent access attempt was granted. This flag is transient and will reset automatically.
+        /// Gets a value indicating whether a recent access attempt was granted. This flag is transient and will reset automatically.
         /// </summary>
         public bool IsAccessGranted => accessGrantedFlag;
 
@@ -627,20 +679,18 @@ namespace Exiled.API.Features.Doors
         public bool IsAllowToInteract(Player player = null) => Base.AllowInteracting(player?.ReferenceHub, 0);
 
         /// <summary>
-        /// Helper to raise door trigger events and manage transient access flags.
-        /// </summary>
-        /// <param name="trigger">The trigger to raise.</param>
-        /// <summary>
-        /// Helper to raise door trigger events and manage transient access flags.
+        /// Raises door trigger events and manages transient access flags.
         /// Made public so external code (tests/plugins) can simulate triggers.
         /// </summary>
-        /// <param name="trigger">The trigger to raise.</param>
+        /// <param name="trigger">The trigger type to raise.</param>
+        /// <param name="player">The player responsible for the trigger, if applicable.</param>
         public void RaiseTrigger(DoorTrigger trigger, Player player = null)
         {
             switch (trigger)
             {
                 case DoorTrigger.AccessDenied:
                     accessDeniedFlag = true;
+
                     // Reset the access flag after a short delay.
                     Timing.CallDelayed(3f, () => accessDeniedFlag = false);
                     break;
@@ -669,9 +719,10 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Helper to raise a DoorPassed event when something passes through the door.
+        /// Raises a DoorPassed event when something passes through the door.
         /// </summary>
         /// <param name="pass">The direction of the pass.</param>
+        /// <param name="player">The player passing through the door, if applicable.</param>
         public void RaisePass(DoorPass pass, Player player = null)
         {
             try
