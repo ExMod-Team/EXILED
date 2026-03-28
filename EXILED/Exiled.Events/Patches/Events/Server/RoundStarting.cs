@@ -112,9 +112,6 @@ namespace Exiled.Events.Patches.Events.Server
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
-            for (int z = 0; z < newInstructions.Count; z++)
-                Log.Warn($"[{z}] {newInstructions[z].opcode} : {newInstructions[z].operand}  ({newInstructions[z].labels.Count})");
-
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
