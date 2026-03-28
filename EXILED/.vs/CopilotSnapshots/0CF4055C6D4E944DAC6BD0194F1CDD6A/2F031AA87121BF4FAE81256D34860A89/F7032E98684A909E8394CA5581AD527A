@@ -18,23 +18,65 @@ namespace DoorTest
             Instance = this;
 
             // Example subscriptions
-            Door.DoorTriggered += OnDoorTriggered;
-            Door.DoorPassed += OnDoorPassed;
+
+            // These are the example of legacy thing meaning of without saying username
+            {
+                // The Door Trigger (interacted) without saying username -> Door.DoorTriggered += OnDoorTriggeredLegacy; // legacy signature
+                // The Door Passed without saying username -> Door.DoorPassed += OnDoorPassedLegacy; // legacy signature
+            }
+            Door.DoorTriggeredWithPlayer += OnDoorTriggered; // extended with player
+            Door.DoorPassedWithPlayer += OnDoorPassed; // extended with player
 
             // Start door monitor which polls door/player state to raise events from in-game activity.
             DoorMonitor.Start();
 
             // Optionally run an automatic test sequence to exercise door events.
+
+            if (Config.Legacy)
+                OnLegacyEnabled();
+
             if (Config.EnableAutoTest)
                 StartAutoTest();
 
             base.OnEnabled();
         }
 
+        private void OnLegacyEnabled()
+        {
+            Instance = this;
+            // Example subscriptions
+
+            // These are the example of legacy thing meaning of without saying username
+
+            Door.DoorTriggered += OnDoorTriggeredLegacy; // legacy signature
+            Door.DoorPassed += OnDoorPassedLegacy; // legacy signature
+            // Start door monitor which polls door/player state to raise events from in-game activity.
+            // DoorMonitor.Start();
+        }
+
+        // Legacy handlers (no player parameter) for backward compatibility
+        private void OnDoorTriggeredLegacy(Door door, Door.DoorTrigger trigger)
+        {
+            if (door is null)
+                return;
+
+            Log.Info($"DoorTriggered: {door.Name} -> {trigger}");
+        }
+
+        private void OnDoorPassedLegacy(Door door, Door.DoorPass pass)
+        {
+            if (door is null)
+                return;
+
+            Log.Info($"DoorPassed: {door.Name} -> {pass}");
+        }
+
         public override void OnDisabled()
         {
-            Door.DoorTriggered -= OnDoorTriggered;
-            Door.DoorPassed -= OnDoorPassed;
+            Door.DoorTriggered -= OnDoorTriggeredLegacy;
+            Door.DoorPassed -= OnDoorPassedLegacy;
+            Door.DoorTriggeredWithPlayer -= OnDoorTriggered;
+            Door.DoorPassedWithPlayer -= OnDoorPassed;
 
             DoorMonitor.Stop();
 
