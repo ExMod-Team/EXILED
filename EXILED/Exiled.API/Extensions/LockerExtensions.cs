@@ -49,6 +49,7 @@ namespace Exiled.API.Extensions
             "AdrenalineMedkitStructure" => LockerType.Adrenaline,
             "MicroHIDpedestal" => LockerType.MicroHid,
             "SCP_127_Container" => LockerType.Scp127Pedestal,
+            "Scp1509PedestalStructure Variant" => LockerType.Scp1509Pedestal,
             _ => LockerType.Unknown,
         };
     }

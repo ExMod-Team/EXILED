@@ -36,6 +36,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a keycard interacts with a door.
         /// </summary>
+        /// <seealso cref="Handlers.Player.InteractingDoor"/>
         public static Event<KeycardInteractingEventArgs> KeycardInteracting { get; set; } = new();
 
         /// <summary>
@@ -78,6 +79,38 @@ namespace Exiled.Events.Handlers
         /// <remarks>The client will still see all effects, like sounds and shoot.</remarks>
         /// </summary>
         public static Event<DisruptorFiringEventArgs> DisruptorFiring { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        public static Event<JailbirdChangingWearStateEventArgs> JailbirdChangingWearState { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        public static Event<JailbirdChangedWearStateEventArgs> JailbirdChangedWearState { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a marshmallow man punches.
+        /// </summary>
+        public static Event<PunchingEventArgs> Punching { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a marshmallow man cackles.
+        /// </summary>
+        public static Event<CacklingEventArgs> Cackling { get; set; } = new();
+
+        /// <summary>
+        /// Called before the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="JailbirdChangingWearStateEventArgs"/> instance.</param>
+        public static void OnJailbirdStateChanging(JailbirdChangingWearStateEventArgs ev) => JailbirdChangingWearState.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after the Jailbird's <see cref="InventorySystem.Items.Jailbird.JailbirdWearState"/> is changed.
+        /// </summary>
+        /// <param name="ev">The <see cref="JailbirdChangedWearStateEventArgs"/> instance.</param>
+        public static void OnJailbirdStateChanged(JailbirdChangedWearStateEventArgs ev) => JailbirdChangedWearState.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="ItemType.ParticleDisruptor"/> firing while on the ground.
@@ -151,5 +184,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="InspectedItemEventArgs"/> instance.</param>
         public static void OnInspectedItem(InspectedItemEventArgs ev) => InspectedItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a marshmallow man punches.
+        /// </summary>
+        /// <param name="ev">The <see cref="PunchingEventArgs"/> instance.</param>
+        public static void OnPunching(PunchingEventArgs ev) => Punching.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a marshmallow man cackles.
+        /// </summary>
+        /// <param name="ev">The <see cref="CacklingEventArgs"/> instance.</param>
+        public static void OnCackling(CacklingEventArgs ev) => Cackling.InvokeSafely(ev);
     }
 }

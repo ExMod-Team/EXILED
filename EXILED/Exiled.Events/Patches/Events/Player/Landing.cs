@@ -14,36 +14,34 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.Handlers;
-
     using HarmonyLib;
-
+    using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Thirdperson;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="AnimatedCharacterModel.OnGrounded" />
+    /// Patches <see cref="FirstPersonMovementModule.IsGrounded" />
     /// Adds the <see cref="Player.Landing" /> event.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.Landing))]
-    [HarmonyPatch(typeof(AnimatedCharacterModel), nameof(AnimatedCharacterModel.OnGrounded))]
+    [HarmonyPatch(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.IsGrounded), MethodType.Setter)]
     internal static class Landing
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            const int offset = -1;
-            int index = newInstructions.FindIndex(
-                instruction => instruction.Calls(Method(typeof(AnimatedCharacterModel), nameof(AnimatedCharacterModel.PlayFootstep)))) + offset;
+            const int offset = 2;
+            int index = newInstructions.FindLastIndex(instruction => instruction.opcode == OpCodes.Ldarg_1) + offset;
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
-                    // Player.Get(base.OwnerHub)
+                    // Player.Get(this.Hub)
                     new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(CharacterModel), nameof(CharacterModel.OwnerHub))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(FirstPersonMovementModule), nameof(FirstPersonMovementModule.Hub))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                     // LandingEventArgs ev = new(Player)

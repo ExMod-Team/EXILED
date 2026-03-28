@@ -22,7 +22,7 @@ namespace Exiled.Events.Patches.Fixes
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="JailbirdDeteriorationTracker.Setup(JailbirdItem, JailbirdHitreg)" />.
+    /// Patches <see cref="JailbirdDeteriorationTracker.Setup(JailbirdItem)" />.
     /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/88).
     /// </summary>
     [HarmonyPatch(typeof(JailbirdDeteriorationTracker), nameof(JailbirdDeteriorationTracker.Setup))]

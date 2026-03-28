@@ -52,8 +52,8 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public float MeleeDamage
         {
-            get => Base._hitreg._damageMelee;
-            set => Base._hitreg._damageMelee = value;
+            get => Base.MeleeDamage;
+            set => Base.MeleeDamage = value;
         }
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public float ChargeDamage
         {
-            get => Base._hitreg._damageCharge;
-            set => Base._hitreg._damageCharge = value;
+            get => Base._chargeDamage;
+            set => Base._chargeDamage = value;
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public float FlashDuration
         {
-            get => Base._hitreg._flashedDuration;
-            set => Base._hitreg._flashedDuration = value;
+            get => Base._flashedDuration;
+            set => Base._flashedDuration = value;
         }
 
         /// <summary>
@@ -79,17 +79,17 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public float ConcussionDuration
         {
-            get => Base._hitreg._concussionDuration;
-            set => Base._hitreg._concussionDuration = value;
+            get => Base._concussionDuration;
+            set => Base._concussionDuration = value;
         }
 
         /// <summary>
-        /// Gets or sets the radius of the Jailbird's hit register.
+        /// Gets or sets the radius of the Jailbird's hit radius.
         /// </summary>
         public float Radius
         {
-            get => Base._hitreg._hitregRadius;
-            set => Base._hitreg._hitregRadius = value;
+            get => Base._hitregRadius;
+            set => Base._hitregRadius = value;
         }
 
         /// <summary>
@@ -97,10 +97,10 @@ namespace Exiled.API.Features.Items
         /// </summary>
         public float TotalDamageDealt
         {
-            get => Base._hitreg.TotalMeleeDamageDealt;
+            get => Base.TotalMeleeDamageDealt;
             set
             {
-                Base._hitreg.TotalMeleeDamageDealt = value;
+                Base.TotalMeleeDamageDealt = value;
                 Base._deterioration.RecheckUsage();
             }
         }

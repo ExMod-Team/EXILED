@@ -50,16 +50,11 @@ namespace Exiled.Events.Patches.Events.Scp330
                 index,
                 new[]
                 {
-                    // Player.Get(bag.Owner)
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(ItemBase), nameof(ItemBase.Owner))),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-
                     // scp330Bag
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Dup),
 
                     // candyKindID = GetCandyID(bag, index)
+                    new(OpCodes.Dup),
                     new(OpCodes.Ldarg_1),
                     new(OpCodes.Call, Method(typeof(DroppingCandy), nameof(DroppingCandy.GetCandyID))),
 
@@ -76,18 +71,19 @@ namespace Exiled.Events.Patches.Events.Scp330
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingScp330EventArgs), nameof(DroppingScp330EventArgs.IsAllowed))),
                     new CodeInstruction(OpCodes.Brfalse_S, returnLabel),
-                });
 
-            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Stloc_2);
-
-            newInstructions.InsertRange(
-                index,
-                new CodeInstruction[]
-                {
-                    // candyKindID = ev.Candy, save locally.
-                    new(OpCodes.Pop),
+                    // index = GetCandyID(bag, candyKindID)
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(DroppingScp330EventArgs), nameof(DroppingScp330EventArgs.Candy))),
+                    new(OpCodes.Call, Method(typeof(DroppingCandy), nameof(DroppingCandy.GetIDCandy))),
+                    new(OpCodes.Starg_S, 1),
+
+                    // if (index == -1)
+                    //    return;
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Ldc_I4_M1),
+                    new(OpCodes.Beq, returnLabel),
                 });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);
@@ -103,6 +99,11 @@ namespace Exiled.Events.Patches.Events.Scp330
             if (index < 0 || index > scp330Bag.Candies.Count)
                 return CandyKindID.None;
             return scp330Bag.Candies[index];
+        }
+
+        private static int GetIDCandy(Scp330Bag scp330Bag, CandyKindID candyKindId)
+        {
+            return scp330Bag.Candies.FindIndex(x => candyKindId == x);
         }
     }
 }

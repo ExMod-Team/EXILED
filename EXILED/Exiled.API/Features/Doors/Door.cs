@@ -55,7 +55,7 @@ namespace Exiled.API.Features.Doors
 
             Type = GetDoorType();
             if (Base != null && Type is DoorType.UnknownDoor or DoorType.UnknownGate or DoorType.UnknownElevator)
-                Log.Error($"[DoorType] Room: {Room?.Type ?? RoomType.Unknown} Name:{Name} GameObjectName:{GameObject.name}");
+                Log.Warn($"[DoorType] Type: {Type} Room: {Room?.Type ?? RoomType.Unknown} Name:{Name} GameObjectName:{GameObject.name}");
         }
 
         /// <summary>
@@ -623,6 +623,8 @@ namespace Exiled.API.Features.Doors
                     {
                         RoomType.HczEzCheckpointA => DoorType.CheckpointArmoryA,
                         RoomType.HczEzCheckpointB => DoorType.CheckpointArmoryB,
+                        RoomType.EzGateA => DoorType.GateAArmory,
+                        RoomType.HczLoadingBay => DoorType.HczLoadingBay,
                         _ => DoorType.UnknownDoor,
                     },
                     "Unsecured Pryable GateDoor" => Room?.Type switch
@@ -638,7 +640,7 @@ namespace Exiled.API.Features.Doors
                     {
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
-                        ElevatorGroup.GateA => DoorType.ElevatorGateA,
+                        ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => DoorType.ElevatorGateA,
                         ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => DoorType.ElevatorLczA,
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
                         _ => DoorType.UnknownElevator,

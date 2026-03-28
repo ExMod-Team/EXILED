@@ -15,8 +15,9 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
-
     using HarmonyLib;
+    using LabApi.Events.Arguments.PlayerEvents;
+    using LabApi.Events.Handlers;
 
     using static HarmonyLib.AccessTools;
 
@@ -55,8 +56,14 @@ namespace Exiled.Events.Patches.Events.Player
                     // isTriggerable
                     new CodeInstruction(OpCodes.Ldloca_S, 3),
 
+                    // referenceHub
+                    new CodeInstruction(OpCodes.Ldloca_S, 4),
+
+                    // referenceHub2
+                    new CodeInstruction(OpCodes.Ldloca_S, 5),
+
                     // TriggeringTesla.TriggeringTeslaEvent(BaseTeslaGate baseTeslaGate, ref bool inIdleRange, ref bool isTriggerable)
-                    new CodeInstruction(OpCodes.Call, Method(typeof(TriggeringTesla), nameof(TriggeringTeslaEvent), new[] { typeof(BaseTeslaGate), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType() })),
+                    new CodeInstruction(OpCodes.Call, Method(typeof(TriggeringTesla), nameof(TriggeringTeslaEvent), new[] { typeof(BaseTeslaGate), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType(), typeof(ReferenceHub).MakeByRefType(), typeof(ReferenceHub).MakeByRefType(), })),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -65,7 +72,7 @@ namespace Exiled.Events.Patches.Events.Player
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
 
-        private static void TriggeringTeslaEvent(BaseTeslaGate baseTeslaGate, ref bool inIdleRange, ref bool isTriggerable)
+        private static void TriggeringTeslaEvent(BaseTeslaGate baseTeslaGate, ref bool inIdleRange, ref bool isTriggerable, ref ReferenceHub referenceHub, ref ReferenceHub referenceHub2)
         {
             TeslaGate teslaGate = TeslaGate.Get(baseTeslaGate);
 
@@ -88,11 +95,35 @@ namespace Exiled.Events.Patches.Events.Player
                 if (!ev.IsAllowed)
                     continue;
 
-                if (ev.IsTriggerable && !isTriggerable)
+                if (ev.IsTriggerable && !isTriggerable && !teslaGate.IsShocking)
+                {
                     isTriggerable = ev.IsTriggerable;
+                    PlayerTriggeringTeslaEventArgs playerTriggeringTeslaEventArgs = new(player.ReferenceHub, teslaGate.Base);
+                    PlayerEvents.OnTriggeringTesla(playerTriggeringTeslaEventArgs);
+                    if (!playerTriggeringTeslaEventArgs.IsAllowed)
+                    {
+                        isTriggerable = false;
+                    }
+                    else
+                    {
+                        referenceHub2 = player.ReferenceHub;
+                    }
+                }
 
                 if (ev.IsInIdleRange && !inIdleRange)
+                {
                     inIdleRange = ev.IsInIdleRange;
+                    PlayerIdlingTeslaEventArgs playerIdlingTeslaEventArgs = new(player.ReferenceHub, teslaGate.Base);
+                    PlayerEvents.OnIdlingTesla(playerIdlingTeslaEventArgs);
+                    if (!playerIdlingTeslaEventArgs.IsAllowed)
+                    {
+                        inIdleRange = false;
+                    }
+                    else
+                    {
+                        referenceHub = player.ReferenceHub;
+                    }
+                }
             }
         }
     }

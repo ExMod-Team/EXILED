@@ -50,17 +50,11 @@ namespace Exiled.API.Features.Components
             {
                 if (!initialized)
                     return;
-                if (Owner == null)
-                    Log.Error($"Owner is null!");
-                if (Grenade == null)
-                    Log.Error("Grenade is null!");
-                if (collision is null)
-                    Log.Error("wat");
-                if (!collision.collider)
-                    Log.Error("water");
-                if (collision.collider.gameObject == null)
-                    Log.Error("pepehm");
-                if (collision.collider.gameObject == Owner || collision.collider.gameObject.TryGetComponent<EffectGrenade>(out _))
+                if (Owner == null || Grenade == null)
+                    return;
+                if (collision?.collider?.gameObject == Owner)
+                    return;
+                if (collision.collider.gameObject.TryGetComponent<EffectGrenade>(out _))
                     return;
 
                 Grenade.TargetTime = 0.1f;

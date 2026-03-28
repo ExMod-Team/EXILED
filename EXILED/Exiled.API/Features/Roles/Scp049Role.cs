@@ -124,6 +124,16 @@ namespace Exiled.API.Features.Roles
         public Dictionary<Player, int> ResurrectedPlayers => Scp049ResurrectAbility.ResurrectedPlayers.ToDictionary(x => Player.Get(x.Key), x => x.Value);
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets or sets the amount of time before SCP-049 can use its Doctor's Call ability again.
         /// </summary>
         public float CallCooldown
@@ -261,8 +271,7 @@ namespace Exiled.API.Features.Roles
             else
             {
                 cardiacArrest.SetAttacker(AttackAbility.Owner);
-                cardiacArrest.Intensity = 1;
-                cardiacArrest.ServerChangeDuration(AttackAbility._statusEffectDuration, false);
+                cardiacArrest.ServerSetState(1, AttackAbility._statusEffectDuration, false);
             }
 
             SenseAbility.OnServerHit(AttackAbility._target);

@@ -15,11 +15,12 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features;
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Items;
+    using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Lockers;
     using Exiled.API.Features.Pickups;
+    using Exiled.API.Interfaces.Keycards;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Player;
-    using Interactables.Interobjects.DoorUtils;
     using InventorySystem.Items.Keycards;
     using UnityEngine;
 
@@ -72,6 +73,30 @@ namespace Exiled.CustomItems.API.Features
         /// </summary>
         public virtual Color32? KeycardPermissionsColor { get; set; }
 
+        /// <summary>
+        /// Gets or sets the wear of a keycard.
+        /// </summary>
+        /// <remarks>
+        /// Only works on CustomSite02 keycards with values 0-4 and CustomMetalCase keycards with values 0-5.
+        /// </remarks>
+        public virtual byte Wear { get; set; } = byte.MaxValue;
+
+        /// <summary>
+        /// Gets or sets the serial number of a keycard.
+        /// </summary>
+        /// <remarks>
+        /// Only works on CustomMetalCase and CustomTaskForce keycards. Max length is 12. Non-numerical characters will be replaced with '-'.
+        /// </remarks>
+        public virtual string SerialNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the rank of a keycard.
+        /// </summary>
+        /// <remarks>
+        /// Only works on CustomTaskForce keycards with values 0-3. Value runs in reverse (3 is rank 1, 2 -> 2, 1 -> 3, 0 -> 0).
+        /// </remarks>
+        public virtual byte Rank { get; set; } = byte.MaxValue;
+
         /// <inheritdoc/>
         public override void Give(Player player, Item item, bool displayMessage = true)
         {
@@ -95,45 +120,55 @@ namespace Exiled.CustomItems.API.Features
         /// <param name="keycard">Item instance.</param>
         protected virtual void SetupKeycard(Keycard keycard)
         {
-            if (!keycard.Base.Customizable)
-                return;
-
-            DetailBase[] details = keycard.Base.Details;
-
-            NametagDetail? nameDetail = details.OfType<NametagDetail>().FirstOrDefault();
-
-            if (nameDetail != null && !string.IsNullOrEmpty(KeycardName))
-                NametagDetail._customNametag = KeycardName;
-
-            CustomItemNameDetail? raNameDetail = details.OfType<CustomItemNameDetail>().FirstOrDefault();
-
-            if (raNameDetail != null)
-                raNameDetail.Name = Name;
-
-            CustomLabelDetail? labelDetail = details.OfType<CustomLabelDetail>().FirstOrDefault();
-
-            if (labelDetail != null)
+            if (keycard is CustomKeycardItem customKeycard)
             {
-                if (!string.IsNullOrEmpty(KeycardLabel))
-                    CustomLabelDetail._customText = KeycardLabel;
+                customKeycard.Permissions = Permissions;
 
-                if (KeycardLabelColor.HasValue)
-                    CustomLabelDetail._customColor = KeycardLabelColor.Value;
+                if (KeycardPermissionsColor.HasValue)
+                    customKeycard.PermissionsColor = KeycardPermissionsColor.Value;
+
+                if (TintColor.HasValue)
+                    customKeycard.Color = TintColor.Value;
+
+                if (!string.IsNullOrEmpty(Name))
+                    customKeycard.ItemName = Name;
+
+                if (!string.IsNullOrEmpty(KeycardName) && customKeycard is INameTagKeycard nametag)
+                    nametag.NameTag = KeycardName;
+
+                if (customKeycard is ILabelKeycard label)
+                {
+                    if (!string.IsNullOrEmpty(KeycardLabel))
+                        label.Label = KeycardLabel;
+                    if (KeycardLabelColor.HasValue)
+                        label.LabelColor = KeycardLabelColor.Value;
+                }
+
+                if (customKeycard is IWearKeycard wear)
+                    wear.Wear = Wear;
+
+                if (customKeycard is ISerialNumberKeycard serialNumber)
+                    serialNumber.SerialNumber = SerialNumber;
+
+                if (customKeycard is IRankKeycard rank)
+                    rank.Rank = Rank;
             }
-
-            CustomPermsDetail? permsDetail = details.OfType<CustomPermsDetail>().FirstOrDefault();
-
-            if (permsDetail != null)
+            else if (keycard.Base.Customizable)
             {
-                CustomPermsDetail._customLevels = new((DoorPermissionFlags)Permissions);
-                CustomPermsDetail._customColor = KeycardPermissionsColor;
-            }
+                // Some keycards have customizable name tags but nothing else. This should handle those.
+                DetailBase[] details = keycard.Base.Details;
 
-            CustomTintDetail? tintDetail = details.OfType<CustomTintDetail>().FirstOrDefault();
+                NametagDetail? nametag = details.OfType<NametagDetail>().FirstOrDefault();
 
-            if (tintDetail != null && TintColor.HasValue)
-            {
-                CustomTintDetail._customColor = TintColor.Value;
+                if (nametag != null)
+                {
+                    NametagDetail._customNametag = KeycardName;
+
+                    if (KeycardDetailSynchronizer.Database.Remove(keycard.Serial))
+                    {
+                        KeycardDetailSynchronizer.ServerProcessItem(keycard.Base);
+                    }
+                }
             }
         }
 

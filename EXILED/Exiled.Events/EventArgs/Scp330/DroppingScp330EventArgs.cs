@@ -22,19 +22,16 @@ namespace Exiled.Events.EventArgs.Scp330
         /// <summary>
         /// Initializes a new instance of the <see cref="DroppingScp330EventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        /// <inheritdoc cref="Player" />
-        /// </param>
         /// <param name="scp330">
         /// <inheritdoc cref="Scp330" />
         /// </param>
         /// <param name="candy">
         /// <inheritdoc cref="Candy" />
         /// </param>
-        public DroppingScp330EventArgs(Player player, Scp330Bag scp330, CandyKindID candy)
+        public DroppingScp330EventArgs(Scp330Bag scp330, CandyKindID candy)
         {
-            Player = player;
             Scp330 = Item.Get<Scp330>(scp330);
+            Player = Scp330.Owner;
             Candy = candy;
         }
 
