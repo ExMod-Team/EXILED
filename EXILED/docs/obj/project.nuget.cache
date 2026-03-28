@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "QWnffhmXbgM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\docs\\docs.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\musta\\.nuget\\packages\\lib.harmony\\2.2.2\\lib.harmony.2.2.2.nupkg.sha512",
+    "C:\\Users\\musta\\.nuget\\packages\\stylecop.analyzers\\1.1.118\\stylecop.analyzers.1.1.118.nupkg.sha512"
+  ],
+  "logs": []
+}

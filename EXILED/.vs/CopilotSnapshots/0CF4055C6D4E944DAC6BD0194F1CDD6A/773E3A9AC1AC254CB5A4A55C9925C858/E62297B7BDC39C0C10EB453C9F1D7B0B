@@ -1,0 +1,161 @@
+﻿using System;
+using System.Collections.Generic;
+using MEC;
+using Exiled.API.Features;
+using Exiled.API.Features.Doors;
+using UnityEngine;
+
+namespace DoorTest
+{
+    // Monitors doors and player positions to raise DoorTriggered and DoorPassed events
+    internal static class DoorMonitor
+    {
+        private static CoroutineHandle handle = default;
+
+        private class DoorState
+        {
+            public bool IsOpen;
+            public bool IsLocked;
+            public bool IsExploded;
+        }
+
+        private class PlayerState
+        {
+            public Door LastDoor;
+            public Door.DoorPass LastSide;
+        }
+
+        private static readonly Dictionary<int, DoorState> doorStates = new();
+        private static readonly Dictionary<int, PlayerState> playerStates = new();
+
+        public static void Start()
+        {
+            if (handle.IsRunning)
+                return;
+
+            handle = Timing.RunCoroutine(MonitorLoop());
+        }
+
+        public static void Stop()
+        {
+            if (handle.IsRunning)
+                Timing.KillCoroutines(handle);
+            doorStates.Clear();
+            playerStates.Clear();
+        }
+
+        private static System.Collections.Generic.IEnumerator<float> MonitorLoop()
+        {
+            // Polling loop
+            while (true)
+            {
+                try
+                {
+                    MonitorDoors();
+                    MonitorPlayers();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"DoorMonitor exception: {ex}");
+                }
+
+                // 5 checks per second
+                yield return Timing.WaitForSeconds(0.2f);
+            }
+        }
+
+        private static void MonitorDoors()
+        {
+            foreach (Door door in Door.List)
+            {
+                if (door is null)
+                    continue;
+
+                int id = door.InstanceId;
+                if (!doorStates.TryGetValue(id, out DoorState prev))
+                {
+                    prev = new DoorState { IsOpen = door.IsOpen, IsLocked = door.IsLocked, IsExploded = door.IsExploded };
+                    doorStates[id] = prev;
+                    continue;
+                }
+
+                if (prev.IsOpen != door.IsOpen)
+                {
+                    door.RaiseTrigger(door.IsOpen ? Door.DoorTrigger.Opened : Door.DoorTrigger.Closed);
+                    prev.IsOpen = door.IsOpen;
+                }
+
+                if (prev.IsLocked != door.IsLocked)
+                {
+                    door.RaiseTrigger(door.IsLocked ? Door.DoorTrigger.Locked : Door.DoorTrigger.Unlocked);
+                    prev.IsLocked = door.IsLocked;
+                }
+
+                if (prev.IsExploded != door.IsExploded)
+                {
+                    if (door.IsExploded)
+                        door.RaiseTrigger(Door.DoorTrigger.Exploded);
+                    prev.IsExploded = door.IsExploded;
+                }
+            }
+        }
+
+        private static void MonitorPlayers()
+        {
+            // If no doors, skip
+            if (Door.List == null)
+                return;
+
+            var doors = new List<Door>(Door.List);
+            if (doors.Count == 0)
+                return;
+
+            foreach (Player pl in Player.List)
+            {
+                if (pl?.ReferenceHub == null)
+                    continue;
+
+                int pid = pl.Id;
+                if (!playerStates.TryGetValue(pid, out PlayerState ps))
+                {
+                    ps = new PlayerState();
+                    playerStates[pid] = ps;
+                }
+
+                // find nearest door within threshold
+                Door nearest = null;
+                float nearestDist = float.MaxValue;
+                foreach (var d in doors)
+                {
+                    float dist = Vector3.Distance(pl.Position, d.Position);
+                    if (dist < nearestDist)
+                    {
+                        nearest = d;
+                        nearestDist = dist;
+                    }
+                }
+
+                const float detectThreshold = 3f;
+                if (nearest == null || nearestDist > detectThreshold)
+                {
+                    // player is away from any door
+                    ps.LastDoor = null;
+                    continue;
+                }
+
+                // Determine side using door forward vector
+                Vector3 dir = pl.Position - nearest.Position;
+                Door.DoorPass side = Vector3.Dot(dir, nearest.Transform.forward) >= 0f ? Door.DoorPass.Front : Door.DoorPass.Back;
+
+                // If player previously near same door and side changed -> passed through
+                if (ps.LastDoor == nearest && ps.LastSide != side && ps.LastDoor != null)
+                {
+                    nearest.RaisePass(side);
+                }
+
+                ps.LastDoor = nearest;
+                ps.LastSide = side;
+            }
+        }
+    }
+}

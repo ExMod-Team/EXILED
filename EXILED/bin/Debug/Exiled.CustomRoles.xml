@@ -1,0 +1,1197 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Exiled.CustomRoles</name>
+    </assembly>
+    <members>
+        <member name="T:Exiled.CustomRoles.API.Extensions">
+            <summary>
+            A collection of API methods.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.GetCustomRoles(Exiled.API.Features.Player)">
+            <summary>
+            Gets a <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> of the player's current custom roles.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to check for roles.</param>
+            <returns>A <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> of all current custom roles.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.HasAnyCustomRole(Exiled.API.Features.Player)">
+            <summary>
+            Checks whether the player has any custom role assigned.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to check.</param>
+            <returns><c>true</c> if the player has at least one custom role; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.Register(System.Collections.Generic.IEnumerable{Exiled.CustomRoles.API.Features.CustomRole})">
+            <summary>
+            Registers an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>s.
+            </summary>
+            <param name="customRoles"><see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>s to be registered.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.Register(Exiled.CustomRoles.API.Features.CustomRole)">
+            <summary>
+            Registers a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>.
+            </summary>
+            <param name="role"><see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> to be registered.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.Register(Exiled.CustomRoles.API.Features.CustomAbility)">
+            <summary>
+            Registers a <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>.
+            </summary>
+            <param name="ability">The <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> to be registered.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.Unregister(System.Collections.Generic.IEnumerable{Exiled.CustomRoles.API.Features.CustomRole})">
+            <summary>
+            Unregisters an <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>s.
+            </summary>
+            <param name="customRoles"><see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>s to be unregistered.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.Unregister(Exiled.CustomRoles.API.Features.CustomRole)">
+            <summary>
+            Unregisters a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>.
+            </summary>
+            <param name="role"><see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> to be unregistered.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.Unregister(Exiled.CustomRoles.API.Features.CustomAbility)">
+            <summary>
+            Unregisters a <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>.
+            </summary>
+            <param name="ability">The <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> to be unregistered.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.GetActiveAbilities(Exiled.API.Features.Player)">
+            <summary>
+            Gets all <see cref="T:Exiled.CustomRoles.API.Features.ActiveAbility"/>s a specific <see cref="T:Exiled.API.Features.Player"/> is able to use.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to get abilities for.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of their active abilities, or <see langword="null"/> if none.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Extensions.GetSelectedAbility(Exiled.API.Features.Player)">
+            <summary>
+            Gets the <see cref="T:Exiled.API.Features.Player"/>'s selected ability.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to check.</param>
+            <returns>The <see cref="T:Exiled.CustomRoles.API.Features.ActiveAbility"/> the <see cref="T:Exiled.API.Features.Player"/> has selected, or <see langword="null"/>.</returns>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.ActiveAbility">
+            <summary>
+            The base class for active (on-use) abilities.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.ActiveAbility.AllActiveAbilities">
+            <summary>
+            Gets a <see cref="T:System.Collections.Generic.Dictionary`2"/> containing all players with active abilities, and the abilities they have access to.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.ActiveAbility.Duration">
+            <summary>
+            Gets or sets how long the ability lasts.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.ActiveAbility.Cooldown">
+            <summary>
+            Gets or sets how long must go between ability uses.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.ActiveAbility.CanUseOverride">
+            <summary>
+            Gets or sets an action to override the behavior of <see cref="M:Exiled.CustomRoles.API.Features.ActiveAbility.CanUseAbility(Exiled.API.Features.Player,System.String@,System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.ActiveAbility.LastUsed">
+            <summary>
+            Gets the last time this ability was used.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.ActiveAbility.ActivePlayers">
+            <summary>
+            Gets all players actively using this ability.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.ActiveAbility.SelectedPlayers">
+            <summary>
+            Gets all players who have this ability selected.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.UseAbility(Exiled.API.Features.Player)">
+            <summary>
+            Uses the ability.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> using the ability.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.EndAbility(Exiled.API.Features.Player)">
+            <summary>
+            Ends the ability.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> the ability is ended for.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.SelectAbility(Exiled.API.Features.Player)">
+            <summary>
+            Selects the ability.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to select the ability.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.UnSelectAbility(Exiled.API.Features.Player)">
+            <summary>
+            Un-Selects the ability.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to un-select the ability.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.Check(Exiled.API.Features.Player)">
+            <summary>
+            Checks if the specified player is using the ability.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to check.</param>
+            <returns>True if the player is actively using the ability.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.Check(Exiled.API.Features.Player,Exiled.CustomRoles.API.Features.Enums.CheckType)">
+            <summary>
+            Checks if the specified <see cref="T:Exiled.API.Features.Player"/> meets certain check criteria.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to check.</param>
+            <param name="type">The <see cref="T:Exiled.CustomRoles.API.Features.Enums.CheckType"/> type of check to preform.</param>
+            <returns>The results of the check.
+            <see cref="F:Exiled.CustomRoles.API.Features.Enums.CheckType.Active"/>: Checks if the ability is currently active for the player.
+            <see cref="F:Exiled.CustomRoles.API.Features.Enums.CheckType.Selected"/>: Checks if the player has the ability selected.
+            <see cref="F:Exiled.CustomRoles.API.Features.Enums.CheckType.Available"/>: Checks if the player has the ability.
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">This should never happen unless Joker fucks up.</exception>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.CanUseAbility(Exiled.API.Features.Player,System.String@,System.Boolean)">
+            <summary>
+            Checks to see if the ability is usable by the player.
+            </summary>
+            <param name="player">The player to check.</param>
+            <param name="response">The response to send to the player.</param>
+            <param name="selectedOnly">Whether to disallow usage if the ability is not selected.</param>
+            <returns>True if the ability is usable.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.AbilityAdded(Exiled.API.Features.Player)">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.AbilityRemoved(Exiled.API.Features.Player)">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.AbilityUsed(Exiled.API.Features.Player)">
+            <summary>
+            Called when the ability is used.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> using the ability.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.AbilityEnded(Exiled.API.Features.Player)">
+            <summary>
+            Called when the abilities duration has ended.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> the ability has ended for.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.Selected(Exiled.API.Features.Player)">
+            <summary>
+            Called when the ability is selected.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> selecting the ability.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.ActiveAbility.Unselected(Exiled.API.Features.Player)">
+            <summary>
+            Called when the ability is un-selected.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> un-selecting the ability.</param>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.CustomAbility">
+            <summary>
+            The custom ability base class.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> class.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomAbility.Registered">
+            <summary>
+            Gets a list of all registered custom abilities.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomAbility.Name">
+            <summary>
+            Gets or sets the name of the ability.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomAbility.Description">
+            <summary>
+            Gets or sets the description of the ability.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomAbility.Players">
+            <summary>
+            Gets all players who have this ability.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomAbility.AbilityType">
+            <summary>
+            Gets the <see cref="T:System.Type"/> for this ability.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.Get(System.String)">
+            <summary>
+            Gets a <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> by name.
+            </summary>
+            <param name="name">The name of the ability to get.</param>
+            <returns>The ability, or <see langword="null"/> if it doesn't exist.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.Get(System.Type)">
+            <summary>
+            Gets a <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> by type.
+            </summary>
+            <param name="type">The type of the ability to get.</param>
+            <returns>The type, or <see langword="null"/> if it doesn't exist.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.TryGet(System.Type,Exiled.CustomRoles.API.Features.CustomAbility@)">
+            <summary>
+            Tries to get a <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> by type.
+            </summary>
+            <param name="type">The type of the ability to get.</param>
+            <param name="customAbility">The custom ability.</param>
+            <returns>True if the ability exists, otherwise false.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.TryGet(System.String,Exiled.CustomRoles.API.Features.CustomAbility@)">
+            <summary>
+            Tries to get a <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> by name.
+            </summary>
+            <param name="name">The name of the ability to get.</param>
+            <param name="customAbility">The custom ability.</param>
+            <returns>True if the ability exists.</returns>
+            <exception cref="T:System.ArgumentNullException">If the name is <see langword="null"/> or an empty string.</exception>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.RegisterAbilities(System.Boolean)">
+            <summary>
+            Registers all the <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s present in the current assembly.
+            </summary>
+            <param name="byAttribute">Whether to register by attribute.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> which contains all registered <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s.</returns>
+            <remarks>
+            This is just a dumbed down version of <see cref="M:Exiled.CustomRoles.API.Features.CustomAbility.RegisterAbilities(System.Boolean,System.Object)"/> for QoL, if you actually use <see cref="T:Exiled.API.Features.Attributes.CustomAbilityAttribute"/>, do not use this overload.
+            </remarks>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.RegisterAbilities(System.Boolean,System.Object)">
+            <summary>
+            Registers all the <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s present in the current assembly.
+            </summary>
+            <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
+            <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> which contains all registered <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.RegisterAbilities(System.Collections.Generic.IEnumerable{System.Type},System.Boolean,System.Boolean,System.Object)">
+            <summary>
+            Registers all the <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s present in the current assembly.
+            </summary>
+            <param name="targetTypes">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Type"/> containing the target types.</param>
+            <param name="isIgnored">A value indicating whether the target types should be ignored.</param>
+            <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
+            <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> which contains all registered <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.UnregisterAbilities">
+            <summary>
+            Unregisters all the <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s present in the current assembly.
+            </summary>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> which contains all unregistered <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.UnregisterAbilities(System.Collections.Generic.IEnumerable{System.Type},System.Boolean)">
+            <summary>
+            Unregisters all the <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s present in the current assembly.
+            </summary>
+            <param name="targetTypes">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Type"/> containing the target types.</param>
+            <param name="isIgnored">A value indicating whether the target types should be ignored.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> which contains all unregistered <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.UnregisterAbilities(System.Collections.Generic.IEnumerable{Exiled.CustomRoles.API.Features.CustomAbility},System.Boolean)">
+            <summary>
+            Unregisters all the <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s present in the current assembly.
+            </summary>
+            <param name="targetAbilities">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> containing the target roles.</param>
+            <param name="isIgnored">A value indicating whether the target abilities should be ignored.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/> which contains all unregistered <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.Check(Exiled.API.Features.Player)">
+            <summary>
+            Checks to see if the specified player has this ability.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to check.</param>
+            <returns>True if the player has this ability.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.AddAbility(Exiled.API.Features.Player)">
+            <summary>
+            Adds this ability to the player.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to give the ability to.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.RemoveAbility(Exiled.API.Features.Player)">
+            <summary>
+            Removes this ability from the player.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to remove this ability from.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.Init">
+            <summary>
+            Initializes this ability.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.Destroy">
+            <summary>
+            Destroys this ability.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.TryRegister">
+            <summary>
+            Tries to register this ability.
+            </summary>
+            <returns>True if the ability registered properly.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.TryUnregister">
+            <summary>
+            Tries to unregister this ability.
+            </summary>
+            <returns>True if the ability is unregistered properly.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.SubscribeEvents">
+            <summary>
+            Loads the internal event handlers for the ability.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.UnsubscribeEvents">
+            <summary>
+            Unloads the internal event handlers for the ability.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.AbilityAdded(Exiled.API.Features.Player)">
+            <summary>
+            Called when the ability is first added to the player.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> using the ability.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomAbility.AbilityRemoved(Exiled.API.Features.Player)">
+            <summary>
+            Called when the ability is being removed.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> using the ability.</param>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.CustomRole">
+            <summary>
+            The custom role base class.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Registered">
+            <summary>
+            Gets a list of all registered custom roles.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Id">
+            <summary>
+            Gets or sets the custom RoleID of the role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.MaxHealth">
+            <summary>
+            Gets or sets the max <see cref="P:Exiled.API.Features.Player.Health"/> for the role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Name">
+            <summary>
+            Gets or sets the name of this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Description">
+            <summary>
+            Gets or sets the description of this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.CustomInfo">
+            <summary>
+            Gets or sets the CustomInfo of this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.TrackedPlayers">
+            <summary>
+            Gets all of the players currently set to this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Role">
+            <summary>
+            Gets or sets the <see cref="T:PlayerRoles.RoleTypeId"/> to spawn this role as.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.CustomAbilities">
+            <summary>
+            Gets or sets a list of the roles custom abilities.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Inventory">
+            <summary>
+            Gets or sets the starting inventory for the role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Ammo">
+            <summary>
+            Gets or sets the starting ammo for the role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.SpawnProperties">
+            <summary>
+            Gets or sets the possible spawn locations for this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.MinPlayers">
+            <summary>
+            Gets or sets the minimum number of players connected needed in order to add the role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.KeepPositionOnSpawn">
+            <summary>
+            Gets or sets a value indicating whether players keep their current position when gaining this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.KeepInventoryOnSpawn">
+            <summary>
+            Gets or sets a value indicating whether players keep their current inventory when gaining this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.RemovalKillsPlayer">
+            <summary>
+            Gets or sets a value indicating whether players die when this role is removed.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.KeepRoleOnDeath">
+            <summary>
+            Gets or sets a value indicating whether players keep this role when they die.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.SpawnChance">
+            <summary>
+            Gets or sets a value indicating the Spawn Chance of the Role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.IgnoreSpawnSystem">
+            <summary>
+            Gets or sets a value indicating whether the spawn system is ignored for this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.KeepRoleOnChangingRole">
+            <summary>
+            Gets or sets a value indicating whether players keep this Custom Role when they switch roles: Class-D -> Scientist for example.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Broadcast">
+            <summary>
+            Gets or sets a value indicating broadcast that will be shown to the player.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.DisplayCustomItemMessages">
+            <summary>
+            Gets or sets a value indicating whether players will receive a message for getting a custom item, when gaining it through the inventory config for this role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Scale">
+            <summary>
+            Gets or sets a value indicating the <see cref="T:Exiled.API.Features.Player"/>'s size.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.Gravity">
+            <summary>
+            Gets or sets a value indicating the <see cref="T:Exiled.API.Features.Player"/>'s gravity.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.CustomRoleFFMultiplier">
+            <summary>
+            Gets or sets a <see cref="T:System.Collections.Generic.Dictionary`2"/> containing cached <see cref="T:System.String"/> and their  <see cref="T:System.Collections.Generic.Dictionary`2"/> which is cached Role with FF multiplier.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.ConsoleMessage">
+            <summary>
+            Gets or sets a <see cref="T:System.String"/> for the console message given to players when they receive a role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.AbilityUsage">
+            <summary>
+            Gets or sets a <see cref="T:System.String"/> for the ability usage help sent to players in the player console.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.CustomRole.SpawnedPlayers">
+            <summary>
+            Gets or sets the number of players that naturally spawned with this custom role.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.Get(System.UInt32)">
+            <summary>
+            Gets a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> by ID.
+            </summary>
+            <param name="id">The ID of the role to get.</param>
+            <returns>The role, or <see langword="null"/> if it doesn't exist.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.Get(System.Type)">
+            <summary>
+            Gets a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> by type.
+            </summary>
+            <param name="t">The <see cref="T:System.Type"/> to get.</param>
+            <returns>The role, or <see langword="null"/> if it doesn't exist.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.Get(System.String)">
+            <summary>
+            Gets a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> by name.
+            </summary>
+            <param name="name">The name of the role to get.</param>
+            <returns>The role, or <see langword="null"/> if it doesn't exist.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryGet(System.UInt32,Exiled.CustomRoles.API.Features.CustomRole@)">
+            <summary>
+            Tries to get a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> by <inheritdoc cref="P:Exiled.CustomRoles.API.Features.CustomRole.Id"/>.
+            </summary>
+            <param name="id">The ID of the role to get.</param>
+            <param name="customRole">The custom role.</param>
+            <returns>True if the role exists.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryGet(System.String,Exiled.CustomRoles.API.Features.CustomRole@)">
+            <summary>
+            Tries to get a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> by name.
+            </summary>
+            <param name="name">The name of the role to get.</param>
+            <param name="customRole">The custom role.</param>
+            <returns>True if the role exists.</returns>
+            <exception cref="T:System.ArgumentNullException">If the name is <see langword="null"/> or an empty string.</exception>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryGet(System.Type,Exiled.CustomRoles.API.Features.CustomRole@)">
+            <summary>
+            Tries to get a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> by name.
+            </summary>
+            <param name="t">The <see cref="T:System.Type"/> of the role to get.</param>
+            <param name="customRole">The custom role.</param>
+            <returns>True if the role exists.</returns>
+            <exception cref="T:System.ArgumentNullException">If the name is <see langword="null"/> or an empty string.</exception>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryGet(Exiled.API.Features.Player,System.Collections.Generic.IReadOnlyCollection{Exiled.CustomRoles.API.Features.CustomRole}@)">
+            <summary>
+            Tries to get a <see cref="T:System.Collections.Generic.IReadOnlyCollection`1"/> of the specified <see cref="T:Exiled.API.Features.Player"/>'s <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>s.
+            </summary>
+            <param name="player">The player to check.</param>
+            <param name="customRoles">The custom roles the player has.</param>
+            <returns>True if the player has custom roles.</returns>
+            <exception cref="T:System.ArgumentNullException">If the player is <see langword="null"/>.</exception>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.RegisterRoles(System.Boolean)">
+            <summary>
+            Registers all the <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s present in the current assembly.
+            </summary>
+            <param name="byAttribute">Whether to register by attribute.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> which contains all registered <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s.</returns>
+            <remarks>
+            This is just a dumbed down version of <see cref="M:Exiled.CustomRoles.API.Features.CustomRole.RegisterRoles(System.Boolean,System.Object)"/> for QoL, if you actually use <see cref="T:Exiled.API.Features.Attributes.CustomRoleAttribute"/>, do not use this overload.
+            </remarks>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.RegisterRoles(System.Boolean,System.Object)">
+            <summary>
+            Registers all the <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s present in the current assembly.
+            </summary>
+            <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
+            <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> which contains all registered <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.RegisterRoles(System.Boolean,System.Object,System.Boolean,System.Reflection.Assembly)">
+            <summary>
+            Registers all the <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s present in the current assembly.
+            </summary>
+            <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
+            <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
+            <param name="inheritAttributes">Whether inherited attributes should be taken into account for registration.</param>
+            <param name="assembly">Assembly which is calling this method.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> which contains all registered <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.RegisterRoles(System.Collections.Generic.IEnumerable{System.Type},System.Boolean,System.Boolean,System.Object)">
+            <summary>
+            Registers all the <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s present in the current assembly.
+            </summary>
+            <param name="targetTypes">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Type"/> containing the target types.</param>
+            <param name="isIgnored">A value indicating whether the target types should be ignored.</param>
+            <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
+            <param name="overrideClass">The class to search properties for, if different from the plugin's config class.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> which contains all registered <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.UnregisterRoles">
+            <summary>
+            Unregisters all the <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s present in the current assembly.
+            </summary>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> which contains all unregistered <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.UnregisterRoles(System.Collections.Generic.IEnumerable{System.Type},System.Boolean)">
+            <summary>
+            Unregisters all the <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s present in the current assembly.
+            </summary>
+            <param name="targetTypes">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:System.Type"/> containing the target types.</param>
+            <param name="isIgnored">A value indicating whether the target types should be ignored.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> which contains all unregistered <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.UnregisterRoles(System.Collections.Generic.IEnumerable{Exiled.CustomRoles.API.Features.CustomRole},System.Boolean)">
+            <summary>
+            Unregisters all the <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s present in the current assembly.
+            </summary>
+            <param name="targetRoles">The <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> containing the target roles.</param>
+            <param name="isIgnored">A value indicating whether the target roles should be ignored.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> which contains all unregistered <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>'s.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.SyncPlayerFriendlyFire(Exiled.CustomRoles.API.Features.CustomRole,Exiled.API.Features.Player,System.Boolean)">
+            <summary>
+            ResyncCustomRole Friendly Fire with Player (Append, or Overwrite).
+            </summary>
+            <param name="roleToSync"> <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> to sync with player. </param>
+            <param name="player"> <see cref="T:Exiled.API.Features.Player"/> Player to add custom role to. </param>
+            <param name="overwrite"> <see cref="T:System.Boolean"/> whether to force sync (Overwriting previous information). </param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.ForceSyncSetPlayerFriendlyFire(Exiled.CustomRoles.API.Features.CustomRole,Exiled.API.Features.Player)">
+            <summary>
+            Force sync CustomRole Friendly Fire with Player (Set to).
+            </summary>
+            <param name="roleToSync"> <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/> to sync with player. </param>
+            <param name="player"> <see cref="T:Exiled.API.Features.Player"/> Player to add custom role to. </param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.Check(Exiled.API.Features.Player)">
+            <summary>
+            Checks if the given player has this role.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to check.</param>
+            <returns>True if the player has this role.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.Init">
+            <summary>
+            Initializes this role manager.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.Destroy">
+            <summary>
+            Destroys this role manager.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.AddRole(Exiled.API.Features.Player)">
+            <summary>
+            Handles setup of the role, including spawn location, inventory and registering event handlers and add FF rules.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to add the role to.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.RemoveRole(Exiled.API.Features.Player)">
+            <summary>
+            Removes the role from a specific player and FF rules.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to remove the role from.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.SetFriendlyFire(PlayerRoles.RoleTypeId,System.Single)">
+            <summary>
+            Tries to add <see cref="T:PlayerRoles.RoleTypeId"/> to CustomRole FriendlyFire rules.
+            </summary>
+            <param name="roleToAdd"> Role to add. </param>
+            <param name="ffMult"> Friendly fire multiplier. </param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.SetFriendlyFire(System.Collections.Generic.KeyValuePair{PlayerRoles.RoleTypeId,System.Single})">
+            <summary>
+            Wrapper to call <see cref="M:Exiled.CustomRoles.API.Features.CustomRole.SetFriendlyFire(PlayerRoles.RoleTypeId,System.Single)"/>.
+            </summary>
+            <param name="roleFF"> Role with FF to add even if it exists. </param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryAddFriendlyFire(PlayerRoles.RoleTypeId,System.Single)">
+            <summary>
+            Tries to add <see cref="T:PlayerRoles.RoleTypeId"/> to CustomRole FriendlyFire rules.
+            </summary>
+            <param name="roleToAdd"> Role to add. </param>
+            <param name="ffMult"> Friendly fire multiplier. </param>
+            <returns> Whether the item was able to be added. </returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryAddFriendlyFire(System.Collections.Generic.KeyValuePair{PlayerRoles.RoleTypeId,System.Single})">
+            <summary>
+            Tries to add <see cref="T:PlayerRoles.RoleTypeId"/> to CustomRole FriendlyFire rules.
+            </summary>
+            <param name="pairedRoleFF"> Role FF multiplier to add. </param>
+            <returns> Whether the item was able to be added. </returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryAddFriendlyFire(System.Collections.Generic.Dictionary{PlayerRoles.RoleTypeId,System.Single},System.Boolean)">
+            <summary>
+            Tries to add <see cref="T:PlayerRoles.RoleTypeId"/> to CustomRole FriendlyFire rules.
+            </summary>
+            <param name="ffRules"> Roles to add with friendly fire values. </param>
+            <param name="overwrite"> Whether to overwrite current values if they exist. </param>
+            <returns> Whether the item was able to be added. </returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.ToString">
+            <summary>
+            Returns the CustomRole in a human-readable format.
+            </summary>
+            <returns>A string containing CustomRole-related data.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryRegister">
+            <summary>
+            Tries to register this role.
+            </summary>
+            <returns>True if the role registered properly.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryUnregister">
+            <summary>
+            Tries to unregister this role.
+            </summary>
+            <returns>True if the role is unregistered properly.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.TryAddItem(Exiled.API.Features.Player,System.String)">
+            <summary>
+            Tries to add an item to the player's inventory by name.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to try giving the item to.</param>
+            <param name="itemName">The name of the item to try adding.</param>
+            <returns>Whether the item was able to be added.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.GetSpawnPosition">
+            <summary>
+            Gets a random <see cref="T:UnityEngine.Vector3"/> from <see cref="P:Exiled.CustomRoles.API.Features.CustomRole.SpawnProperties"/>.
+            </summary>
+            <returns>The chosen spawn location.</returns>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.SubscribeEvents">
+            <summary>
+            Called when the role is initialized to setup internal events.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.UnsubscribeEvents">
+            <summary>
+            Called when the role is destroyed to unsubscribe internal event handlers.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.ShowMessage(Exiled.API.Features.Player)">
+            <summary>
+            Shows the spawn message to the player.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to show the message to.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.ShowBroadcast(Exiled.API.Features.Player)">
+            <summary>
+            Shows the spawn broadcast to the player.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> to show the message to.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.RoleAdded(Exiled.API.Features.Player)">
+            <summary>
+            Called after the role has been added to the player.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> the role was added to.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.CustomRole.RoleRemoved(Exiled.API.Features.Player)">
+            <summary>
+            Called 1 frame before the role is removed from the player.
+            </summary>
+            <param name="player">The <see cref="T:Exiled.API.Features.Player"/> the role was removed from.</param>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.Enums.CheckType">
+            <summary>
+            The possible types of checks to preform on active abilities.
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.CheckType.Available">
+            <summary>
+            Check if the ability is available to the player. (DOES NOT CHECK COOLDOWNS)
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.CheckType.Selected">
+            <summary>
+            Check if the ability is selected, but not active.
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.CheckType.Active">
+            <summary>
+            The ability is currently active.
+            </summary>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.Enums.AbilityKeypressTriggerType">
+            <summary>
+            The action type that should be triggered from a keypress trigger.
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.AbilityKeypressTriggerType.None">
+            <summary>
+            No action.
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.AbilityKeypressTriggerType.Activate">
+            <summary>
+            Activate ability.
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.AbilityKeypressTriggerType.SwitchForward">
+            <summary>
+            Switch to next ability.
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.AbilityKeypressTriggerType.SwitchBackward">
+            <summary>
+            Switch to previous ability.
+            </summary>
+        </member>
+        <member name="F:Exiled.CustomRoles.API.Features.Enums.AbilityKeypressTriggerType.DisplayInfo">
+            <summary>
+            Display information about the ability to the user.
+            </summary>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.Extensions.ParserExtension">
+            <summary>
+            Extensions for <see cref="T:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer"/>.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Extensions.ParserExtension.TryFindMappingEntry(Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer,System.Func{YamlDotNet.Core.Events.Scalar,System.Boolean},YamlDotNet.Core.Events.Scalar@,YamlDotNet.Core.Events.ParsingEvent@)">
+            <summary>
+            Tries to find a valid mapping entry.
+            </summary>
+            <param name="parser">The <see cref="T:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer"/> parser.</param>
+            <param name="selector">The selector.</param>
+            <param name="key">The key found.</param>
+            <param name="value">The value found.</param>
+            <returns><see langword="true"/> when a valid mapping entry is found; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.Interfaces.ITypeDiscriminator">
+            <summary>
+            A <see cref="T:System.Type"/> discriminator.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.Interfaces.ITypeDiscriminator.BaseType">
+            <summary>
+            Gets the base <see cref="T:System.Type"/>.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Interfaces.ITypeDiscriminator.TryResolve(Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer,System.Type@)">
+            <summary>
+            Tries to resolve a mapping into a specific <see cref="T:System.Type"/>.
+            </summary>
+            <param name="buffer">The <see cref="T:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer"/> parser buffer.</param>
+            <param name="suggestedType">The <see cref="T:System.Type"/> to resolve the mapping key.</param>
+            <returns><see langword="true"/> if resolution is successful; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.KeypressActivator">
+            <summary>
+            Control class for keypress ability actions.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.KeypressActivator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.API.Features.KeypressActivator"/> class.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.KeypressActivator.Finalize">
+            <summary>
+            Finalizes an instance of the <see cref="T:Exiled.CustomRoles.API.Features.KeypressActivator"/> class.
+            </summary>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.Parsers.AbstractClassNodeTypeResolver">
+            <summary>
+            A node resolver for <see cref="T:Exiled.CustomRoles.API.Features.CustomAbility"/>.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Parsers.AbstractClassNodeTypeResolver.#ctor(YamlDotNet.Serialization.INodeDeserializer,Exiled.CustomRoles.API.Features.Interfaces.ITypeDiscriminator[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.API.Features.Parsers.AbstractClassNodeTypeResolver"/> class.
+            </summary>
+            <param name="original">The <see cref="T:YamlDotNet.Serialization.INodeDeserializer"/> original deserializer.</param>
+            <param name="discriminators">The <see cref="T:Exiled.CustomRoles.API.Features.Interfaces.ITypeDiscriminator"/> array of discriminators.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Parsers.AbstractClassNodeTypeResolver.Deserialize(YamlDotNet.Core.IParser,System.Type,System.Func{YamlDotNet.Core.IParser,System.Type,System.Object},System.Object@)">
+            <inheritdoc cref="T:YamlDotNet.Serialization.INodeDeserializer"/>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.Parsers.AggregateExpectationTypeResolver`1">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Parsers.AggregateExpectationTypeResolver`1.#ctor(YamlDotNet.Serialization.INamingConvention)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.API.Features.Parsers.AggregateExpectationTypeResolver`1"/> class.
+            </summary>
+            <param name="namingConvention">The <see cref="T:YamlDotNet.Serialization.INamingConvention"/> instance.</param>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.Parsers.AggregateExpectationTypeResolver`1.BaseType">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Parsers.AggregateExpectationTypeResolver`1.TryResolve(Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer,System.Type@)">
+            <inheritdoc />
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer.#ctor(System.Collections.Generic.LinkedList{YamlDotNet.Core.Events.ParsingEvent})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer"/> class.
+            </summary>
+            <param name="events">The <see cref="T:System.Collections.Generic.LinkedList`1"/> instance.</param>
+        </member>
+        <member name="P:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer.Current">
+            <inheritdoc cref="T:YamlDotNet.Core.IParser"/>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer.MoveNext">
+            <inheritdoc cref="T:YamlDotNet.Core.IParser"/>
+        </member>
+        <member name="M:Exiled.CustomRoles.API.Features.Parsers.ParsingEventBuffer.Reset">
+            <summary>
+            Resets the buffer.
+            </summary>
+        </member>
+        <member name="T:Exiled.CustomRoles.API.Features.PassiveAbility">
+            <summary>
+            The base class for passive (always active) abilities.
+            </summary>
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.Get">
+            <summary>
+            The command to get specified player(s) current custom roles.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Get.Instance">
+            <summary>
+            Gets the <see cref="T:Exiled.CustomRoles.Commands.Get"/> command instance.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Get.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Get.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Get.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.Get.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.Give">
+            <summary>
+            The command to give a role to player(s).
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Give.Instance">
+            <summary>
+            Gets the <see cref="T:Exiled.CustomRoles.Commands.Give"/> command instance.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Give.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Give.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Give.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.Give.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.Info">
+            <summary>
+            The command to view info about a specific role.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Info.Instance">
+            <summary>
+            Gets the <see cref="T:Exiled.CustomRoles.Commands.Info"/> instance.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Info.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Info.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Info.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.Info.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.List.Abilities">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.Abilities.Command">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.Abilities.Aliases">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.Abilities.Description">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.List.Abilities.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc />
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.List.List">
+            <summary>
+            The command to list all registered roles.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.List.Instance">
+            <summary>
+            Gets the <see cref="T:Exiled.CustomRoles.Commands.List.List"/> command instance.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.List.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.List.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.List.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.List.List.LoadGeneratedCommands">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.List.List.ExecuteParent(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.List.Registered">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.Registered.Instance">
+            <summary>
+            Gets the command instance.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.Registered.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.Registered.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.List.Registered.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.List.Registered.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.Parent">
+            <summary>
+            The main parent command.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.Parent.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.Commands.Parent"/> class.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Parent.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Parent.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.Parent.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.Parent.LoadGeneratedCommands">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.Parent.ExecuteParent(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Commands.UseAbility">
+            <summary>
+            Handles the using of custom role abilities.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.UseAbility.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.UseAbility.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Commands.UseAbility.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Commands.UseAbility.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Config">
+            <summary>
+            The plugin's config.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.IsEnabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.Debug">
+            <summary>
+            Gets or sets a value indicating whether debug messages should be printed to the console.
+            </summary>
+            <returns><see cref="T:System.Boolean"/>.</returns>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.GotRoleHint">
+            <summary>
+            Gets the hint that is shown when someone gets a <see cref="T:Exiled.CustomRoles.API.Features.CustomRole"/>.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.UsedAbilityHint">
+            <summary>
+            Gets the hint that is shown when someone used an <see cref="T:Exiled.CustomRoles.API.Features.ActiveAbility"/>.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.UseKeypressActivation">
+            <summary>
+            Gets or sets a value indicating whether keypress ability activations can be used on the server.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.ActivateOnlySelected">
+            <summary>
+            Gets or sets a value indicating whether abilities that are not the keypress primary can still be activated.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.FailedActionHint">
+            <summary>
+            Gets or sets the hint that is shown when someone fails to use a <see cref="T:Exiled.CustomRoles.API.Features.ActiveAbility"/>.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.Config.SwitchedAbilityHint">
+            <summary>
+            Gets or sets the hint that is shown when someone switches their selected <see cref="T:Exiled.CustomRoles.API.Features.ActiveAbility"/>.
+            </summary>
+        </member>
+        <member name="T:Exiled.CustomRoles.CustomRoles">
+            <summary>
+            Handles all custom role API functions.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.CustomRoles.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.CustomRoles"/> class.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.CustomRoles.Instance">
+            <summary>
+            Gets a static reference to the plugin's instance.
+            </summary>
+        </member>
+        <member name="P:Exiled.CustomRoles.CustomRoles.StopRagdollPlayers">
+            <summary>
+            Gets a list of players to stop spawning ragdolls for.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.CustomRoles.OnEnabled">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.CustomRoles.CustomRoles.OnDisabled">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.CustomRoles.Events.PlayerHandlers">
+            <summary>
+            Handles general events for players.
+            </summary>
+        </member>
+        <member name="M:Exiled.CustomRoles.Events.PlayerHandlers.#ctor(Exiled.CustomRoles.CustomRoles)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.CustomRoles.Events.PlayerHandlers"/> class.
+            </summary>
+            <param name="plugin">The <see cref="T:Exiled.CustomRoles.CustomRoles"/> plugin instance.</param>
+        </member>
+        <member name="M:Exiled.CustomRoles.Events.PlayerHandlers.OnWaitingForPlayers">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Server.WaitingForPlayers"/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Events.PlayerHandlers.OnSpawningRagdoll(Exiled.Events.EventArgs.Player.SpawningRagdollEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.SpawningRagdoll"/>
+        </member>
+        <member name="M:Exiled.CustomRoles.Events.PlayerHandlers.OnSpawned(Exiled.Events.EventArgs.Player.SpawnedEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.Spawning"/>
+        </member>
+    </members>
+</doc>

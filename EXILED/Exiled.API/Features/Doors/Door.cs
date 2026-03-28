@@ -32,6 +32,35 @@ namespace Exiled.API.Features.Doors
     /// </summary>
     public class Door : TypeCastObject<Door>, IWrapper<DoorVariant>, IWorldSpace
     {
+        // Door trigger types raised by the door wrapper.
+        // These represent significant state changes on a door that plugins may want to listen for.
+        public enum DoorTrigger
+        {
+            Locked, // Door was locked
+            Unlocked, // Door was unlocked
+            Opened, // Door was opened (target state changed to open)
+            Closed, // Door was closed (target state changed to closed)
+            Exploded, // Door was destroyed / exploded (breakable door)
+            AccessDenied, // An access attempt was denied (keycard denied)
+            AccessGranted // An access attempt was granted (keycard accepted)
+        }
+
+        // Direction when a player/object passes through a door.
+        public enum DoorPass
+        {
+            Front, // Passed from front side
+            Back // Passed from back side
+        }
+
+        // Event raised when a door trigger occurs (locked/unlocked/opened/closed/exploded/access denied/granted).
+        public static event Action<Door, DoorTrigger> DoorTriggered;
+
+        // Event raised when something passes through a door (front/back).
+        public static event Action<Door, DoorPass> DoorPassed;
+
+        // Extended events that include the player responsible when known.
+        public static event Action<Door, DoorTrigger, Player> DoorTriggeredWithPlayer;
+        public static event Action<Door, DoorPass, Player> DoorPassedWithPlayer;
         /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="DoorVariant"/>'s and their corresponding <see cref="Door"/>.
         /// </summary>
@@ -124,8 +153,41 @@ namespace Exiled.API.Features.Doors
         public bool IsOpen
         {
             get => Base.NetworkTargetState;
-            set => Base.NetworkTargetState = value;
+            set
+            {
+                Base.NetworkTargetState = value;
+            }
         }
+
+        /// <summary>
+        /// Convenience property indicating the door is closed (not open).
+        /// </summary>
+        public bool IsClosed => !IsOpen;
+
+        /// <summary>
+        /// Convenience property indicating the door is unlocked.
+        /// </summary>
+        public bool IsUnlocked => !IsLocked;
+
+        /// <summary>
+        /// Indicates whether the door has been exploded/destroyed. For breakable doors this reflects the underlying breakable state.
+        /// </summary>
+        public bool IsExploded => Base is BaseBreakableDoor brk && brk.IsDestroyed;
+
+        // Access result flags that can be set briefly when access events are triggered.
+        // These are transient and will be reset a few seconds after being set.
+        private bool accessDeniedFlag;
+        private bool accessGrantedFlag;
+
+        /// <summary>
+        /// True if a recent access attempt was denied. This flag is transient and will reset automatically.
+        /// </summary>
+        public bool IsAccessDenied => accessDeniedFlag;
+
+        /// <summary>
+        /// True if a recent access attempt was granted. This flag is transient and will reset automatically.
+        /// </summary>
+        public bool IsAccessGranted => accessGrantedFlag;
 
         /// <summary>
         /// Gets a value indicating whether this door is a gate.
@@ -563,6 +625,68 @@ namespace Exiled.API.Features.Doors
         /// <param name="player">Player to check.</param>
         /// <returns><see langword="true"/> if the specified player can interact with the door. Otherwise, <see langword="false"/>.</returns>
         public bool IsAllowToInteract(Player player = null) => Base.AllowInteracting(player?.ReferenceHub, 0);
+
+        /// <summary>
+        /// Helper to raise door trigger events and manage transient access flags.
+        /// </summary>
+        /// <param name="trigger">The trigger to raise.</param>
+        /// <summary>
+        /// Helper to raise door trigger events and manage transient access flags.
+        /// Made public so external code (tests/plugins) can simulate triggers.
+        /// </summary>
+        /// <param name="trigger">The trigger to raise.</param>
+        public void RaiseTrigger(DoorTrigger trigger, Player player = null)
+        {
+            switch (trigger)
+            {
+                case DoorTrigger.AccessDenied:
+                    accessDeniedFlag = true;
+                    // Reset the access flag after a short delay.
+                    Timing.CallDelayed(3f, () => accessDeniedFlag = false);
+                    break;
+                case DoorTrigger.AccessGranted:
+                    accessGrantedFlag = true;
+                    Timing.CallDelayed(3f, () => accessGrantedFlag = false);
+                    break;
+                case DoorTrigger.Exploded:
+                    // Exploded state is read from underlying breakable component (IsExploded),
+                    // so no additional state needs to be tracked here.
+                    break;
+            }
+
+            try
+            {
+                // Raise old event (no player) for backward compatibility
+                DoorTriggered?.Invoke(this, trigger);
+
+                // Raise extended event with player when available
+                DoorTriggeredWithPlayer?.Invoke(this, trigger, player);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in DoorTriggered event handler: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Helper to raise a DoorPassed event when something passes through the door.
+        /// </summary>
+        /// <param name="pass">The direction of the pass.</param>
+        public void RaisePass(DoorPass pass, Player player = null)
+        {
+            try
+            {
+                // Backwards-compatible event
+                DoorPassed?.Invoke(this, pass);
+
+                // Extended event with player
+                DoorPassedWithPlayer?.Invoke(this, pass, player);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in DoorPassed event handler: {ex}");
+            }
+        }
 
         /// <summary>
         /// Returns the Door in a human-readable format.

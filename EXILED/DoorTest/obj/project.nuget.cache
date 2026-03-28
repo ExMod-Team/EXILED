@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "LRfKXJl+Io4=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\DoorTest.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\musta\\.nuget\\packages\\lib.harmony\\2.2.2\\lib.harmony.2.2.2.nupkg.sha512",
+    "C:\\Users\\musta\\.nuget\\packages\\mono.posix-4.5\\4.5.0\\mono.posix-4.5.4.5.0.nupkg.sha512",
+    "C:\\Users\\musta\\.nuget\\packages\\northwood.pluginapi\\13.1.2\\northwood.pluginapi.13.1.2.nupkg.sha512",
+    "C:\\Users\\musta\\.nuget\\packages\\semanticversioning\\2.0.2\\semanticversioning.2.0.2.nupkg.sha512",
+    "C:\\Users\\musta\\.nuget\\packages\\stylecop.analyzers\\1.1.118\\stylecop.analyzers.1.1.118.nupkg.sha512",
+    "C:\\Users\\musta\\.nuget\\packages\\yamldotnet\\11.0.1\\yamldotnet.11.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
