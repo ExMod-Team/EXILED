@@ -66,10 +66,5 @@ namespace Exiled.API.Enums
         /// The user has been spawn by the usage of an Item.
         /// </summary>
         ItemUsage,
-
-        /// <summary>
-        /// The user has been resurected.
-        /// </summary>
-        Resurrected,
     }
 }

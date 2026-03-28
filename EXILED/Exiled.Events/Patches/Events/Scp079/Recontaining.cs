@@ -31,18 +31,17 @@ namespace Exiled.Events.Patches.Events.Scp079
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
+            int index = 0;
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             LocalBuilder ev = generator.DeclareLocal(typeof(RecontainingEventArgs));
 
             Label returnLabel = generator.DefineLabel();
 
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + 1;
-
-            newInstructions.InsertRange(index, new[]
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // RecontainingEventArgs ev = new(this._activatorGlass)
-                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(typeof(Scp079Recontainer), nameof(Scp079Recontainer._activatorGlass))),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(RecontainingEventArgs))[0]),
                 new(OpCodes.Stloc_S, ev.LocalIndex),

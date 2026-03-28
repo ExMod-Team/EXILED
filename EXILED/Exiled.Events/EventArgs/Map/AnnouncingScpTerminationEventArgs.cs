@@ -7,12 +7,14 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using System;
-
     using API.Features;
     using API.Features.DamageHandlers;
     using API.Features.Roles;
+
     using Interfaces;
+
+    using CustomAttackerHandler = API.Features.DamageHandlers.AttackerDamageHandler;
+    using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
 
     /// <summary>
     /// Contains all information before C.A.S.S.I.E announces an SCP termination.
@@ -25,14 +27,16 @@ namespace Exiled.Events.EventArgs.Map
         /// <param name="scp">
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="terminationCause">
-        /// <inheritdoc cref="TerminationCause"/>
+        /// <param name="damageHandlerBase">
+        /// <inheritdoc cref="DamageHandler" />
         /// </param>
-        public AnnouncingScpTerminationEventArgs(Player scp, string terminationCause)
+        public AnnouncingScpTerminationEventArgs(Player scp, DamageHandlerBase damageHandlerBase)
         {
             Player = scp;
             Role = scp.Role;
-            TerminationCause = terminationCause;
+            DamageHandler = new CustomDamageHandler(scp, damageHandlerBase);
+            Attacker = DamageHandler.BaseIs(out CustomAttackerHandler customAttackerHandler) ? customAttackerHandler.Attacker : null;
+            TerminationCause = damageHandlerBase.CassieDeathAnnouncement.Announcement;
             IsAllowed = true;
         }
 
@@ -54,13 +58,11 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets the player who killed the SCP.
         /// </summary>
-        [Obsolete("Attacker can no longer be acquired for this event. This will be readded in a different event.")]
         public Player Attacker { get; }
 
         /// <summary>
         /// Gets or sets the <see cref="CustomDamageHandler" />.
         /// </summary>
-        [Obsolete("DamageHandler can no longer be acquired for this event. This will be readded in a different event.")]
         public CustomDamageHandler DamageHandler { get; set; }
 
         /// <summary>

@@ -111,11 +111,6 @@ namespace Exiled.CustomRoles.API.Features
         public virtual SpawnProperties SpawnProperties { get; set; } = new();
 
         /// <summary>
-        /// Gets or sets the minimum number of players connected needed in order to add the role.
-        /// </summary>
-        public virtual int MinPlayers { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether players keep their current position when gaining this role.
         /// </summary>
         public virtual bool KeepPositionOnSpawn { get; set; }
@@ -699,7 +694,7 @@ namespace Exiled.CustomRoles.API.Features
             player.UniqueRole = string.Empty;
             player.TryRemoveCustomeRoleFriendlyFire(Name);
 
-            if (RemovalKillsPlayer && player.Role.Type != RoleTypeId.Destroyed)
+            if (RemovalKillsPlayer)
                 player.Role.Set(RoleTypeId.Spectator);
         }
 
@@ -794,12 +789,6 @@ namespace Exiled.CustomRoles.API.Features
             DictionaryPool<RoleTypeId, float>.Pool.Return(temporaryFriendlyFireRules);
             return true;
         }
-
-        /// <summary>
-        /// Returns the CustomRole in a human-readable format.
-        /// </summary>
-        /// <returns>A string containing CustomRole-related data.</returns>
-        public override string ToString() => $"{Name} ({Id})";
 
         /// <summary>
         /// Tries to register this role.

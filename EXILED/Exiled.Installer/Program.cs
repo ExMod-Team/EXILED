@@ -89,7 +89,7 @@ namespace Exiled.Installer
                     GitHubClient.Credentials = new Credentials(args.GitHubToken, AuthenticationType.Bearer);
                 }
 
-                if (string.IsNullOrEmpty(args.TargetVersion) && !args.PreReleases && !args.SkipVersionSelect)
+                if (string.IsNullOrEmpty(args.TargetVersion) && !args.PreReleases)
                 {
                     Console.WriteLine(Resources.Program_MainSafe_Which_version_would_you_like_to_install_);
                     Console.WriteLine(Resources.Program_MainSafe__1___Latest_stable_release);
@@ -172,7 +172,7 @@ namespace Exiled.Installer
                     r => Version.TryParse(r.TagName, out Version version)
                          && version > VersionLimit);
 
-            return releases.OrderByDescending(r => r.PublishedAt);
+            return releases.OrderByDescending(r => r.CreatedAt.Ticks);
         }
 
         private static string FormatRelease(Release r)

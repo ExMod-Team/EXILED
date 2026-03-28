@@ -56,7 +56,7 @@ namespace Exiled.Events.EventArgs.Player
             get => reservedSlotEventResult;
             set
             {
-                switch (value)
+                switch (reservedSlotEventResult)
                 {
                     case ReservedSlotEventResult.CanUseReservedSlots or ReservedSlotEventResult.UseBaseGameSystem:
                         IsAllowed = HasReservedSlot;

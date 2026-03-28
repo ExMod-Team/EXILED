@@ -12,13 +12,11 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using API.Features.Pools;
-
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
 
-    using InventorySystem.Items.Pickups;
     using InventorySystem.Searching;
 
     using static HarmonyLib.AccessTools;
@@ -35,20 +33,17 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label continueLabel = generator.DefineLabel();
+            Label returnLabel = generator.DefineLabel();
 
             int offset = -4;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerPickingUpItemEventArgs))[0]) + offset;
-
-            List<Label> logicLabels = newInstructions[index].ExtractLabels();
-            newInstructions[index].WithLabels(continueLabel);
 
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
                     // this.Hub
-                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(logicLabels),
+                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(Scp244SearchCompletor), nameof(Scp244SearchCompletor.Hub))),
 
                     // scp244DeployablePickup
@@ -65,21 +60,12 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)
-                    //    TargetPickup.ServerHandleAbort(hub);
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
-                    new(OpCodes.Brtrue_S, continueLabel),
-
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(Scp244SearchCompletor), nameof(Scp244SearchCompletor.TargetPickup))),
-
-                    // this.Hub
-                    new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(Scp244SearchCompletor), nameof(Scp244SearchCompletor.Hub))),
-
-                    new(OpCodes.Callvirt, Method(typeof(ItemPickupBase), nameof(ItemPickupBase.ServerHandleAbort))),
-                    new(OpCodes.Ret),
+                    new(OpCodes.Brfalse_S, returnLabel),
                 });
+
+            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

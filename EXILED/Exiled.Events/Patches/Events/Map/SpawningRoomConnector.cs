@@ -12,8 +12,10 @@ namespace Exiled.Events.Patches.Events.Map
 #pragma warning disable SA1402 // File may only contain a single type
 
     using System.Collections.Generic;
+    using System.Reflection;
     using System.Reflection.Emit;
 
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Map;
@@ -85,31 +87,15 @@ namespace Exiled.Events.Patches.Events.Map
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
-            Label skip = generator.DefineLabel();
 
-            // steal the code to put it later in the code:
-            // RoomConnectorSpawnpointBase.SetupAllRoomConnectors();
-            // ServerEvents.OnMapGenerated(new MapGeneratedEventArgs(SeedSynchronizer.Seed));
-            const int lengthOfCodeToMove = 4;
             int index = newInstructions.FindIndex(i => i.Calls(Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))));
-            List<Label> labels = newInstructions[index].ExtractLabels();
-            List<CodeInstruction> codeInstructionsCopy = newInstructions.GetRange(index, lengthOfCodeToMove);
-            newInstructions.RemoveRange(index, lengthOfCodeToMove);
-            newInstructions[index].labels.AddRange(labels);
+            List<Label> label = newInstructions[index].labels;
 
-            index = newInstructions.FindIndex(x => x.OperandIs(Field(typeof(SeedSynchronizer), nameof(SeedSynchronizer.OnGenerationStage))));
-            newInstructions[index].labels.Add(skip);
-            const int lengthOfCodeAdded = 3;
-            newInstructions.InsertRange(index, new List<CodeInstruction>()
-            {
-                // if (mapGenerationPhase == MapGenerationPhase.ParentRoomRegistration)
-                //     // The moved code
-                new(OpCodes.Ldloc_2),
-                new(OpCodes.Ldc_I4_1),
-                new(OpCodes.Bne_Un_S, skip),
-            });
+            newInstructions.RemoveAt(index);
 
-            newInstructions.InsertRange(index + lengthOfCodeAdded, codeInstructionsCopy);
+            int offset = -1;
+            index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.ServerEvents.MapGeneratedEventArgs))[0]) + offset;
+            newInstructions.Insert(index, new CodeInstruction(OpCodes.Call, Method(typeof(RoomConnectorSpawnpointBase), nameof(RoomConnectorSpawnpointBase.SetupAllRoomConnectors))).WithLabels(label));
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

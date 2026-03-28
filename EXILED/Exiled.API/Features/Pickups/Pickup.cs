@@ -35,7 +35,6 @@ namespace Exiled.API.Features.Pickups
     using BaseMicroHIDPickup = InventorySystem.Items.MicroHID.MicroHIDPickup;
     using BaseRadioPickup = InventorySystem.Items.Radio.RadioPickup;
     using BaseScp018Projectile = InventorySystem.Items.ThrowableProjectiles.Scp018Projectile;
-    using BaseScp1509Pickup = InventorySystem.Items.Scp1509.Scp1509Pickup;
     using BaseScp1576Pickup = InventorySystem.Items.Usables.Scp1576.Scp1576Pickup;
     using BaseScp2176Projectile = InventorySystem.Items.ThrowableProjectiles.Scp2176Projectile;
     using BaseScp330Pickup = InventorySystem.Items.Usables.Scp330.Scp330Pickup;
@@ -343,7 +342,6 @@ namespace Exiled.API.Features.Pickups
                     TimeGrenade timeGrenade => new TimeGrenadeProjectile(timeGrenade),
                     _ => new Projectile(thrownProjectile),
                 },
-                BaseScp1509Pickup baseScp1509 => new Scp1509Pickup(baseScp1509),
                 _ => new Pickup(pickupBase),
             };
         }
@@ -523,7 +521,6 @@ namespace Exiled.API.Features.Pickups
                 TimeGrenade => new TimeGrenadeProjectile(type),
                 _ => new Projectile(type),
             },
-            BaseScp1509Pickup => new Scp1509Pickup(),
             _ => new Pickup(type),
         };
 

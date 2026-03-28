@@ -14,8 +14,6 @@ namespace Exiled.API.Features
 
     using Exiled.API.Enums;
     using Exiled.API.Features.Attributes;
-
-    using MapGeneration.Distributors;
     using Mirror;
     using UnityEngine;
 
@@ -102,18 +100,8 @@ namespace Exiled.API.Features
             if (!TryGetPrefab(prefabType, out GameObject gameObject))
                 return null;
 
-            rotation ??= Quaternion.identity;
-
-            GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation.Value);
-
-            if (newGameObject.TryGetComponent(out StructurePositionSync positionSync))
-            {
-                positionSync.Network_position = position;
-                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / 5.625F);
-            }
-
+            GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation ?? Quaternion.identity);
             NetworkServer.Spawn(newGameObject);
-
             return newGameObject;
         }
 

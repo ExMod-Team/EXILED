@@ -15,14 +15,13 @@ namespace Exiled.API.Features
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
     using InventorySystem.Items.Firearms.Attachments;
-    using MapGeneration.Distributors;
     using Mirror;
     using UnityEngine;
 
     /// <summary>
     /// A wrapper class for <see cref="WorkstationController"/>.
     /// </summary>
-    public class Workstation : IWrapper<WorkstationController>, IWorldSpace, IStructureSync
+    public class Workstation : IWrapper<WorkstationController>, IWorldSpace
     {
         /// <summary>
         /// A dictionary mapping <see cref="WorkstationController"/> to <see cref="Workstation"/>.
@@ -37,7 +36,6 @@ namespace Exiled.API.Features
         {
             WorkstationControllerToWorkstation.Add(workstationController, this);
             Base = workstationController;
-            PositionSync = workstationController.GetComponent<StructurePositionSync>();
         }
 
         /// <summary>
@@ -75,32 +73,28 @@ namespace Exiled.API.Features
         /// </summary>
         public Vector3 Position
         {
-            get => Base.transform.position;
+            get => Transform.position;
             set
             {
-                Base.transform.position = value;
-                PositionSync.Network_position = value;
-                ((IStructureSync)this).Respawn();
+                NetworkServer.UnSpawn(GameObject);
+                Transform.position = value;
+                NetworkServer.Spawn(GameObject);
             }
         }
 
         /// <summary>
-        /// Gets or sets the position of the workstation.
+        /// Gets or sets the rotation of the workstation.
         /// </summary>
-        /// <remarks>The setter only works in the y-axis (left to right) due to base game limitations.</remarks>
         public Quaternion Rotation
         {
-            get => Base.transform.rotation;
+            get => Transform.rotation;
             set
             {
-                Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
-                PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
-                ((IStructureSync)this).Respawn();
+                NetworkServer.UnSpawn(GameObject);
+                Transform.rotation = value;
+                NetworkServer.Spawn(GameObject);
             }
         }
-
-        /// <inheritdoc cref="IStructureSync.PositionSync"/>
-        public StructurePositionSync PositionSync { get; }
 
         /// <summary>
         /// Gets or sets the status of the workstation.

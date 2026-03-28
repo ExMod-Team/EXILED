@@ -7,11 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Scp1344
 {
-    using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
-
-    using InventorySystem.Items.Usables.Scp1344;
 
     /// <summary>
     /// Contains all information before deactivating.
@@ -39,17 +36,12 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// <summary>
         /// Gets the player in owner of the item.
         /// </summary>
-        public Player Player { get; }
+        public Exiled.API.Features.Player Player { get; }
 
         /// <summary>
         /// Gets Scp1344 item.
         /// </summary>
         public Scp1344 Scp1344 { get; }
-
-        /// <summary>
-        /// Gets or sets the status of the SCP-1344 after the deactivation process.
-        /// </summary>
-        public Scp1344Status NewStatus { get; set; } = Scp1344Status.Active;
 
         /// <inheritdoc/>
         public bool IsAllowed { get; set; }

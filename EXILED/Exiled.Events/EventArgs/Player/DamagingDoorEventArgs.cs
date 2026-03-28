@@ -7,16 +7,14 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using Exiled.API.Features;
     using Exiled.API.Features.Doors;
-    using Footprinting;
     using Interactables.Interobjects.DoorUtils;
     using Interfaces;
 
     /// <summary>
     /// Contains all information before damage is dealt to a <see cref="DoorVariant" />.
     /// </summary>
-    public class DamagingDoorEventArgs : IDeniableEvent, IPlayerEvent
+    public class DamagingDoorEventArgs : IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DamagingDoorEventArgs" /> class.
@@ -28,16 +26,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="doorDamageType">
         /// <inheritdoc cref="DoorDamageType" />
         /// </param>
-        /// <param name="footprint">
-        /// <inheritdoc cref="Footprint" />
-        /// </param>
-        public DamagingDoorEventArgs(DoorVariant door, float damage, DoorDamageType doorDamageType, Footprint footprint)
+        public DamagingDoorEventArgs(DoorVariant door, float damage, DoorDamageType doorDamageType)
         {
             Door = Door.Get(door);
             Damage = damage;
             DamageType = doorDamageType;
-            Footprint = footprint;
-            Player = Player.Get(footprint);
 
             // TODO: Remove when NW fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/817
             IsAllowed = damage > 0;
@@ -62,13 +55,5 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets the <see cref="DoorDamageType"/> dealt to the door.
         /// </summary>
         public DoorDamageType DamageType { get; }
-
-        /// <inheritdoc/>
-        public Player Player { get; }
-
-        /// <summary>
-        /// Gets the <see cref="Footprinting.Footprint"/> of the player that damaged the door.
-        /// </summary>
-        public Footprint Footprint { get; }
     }
 }

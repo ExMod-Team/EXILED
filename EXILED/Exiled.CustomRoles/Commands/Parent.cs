@@ -41,13 +41,12 @@ namespace Exiled.CustomRoles.Commands
             RegisterCommand(Give.Instance);
             RegisterCommand(Info.Instance);
             RegisterCommand(List.List.Instance);
-            RegisterCommand(Get.Instance);
         }
 
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = "Invalid subcommand! Available: give, info, list, get";
+            response = "Invalid subcommand! Available: give, info, list";
             return false;
         }
     }

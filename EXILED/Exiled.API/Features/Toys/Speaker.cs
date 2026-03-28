@@ -43,12 +43,12 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <value>
         /// A <see cref="float"/> representing the volume level of the audio source,
-        /// where 0.0 is silent and 1.0 is full volume if it's more it's will amplify it.
+        /// where 0.0 is silent and 1.0 is full volume.
         /// </value>
         public float Volume
         {
             get => Base.NetworkVolume;
-            set => Base.NetworkVolume = value;
+            set => Base.NetworkVolume = Mathf.Clamp01(value);
         }
 
         /// <summary>

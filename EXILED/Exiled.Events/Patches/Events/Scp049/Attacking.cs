@@ -32,7 +32,8 @@ namespace Exiled.Events.Patches.Events.Scp049
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Ldc_R4);
+            int offset = -3;
+            int index = newInstructions.FindIndex(x => x.Calls(Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger)))) + offset;
 
             Label continueLabel = generator.DefineLabel();
 

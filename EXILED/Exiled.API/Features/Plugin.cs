@@ -143,7 +143,7 @@ namespace Exiled.API.Features
                             if (commandHandlerType == typeof(RemoteAdminCommandHandler))
                                 CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(command);
                             else if (commandHandlerType == typeof(GameConsoleCommandHandler))
-                                GameCore.Console.ConsoleCommandHandler.RegisterCommand(command);
+                                GameCore.Console.singleton.ConsoleCommandHandler.RegisterCommand(command);
                             else if (commandHandlerType == typeof(ClientCommandHandler))
                                 QueryProcessor.DotCommandHandler.RegisterCommand(command);
                         }
@@ -212,7 +212,7 @@ namespace Exiled.API.Features
                     if (types.Key == typeof(RemoteAdminCommandHandler))
                         CommandProcessor.RemoteAdminCommandHandler.UnregisterCommand(command);
                     else if (types.Key == typeof(GameConsoleCommandHandler))
-                        GameCore.Console.ConsoleCommandHandler.UnregisterCommand(command);
+                        GameCore.Console.singleton.ConsoleCommandHandler.UnregisterCommand(command);
                     else if (types.Key == typeof(ClientCommandHandler))
                         QueryProcessor.DotCommandHandler.UnregisterCommand(command);
                 }

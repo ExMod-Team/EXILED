@@ -12,15 +12,10 @@ namespace Exiled.Events.Patches.Events.Scp1344
     using Exiled.API.Features.Items;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1344;
-
     using HarmonyLib;
-
     using InventorySystem.Items.Usables.Scp1344;
     using InventorySystem.Items.Usables.Scp244;
-
     using UnityEngine;
-
-    using static PlayerList;
 
     /// <summary>
     /// Patches <see cref="Scp1344Item.ServerUpdateDeactivating"/>.
@@ -39,48 +34,39 @@ namespace Exiled.Events.Patches.Events.Scp1344
             if (__instance._useTime == 0)
             {
                 TryingDeactivatingEventArgs ev = new(Item.Get(__instance));
-                Handlers.Scp1344.OnTryingDeactivating(ev);
+                Exiled.Events.Handlers.Scp1344.OnTryingDeactivating(ev);
 
                 if (!ev.IsAllowed)
                 {
-                    return StopDeactivation(__instance, Scp1344Status.Active);
+                    return StopDeactivation(__instance);
                 }
             }
 
-            if (__instance._useTime + Time.deltaTime >= Scp1344Item.DeactivationTime)
+            if (__instance._useTime + Time.deltaTime >= 5.1f)
             {
                 DeactivatingEventArgs deactivating = new(Item.Get(__instance));
-                Handlers.Scp1344.OnDeactivating(deactivating);
+                Exiled.Events.Handlers.Scp1344.OnDeactivating(deactivating);
 
                 if (!deactivating.IsAllowed)
                 {
-                    return StopDeactivation(__instance, deactivating.NewStatus);
+                    return StopDeactivation(__instance);
                 }
 
                 __instance.ActivateFinalEffects();
                 __instance.ServerDropItem(__instance);
 
                 DeactivatedEventArgs ev = new(Item.Get(__instance));
-                Handlers.Scp1344.OnDeactivated(ev);
+                Exiled.Events.Handlers.Scp1344.OnDeactivated(ev);
                 return false;
             }
 
             return true;
         }
 
-        private static bool StopDeactivation(Scp1344Item instance, Scp1344Status newStatus)
+        private static bool StopDeactivation(Scp1344Item instance)
         {
-            instance.Status = newStatus;
-            instance.ServerSetStatus(newStatus);
-
-            if (newStatus == Scp1344Status.Idle)
-            {
-                instance._useTime = 0f;
-                instance._savedIntensity = 0;
-                instance._cancelationTime = 0f;
-                instance.OwnerInventory?.ServerSelectItem(0);
-            }
-
+            instance.Status = Scp1344Status.Active;
+            instance.ServerSetStatus(Scp1344Status.Active);
             return false;
         }
     }

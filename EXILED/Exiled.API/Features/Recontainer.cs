@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -34,8 +33,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the C.A.S.S.I.E is currently busy.
         /// </summary>
-        [Obsolete("Use Cassie.IsSpeaking instead")]
-        public static bool IsCassieBusy => Cassie.IsSpeaking;
+        public static bool IsCassieBusy => Base.CassieBusy;
 
         /// <summary>
         /// Gets a value about how many generator have been activated.
@@ -63,8 +61,11 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets the delay to wait before overcharging.
         /// </summary>
-        [Obsolete("Will be removed in Exiled 10, patch the Cassie079RecontainAnnouncement ctor if you need this functionality")]
-        public static float OverchargeDelay { get; set; }
+        public static float OverchargeDelay
+        {
+            get => Base._activationDelay;
+            set => Base._activationDelay = value;
+        }
 
         /// <summary>
         /// Gets or sets the lockdown duration.
@@ -187,7 +188,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="announcement">The announcement to play.</param>
         /// <param name="glitchyMultiplier">The glitchy multiplier.</param>
-        public static void PlayAnnouncement(string announcement, float glitchyMultiplier) => Base.PlayAnnouncement(announcement, false, false, null);
+        public static void PlayAnnouncement(string announcement, float glitchyMultiplier) => Base.PlayAnnouncement(announcement, glitchyMultiplier);
 
         /// <summary>
         /// Begins the overcharge procedure.
@@ -198,6 +199,7 @@ namespace Exiled.API.Features
             Base.BeginOvercharge();
             if (endOvercharge)
             {
+                Base._delayStopwatch.Stop();
                 Base._unlockStopwatch.Start();
             }
         }
@@ -226,7 +228,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Begins the recontainment procedure.
         /// </summary>
-        public static void Recontain() => Base.Recontain(false);
+        public static void Recontain() => Base.Recontain();
 
         /// <summary>
         /// Refreshes the activator.

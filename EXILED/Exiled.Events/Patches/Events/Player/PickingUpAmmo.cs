@@ -59,20 +59,29 @@ namespace Exiled.Events.Patches.Events.Player
                     // Handlers.Player.OnPickingUpItem(ev)
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
-                    // if (!ev.IsAllowed)
-                    //    TargetPickup.ServerHandleAbort(hub);
-                    //    return;
+                    // if (ev.IsAllowed)
+                    //    goto continueLabel;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
                     new(OpCodes.Brtrue_S, continueLabel),
 
+                    // PickupSyncInfo info = this.TargetPickup.Info;
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(AmmoSearchCompletor), nameof(AmmoSearchCompletor.TargetPickup))),
+                    new(OpCodes.Ldfld, Field(typeof(ItemPickupBase), nameof(ItemPickupBase.Info))),
+                    new(OpCodes.Stloc_S, 4),
 
-                    // this.Hub
+                    // info.InUse = false;
+                    new(OpCodes.Ldloca_S, 4),
+                    new(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Call, PropertySetter(typeof(PickupSyncInfo), nameof(PickupSyncInfo.InUse))),
+
+                    // this.TargetPickup.NetworkInfo = info;
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(AmmoSearchCompletor), nameof(AmmoSearchCompletor.Hub))),
+                    new(OpCodes.Ldfld, Field(typeof(AmmoSearchCompletor), nameof(AmmoSearchCompletor.TargetPickup))),
+                    new(OpCodes.Ldloc_S, 4),
+                    new(OpCodes.Call, PropertySetter(typeof(ItemPickupBase), nameof(ItemPickupBase.NetworkInfo))),
 
-                    new(OpCodes.Callvirt, Method(typeof(ItemPickupBase), nameof(ItemPickupBase.ServerHandleAbort))),
+                    // return;
                     new(OpCodes.Ret),
                 });
 

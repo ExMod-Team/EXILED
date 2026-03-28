@@ -13,6 +13,7 @@ namespace Exiled.Loader
 
     using LabApi.Loader.Features.Plugins;
     using LabApi.Loader.Features.Plugins.Enums;
+
     using MEC;
 
     using Log = API.Features.Log;
@@ -53,7 +54,7 @@ namespace Exiled.Loader
         /// <summary>
         /// Gets the RequiredApiVersion of the EXILED Loader.
         /// </summary>
-        public override Version RequiredApiVersion => LabApi.Features.LabApiProperties.CurrentVersion;
+        public override Version RequiredApiVersion { get; } = Assembly.GetAssembly(typeof(LabApi.Loader.PluginLoader)).GetReferencedAssemblies()[0].Version; // TODO Not finish
 
         /// <summary>
         /// Gets the Exiled Version.

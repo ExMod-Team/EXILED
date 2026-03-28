@@ -23,9 +23,9 @@ namespace Exiled.Events.Patches.Events.Player
 
     /// <summary>
     /// Patches the <see cref="StatusEffectBase.Intensity"/> method.
-    /// Adds the <see cref="Handlers.Player.ReceivingEffect"/> event and fix NW Duration not being correctly set to 0 when effect is Reset.
+    /// Adds the <see cref="Handlers.Player.ReceivingEffect"/> event.
     /// </summary>
-    // [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingEffect))]
+    [EventPatch(typeof(Handlers.Player), nameof(Handlers.Player.ReceivingEffect))]
     [HarmonyPatch(typeof(StatusEffectBase), nameof(StatusEffectBase.ForceIntensity))]
     internal static class ReceivingStatusEffect
     {
@@ -74,9 +74,9 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(StatusEffectBase), nameof(StatusEffectBase._intensity))),
 
-                    // this._timeLeft
+                    // this.Duration
                     new(OpCodes.Ldarg_0),
-                    new(OpCodes.Ldfld, Field(typeof(StatusEffectBase), nameof(StatusEffectBase._timeLeft))),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Duration))),
 
                     // ReceivingEventArgs ev = new(Player, StatusEffectBase, byte, byte, float)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ReceivingEffectEventArgs))[0]),
@@ -95,11 +95,11 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingEffectEventArgs), nameof(ReceivingEffectEventArgs.Intensity))),
                     new(OpCodes.Starg_S, 1),
 
-                    // this._timeLeft = ev.Duration
+                    // this.Duration = ev.Duration
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldloc_S, ev.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ReceivingEffectEventArgs), nameof(ReceivingEffectEventArgs.Duration))),
-                    new(OpCodes.Stfld, Field(typeof(StatusEffectBase), nameof(StatusEffectBase._timeLeft))),
+                    new(OpCodes.Callvirt, PropertySetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Duration))),
                 });
 
             newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);

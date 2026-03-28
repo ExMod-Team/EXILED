@@ -120,10 +120,5 @@ namespace Exiled.API.Enums
         /// SCP-127 pedestal.
         /// </summary>
         Scp127Pedestal,
-
-        /// <summary>
-        /// SCP-1509 pedestal.
-        /// </summary>
-        Scp1509Pedestal,
     }
 }
