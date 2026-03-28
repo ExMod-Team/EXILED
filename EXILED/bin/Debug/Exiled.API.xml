@@ -8615,9 +8615,76 @@
             A wrapper class for <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.
             </summary>
         </member>
+        <member name="T:Exiled.API.Features.Doors.Door.DoorTrigger">
+            <summary>
+            Represents the types of triggers that can occur on a door.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorTrigger.Locked">
+            <summary>
+            Door was locked.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorTrigger.Unlocked">
+            <summary>
+            Door was unlocked.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorTrigger.Opened">
+            <summary>
+            Door was opened (target state changed to open).
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorTrigger.Closed">
+            <summary>
+            Door was closed (target state changed to closed).
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorTrigger.Exploded">
+            <summary>
+            Door was destroyed or exploded (breakable door).
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorTrigger.AccessDenied">
+            <summary>
+            An access attempt was denied (keycard denied).
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorTrigger.AccessGranted">
+            <summary>
+            An access attempt was granted (keycard accepted).
+            </summary>
+        </member>
+        <member name="T:Exiled.API.Features.Doors.Door.DoorPass">
+            <summary>
+            Represents the direction when a player or object passes through a door.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorPass.Front">
+            <summary>
+            Passed from the front side.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.DoorPass.Back">
+            <summary>
+            Passed from the back side.
+            </summary>
+        </member>
         <member name="F:Exiled.API.Features.Doors.Door.DoorVariantToDoor">
             <summary>
             A <see cref="T:System.Collections.Generic.Dictionary`2"/> containing all known <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>'s and their corresponding <see cref="T:Exiled.API.Features.Doors.Door"/>.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.accessDeniedFlag">
+            <summary>
+            Access result flags that can be set briefly when access events are triggered.
+            These are transient and will be reset a few seconds after being set.
+            </summary>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.Door.accessGrantedFlag">
+            <summary>
+            Access result flags that can be set briefly when access events are triggered.
+            These are transient and will be reset a few seconds after being set.
             </summary>
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.#ctor(Interactables.Interobjects.DoorUtils.DoorVariant,System.Collections.Generic.List{Exiled.API.Features.Room})">
@@ -8626,6 +8693,26 @@
             </summary>
             <param name="door">The base <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/> for this door.</param>
             <param name="rooms">The <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:Exiled.API.Features.Room"/>'s for this door.</param>
+        </member>
+        <member name="E:Exiled.API.Features.Doors.Door.DoorTriggered">
+            <summary>
+            Event raised when a door trigger occurs (locked/unlocked/opened/closed/exploded/access denied/granted).
+            </summary>
+        </member>
+        <member name="E:Exiled.API.Features.Doors.Door.DoorPassed">
+            <summary>
+            Event raised when something passes through a door (front/back).
+            </summary>
+        </member>
+        <member name="E:Exiled.API.Features.Doors.Door.DoorTriggeredWithPlayer">
+            <summary>
+            Event raised when a door trigger occurs with the player responsible.
+            </summary>
+        </member>
+        <member name="E:Exiled.API.Features.Doors.Door.DoorPassedWithPlayer">
+            <summary>
+            Event raised when something passes through a door with the player responsible.
+            </summary>
         </member>
         <member name="P:Exiled.API.Features.Doors.Door.List">
             <summary>
@@ -8694,27 +8781,27 @@
         </member>
         <member name="P:Exiled.API.Features.Doors.Door.IsClosed">
             <summary>
-            Convenience property indicating the door is closed (not open).
+            Gets a value indicating whether the door is closed (not open).
             </summary>
         </member>
         <member name="P:Exiled.API.Features.Doors.Door.IsUnlocked">
             <summary>
-            Convenience property indicating the door is unlocked.
+            Gets a value indicating whether the door is unlocked.
             </summary>
         </member>
         <member name="P:Exiled.API.Features.Doors.Door.IsExploded">
             <summary>
-            Indicates whether the door has been exploded/destroyed. For breakable doors this reflects the underlying breakable state.
+            Gets a value indicating whether the door has been exploded or destroyed.
             </summary>
         </member>
         <member name="P:Exiled.API.Features.Doors.Door.IsAccessDenied">
             <summary>
-            True if a recent access attempt was denied. This flag is transient and will reset automatically.
+            Gets a value indicating whether a recent access attempt was denied. This flag is transient and will reset automatically.
             </summary>
         </member>
         <member name="P:Exiled.API.Features.Doors.Door.IsAccessGranted">
             <summary>
-            True if a recent access attempt was granted. This flag is transient and will reset automatically.
+            Gets a value indicating whether a recent access attempt was granted. This flag is transient and will reset automatically.
             </summary>
         </member>
         <member name="P:Exiled.API.Features.Doors.Door.IsGate">
@@ -8849,7 +8936,7 @@
             <summary>
             Gets the <see cref="T:Exiled.API.Features.Doors.Door"/> by <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.
             </summary>
-            <param name="doorVariant">The <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/> to convert into an door.</param>
+            <param name="doorVariant">The <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/> to convert into a door.</param>
             <typeparam name="T">The specified <see cref="T:Exiled.API.Features.Doors.Door"/> type.</typeparam>
             <returns>The door wrapper for the given <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.</returns>
         </member>
@@ -8862,11 +8949,11 @@
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.Get``1(Exiled.API.Enums.DoorType)">
             <summary>
-            Gets the <see cref="T:Exiled.API.Features.Doors.Door"/> by <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.
+            Gets the <see cref="T:Exiled.API.Features.Doors.Door"/> by <see cref="T:Exiled.API.Enums.DoorType"/>.
             </summary>
-            <param name="doorType">The <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/> to convert into an door.</param>
+            <param name="doorType">The <see cref="T:Exiled.API.Enums.DoorType"/> to search for.</param>
             <typeparam name="T">The specified <see cref="T:Exiled.API.Features.Doors.Door"/> type.</typeparam>
-            <returns>The door wrapper for the given <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.</returns>
+            <returns>The door wrapper for the given <see cref="T:Exiled.API.Enums.DoorType"/>.</returns>
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.Get(System.String)">
             <summary>
@@ -8877,11 +8964,11 @@
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.Get``1(System.String)">
             <summary>
-            Gets the <see cref="T:Exiled.API.Features.Doors.Door"/> by <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.
+            Gets the <see cref="T:Exiled.API.Features.Doors.Door"/> by name.
             </summary>
             <param name="name">The name to search for.</param>
             <typeparam name="T">The specified <see cref="T:Exiled.API.Features.Doors.Door"/> type.</typeparam>
-            <returns>The door wrapper for the given <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.</returns>
+            <returns>The door wrapper for the given name.</returns>
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.Get(UnityEngine.GameObject)">
             <summary>
@@ -8910,8 +8997,8 @@
             <summary>
             Gets a <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.API.Features.Doors.Door"/> filtered based on a predicate.
             </summary>
-            <param name="predicate">The condition to satify.</param>
-            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.API.Features.Doors.Door"/> which contains elements that satify the condition.</returns>
+            <param name="predicate">The condition to satisfy.</param>
+            <returns>A <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Exiled.API.Features.Doors.Door"/> which contains elements that satisfy the condition.</returns>
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.LockAll(System.Single,Exiled.API.Enums.ZoneType,Exiled.API.Enums.DoorLockType)">
             <summary>
@@ -8923,7 +9010,7 @@
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.LockAll(System.Single,System.Collections.Generic.IEnumerable{Exiled.API.Enums.ZoneType},Exiled.API.Enums.DoorLockType)">
             <summary>
-            Locks all <see cref="T:Exiled.API.Features.Doors.Door">doors</see> given the specified <see cref="T:Exiled.API.Enums.ZoneType"/>.
+            Locks all <see cref="T:Exiled.API.Features.Doors.Door">doors</see> given the specified <see cref="T:Exiled.API.Enums.ZoneType"/>s.
             </summary>
             <param name="duration">The duration of the lockdown.</param>
             <param name="zoneTypes">The <see cref="T:Exiled.API.Enums.ZoneType"/>s to affect.</param>
@@ -8957,7 +9044,7 @@
             <summary>
             Unlocks all <see cref="T:Exiled.API.Features.Doors.Door">doors</see> in the facility.
             </summary>
-            <param name="predicate">The condition to satify.</param>
+            <param name="predicate">The condition to satisfy.</param>
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.PlaySound(Exiled.API.Enums.DoorBeepType)">
             <summary>
@@ -9005,20 +9092,17 @@
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.RaiseTrigger(Exiled.API.Features.Doors.Door.DoorTrigger,Exiled.API.Features.Player)">
             <summary>
-            Helper to raise door trigger events and manage transient access flags.
+            Raises door trigger events and manages transient access flags.
             </summary>
-            <param name="trigger">The trigger to raise.</param>
-            <summary>
-            Helper to raise door trigger events and manage transient access flags.
-            Made public so external code (tests/plugins) can simulate triggers.
-            </summary>
-            <param name="trigger">The trigger to raise.</param>
+            <param name="trigger">The trigger type to raise.</param>
+            <param name="player">The player responsible for the trigger, if applicable.</param>
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.RaisePass(Exiled.API.Features.Doors.Door.DoorPass,Exiled.API.Features.Player)">
             <summary>
-            Helper to raise a DoorPassed event when something passes through the door.
+            Raises a DoorPassed event when something passes through the door.
             </summary>
             <param name="pass">The direction of the pass.</param>
+            <param name="player">The player passing through the door, if applicable.</param>
         </member>
         <member name="M:Exiled.API.Features.Doors.Door.ToString">
             <summary>
@@ -9033,6 +9117,11 @@
             <param name="doorVariant">The base-game <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>.</param>
             <param name="rooms">Target door <see cref="P:Exiled.API.Features.Doors.Door.Rooms"/>.</param>
             <returns>A <see cref="T:Exiled.API.Features.Doors.Door"/> wrapper object.</returns>
+        </member>
+        <member name="F:Exiled.API.Features.Doors.DoorHelpers.DoorVariantToDoor">
+            <summary>
+            A <see cref="T:System.Collections.Generic.Dictionary`2"/> containing all known <see cref="T:Interactables.Interobjects.DoorUtils.DoorVariant"/>'s and their corresponding <see cref="T:Exiled.API.Features.Doors.Door"/>.
+            </summary>
         </member>
         <member name="T:Exiled.API.Features.Doors.ElevatorDoor">
             <summary>
