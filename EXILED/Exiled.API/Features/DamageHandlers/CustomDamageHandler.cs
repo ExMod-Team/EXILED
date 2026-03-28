@@ -39,11 +39,17 @@ namespace Exiled.API.Features.DamageHandlers
             if (Attacker is not null)
             {
                 if (baseHandler is BaseScpDamageHandler)
+                {
                     CustomBase = new ScpDamageHandler(target, baseHandler);
-                else if (Attacker.CurrentItem is not null && Attacker.CurrentItem.Type.IsWeapon() && baseHandler is BaseFirearmHandler)
-                    CustomBase = new FirearmDamageHandler(Attacker.CurrentItem, target, baseHandler);
+                }
                 else
-                    CustomBase = new DamageHandler(target, Attacker);
+                {
+                    Item item = Attacker.CurrentItem;
+                    if (item is not null && item.Type.IsWeapon() && baseHandler is BaseFirearmHandler)
+                        CustomBase = new FirearmDamageHandler(item, target, baseHandler);
+                    else
+                        CustomBase = new DamageHandler(target, Attacker);
+                }
             }
             else
             {

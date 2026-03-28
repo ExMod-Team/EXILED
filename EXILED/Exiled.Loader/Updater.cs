@@ -229,7 +229,7 @@ namespace Exiled.Loader
                     FileName = installerPath,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    Arguments = $"--exit {(Folder == "global" ? string.Empty : $"--target-port {Folder}")} --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\" --exiled \"{Path.Combine(Paths.Exiled, "..")}\" {(newVersion.IsPrerelease ? "--pre-releases" : string.Empty)}",
+                    Arguments = $"--exit {(Folder == "global" ? string.Empty : $"--target-port {Folder}")} --target-version {newVersion.Release.TagName} --appdata \"{Paths.AppData}\" --exiled \"{Path.Combine(config.ExiledDirectoryPath, "..")}\" {(newVersion.IsPrerelease ? "--pre-releases" : string.Empty)}",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     StandardErrorEncoding = ProcessEncoding,

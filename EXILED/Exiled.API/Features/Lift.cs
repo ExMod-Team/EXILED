@@ -19,6 +19,7 @@ namespace Exiled.API.Features
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
     using UnityEngine;
+    using Utils;
 
     using static Interactables.Interobjects.ElevatorChamber;
 
@@ -46,6 +47,7 @@ namespace Exiled.API.Features
         internal Lift(ElevatorChamber elevator)
         {
             Base = elevator;
+            ElevatorAutoReturn = elevator.GetComponent<ElevatorAutoReturn>();
             ElevatorChamberToLift.Add(elevator, this);
 
             internalDoorsList.AddRange(Elevator.AllElevatorDoors[Group]);
@@ -73,6 +75,12 @@ namespace Exiled.API.Features
         public ElevatorChamber Base { get; }
 
         /// <summary>
+        /// Gets the base <see cref="ElevatorAutoReturn"/>.
+        /// </summary>
+        /// <remarks>Would be null for any elevator that do not used <see cref="Interactables.Interobjects.ElevatorAutoReturn"/>.</remarks>
+        public ElevatorAutoReturn ElevatorAutoReturn { get; }
+
+        /// <summary>
         /// Gets a value of the internal doors list.
         /// </summary>
         public IReadOnlyCollection<Doors.ElevatorDoor> Doors => internalDoorsList.Select(x => Door.Get<Doors.ElevatorDoor>(x)).ToList();
@@ -80,7 +88,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> in the <see cref="Room"/>.
         /// </summary>
-        public IEnumerable<Player> Players => Player.List.Where(x => Bounds.Contains(x.Position));
+        public IEnumerable<Player> Players => Player.List.Where(x => RelativeBounds.Contains(x.Position));
 
         /// <summary>
         /// Gets the lift's name.
@@ -127,7 +135,13 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="UnityEngine.Bounds"/> representing the space inside the lift.
         /// </summary>
-        public Bounds Bounds => Base.WorldspaceBounds;
+        [Obsolete("It's now necessary to use RelativeBounds instead", true)]
+        public Bounds Bounds => Base.WorldspaceBounds.Bounds;
+
+        /// <summary>
+        /// Gets the <see cref="Utils.RelativeBounds"/> representing the space inside the lift.
+        /// </summary>
+        public RelativeBounds RelativeBounds => Base.WorldspaceBounds;
 
         /// <summary>
         /// Gets the lift's <see cref="ElevatorType"/>.
@@ -135,7 +149,7 @@ namespace Exiled.API.Features
         public ElevatorType Type => Group switch
         {
             ElevatorGroup.Scp049 => ElevatorType.Scp049,
-            ElevatorGroup.GateA => ElevatorType.GateA,
+            ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => ElevatorType.GateA,
             ElevatorGroup.GateB => ElevatorType.GateB,
             ElevatorGroup.ServerRoom => ElevatorType.ServerRoom,
             ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => ElevatorType.LczA,
@@ -250,7 +264,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The <see cref="Vector3"/>.</param>
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
-        public static Lift Get(Vector3 position) => Get(lift => lift.Bounds.Contains(position)).FirstOrDefault();
+        public static Lift Get(Vector3 position) => Get(lift => lift.RelativeBounds.Contains(position)).FirstOrDefault();
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> filtered based on a predicate.
@@ -310,7 +324,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="point">The position.</param>
         /// <returns><see langword="true"/> if the point is inside the elevator. Otherwise, <see langword="false"/>.</returns>
-        public bool IsInElevator(Vector3 point) => Bounds.Contains(point);
+        public bool IsInElevator(Vector3 point) => RelativeBounds.Contains(point);
 
         /// <summary>
         /// Returns the Lift in a human-readable format.

@@ -15,6 +15,7 @@ namespace Exiled.API.Extensions
     using CustomPlayerEffects;
     using CustomRendering;
     using Enums;
+    using Exiled.API.Features;
     using InventorySystem.Items.MarshmallowMan;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using PlayerRoles.FirstPersonControl;
@@ -80,12 +81,29 @@ namespace Exiled.API.Extensions
             { EffectType.Lightweight, typeof(Lightweight) },
             { EffectType.HeavyFooted, typeof(HeavyFooted) },
             { EffectType.Fade, typeof(Fade) },
+            { EffectType.NightVision, typeof(NightVision) },
             #pragma warning disable CS0618
             { EffectType.Marshmallow, typeof(MarshmallowEffect) },
             { EffectType.BecomingFlamingo, typeof(BecomingFlamingo) },
             { EffectType.Scp559, typeof(Scp559Effect) },
             { EffectType.Scp956Target, typeof(Scp956Target) },
             { EffectType.Snowed, typeof(Snowed) },
+            { EffectType.Metal, typeof(Metal) },
+            { EffectType.OrangeCandy, typeof(OrangeCandy) },
+            { EffectType.OrangeWitness, typeof(OrangeWitness) },
+            { EffectType.Prismatic, typeof(Prismatic) },
+            { EffectType.SlowMetabolism, typeof(SlowMetabolism) },
+            { EffectType.Spicy, typeof(Spicy) },
+            { EffectType.SugarCrave, typeof(SugarCrave) },
+            { EffectType.SugarHigh, typeof(SugarHigh) },
+            { EffectType.SugarRush, typeof(SugarRush) },
+            { EffectType.TemporaryBypass, typeof(TemporaryBypass) },
+            { EffectType.TraumatizedByEvil, typeof(TraumatizedByEvil) },
+            { EffectType.WhiteCandy, typeof(WhiteCandy) },
+            { EffectType.Scp1509Resurrected, typeof(Scp1509Resurrected) },
+            { EffectType.FocusedVision, typeof(FocusedVision) },
+            { EffectType.AnomalousRegeneration, typeof(AnomalousRegeneration) },
+            { EffectType.AnomalousTarget, typeof(AnomalousTarget) },
             #pragma warning restore CS0618
         });
 
@@ -117,7 +135,15 @@ namespace Exiled.API.Extensions
         /// <param name="statusEffectBase">The <see cref="StatusEffectBase"/> enum.</param>
         /// <returns>The <see cref="EffectType"/>.</returns>
         public static EffectType GetEffectType(this StatusEffectBase statusEffectBase)
-            => TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType effect) ? effect : throw new InvalidOperationException("Invalid effect status base provided");
+        {
+            if (!TypeToEffectType.TryGetValue(statusEffectBase.GetType(), out EffectType type))
+            {
+                Log.Warn($"Missing EffectType for Type {statusEffectBase.GetType()}!!! This issue likely originates from a new update or a CustomEffect on your Server");
+                return EffectType.None;
+            }
+
+            return type;
+        }
 
         /// <summary>
         /// Gets the <see cref="EffectType"/> of the specified <see cref="StatusEffectBase"/>.

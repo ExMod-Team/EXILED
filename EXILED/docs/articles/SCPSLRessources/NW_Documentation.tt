@@ -9,6 +9,8 @@
 <#@ import namespace="Exiled.API.Enums" #>
 <#@ import namespace="Exiled.API.Extensions" #>
 <#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="PlayerStatsSystem" #>
 <#@ import namespace="System.Reflection" #>
 <#@ import namespace="PlayerRoles" #>
 <#@ output extension=".md" #>
@@ -95,23 +97,67 @@ All available DamageHandlers
 
 
 <#
-    string alldamagehandler = string.Empty;
-    // Load the assembly
-    var assembly2 = typeof(BanPlayer).Assembly;
-    Type[] types2 = null;
-    try
+string alldamagehandler = string.Empty;
+
+// Load the assembly
+var assembly2 = typeof(BanPlayer).Assembly;
+Type[] types2 = null;
+
+try
+{
+    types2 = assembly2.GetTypes();
+}
+catch (ReflectionTypeLoadException e)
+{
+    types2 = e.Types;
+}
+
+try
+{
+    Type baseDamageHandler = typeof(PlayerStatsSystem.DamageHandlerBase);
+    var damageHandlers =
+    types2.Where(t =>
+        t != null &&
+        t.IsClass &&
+        baseDamageHandler.IsAssignableFrom(t));
+
+    WriteLine("- " + baseDamageHandler.FullName);
+    PrintTree(baseDamageHandler, 1);
+
+    void PrintTree(Type parent, int depth)
     {
-        types2 = assembly2.GetTypes();
-    }
-    catch (ReflectionTypeLoadException e)
-    {
-        types2 = e.Types;
+        var children = types2
+            .Where(t => t != null && t.BaseType == parent)
+            .OrderBy(t => Count(t));
+
+        foreach (var child in children)
+        {
+            // Print only concrete classes, or include abstract if you want
+            WriteLine($"{new string(' ', depth * 2)}- {child.FullName} : {child.BaseType.FullName}, {string.Join<Type>(", ", child.GetInterfaces()).ToString()}");
+                
+            // Recurse to process children correctly
+            PrintTree(child, depth + 1);
+        }
     }
 
-    foreach (Type type2 in types2.Where(t => t != null && t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(PlayerStatsSystem.DamageHandlerBase))))
+    int Count(Type parent)
     {
-        WriteLine($"{type2.FullName} : {type2.BaseType.Name}");
+        var children = types2
+            .Where(t => t != null && t.BaseType == parent);
+
+        int count = 0;
+        foreach (var child in children)
+        {
+            count -= 1 + Count(child);
+        }
+        return count;
     }
+
+}
+catch (Exception ex)
+{
+    WriteLine(ex.ToString());
+}
 #>
 ```
 </details>

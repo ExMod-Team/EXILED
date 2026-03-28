@@ -119,6 +119,16 @@ namespace Exiled.API.Features.Roles
         public Scp173AudioPlayer AudioPlayer { get; }
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets or sets the amount of time before SCP-173 can use breakneck speed again.
         /// </summary>
         public float RemainingBreakneckCooldown

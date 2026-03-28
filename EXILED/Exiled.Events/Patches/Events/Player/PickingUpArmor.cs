@@ -13,11 +13,13 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features;
     using API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
 
+    using InventorySystem.Items.Pickups;
     using InventorySystem.Searching;
 
     using static HarmonyLib.AccessTools;
@@ -34,15 +36,17 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label returnLabel = generator.DefineLabel();
+            Label continueLabel = generator.DefineLabel();
 
             int offset = -5;
             int index = newInstructions.FindIndex(i => i.opcode == OpCodes.Newobj && (ConstructorInfo)i.operand == GetDeclaredConstructors(typeof(LabApi.Events.Arguments.PlayerEvents.PlayerPickingUpArmorEventArgs))[0]) + offset;
 
+            newInstructions[index].labels.Add(continueLabel);
+
             newInstructions.InsertRange(
                 index,
-                new CodeInstruction[]
-                {
+                [
+
                     // this.Hub
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Hub))),
@@ -62,12 +66,21 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnPickingUpItem))),
 
                     // if (!ev.IsAllowed)
+                    //    TargetPickup.ServerHandleAbort(hub);
                     //    return;
                     new(OpCodes.Callvirt, PropertyGetter(typeof(PickingUpItemEventArgs), nameof(PickingUpItemEventArgs.IsAllowed))),
-                    new(OpCodes.Brfalse, returnLabel),
-                });
+                    new(OpCodes.Brtrue_S, continueLabel),
 
-            newInstructions[newInstructions.Count - 1].WithLabels(returnLabel);
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Ldfld, Field(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.TargetPickup))),
+
+                    // this.Hub
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(ArmorSearchCompletor), nameof(ArmorSearchCompletor.Hub))),
+
+                    new(OpCodes.Callvirt, Method(typeof(ItemPickupBase), nameof(ItemPickupBase.ServerHandleAbort))),
+                    new(OpCodes.Ret),
+                ]);
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

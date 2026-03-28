@@ -10,14 +10,16 @@ namespace Exiled.API.Features.DamageHandlers
     using System;
 
     using Enums;
+    using Exiled.API.Features.Pickups.Projectiles;
 
     using Footprinting;
+    using InventorySystem.Items.Scp1509;
     using Items;
-
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp096;
+    using PlayerRoles.PlayableScps.Scp1507;
+    using PlayerRoles.PlayableScps.Scp3114;
     using PlayerRoles.PlayableScps.Scp939;
-
     using PlayerStatsSystem;
     using UnityEngine;
 
@@ -114,6 +116,12 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.Jailbird:
                     Base = new JailbirdDamageHandler(Attacker.Hub, damage, Vector3.zero);
                     break;
+                case DamageType.Scp1509:
+                    Base = new Scp1509DamageHandler(Attacker.Hub, damage, Vector3.zero);
+                    break;
+                case DamageType.GrayCandy:
+                    Base = new GrayCandyDamageHandler(Attacker.Hub, damage);
+                    break;
                 case DamageType.MicroHid:
                     InventorySystem.Items.MicroHID.MicroHIDItem microHidOwner = new();
                     microHidOwner.Owner = attacker.ReferenceHub;
@@ -123,6 +131,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);
                     break;
                 case DamageType.Firearm:
+                case DamageType.AK:
                     GenericFirearm(player, attacker, damage, damageType, ItemType.GunAK);
                     break;
                 case DamageType.Crossvec:
@@ -136,9 +145,6 @@ namespace Exiled.API.Features.DamageHandlers
                     break;
                 case DamageType.Shotgun:
                     GenericFirearm(player, attacker, damage, damageType, ItemType.GunShotgun);
-                    break;
-                case DamageType.AK:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunAK);
                     break;
                 case DamageType.Com15:
                     GenericFirearm(player, attacker, damage, damageType, ItemType.GunCOM15);
@@ -183,11 +189,13 @@ namespace Exiled.API.Features.DamageHandlers
 
                     Base = new Scp939DamageHandler(curr939, damage, Scp939DamageType.LungeTarget);
                     break;
-                case DamageType.Scp:
+                case DamageType.Scp: // TODO replace ScpDamageHandler with specific SCP-Role damage handler
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Unknown);
                     break;
                 case DamageType.Scp018:
-                    Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Unknown);
+                    Scp018Projectile scp018Projectile = Projectile.Create<Scp018Projectile>(ProjectileType.Scp018);
+                    scp018Projectile.PreviousOwner = attacker;
+                    Base = new Scp018DamageHandler(scp018Projectile.Base, damage, true);
                     break;
                 case DamageType.Scp207:
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Scp207);
@@ -204,8 +212,27 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.Scp106:
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.PocketDecay);
                     break;
+                case DamageType.CardiacArrest:
+                    Base = new Scp049DamageHandler(attacker.ReferenceHub, damage, Scp049DamageHandler.AttackType.CardiacArrest);
+                    break;
+                case DamageType.Scp3114:
+                    Base = new Scp3114DamageHandler(attacker.ReferenceHub, damage, Scp3114DamageHandler.HandlerType.Slap);
+                    break;
+                case DamageType.Strangled:
+                    Base = new Scp3114DamageHandler(attacker.ReferenceHub, damage, Scp3114DamageHandler.HandlerType.Strangulation);
+                    break;
+                case DamageType.Scp1507:
+                    Base = new Scp1507DamageHandler(attacker.Footprint, damage);
+                    break;
+                case DamageType.Scp956:
+                    Base = new Scp956DamageHandler(Vector3.forward);
+                    break;
+                case DamageType.SnowBall:
+                    Base = new SnowballDamageHandler(attacker.Footprint, damage, Vector3.forward);
+                    break;
                 case DamageType.Custom:
                 case DamageType.Unknown:
+                case DamageType.Marshmallow:
                 default:
                     Base = new CustomReasonDamageHandler(damageText ?? genericDamageText, damage, cassieAnnouncement.Announcement);
                     break;

@@ -52,5 +52,10 @@ namespace Exiled.API.Enums
         /// No team. Same as <see cref="Team.Dead"/>.
         /// </summary>
         None,
+
+        /// <summary>
+        /// Contains <see cref="RoleTypeId.Flamingo"/> and <see cref="RoleTypeId.AlphaFlamingo"/>. Same as <see cref="Team.Flamingos"/>.
+        /// </summary>
+        Flamingos,
     }
 }

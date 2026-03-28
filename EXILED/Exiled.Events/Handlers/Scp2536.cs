@@ -22,6 +22,11 @@ namespace Exiled.Events.Handlers
         public static Event<FindingPositionEventArgs> FindingPosition { get; set; } = new();
 
         /// <summary>
+        /// Invoked once SCP-2536 has found a spawn location.
+        /// </summary>
+        public static Event<FoundPositionEventArgs> FoundPosition { get; set; } = new();
+
+        /// <summary>
         /// Invoked before SCP-2536 gives a gift to a player.
         /// </summary>
         public static Event<GrantingGiftEventArgs> GrantingGift { get; set; } = new();
@@ -36,6 +41,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="FindingPositionEventArgs"/> instance.</param>
         public static void OnFindingPosition(FindingPositionEventArgs ev) => FindingPosition.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after SCP-2536 chooses a target.
+        /// </summary>
+        /// <param name="ev">The <see cref="FoundPositionEventArgs"/> instance.</param>
+        public static void OnFoundPosition(FoundPositionEventArgs ev) => FoundPosition.InvokeSafely(ev);
 
         /// <summary>
         /// Called before SCP-2536 gives a gift to a player.

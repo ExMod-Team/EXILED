@@ -28,6 +28,7 @@ namespace Exiled.Events.Handlers.Internal
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
+    using InventorySystem.Items.Usables.Scp330;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
@@ -41,7 +42,7 @@ namespace Exiled.Events.Handlers.Internal
     internal static class Round
     {
         /// <inheritdoc cref="Handlers.Player.OnUsedItem" />
-        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable));
+        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable, false));
 
         /// <inheritdoc cref="Handlers.Server.OnWaitingForPlayers" />
         public static void OnWaitingForPlayers()
@@ -56,6 +57,9 @@ namespace Exiled.Events.Handlers.Internal
                 TranslationManager.Reload();
 
             RoundSummary.RoundLock = false;
+
+            if (Events.Instance.Config.Debug)
+                Patches.Events.Map.Generating.Benchmark();
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRestartingRound" />
@@ -81,7 +85,7 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Player.OnChangingRole(ChangingRoleEventArgs)" />
         public static void OnChangingRole(ChangingRoleEventArgs ev)
         {
-            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason != API.Enums.SpawnReason.Destroyed && Events.Instance.Config.ShouldDropInventory)
+            if (!ev.Player.IsHost && ev.NewRole == RoleTypeId.Spectator && ev.Reason is not SpawnReason.Destroyed && Events.Instance.Config.ShouldDropInventory)
                 ev.Player.Inventory.ServerDropEverything();
         }
 
@@ -122,6 +126,13 @@ namespace Exiled.Events.Handlers.Internal
             {
                 player.SetFakeScale(player.Scale, new List<Player>() { ev.Player });
             }
+        }
+
+        /// <inheritdoc cref="Handlers.Warhead.OnDetonated()"/>
+        public static void OnWarheadDetonated()
+        {
+            // fix for black candy
+            CandyBlack.Outcomes.RemoveAll(outcome => outcome is TeleportOutcome);
         }
 
         private static void GenerateAttachments()

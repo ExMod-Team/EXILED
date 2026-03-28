@@ -7,21 +7,19 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System.Collections.Generic;
-
     using API.Features;
     using Exiled.API.Enums;
     using Interfaces;
 
     using PlayerRoles;
 
-    using Respawning;
-
     /// <summary>
     /// Contains all information before a player escapes.
     /// </summary>
     public class EscapingEventArgs : IPlayerEvent, IDeniableEvent
     {
+        private EscapeScenario escapeScenario;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EscapingEventArgs" /> class.
         /// </summary>
@@ -55,7 +53,11 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets the EscapeScenario that will represent for this player.
         /// </summary>
-        public EscapeScenario EscapeScenario { get; set; }
+        public EscapeScenario EscapeScenario
+        {
+            get => (escapeScenario is EscapeScenario.None && IsAllowed) ? EscapeScenario.CustomEscape : escapeScenario;
+            set => escapeScenario = value;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the player can escape.

@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
                     new (OpCodes.Ldloc_S, 11),
 
                     // flags
-                    new (OpCodes.Ldloc_S, 12),
+                    new (OpCodes.Ldloc_S, 17),
 
                     // country
                     new (OpCodes.Ldloc_S, 13),

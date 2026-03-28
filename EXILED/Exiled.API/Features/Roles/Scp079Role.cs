@@ -237,6 +237,16 @@ namespace Exiled.API.Features.Roles
         public Door LockedDoor => Door.Get(DoorLockChanger.LockedDoor);
 
         /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool RespectPreferences => true;
+
+        /// <summary>
+        /// Gets a value indicating whether .
+        /// </summary>
+        public bool AllowFallback => true;
+
+        /// <summary>
         /// Gets or sets SCP-079's abilities. Can be <see langword="null"/>.
         /// </summary>
         public IScp079AuxRegenModifier[] Abilities

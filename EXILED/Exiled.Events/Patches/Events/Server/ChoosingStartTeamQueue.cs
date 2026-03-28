@@ -32,8 +32,8 @@ namespace Exiled.Events.Patches.Events.Server
 
             Label continueLabel = generator.DefineLabel();
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Dup) + offset;
+            int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(YamlConfig), nameof(YamlConfig.GetString)))) + offset;
 
             newInstructions.InsertRange(
                 index,

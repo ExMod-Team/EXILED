@@ -44,11 +44,13 @@ namespace Exiled.Events.EventArgs.Map
         /// <summary>
         /// Gets or sets the NTF unit name.
         /// </summary>
+        /// <remarks>If <see cref="Wave"/> is NTF Mini wave, value is <c>null</c> and setter does not work.</remarks>
         public string UnitName { get; set; }
 
         /// <summary>
         /// Gets or sets the NTF unit number.
         /// </summary>
+        /// <remarks>If <see cref="Wave"/> is NTF Mini wave, value is <c>0</c> and setter does not work.</remarks>
         public int UnitNumber { get; set; }
 
         /// <summary>

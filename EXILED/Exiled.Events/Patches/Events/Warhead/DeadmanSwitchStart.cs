@@ -20,7 +20,7 @@ namespace Exiled.Events.Patches.Events.Warhead
 
     /// <summary>
     /// Patches <see cref="AlphaWarheadController.Detonate" />
-    /// to add <see cref="Exiled.API.Features.Warhead.DeadmanSwitchEnabled"/> and  <see cref="Warhead.DeadmanSwitchInitiating"/> events.
+    /// to add  <see cref="Warhead.DeadmanSwitchInitiating"/> events.
     /// </summary>
     [EventPatch(typeof(Warhead), nameof(Warhead.DeadmanSwitchInitiating))]
     [HarmonyPatch(typeof(DeadmanSwitch), nameof(DeadmanSwitch.InitiateProtocol))]
@@ -35,11 +35,6 @@ namespace Exiled.Events.Patches.Events.Warhead
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
-                // if (!Exiled.API.Features.Warhead.DeadmanSwitchEnabled)
-                //    return;
-                new(OpCodes.Call, PropertyGetter(typeof(Exiled.API.Features.Warhead), nameof(Exiled.API.Features.Warhead.DeadmanSwitchEnabled))),
-                new(OpCodes.Brfalse_S, retLabel),
-
                 // DeadmanSwitchInitiatingEventArgs ev = new();
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(DeadmanSwitchInitiatingEventArgs))[0]),
                 new(OpCodes.Dup),
