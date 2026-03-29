@@ -1,0 +1,288 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Exiled.Example</name>
+    </assembly>
+    <members>
+        <member name="T:Exiled.Example.Commands.ParentCommandExample">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.Example.Commands.ParentCommandExample.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Exiled.Example.Commands.ParentCommandExample"/> class.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Commands.ParentCommandExample.Command">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.Example.Commands.ParentCommandExample.Aliases">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.Example.Commands.ParentCommandExample.Description">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.Example.Commands.ParentCommandExample.LoadGeneratedCommands">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.Example.Commands.ParentCommandExample.ExecuteParent(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc />
+        </member>
+        <member name="T:Exiled.Example.Commands.ParentTest">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.Example.Commands.ParentTest.Command">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.Example.Commands.ParentTest.Aliases">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.Example.Commands.ParentTest.Description">
+            <inheritdoc />
+        </member>
+        <member name="M:Exiled.Example.Commands.ParentTest.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc />
+        </member>
+        <member name="T:Exiled.Example.Commands.Test">
+            <summary>
+            This is an example of how commands should be made.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Commands.Test.Command">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.Example.Commands.Test.Aliases">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.Example.Commands.Test.Description">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.Example.Commands.Test.Execute(System.ArraySegment{System.String},CommandSystem.ICommandSender,System.String@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Exiled.Example.Config">
+            <inheritdoc cref="T:Exiled.API.Interfaces.IConfig"/>
+        </member>
+        <member name="P:Exiled.Example.Config.IsEnabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:Exiled.Example.Config.Debug">
+            <inheritdoc />
+        </member>
+        <member name="P:Exiled.Example.Config.String">
+            <summary>
+            Gets the string config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.Int">
+            <summary>
+            Gets the int config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.Float">
+            <summary>
+            Gets the float config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.StringsList">
+            <summary>
+            Gets the list of strings config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.IntsList">
+            <summary>
+            Gets the list of ints config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.StringIntDictionary">
+            <summary>
+            Gets the dictionary of string as key and int as value config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.NestedDictionaries">
+            <summary>
+            Gets the dictionary of string as key and <see cref="T:System.Collections.Generic.Dictionary`2"/> as value config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.JoinedBroadcast">
+            <summary>
+            Gets the joined broadcast.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.Vector3">
+            <summary>
+            Gets the Vector3 config.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Config.Attachments">
+            <summary>
+            Gets the <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:InventorySystem.Items.Firearms.Attachments.AttachmentName"/> config.
+            </summary>
+        </member>
+        <member name="T:Exiled.Example.Events.ItemHandler">
+            <summary>
+            Handles Item events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Events.ItemHandler.OnChangingAmmo(Exiled.Events.EventArgs.Item.ChangingAmmoEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Item.OnChangingAmmo(Exiled.Events.EventArgs.Item.ChangingAmmoEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.ItemHandler.OnChangingAttachments(Exiled.Events.EventArgs.Item.ChangingAttachmentsEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Item.OnChangingAttachments(Exiled.Events.EventArgs.Item.ChangingAttachmentsEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.ItemHandler.OnReceivingPreference(Exiled.Events.EventArgs.Item.ReceivingPreferenceEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Item.OnReceivingPreference(Exiled.Events.EventArgs.Item.ReceivingPreferenceEventArgs)"/>
+        </member>
+        <member name="T:Exiled.Example.Events.MapHandler">
+            <summary>
+            Handles Map events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Events.MapHandler.OnExplodingGrenade(Exiled.Events.EventArgs.Map.ExplodingGrenadeEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Map.OnExplodingGrenade(Exiled.Events.EventArgs.Map.ExplodingGrenadeEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.MapHandler.OnGeneratorActivated(Exiled.Events.EventArgs.Map.GeneratorActivatingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Map.OnGeneratorActivating(Exiled.Events.EventArgs.Map.GeneratorActivatingEventArgs)"/>
+        </member>
+        <member name="T:Exiled.Example.Events.PlayerHandler">
+            <summary>
+            Handles player events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnDied(Exiled.Events.EventArgs.Player.DiedEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnDied(Exiled.Events.EventArgs.Player.DiedEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnChangingRole(Exiled.Events.EventArgs.Player.ChangingRoleEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnChangingRole(Exiled.Events.EventArgs.Player.ChangingRoleEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnChangingItem(Exiled.Events.EventArgs.Player.ChangingItemEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnChangingItem(Exiled.Events.EventArgs.Player.ChangingItemEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnTeleporting(Exiled.Events.EventArgs.Scp106.TeleportingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Scp106.OnTeleporting(Exiled.Events.EventArgs.Scp106.TeleportingEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnActivating(Exiled.Events.EventArgs.Scp914.ActivatingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Scp914.OnActivating(Exiled.Events.EventArgs.Scp914.ActivatingEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnFailingEscapePocketDimension(Exiled.Events.EventArgs.Player.FailingEscapePocketDimensionEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnFailingEscapePocketDimension(Exiled.Events.EventArgs.Player.FailingEscapePocketDimensionEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnEscapingPocketDimension(Exiled.Events.EventArgs.Player.EscapingPocketDimensionEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnEscapingPocketDimension(Exiled.Events.EventArgs.Player.EscapingPocketDimensionEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnChangingKnobSetting(Exiled.Events.EventArgs.Scp914.ChangingKnobSettingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Scp914.OnChangingKnobSetting(Exiled.Events.EventArgs.Scp914.ChangingKnobSettingEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnVerified(Exiled.Events.EventArgs.Player.VerifiedEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.Joined"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnUnlockingGenerator(Exiled.Events.EventArgs.Player.UnlockingGeneratorEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.UnlockingGenerator"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnDestroying(Exiled.Events.EventArgs.Player.DestroyingEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.Destroying"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnDying(Exiled.Events.EventArgs.Player.DyingEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.Dying"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnPreAuthenticating(Exiled.Events.EventArgs.Player.PreAuthenticatingEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.PreAuthenticating"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnPickingUpItem(Exiled.Events.EventArgs.Player.PickingUpItemEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnPickingUpItem(Exiled.Events.EventArgs.Player.PickingUpItemEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnUsingItem(Exiled.Events.EventArgs.Player.UsingItemEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnUsingItem(Exiled.Events.EventArgs.Player.UsingItemEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnShooting(Exiled.Events.EventArgs.Player.ShootingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnShooting(Exiled.Events.EventArgs.Player.ShootingEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnReloading(Exiled.Events.EventArgs.Player.ReloadingWeaponEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnReloadingWeapon(LabApi.Events.Arguments.PlayerEvents.PlayerReloadingWeaponEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnReceivingEffect(Exiled.Events.EventArgs.Player.ReceivingEffectEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnReceivingEffect(Exiled.Events.EventArgs.Player.ReceivingEffectEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnUpgradingPlayer(Exiled.Events.EventArgs.Scp914.UpgradingPlayerEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Scp914.OnUpgradingPlayer(Exiled.Events.EventArgs.Scp914.UpgradingPlayerEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnDroppingItem(Exiled.Events.EventArgs.Player.DroppingItemEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnDroppingItem(Exiled.Events.EventArgs.Player.DroppingItemEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnSpawned(Exiled.Events.EventArgs.Player.SpawnedEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnSpawned(Exiled.Events.EventArgs.Player.SpawnedEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnEscaping(Exiled.Events.EventArgs.Player.EscapingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Player.OnEscaping(Exiled.Events.EventArgs.Player.EscapingEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.PlayerHandler.OnHurting(Exiled.Events.EventArgs.Player.HurtingEventArgs)">
+            <inheritdoc cref="P:Exiled.Events.Handlers.Player.Hurting"/>
+        </member>
+        <member name="T:Exiled.Example.Events.Scp096Handler">
+            <summary>
+            Handles SCP-096 events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Events.Scp096Handler.OnAddingTarget(Exiled.Events.EventArgs.Scp096.AddingTargetEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Scp096.OnAddingTarget(Exiled.Events.EventArgs.Scp096.AddingTargetEventArgs)"/>
+        </member>
+        <member name="T:Exiled.Example.Events.Scp914Handler">
+            <summary>
+            Handles SCP-914 events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Events.Scp914Handler.OnUpgradingItem(Exiled.Events.EventArgs.Scp914.UpgradingPickupEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Scp914.OnUpgradingPickup(Exiled.Events.EventArgs.Scp914.UpgradingPickupEventArgs)"/>
+        </member>
+        <member name="T:Exiled.Example.Events.ServerHandler">
+            <summary>
+            Handles server-related events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Events.ServerHandler.OnWaitingForPlayers">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Server.OnWaitingForPlayers"/>
+        </member>
+        <member name="M:Exiled.Example.Events.ServerHandler.OnRoundStarted">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Server.OnRoundStarted"/>
+        </member>
+        <member name="T:Exiled.Example.Events.WarheadHandler">
+            <summary>
+            Handles warhead events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Events.WarheadHandler.OnStopping(Exiled.Events.EventArgs.Warhead.StoppingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Warhead.OnStopping(Exiled.Events.EventArgs.Warhead.StoppingEventArgs)"/>
+        </member>
+        <member name="M:Exiled.Example.Events.WarheadHandler.OnStarting(Exiled.Events.EventArgs.Warhead.StartingEventArgs)">
+            <inheritdoc cref="M:Exiled.Events.Handlers.Warhead.OnStarting(Exiled.Events.EventArgs.Warhead.StartingEventArgs)"/>
+        </member>
+        <member name="T:Exiled.Example.Example">
+            <summary>
+            The example plugin.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Example.Instance">
+            <summary>
+            Gets the only existing instance of this plugin.
+            </summary>
+        </member>
+        <member name="P:Exiled.Example.Example.Priority">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.Example.Example.OnEnabled">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.Example.Example.OnDisabled">
+            <inheritdoc/>
+        </member>
+        <member name="M:Exiled.Example.Example.RegisterEvents">
+            <summary>
+            Registers the plugin events.
+            </summary>
+        </member>
+        <member name="M:Exiled.Example.Example.UnregisterEvents">
+            <summary>
+            Unregisters the plugin events.
+            </summary>
+        </member>
+    </members>
+</doc>

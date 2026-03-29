@@ -1,0 +1,355 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETFramework,Version=v4.8": {
+      "Lib.Harmony/2.2.2": {
+        "type": "package",
+        "compile": {
+          "lib/net48/0Harmony.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net48/0Harmony.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Mono.Posix-4.5/4.5.0": {
+        "type": "package",
+        "compile": {
+          "lib/net45/Mono.Posix.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Mono.Posix.dll": {}
+        }
+      },
+      "Northwood.PluginAPI/13.1.2": {
+        "type": "package",
+        "dependencies": {
+          "YamlDotNet": "11.0.1"
+        },
+        "compile": {
+          "lib/net48/PluginAPI.dll": {}
+        },
+        "runtime": {
+          "lib/net48/PluginAPI.dll": {}
+        }
+      },
+      "SemanticVersioning/2.0.2": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System"
+        ],
+        "compile": {
+          "lib/net45/SemanticVersioning.dll": {}
+        },
+        "runtime": {
+          "lib/net45/SemanticVersioning.dll": {}
+        }
+      },
+      "StyleCop.Analyzers/1.1.118": {
+        "type": "package"
+      },
+      "YamlDotNet/11.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/net45/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net45/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Exiled.API/9.13.3": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Lib.Harmony": "2.2.2"
+        },
+        "compile": {
+          "bin/placeholder/Exiled.API.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Exiled.API.dll": {}
+        }
+      },
+      "Exiled.Events/9.13.3": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Exiled.API": "9.13.3",
+          "Exiled.Loader": "9.13.3",
+          "Exiled.Permissions": "9.13.3",
+          "Lib.Harmony": "2.2.2"
+        },
+        "compile": {
+          "bin/placeholder/Exiled.Events.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Exiled.Events.dll": {}
+        }
+      },
+      "Exiled.Loader/9.13.3": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Exiled.API": "9.13.3",
+          "Exiled.Permissions": "9.13.3",
+          "Mono.Posix-4.5": "4.5.0",
+          "SemanticVersioning": "2.0.2"
+        },
+        "compile": {
+          "bin/placeholder/Exiled.Loader.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Exiled.Loader.dll": {}
+        }
+      },
+      "Exiled.Permissions/9.13.3": {
+        "type": "project",
+        "framework": ".NETFramework,Version=v4.8",
+        "dependencies": {
+          "Exiled.API": "9.13.3"
+        },
+        "compile": {
+          "bin/placeholder/Exiled.Permissions.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Exiled.Permissions.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Lib.Harmony/2.2.2": {
+      "sha512": "70KvWz+DiUELxafsYL/LHxA/jH3PDWeApLo/VwtnrpTvRWQ/eUdPfS/l5funmhZWOy41QXw6UjVv+6C57Nx77A==",
+      "type": "package",
+      "path": "lib.harmony/2.2.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "HarmonyLogo.png",
+        "LICENSE",
+        "lib.harmony.2.2.2.nupkg.sha512",
+        "lib.harmony.nuspec",
+        "lib/net35/0Harmony.dll",
+        "lib/net35/0Harmony.xml",
+        "lib/net45/0Harmony.dll",
+        "lib/net45/0Harmony.xml",
+        "lib/net472/0Harmony.dll",
+        "lib/net472/0Harmony.xml",
+        "lib/net48/0Harmony.dll",
+        "lib/net48/0Harmony.xml",
+        "lib/net5.0/0Harmony.dll",
+        "lib/net5.0/0Harmony.xml",
+        "lib/net6.0/0Harmony.dll",
+        "lib/net6.0/0Harmony.xml",
+        "lib/netcoreapp3.0/0Harmony.dll",
+        "lib/netcoreapp3.0/0Harmony.xml",
+        "lib/netcoreapp3.1/0Harmony.dll",
+        "lib/netcoreapp3.1/0Harmony.xml"
+      ]
+    },
+    "Mono.Posix-4.5/4.5.0": {
+      "sha512": "QMynhYKbgqz/FiXUeP3+RL8eSPnYIqD3bZcGJ2oOOZQ0yr+BVRMuw40c2Id6s1dg7l8Ei+mdUD77xOdaXGHlqA==",
+      "type": "package",
+      "path": "mono.posix-4.5/4.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/Mono.Posix.dll",
+        "mono.posix-4.5.4.5.0.nupkg.sha512",
+        "mono.posix-4.5.nuspec"
+      ]
+    },
+    "Northwood.PluginAPI/13.1.2": {
+      "sha512": "q2CtFq+is0YWnd1i7hC/P6GYJEXf4ghumRaG2cbH07iw+iUtI5M6yztT/iZVpuLBhPYbBXYBWPcxyOf/R0zPLg==",
+      "type": "package",
+      "path": "northwood.pluginapi/13.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "Resources/nw_logo.jpg",
+        "lib/net48/PluginAPI.dll",
+        "northwood.pluginapi.13.1.2.nupkg.sha512",
+        "northwood.pluginapi.nuspec"
+      ]
+    },
+    "SemanticVersioning/2.0.2": {
+      "sha512": "4EQgYdNZ92SyaO7YFk6olVnebF5V+jrHyMUjvPq89tLeMo8NSfgDF+6Zwq/lgh9j/0yfQp9Lkm0ZA0rUATCZFA==",
+      "type": "package",
+      "path": "semanticversioning/2.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net35/SemanticVersioning.dll",
+        "lib/net45/SemanticVersioning.dll",
+        "lib/netstandard1.1/SemanticVersioning.dll",
+        "lib/netstandard2.0/SemanticVersioning.dll",
+        "semanticversioning.2.0.2.nupkg.sha512",
+        "semanticversioning.nuspec"
+      ]
+    },
+    "StyleCop.Analyzers/1.1.118": {
+      "sha512": "Onx6ovGSqXSK07n/0eM3ZusiNdB6cIlJdabQhWGgJp3Vooy9AaLS/tigeybOJAobqbtggTamoWndz72JscZBvw==",
+      "type": "package",
+      "path": "stylecop.analyzers/1.1.118",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "THIRD-PARTY-NOTICES.txt",
+        "analyzers/dotnet/cs/StyleCop.Analyzers.CodeFixes.dll",
+        "analyzers/dotnet/cs/StyleCop.Analyzers.dll",
+        "analyzers/dotnet/cs/de-DE/StyleCop.Analyzers.resources.dll",
+        "analyzers/dotnet/cs/en-GB/StyleCop.Analyzers.resources.dll",
+        "analyzers/dotnet/cs/es-MX/StyleCop.Analyzers.resources.dll",
+        "analyzers/dotnet/cs/fr-FR/StyleCop.Analyzers.resources.dll",
+        "analyzers/dotnet/cs/pl-PL/StyleCop.Analyzers.resources.dll",
+        "analyzers/dotnet/cs/pt-BR/StyleCop.Analyzers.resources.dll",
+        "analyzers/dotnet/cs/ru-RU/StyleCop.Analyzers.resources.dll",
+        "stylecop.analyzers.1.1.118.nupkg.sha512",
+        "stylecop.analyzers.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    },
+    "YamlDotNet/11.0.1": {
+      "sha512": "UvICfSN4gJfAmOsuY/go0hb5SFfr3ZYCXb7jg66yT7kh+wSJEt7tUiwuoCNMpt8ScEXLDwXttpFoWKWeirYU1A==",
+      "type": "package",
+      "path": "yamldotnet/11.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.txt",
+        "images/yamldotnet.png",
+        "lib/net20/YamlDotNet.dll",
+        "lib/net20/YamlDotNet.xml",
+        "lib/net35-client/YamlDotNet.dll",
+        "lib/net35-client/YamlDotNet.xml",
+        "lib/net35/YamlDotNet.dll",
+        "lib/net35/YamlDotNet.xml",
+        "lib/net45/YamlDotNet.dll",
+        "lib/net45/YamlDotNet.xml",
+        "lib/netstandard1.3/YamlDotNet.dll",
+        "lib/netstandard1.3/YamlDotNet.xml",
+        "lib/netstandard2.1/YamlDotNet.dll",
+        "lib/netstandard2.1/YamlDotNet.xml",
+        "yamldotnet.11.0.1.nupkg.sha512",
+        "yamldotnet.nuspec"
+      ]
+    },
+    "Exiled.API/9.13.3": {
+      "type": "project",
+      "path": "../Exiled.API/Exiled.API.csproj",
+      "msbuildProject": "../Exiled.API/Exiled.API.csproj"
+    },
+    "Exiled.Events/9.13.3": {
+      "type": "project",
+      "path": "../Exiled.Events/Exiled.Events.csproj",
+      "msbuildProject": "../Exiled.Events/Exiled.Events.csproj"
+    },
+    "Exiled.Loader/9.13.3": {
+      "type": "project",
+      "path": "../Exiled.Loader/Exiled.Loader.csproj",
+      "msbuildProject": "../Exiled.Loader/Exiled.Loader.csproj"
+    },
+    "Exiled.Permissions/9.13.3": {
+      "type": "project",
+      "path": "../Exiled.Permissions/Exiled.Permissions.csproj",
+      "msbuildProject": "../Exiled.Permissions/Exiled.Permissions.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETFramework,Version=v4.8": [
+      "Exiled.API >= 9.13.3",
+      "Exiled.Events >= 9.13.3",
+      "Lib.Harmony >= 2.2.2",
+      "Northwood.PluginAPI >= 13.1.2",
+      "StyleCop.Analyzers >= 1.1.118"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\musta\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "9.13.3",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\DoorTest.csproj",
+      "projectName": "DoorTest",
+      "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\DoorTest.csproj",
+      "packagesPath": "C:\\Users\\musta\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\musta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net48"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "projectReferences": {
+            "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj": {
+              "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj"
+            },
+            "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\Exiled.Events.csproj": {
+              "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\Exiled.Events.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "10.0.100"
+    },
+    "frameworks": {
+      "net48": {
+        "targetAlias": "net48",
+        "dependencies": {
+          "Lib.Harmony": {
+            "target": "Package",
+            "version": "[2.2.2, )"
+          },
+          "Northwood.PluginAPI": {
+            "target": "Package",
+            "version": "[13.1.2, )"
+          },
+          "StyleCop.Analyzers": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[1.1.118, )"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DoorTest</name>
+    </assembly>
+    <members>
+        <member name="T:DoorTest.Config">
+            <summary>
+            Configuration for the DoorTest plugin.
+            Add values here to control test behaviour from server config.
+            </summary>
+        </member>
+        <member name="P:DoorTest.Config.IsEnabled">
+            <inheritdoc/>
+        </member>
+        <member name="P:DoorTest.Config.Debug">
+            <inheritdoc/>
+        </member>
+        <member name="P:DoorTest.Config.EnableAutoTest">
+            <summary>
+            If true the plugin will run a simple auto-test when enabled (will only run server-side).
+            </summary>
+        </member>
+        <member name="P:DoorTest.Config.TestDoorName">
+            <summary>
+            Optional door name to target for automatic tests. If empty, a random door is used.
+            </summary>
+        </member>
+        <member name="P:DoorTest.Config.LogOnEvents">
+            <summary>
+            Controls whether event callbacks log to server log.
+            </summary>
+        </member>
+        <member name="P:DoorTest.Config.AccessPermA">
+            <summary>
+            Example numbers used when simulating access denied/granted screens.
+            </summary>
+        </member>
+    </members>
+</doc>

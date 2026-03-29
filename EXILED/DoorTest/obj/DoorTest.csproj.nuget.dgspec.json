@@ -1,0 +1,340 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\DoorTest.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\DoorTest.csproj": {
+      "version": "9.13.3",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\DoorTest.csproj",
+        "projectName": "DoorTest",
+        "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\DoorTest.csproj",
+        "packagesPath": "C:\\Users\\musta\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\DoorTest\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\musta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj"
+              },
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\Exiled.Events.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\Exiled.Events.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Lib.Harmony": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "Northwood.PluginAPI": {
+              "target": "Package",
+              "version": "[13.1.2, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.118, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj": {
+      "version": "9.13.3",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj",
+        "projectName": "Exiled.API",
+        "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj",
+        "packagesPath": "C:\\Users\\musta\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\musta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Lib.Harmony": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.118, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\Exiled.Events.csproj": {
+      "version": "9.13.3",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\Exiled.Events.csproj",
+        "projectName": "Exiled.Events",
+        "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\Exiled.Events.csproj",
+        "packagesPath": "C:\\Users\\musta\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Events\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\musta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj"
+              },
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Loader\\Exiled.Loader.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Loader\\Exiled.Loader.csproj"
+              },
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\Exiled.Permissions.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\Exiled.Permissions.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Lib.Harmony": {
+              "target": "Package",
+              "version": "[2.2.2, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.118, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Loader\\Exiled.Loader.csproj": {
+      "version": "9.13.3",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Loader\\Exiled.Loader.csproj",
+        "projectName": "Exiled.Loader",
+        "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Loader\\Exiled.Loader.csproj",
+        "packagesPath": "C:\\Users\\musta\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Loader\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\musta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj"
+              },
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\Exiled.Permissions.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\Exiled.Permissions.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Mono.Posix-4.5": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            },
+            "SemanticVersioning": {
+              "target": "Package",
+              "version": "[2.0.2, )"
+            },
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.118, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\Exiled.Permissions.csproj": {
+      "version": "9.13.3",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\Exiled.Permissions.csproj",
+        "projectName": "Exiled.Permissions",
+        "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\Exiled.Permissions.csproj",
+        "packagesPath": "C:\\Users\\musta\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.Permissions\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\musta\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {
+              "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj": {
+                "projectPath": "C:\\Users\\musta\\Downloads\\EXILED-master (1)\\EXILED-master\\EXILED\\Exiled.API\\Exiled.API.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.100"
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "StyleCop.Analyzers": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.1.118, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

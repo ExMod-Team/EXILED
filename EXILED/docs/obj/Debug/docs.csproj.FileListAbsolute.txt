@@ -1,0 +1,12 @@
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\bin\Debug\docs.dll
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\bin\Debug\docs.pdb
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\bin\Debug\docs.xml
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.csproj.AssemblyReference.cache
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.AssemblyInfoInputs.cache
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.AssemblyInfo.cs
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.csproj.CoreCompileInputs.cache
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.csproj.Up2Date
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.dll
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.xml
+C:\Users\musta\Downloads\EXILED-master (1)\EXILED-master\EXILED\docs\obj\Debug\docs.pdb
