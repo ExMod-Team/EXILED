@@ -33,9 +33,80 @@ namespace Exiled.API.Features.Doors
     public class Door : TypeCastObject<Door>, IWrapper<DoorVariant>, IWorldSpace
     {
         /// <summary>
+        /// Represents the types of triggers that can occur on a door.
+        /// </summary>
+        public enum DoorTrigger
+        {
+            /// <summary>
+            /// Door was locked.
+            /// </summary>
+            Locked,
+
+            /// <summary>
+            /// Door was unlocked.
+            /// </summary>
+            Unlocked,
+
+            /// <summary>
+            /// Door was opened (target state changed to open).
+            /// </summary>
+            Opened,
+
+            /// <summary>
+            /// Door was closed (target state changed to closed).
+            /// </summary>
+            Closed,
+
+            /// <summary>
+            /// Door was destroyed or exploded (breakable door).
+            /// </summary>
+            Exploded,
+
+            /// <summary>
+            /// An access attempt was denied (keycard denied).
+            /// </summary>
+            AccessDenied,
+
+            /// <summary>
+            /// An access attempt was granted (keycard accepted).
+            /// </summary>
+            AccessGranted,
+        }
+
+        /// <summary>
+        /// Represents the direction when a player or object passes through a door.
+        /// </summary>
+        public enum DoorPass
+        {
+            /// <summary>
+            /// Passed from the front side.
+            /// </summary>
+            Front,
+
+            /// <summary>
+            /// Passed from the back side.
+            /// </summary>
+            Back,
+        }
+
+        /// <summary>
         /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="DoorVariant"/>'s and their corresponding <see cref="Door"/>.
         /// </summary>
+#pragma warning disable SA1201 // Elements should appear in the correct order
         internal static readonly Dictionary<DoorVariant, Door> DoorVariantToDoor = new(new ComponentsEqualityComparer());
+#pragma warning restore SA1201 // Elements should appear in the correct order
+
+        /// <summary>
+        /// Access result flags that can be set briefly when access events are triggered.
+        /// These are transient and will be reset a few seconds after being set.
+        /// </summary>
+        private bool accessDeniedFlag;
+
+        /// <summary>
+        /// Access result flags that can be set briefly when access events are triggered.
+        /// These are transient and will be reset a few seconds after being set.
+        /// </summary>
+        private bool accessGrantedFlag;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Door"/> class.
@@ -57,6 +128,26 @@ namespace Exiled.API.Features.Doors
             if (Base != null && Type is DoorType.UnknownDoor or DoorType.UnknownGate or DoorType.UnknownElevator)
                 Log.Warn($"[DoorType] Type: {Type} Room: {Room?.Type ?? RoomType.Unknown} Name:{Name} GameObjectName:{GameObject.name}");
         }
+
+        /// <summary>
+        /// Event raised when a door trigger occurs (locked/unlocked/opened/closed/exploded/access denied/granted).
+        /// </summary>
+        public static event Action<Door, DoorTrigger> DoorTriggered;
+
+        /// <summary>
+        /// Event raised when something passes through a door (front/back).
+        /// </summary>
+        public static event Action<Door, DoorPass> DoorPassed;
+
+        /// <summary>
+        /// Event raised when a door trigger occurs with the player responsible.
+        /// </summary>
+        public static event Action<Door, DoorTrigger, Player> DoorTriggeredWithPlayer;
+
+        /// <summary>
+        /// Event raised when something passes through a door with the player responsible.
+        /// </summary>
+        public static event Action<Door, DoorPass, Player> DoorPassedWithPlayer;
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains all the <see cref="Door"/> instances.
@@ -126,6 +217,31 @@ namespace Exiled.API.Features.Doors
             get => Base.NetworkTargetState;
             set => Base.NetworkTargetState = value;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the door is closed (not open).
+        /// </summary>
+        public bool IsClosed => !IsOpen;
+
+        /// <summary>
+        /// Gets a value indicating whether the door is unlocked.
+        /// </summary>
+        public bool IsUnlocked => !IsLocked;
+
+        /// <summary>
+        /// Gets a value indicating whether the door has been exploded or destroyed.
+        /// </summary>
+        public bool IsExploded => Base is BaseBreakableDoor brk && brk.IsDestroyed;
+
+        /// <summary>
+        /// Gets a value indicating whether a recent access attempt was denied. This flag is transient and will reset automatically.
+        /// </summary>
+        public bool IsAccessDenied => accessDeniedFlag;
+
+        /// <summary>
+        /// Gets a value indicating whether a recent access attempt was granted. This flag is transient and will reset automatically.
+        /// </summary>
+        public bool IsAccessGranted => accessGrantedFlag;
 
         /// <summary>
         /// Gets a value indicating whether this door is a gate.
@@ -318,14 +434,13 @@ namespace Exiled.API.Features.Doors
                 doorVariant.RegisterRooms();
             }
 
-            // Exiled door must be created after the `RegisterRooms` call
             return DoorVariantToDoor[doorVariant];
         }
 
         /// <summary>
         /// Gets the <see cref="Door"/> by <see cref="DoorVariant"/>.
         /// </summary>
-        /// <param name="doorVariant">The <see cref="DoorVariant"/> to convert into an door.</param>
+        /// <param name="doorVariant">The <see cref="DoorVariant"/> to convert into a door.</param>
         /// <typeparam name="T">The specified <see cref="Door"/> type.</typeparam>
         /// <returns>The door wrapper for the given <see cref="DoorVariant"/>.</returns>
         public static T Get<T>(DoorVariant doorVariant)
@@ -339,11 +454,11 @@ namespace Exiled.API.Features.Doors
         public static Door Get(DoorType doorType) => List.FirstOrDefault(x => x.Type == doorType);
 
         /// <summary>
-        /// Gets the <see cref="Door"/> by <see cref="DoorVariant"/>.
+        /// Gets the <see cref="Door"/> by <see cref="DoorType"/>.
         /// </summary>
-        /// <param name="doorType">The <see cref="DoorVariant"/> to convert into an door.</param>
+        /// <param name="doorType">The <see cref="DoorType"/> to search for.</param>
         /// <typeparam name="T">The specified <see cref="Door"/> type.</typeparam>
-        /// <returns>The door wrapper for the given <see cref="DoorVariant"/>.</returns>
+        /// <returns>The door wrapper for the given <see cref="DoorType"/>.</returns>
         public static T Get<T>(DoorType doorType)
             where T : Door => Get(doorType) as T;
 
@@ -359,11 +474,11 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Gets the <see cref="Door"/> by <see cref="DoorVariant"/>.
+        /// Gets the <see cref="Door"/> by name.
         /// </summary>
         /// <param name="name">The name to search for.</param>
         /// <typeparam name="T">The specified <see cref="Door"/> type.</typeparam>
-        /// <returns>The door wrapper for the given <see cref="DoorVariant"/>.</returns>
+        /// <returns>The door wrapper for the given name.</returns>
         public static T Get<T>(string name)
             where T : Door => Get(name) as T;
 
@@ -403,8 +518,8 @@ namespace Exiled.API.Features.Doors
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Door"/> filtered based on a predicate.
         /// </summary>
-        /// <param name="predicate">The condition to satify.</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains elements that satify the condition.</returns>
+        /// <param name="predicate">The condition to satisfy.</param>
+        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="Door"/> which contains elements that satisfy the condition.</returns>
         public static IEnumerable<Door> Get(Func<Door, bool> predicate) => List.Where(predicate);
 
         /// <summary>
@@ -424,7 +539,7 @@ namespace Exiled.API.Features.Doors
         }
 
         /// <summary>
-        /// Locks all <see cref="Door">doors</see> given the specified <see cref="ZoneType"/>.
+        /// Locks all <see cref="Door">doors</see> given the specified <see cref="ZoneType"/>s.
         /// </summary>
         /// <param name="duration">The duration of the lockdown.</param>
         /// <param name="zoneTypes">The <see cref="ZoneType"/>s to affect.</param>
@@ -474,7 +589,7 @@ namespace Exiled.API.Features.Doors
         /// <summary>
         /// Unlocks all <see cref="Door">doors</see> in the facility.
         /// </summary>
-        /// <param name="predicate">The condition to satify.</param>
+        /// <param name="predicate">The condition to satisfy.</param>
         public static void UnlockAll(Func<Door, bool> predicate)
         {
             foreach (Door door in Get(predicate))
@@ -565,6 +680,54 @@ namespace Exiled.API.Features.Doors
         public bool IsAllowToInteract(Player player = null) => Base.AllowInteracting(player?.ReferenceHub, 0);
 
         /// <summary>
+        /// Raises door trigger events and manages transient access flags.
+        /// </summary>
+        /// <param name="trigger">The trigger type to raise.</param>
+        /// <param name="player">The player responsible for the trigger, if applicable.</param>
+        public void RaiseTrigger(DoorTrigger trigger, Player player = null)
+        {
+            switch (trigger)
+            {
+                case DoorTrigger.AccessDenied:
+                    accessDeniedFlag = true;
+                    Timing.CallDelayed(3f, () => accessDeniedFlag = false);
+                    break;
+                case DoorTrigger.AccessGranted:
+                    accessGrantedFlag = true;
+                    Timing.CallDelayed(3f, () => accessGrantedFlag = false);
+                    break;
+            }
+
+            try
+            {
+                DoorTriggered?.Invoke(this, trigger);
+                DoorTriggeredWithPlayer?.Invoke(this, trigger, player);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in DoorTriggered event handler: {ex}");
+            }
+        }
+
+        /// <summary>
+        /// Raises a DoorPassed event when something passes through the door.
+        /// </summary>
+        /// <param name="pass">The direction of the pass.</param>
+        /// <param name="player">The player passing through the door, if applicable.</param>
+        public void RaisePass(DoorPass pass, Player player = null)
+        {
+            try
+            {
+                DoorPassed?.Invoke(this, pass);
+                DoorPassedWithPlayer?.Invoke(this, pass, player);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Exception in DoorPassed event handler: {ex}");
+            }
+        }
+
+        /// <summary>
         /// Returns the Door in a human-readable format.
         /// </summary>
         /// <returns>A string containing Door-related data.</returns>
@@ -651,11 +814,8 @@ namespace Exiled.API.Features.Doors
 
             return Name.RemoveBracketsOnEndOfName() switch
             {
-                // Doors contains the DoorNameTagExtension component
                 "CHECKPOINT_LCZ_A" => DoorType.CheckpointLczA,
                 "CHECKPOINT_LCZ_B" => DoorType.CheckpointLczB,
-
-                // TODO: Remove when it's fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/782
                 "CHECKPOINT_EZ_HCZ_A" => Room?.Type switch
                 {
                     RoomType.HczEzCheckpointA => DoorType.CheckpointEzHczA,
@@ -692,16 +852,10 @@ namespace Exiled.API.Features.Doors
                 "GR18_INNER" => DoorType.GR18Inner,
                 "939_CRYO" => DoorType.Scp939Cryo,
                 "ESCAPE_FINAL" => DoorType.EscapeFinal,
-
-                // Doors spawned by the DoorSpawnPoint component
                 "LCZ_CAFE" => DoorType.LczCafe,
                 "173_BOTTOM" => DoorType.Scp173Bottom,
-
-                // Doors contains the Door component,
-                // also gameobject names
                 "LightContainmentDoor" => DoorType.LightContainmentDoor,
                 "EntrDoor" => DoorType.EntranceDoor,
-
                 _ => DoorType.UnknownDoor,
             };
         }
