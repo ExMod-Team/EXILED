@@ -33,6 +33,11 @@ namespace Exiled.Events.Handlers
         public static Event<HitEventArgs> Hit { get; set; } = new ();
 
         /// <summary>
+        /// Invoked before a player is shown a hitmarker.
+        /// </summary>
+        public static Event<ShowingHitMarkerEventArgs> ShowingHitMarker { get; set; } = new ();
+
+        /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
         public static Event<PreAuthenticatingEventArgs> PreAuthenticating { get; set; } = new();
@@ -1422,6 +1427,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="HitEventArgs"/> instance.</param>
         public static void OnHit(HitEventArgs ev) => Hit.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a player is shown a hitmarker.
+        /// </summary>
+        /// <param name="ev">The <see cref="ShowingHitMarkerEventArgs"/> instance.</param>
+        public static void OnShowingHitMarker(ShowingHitMarkerEventArgs ev) => ShowingHitMarker.InvokeSafely(ev);
 
         /// <summary>
         /// Called before Emergency Release Button is pressed.
