@@ -229,6 +229,8 @@ namespace Exiled.API.Extensions
                     return DamageType.GrayCandy;
                 case Scp1509DamageHandler:
                     return DamageType.Scp1509;
+                case MarshmallowDamageHandler:
+                    return DamageType.Marshmallow;
                 case Scp049DamageHandler scp049DamageHandler:
                     return scp049DamageHandler.DamageSubType switch
                     {
@@ -290,16 +292,7 @@ namespace Exiled.API.Extensions
 
                         return DamageType.Unknown;
                     }
-
-                case AttackerDamageHandler attackerDamageHandler:
-                    {
-                        if (Player.TryGet(attackerDamageHandler.Attacker, out Player attacker) && attacker.CurrentItem?.Type == ItemType.MarshmallowItem)
-                            return DamageType.Marshmallow;
-
-                        if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
-                            Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(AttackerDamageHandler)} with Type {attackerDamageHandler.GetType()}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
-                        return DamageType.Unknown;
-                    }
+            }
 
                 default:
                     {
