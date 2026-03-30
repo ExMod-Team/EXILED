@@ -10,18 +10,32 @@ namespace Exiled.API.Features.DamageHandlers
     using System;
 
     using Enums;
+
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Pickups.Projectiles;
 
     using Footprinting;
+
+    using InventorySystem;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Firearms;
+    using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Scp1509;
+
     using Items;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp096;
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
     using PlayerRoles.PlayableScps.Scp939;
+
     using PlayerStatsSystem;
+
     using UnityEngine;
+
+    using Object = UnityEngine.Object;
 
     /// <summary>
     /// Allows generic damage to a player.
@@ -59,7 +73,7 @@ namespace Exiled.API.Features.DamageHandlers
             if (customCassieAnnouncement is not null)
                 customCassieAnnouncement.Announcement ??= $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
 
-            Attacker = attacker.Footprint;
+            Attacker = attacker != null ? attacker.Footprint : Server.Host.Footprint;
             AllowSelfDamage = true;
             Damage = damage;
             ServerLogsText = $"GenericDamageHandler damage processing";
@@ -123,55 +137,57 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new GrayCandyDamageHandler(Attacker.Hub, damage);
                     break;
                 case DamageType.MicroHid:
-                    InventorySystem.Items.MicroHID.MicroHIDItem microHidOwner = new();
-                    microHidOwner.Owner = attacker.ReferenceHub;
+                    InventorySystem.Items.MicroHID.MicroHIDItem microHidOwner = new()
+                    {
+                        Owner = attacker.ReferenceHub,
+                    };
                     Base = new MicroHidDamageHandler(damage, microHidOwner);
                     break;
                 case DamageType.Explosion:
-                    Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);
+                    Base = new ExplosionDamageHandler(attacker.Footprint, Vector3.zero, damage, 0, ExplosionType.Grenade);
                     break;
                 case DamageType.Firearm:
                 case DamageType.AK:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunAK);
+                    GenericFirearm(damage, ItemType.GunAK);
                     break;
                 case DamageType.Crossvec:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunCrossvec);
+                    GenericFirearm(damage, ItemType.GunCrossvec);
                     break;
                 case DamageType.Logicer:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunLogicer);
+                    GenericFirearm(damage, ItemType.GunLogicer);
                     break;
                 case DamageType.Revolver:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunRevolver);
+                    GenericFirearm(damage, ItemType.GunRevolver);
                     break;
                 case DamageType.Shotgun:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunShotgun);
+                    GenericFirearm(damage, ItemType.GunShotgun);
                     break;
                 case DamageType.Com15:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunCOM15);
+                    GenericFirearm(damage, ItemType.GunCOM15);
                     break;
                 case DamageType.Com18:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunCOM18);
+                    GenericFirearm(damage, ItemType.GunCOM18);
                     break;
                 case DamageType.Fsp9:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunFSP9);
+                    GenericFirearm(damage, ItemType.GunFSP9);
                     break;
                 case DamageType.E11Sr:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunE11SR);
+                    GenericFirearm(damage, ItemType.GunE11SR);
                     break;
                 case DamageType.Com45:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunCom45);
+                    GenericFirearm(damage, ItemType.GunCom45);
                     break;
                 case DamageType.Frmg0:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunFRMG0);
+                    GenericFirearm(damage, ItemType.GunFRMG0);
                     break;
                 case DamageType.A7:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunA7);
+                    GenericFirearm(damage, ItemType.GunA7);
                     break;
                 case DamageType.Scp127:
-                    GenericFirearm(player, attacker, damage, damageType, ItemType.GunSCP127);
+                    GenericFirearm(damage, ItemType.GunSCP127);
                     break;
                 case DamageType.ParticleDisruptor:
-                    Base = new DisruptorDamageHandler(new (Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, InventorySystem.Items.Firearms.Modules.DisruptorActionModule.FiringState.FiringSingle), Vector3.up, damage);
+                    Base = new DisruptorDamageHandler(new DisruptorShotEvent(default, Attacker, InventorySystem.Items.Firearms.Modules.DisruptorActionModule.FiringState.FiringSingle), Vector3.up, damage);
                     break;
                 case DamageType.Scp096:
                     Scp096Role curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
@@ -193,9 +209,12 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Unknown);
                     break;
                 case DamageType.Scp018:
-                    Scp018Projectile scp018Projectile = Projectile.Create<Scp018Projectile>(ProjectileType.Scp018);
-                    scp018Projectile.PreviousOwner = attacker;
-                    Base = new Scp018DamageHandler(scp018Projectile.Base, damage, true);
+                    InventorySystem.Items.ThrowableProjectiles.Scp018Projectile dummy018 = new()
+                    {
+                        PreviousOwner = Attacker,
+                    };
+
+                    Base = new Scp018DamageHandler(dummy018, damage, true);
                     break;
                 case DamageType.Scp207:
                     Base = new PlayerStatsSystem.ScpDamageHandler(attacker.ReferenceHub, damage, DeathTranslations.Scp207);
@@ -303,21 +322,26 @@ namespace Exiled.API.Features.DamageHandlers
         /// <summary>
         /// Generic firearm path for handle type.
         /// </summary>
-        /// <param name="player"> Current player. </param>
-        /// <param name="attacker"> Current attacker. </param>
         /// <param name="amount"> Damage amount. </param>
-        /// <param name="damageType"> Damage type. </param>
         /// <param name="itemType"> ItemType. </param>
-        private void GenericFirearm(Player player, Player attacker, float amount, DamageType damageType, ItemType itemType)
+        private void GenericFirearm(float amount, ItemType itemType)
         {
-            Firearm firearm = new(itemType)
+            ItemType ammoType = ItemType.None;
+
+            if (InventoryItemLoader.TryGetItem(itemType, out InventorySystem.Items.Firearms.Firearm firearmTemplate))
             {
-                Base =
-                {
-                    Owner = attacker.ReferenceHub,
-                },
+                Items.Firearm firearm = new(firearmTemplate);
+                ammoType = firearm.AmmoType.GetItemType();
+            }
+
+            Base = new PlayerStatsSystem.FirearmDamageHandler
+            {
+                Damage = amount,
+                Attacker = Attacker,
+                AmmoType = ammoType,
+                WeaponType = itemType,
+                Firearm = firearmTemplate,
             };
-            Base = new PlayerStatsSystem.FirearmDamageHandler() { Firearm = firearm.Base, Damage = amount };
         }
     }
 }

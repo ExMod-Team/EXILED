@@ -19,7 +19,7 @@
 title: NW Documentation
 ---
 
-Last Update (14.2.0.4)
+Last Update (14.2.0.6)
 
 ### Index
 
@@ -157,6 +157,7 @@ Last Update (14.2.0.4)
 - [HintTranslations](#hinttranslations)
 - [HintType](#hinttype)
 - [HitboxType](#hitboxtype)
+- [HitmarkerType](#hitmarkertype)
 - [HitResult](#hitresult)
 - [HolidayType](#holidaytype)
 - [HotkeysTranslation](#hotkeystranslation)
@@ -2415,6 +2416,18 @@ Last Update (14.2.0.4)
 
 </details>
 
+### HitmarkerType
+
+<details><summary><b>HitmarkerType</b></summary>
+
+```
+ [0] = None
+ [1] = Regular
+ [2] = Blocked
+```
+
+</details>
+
 ### HitResult
 
 <details><summary><b>InventorySystem.Items.Autosync.MeleeAutoSync+HitResult</b></summary>
@@ -2605,6 +2618,7 @@ Last Update (14.2.0.4)
  [26] = MicroHidDamaged
  [27] = Scp127OnEquip
  [28] = SnakeHint
+ [29] = FirearmSprintSpeed
 ```
 
 </details>
@@ -3552,6 +3566,8 @@ Last Update (14.2.0.4)
  [15] = InvalidProtocol
  [16] = NatMessage
  [17] = Empty
+ [18] = ReliableMerged
+ [19] = Total
 ```
 
 </details>
@@ -5667,7 +5683,7 @@ Last Update (14.2.0.4)
  [7] = Mimicry
  [8] = Scp1576
  [9] = PreGameLobby
- [9] = PreGameLobby
+ [10] = Scp1507
 ```
 
 </details>
@@ -5850,7 +5866,7 @@ Last Update (14.2.0.4)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.2.0.4"
+```md title="Latest Updated: 14.2.0.6"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"
@@ -5870,6 +5886,7 @@ All available DamageHandlers
       - PlayerStatsSystem.ExplosionDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
       - PlayerStatsSystem.GrayCandyDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
       - PlayerStatsSystem.JailbirdDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerStatsSystem.MarshmallowDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
       - PlayerStatsSystem.MicroHidDamageHandler : PlayerStatsSystem.AttackerDamageHandler, DisintegrateDeathAnimation+IDisintegrateDamageHandler
       - PlayerStatsSystem.RecontainmentDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
       - PlayerStatsSystem.Scp018DamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
