@@ -292,7 +292,6 @@ namespace Exiled.API.Extensions
 
                         return DamageType.Unknown;
                     }
-            }
 
                 default:
                     {
