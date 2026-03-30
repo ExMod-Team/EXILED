@@ -31,19 +31,19 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
+            Label skipLabel = generator.DefineLabel();
             LocalBuilder ev = generator.DeclareLocal(typeof(SavingByAntiScp207EventArgs));
 
             int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_1);
 
-            Label skipLabel = generator.DefineLabel();
-            Label gotoEventLabel = newInstructions[index].labels[0];
+            List<Label> mainLogicLabels = newInstructions[index].ExtractLabels();
 
-            newInstructions[index].labels = new List<Label> { skipLabel };
+            newInstructions[index].WithLabels(skipLabel);
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
                 // this.Hub
-                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(gotoEventLabel),
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(mainLogicLabels),
                 new(OpCodes.Call, PropertyGetter(typeof(StatusEffectBase), nameof(StatusEffectBase.Hub))),
 
                 // damageAmount
@@ -64,24 +64,24 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSavingByAntiScp207))),
 
                 // if (!ev.IsAllowed)
-                // return ev.DeniedDamageMultiplier;
+                // return 1f;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SavingByAntiScp207EventArgs), nameof(SavingByAntiScp207EventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, skipLabel),
 
-                new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(SavingByAntiScp207EventArgs), nameof(SavingByAntiScp207EventArgs.DeniedDamageMultiplier))),
+                new(OpCodes.Ldc_R4, 1f),
                 new(OpCodes.Ret),
             });
 
-            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_2);
+            const int Offset = 1;
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_1) + Offset;
 
+            newInstructions.RemoveAt(index);
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // return ev.DamageMultiplier;
+                // module.CurValue = ev.DeathSaveHealth;
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(SavingByAntiScp207EventArgs), nameof(SavingByAntiScp207EventArgs.DamageMultiplier))),
-                new(OpCodes.Ret),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(SavingByAntiScp207EventArgs), nameof(SavingByAntiScp207EventArgs.DeathSaveHealth))),
             });
 
             for (int i = 0; i < newInstructions.Count; i++)
