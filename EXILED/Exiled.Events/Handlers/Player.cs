@@ -11,15 +11,11 @@ namespace Exiled.Events.Handlers
 
     using Exiled.API.Enums;
     using Exiled.API.Features;
-
 #pragma warning disable IDE0079
 #pragma warning disable IDE0060
 #pragma warning disable SA1623 // Property summary documentation should match accessors
-
     using Exiled.Events.EventArgs.Player;
-
     using Exiled.Events.Features;
-
     using LabApi.Events.Arguments.PlayerEvents;
 
     /// <summary>
@@ -30,7 +26,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after a player triggers the attack as an SCP.
         /// </summary>
-        public static Event<HitEventArgs> Hit { get; set; } = new ();
+        public static Event<HitEventArgs> Hit { get; set; } = new();
 
         /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
@@ -87,7 +83,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>. In other words, it is invoked after the animation finishes but before the <see cref="API.Features.Items.Usable"/> is actually used.
         /// </summary>
-        public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new ();
+        public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new();
 
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> uses an <see cref="API.Features.Items.Usable"/>.
@@ -364,6 +360,21 @@ namespace Exiled.Events.Handlers
         /// Invoked before a <see cref="API.Features.Player"/> triggers a tesla gate.
         /// </summary>
         public static Event<TriggeringTeslaEventArgs> TriggeringTesla { get; set; } = new();
+
+        /// <summary>
+        /// Invoked after a <see cref="API.Features.Player"/> triggers a tesla gate.
+        /// </summary>
+        public static Event<TriggeredTeslaEventArgs> TriggeredTesla { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> idles a tesla gate.
+        /// </summary>
+        public static Event<IdlingTeslaEventArgs> IdlingTesla { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> idles a tesla gate.
+        /// </summary>
+        public static Event<IdledTeslaEventArgs> IdledTesla { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> unlocks a generator.
@@ -1015,6 +1026,12 @@ namespace Exiled.Events.Handlers
         public static void OnTriggeringTesla(TriggeringTeslaEventArgs ev) => TriggeringTesla.InvokeSafely(ev);
 
         /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> idles a tesla.
+        /// </summary>
+        /// <param name="ev">The <see cref="IdledTeslaEventArgs"/> instance.</param>
+        public static void OnIdlingTesla(IdlingTeslaEventArgs ev) => IdlingTesla.InvokeSafely(ev);
+
+        /// <summary>
         /// Called before a <see cref="API.Features.Player"/> receives a status effect.
         /// </summary>
         /// <param name="ev">The <see cref="ReceivingEffectEventArgs"/> instance.</param>
@@ -1434,5 +1451,17 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="Scp1576TransmissionEndedEventArgs"/> instance.</param>
         public static void OnScp1576TransmissionEnded(Scp1576TransmissionEndedEventArgs ev) => Scp1576TransmissionEnded.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> triggers a tesla.
+        /// </summary>
+        /// <param name="ev">The <see cref="TriggeringTeslaEventArgs"/> instance.</param>
+        public static void OnTriggeredTesla(TriggeredTeslaEventArgs ev) => TriggeredTesla.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a <see cref="API.Features.Player"/> idles a tesla.
+        /// </summary>
+        /// <param name="ev">The <see cref="IdledTeslaEventArgs"/> instance.</param>
+        public static void OnIdledTesla(IdledTeslaEventArgs ev) => IdledTesla.InvokeSafely(ev);
     }
 }

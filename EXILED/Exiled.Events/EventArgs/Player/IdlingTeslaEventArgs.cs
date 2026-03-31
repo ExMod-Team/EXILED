@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="TriggeringTeslaEventArgs.cs" company="ExMod Team">
+// <copyright file="IdlingTeslaEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -8,16 +8,15 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
-
     using Interfaces;
 
     /// <summary>
-    /// Contains all information before triggering a tesla.
+    /// Contains all information before Idling a tesla.
     /// </summary>
-    public class TriggeringTeslaEventArgs : IPlayerEvent, ITeslaEvent, IDeniableEvent
+    public class IdlingTeslaEventArgs : IPlayerEvent, ITeslaEvent, IDeniableEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TriggeringTeslaEventArgs" /> class.
+        /// Initializes a new instance of the <see cref="IdlingTeslaEventArgs" /> class.
         /// </summary>
         /// <param name="player">
         /// <inheritdoc cref="Player" />
@@ -25,7 +24,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="teslaGate">
         /// <inheritdoc cref="Tesla" />
         /// </param>
-        public TriggeringTeslaEventArgs(Player player, TeslaGate teslaGate)
+        public IdlingTeslaEventArgs(Player player, TeslaGate teslaGate)
         {
             Player = player;
             Tesla = teslaGate;
