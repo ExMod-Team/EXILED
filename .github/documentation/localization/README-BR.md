@@ -11,7 +11,7 @@
 
 </div>
 
-O EXILED é uma Framework de alto nível para a criação de plug-ins direcionado a servidores de SCP: Secret Laboratory. Ele oferece um sistema de eventos para os desenvolvedores, com o objetivo de manipular, alterar o código do jogo ou implementar suas próprias funções.
+O EXILED é uma Framework de alto nível para a criação de plug-ins direcionado a servidores de SCP: Secret Laboratory. Ele oferece um sistema de eventos para os desenvolvedores, com o objetivo de manipular, alterar ou implementar o código do jogo suas próprias funções.
 Todos os eventos do EXILED são feitos com [Harmony](https://harmony.pardeike.net/articles/intro.html), significando que não requerem edição direta dos Assemblies/Código Base do servidor para funcionar, o que permite dois benefícios exclusivos:
 
  - Todo o código da Framework pode ser publicado e compartilhado livremente, permitindo que os desenvolvedores possam entender melhor *como* funciona. Também podendo oferecer sugestões para adicionar ou alterar suas funções.
@@ -111,13 +111,13 @@ Mas certifique-se de seguir estas regras ao publicar seus plug-ins:
 ### Desativando patches de evento do EXILED
 ***Atualmente, esta função não está mais implementada.***
 
-### Corrotinas MEC
+### Corrotinas do MEC
 Se você não estiver familiarizado com o MEC, este será um guia muito breve e simples para você começar.
-Corrotinas MEC são basicamente métodos cronometrados que suportam períodos de espera antes de continuar a execução, sem interromper/suspender o alinhamento (thread) principal do jogo.
-As corrotinas MEC são seguras para usar com o Unity, ao contrário do alinhamento tradicional. ***NÃO tente criar novos alinhamentos para interagir com o Unity, eles VÃO travar o servidor.***
+As corrotinas do MEC são basicamente métodos cronometrados que suportam períodos de espera antes de continuar a execução, sem interromper/suspender o thread principal do jogo.
+Elas são seguras para usar com o Unity, ao contrário do threading tradicional. ***NÃO tente criar NOVAS THREADS para interagir com o Unity, eles VÃO travar o servidor!!!***
 
 Para usar o MEC, você precisará referenciar ``Assembly-CSharp-firstpass.dll`` dos arquivos do servidor e incluir ``using MEC;``.
-Exemplo de chamada de uma corrotina simples, que se repete com um atraso entre cada ciclo:
+Exemplo de criação de uma corrotina simples, que se repete com um atraso a cada ciclo:
 ```cs
 using MEC;
 using Exiled.API.Features;
@@ -137,7 +137,7 @@ public IEnumerator<float> MyCoroutine()
 }
 ```
 
-É **altamente** recomendável que você pesquise no Google ou pergunte no Discord se não estiver familiarizado com o MEC e quiser aprender mais, obter conselhos ou precisar de ajuda. As perguntas, não importa o quão 'estúpidas' sejam, sempre serão respondidas da maneira mais útil e clara possível para que os desenvolvedores de plug-ins se destaquem. Um bom código é melhor para todos.
+É **altamente** recomendável que você pesquise no Google ou pergunte no Discord se não estiver familiarizado com o MEC e quiser aprender mais, obter conselhos ou precisar de ajuda. As perguntas, não importa o quão 'estúpidas' sejam, sempre serão respondidas da maneira mais útil e clara possível. Um bom código é melhor para todos.
 
 ### Atualizações Dinâmicas
 O EXILED como uma estrutura suporta o recarregamento dinâmico de Assemblies de plug-ins sem exigir uma reinicialização do servidor.
@@ -166,4 +166,4 @@ Como tal, os plug-ins que oferecem suporte a Atualizações Dinâmicas ***DEVEM*
 
 Mas nem todo plug-in tem de oferecer suporte a Atualizações Dinâmicas. Se você não pretende oferecer suporte a Atualizações Dinâmicas, tudo bem, simplesmente não altere o nome do Assembly do seu plug-in ao criar uma nova versão e não precisará se preocupar com nada disso, apenas certifique-se de que os anfitriões de servidor saibam que eles precisarão reinicializar completamente seus servidores para atualizar seu plug-in.
 
-**Tradução brasileira feita por**: *Firething*
+**Tradução brasileira feita por**: *Firething* e *Unbistrackted*
