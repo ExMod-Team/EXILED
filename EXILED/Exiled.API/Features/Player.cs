@@ -4018,7 +4018,7 @@ namespace Exiled.API.Features
         /// <param name="maxDistance">The max distance the raycast can reach.</param>
         /// <returns><see cref="Player"/> if any.</returns>
         public Player GetRaycastedPlayer(float maxDistance) =>
-             Get(GetRaycast(maxDistance, LayerMasks.Hitbox)?.collider);
+             Player.Get(GetRaycastedHitbox(maxDistance)?.TargetHub);
 
         /// <inheritdoc/>
         public bool HasComponent<T>(bool depthInheritance = false) => depthInheritance
