@@ -15,16 +15,17 @@ EXILED é um Framework de alto nível para a criação de plug-ins direcionado a
 Todos os eventos do EXILED são feitos com [Harmony](https://harmony.pardeike.net/articles/intro.html), significando que não requerem edição direta dos Assemblies/Código Base do servidor para funcionar, o que permite dois benefícios exclusivos:
 
  - Todo o código do Framework pode ser publicado e compartilhado livremente, permitindo que os desenvolvedores entendam melhor *como* funciona, além de poder sugerir para adicionar ou alterar algo.
- - Todo o código relacionado ao framework é feito fora do assembly do servidor, significando que pequenas atualizações do jogo terão pouco ou nenhum efeito. Isso torna o projeto mais compatível com futuras atualizações do jogo, além de facilitar quando for necessário atualizá-lo.
+ - Todo o código relacionado ao framework é feito fora do assembly do servidor, significando que pequenas atualizações do jogo muito provavelmente não terão efeitos colaterais. Isso torna o projeto mais compatível, além de facilitar quando for necessário atualizá-lo.
 
 # Instalação
 A instalação do EXILED é bem simples e você pode escolher entre dois tipos: ``Automática`` e ``Manual``.
 
-Na instalação manual, você faz o download do ``Exiled.tar.gz`` nos arquivos do release, e há duas pastas dentro. ``SCP Secret Laboratory`` contém os arquivos necessários para carregar os recursos do EXILED na pasta ``EXILED``. Dito isso, tudo o que você precisa fazer é mover essas duas pastas para o caminho adequado e pronto!
+Na instalação automática, o instalador cuidará de baixar todos os recursos e arquivos para que o EXILED funcione.
 
-Já na automática, o instalador cuidará de baixar todos os recursos e arquivos para que o EXILED funcione.
+Já na manual, você faz o download do ``Exiled.tar.gz`` nos arquivos do release, e há duas pastas dentro. 
+``SCP Secret Laboratory`` contém os arquivos necessários para carregar os recursos do EXILED de dentro da pasta ``EXILED``. Dito isso, tudo o que você precisa fazer é mover essas duas para o caminho adequado e pronto!
 
-Siga os guias abaixo.
+Abaixo entraremos em mais detalhes...
 
 # Windows
 > [!IMPORTANT]  
