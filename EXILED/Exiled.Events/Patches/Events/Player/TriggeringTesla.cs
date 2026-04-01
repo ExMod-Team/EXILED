@@ -15,6 +15,8 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.EventArgs.Player;
     using Handlers;
     using HarmonyLib;
+    using LabApi.Events.Arguments.PlayerEvents;
+    using LabApi.Events.Handlers;
 
     using static HarmonyLib.AccessTools;
 
@@ -32,18 +34,18 @@ namespace Exiled.Events.Patches.Events.Player
 
             LocalBuilder ev = generator.DeclareLocal(typeof(TriggeringTeslaEventArgs));
 
-            int offset = 2;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(TeslaGate), nameof(TeslaGate.PlayerInRange)))) + offset;
+            int offset = 1;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(PlayerEvents), nameof(PlayerEvents.OnIdlingTesla)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // Player.Get(allHub);
-                new(OpCodes.Ldloc_S, 7),
-                new(OpCodes.Call, Method(typeof(Exiled.API.Features.Player), nameof(Exiled.API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
-
                 // TeslaGate.Get(allGate);
                 new(OpCodes.Ldloc_1),
-                new(OpCodes.Call, Method(typeof(Exiled.API.Features.TeslaGate), nameof(Exiled.API.Features.TeslaGate.Get), new[] { typeof(TeslaGate) })),
+                new(OpCodes.Call, Method(typeof(API.Features.TeslaGate), nameof(API.Features.TeslaGate.Get), new[] { typeof(TeslaGate) })),
+
+                // Player.Get(allHub);
+                new(OpCodes.Ldloc_S, 7),
+                new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // TriggeringTeslaEventArgs ev = new(Player, TeslaGate);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(TriggeringTeslaEventArgs))[0]),
@@ -54,16 +56,44 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.OnTriggeringTesla))),
             });
 
-            int labApiIsAllowedIndex = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(
-                typeof(LabApi.Events.Arguments.PlayerEvents.PlayerTriggeringTeslaEventArgs),
-                nameof(LabApi.Events.Arguments.PlayerEvents.PlayerTriggeringTeslaEventArgs.IsAllowed)))) + 1;
+            int index1 = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(PlayerIdlingTeslaEventArgs), nameof(PlayerIdlingTeslaEventArgs.IsAllowed)))) + offset;
 
-            newInstructions.InsertRange(labApiIsAllowedIndex, new CodeInstruction[]
+            newInstructions.InsertRange(index1, new CodeInstruction[]
             {
-                // if (e2.IsAllowed && ev.IsAllowed)
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.IsAllowed))),
-                new CodeInstruction(OpCodes.And),
+                new(OpCodes.And),
+
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.CanIdle))),
+                new(OpCodes.And),
+
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.DisableTesla))),
+                new(OpCodes.Not),
+
+                // if (e.IsAllowed && ev.IsAllowed && ev.CanIdle && !ev.DisableTesla)
+                new(OpCodes.And),
+            });
+
+            int index2 = newInstructions.FindIndex(instruction => instruction.Calls(PropertyGetter(typeof(PlayerTriggeringTeslaEventArgs), nameof(PlayerTriggeringTeslaEventArgs.IsAllowed)))) + offset;
+
+            newInstructions.InsertRange(index2, new CodeInstruction[]
+            {
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.IsAllowed))),
+                new(OpCodes.And),
+
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.IsTriggerable))),
+                new(OpCodes.And),
+
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.DisableTesla))),
+                new(OpCodes.Not),
+
+                // if (e2.IsAllowed && ev.IsAllowed && ev.IsTriggerable && !ev.DisableTesla)
+                new(OpCodes.And),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)

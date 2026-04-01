@@ -8,7 +8,6 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using API.Features;
-
     using Interfaces;
 
     /// <summary>
@@ -45,5 +44,20 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets a value indicating whether the player will be detected by the tesla.
         /// </summary>
         public bool IsAllowed { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tesla will be deactivated (Both Idle and Activation).
+        /// </summary>
+        public bool DisableTesla { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the player will cause the tesla going to be activated.
+        /// </summary>
+        public bool IsTriggerable { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the tesla can Idle.
+        /// </summary>
+        public bool CanIdle { get; set; } = true;
     }
 }
