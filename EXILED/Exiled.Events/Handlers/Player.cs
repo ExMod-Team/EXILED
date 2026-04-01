@@ -1430,6 +1430,5 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="Scp1576TransmissionEndedEventArgs"/> instance.</param>
         public static void OnScp1576TransmissionEnded(Scp1576TransmissionEndedEventArgs ev) => Scp1576TransmissionEnded.InvokeSafely(ev);
-
     }
 }
