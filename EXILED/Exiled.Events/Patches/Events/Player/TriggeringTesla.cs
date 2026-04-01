@@ -65,7 +65,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.And),
 
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.CanIdle))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(TriggeringTeslaEventArgs), nameof(TriggeringTeslaEventArgs.IsInIdleRange))),
                 new(OpCodes.And),
 
                 new(OpCodes.Ldloc_S, ev.LocalIndex),

@@ -56,8 +56,13 @@ namespace Exiled.Events.EventArgs.Player
         public bool IsTriggerable { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets a value indicating whether the tesla can Idle.
+        /// Gets or sets a value indicating whether the player will cause the tesla going to be idle.
+        /// </summary>IO
+        public bool IsInIdleRange { get; set; } = true;
+
+        /// <summary>
+        /// Gets a value indicating whether the player is in hurting range.
         /// </summary>
-        public bool CanIdle { get; set; } = true;
+        public bool IsInHurtingRange => Tesla.IsPlayerInHurtRange(Player);
     }
 }
