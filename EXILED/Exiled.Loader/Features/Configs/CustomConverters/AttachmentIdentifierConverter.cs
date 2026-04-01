@@ -37,16 +37,16 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
             string[] parts = scalar?.Value?.Split(':');
             if (parts.Length != 3)
-                throw new InvalidOperationException($"Invalid AttachmentIdentifier format: '{scalar?.Value}'. Expected 'FirearmType:AttachmentName'.");
+                throw new InvalidOperationException($"Invalid AttachmentIdentifier format: '{scalar?.Value}'. Expected \"AttachmentName:AttachmentSlot:AttachmentCode\".");
 
             if (!Enum.TryParse(parts[0], true, out AttachmentName attachmentName))
                 throw new InvalidOperationException($"Invalid AttachmentName: '{parts[0]}'.");
 
             if (!Enum.TryParse(parts[1], true, out AttachmentSlot attachmentSlot))
-                throw new InvalidOperationException($"Invalid AttachmentName: '{parts[1]}'.");
+                throw new InvalidOperationException($"Invalid AttachmentSlot: '{parts[1]}'.");
 
             if (!uint.TryParse(parts[2], out uint code))
-                throw new InvalidOperationException($"Invalid AttachmentName: '{parts[2]}'.");
+                throw new InvalidOperationException($"Invalid AttachmentCode: '{parts[2]}'.");
 
             return Firearm.AvailableAttachments
                 .SelectMany(kvp => kvp.Value)
@@ -61,7 +61,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
             if (value is AttachmentIdentifier castAttId)
                 attId = castAttId;
 
-            // If anyone ever looks at this code and doesn't understand why it's implemented the way it is, here's an explanation. The problem is that the NW code doesn't provide a way to properly serialize attachments into a string so that this string can then be deserialized back into an object while maintaining integrity. Therefore, literally the only way to obtain an object is to store it as three properties. Storing only AttachmentName will cause problems. Storing it as "FirearmType:AttachmentName" will also cause problems.
+            // If anyone ever looks at this code and doesn't understand why it's implemented the way it is, here's an explanation. The problem is that the NW code doesn't provide a way to properly serialize attachments into a string so that this string can then be deserialized back into an object while maintaining integrity. Therefore, literally the only way to obtain an object is to store it as three properties. Storing only "AttachmentName" will cause problems. Storing it as "FirearmType:AttachmentName" will also cause problems.
             // https://discord.com/channels/656673194693885975/1002713309876854924/1488655471697989682
             emitter.Emit(new Scalar($"{attId.Name}:{attId.Slot}:{attId.Code}"));
         }
