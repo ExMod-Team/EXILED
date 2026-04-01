@@ -12,7 +12,7 @@ namespace Exiled.API.Structs
     using System.Linq;
 
     using Exiled.API.Enums;
-
+    using Exiled.API.Features.Items;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
 
@@ -130,32 +130,12 @@ namespace Exiled.API.Structs
         public static uint operator -(uint left, AttachmentIdentifier right) => left - right.Code;
 
         /// <summary>
-        /// Converts the string representation of a <see cref="AttachmentIdentifier"/> to its <see cref="AttachmentIdentifier"/> equivalent.
-        /// A return value indicates whether the conversion is succeeded or failed.
-        /// </summary>
-        /// <param name="s">The <see cref="string"/> to convert.</param>
-        /// <param name="identifier">The converted <see cref="string"/>.</param>
-        /// <returns><see langword="true"/> if <see cref="string"/> was converted successfully; otherwise, <see langword="false"/>.</returns>
-        public static bool TryParse(string s, out AttachmentIdentifier identifier)
-        {
-            identifier = default;
-
-            foreach (AttachmentIdentifier attId in Features.Items.Firearm.AvailableAttachments.Values.SelectMany(kvp => kvp.Where(kvp2 => kvp2.Name.ToString() == s)))
-            {
-                identifier = attId;
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
         /// Gets a <see cref="AttachmentIdentifier"/> by name.
         /// </summary>
         /// <param name="type">Weapons <see cref="FirearmType"/>.</param>
         /// <param name="name">Attachment name.</param>
         /// <returns><see cref="AttachmentIdentifier"/> instance.</returns>
-        public static AttachmentIdentifier Get(FirearmType type, AttachmentName name) => Features.Items.Firearm.AvailableAttachments[type].FirstOrDefault(identifier => identifier.Name == name);
+        public static AttachmentIdentifier Get(FirearmType type, AttachmentName name) => Firearm.AvailableAttachments[type].FirstOrDefault(identifier => identifier.Name == name);
 
         /// <summary>
         /// Gets the all <see cref="AttachmentIdentifier"/>'s for type, by slot.
@@ -163,7 +143,7 @@ namespace Exiled.API.Structs
         /// <param name="type">Weapons <see cref="FirearmType"/>.</param>
         /// <param name="slot">Attachment slot.</param>
         /// <returns><see cref="AttachmentIdentifier"/> instance.</returns>
-        public static IEnumerable<AttachmentIdentifier> Get(FirearmType type, AttachmentSlot slot) => Features.Items.Firearm.AvailableAttachments[type].Where(identifier => identifier.Slot == slot);
+        public static IEnumerable<AttachmentIdentifier> Get(FirearmType type, AttachmentSlot slot) => Firearm.AvailableAttachments[type].Where(identifier => identifier.Slot == slot);
 
         /// <summary>
         /// Converts the string representation of a <see cref="AttachmentName"/> to its <see cref="AttachmentName"/> equivalent.
