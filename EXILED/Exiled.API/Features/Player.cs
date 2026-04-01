@@ -1204,6 +1204,11 @@ namespace Exiled.API.Features
         public Footprint Footprint => new(ReferenceHub);
 
         /// <summary>
+        /// Gets the player's UniqueLifeIdentifier.
+        /// </summary>
+        public int LifeIdentifier => ReferenceHub.roleManager.CurrentRole.UniqueLifeIdentifier;
+
+        /// <summary>
         /// Gets or sets a value indicating whether the player is spawn protected.
         /// </summary>
         public bool IsSpawnProtected
@@ -2656,9 +2661,9 @@ namespace Exiled.API.Features
         /// <returns>The maximum amount of items in the category that the player can hold.</returns>
         public sbyte GetCategoryLimit(ItemCategory category, bool ignoreArmor = false)
         {
-            int index = InventorySystem.Configs.InventoryLimits.StandardCategoryLimits.Where(x => x.Value >= 0).OrderBy(x => x.Key).ToList().FindIndex(x => x.Key == category);
+            int index = (int)category;
 
-            if (ignoreArmor && index != -1)
+            if (ignoreArmor)
             {
                 if (CustomCategoryLimits.TryGetValue(category, out sbyte customLimit))
                     return customLimit;
@@ -2680,11 +2685,11 @@ namespace Exiled.API.Features
         /// <param name="limit">The <see cref="int"/> number that will define the new limit.</param>
         public void SetCategoryLimit(ItemCategory category, sbyte limit)
         {
-            int index = InventorySystem.Configs.InventoryLimits.StandardCategoryLimits.Where(x => x.Value >= 0).OrderBy(x => x.Key).ToList().FindIndex(x => x.Key == category);
+            int index = (int)category;
 
-            if (index == -1)
+            if (index < 0 || index >= ServerConfigSynchronizer.Singleton.CategoryLimits.Count)
             {
-                Log.Error($"{nameof(Player)}.{nameof(SetCategoryLimit)}(ItemCategory, sbyte): Cannot set category limit for ItemCategory.{category}.");
+                Log.Error($"{nameof(Player)}.{nameof(SetCategoryLimit)}(ItemCategory, sbyte): Cannot set category limit for ItemCategory.{category}. Index out of bounds.");
                 return;
             }
 
@@ -2706,18 +2711,16 @@ namespace Exiled.API.Features
         /// <param name="category">The <see cref="ItemCategory"/> of the category to reset.</param>
         public void ResetCategoryLimit(ItemCategory category)
         {
-            int index = InventorySystem.Configs.InventoryLimits.StandardCategoryLimits.Where(x => x.Value >= 0).OrderBy(x => x.Key).ToList().FindIndex(x => x.Key == category);
+            int index = (int)category;
 
-            if (index == -1)
+            if (index < 0 || index >= ServerConfigSynchronizer.Singleton.CategoryLimits.Count)
             {
-                Log.Error($"{nameof(Player)}.{nameof(ResetCategoryLimit)}(ItemCategory, sbyte): Cannot reset category limit for ItemCategory.{category}.");
+                Log.Error($"{nameof(Player)}.{nameof(ResetCategoryLimit)}(ItemCategory, sbyte): Cannot reset category limit for ItemCategory.{category}. Index out of bounds.");
                 return;
             }
 
             if (!HasCustomCategoryLimit(category))
-            {
                 return;
-            }
 
             CustomCategoryLimits.Remove(category);
 
