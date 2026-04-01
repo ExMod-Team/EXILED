@@ -28,6 +28,7 @@ namespace Exiled.Events.EventArgs.Player
         {
             Player = player;
             Tesla = teslaGate;
+            IsInHurtingRange = Tesla.IsPlayerInHurtRange(player);
         }
 
         /// <summary>
@@ -63,6 +64,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets a value indicating whether the player is in hurting range.
         /// </summary>
-        public bool IsInHurtingRange => Tesla.IsPlayerInHurtRange(Player);
+        public bool IsInHurtingRange { get; }
     }
 }
