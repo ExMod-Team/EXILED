@@ -325,6 +325,11 @@ namespace Exiled.API.Enums
         HczStraightPipeRoom,
 
         /// <summary>
+        /// Heavy Containment Zone's straight hall.
+        /// </summary>
+        HczStraightVariant,
+
+        /// <summary>
         /// Entrance Zone's straight hall with Dr.L's and conference room 9b locked room.
         /// </summary>
         EzSmallrooms,

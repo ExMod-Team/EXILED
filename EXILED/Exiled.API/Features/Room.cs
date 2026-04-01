@@ -501,6 +501,7 @@ namespace Exiled.API.Features
                 "HCZ_Straight" => RoomType.HczStraight,
                 "HCZ_Straight_C" => RoomType.HczStraightC,
                 "HCZ_Straight_PipeRoom" => RoomType.HczStraightPipeRoom,
+                "HCZ_Straight Variant" => RoomType.HczStraightVariant, // As of the current date 01.04.2026 this room does not exist. It hasn't existed for quite some time.
                 "HCZ_ChkpA" => RoomType.HczElevatorA,
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
                 "HCZ_127" => RoomType.Hcz127,
