@@ -202,12 +202,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public bool AllowsScp106
         {
-            get => Base is IScp106PassableDoor door && door.IsScp106Passable;
-            set
-            {
-                if (Base is IScp106PassableDoor door)
-                    door.IsScp106Passable = value;
-            }
+            get => Base is not IScp106PassableDoor door || door.IsScp106Passable;
+            set => (Base as IScp106PassableDoor)?.IsScp106Passable = value;
         }
 
         /// <summary>
@@ -642,7 +638,7 @@ namespace Exiled.API.Features.Doors
                     },
                     "Cargo Elevator Door" => DoorType.ElevatorServerRoom,
                     "Nuke Elevator Door" => DoorType.ElevatorNuke,
-                    "Elevator Door" or "Elevator Door 02" or "Elevator Door 01" => (Base as Interactables.Interobjects.ElevatorDoor)?.Group switch
+                    not null when Base is Interactables.Interobjects.ElevatorDoor elevatorGroup => elevatorGroup?.Group switch
                     {
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,

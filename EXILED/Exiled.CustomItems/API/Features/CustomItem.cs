@@ -540,7 +540,7 @@ namespace Exiled.CustomItems.API.Features
 
             Pickup? pickup = Spawn(position, item, previousOwner);
 
-            UnityEngine.Object.Destroy(item.Base);
+            item.Destroy();
             return pickup;
         }
 
@@ -554,6 +554,7 @@ namespace Exiled.CustomItems.API.Features
         public virtual Pickup? Spawn(Vector3 position, Item item, Player? previousOwner = null)
         {
             Pickup? pickup = item.CreatePickup(position);
+
             pickup.Scale = Scale;
             pickup.Weight = Weight;
 
