@@ -263,25 +263,25 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Makes you a flamingo <see cref="CustomPlayerEffects.BecomingFlamingo"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Christmas and AprilFools.")]
+        [Obsolete("Only availaible for Christmas and AprilFools.")]
         BecomingFlamingo,
 
         /// <summary>
         /// Makes you a Child after eating Cake <see cref="Scp559Effect"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Christmas and AprilFools.")]
+        [Obsolete("Only availaible for Christmas and AprilFools.")]
         Scp559,
 
         /// <summary>
         /// Scp956 found you <see cref="global::Scp956Target"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Christmas and AprilFools.")]
+        [Obsolete("Only availaible for Christmas and AprilFools.")]
         Scp956Target,
 
         /// <summary>
         /// you are snowed <see cref="global::Snowed"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Christmas and AprilFools.")]
+        [Obsolete("Only availaible for Christmas and AprilFools.")]
         Snowed,
 
         /// <summary>
@@ -353,7 +353,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// <see cref="CustomPlayerEffects.SugarCrave"/>.
         /// </summary>
-        // [Obsolete("Only availaible for Halloween or Christmas.")]
+        [Obsolete("Only availaible for Halloween or Christmas.")]
         SugarCrave,
 
         /// <summary>

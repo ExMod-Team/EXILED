@@ -35,6 +35,7 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label retLabel = generator.DefineLabel();
+            Label skipLabel = generator.DefineLabel();
 
             LocalBuilder ev = generator.DeclareLocal(typeof(SearchingPickupEventArgs));
 
@@ -46,12 +47,22 @@ namespace Exiled.Events.Patches.Events.Player
             offset = 1;
             index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Ret) + offset;
 
+            List<Label> logicLabels = newInstructions[index].ExtractLabels();
+            newInstructions[index].labels.Add(skipLabel);
+
             newInstructions.InsertRange(
                 index,
                 new[]
                 {
+                    // if (request.Target is not ItemPickupBase)
+                    //    skip
+                    new CodeInstruction(OpCodes.Ldloca_S, 0).WithLabels(logicLabels),
+                    new(OpCodes.Callvirt, PropertyGetter(typeof(SearchRequest), nameof(SearchRequest.Target))),
+                    new(OpCodes.Isinst, typeof(ItemPickupBase)),
+                    new(OpCodes.Brfalse_S, skipLabel),
+
                     // Player.Get(Hub)
-                    new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
+                    new(OpCodes.Ldarg_0),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(SearchCoordinator), nameof(SearchCoordinator.Hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
@@ -115,15 +126,24 @@ namespace Exiled.Events.Patches.Events.Player
                 index,
                 new[]
                 {
-                    // num3 = ev.SearchTime
+                    // num3 = SafeGetTime(ev, this);
                     new CodeInstruction(OpCodes.Ldloc_S, ev.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(SearchingPickupEventArgs), nameof(SearchingPickupEventArgs.SearchTime))),
+                    new(OpCodes.Ldarg_0),
+                    new(OpCodes.Call, Method(typeof(SearchingPickupEvent), nameof(SafeGetTime))),
                 });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static float SafeGetTime(SearchingPickupEventArgs ev, SearchCoordinator coordinator)
+        {
+            if (ev != null)
+                return ev.SearchTime;
+
+            return coordinator.SessionPipe.Request.Target.SearchTimeForPlayer(coordinator.Hub);
         }
     }
 }

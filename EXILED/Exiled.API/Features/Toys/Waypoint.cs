@@ -8,8 +8,10 @@
 namespace Exiled.API.Features.Toys
 {
     using AdminToys;
-    using Enums;
+
+    using Exiled.API.Enums;
     using Exiled.API.Interfaces;
+
     using UnityEngine;
 
     /// <summary>
@@ -27,7 +29,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static WaypointToy Prefab => PrefabHelper.GetPrefab<WaypointToy>(PrefabType.WaypointToy);
+        public static WaypointToy Prefab { get; } = PrefabHelper.GetPrefab<WaypointToy>(PrefabType.WaypointToy);
 
         /// <summary>
         /// Gets the base <see cref="WaypointToy"/>.
@@ -62,8 +64,62 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Gets or sets the bounds size this waypoint encapsulates.
+        /// </summary>
+        public Vector3 BoundsSize
+        {
+            get => Base.NetworkBoundsSize;
+            set => Base.NetworkBoundsSize = value;
+        }
+
+        /// <summary>
         /// Gets the id of the Waypoint used for <see cref="RelativePositioning.RelativePosition.WaypointId"/>.
         /// </summary>
         public byte WaypointId => Base._waypointId;
+
+        /// <summary>
+        /// Creates a new <see cref="Waypoint"/> with a specific position and size (bounds).
+        /// </summary>
+        /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
+        /// <param name="size">The size of the bounds (Applied to NetworkBoundsSize).</param>
+        /// <returns>The new <see cref="Waypoint"/>.</returns>
+        public static Waypoint Create(Vector3 position, Vector3 size) => Create(position: position, scale: size, spawn: true);
+
+        /// <summary>
+        /// Creates a new <see cref="Waypoint"/> based on a Transform.
+        /// </summary>
+        /// <param name="transform">The transform to spawn at (LocalScale is applied to Bounds).</param>
+        /// <param name="size">The size of the bounds (Applied to NetworkBoundsSize).</param>
+        /// <returns>The new <see cref="Waypoint"/>.</returns>
+        public static Waypoint Create(Transform transform, Vector3 size) => Create(parent: transform, scale: size, spawn: true);
+
+        /// <summary>
+        /// Creates a new <see cref="Waypoint"/>.
+        /// </summary>
+        /// <param name="parent">The transform to create this <see cref="Waypoint"/> on.</param>
+        /// <param name="position">The local position of the <see cref="Waypoint"/>.</param>
+        /// <param name="rotation">The local rotation of the <see cref="Waypoint"/>.</param>
+        /// <param name="scale">The size of the bounds (This is NOT localScale, it applies to NetworkBoundsSize).</param>
+        /// <param name="priority">The priority of the waypoint.</param>
+        /// <param name="visualizeBounds">Whether to visualize the bounds.</param>
+        /// <param name="spawn">Whether the <see cref="Waypoint"/> should be initially spawned.</param>
+        /// <returns>The new <see cref="Waypoint"/>.</returns>
+        public static Waypoint Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, float priority = 0f, bool visualizeBounds = false, bool spawn = true)
+        {
+            Waypoint toy = new(Object.Instantiate(Prefab, parent))
+            {
+                Priority = priority,
+                BoundsSize = scale ?? Vector3.one * 255.9961f,
+                VisualizeBounds = visualizeBounds,
+            };
+
+            toy.Transform.localPosition = position ?? Vector3.zero;
+            toy.Transform.localRotation = rotation ?? Quaternion.identity;
+
+            if (spawn)
+                toy.Spawn();
+
+            return toy;
+        }
     }
 }

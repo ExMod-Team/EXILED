@@ -476,8 +476,8 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="target">The player who will become not spectatable.</param>
         /// <param name="viewer">The viewer who will see this change.</param>
-        /// <param name="value">The faked value.</param>
-        public static void SetFakeSpectatable(Player target, Player viewer, bool value) => viewer.Connection.Send(new SpectatableVisibilityMessages.SpectatableVisibilityMessage(target.ReferenceHub, value));
+        /// <param name="isforceHidden">Determine if the player will be force hidden.</param>
+        public static void SetFakeSpectatable(Player target, Player viewer, bool isforceHidden) => viewer.Connection.Send(new SpectatableVisibilityMessages.SpectatableVisibilityMessage(target.ReferenceHub, isforceHidden));
 
         /// <summary>
         /// Makes the server resend a message to all clients updating a keycards details to current values.

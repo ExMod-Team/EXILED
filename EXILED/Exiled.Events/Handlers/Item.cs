@@ -36,6 +36,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a keycard interacts with a door.
         /// </summary>
+        /// <seealso cref="Handlers.Player.InteractingDoor"/>
         public static Event<KeycardInteractingEventArgs> KeycardInteracting { get; set; } = new();
 
         /// <summary>

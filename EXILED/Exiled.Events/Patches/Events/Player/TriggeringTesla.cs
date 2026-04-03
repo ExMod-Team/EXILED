@@ -76,9 +76,9 @@ namespace Exiled.Events.Patches.Events.Player
         {
             TeslaGate teslaGate = TeslaGate.Get(baseTeslaGate);
 
-            foreach (Player player in ReferenceHub.AllHubs.Select(Player.Get))
+            foreach (ReferenceHub hub in ReferenceHub.AllHubs)
             {
-                if (player is null || !teslaGate.CanBeIdle(player))
+                if (!Player.TryGet(hub, out Player player) || !teslaGate.CanBeIdle(player))
                     continue;
 
                 TriggeringTeslaEventArgs ev = new(player, teslaGate);
@@ -97,8 +97,8 @@ namespace Exiled.Events.Patches.Events.Player
 
                 if (ev.IsTriggerable && !isTriggerable && !teslaGate.IsShocking)
                 {
-                    isTriggerable = ev.IsTriggerable;
-                    PlayerTriggeringTeslaEventArgs playerTriggeringTeslaEventArgs = new(player.ReferenceHub, teslaGate.Base);
+                    isTriggerable = true;
+                    PlayerTriggeringTeslaEventArgs playerTriggeringTeslaEventArgs = new(hub, teslaGate.Base);
                     PlayerEvents.OnTriggeringTesla(playerTriggeringTeslaEventArgs);
                     if (!playerTriggeringTeslaEventArgs.IsAllowed)
                     {
@@ -106,14 +106,14 @@ namespace Exiled.Events.Patches.Events.Player
                     }
                     else
                     {
-                        referenceHub2 = player.ReferenceHub;
+                        referenceHub2 = hub;
                     }
                 }
 
                 if (ev.IsInIdleRange && !inIdleRange)
                 {
-                    inIdleRange = ev.IsInIdleRange;
-                    PlayerIdlingTeslaEventArgs playerIdlingTeslaEventArgs = new(player.ReferenceHub, teslaGate.Base);
+                    inIdleRange = true;
+                    PlayerIdlingTeslaEventArgs playerIdlingTeslaEventArgs = new(hub, teslaGate.Base);
                     PlayerEvents.OnIdlingTesla(playerIdlingTeslaEventArgs);
                     if (!playerIdlingTeslaEventArgs.IsAllowed)
                     {
@@ -121,7 +121,7 @@ namespace Exiled.Events.Patches.Events.Player
                     }
                     else
                     {
-                        referenceHub = player.ReferenceHub;
+                        referenceHub = hub;
                     }
                 }
             }

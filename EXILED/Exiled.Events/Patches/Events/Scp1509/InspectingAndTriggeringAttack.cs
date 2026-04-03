@@ -59,7 +59,8 @@ namespace Exiled.Events.Patches.Events.Scp1509
                 new(OpCodes.Brfalse_S, retLabel),
             });
 
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
+            offset = 2;
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_2) + offset;
 
             newInstructions.InsertRange(index, new[]
             {

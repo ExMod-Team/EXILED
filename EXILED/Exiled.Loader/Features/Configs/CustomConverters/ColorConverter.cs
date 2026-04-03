@@ -14,9 +14,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
-
     using UnityEngine;
-
     using YamlDotNet.Core;
     using YamlDotNet.Core.Events;
     using YamlDotNet.Serialization;
@@ -30,19 +28,26 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         public bool Accepts(Type type)
         {
             Type baseType = Nullable.GetUnderlyingType(type) ?? type;
-            return baseType == typeof(Color);
+            return baseType == typeof(Color) || baseType == typeof(Color32);
         }
 
         /// <inheritdoc cref="IYamlTypeConverter" />
         public object ReadYaml(IParser parser, Type type)
         {
-            Type baseType = Nullable.GetUnderlyingType(type) ?? type;
+            Type baseType = Nullable.GetUnderlyingType(type);
+
+            bool isNullable = true;
+            if (baseType == null)
+            {
+                baseType = type;
+                isNullable = false;
+            }
 
             if (parser.TryConsume(out Scalar scalar))
             {
                 if (string.IsNullOrEmpty(scalar.Value) || scalar.Value.Equals("null", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (Nullable.GetUnderlyingType(type) != null)
+                    if (isNullable)
                         return null;
 
                     Log.Error($"Cannot assign null to non-nullable type {baseType.FullName}.");
@@ -56,6 +61,8 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
             List<object> coordinates = ListPool<object>.Pool.Get(4);
             int i = 0;
+
+            bool isColor32 = baseType == typeof(Color32);
 
             while (!parser.TryConsume<MappingEnd>(out _))
             {
@@ -71,10 +78,21 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                     throw new InvalidDataException("Invalid float value.");
                 }
 
-                coordinates.Add(coordinate);
+                if (isColor32)
+                {
+                    coordinates.Add((byte)Mathf.Round(Mathf.Clamp01(coordinate) * 255f));
+                }
+                else
+                {
+                    coordinates.Add(coordinate);
+                }
             }
 
-            object color = Activator.CreateInstance(type, coordinates.ToArray());
+            object color;
+            if (isNullable)
+                color = Activator.CreateInstance(type, Activator.CreateInstance(baseType, coordinates.ToArray()));
+            else
+                color = Activator.CreateInstance(type, coordinates.ToArray());
 
             ListPool<object>.Pool.Return(coordinates);
 
@@ -94,6 +112,14 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
             if (value is Color color)
             {
+                coordinates["r"] = color.r;
+                coordinates["g"] = color.g;
+                coordinates["b"] = color.b;
+                coordinates["a"] = color.a;
+            }
+            else if (value is Color32 color32)
+            {
+                color = color32;
                 coordinates["r"] = color.r;
                 coordinates["g"] = color.g;
                 coordinates["b"] = color.b;
