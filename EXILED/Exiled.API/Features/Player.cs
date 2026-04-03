@@ -2138,6 +2138,22 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Removes an <see cref="Item"/> from the player's inventory by its <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="item">The specified <see cref="ItemType"/> to be removed.</param>
+        /// <param name="destroy">Whether to destroy the item.</param>
+        /// <returns>A value indicating whether the <see cref="Item"/> was removed.</returns>
+        public bool RemoveItem(ItemType item, bool destroy = true)
+        {
+            Item itemtoremove = Items.FirstOrDefault(tempItem => tempItem.Type == item);
+            if (itemtoremove == null)
+                return false;
+
+            RemoveItem(itemtoremove, destroy);
+            return true;
+        }
+
+        /// <summary>
         /// Removes an <see cref="Item"/> from the player's inventory.
         /// </summary>
         /// <param name="serial">The <see cref="Item"/> serial to remove.</param>
