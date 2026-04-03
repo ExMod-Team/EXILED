@@ -83,7 +83,7 @@ namespace Exiled.API.Features
         internal readonly List<Item> ItemsValue = new(8);
 
         /// <summary>
-        /// A dictionary of custom type category limits.
+        /// A dictionary of custom item category limits.
         /// </summary>
         internal Dictionary<ItemCategory, sbyte> CustomCategoryLimits = new();
 
@@ -987,7 +987,7 @@ namespace Exiled.API.Features
         public HumeShieldStat HumeShieldStat => CustomHumeShieldStat;
 
         /// <summary>
-        /// Gets or sets the type in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
+        /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
         /// </summary>
         /// <seealso cref="DropHeldItem()"/>
         public Item CurrentItem
@@ -1643,7 +1643,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="roleToAdd"> Role to add. </param>
         /// <param name="ffMult"> Friendly fire multiplier. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryAddFriendlyFire(RoleTypeId roleToAdd, float ffMult)
         {
             if (FriendlyFireMultiplier.ContainsKey(roleToAdd))
@@ -1657,7 +1657,7 @@ namespace Exiled.API.Features
         /// Tries to add <see cref="RoleTypeId"/> to FriendlyFire rules.
         /// </summary>
         /// <param name="pairedRoleFF"> Role FF multiplier to add. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryAddFriendlyFire(KeyValuePair<RoleTypeId, float> pairedRoleFF) => TryAddFriendlyFire(pairedRoleFF.Key, pairedRoleFF.Value);
 
         /// <summary>
@@ -1665,7 +1665,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="ffRules"> Roles to add with friendly fire values. </param>
         /// <param name="overwrite"> Whether to overwrite current values if they exist. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryAddFriendlyFire(Dictionary<RoleTypeId, float> ffRules, bool overwrite = false)
         {
             Dictionary<RoleTypeId, float> temporaryFriendlyFireRules = DictionaryPool<RoleTypeId, float>.Pool.Get();
@@ -1729,7 +1729,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="roleTypeId"> Role associated for CustomFF. </param>
         /// <param name="roleFf"> Role to add and FF multiplier. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryAddCustomRoleFriendlyFire(string roleTypeId, KeyValuePair<RoleTypeId, float> roleFf) => TryAddCustomRoleFriendlyFire(roleTypeId, roleFf.Key, roleFf.Value);
 
         /// <summary>
@@ -1738,7 +1738,7 @@ namespace Exiled.API.Features
         /// <param name="roleTypeId"> Role associated for CustomFF. </param>
         /// <param name="roleToAdd"> Role to add. </param>
         /// <param name="ffMult"> Friendly fire multiplier. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryAddCustomRoleFriendlyFire(string roleTypeId, RoleTypeId roleToAdd, float ffMult)
         {
             if (CustomRoleFriendlyFireMultiplier.TryGetValue(roleTypeId, out Dictionary<RoleTypeId, float> currentPairedData))
@@ -1762,7 +1762,7 @@ namespace Exiled.API.Features
         /// <param name="customRoleName"> Role associated for CustomFF. </param>
         /// <param name="ffRules"> Roles to add with friendly fire values. </param>
         /// <param name="overwrite"> Whether to overwrite current values if they exist - does NOT delete previous entries if they are not in provided rules. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryAddCustomRoleFriendlyFire(string customRoleName, Dictionary<RoleTypeId, float> ffRules, bool overwrite = false)
         {
             Dictionary<RoleTypeId, float> temporaryFriendlyFireRules = DictionaryPool<RoleTypeId, float>.Pool.Get();
@@ -1829,14 +1829,14 @@ namespace Exiled.API.Features
         /// Tries to remove <see cref="RoleTypeId"/> from FriendlyFire rules.
         /// </summary>
         /// <param name="role"> Role to add. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryRemoveFriendlyFire(RoleTypeId role) => FriendlyFireMultiplier.Remove(role);
 
         /// <summary>
         /// Tries to remove <see cref="RoleTypeId"/> from FriendlyFire rules.
         /// </summary>
         /// <param name="role"> Role to add. </param>
-        /// <returns> Whether the type was able to be added. </returns>
+        /// <returns> Whether the item was able to be added. </returns>
         public bool TryRemoveCustomeRoleFriendlyFire(string role) => CustomRoleFriendlyFireMultiplier.Remove(role);
 
         /// <summary>
@@ -1906,11 +1906,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Tries to get an type from a player's inventory.
+        /// Tries to get an item from a player's inventory.
         /// </summary>
-        /// <param name="serial">The unique identifier of the type.</param>
+        /// <param name="serial">The unique identifier of the item.</param>
         /// <param name="item">The <see cref="Item"/> found. <see langword="null"/> if it doesn't exist.</param>
-        /// <returns><see langword="true"/> if the type is found, <see langword="false"/> otherwise.</returns>
+        /// <returns><see langword="true"/> if the item is found, <see langword="false"/> otherwise.</returns>
         public bool TryGetItem(ushort serial, out Item item)
         {
             item = Inventory.UserInventory.Items.TryGetValue(serial, out ItemBase itemBase) ? Item.Get(itemBase) : null;
@@ -2012,10 +2012,10 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Drops an type from the player's inventory.
+        /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The <see cref="Item"/> to be dropped.</param>
-        /// <param name="isThrown">Is the type Thrown?.</param>
+        /// <param name="isThrown">Is the item Thrown?.</param>
         public void DropItem(Item item, bool isThrown = false)
         {
             if (item is null)
@@ -2024,23 +2024,23 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Drops an type from the player's inventory.
+        /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The <see cref="Item"/> to be dropped.</param>
         /// <returns>dropped <see cref="Pickup"/>.</returns>
         public Pickup DropItem(Item item) => item is not null ? Pickup.Get(Inventory.ServerDropItem(item.Serial)) : null;
 
         /// <summary>
-        /// Drops the held type. Will not do anything if the player is not holding an type.
+        /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
-        /// <param name="isThrown">Is the type Thrown?.</param>
+        /// <param name="isThrown">Is the item Thrown?.</param>
         public void DropHeldItem(bool isThrown = false) => DropItem(CurrentItem, isThrown);
 
         /// <summary>
-        /// Drops the held type. Will not do anything if the player is not holding an type.
+        /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
         /// <seealso cref="CurrentItem"/>
-        /// <returns>Dropped type's <see cref="Pickup"/>.</returns>
+        /// <returns>Dropped item's <see cref="Pickup"/>.</returns>
         public Pickup DropHeldItem()
         {
             Item item = CurrentItem;
@@ -2052,14 +2052,14 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Indicates whether the player has an type.
+        /// Indicates whether the player has an item.
         /// </summary>
-        /// <param name="item">The type to search for.</param>
+        /// <param name="item">The item to search for.</param>
         /// <returns><see langword="true"/>, if the player has it; otherwise, <see langword="false"/>.</returns>
         public bool HasItem(Item item) => Items.Contains(item);
 
         /// <summary>
-        /// Indicates whether the player has an type type.
+        /// Indicates whether the player has an item type.
         /// </summary>
         /// <param name="type">The type to search for.</param>
         /// <returns><see langword="true"/>, if the player has it; otherwise, <see langword="false"/>.</returns>
@@ -2068,7 +2068,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Counts how many items of a certain <see cref="ItemType"/> a player has.
         /// </summary>
-        /// <param name="item">The type to search for.</param>
+        /// <param name="item">The item to search for.</param>
         /// <returns>How many items of that <see cref="ItemType"/> the player has.</returns>
         /// <remarks>For counting ammo, see <see cref="GetAmmo(AmmoType)"/>.</remarks>
         /// <seealso cref="GetAmmo(AmmoType)"/>
@@ -2099,7 +2099,7 @@ namespace Exiled.API.Features
         /// Removes an <see cref="Item"/> from the player's inventory.
         /// </summary>
         /// <param name="item">The <see cref="Item"/> to remove.</param>
-        /// <param name="destroy">Whether to destroy the type.</param>
+        /// <param name="destroy">Whether to destroy the item.</param>
         /// <returns>A value indicating whether the <see cref="Item"/> was removed.</returns>
         public bool RemoveItem(Item item, bool destroy = true)
         {
@@ -2140,12 +2140,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Removes an <see cref="Item"/> from the player's inventory by its <see cref="ItemType"/>.
         /// </summary>
-        /// <param name="type">The specified <see cref="ItemType"/> to be removed.</param>
-        /// <param name="destroy">Whether to destroy the type.</param>
+        /// <param name="item">The specified <see cref="ItemType"/> to be removed.</param>
+        /// <param name="destroy">Whether to destroy the item.</param>
         /// <returns>A value indicating whether the <see cref="Item"/> was removed.</returns>
-        public bool RemoveItem(ItemType type, bool destroy = true)
+        public bool RemoveItem(ItemType item, bool destroy = true)
         {
-            Item itemtoremove = Items.FirstOrDefault(item => item.Type == type);
+            Item itemtoremove = Items.FirstOrDefault(tempItem => tempItem.Type == item);
             if (itemtoremove == null)
                 return false;
 
@@ -2157,7 +2157,7 @@ namespace Exiled.API.Features
         /// Removes an <see cref="Item"/> from the player's inventory.
         /// </summary>
         /// <param name="serial">The <see cref="Item"/> serial to remove.</param>
-        /// <param name="destroy">Whether to destroy the type.</param>
+        /// <param name="destroy">Whether to destroy the item.</param>
         /// <returns>A value indicating whether the <see cref="Item"/> was removed.</returns>
         public bool RemoveItem(ushort serial, bool destroy = true)
         {
@@ -2190,7 +2190,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Removes the held <see cref="ItemBase"/> from the player's inventory.
         /// </summary>
-        /// <param name="destroy">Whether to destroy the type.</param>
+        /// <param name="destroy">Whether to destroy the item.</param>
         /// <returns>Returns a value indicating whether the <see cref="ItemBase"/> was removed.</returns>
         public bool RemoveHeldItem(bool destroy = true) => RemoveItem(CurrentItem, destroy);
 
@@ -2340,23 +2340,23 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Forces the player to use an type.
+        /// Forces the player to use an item.
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
-        /// <returns><see langword="true"/> if type was used successfully. Otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
         public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
 
         /// <summary>
-        /// Forces the player to use an type.
+        /// Forces the player to use an item.
         /// </summary>
-        /// <param name="usable">The type to be used.</param>
+        /// <param name="usable">The item to be used.</param>
         public void UseItem(Usable usable) => usable?.Use(this);
 
         /// <summary>
-        /// Forces the player to use an type.
+        /// Forces the player to use an item.
         /// </summary>
-        /// <param name="item">The type to be used.</param>
-        /// <returns><see langword="true"/> if type was used successfully. Otherwise, <see langword="false"/>.</returns>
+        /// <param name="item">The item to be used.</param>
+        /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
         public bool UseItem(Item item)
         {
             if (item is not Usable usableItem)
@@ -2772,9 +2772,9 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Adds an type of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
+        /// Adds an item of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
-        /// <param name="itemType">The type to be added.</param>
+        /// <param name="itemType">The item to be added.</param>
         /// <returns>The <see cref="Item"/> given to the player.</returns>
         public Item AddItem(ItemType itemType)
         {
@@ -2794,7 +2794,7 @@ namespace Exiled.API.Features
         /// Adds a firearm of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
         /// <param name="firearmType">The firearm to be added.</param>
-        /// <param name="identifiers">The attachments to be added to the type.</param>
+        /// <param name="identifiers">The attachments to be added to the item.</param>
         /// <returns>The <see cref="Item"/> given to the player.</returns>
         public Item AddItem(FirearmType firearmType, IEnumerable<AttachmentIdentifier> identifiers)
         {
@@ -2816,7 +2816,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Adds the amount of items of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
-        /// <param name="itemType">The type to be added.</param>
+        /// <param name="itemType">The item to be added.</param>
         /// <param name="amount">The amount of items to be added.</param>
         /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
         public IEnumerable<Item> AddItem(ItemType itemType, int amount)
@@ -2834,9 +2834,9 @@ namespace Exiled.API.Features
         /// <summary>
         /// Adds the amount of firearms of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
-        /// <param name="firearmType">The type to be added.</param>
+        /// <param name="firearmType">The item to be added.</param>
         /// <param name="amount">The amount of items to be added.</param>
-        /// <param name="identifiers">The attachments to be added to the type.</param>
+        /// <param name="identifiers">The attachments to be added to the item.</param>
         /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
         public IEnumerable<Item> AddItem(FirearmType firearmType, int amount, IEnumerable<AttachmentIdentifier> identifiers)
         {
@@ -2886,9 +2886,9 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Adds an type to the player's inventory.
+        /// Adds an item to the player's inventory.
         /// </summary>
-        /// <param name="item">The type to be added.</param>
+        /// <param name="item">The item to be added.</param>
         public void AddItem(Item item)
         {
             try
@@ -2902,10 +2902,10 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Adds an type to the player's inventory.
+        /// Adds an item to the player's inventory.
         /// </summary>
-        /// <param name="item">The type to be added.</param>
-        /// <param name="identifiers">The attachments to be added to the type.</param>
+        /// <param name="item">The item to be added.</param>
+        /// <param name="identifiers">The attachments to be added to the item.</param>
         public void AddItem(Firearm item, IEnumerable<AttachmentIdentifier> identifiers)
         {
             try
@@ -2922,18 +2922,18 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Adds an type to the player's inventory.
+        /// Adds an item to the player's inventory.
         /// </summary>
-        /// <param name="pickup">The <see cref="Pickup"/> of the type to be added.</param>
-        /// <param name="addReason">The reason the type was added.</param>
+        /// <param name="pickup">The <see cref="Pickup"/> of the item to be added.</param>
+        /// <param name="addReason">The reason the item was added.</param>
         /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(Pickup pickup, ItemAddReason addReason = ItemAddReason.AdminCommand) => Item.Get(Inventory.ServerAddItem(pickup.Type, addReason, pickup.Serial, pickup.Base));
 
         /// <summary>
-        /// Adds an type to the player's inventory.
+        /// Adds an item to the player's inventory.
         /// </summary>
-        /// <param name="pickup">The <see cref="FirearmPickup"/> of the type to be added.</param>
-        /// <param name="identifiers">The attachments to be added to <see cref="Pickup"/> of the type.</param>
+        /// <param name="pickup">The <see cref="FirearmPickup"/> of the item to be added.</param>
+        /// <param name="identifiers">The attachments to be added to <see cref="Pickup"/> of the item.</param>
         /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(FirearmPickup pickup, IEnumerable<AttachmentIdentifier> identifiers)
         {
@@ -2946,11 +2946,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Adds an type to the player's inventory.
+        /// Adds an item to the player's inventory.
         /// </summary>
-        /// <param name="itemBase">The type to be added.</param>
-        /// <param name="item">The <see cref="Item"/> object of the type.</param>
-        /// <param name="addReason">The reason the type was added.</param>
+        /// <param name="itemBase">The item to be added.</param>
+        /// <param name="item">The <see cref="Item"/> object of the item.</param>
+        /// <param name="addReason">The reason the item was added.</param>
         /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(ItemBase itemBase, Item item = null, ItemAddReason addReason = ItemAddReason.AdminCommand)
         {
@@ -3128,7 +3128,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="type">The <see cref="ProjectileType"/> to be thrown.</param>
         /// <param name="fullForce">Whether to throw with full or half force.</param>
-        /// <returns>The <see cref="Throwable"/> type that was spawned.</returns>
+        /// <returns>The <see cref="Throwable"/> item that was spawned.</returns>
         public Throwable ThrowGrenade(ProjectileType type, bool fullForce = true)
         {
             Throwable throwable = Item.Create<Throwable>(type.GetItemType(), this);
@@ -3139,7 +3139,7 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Forcefully throws a <paramref name="throwable"/> type.
+        /// Forcefully throws a <paramref name="throwable"/> item.
         /// </summary>
         /// <param name="throwable">The <see cref="Throwable"/> to be thrown.</param>
         /// <param name="fullForce">Whether to throw with full or half force.</param>
