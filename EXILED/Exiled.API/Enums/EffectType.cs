@@ -169,7 +169,7 @@ namespace Exiled.API.Enums
         Scp1853,
 
         /// <summary>
-        /// Effect given to player after being hurt by SCP-049. Deals 8 damage per second, after an inital 16 damage for the first second. 
+        /// Effect given to player after being hurt by SCP-049. Deals 8 damage per second, after an inital 16 damage for the first second.
         /// </summary>
         CardiacArrest,
 
@@ -387,7 +387,7 @@ namespace Exiled.API.Enums
         WhiteCandy,
 
         /// <summary>
-        /// Gives the user 25 non-decaying AHP, and sets the user's HP to 75 if it was above or at 75, otherwise if <75 keeps current HP. Clearing this effect does not reset the AHP nor HP maximum.
+        /// Gives the user 25 non-decaying AHP, and sets the user's HP to 75 if it was above or at 75, otherwise if &lt;75 keeps current HP. Clearing this effect does not reset the AHP nor HP maximum.
         /// </summary>
         Scp1509Resurrected,
 
