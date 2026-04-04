@@ -144,7 +144,7 @@ namespace Exiled.API.Enums
         RainbowTaste,
 
         /// <summary>
-        /// Drops the player's current item, disables interaction with objects, and deals damage while effect is active.
+        /// Drops the player's current item, disables interaction with objects, spawns hands that drop to the floor, and deals damage while effect is active.
         /// </summary>
         SeveredHands,
 
@@ -169,7 +169,7 @@ namespace Exiled.API.Enums
         Scp1853,
 
         /// <summary>
-        /// Effect given to player after being hurt by SCP-049.
+        /// Effect given to player after being hurt by SCP-049. Deals 8 damage per second, after an inital 16 damage for the first second. 
         /// </summary>
         CardiacArrest,
 
@@ -194,12 +194,12 @@ namespace Exiled.API.Enums
         Traumatized,
 
         /// <summary>
-        /// It slows down the player, providing a passive health regeneration and saving the player from death once.
+        /// Slows down the player, providing passive health regeneration, AHP up to 75, and saves the player from death once.
         /// </summary>
         AntiScp207,
 
         /// <summary>
-        /// The effect that SCP-079 gives the scanned player with the Breach Scanner.
+        /// The effect that SCP-079 gives the scanned player with the Breach Scanner. Mutes the soundtrack.
         /// </summary>
         Scanned,
 
@@ -209,7 +209,7 @@ namespace Exiled.API.Enums
         PocketCorroding,
 
         /// <summary>
-        /// Reduces walking sound by 10%.
+        /// Reduces walking sound by 10% per intensity level.
         /// </summary>
         SilentWalk,
 
@@ -225,38 +225,38 @@ namespace Exiled.API.Enums
         Strangled,
 
         /// <summary>
-        /// Makes the player nearly invisible, and allows them to pass through doors.
+        /// Allow players to pass through doors.
         /// </summary>
         Ghostly,
 
         /// <summary>
-        /// Manipulate wish Fog player will have.
+        /// Manipulate which fog type the player will have.
         /// <remarks>You can choose fog with <see cref="CustomRendering.FogType"/> and putting it on intensity.</remarks>
         /// </summary>
         FogControl,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Slowness"/>.
+        /// Slows the player down by 1% per intensity.
         /// </summary>
         Slowness,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Scp1344"/>.
+        /// Allows the affected user to see players through walls, with a slight delay between spurts of viewability.
         /// </summary>
         Scp1344,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.SeveredEyes"/>.
+        /// Does not blind the player. Spawns eyeballs that drop to the floor, and does 10 damage per second.
         /// </summary>
         SeveredEyes,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.PitDeath"/>.
+        /// Immediately kills the player with death message "Fatal blunt trauma; the body is badly mutilated and pupled.", and "Reason: Crushed" through console.
         /// </summary>
         PitDeath,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Blurred"/>.
+        /// Blurs the affected player's vision.
         /// </summary>
         Blurred,
 
@@ -290,27 +290,27 @@ namespace Exiled.API.Enums
         Scp1344Detected,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Scp1576"/>.
+        /// Allows the affected player to speak with players in spectator or overwatch.
         /// </summary>
         Scp1576,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Lightweight"/>.
+        /// Increases the player's jump height.
         /// </summary>
         Lightweight,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.HeavyFooted"/>.
+        /// Decreases the player's jump height.
         /// </summary>
         HeavyFooted,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Fade"/>.
+        /// Makes the user transparent, 255 being completely transparent.
         /// </summary>
         Fade,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.NightVision"/>.
+        /// Allows the user to see in dark areas. Does not extend the viewing range. Scales with intensity.
         /// </summary>
         NightVision,
 
@@ -387,7 +387,7 @@ namespace Exiled.API.Enums
         WhiteCandy,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Scp1509Resurrected"/>.
+        /// Gives the user 25 non-decaying AHP, and sets the user's HP to 75 if it was above or at 75, otherwise if <75 keeps current HP. Clearing this effect does not reset the AHP nor HP maximum.
         /// </summary>
         Scp1509Resurrected,
 
@@ -397,12 +397,12 @@ namespace Exiled.API.Enums
         FocusedVision,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.AnomalousRegeneration"/>.
+        /// If the affected player has a maximum hume shield, this sets the hume shield to the maximum value.
         /// </summary>
         AnomalousRegeneration,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.AnomalousTarget"/>.
+        /// Allows SCPs to see the target from a certain distance. Works on SCPs.
         /// </summary>
         AnomalousTarget,
     }
