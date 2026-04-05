@@ -5,13 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-
 namespace Exiled.API.Enums
 {
     using System;
-    
     using Exiled.API.Features.Attributes;
-    
     /// <summary>
     /// Type of prefab.
     /// </summary>
