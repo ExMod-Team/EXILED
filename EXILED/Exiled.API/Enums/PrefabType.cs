@@ -9,7 +9,8 @@
 namespace Exiled.API.Enums
 {
     using Exiled.API.Features.Attributes;
-
+    using System;
+    
     /// <summary>
     /// Type of prefab.
     /// </summary>
