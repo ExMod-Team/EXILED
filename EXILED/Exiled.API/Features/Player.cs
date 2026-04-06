@@ -95,10 +95,6 @@ namespace Exiled.API.Features
 
         private readonly HashSet<EActor> componentsInChildren = new();
 
-        private ReferenceHub referenceHub;
-
-        private Role role;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
         /// </summary>
@@ -192,10 +188,10 @@ namespace Exiled.API.Features
         /// </summary>
         public ReferenceHub ReferenceHub
         {
-            get => referenceHub;
+            get;
             private set
             {
-                referenceHub = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");
+                field = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");
                 GameObject = value.gameObject;
                 HintDisplay = value.hints;
                 Inventory = value.inventory;
@@ -278,7 +274,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the player's user id.
         /// </summary>
-        public string UserId => referenceHub.authManager.UserId;
+        public string UserId => ReferenceHub.authManager.UserId;
 
         /// <summary>
         /// Gets the player's user id without the authentication.
@@ -599,11 +595,11 @@ namespace Exiled.API.Features
         /// <seealso cref="Role.Set(RoleTypeId, SpawnReason, RoleSpawnFlags)"/>
         public Role Role
         {
-            get => role ??= Role.Create(RoleManager.CurrentRole);
+            get => field ??= Role.Create(RoleManager.CurrentRole);
             internal set
             {
-                PreviousRole = role?.Type ?? RoleTypeId.None;
-                role = value;
+                PreviousRole = field?.Type ?? RoleTypeId.None;
+                field = value;
             }
         }
 
@@ -654,7 +650,7 @@ namespace Exiled.API.Features
         public bool IsJumping
         {
             get => Role is FpcRole fpc && fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping;
-            set => _ = Role is FpcRole fpc ? fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping = value : _ = value;
+            set => (Role as FpcRole)?.FirstPersonController.FpcModule.Motor.JumpController.IsJumping = value;
         }
 
         /// <summary>
@@ -863,7 +859,7 @@ namespace Exiled.API.Features
         public byte UnitId
         {
             get => Role.Base is PlayerRoles.HumanRole humanRole ? humanRole.UnitNameId : byte.MinValue;
-            set => _ = Role.Base is PlayerRoles.HumanRole humanRole ? humanRole.UnitNameId = value : _ = value;
+            set => (Role.Base as PlayerRoles.HumanRole)?.UnitNameId = value;
         }
 
         /// <summary>
@@ -1074,7 +1070,7 @@ namespace Exiled.API.Features
         /// <seealso cref="EnableEffect(string, float, bool)"/>
         /// <seealso cref="EnableEffect{T}(float, bool)"/>
         /// <seealso cref="EnableEffects(IEnumerable{EffectType}, float, bool)"/>
-        public IEnumerable<StatusEffectBase> ActiveEffects => referenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
+        public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
 
         /// <summary>
         /// Gets or sets the player's group.
@@ -1202,6 +1198,11 @@ namespace Exiled.API.Features
         /// Gets the player's <see cref="Footprinting.Footprint"/>.
         /// </summary>
         public Footprint Footprint => new(ReferenceHub);
+
+        /// <summary>
+        /// Gets the player's UniqueLifeIdentifier.
+        /// </summary>
+        public int LifeIdentifier => ReferenceHub.roleManager.CurrentRole.UniqueLifeIdentifier;
 
         /// <summary>
         /// Gets or sets a value indicating whether the player is spawn protected.
@@ -1962,7 +1963,7 @@ namespace Exiled.API.Features
         {
             ReferenceHub.inventory.SetDisarmedStatus(null);
 
-            DisarmedPlayers.Entries.Add(new DisarmedPlayers.DisarmedEntry(referenceHub.networkIdentity.netId, 0U));
+            DisarmedPlayers.Entries.Add(new DisarmedPlayers.DisarmedEntry(ReferenceHub.networkIdentity.netId, 0U));
             new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated(0);
         }
 
@@ -2229,7 +2230,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="message">The message to be sent.</param>
         /// <param name="color">The message color.</param>
-        public void SendConsoleMessage(string message, string color) => referenceHub.gameConsoleTransmission.SendToClient(message, color);
+        public void SendConsoleMessage(string message, string color) => ReferenceHub.gameConsoleTransmission.SendToClient(message, color);
 
         /// <summary>
         /// Disconnects the player.
@@ -2374,7 +2375,17 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
         /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
+        public bool UseItem(ItemType usableItem)
+        {
+            if (usableItem.GetTemplate() is not UsableItem)
+                return false;
+
+            Item usable = Item.Create<Usable>(usableItem);
+
+            UseItem(usable);
+            usable.Destroy();
+            return true;
+        }
 
         /// <summary>
         /// Forces the player to use an item.
@@ -2438,7 +2449,8 @@ namespace Exiled.API.Features
             if ((Role.Side != Side.Scp) && !string.IsNullOrEmpty(cassieAnnouncement))
                 Cassie.Message(cassieAnnouncement);
 
-            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
+            Footprint footprint = attacker != null ? attacker.Footprint : Server.Host.Footprint;
+            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(default, footprint, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
         }
 
         /// <summary>
@@ -2636,7 +2648,7 @@ namespace Exiled.API.Features
                 return ServerConfigSynchronizer.Singleton.AmmoLimitsSync.FirstOrDefault(x => x.AmmoType == itemType).Limit;
             }
 
-            return InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), referenceHub);
+            return InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), ReferenceHub);
         }
 
         /// <summary>
@@ -2702,9 +2714,9 @@ namespace Exiled.API.Features
         /// <returns>The maximum amount of items in the category that the player can hold.</returns>
         public sbyte GetCategoryLimit(ItemCategory category, bool ignoreArmor = false)
         {
-            int index = InventorySystem.Configs.InventoryLimits.StandardCategoryLimits.Where(x => x.Value >= 0).OrderBy(x => x.Key).ToList().FindIndex(x => x.Key == category);
+            int index = (int)category;
 
-            if (ignoreArmor && index != -1)
+            if (ignoreArmor)
             {
                 if (CustomCategoryLimits.TryGetValue(category, out sbyte customLimit))
                     return customLimit;
@@ -2712,7 +2724,7 @@ namespace Exiled.API.Features
                 return ServerConfigSynchronizer.Singleton.CategoryLimits[index];
             }
 
-            sbyte limit = InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, referenceHub);
+            sbyte limit = InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, ReferenceHub);
 
             return limit == -1 ? (sbyte)1 : limit;
         }
@@ -2726,11 +2738,11 @@ namespace Exiled.API.Features
         /// <param name="limit">The <see cref="int"/> number that will define the new limit.</param>
         public void SetCategoryLimit(ItemCategory category, sbyte limit)
         {
-            int index = InventorySystem.Configs.InventoryLimits.StandardCategoryLimits.Where(x => x.Value >= 0).OrderBy(x => x.Key).ToList().FindIndex(x => x.Key == category);
+            int index = (int)category;
 
-            if (index == -1)
+            if (index < 0 || index >= ServerConfigSynchronizer.Singleton.CategoryLimits.Count)
             {
-                Log.Error($"{nameof(Player)}.{nameof(SetCategoryLimit)}(ItemCategory, sbyte): Cannot set category limit for ItemCategory.{category}.");
+                Log.Error($"{nameof(Player)}.{nameof(SetCategoryLimit)}(ItemCategory, sbyte): Cannot set category limit for ItemCategory.{category}. Index out of bounds.");
                 return;
             }
 
@@ -2752,18 +2764,16 @@ namespace Exiled.API.Features
         /// <param name="category">The <see cref="ItemCategory"/> of the category to reset.</param>
         public void ResetCategoryLimit(ItemCategory category)
         {
-            int index = InventorySystem.Configs.InventoryLimits.StandardCategoryLimits.Where(x => x.Value >= 0).OrderBy(x => x.Key).ToList().FindIndex(x => x.Key == category);
+            int index = (int)category;
 
-            if (index == -1)
+            if (index < 0 || index >= ServerConfigSynchronizer.Singleton.CategoryLimits.Count)
             {
-                Log.Error($"{nameof(Player)}.{nameof(ResetCategoryLimit)}(ItemCategory, sbyte): Cannot reset category limit for ItemCategory.{category}.");
+                Log.Error($"{nameof(Player)}.{nameof(ResetCategoryLimit)}(ItemCategory, sbyte): Cannot reset category limit for ItemCategory.{category}. Index out of bounds.");
                 return;
             }
 
             if (!HasCustomCategoryLimit(category))
-            {
                 return;
-            }
 
             CustomCategoryLimits.Remove(category);
 
@@ -3751,9 +3761,10 @@ namespace Exiled.API.Features
         /// <param name="efficacy">Percent of incoming damage absorbed by this stat.</param>
         /// <param name="sustain">The number of seconds to delay the start of the decay.</param>
         /// <param name="persistant">Whether the process is removed when the value hits 0.</param>
-        public void AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
+        /// <returns>The <see cref="AhpStat.AhpProcess"/> instance..</returns>
+        public AhpStat.AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
         {
-            ReferenceHub.playerStats.GetModule<AhpStat>()
+            return ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
         }
 
