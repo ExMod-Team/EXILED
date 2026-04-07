@@ -11,11 +11,11 @@
 
 </div>
 
-EXILED é um Framework de alto nível para a criação de plug-ins direcionado a servidores de SCP: Secret Laboratory. Ele oferece um sistema de eventos para os desenvolvedores, com o objetivo de manipular, alterar ou implementar no código do jogo suas próprias funções.
-Todos os eventos do EXILED são feitos com [Harmony](https://harmony.pardeike.net/articles/intro.html), significando que não requerem edição direta dos Assemblies/Código Base do servidor para funcionar, o que permite dois benefícios exclusivos:
+EXILED é um Framework de alto nível para a criação de plug-ins direcionado a servidores de SCP: Secret Laboratory. Ele oferece um sistema de eventos para os desenvolvedores, com o objetivo de manipular, alterar ou implementar suas próprias funcionalidades no jogo.
+Todos os eventos do EXILED são feitos com [Harmony](https://harmony.pardeike.net/articles/intro.html), o que significa que não requerem edição direta dos Assemblies/Código Base do servidor para funcionar, permitindo dois benefícios:
 
  - Todo o código do Framework pode ser publicado e compartilhado livremente, permitindo que os desenvolvedores entendam melhor *como* funciona, além de poder sugerir para adicionar ou alterar algo.
- - Todo o código relacionado ao framework é feito fora do assembly do servidor, significando que pequenas atualizações do jogo muito provavelmente não terão efeitos colaterais. Isso torna o projeto mais compatível, além de facilitar quando for necessário atualizá-lo.
+ - Todo o código relacionado ao framework é feito fora do assembly do servidor, significando que pequenas atualizações do jogo provavelmente não causarão efeitos colaterais. Isso torna o projeto mais compatível, além de facilitar quando for necessário atualizá-lo.
 
 # Instalação
 A instalação do EXILED é bem simples e você pode escolher entre dois tipos: ``Automática`` e ``Manual``.
@@ -23,7 +23,7 @@ A instalação do EXILED é bem simples e você pode escolher entre dois tipos: 
 Na instalação automática, o instalador cuidará de baixar todos os recursos e arquivos para que o EXILED funcione.
 
 Já na manual, você faz o download do ``Exiled.tar.gz`` nos arquivos do release, e há duas pastas dentro. 
-``SCP Secret Laboratory`` contém os arquivos necessários para carregar os recursos do EXILED de dentro da pasta ``EXILED``. Dito isso, tudo o que você precisa fazer é mover essas duas para o caminho adequado e pronto!
+``SCP Secret Laboratory`` contém os arquivos necessários para carregar os recursos do EXILED de dentro da pasta ``EXILED``. Com isso em mente, tudo o que você precisa fazer é mover essas duas para o caminho adequado e pronto!
 
 Abaixo entraremos em mais detalhes...
 
@@ -99,7 +99,7 @@ No entanto, alguns plug-ins podem gerar suas configurações em outros locais po
 
 # Para Desenvolvedores
 
-Se você deseja fazer um plug-in com o EXILED, é bem simples. Caso queria ver um tutorial, visite nosso [Manual de Instruções.](GettingStarted-BR.md)
+Se você deseja fazer um plug-in com o EXILED, é bem simples. Caso queira ver um tutorial, visite nosso [Manual de Instruções.](GettingStarted-BR.md)
 
 Para tutoriais mais abrangentes e ativamente atualizados, consulte [o site da EXILED](https://exmod-team.github.io/EXILED/).
 
@@ -107,7 +107,7 @@ Mas certifique-se de seguir estas regras ao publicar seus plug-ins:
 
  - Seu plug-in deve conter uma classe herdada de ``Exiled.API.Features.Plugin<>``, caso contrário, o EXILED não carregará seu plug-in quando o servidor iniciar.
  - Quando um plug-in é carregado, o código dentro do método ``OnEnabled()`` da classe é chamado imediatamente (Dependendo do ``Exiled.API.Features.Plugin<>::PluginPriority``)
- - Se você precisar acessar coisas que não foram inicializadas antes do carregamento do plug-in, é recomendável simplesmente aguardar o evento ``WaitingForPlayers`` para fazê-lo, se por algum motivo precisar fazer as coisas antes, envolva o código em um loop ```while (!x)``` que verifica se a variável/objeto que você precisa não é mais *null* antes de continuar.
+ - Se você precisar acessar algo que ainda não foram inicializadas antes do carregamento do plug-in, recomendamos simplesmente ouvir o evento ``WaitingForPlayers``. Se por algum motivo necessite disso, coloque o código dentro de um loop ```while (!x)``` onde verifica se a variável/objeto que você precisa não é mais *null* antes de continuar.
  - O EXILED suporta o recarregamento dinâmico de Assemblies de plug-ins no meio da execução. Isso significa que, se você precisar atualizar um plug-in, isso pode ser feito sem reiniciar o servidor, no entanto, se você estiver atualizando um plug-in no meio da execução, o plug-in precisa ser configurado corretamente para suportá-lo, ou você terá um sério problema. Consulte a seção ``Atualizações Dinâmicas`` para mais informações e orientações a seguir.
  - **NÃO** há evento OnUpdate, OnFixedUpdate ou OnLateUpdate no EXILED. Se você precisar, por algum motivo, executar o código com frequência, poderá usar uma corrotina MEC que espera por um quadro, 0.01f, ou usar uma camada de Timing como Timing.FixedUpdate.
 
@@ -134,7 +134,7 @@ public IEnumerator<float> MyCoroutine()
 {
     for (;;) //Repete o evento seguinte por tempo indefinido
     {
-        Log.Info("Ei, eu sou um ciclo infinito!"); //Designar Log.Info para reproduzir uma linha nos registros do console/servidor do jogo.
+        Log.Info("Ei, eu sou um ciclo infinito!"); // Usado para reproduzir uma linha nos registros do console/servidor do jogo.
         yield return Timing.WaitForSeconds(5f); //Diz à corrotina para esperar 5 segundos antes de continuar, e quando está no final do ciclo, efetivamente interrompe a repetição do ciclo por 5 segundos.
     }
 }
@@ -151,7 +151,7 @@ Isso também significa que você pode *atualizar* os plug-ins sem precisar reini
 ***Para Hosters***
  - Se você estiver atualizando um plug-in, certifique-se de que o nome do Assembly não seja o mesmo da versão atual que você instalou (se houver uma). O plug-in deve ser construído pelo desenvolvedor com atualizações dinâmicas em mente para que isso funcione, simplesmente renomear o arquivo não basta.
  - Se o plug-in suporta Atualizações Dinâmicas, certifique-se de que, ao colocar a versão mais recente do plug-in na pasta "Plugins", você também remova a versão mais antiga da pasta, antes de recarregar o EXILED; a falha em garantir isso resultará em muitos problemas indesejados.
- - Quaisquer problemas decorrentes da Atualização Dinâmica de um plug-in são de sua exclusiva responsabilidade e do desenvolvedor do plug-in em questão. Embora o EXILED suporte e incentive totalmente as Atualizações Dinâmicas, a única maneira de isso falhar ou dar errado é se o anfitrião do servidor ou o desenvolvedor do plug-in fizer algo errado. Verifique três vezes se tudo foi feito corretamente por ambas as partes antes de relatar um erro aos desenvolvedores da EXILED em relação às Atualizações Dinâmicas.
+ - Quaisquer problemas decorrentes da Atualização Dinâmica de um plug-in são de sua exclusiva responsabilidade e do desenvolvedor do plug-in em questão. Embora o EXILED suporte e incentive totalmente as Atualizações Dinâmicas, a única maneira de isso falhar ou dar errado é se o dono do servidor ou o desenvolvedor do plug-in fizer algo errado. Verifique três vezes se tudo foi feito corretamente por ambas as partes antes de relatar um erro aos desenvolvedores da EXILED em relação às Atualizações Dinâmicas.
 
  ***Para Desenvolvedores***
 
@@ -169,4 +169,4 @@ Como tal, os plug-ins que oferecem suporte a Atualizações Dinâmicas ***DEVEM*
 
 Mas nem todo plug-in tem de oferecer suporte a Atualizações Dinâmicas. Se você não pretende oferecer suporte a Atualizações Dinâmicas, tudo bem, simplesmente não altere o nome do Assembly do seu plug-in ao criar uma nova versão e não precisará se preocupar com nada disso, apenas certifique-se de que os donos de servidor saibam que eles precisarão reinicializar completamente seus servidores para atualizar seu plug-in.
 
-**Tradução brasileira feita por**: *Firething* e *Unbistrackted*
+**Tradução para o português feita por**: *Unbistrackted* e *Firething*
