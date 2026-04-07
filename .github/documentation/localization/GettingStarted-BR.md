@@ -1,21 +1,28 @@
-# Documento de Baixo Nível do Exiled
-*(Escrito por [KadeDev](https://github.com/KadeDev) para a comunidade) (Traduzido por [Firething](https://github.com/Firething))*
+# Tutorial do EXILED
+*(Escrito por [KadeDev](https://github.com/KadeDev) para a comunidade)*
 
 ## Manual de Instruções
 ### Introdução
-Exiled é uma API de baixo nível, o que significa que você pode chamar funções do jogo sem precisar de vários bloatwares de API.
+Como dito anteriormente, o EXILED é uma framework de alto nível que permite a gente chamar funções do jogo sem ter nenhum tipo de complicação ou quase nenhuma perca de perfomance.
 
-Isso permite com que o Exiled atualize-se facilmente, e ele pode ser atualizado antes mesmo da atualização chegar ao jogo.
+Isso permite que o projeto seja atualizado de forma mais simples, sem precisar que desenvolvedores atualizem seus plugins! (Isso se não houver códigos que foram alterados/tornados obsoletos em versões majors do EXILED)
 
-Isso também permite que desenvolvedores de plug-in não precisem atualizar seus códigos sempre que houver uma atualização do Exiled ou SCP:SL. Na realidade, eles nem precisarão atualizar seus plug-ins!
+O guia a seguir irá te ensinar o básico de como criar seu primeiro plugin!
 
-Esse documento mostrará a você os básicos de como se fazer um Plug-in para o Exiled. A partir daqui, você poderá mostrar ao mundo as coisas criativas que você pode criar com essa framework!
+### Guia
+O [Plug-in de Exemplo](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Example) mostra o que são eventos e como criar eles de forma correta. Usar esse exemplo ajudará você a aprender a como usar o Exiled apropriadamente. Há naquele alguns aspectos que são importantes, o quais abordaremos nessa guia.
 
-### Exemplo de Plug-in
-Um [Exemplo de Plug-in](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Example) que é um plug-in simples que mostra eventos e como fazer eles adequadamente. Usar esse exemplo ajudará você a aprender a como usar o Exiled apropriadamente. Há alguns aspectos nesse plug-in que são importantes, falaremos sobre eles.
+#### Atualizações Dinâmicas e ``OnEnable`` + ``OnDisable``
+O EXILED possuí um comando chamado **Reload**, que recarrega todos os plug-ins instalados. 
 
-#### Atualizações Dinâmicas em On Enable + On Disable
-Exiled é uma framework que tem um comando de **Reload** que pode ser usado para recarregar todos os plug-ins e obter novos. Isso significa que você deve fazer com que seus plug-ins sejam **Dinamicamente Atualizáveis.** Isso significa que toda variável, evento, corrotina, etc *deve* ser atribuída quando ativada e anulada quando desativada. O método **On Enable** deve ativar todos, e o método **On Disable** deve desativar todos. Mas talvez você esteja se perguntando 'E o **On Reload**'? Essa função tem como objetivo carregar variáveis estáticas para que toda constante estática que você fizer não seja apagada. Então você poderia fazer algo assim:
+Ele funciona desativando o plugin e ativando-o novamente, além de chamar a função ``OnReload`` que entraremos em detalhes abaixo.
+
+Lembrando que toda variável, evento, corrotina, etc. *deve* ser atribuído ou criado quando o plugin é ativado e anulada quando o mesmo é desativado.
+
+> [!IMPORTANT]  
+> Você **DEVE** usar o método ``OnEnable`` para ativar o Plug-in, e ``OnDisable`` desativa-lo. 
+
+Mas talvez você deve estar se perguntando: "Mas então para que serve o ``OnReload``?" Essa função tem como objetivo recarregar as variáveis estáticas de dentro do seu plugin. Então você poderia fazer algo assim:
 ```csharp
 public static int StaticCount = 0;
 public int counter = 0;
@@ -41,13 +48,14 @@ public override void OnReload()
 
 E o resultado seria:
 ```bash
-# On enable fires
+# O servidor é iniciado...
+# OnEnable é chamado.
 1
-# Reload command
-# On Disable fires
+# Comando Reload é executado por alguém...
+# OnDisable é chamado.
 2
-# On Reload fires
-# On Enable fires again
+# OnReload é chamado.
+# E então OnEnabled é chamado novamente.
 3
 
 ```
