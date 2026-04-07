@@ -14,8 +14,8 @@
 EXILED é um Framework de alto nível para a criação de plug-ins direcionado a servidores de SCP: Secret Laboratory. Ele oferece um sistema de eventos para os desenvolvedores, com o objetivo de manipular, alterar ou implementar suas próprias funcionalidades no jogo.
 Todos os eventos do EXILED são feitos com [Harmony](https://harmony.pardeike.net/articles/intro.html), o que significa que não requerem edição direta dos Assemblies/Código Base do servidor para funcionar, permitindo dois benefícios:
 
- - Todo o código do Framework pode ser publicado e compartilhado livremente, permitindo que os desenvolvedores entendam melhor *como* funciona, além de poder sugerir para adicionar ou alterar algo.
- - Todo o código relacionado ao framework é feito fora do assembly do servidor, significando que pequenas atualizações do jogo provavelmente não causarão efeitos colaterais. Isso torna o projeto mais compatível, além de facilitar quando for necessário atualizá-lo.
+ - Todo o código do Framework pode ser publicado e compartilhado livremente, permitindo que os desenvolvedores entendam melhor *como* funciona, além de poderem sugerir adições ou alterações.
+ - Todo o código relacionado ao framework é executado fora do assembly do servidor, significando que pequenas atualizações do jogo provavelmente não causarão efeitos colaterais. Isso torna o projeto mais compatível, além de facilitar quando for necessário atualizá-lo.
 
 # Instalação
 A instalação do EXILED é bem simples e você pode escolher entre dois tipos: ``Automática`` e ``Manual``.
@@ -107,9 +107,9 @@ Mas certifique-se de seguir estas regras ao publicar seus plug-ins:
 
  - Seu plug-in deve conter uma classe herdada de ``Exiled.API.Features.Plugin<>``, caso contrário, o EXILED não carregará seu plug-in quando o servidor iniciar.
  - Quando um plug-in é carregado, o código dentro do método ``OnEnabled()`` da classe é chamado imediatamente (Dependendo do ``Exiled.API.Features.Plugin<>::PluginPriority``)
- - Se você precisar acessar algo que ainda não foram inicializadas antes do carregamento do plug-in, recomendamos simplesmente ouvir o evento ``WaitingForPlayers``. Se por algum motivo necessite disso, coloque o código dentro de um loop ```while (!x)``` onde verifica se a variável/objeto que você precisa não é mais *null* antes de continuar.
+ - Se você precisar acessar algo que ainda não foi inicializado antes do carregamento do plug-in, recomendamos simplesmente ouvir o evento ``WaitingForPlayers``. Se por algum motivo você precisar fazer isso antes, coloque o código dentro de um loop ```while (!x)``` onde verifica se a variável/objeto que você precisa não é mais *null* antes de continuar.
  - O EXILED suporta o recarregamento dinâmico de Assemblies de plug-ins no meio da execução. Isso significa que, se você precisar atualizar um plug-in, isso pode ser feito sem reiniciar o servidor, no entanto, se você estiver atualizando um plug-in no meio da execução, o plug-in precisa ser configurado corretamente para suportá-lo, ou você terá um sério problema. Consulte a seção ``Atualizações Dinâmicas`` para mais informações e orientações a seguir.
- - **NÃO** há evento OnUpdate, OnFixedUpdate ou OnLateUpdate no EXILED. Se você precisar, por algum motivo, executar o código com frequência, poderá usar uma corrotina MEC que espera por um quadro, 0.01f, ou usar uma camada de Timing como Timing.FixedUpdate.
+ - **NÃO** há evento OnUpdate, OnFixedUpdate ou OnLateUpdate no EXILED. Se você precisar, por algum motivo, executar o código com frequência, poderá usar uma corrotina MEC que espera por um quadro, 0.01f, ou usar um segmento de Timing como ``Timing.FixedUpdate``.
 
 ### Desativando patches de evento do EXILED
 ***Atualmente, esta função não está mais implementada.***
@@ -143,7 +143,7 @@ public IEnumerator<float> MyCoroutine()
 É **altamente** recomendável que você pesquise no Google ou pergunte no Discord se não estiver familiarizado com o MEC e quiser aprender mais, obter conselhos ou precisar de ajuda. As perguntas, não importa o quão 'estúpidas' sejam, sempre serão respondidas da maneira mais útil e clara possível. Um bom código é melhor para todos.
 
 ### Atualizações Dinâmicas
-O EXILED como uma estrutura suporta o recarregamento dinâmico de Assemblies de plug-ins sem exigir uma reinicialização do servidor.
+O EXILED como uma estrutura suporta o recarregamento dinâmico de Assemblies de plug-ins sem precisar reiniciar o servidor.
 Por exemplo, apenas com `Exiled.Events` como o único plug-in e depois você deseja adicionar um novo, não será necessário reiniciar o servidor. Você pode simplesmente usar o comando do RemoteAdmin/ServerConsole `reload plugins` para recarregar todos os plug-ins do EXILED, incluindo os novos que não foram carregados antes.
 
 Isso também significa que você pode *atualizar* os plug-ins sem precisar reinicializar totalmente o servidor. No entanto, existem algumas diretrizes que devem ser seguidas pelo desenvolvedor do plug-in para que isso seja realizado corretamente:
@@ -163,7 +163,7 @@ Tudo isso pode ser realizado nos métodos ``OnReloaded()`` ou ``OnDisabled()`` n
 
 Observe que eu disse *novos* Assemblies. Se você substituir um Assembly por outro com o mesmo nome, ele ***NÃO*** será atualizado. Isso se deve ao GAC (Global Assembly Cache), se você tentar 'carregar' um Assembly que já está no cache, ele sempre usará o Assembly em cache.
 Por esse motivo, se o seu plug-in oferecer suporte a Atualizações Dinâmicas, você deverá criar cada versão com um nome de Assembly diferente nas opções de compilação (renomear o arquivo não funcionará). Além disso, como o Assembly antigo não é "destruído" quando não é mais necessário, se você não cancelar a assinatura de eventos, desfazer o patch de sua instância de Harmony, eliminar corrotinas, etc., esse código continuará a ser executado, bem como o código da nova versão.
-Esta é uma péssima, bem péssima situação para se deixar ocorrer.
+Esta é uma situação muito ruim para se deixar acontecer.
 
 Como tal, os plug-ins que oferecem suporte a Atualizações Dinâmicas ***DEVEM*** seguir estas diretrizes ou serão removidos do servidor do Discord devido ao risco potencial para os donos de servidor.
 
