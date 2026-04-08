@@ -159,7 +159,7 @@ Isso também significa que você pode *atualizar* os plug-ins sem precisar reini
  - Os plug-ins que possuem patches personalizados do Harmony devem usar algum tipo de variável mutável no nome da instância do Harmony e devem usar UnPatchAll() em sua instância do Harmony quando o plug-in for desativado ou recarregado.
  - Quaisquer corrotinas iniciadas pelo plug-in em ``OnEnabled()`` também devem ser eliminadas quando o plug-in for desativado ou recarregado.
 
-Tudo isso pode ser realizado nos métodos ``OnReloaded()`` ou ``OnDisabled()`` na classe do plug-in. Quando o EXILED recarrega os plug-ins, ele designa OnDisabled(), então ``OnReloaded()``, então ele carregará nos novos Assemblies, e então executará ``OnEnabled()``.
+Tudo isso pode ser realizado nos métodos ``OnReloaded()`` ou ``OnDisabled()`` na classe do plug-in. Quando o EXILED recarrega os plug-ins, ele chama ``OnDisabled()``, então ``OnReloaded()``, então ele carregará nos novos Assemblies, e então executará ``OnEnabled()``.
 
 Observe que eu disse *novos* Assemblies. Se você substituir um Assembly por outro com o mesmo nome, ele ***NÃO*** será atualizado. Isso se deve ao GAC (Global Assembly Cache), se você tentar 'carregar' um Assembly que já está no cache, ele sempre usará o Assembly em cache.
 Por esse motivo, se o seu plug-in oferecer suporte a Atualizações Dinâmicas, você deverá criar cada versão com um nome de Assembly diferente nas opções de compilação (renomear o arquivo não funcionará). Além disso, como o Assembly antigo não é "destruído" quando não é mais necessário, se você não cancelar a assinatura de eventos, desfazer o patch de sua instância de Harmony, eliminar corrotinas, etc., esse código continuará a ser executado, bem como o código da nova versão.
