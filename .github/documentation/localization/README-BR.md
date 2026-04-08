@@ -60,12 +60,10 @@ O EXILED agora deve estar instalado e ativo na próxima vez que você iniciar o 
 > Certifique-se de executar o instalador como o mesmo usuário (ou root) que executa seus servidores de SCP:SL.
 
 ### Instalação automática ([mais informações](https://github.com/ExMod-Team/EXILED/blob/master/EXILED/Exiled.Installer/README.md))
+> [!CAUTION] 
+> Não esqueça de usar o ``chmod`` para dar as permissões necessárias para o instalador e executar o servidor dedicado pelo menos uma vez!
   - Baixe o **`Exiled.Installer-Linux` [aqui](https://github.com/ExMod-Team/EXILED/releases)** (clique em Assets -> baixe o Instalador)
-  - Instale-o digitando **`./Exiled.Installer-Linux --path /path/to/server`** ou mova-o diretamente para dentro da pasta do servidor, e digite: **`./Exiled.Installer-Linux`**.
-  
-> [!NOTE]  
-> Se você quiser o último pré-lançamento, adicione a flag **`--pre-releases`**. Exemplo: **`./Exiled.Installer-Linux --pre-releases`**
-
+  - Mova-o diretamente para dentro da pasta do servidor e digite: **`./Exiled.Installer-Linux`** ou, passe diretamente o caminho usando o comando: **`./Exiled.Installer-Linux --path /path/to/server`**
   - Para instalar e obter plug-ins, confira a secção [Instalando plug-ins](https://github.com/ExMod-Team/EXILED/edit/master/.github/documentation/localization/README-BR.md#instalando-plug-ins-1).
 
 ### Instalação manual
