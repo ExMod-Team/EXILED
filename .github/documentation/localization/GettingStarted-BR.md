@@ -1,5 +1,5 @@
 # Tutorial do EXILED
-*(Escrito por [KadeDev](https://github.com/KadeDev) para a comunidade)*
+*(Escrito por [KadeDev](https://github.com/KadeDev) para a comunidade, revisado e traduzido por [Unbistrackted](https://github.com/Unbistrackted) e [Firething](https://github.com/Firething))*
 
 ## Manual de Instruções
 ### Introdução
