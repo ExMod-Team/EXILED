@@ -55,7 +55,7 @@ E o resultado seria:
 # OnDisable é chamado.
 2
 # OnReload é chamado.
-número é guardado dentro de StaticCount
+"counter" é guardado dentro de "StaticCount"
 # E então OnEnabled é chamado novamente.
 3
 
@@ -65,10 +65,10 @@ Sem fazer isso, teria apenas mostrado no console ``1`` e então para o ``2`` nov
 ### Jogadores + Eventos
 Agora que entendemos como plug-ins **Dinamicamente Atualizáveis** funcionam, podemos focar em tentar interagir com jogadores por meio de eventos!
 
-Um evento é uma forma do jogo notificar seu plug-in quando algo acontece, por exemplo: jogador entrou, tomou dano, morreu, etc.
+Um evento é uma forma do jogo notificar seu plug-in quando algo acontece, por exemplo quando um jogador entrar, tomar dano, morrer, etc.
 
 > [!IMPORTANT]  
-> Você **PRECISA** referenciar o arquivo `Exiled.Events.dll` para que você consiga usar os eventos. (Ou apenas baixe o pacote [Nuget](https://www.nuget.org/packages/ExMod.Exiled) do Exiled!)
+> Você **PRECISA** referenciar o arquivo `Exiled.Events.dll` para que você consiga usar os eventos. (Ou apenas baixe o pacote [Nuget do Exiled](https://www.nuget.org/packages/ExMod.Exiled)!)
 
 Para começar a ouvir um evento, iremos utilizar uma nova classe chamada "EventHandlers", que irá gerenciar os nossos eventos.
 
@@ -126,7 +126,7 @@ public class EventHandlers
 }
 ```
 
-Outro exemplo seria um evento que desliga as Teslas para todos os MTFs (incluindo guardas).
+Outro exemplo seria um evento que desliga as Teslas para todos os MTFs. (Incluindo guardas)
 
 `MainClass.cs`
 ```csharp
@@ -169,7 +169,7 @@ public class EventHandlers
 
 
 ### Configurações
-Grande partes dos plug-ins precisam de configurações, isso permite que os donos de servidores modifiquem os plug-ins livremente, no caso limitadas à configuração que o desenvolvedor do plug-in forneceu.
+Grande partes dos plug-ins precisam de configurações, isso permite que os donos de servidores modifiquem os plug-ins livremente. (Limitados as configurações que o desenvolvedor ofereceu)
 
 Primeiro crie uma classe chmada `Config` e mude a herança do seu plug-in de `Plugin<>` para `Plugin<Config>`
 
@@ -197,7 +197,9 @@ Você pode adicionar qualquer opção de configuração ali e referenciá-la ass
 
 > [!NOTE] 
 > Você não precisa verificar se `IsEnabled == true` ou não, o Loader já faz isso automaticamente.
+
 `MainClass.cs`
+
 ```csharp
    public override OnEnabled()
    {
@@ -212,4 +214,4 @@ Se você quiser mais informações, entre no nosso [Servidor do Discord!](https:
 
 Nós temos um canal de #resources que você pode considerar útil, assim como vários outros desenvolvedores que iram te ajudar a desenvolver seus plug-ins!
 
-Ou você poderia ler sobre todos os eventos que nós temos! Bem [aqui!](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)
+Ou você poderia ler sobre todos os eventos que nós temos! Bem [aqui](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)!
