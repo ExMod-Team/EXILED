@@ -82,9 +82,12 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Ldloc_S, cause),
                 new(OpCodes.Newobj, Constructor(typeof(AnnouncingScpTerminationEventArgs), new[] { typeof(Player), typeof(string) })),
                 new(OpCodes.Dup),
+                new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnAnnouncingScpTermination))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.TerminationCause))),
                 new(OpCodes.Stloc_S, cause),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.IsAllowed))),
+                new(OpCodes.Brfalse, ret),
 
                 // entry point
                 new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(entryLabel),
