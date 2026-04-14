@@ -99,6 +99,11 @@ namespace Exiled.Events.Handlers
         public static Event<UsedItemEventArgs> UsedItem { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> consumes an <see cref="API.Features.Items.Consumable"/>. In other words, it is invoked before the consumable item logic are applied.
+        /// </summary>
+        public static Event<ConsumingItemEventArgs> ConsumingItem { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> has stopped the use of a <see cref="API.Features.Items.Usable"/>.
         /// </summary>
         public static Event<CancellingItemUseEventArgs> CancellingItemUse { get; set; } = new();
@@ -722,6 +727,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="UsedItemEventArgs"/> instance.</param>
         public static void OnUsedItem(UsedItemEventArgs ev) => UsedItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> consumes a <see cref="API.Features.Items.Consumable"/> item.
+        /// </summary>
+        /// <param name="ev">The <see cref="ConsumingItemEventArgs"/> instance.</param>
+        public static void OnConsumingItem(ConsumingItemEventArgs ev) => ConsumingItem.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> has stopped the use of a <see cref="API.Features.Items.Usable"/> item.
