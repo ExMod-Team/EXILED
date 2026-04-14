@@ -5,19 +5,21 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.API.Features.Audio
+namespace Exiled.API.Features.Audio.PcmSources
 {
     using System;
     using System.Buffers;
     using System.IO;
     using System.Runtime.InteropServices;
 
-    using Exiled.API.Interfaces;
+    using Exiled.API.Features.Audio;
+    using Exiled.API.Interfaces.Audio;
+    using Exiled.API.Structs.Audio;
 
     using VoiceChat;
 
     /// <summary>
-    /// Provides a PCM audio source from a WAV file stream.
+    /// Provides a <see cref="IPcmSource"/> from a WAV file stream.
     /// </summary>
     public sealed class WavStreamSource : IPcmSource
     {
@@ -36,11 +38,16 @@ namespace Exiled.API.Features.Audio
         public WavStreamSource(string path)
         {
             stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 64 * 1024, FileOptions.SequentialScan);
-            WavUtility.SkipHeader(stream);
+            TrackInfo = WavUtility.SkipHeader(stream);
             startPosition = stream.Position;
             endPosition = stream.Length;
             internalBuffer = ArrayPool<byte>.Shared.Rent(VoiceChatSettings.PacketSizePerChannel * 2);
         }
+
+        /// <summary>
+        /// Gets the metadata of the streaming track.
+        /// </summary>
+        public TrackData TrackInfo { get; }
 
         /// <summary>
         /// Gets the total duration of the audio in seconds.
@@ -70,6 +77,11 @@ namespace Exiled.API.Features.Audio
         /// <returns>The number of samples read.</returns>
         public int Read(float[] buffer, int offset, int count)
         {
+            count = Math.Min(count, buffer.Length - offset);
+
+            if (count <= 0)
+                return 0;
+
             int bytesNeeded = count * 2;
 
             if (internalBuffer.Length < bytesNeeded)
@@ -89,13 +101,10 @@ namespace Exiled.API.Features.Audio
             Span<byte> byteSpan = internalBuffer.AsSpan(0, bytesRead);
             Span<short> shortSpan = MemoryMarshal.Cast<byte, short>(byteSpan);
 
-            int samplesInDestination = buffer.Length - offset;
-            int samplesToWrite = Math.Min(shortSpan.Length, samplesInDestination);
-
-            for (int i = 0; i < samplesToWrite; i++)
+            for (int i = 0; i < shortSpan.Length; i++)
                 buffer[offset + i] = shortSpan[i] * Divide;
 
-            return samplesToWrite;
+            return shortSpan.Length;
         }
 
         /// <summary>
@@ -104,15 +113,7 @@ namespace Exiled.API.Features.Audio
         /// <param name="seconds">The position in seconds to seek to.</param>
         public void Seek(double seconds)
         {
-            long targetSample = (long)(seconds * VoiceChatSettings.SampleRate);
-            long targetByte = targetSample * 2;
-
-            long newPos = startPosition + targetByte;
-            if (newPos > endPosition)
-                newPos = endPosition;
-
-            if (newPos < startPosition)
-                newPos = startPosition;
+            long newPos = Math.Clamp(startPosition + ((long)(seconds * VoiceChatSettings.SampleRate) * 2), startPosition, endPosition);
 
             if (newPos % 2 != 0)
                 newPos--;
