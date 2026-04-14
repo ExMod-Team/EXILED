@@ -14,8 +14,13 @@ namespace Exiled.API.Features.Hazards
     using Exiled.API.Enums;
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
+
     using global::Hazards;
+
+    using Interactables.Interobjects.DoorUtils;
+
     using PlayerRoles.PlayableScps.Scp939;
+
     using UnityEngine;
 
     /// <summary>
@@ -114,11 +119,18 @@ namespace Exiled.API.Features.Hazards
         }
 
         /// <summary>
+        /// Converts EnvironmentalHazard to Hazard.
+        /// </summary>
+        /// <param name="environmentalHazard">The EnvironmentalHazard.</param>
+        /// <returns>EXILED Hazard.</returns>
+        public static implicit operator Hazard(EnvironmentalHazard environmentalHazard) => Get(environmentalHazard);
+
+        /// <summary>
         /// Gets the <see cref="Hazard"/> by <see cref="EnvironmentalHazard"/>.
         /// </summary>
         /// <param name="environmentalHazard">The <see cref="EnvironmentalHazard"/> instance.</param>
         /// <returns><see cref="Hazard"/> for <see cref="EnvironmentalHazard"/>.</returns>
-        public static Hazard Get(EnvironmentalHazard environmentalHazard) =>
+        public static Hazard Get(EnvironmentalHazard environmentalHazard) => environmentalHazard == null ? null :
             EnvironmentalHazardToHazard.TryGetValue(environmentalHazard, out Hazard hazard) ? hazard
             : environmentalHazard switch
         {
