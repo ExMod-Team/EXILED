@@ -120,11 +120,10 @@ namespace Exiled.API.Features.Toys
                 Shape = shape,
                 IsLocked = isLocked,
                 InteractionDuration = interactionDuration,
+                LocalPosition = position ?? Vector3.zero,
+                LocalRotation = rotation ?? Quaternion.identity,
+                Scale = scale ?? Vector3.one,
             };
-
-            toy.Transform.localPosition = position ?? Vector3.zero;
-            toy.Transform.localRotation = rotation ?? Quaternion.identity;
-            toy.Transform.localScale = scale ?? Vector3.one;
 
             if (spawn)
                 toy.Spawn();
