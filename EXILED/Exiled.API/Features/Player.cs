@@ -2032,6 +2032,36 @@ namespace Exiled.API.Features
         public Pickup DropItem(Item item) => item is not null ? Pickup.Get(Inventory.ServerDropItem(item.Serial)) : null;
 
         /// <summary>
+        /// Drops an <see cref="Item"/> from the player's inventory by its <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="item">The specified <see cref="ItemType"/> to be dropped.</param>
+        /// <param name="isThrown">Is the item Thrown?.</param>
+        /// <returns>A value indicating whether the <see cref="Item"/> was dropped.</returns>
+        public bool DropItem(ItemType item, bool isThrown = false)
+        {
+            Item itemtodrop = Items.FirstOrDefault(tempItem => tempItem.Type == item);
+            if (itemtodrop == null)
+                return false;
+
+            DropItem(itemtodrop, isThrown);
+            return true;
+        }
+
+        /// <summary>
+        /// Drops an item from the player's inventory.
+        /// </summary>
+        /// <param name="item">The specified <see cref="ItemType"/> to be dropped.</param>
+        /// <returns>dropped <see cref="Pickup"/>.</returns>
+        public Pickup DropItem(ItemType item)
+        {
+            Item itemtodrop = Items.FirstOrDefault(tempItem => tempItem.Type == item);
+            if (itemtodrop == null)
+                return null;
+
+            return Pickup.Get(Inventory.ServerDropItem(itemtodrop.Serial));
+        }
+
+        /// <summary>
         /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
         /// <param name="isThrown">Is the item Thrown?.</param>
@@ -2135,6 +2165,22 @@ namespace Exiled.API.Features
                 Inventory.SendItemsNextFrame = true;
             }
 
+            return true;
+        }
+
+        /// <summary>
+        /// Removes an <see cref="Item"/> from the player's inventory by its <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="item">The specified <see cref="ItemType"/> to be removed.</param>
+        /// <param name="destroy">Whether to destroy the item.</param>
+        /// <returns>A value indicating whether the <see cref="Item"/> was removed.</returns>
+        public bool RemoveItem(ItemType item, bool destroy = true)
+        {
+            Item itemtoremove = Items.FirstOrDefault(tempItem => tempItem.Type == item);
+            if (itemtoremove == null)
+                return false;
+
+            RemoveItem(itemtoremove, destroy);
             return true;
         }
 
