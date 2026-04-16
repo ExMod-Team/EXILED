@@ -364,51 +364,44 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Moves Npc by direction times distance.
-        /// For future maintainer: <see cref="FpcMotor"/> implements <see cref="IDummyActionProvider"/>.
+        /// Moves this Npc by a direction relative to where they are looking.
         /// </summary>
-        /// <param name="dir">Direction where Npc should move.</param>
+        /// <param name="dir">Direction where Npc should move relative to where they are looking.</param>
         /// <param name="distance">The distance that the Npc should move by.</param>
-        /// <returns>true if moved.</returns>
-        public bool MoveRelative(Vector3 dir, float distance)
+        /// <returns>True if successful.</returns>
+        public bool TryMoveRelative(Vector3 dir, float distance)
         {
-            if (Role is not FpcRole fpcRole)
-            {
+            if (Role is not FpcRole)
                 return false;
-            }
 
-            Vector3 vector = ReferenceHub.PlayerCameraReference.TransformDirection(dir).NormalizeIgnoreY();
-            fpcRole.FirstPersonController.FpcModule.Motor.ReceivedPosition = new RelativePosition(Position + (vector * distance));
+            Vector3 vector = CameraTransform.TransformDirection(dir).NormalizeIgnoreY();
+            Position += vector * distance;
             return true;
         }
 
         /// <summary>
-        /// Makes the Npc look horizontal. Right or Left.
+        /// Makes the Npc look more left or more right.
         /// </summary>
-        /// <param name="amount">Amount that will be added to horizontal.</param>
+        /// <param name="amount">Amount that will be added to horizontal (in degrees).</param>
         /// <returns>True if successful.</returns>
-        public bool LookHorizontal(float amount)
+        public bool TryAddHorizontalLook(float amount)
         {
             if (Role is not FpcRole fpcRole)
-            {
                 return false;
-            }
 
             fpcRole.FirstPersonController.FpcModule.MouseLook.CurrentHorizontal += amount;
             return true;
         }
 
         /// <summary>
-        /// Makes the Npc look vertical. Up or Down.
+        /// Makes the Npc look more up or more down.
         /// </summary>
-        /// <param name="amount">Amount that will be added to vertical.</param>
+        /// <param name="amount">Amount that will be added to vertical (in degrees).</param>
         /// <returns>True if successful.</returns>
-        public bool LookVertical(float amount)
+        public bool TryAddVerticalLook(float amount)
         {
             if (Role is not FpcRole fpcRole)
-            {
                 return false;
-            }
 
             fpcRole.FirstPersonController.FpcModule.MouseLook.CurrentVertical += amount;
             return true;
@@ -418,31 +411,27 @@ namespace Exiled.API.Features
         /// Forces Npc to look at certain point.
         /// </summary>
         /// <param name="position">Position to look at.</param>
-        /// <param name="lerp">The amount in percentage how much to look at the position, 1 is full and will immediately look at point.</param>
+        /// <param name="lerp">The amount in percentage how much to look at the position, 1 is full and will immediately look at the point.</param>
         /// <returns>True if successful.</returns>
-        public bool LookAtPoint(Vector3 position, float lerp = 1)
+        public bool TryLookAtPoint(Vector3 position, float lerp = 1)
         {
             if (Role is not FpcRole fpcRole)
-            {
                 return false;
-            }
 
             fpcRole.FirstPersonController.LookAtPoint(position, lerp);
             return true;
         }
 
         /// <summary>
-        /// Forces Npc to look at certain point.
+        /// Forces Npc to look at a certain direction.
         /// </summary>
-        /// <param name="dir">Position to look at.</param>
-        /// <param name="lerp">The amount in percentage how much to look at the position, 1 is full and will immediately look at point.</param>
+        /// <param name="dir">The direction to look at.</param>
+        /// <param name="lerp">The amount in percentage how much to look at the direction, 1 is full and will immediately look at the target direction.</param>
         /// <returns>True if successful.</returns>
-        public bool LookAtDirection(Vector3 dir, float lerp = 1)
+        public bool TryLookAtDirection(Vector3 dir, float lerp = 1)
         {
             if (Role is not FpcRole fpcRole)
-            {
                 return false;
-            }
 
             fpcRole.FirstPersonController.LookAtDirection(dir, lerp);
             return true;

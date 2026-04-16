@@ -192,8 +192,9 @@ namespace Exiled.API.Features.Items
         public Player Owner => Player.Get(Base.Owner) ?? Server.Host;
 
         /// <summary>
-        /// Gets the emulator for dummy actions if the item is Autosync.
+        /// Gets the emulator for dummy actions if this item inherits <see cref="AutosyncItem"/>.
         /// </summary>
+        /// <remarks>Returns null if this item does not inherit <see cref="AutosyncItem"/>.</remarks>
         public DummyKeyEmulator DummyEmulator
         {
             get
