@@ -79,6 +79,8 @@ namespace Exiled.Events.Patches.Events.Map
                 // start of loop
                 new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(loopLabel),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(IEnumerator<Footprint>), nameof(IEnumerator<Footprint>.Current))),
+                new(OpCodes.Stloc_S, footprint),
+                new(OpCodes.Ldloc_S, footprint),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(Footprint) })),
                 new(OpCodes.Ldloc_S, cause),
                 new(OpCodes.Newobj, Constructor(typeof(AnnouncingScpTerminationEventArgs), new[] { typeof(Player), typeof(string) })),
