@@ -41,6 +41,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             LocalBuilder cause = generator.DeclareLocal(typeof(string));
             LocalBuilder enumerator = generator.DeclareLocal(typeof(IEnumerator<Footprint>));
+            LocalBuilder footprint = generator.DeclareLocal(typeof(Footprint));
 
             ExceptionBlock beginTry = new(ExceptionBlockType.BeginExceptionBlock);
             ExceptionBlock beginFinally = new(ExceptionBlockType.BeginFinallyBlock);
