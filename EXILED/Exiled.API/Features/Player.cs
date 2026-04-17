@@ -2924,7 +2924,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(FirearmPickup pickup, IEnumerable<AttachmentIdentifier> identifiers)
         {
-            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, ItemAddReason.AdminCommand, pickup.Serial, pickup.Base));
+            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, ItemAddReason.PickedUp, pickup.Serial, pickup.Base));
 
             if (identifiers is not null)
                 firearm.AddAttachment(identifiers);

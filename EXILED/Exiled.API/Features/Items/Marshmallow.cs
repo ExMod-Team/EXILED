@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Marshmallow.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Items
     using CustomPlayerEffects;
     using Exiled.API.Interfaces;
     using InventorySystem.Items.MarshmallowMan;
+    using InventorySystem.Items.Usables;
     using PlayerStatsSystem;
     using UnityEngine;
 
@@ -96,7 +97,7 @@ namespace Exiled.API.Features.Items
             if (Evil)
                 return;
 
-            Base.ReleaseEvil(evilProcess ?? EvilAhpProcess ?? Owner.GetModule<AhpStat>().ServerAddProcess(450F, 450F, 0F, 1F, 0F, true));
+            Base.ReleaseEvil(evilProcess ?? EvilAhpProcess ?? Owner.GetModule<AhpStat>().ServerAddProcess(Scp021J.MaxEvilAHP, Scp021J.MaxEvilAHP, 0F, 1F, 0F, true));
         }
     }
 }
