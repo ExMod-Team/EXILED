@@ -41,6 +41,7 @@ namespace Exiled.Events.Patches.Events.Map
 
             LocalBuilder cause = generator.DeclareLocal(typeof(string));
             LocalBuilder enumerator = generator.DeclareLocal(typeof(IEnumerator<Footprint>));
+            LocalBuilder footprint = generator.DeclareLocal(typeof(Footprint));
 
             ExceptionBlock beginTry = new(ExceptionBlockType.BeginExceptionBlock);
             ExceptionBlock beginFinally = new(ExceptionBlockType.BeginFinallyBlock);
@@ -78,13 +79,23 @@ namespace Exiled.Events.Patches.Events.Map
                 // start of loop
                 new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(loopLabel),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(IEnumerator<Footprint>), nameof(IEnumerator<Footprint>.Current))),
+                new(OpCodes.Stloc_S, footprint),
+                new(OpCodes.Ldloc_S, footprint),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(Footprint) })),
                 new(OpCodes.Ldloc_S, cause),
                 new(OpCodes.Newobj, Constructor(typeof(AnnouncingScpTerminationEventArgs), new[] { typeof(Player), typeof(string) })),
                 new(OpCodes.Dup),
+                new(OpCodes.Dup),
                 new(OpCodes.Call, Method(typeof(Map), nameof(Map.OnAnnouncingScpTermination))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.TerminationCause))),
                 new(OpCodes.Stloc_S, cause),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.IsAllowed))),
+                new(OpCodes.Brtrue, entryLabel),
+
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(typeof(CassieScpTerminationAnnouncement), nameof(CassieScpTerminationAnnouncement._victims))),
+                new(OpCodes.Ldloc_S, footprint),
+                new(OpCodes.Callvirt, Method(typeof(List<Footprint>), nameof(List<>.Remove))),
 
                 // entry point
                 new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(entryLabel),
