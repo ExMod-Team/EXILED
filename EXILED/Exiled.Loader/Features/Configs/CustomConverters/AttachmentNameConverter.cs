@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="AttachmentIdentifiersConverter.cs" company="ExMod Team">
+// <copyright file="AttachmentNameConverter.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
@@ -22,7 +22,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
     /// <summary>
     /// Converts a <see cref="IEnumerable{T}"/> of <see cref="AttachmentName"/> to Yaml configs and vice versa.
     /// </summary>
-    public sealed class AttachmentIdentifiersConverter : IYamlTypeConverter
+    public sealed class AttachmentNameConverter : IYamlTypeConverter
     {
         /// <inheritdoc cref="IYamlTypeConverter" />
         public bool Accepts(Type type) => type == typeof(AttachmentName);

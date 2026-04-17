@@ -500,7 +500,7 @@ namespace Exiled.API.Features
                 "HCZ_Corner_Deep" => RoomType.HczCornerDeep,
                 "HCZ_Straight" => RoomType.HczStraight,
                 "HCZ_Straight_C" => RoomType.HczStraightC,
-                "HCZ_Straight_PipeRoom"=> RoomType.HczStraightPipeRoom,
+                "HCZ_Straight_PipeRoom" => RoomType.HczStraightPipeRoom,
                 "HCZ_Straight Variant" => RoomType.HczStraightVariant,
                 "HCZ_ChkpA" => RoomType.HczElevatorA,
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
