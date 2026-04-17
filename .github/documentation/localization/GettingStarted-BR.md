@@ -3,7 +3,7 @@
 
 ## Manual de Instruções
 ### Introdução
-Como dito anteriormente, o EXILED é um framework de alto nível que nos permite chamar funções do jogo sem ter nenhum tipo de complicação ou quase nenhuma perda de perfomance.
+Como dito anteriormente, o EXILED é um framework de alto nível que nos permite chamar funções do jogo sem ter nenhum tipo de complicação ou quase nenhuma perda de performance.
 
 Isso permite que o projeto seja atualizado de forma mais simples, sem precisar que desenvolvedores atualizem seus plugins toda vez que o jogo atualizar. (Isso se não houver códigos que foram alterados/tornados obsoletos em versões majors do EXILED)
 
@@ -105,8 +105,7 @@ public override void OnEnable()
 public override void OnDisable()
 {
     // Precisamos desatribuir o evento e depois, anular o gerenciador de eventos.
-
-    // A linha abaixo deve ser repetido para cada evento.
+    // A linha abaixo deve ser repetida para cada evento.
     Player.Verified -= EventHandler.PlayerVerified;
     EventHandler = null;
 }
