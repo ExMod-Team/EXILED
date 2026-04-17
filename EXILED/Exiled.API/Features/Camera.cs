@@ -15,6 +15,7 @@ namespace Exiled.API.Features
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
     using MapGeneration;
+    using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
     using UnityEngine;
 
@@ -275,6 +276,24 @@ namespace Exiled.API.Features
         public static Camera Get(Scp079Camera camera079) => camera079 != null ? Camera079ToCamera.TryGetValue(camera079, out Camera camera) ? camera : new(camera079) : null;
 
         /// <summary>
+        /// Gets the <see cref="Camera"/> belonging to the <see cref="GameObject"/>, if any.
+        /// </summary>
+        /// <param name="gameObject">The <see cref="GameObject"/> of the camera.</param>
+        /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
+        public static Camera Get(GameObject gameObject)
+        {
+            foreach (Camera camera in List)
+            {
+                if (camera.GameObject == gameObject)
+                {
+                    return camera;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
         /// </summary>
         /// <param name="cameraId">The camera id to be searched for.</param>
@@ -317,6 +336,14 @@ namespace Exiled.API.Features
         /// <param name="result">The instance of <see cref="Camera"/> which <see cref="Scp079Camera"/> base.</param>
         /// <returns><see langword="true"/> if <see cref="Camera"/> is not <see langword="null"/>, or <see langword="false"/> if <see cref="Camera"/> is <see langword="null"/>.</returns>
         public static bool TryGet(Scp079Camera camera, out Camera result) => (result = Get(camera)) != null;
+
+        /// <summary>
+        /// Gets the <see cref="Camera"/> belonging to the <see cref="Scp079Camera"/>, if any.
+        /// </summary>
+        /// <param name="gameObject">The <see cref="GameObject"/> of the camera.</param>
+        /// <param name="result">The instance of <see cref="Camera"/> which <see cref="Scp079Camera"/> base.</param>
+        /// <returns><see langword="true"/> if <see cref="Camera"/> is not <see langword="null"/>, or <see langword="false"/> if <see cref="Camera"/> is <see langword="null"/>.</returns>
+        public static bool TryGet(GameObject gameObject, out Camera result) => (result = Get(gameObject)) != null;
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
