@@ -90,7 +90,12 @@ namespace Exiled.Events.Patches.Events.Map
                 new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.TerminationCause))),
                 new(OpCodes.Stloc_S, cause),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(AnnouncingScpTerminationEventArgs), nameof(AnnouncingScpTerminationEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse, ret),
+                new(OpCodes.Brtrue, entryLabel),
+
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldfld, Field(typeof(CassieScpTerminationAnnouncement), nameof(CassieScpTerminationAnnouncement._victims))),
+                new(OpCodes.Ldloc_S, footprint),
+                new(OpCodes.Callvirt, Method(typeof(List<Footprint>), nameof(List<>.Remove))),
 
                 // entry point
                 new CodeInstruction(OpCodes.Ldloc_S, enumerator).WithLabels(entryLabel),
