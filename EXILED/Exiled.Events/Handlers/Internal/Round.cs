@@ -191,63 +191,58 @@ namespace Exiled.Events.Handlers.Internal
             Player owner = Player.Get(ownerHub);
             Player viewer = Player.Get(viewerHub);
 
-            if (viewer.FakeRoles.TryGetValue(owner, out RoleData data))
+            if (!viewer.FakeRoles.TryGetValue(owner, out RoleData data) || data.Role == actualRole)
+                return actualRole;
+
+            if (ownerHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
+                return previousRole;
+
+            // if another plugin has written data, we can't reliably modify and expect non-breaking behavior.
+            // if we send faulty data we can accidentally soft-dc the entire server which is much worse than a plugin not working.
+            if (writer.Position != 0 && (data.DataAuthority & RoleData.Authority.Override) == RoleData.Authority.None)
+                return actualRole;
+
+            writer.Position = 0;
+
+            // I doubt most devs want people who are dead to have fake roles.
+            if (actualRole.IsDead() && (data.DataAuthority & RoleData.Authority.Always) == RoleData.Authority.None)
+                return actualRole;
+
+            if (data.CustomData != null)
             {
-                if (data.Role == actualRole)
-                    return actualRole;
-
-                if (ownerHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
-                    return data.Role;
-
-                // if another plugin has written data, we can't reliably modify and expect non-breaking behavior.
-                // if we send faulty data we can accidentally soft-dc the entire server which is much worse than a plugin not working.
-                if (writer.Position != 0 && (data.DataAuthority & RoleData.Authority.Override) == RoleData.Authority.None)
-                    return actualRole;
-
-                writer.Position = 0;
-
-                // I doubt most devs want people who are dead to have fake roles.
-                if (actualRole.IsDead() && (data.DataAuthority & RoleData.Authority.Always) == RoleData.Authority.None)
-                    return actualRole;
-
-                if (data.CustomData != null)
+                data.CustomData(writer);
+            }
+            else
+            {
+                if (data.Role.GetRoleBase() is PlayerRoles.HumanRole { UsesUnitNames: true })
                 {
-                    data.CustomData(writer);
-                }
-                else
-                {
-                    if (data.Role.GetRoleBase() is PlayerRoles.HumanRole { UsesUnitNames: true })
+                    if (data.UnitId != 0)
                     {
-                        if (data.UnitId != 0)
-                        {
-                            writer.WriteByte(data.UnitId);
-                        }
-                        else
-                        {
-                            if (!NamingRulesManager.GeneratedNames.TryGetValue(Team.FoundationForces, out List<string> list))
-                                return actualRole;
-
-                            writer.WriteByte((byte)list.Count);
-                        }
+                        writer.WriteByte(data.UnitId);
                     }
-
-                    if (data.Role.GetRoleBase() is PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo)
-                        writer.WriteByte((byte)flamingo.ServerSpawnReason);
-
-                    if (data.Role == RoleTypeId.Scp0492)
+                    else
                     {
-                        writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(owner.MaxHealth), 0, ushort.MaxValue));
-                        writer.WriteBool(false);
-                    }
+                        if (!NamingRulesManager.GeneratedNames.TryGetValue(Team.FoundationForces, out List<string> list))
+                            return actualRole;
 
-                    writer.WriteRelativePosition(new RelativePosition(owner.Position));
-                    writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0.0f, 360f, owner.Rotation.eulerAngles.y) * ushort.MaxValue));
+                        writer.WriteByte((byte)list.Count);
+                    }
                 }
 
-                return data.Role;
+                if (data.Role.GetRoleBase() is PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo)
+                    writer.WriteByte((byte)flamingo.ServerSpawnReason);
+
+                if (data.Role == RoleTypeId.Scp0492)
+                {
+                    writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(owner.MaxHealth), 0, ushort.MaxValue));
+                    writer.WriteBool(false);
+                }
+
+                writer.WriteRelativePosition(new RelativePosition(owner.Position));
+                writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0.0f, 360f, owner.Rotation.eulerAngles.y) * ushort.MaxValue));
             }
 
-            return actualRole;
+            return data.Role;
         }
 
         /// <inheritdoc cref="Handlers.Warhead.OnDetonated()"/>
