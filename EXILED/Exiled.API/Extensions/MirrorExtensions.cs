@@ -620,16 +620,8 @@ namespace Exiled.API.Extensions
                 return;
 
             identity.gameObject.transform.position = pos;
-            ObjectDestroyMessage objectDestroyMessage = new()
-            {
-                netId = identity.netId,
-            };
-
-            foreach (Player ply in Player.List)
-            {
-                ply.Connection.Send(objectDestroyMessage, 0);
-                SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, ply.Connection });
-            }
+            NetworkServer.UnSpawn(identity.gameObject);
+            NetworkServer.Spawn(identity.gameObject);
         }
 
         /// <summary>
@@ -643,16 +635,8 @@ namespace Exiled.API.Extensions
                 return;
 
             identity.gameObject.transform.localScale = scale;
-            ObjectDestroyMessage objectDestroyMessage = new()
-            {
-                netId = identity.netId,
-            };
-
-            foreach (Player ply in Player.List)
-            {
-                ply.Connection.Send(objectDestroyMessage, 0);
-                SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, ply.Connection });
-            }
+            NetworkServer.UnSpawn(identity.gameObject);
+            NetworkServer.Spawn(identity.gameObject);
         }
 
         /// <summary>
@@ -788,16 +772,8 @@ namespace Exiled.API.Extensions
         {
             customAction.Invoke(identity);
 
-            ObjectDestroyMessage objectDestroyMessage = new()
-            {
-                netId = identity.netId,
-            };
-
-            foreach (Player player in Player.List)
-            {
-                player.Connection.Send(objectDestroyMessage, 0);
-                SendSpawnMessageMethodInfo.Invoke(null, new object[] { identity, player.Connection });
-            }
+            NetworkServer.UnSpawn(identity.gameObject);
+            NetworkServer.Spawn(identity.gameObject);
         }
 
         // Get components index in identity.(private)
