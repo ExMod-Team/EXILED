@@ -133,27 +133,6 @@ namespace Exiled.API.Structs
         /// A return value indicates whether the conversion succeeded or failed.
         /// </summary>
         /// <param name="name">The <see cref="string"/> to convert.</param>
-        /// <param name="identifier">The converted <see cref="string"/>.</param>
-        /// <returns><see langword="true"/> if <see cref="string"/> was converted successfully; otherwise, <see langword="false"/>.</returns>
-        [Obsolete("Use AttachmentIdentifier.TryParse(string, FirearmType, out AttachmentIdentifier) instead. Gives wrong Attachment for certain weapons.", true)]
-        public static bool TryParse(string name, out AttachmentIdentifier identifier)
-        {
-            identifier = default;
-
-            foreach (AttachmentIdentifier attId in Features.Items.Firearm.AvailableAttachments.Values.SelectMany(kvp => kvp.Where(kvp2 => kvp2.Name.ToString() == name)))
-            {
-                identifier = attId;
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Converts the string representation of a <see cref="AttachmentIdentifier"/> to its <see cref="AttachmentIdentifier"/> equivalent.
-        /// A return value indicates whether the conversion succeeded or failed.
-        /// </summary>
-        /// <param name="name">The <see cref="string"/> to convert.</param>
         /// <param name="firearm">The <see cref="FirearmType"/> to get the <see cref="AttachmentIdentifier"/> from.</param>
         /// <param name="identifier">The converted <see cref="AttachmentIdentifier"/>.</param>
         /// <returns><see langword="true"/> if <see cref="string"/> was converted successfully; otherwise, <see langword="false"/>.</returns>
