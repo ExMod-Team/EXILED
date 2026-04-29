@@ -1059,7 +1059,7 @@ namespace Exiled.API.Features.Toys
             DestroyAfter = false;
             ReturnToPoolAfter = false;
             PlayMode = SpeakerPlayMode.Global;
-            Channel = Channels.ReliableOrdered2;
+            Channel = Channels.Unreliable;
 
             LastTrackInfo = default;
 
