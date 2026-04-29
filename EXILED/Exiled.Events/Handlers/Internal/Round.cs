@@ -96,7 +96,7 @@ namespace Exiled.Events.Handlers.Internal
         /// <inheritdoc cref="Handlers.Player.OnSpawned(SpawnedEventArgs)" />
         public static void OnSpawned(SpawnedEventArgs ev)
         {
-            foreach (Player viewer in Player.Enumerable)
+            foreach (Player viewer in Player.Enumerable.Where(p => !p.IsNPC && !p.IsHost))
             {
                 foreach (Func<Player, RoleData> generator in ev.Player.FakeRoleGenerator)
                 {
@@ -119,7 +119,7 @@ namespace Exiled.Events.Handlers.Internal
             if (!ev.IsAllowed)
                 return;
 
-            foreach (Player viewer in Player.Enumerable)
+            foreach (Player viewer in Player.Enumerable.Where(p => !p.IsNPC && !p.IsHost))
             {
                 if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && (data.DataAuthority & RoleData.Authority.Persist) == RoleData.Authority.None)
                     viewer.FakeRoles.Remove(ev.Player);
@@ -191,7 +191,7 @@ namespace Exiled.Events.Handlers.Internal
             Player owner = Player.Get(ownerHub);
             Player viewer = Player.Get(viewerHub);
 
-            if (!viewer.FakeRoles.TryGetValue(owner, out RoleData data) || data.Role == actualRole)
+            if (viewer.IsNPC || viewer.IsHost || !viewer.FakeRoles.TryGetValue(owner, out RoleData data) || data.Role == actualRole)
                 return actualRole;
 
             if (ownerHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
