@@ -181,12 +181,28 @@ namespace Exiled.API.Structs
         public static AttachmentIdentifier Get(FirearmType type, AttachmentName name) => Features.Items.Firearm.AvailableAttachments[type].FirstOrDefault(identifier => identifier.Name == name);
 
         /// <summary>
-        /// Gets a <see cref="AttachmentIdentifier"/> by name.
+        /// Gets a IEnumerable of <see cref="AttachmentIdentifier"/> by name.
         /// </summary>
         /// <param name="type">Weapons <see cref="FirearmType"/>.</param>
         /// <param name="names">Attachments name.</param>
         /// <returns><see cref="AttachmentIdentifier"/> instances.</returns>
         public static IEnumerable<AttachmentIdentifier> Get(FirearmType type, IEnumerable<AttachmentName> names) => Features.Items.Firearm.AvailableAttachments[type].Where(identifier => names.Contains(identifier.Name));
+
+        /// <summary>
+        /// Gets a <see cref="AttachmentIdentifier"/> by the Attachment's code.
+        /// </summary>
+        /// <param name="type">Weapons <see cref="FirearmType"/>.</param>
+        /// <param name="code">Attachment code.</param>
+        /// <returns><see cref="AttachmentIdentifier"/> instance.</returns>
+        public static AttachmentIdentifier Get(FirearmType type, uint code) => Features.Items.Firearm.AvailableAttachments[type].FirstOrDefault(identifier => identifier.Code == code);
+
+        /// <summary>
+        /// Gets a IEnumerable of <see cref="AttachmentIdentifier"/> by the Attachment's code.
+        /// </summary>
+        /// <param name="type">Weapons <see cref="FirearmType"/>.</param>
+        /// <param name="codes">Attachments codes.</param>
+        /// <returns><see cref="AttachmentIdentifier"/> instances.</returns>
+        public static IEnumerable<AttachmentIdentifier> Get(FirearmType type, IEnumerable<uint> codes) => Features.Items.Firearm.AvailableAttachments[type].Where(identifier => codes.Contains(identifier.Code));
 
         /// <summary>
         /// Gets the all <see cref="AttachmentIdentifier"/>'s for type, by slot.
@@ -195,6 +211,16 @@ namespace Exiled.API.Structs
         /// <param name="slot">Attachment slot.</param>
         /// <returns><see cref="AttachmentIdentifier"/> instance.</returns>
         public static IEnumerable<AttachmentIdentifier> Get(FirearmType type, AttachmentSlot slot) => Features.Items.Firearm.AvailableAttachments[type].Where(identifier => identifier.Slot == slot);
+
+        /// <summary>
+        /// Gets a <see cref="AttachmentIdentifier"/> by the Attachment's code.
+        /// A return value indicates whether the conversion succeeded or failed.
+        /// </summary>
+        /// <param name="code">The code of the attachment.</param>
+        /// <param name="firearm">The <see cref="FirearmType"/> to get the <see cref="AttachmentIdentifier"/> from.</param>
+        /// <param name="identifier">The converted <see cref="AttachmentIdentifier"/>.</param>
+        /// <returns><see langword="true"/> if the <see cref="AttachmentIdentifier"/> was found; otherwise, <see langword="false"/>.</returns>
+        public static bool TryGet(uint code, FirearmType firearm, out AttachmentIdentifier identifier) => (identifier = Get(firearm, code)).Code != 0;
 
         /// <inheritdoc/>
         public override bool Equals(object obj) => base.Equals(obj);
