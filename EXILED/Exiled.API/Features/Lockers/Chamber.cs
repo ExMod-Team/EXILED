@@ -16,8 +16,13 @@ namespace Exiled.API.Features.Lockers
     using Exiled.API.Extensions;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
+    using Interactables.Interobjects;
+
     using InventorySystem.Items.Pickups;
+
     using MapGeneration.Distributors;
+
     using UnityEngine;
 
     /// <summary>
@@ -188,6 +193,13 @@ namespace Exiled.API.Features.Lockers
         /// Gets a value indicating whether the chamber is interactable.
         /// </summary>
         public bool CanInteract => Base.CanInteract;
+
+        /// <summary>
+        /// Converts LockerChamber to Chamber.
+        /// </summary>
+        /// <param name="chamber">The LockerChamber.</param>
+        /// <returns>EXILED Chamber.</returns>
+        public static implicit operator Chamber(LockerChamber chamber) => Get(chamber);
 
         /// <summary>
         /// Adds an item to the current chamber.

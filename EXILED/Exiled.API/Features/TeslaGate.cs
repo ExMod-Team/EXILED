@@ -12,9 +12,15 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Exiled.API.Interfaces;
+
     using Hazards;
+
+    using InventorySystem.Items.Firearms.Attachments;
+
     using MEC;
+
     using PlayerRoles;
+
     using UnityEngine;
 
     using BaseTeslaGate = global::TeslaGate;
@@ -196,11 +202,18 @@ namespace Exiled.API.Features
         public IEnumerable<Player> PlayersInTriggerRange => Player.List.Where(IsPlayerInTriggerRange);
 
         /// <summary>
+        /// Converts BaseTeslaGate to TeslaGate.
+        /// </summary>
+        /// <param name="baseTeslaGate">The BaseTeslaGate.</param>
+        /// <returns>EXILED TeslaGate.</returns>
+        public static implicit operator TeslaGate(BaseTeslaGate baseTeslaGate) => Get(baseTeslaGate);
+
+        /// <summary>
         /// Gets the <see cref="TeslaGate"/> belonging to the <see cref="BaseTeslaGate"/>.
         /// </summary>
         /// <param name="baseTeslaGate">The <see cref="BaseTeslaGate"/> instance.</param>
         /// <returns>The corresponding <see cref="TeslaGate"/> instance.</returns>
-        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => BaseTeslaGateToTeslaGate.TryGetValue(baseTeslaGate, out TeslaGate teslagate) ?
+        public static TeslaGate Get(BaseTeslaGate baseTeslaGate) => baseTeslaGate == null ? null : BaseTeslaGateToTeslaGate.TryGetValue(baseTeslaGate, out TeslaGate teslagate) ?
             teslagate :
             new(baseTeslaGate, Room.FindParentRoom(baseTeslaGate.gameObject));
 

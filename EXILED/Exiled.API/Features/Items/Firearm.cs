@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Items
     using System.Linq;
 
     using CameraShaking;
+
     using Enums;
 
     using Exiled.API.Features.Items.FirearmModules;
@@ -20,7 +21,10 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
+
     using Extensions;
+
+    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
