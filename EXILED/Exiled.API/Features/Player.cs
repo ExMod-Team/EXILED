@@ -2789,8 +2789,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="itemType">The item to be added.</param>
         /// <param name="amount">The amount of items to be added.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        public IEnumerable<Item> AddItem(ItemType itemType, int amount)
+        /// <returns>An <see cref="List{Item}"/> containing the items given.</returns>
+        public List<Item> AddItem(ItemType itemType, int amount)
         {
             List<Item> items = new(amount > 0 ? amount : 0);
             if (amount > 0)
@@ -2806,16 +2806,14 @@ namespace Exiled.API.Features
         /// Adds the list of items of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
         /// <param name="items">The list of items to be added.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        public IEnumerable<Item> AddItem(IEnumerable<ItemType> items)
+        /// <returns>An <see cref="List{Item}"/> containing the items given.</returns>
+        public List<Item> AddItem(IEnumerable<ItemType> items)
         {
-            List<ItemType> enumeratedItems = ListPool<ItemType>.Pool.Get(items);
-            List<Item> returnedItems = new(enumeratedItems.Count);
+            List<Item> returnedItems = new(items.Count());
 
-            foreach (ItemType type in enumeratedItems)
+            foreach (ItemType type in items)
                 returnedItems.Add(AddItem(type));
 
-            ListPool<ItemType>.Pool.Return(enumeratedItems);
             return returnedItems;
         }
 
@@ -2871,17 +2869,15 @@ namespace Exiled.API.Features
         /// <param name="firearmType">The item to be added.</param>
         /// <param name="amount">The amount of items to be added.</param>
         /// <param name="identifiers">The attachments to be added to the item.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        public IEnumerable<Item> AddItem(FirearmType firearmType, int amount, IEnumerable<AttachmentIdentifier> identifiers)
+        /// <returns>An <see cref="List{Item}"/> containing the items given.</returns>
+        public List<Item> AddItem(FirearmType firearmType, int amount, IEnumerable<AttachmentIdentifier> identifiers)
         {
             List<Item> items = new(amount > 0 ? amount : 0);
 
             if (amount > 0)
             {
-                IEnumerable<AttachmentIdentifier> attachmentIdentifiers = identifiers.ToList();
-
                 for (int i = 0; i < amount; i++)
-                    items.Add(AddItem(firearmType, attachmentIdentifiers));
+                    items.Add(AddItem(firearmType, identifiers));
             }
 
             return items;
@@ -2893,17 +2889,15 @@ namespace Exiled.API.Features
         /// <param name="firearmType">The item to be added.</param>
         /// <param name="amount">The amount of items to be added.</param>
         /// <param name="identifiers">The attachments to be added to the item.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        public IEnumerable<Item> AddItem(FirearmType firearmType, int amount, IEnumerable<AttachmentName> identifiers)
+        /// <returns>An <see cref="List{Item}"/> containing the items given.</returns>
+        public List<Item> AddItem(FirearmType firearmType, int amount, IEnumerable<AttachmentName> identifiers)
         {
             List<Item> items = new(amount > 0 ? amount : 0);
 
             if (amount > 0)
             {
-                IEnumerable<AttachmentName> attachmentIdentifiers = identifiers.ToList();
-
                 for (int i = 0; i < amount; i++)
-                    items.Add(AddItem(firearmType, attachmentIdentifiers));
+                    items.Add(AddItem(firearmType, identifiers));
             }
 
             return items;
@@ -2913,8 +2907,8 @@ namespace Exiled.API.Features
         /// Adds the list of items of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
         /// <param name="items">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="IEnumerable{T}"/> of <see cref="AttachmentIdentifier"/> to be added.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        public IEnumerable<Item> AddItem(Dictionary<FirearmType, IEnumerable<AttachmentIdentifier>> items)
+        /// <returns>An <see cref="List{Item}"/> containing the items given.</returns>
+        public List<Item> AddItem(Dictionary<FirearmType, IEnumerable<AttachmentIdentifier>> items)
         {
             List<Item> returnedItems = new(items.Count);
 
@@ -2928,8 +2922,8 @@ namespace Exiled.API.Features
         /// Adds the list of items of the specified type with default durability(ammo/charge) and no mods to the player's inventory.
         /// </summary>
         /// <param name="items">The <see cref="Dictionary{TKey, TValue}"/> of <see cref="ItemType"/> and <see cref="IEnumerable{T}"/> of <see cref="AttachmentName"/> to be added.</param>
-        /// <returns>An <see cref="IEnumerable{Item}"/> containing the items given.</returns>
-        public IEnumerable<Item> AddItem(Dictionary<FirearmType, IEnumerable<AttachmentName>> items)
+        /// <returns>An <see cref="List{Item}"/> containing the items given.</returns>
+        public List<Item> AddItem(Dictionary<FirearmType, IEnumerable<AttachmentName>> items)
         {
             List<Item> returnedItems = new(items.Count);
 
