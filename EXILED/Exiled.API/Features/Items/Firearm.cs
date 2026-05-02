@@ -814,6 +814,11 @@ namespace Exiled.API.Features.Items
             {
                 PrimaryMagazine.MaxAmmo = firearmPickup.MaxAmmo;
                 AmmoDrain = firearmPickup.AmmoDrain;
+
+                Damage = firearmPickup.Damage;
+                Inaccuracy = firearmPickup.Inaccuracy;
+                Penetration = firearmPickup.Penetration;
+                DamageFalloffDistance = firearmPickup.DamageFalloffDistance;
             }
         }
     }
