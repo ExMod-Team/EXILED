@@ -15,12 +15,12 @@ namespace Exiled.API.Enums
     public enum Scp939VisibilityState
     {
         /// <summary>
-        /// SCP-939 doesnt see an other player, by default FPC role logic.
+        /// SCP-939 doesn't see an other player, by default FPC role logic.
         /// </summary>
         None,
 
         /// <summary>
-        /// SCP-939 doesnt see an player, by basic SCP-939 logic.
+        /// SCP-939 doesn't see an player, by basic SCP-939 logic.
         /// </summary>
         NotSeen,
 
