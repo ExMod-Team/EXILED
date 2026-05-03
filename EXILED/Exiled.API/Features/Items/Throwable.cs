@@ -93,7 +93,7 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Cancel the throws of the item.
+        /// Cancels the throw of the item.
         /// </summary>
         public void CancelThrow() => Base.ServerProcessCancellation();
 

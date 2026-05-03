@@ -15,32 +15,32 @@ namespace Exiled.API.Enums
     public enum Scp939VisibilityState
     {
         /// <summary>
-        /// SCP-939 doesn't see an other player, by default FPC role logic.
+        /// SCP-939 doesn't see another player, by default FPC role logic.
         /// </summary>
         None,
 
         /// <summary>
-        /// SCP-939 doesn't see an player, by basic SCP-939 logic.
+        /// SCP-939 doesn't see a player, by basic SCP-939 logic.
         /// </summary>
         NotSeen,
 
         /// <summary>
-        /// SCP-939 sees an other player, who is teammate SCP.
+        /// SCP-939 sees another player, who is teammate SCP.
         /// </summary>
         SeenAsScp,
 
         /// <summary>
-        /// SCP-939 sees an other player due the Alpha Warhead detonation.
+        /// SCP-939 sees another player due the Alpha Warhead detonation.
         /// </summary>
         SeenByDetonation,
 
         /// <summary>
-        /// SCP-939 sees an other player, due the base-game vision range logic.
+        /// SCP-939 sees another player, due the base-game vision range logic.
         /// </summary>
         SeenByRange,
 
         /// <summary>
-        /// SCP-939 sees an other player for a while, after it's out of range.
+        /// SCP-939 sees another player for a while, after it's out of range.
         /// </summary>
         SeenByLastTime,
     }
