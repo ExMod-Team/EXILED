@@ -55,7 +55,7 @@ namespace Exiled.CustomItems.API
         public static void Register(this IEnumerable<CustomItem> customItems)
         {
             if (customItems is null)
-                throw new ArgumentNullException("customItems");
+                throw new ArgumentNullException(nameof(customItems));
 
             foreach (CustomItem customItem in customItems)
                 customItem.TryRegister();
@@ -74,7 +74,7 @@ namespace Exiled.CustomItems.API
         public static void Unregister(this IEnumerable<CustomItem> customItems)
         {
             if (customItems is null)
-                throw new ArgumentNullException("customItems");
+                throw new ArgumentNullException(nameof(customItems));
 
             foreach (CustomItem customItem in customItems)
                 customItem.TryUnregister();
