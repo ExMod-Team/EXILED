@@ -76,7 +76,7 @@ namespace Exiled.API.Features.Core
         /// <summary>
         /// Gets a <see cref="StaticActor"/> given the specified type.
         /// </summary>
-        /// <param name="type">The the type of the <see cref="StaticActor"/> to look for.</param>
+        /// <param name="type">The type of the <see cref="StaticActor"/> to look for.</param>
         /// <typeparam name="T">The type to cast the <see cref="StaticActor"/> to.</typeparam>
         /// <returns>The corresponding <see cref="StaticActor"/> of type <typeparamref name="T"/>, or <see langword="null"/> if not found.</returns>
         public static T Get<T>(Type type)
@@ -96,7 +96,7 @@ namespace Exiled.API.Features.Core
         /// <summary>
         /// Gets a <see cref="StaticActor"/> given the specified type.
         /// </summary>
-        /// <param name="type">The the type of the <see cref="StaticActor"/> to look for.</param>
+        /// <param name="type">The type of the <see cref="StaticActor"/> to look for.</param>
         /// <returns>The corresponding <see cref="StaticActor"/>.</returns>
         public static StaticActor Get(Type type)
         {

@@ -127,7 +127,7 @@ namespace Exiled.API.Features.Pickups
         /// Damages the Scp244Pickup.
         /// </summary>
         /// <param name="handler">The <see cref="DamageHandler"/> used to deal damage.</param>
-        /// <returns><see langword="true"/> if the the damage has been deal; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if the damage has been dealt; otherwise, <see langword="false"/>.</returns>
         public bool Damage(DamageHandler handler) => Base.Damage(handler.Damage, handler, Vector3.zero);
 
         /// <summary>

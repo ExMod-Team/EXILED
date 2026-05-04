@@ -164,12 +164,12 @@ namespace Exiled.API.Enums
         Hypothermia,
 
         /// <summary>
-        /// Increases the affected player's motor function, causing the affected player to reduce the weapon draw time, reload spead, item pickup speed, and medical item usage.
+        /// Increases the affected player's motor function, causing the affected player to reduce the weapon draw time, reload speed, item pickup speed, and medical item usage.
         /// </summary>
         Scp1853,
 
         /// <summary>
-        /// Effect given to a player after being hurt by SCP-049. Deals 8 damage per second, after an inital 16 damage for the first second.
+        /// Effect given to a player after being hurt by SCP-049. Deals 8 damage per second, after an initial 16 damage for the first second.
         /// </summary>
         CardiacArrest,
 
@@ -204,7 +204,7 @@ namespace Exiled.API.Enums
         Scanned,
 
         /// <summary>
-        /// Teleports the affected player to the pocket dimension and drains their health until the affected player escapes the pocket dimension or is killed. The amount of damage recieved increases the longer the effect is applied.
+        /// Teleports the affected player to the pocket dimension and drains their health until the affected player escapes the pocket dimension or is killed. The amount of damage received increases the longer the effect is applied.
         /// </summary>
         PocketCorroding,
 
