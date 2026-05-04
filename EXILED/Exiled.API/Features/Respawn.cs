@@ -31,6 +31,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="List{T}"/> of paused <see cref="SpawnableWaveBase"/>'s.
         /// </summary>
+        [Obsolete("This is now unused.", true)]
         public static List<SpawnableWaveBase> PausedWaves { get; } = new();
 
         /// <summary>
@@ -389,11 +390,17 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Forcefully pauses or resumes the timer of a time-based respawn wave for the specified faction.
+        /// Pauses a specific respawn wave by removing it from the active wave list and adding it to the paused wave list.
+        /// </summary>
+        /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> representing the wave to pause.</param>
+        public static void PauseWave(SpawnableFaction spawnableFaction) => PauseWave(spawnableFaction, true);
+
+        /// <summary>
+        /// Pauses or resumes the timer of a time-based respawn wave for the specified faction.
         /// </summary>
         /// <param name="spawnableFaction">The faction associated with the respawn wave.</param>
         /// <param name="isForcePause">True to pause the wave timer, false to resume it.</param>
-        public static void ForcePauseWave(SpawnableFaction spawnableFaction, bool isForcePause = true)
+        public static void PauseWave(SpawnableFaction spawnableFaction, bool isForcePause)
         {
             if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
             {
@@ -405,15 +412,16 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Forcefully pauses or resumes all time-based respawn waves by controlling their timers.
+        /// Pauses all time-based respawn waves by controlling their timers.
         /// </summary>
-        /// <param name="isForcePause">
-        /// If true, all time-based waves will be paused. If false, their timers will resume.
-        /// </param>
-        /// <remarks>
-        /// Unlike ClearWaves, this does not remove waves from the system, it only controls their timer state.
-        /// </remarks>
-        public static void ForcePauseWaves(bool isForcePause = true)
+        public static void PauseWaves() => PauseWaves(true);
+
+        /// <summary>
+        /// Pauses or resumes all time-based respawn waves by controlling their timers.
+        /// </summary>
+        /// <param name="isForcePause"> If true, all time-based waves will be paused. If false, their timers will resume.</param>
+        /// <remarks> Unlike ClearWaves, this does not remove waves from the system, it only controls their timer state. </remarks>
+        public static void PauseWaves(bool isForcePause = true)
         {
             foreach (SpawnableWaveBase wave in WaveManager.Waves)
             {
@@ -431,55 +439,6 @@ namespace Exiled.API.Features
         /// <param name="spawnableFactions">
         /// A list of <see cref="SpawnableFaction"/> instances representing the waves to pause.
         /// </param>
-        public static void ForcePauseWaves(List<SpawnableFaction> spawnableFactions)
-        {
-            foreach (SpawnableFaction spawnableFaction in spawnableFactions)
-            {
-                ForcePauseWave(spawnableFaction);
-            }
-        }
-
-        /// <summary>
-        /// Pauses a specific respawn wave by removing it from the active wave list and adding it to the paused wave list.
-        /// </summary>
-        /// <param name="spawnableFaction">The <see cref="SpawnableFaction"/> representing the wave to pause.</param>
-        [Obsolete("Use ForcePauseWave instead. PauseWave breaks wave systems after game update.")]
-        public static void PauseWave(SpawnableFaction spawnableFaction)
-        {
-            if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
-            {
-                if (!PausedWaves.Contains(spawnableWaveBase))
-                {
-                    PausedWaves.Add(spawnableWaveBase);
-                }
-
-                if (WaveManager.Waves.Contains(spawnableWaveBase))
-                {
-                    WaveManager.Waves.Remove(spawnableWaveBase);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Pauses respawn waves by removing them from <see cref="WaveManager.Waves">WaveManager.Waves</see> and storing them in <see cref="PausedWaves"/>.
-        /// </summary>
-        /// <!--Beryl said this should work fine but it requires testing-->
-        [Obsolete("Use ForcePauseWaves instead. PauseWaves breaks wave systems after game update.")]
-        public static void PauseWaves()
-        {
-            PausedWaves.Clear();
-            PausedWaves.AddRange(WaveManager.Waves);
-            WaveManager.Waves.Clear();
-        }
-
-        /// <summary>
-        /// Pauses the specified list of respawn waves by iterating through each wave
-        /// and pausing it using the <see cref="PauseWave(SpawnableFaction)"/> method.
-        /// </summary>
-        /// <param name="spawnableFactions">
-        /// A list of <see cref="SpawnableFaction"/> instances representing the waves to pause.
-        /// </param>
-        [Obsolete("Use ForcePauseWaves instead. PauseWaves breaks wave systems after game update.")]
         public static void PauseWaves(List<SpawnableFaction> spawnableFactions)
         {
             foreach (SpawnableFaction spawnableFaction in spawnableFactions)
@@ -489,50 +448,61 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Resumes respawn waves by filling <see cref="WaveManager.Waves">WaveManager.Waves</see> with values stored in <see cref="PausedWaves"/>.
+        /// Pauses the specified list of respawn waves by iterating through each wave
+        /// and pausing it using the <see cref="PauseWave(SpawnableFaction)"/> method.
         /// </summary>
-        /// <!--Beryl said this should work fine but it requires testing-->
-        /// <remarks>This also clears <see cref="PausedWaves"/>.</remarks>
+        /// <param name="spawnableFactions"> A list of <see cref="SpawnableFaction"/> instances representing the waves to pause. </param>
+        /// <param name="isForcePause">True to pause the wave timer, false to resume it.</param>
+        public static void PauseWaves(List<SpawnableFaction> spawnableFactions, bool isForcePause = true)
+        {
+            foreach (SpawnableFaction spawnableFaction in spawnableFactions)
+            {
+                PauseWave(spawnableFaction, isForcePause);
+            }
+        }
+
+        /// <summary>
+        /// Resumes respawn waves.
+        /// </summary>
         public static void ResumeWaves()
         {
-            WaveManager.Waves.Clear();
-            WaveManager.Waves.AddRange(PausedWaves);
-            PausedWaves.Clear();
+            foreach (SpawnableWaveBase wave in WaveManager.Waves)
+            {
+                if (wave is TimeBasedWave timeBasedWave)
+                {
+                    timeBasedWave.Timer.IsForcefullyPaused = false;
+                }
+            }
         }
 
         /// <summary>
         /// Restarts a specific respawn wave by adding it back to the active wave list
         /// and removing it from the paused wave list if necessary.
         /// </summary>
-        /// <param name="spawnableFaction">
-        /// The <see cref="SpawnableFaction"/> representing the wave to restart.
-        /// </param>
+        /// <param name="spawnableFaction"> The <see cref="SpawnableFaction"/> representing the wave to restart. </param>
         public static void RestartWave(SpawnableFaction spawnableFaction)
         {
-            if (TryGetWaveBase(spawnableFaction, out SpawnableWaveBase spawnableWaveBase))
-            {
-                if (!WaveManager.Waves.Contains(spawnableWaveBase))
-                {
-                    WaveManager.Waves.Add(spawnableWaveBase);
-                }
-
-                if (PausedWaves.Contains(spawnableWaveBase))
-                {
-                    PausedWaves.Remove(spawnableWaveBase);
-                }
-            }
+            PauseWave(spawnableFaction, false);
         }
 
         /// <summary>
         /// Restarts respawn waves by clearing <see cref="WaveManager.Waves">WaveManager.Waves</see> and filling it with new values..
         /// </summary>
-        /// <!--Beryl said this should work fine but it requires testing-->
-        /// <remarks>This also clears <see cref="PausedWaves"/>.</remarks>
-        public static void RestartWaves()
+        public static void RestartWaves() => RestartWaves(true);
+
+        /// <summary>
+        /// Restarts respawn waves by clearing <see cref="WaveManager.Waves">WaveManager.Waves</see> and filling it with new values..
+        /// </summary>
+        /// <param name="resetSpawnInterval">True to reset the spawn interval.</param>
+        public static void RestartWaves(bool resetSpawnInterval)
         {
-            WaveManager.Waves.Clear();
-            WaveManager.Waves.AddRange(new List<SpawnableWaveBase> { new ChaosMiniWave(), new ChaosSpawnWave(), new NtfMiniWave(), new NtfSpawnWave() });
-            PausedWaves.Clear();
+            foreach (SpawnableWaveBase wave in WaveManager.Waves)
+            {
+                if (wave is TimeBasedWave timeBasedWave)
+                {
+                    timeBasedWave.Timer.Reset(resetSpawnInterval);
+                }
+            }
         }
 
         /// <summary>
