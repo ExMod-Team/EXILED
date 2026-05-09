@@ -13,35 +13,22 @@ namespace Exiled.API.Extensions
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
-    using System.Text;
 
     using AdminToys;
-
     using AudioPooling;
-
     using Cassie;
-
     using CustomPlayerEffects;
-
     using Exiled.API.Enums;
-    using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
-
     using Features;
-    using Features.Pools;
-
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Keycards;
-
     using MEC;
-
     using Mirror;
-
     using PlayerRoles;
     using PlayerRoles.Blood;
     using PlayerRoles.FirstPersonControl;
@@ -49,13 +36,8 @@ namespace Exiled.API.Extensions
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
-
     using RelativePositioning;
-
-    using Respawning;
-
     using UnityEngine;
-
     using Utils.Networking;
 
     /// <summary>
@@ -107,8 +89,8 @@ namespace Exiled.API.Extensions
                 if (SyncVarDirtyBitsValue.Count == 0)
                 {
                     foreach (PropertyInfo property in typeof(ServerConsole).Assembly.GetTypes()
-                        .SelectMany(x => x.GetProperties())
-                        .Where(m => m.Name.StartsWith("Network")))
+                                 .SelectMany(x => x.GetProperties())
+                                 .Where(m => m.Name.StartsWith("Network")))
                     {
                         MethodInfo setMethod = property.GetSetMethod();
 
@@ -141,8 +123,8 @@ namespace Exiled.API.Extensions
                 if (RpcFullNamesValue.Count == 0)
                 {
                     foreach (MethodInfo method in typeof(ServerConsole).Assembly.GetTypes()
-                        .SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-                        .Where(m => m.GetCustomAttributes(typeof(ClientRpcAttribute), false).Length > 0 || m.GetCustomAttributes(typeof(TargetRpcAttribute), false).Length > 0))
+                                 .SelectMany(x => x.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                                 .Where(m => m.GetCustomAttributes(typeof(ClientRpcAttribute), false).Length > 0 || m.GetCustomAttributes(typeof(TargetRpcAttribute), false).Length > 0))
                     {
                         MethodBody methodBody = method.GetMethodBody();
 
@@ -306,7 +288,14 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="target">Only this player can see Display Text.</param>
         /// <param name="text">Text displayed to the player.</param>
-        public static void SetIntercomDisplayTextForTargetOnly(this Player target, string text) => target.SendFakeSyncVar(IntercomDisplay._singleton.netIdentity, typeof(IntercomDisplay), nameof(IntercomDisplay.Network_overrideText), text);
+        public static void SetIntercomDisplayTextForTargetOnly(this Player target, string text) => target.Connection.SetIntercomDisplayTextForTargetOnly(text);
+
+        /// <summary>
+        /// Sets <see cref="Features.Intercom.DisplayText"/> that only the <paramref name="connection"/> connection can see.
+        /// </summary>
+        /// <param name="connection">Only this connection can see Display Text.</param>
+        /// <param name="text">Text displayed to the player.</param>
+        public static void SetIntercomDisplayTextForTargetOnly(this NetworkConnection connection, string text) => connection.SendFakeSyncVar(IntercomDisplay._singleton.netIdentity, typeof(IntercomDisplay), nameof(IntercomDisplay.Network_overrideText), text);
 
         /// <summary>
         /// Resync <see cref="Features.Intercom.DisplayText"/>.
@@ -322,6 +311,30 @@ namespace Exiled.API.Extensions
         public static void SetRoomColorForTargetOnly(this Room room, Player target, Color color) => target.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkOverrideColor), color);
 
         /// <summary>
+        /// Sets <see cref="Room.Color"/> of a <paramref name="room"/> that only the <paramref name="connection"/> can see.
+        /// </summary>
+        /// <param name="room">Room to modify.</param>
+        /// <param name="connection">Only this connection can see room color.</param>
+        /// <param name="color">Color to set.</param>
+        public static void SetRoomColorForTargetOnly(this Room room, NetworkConnection connection, Color color) => connection.SendFakeSyncVar(room.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkOverrideColor), color);
+
+        /// <summary>
+        /// Sets <see cref="Room.Color"/> of a <paramref name="targetRoom"/> that only the <paramref name="player"/> can see.
+        /// </summary>
+        /// <param name="player">Only this player can see room color.</param>
+        /// <param name="targetRoom">Room to modify.</param>
+        /// <param name="color">Color to set.</param>
+        public static void SetRoomColorForTargetOnly(this Player player, Room targetRoom, Color color) => player.Connection.SetRoomColorForTargetOnly(targetRoom, color);
+
+        /// <summary>
+        /// Sets <see cref="Room.Color"/> of a <paramref name="targetRoom"/> that only the <paramref name="connection"/> can see.
+        /// </summary>
+        /// <param name="connection">Only this connection can see room color.</param>
+        /// <param name="targetRoom">Room to modify.</param>
+        /// <param name="color">Color to set.</param>
+        public static void SetRoomColorForTargetOnly(this NetworkConnection connection, Room targetRoom, Color color) => connection.SendFakeSyncVar(targetRoom.RoomLightControllerNetIdentity, typeof(RoomLightController), nameof(RoomLightController.NetworkOverrideColor), color);
+
+        /// <summary>
         /// Sets the lights of a <paramref name="room"/> to be either on or off, visible only to the <paramref name="target"/> player.
         /// </summary>
         /// <param name="room">The room to modify the lights of.</param>
@@ -335,10 +348,7 @@ namespace Exiled.API.Extensions
         /// <param name="target">Only this player can see the name changed.</param>
         /// <param name="player">Player that will desync the CustomName.</param>
         /// <param name="name">Nickname to set.</param>
-        public static void SetName(this Player target, Player player, string name)
-        {
-            target.SendFakeSyncVar(player.NetworkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_displayName), name);
-        }
+        public static void SetName(this Player target, Player player, string name) => target.SendFakeSyncVar(player.NetworkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_displayName), name);
 
         /// <summary>
         /// Change <see cref="Player"/> character model for appearance.
@@ -556,14 +566,21 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">The player to send the Scene.</param>
         /// <param name="newSceneName">The new Scene the client will load.</param>
-        public static void SendFakeSceneLoading(this Player player, ScenesType newSceneName)
+        public static void SendFakeSceneLoading(this Player player, ScenesType newSceneName) => player.Connection.SendFakeSceneLoading(newSceneName);
+
+        /// <summary>
+        /// Sends to the player a Fake Change Scene.
+        /// </summary>
+        /// <param name="connection">The <see cref="NetworkConnection"/> to send the Scene.</param>
+        /// <param name="newSceneName">The new Scene the client will load.</param>
+        public static void SendFakeSceneLoading(this NetworkConnection connection, ScenesType newSceneName)
         {
             SceneMessage message = new()
             {
                 sceneName = newSceneName.ToString(),
             };
 
-            player.Connection.Send(message);
+            connection.Send(message);
         }
 
         /// <summary>
@@ -588,6 +605,13 @@ namespace Exiled.API.Extensions
         public static void SpawnNetworkIdentity(this Player player, NetworkIdentity identity) => SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, player.Connection });
 
         /// <summary>
+        /// Sends a spawn message for the specified <see cref="NetworkIdentity"/> to the given <see cref="NetworkConnection"/>.
+        /// </summary>
+        /// <param name="connection">The <see cref="NetworkConnection"/> which should receive the spawn message.</param>
+        /// <param name="identity">The <see cref="NetworkIdentity"/> to spawn.</param>
+        public static void SpawnNetworkIdentity(this NetworkConnection connection, NetworkIdentity identity) => SendSpawnMessageMethodInfo?.Invoke(null, new object[] { identity, connection });
+
+        /// <summary>
         /// Sends a destroy message for the specified <see cref="NetworkIdentity"/> to the given <see cref="Player"/>.
         /// </summary>
         /// <param name="player">The player who should receive the destroy message.</param>
@@ -595,22 +619,48 @@ namespace Exiled.API.Extensions
         public static void DestroyNetworkIdentity(this Player player, NetworkIdentity identity) => player.DestroyNetworkId(identity.netId);
 
         /// <summary>
+        /// Sends a destroy message for the specified <see cref="NetworkIdentity"/> to the given <see cref="NetworkConnection"/>.
+        /// </summary>
+        /// <param name="connection">The <see cref="NetworkConnection"/> which should receive the destroy message.</param>
+        /// <param name="identity">The <see cref="NetworkIdentity"/> to destroy.</param>
+        public static void DestroyNetworkIdentity(this NetworkConnection connection, NetworkIdentity identity) => connection.DestroyNetworkId(identity.netId);
+
+        /// <summary>
         /// Sends a destroy message for the specified network ID to the given <see cref="Player"/>.
         /// </summary>
         /// <param name="player">The player who should receive the destroy message.</param>
         /// <param name="netId">The network ID of the object to destroy.</param>
-        public static void DestroyNetworkId(this Player player, uint netId) => player.Connection.Send(new ObjectDestroyMessage() { netId = netId });
+        public static void DestroyNetworkId(this Player player, uint netId) => player.Connection.DestroyNetworkId(netId);
+
+        /// <summary>
+        /// Sends a destroy message for the specified network ID to the given <see cref="NetworkConnection"/>.
+        /// </summary>
+        /// <param name="connection">The <see cref="NetworkConnection"/> which should receive the destroy message.</param>
+        /// <param name="netId">The network ID of the object to destroy.</param>
+        public static void DestroyNetworkId(this NetworkConnection connection, uint netId) => connection.Send(new ObjectDestroyMessage() { netId = netId });
 
         /// <summary>
         /// Respawns the specified <see cref="NetworkIdentity"/> for the given <see cref="Player"/>.
         /// This sends a destroy message followed by a spawn message to the player's client.
         /// </summary>
-        /// <param name="player">The player who should receive the respawn messages.</param>
+        /// <param name="player">The <see cref="Player"/> who should receive the respawn messages.</param>
         /// <param name="identity">The <see cref="NetworkIdentity"/> to respawn.</param>
         public static void RespawnNetworkIdentity(this Player player, NetworkIdentity identity)
         {
             player.DestroyNetworkIdentity(identity);
             player.SpawnNetworkIdentity(identity);
+        }
+
+        /// <summary>
+        /// Respawns the specified <see cref="NetworkIdentity"/> for the given <see cref="Player"/>.
+        /// This sends a destroy message followed by a spawn message to connection.
+        /// </summary>
+        /// <param name="connection">The <see cref="NetworkConnection"/> who should receive the respawn messages.</param>
+        /// <param name="identity">The <see cref="NetworkIdentity"/> to respawn.</param>
+        public static void RespawnNetworkIdentity(this NetworkConnection connection, NetworkIdentity identity)
+        {
+            connection.DestroyNetworkIdentity(identity);
+            connection.SpawnNetworkIdentity(identity);
         }
 
         /// <summary>
@@ -671,13 +721,41 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
+        /// Edit <see cref="NetworkIdentity"/>'s parameter and sync.
+        /// </summary>
+        /// <param name="connection">Target to send.</param>
+        /// <param name="identity">Target object.</param>
+        /// <param name="customAction">Edit function.</param>
+        /// <param name="resetAction">Reback function for reset object to original state.</param>
+        public static void EditNetworkObject(this NetworkConnection connection, NetworkIdentity identity, Action<NetworkIdentity> customAction, Action<NetworkIdentity> resetAction)
+        {
+            if (identity == null)
+                return;
+
+            customAction?.Invoke(identity);
+
+            connection.RespawnNetworkIdentity(identity);
+
+            resetAction?.Invoke(identity);
+        }
+
+        /// <summary>
         /// Sends a spawn message for the specified <see cref="NetworkIdentity"/> to a targeted collection of players.
         /// </summary>
         /// <param name="identity">The <see cref="NetworkIdentity"/> to serialize and spawn.</param>
         /// <param name="players">The collection of <see cref="Player"/> who will receive the spawn message.</param>
-        public static void SendSpawnMessageForPlayers(this NetworkIdentity identity, IEnumerable<Player> players)
+        public static void SendSpawnMessageForPlayers(this NetworkIdentity identity, IEnumerable<Player> players) => identity.SendSpawnMessageForConnections(players.Where(p => p.IsConnected).Select(p => p.Connection));
+
+        /// <summary>
+        /// Sends a spawn message for the specified <see cref="NetworkIdentity"/> to a targeted collection of <see cref="NetworkConnection"/>s."/>.
+        /// </summary>
+        /// <param name="identity">The <see cref="NetworkIdentity"/> to serialize and spawn.</param>
+        /// <param name="connections">The collection of <see cref="NetworkConnection"/> who will receive the spawn message.</param>
+        public static void SendSpawnMessageForConnections(this NetworkIdentity identity, IEnumerable<NetworkConnection> connections)
         {
-            if (identity == null || identity.netId == 0 || !players.Any())
+            IEnumerable<NetworkConnection> networkConnections = connections as NetworkConnection[] ?? connections.ToArray();
+
+            if (identity == null || identity.netId == 0 || !networkConnections.Any())
                 return;
 
             using NetworkWriterPooled ownerWriter = NetworkWriterPool.Get();
@@ -705,25 +783,25 @@ namespace Exiled.API.Extensions
             NetworkMessages.Pack(spawnMessage, prepackedObserverWriter);
             ArraySegment<byte> segment = prepackedObserverWriter.ToArraySegment();
 
-            foreach (Player player in players)
+            foreach (NetworkConnection connection in networkConnections)
             {
-                if (!player.IsConnected)
+                if (connection == null)
                     continue;
 
-                bool isOwner = identity.connectionToClient == player.Connection;
+                bool isOwner = identity.connectionToClient == connection;
 
                 if (!isOwner)
                 {
-                    player.Connection.Send(segment);
+                    connection.Send(segment);
                     continue;
                 }
 
                 SpawnMessage ownerMessage = spawnMessage;
                 ownerMessage.isOwner = true;
-                ownerMessage.isLocalPlayer = player.NetworkIdentity == identity;
+                ownerMessage.isLocalPlayer = connection.identity == identity;
                 ownerMessage.payload = ownerPayload;
 
-                player.Connection.Send(ownerMessage);
+                connection.Send(ownerMessage);
             }
         }
 
@@ -824,13 +902,29 @@ namespace Exiled.API.Extensions
         /// <param name="value">Value of send to target.</param>
         public static void SendFakeSyncVar<T>(this Player target, NetworkIdentity behaviorOwner, Type targetType, string propertyName, T value)
         {
-            if (!target.IsConnected || behaviorOwner == null)
+            if (!target.IsConnected)
+                return;
+            target.Connection.SendFakeSyncVar(behaviorOwner, targetType, propertyName, value);
+        }
+
+        /// <summary>
+        /// Send fake values to client's <see cref="SyncVarAttribute"/>.
+        /// </summary>
+        /// <typeparam name="T">Target SyncVar property type.</typeparam>
+        /// <param name="connection"><see cref="NetworkConnection"/> to send.</param>
+        /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
+        /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
+        /// <param name="propertyName">Property name starting with Network.</param>
+        /// <param name="value">Value of send to connection.</param>
+        public static void SendFakeSyncVar<T>(this NetworkConnection connection, NetworkIdentity behaviorOwner, Type targetType, string propertyName, T value)
+        {
+            if (connection == null || behaviorOwner == null)
                 return;
 
             NetworkWriterPooled writer = NetworkWriterPool.Get();
             NetworkWriterPooled writer2 = NetworkWriterPool.Get();
             MakeCustomSyncWriter(behaviorOwner, targetType, null, CustomSyncVarGenerator, writer, writer2);
-            target.Connection.Send(new EntityStateMessage
+            connection.Send(new EntityStateMessage
             {
                 netId = behaviorOwner.netId,
                 payload = writer.ToArraySegment(),
@@ -838,6 +932,7 @@ namespace Exiled.API.Extensions
 
             NetworkWriterPool.Return(writer);
             NetworkWriterPool.Return(writer2);
+
             void CustomSyncVarGenerator(NetworkWriter targetWriter)
             {
                 bool isAdminToy = targetType.BaseType == typeof(AdminToyBase);
@@ -888,9 +983,25 @@ namespace Exiled.API.Extensions
         /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
         /// <param name="rpcName">Property name starting with Rpc.</param>
         /// <param name="values">Values of send to target.</param>
-        public static void SendFakeTargetRpc(Player target, NetworkIdentity behaviorOwner, Type targetType, string rpcName, params object[] values)
+        public static void SendFakeTargetRpc(this Player target, NetworkIdentity behaviorOwner, Type targetType, string rpcName, params object[] values)
         {
-            if (!target.IsConnected || behaviorOwner == null)
+            if (!target.IsConnected)
+                return;
+
+            target.Connection.SendFakeTargetRpc(behaviorOwner, targetType, rpcName, values);
+        }
+
+        /// <summary>
+        /// Send fake values to client's <see cref="ClientRpcAttribute"/>.
+        /// </summary>
+        /// <param name="connection">Connection to send.</param>
+        /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
+        /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
+        /// <param name="rpcName">Property name starting with Rpc.</param>
+        /// <param name="values">Values of send to connection.</param>
+        public static void SendFakeTargetRpc(this NetworkConnection connection, NetworkIdentity behaviorOwner, Type targetType, string rpcName, params object[] values)
+        {
+            if (connection == null || behaviorOwner == null)
                 return;
 
             NetworkWriterPooled writer = NetworkWriterPool.Get();
@@ -906,7 +1017,7 @@ namespace Exiled.API.Extensions
                 payload = writer.ToArraySegment(),
             };
 
-            target.Connection.Send(msg);
+            connection.Send(msg);
 
             NetworkWriterPool.Return(writer);
         }
@@ -929,15 +1040,41 @@ namespace Exiled.API.Extensions
         ///  });
         /// </code>
         /// </example>
-        public static void SendFakeSyncObject(Player target, NetworkIdentity behaviorOwner, Type targetType, Action<NetworkWriter> customAction)
+        public static void SendFakeSyncObject(this Player target, NetworkIdentity behaviorOwner, Type targetType, Action<NetworkWriter> customAction)
         {
             if (!target.IsConnected)
+                return;
+
+            target.Connection.SendFakeSyncObject(behaviorOwner, targetType, customAction);
+        }
+
+        /// <summary>
+        /// Send fake values to client's <see cref="SyncObject"/>.
+        /// </summary>
+        /// <param name="connection">Target to send.</param>
+        /// <param name="behaviorOwner"><see cref="NetworkIdentity"/> of object that owns <see cref="NetworkBehaviour"/>.</param>
+        /// <param name="targetType"><see cref="NetworkBehaviour"/>'s type.</param>
+        /// <param name="customAction">Custom writing action.</param>
+        /// <example>
+        /// EffectOnlySCP207.
+        /// <code>
+        ///  MirrorExtensions.SendFakeSyncObject(player, player.NetworkIdentity, typeof(PlayerEffectsController), (writer) => {
+        ///   writer.WriteULong(1ul);                                            // DirtyObjectsBit
+        ///   writer.WriteUInt(1);                                               // DirtyIndexCount
+        ///   writer.WriteByte((byte)SyncList&lt;byte&gt;.Operation.OP_SET);     // Operations
+        ///   writer.WriteUInt(17);                                              // EditIndex
+        ///  });
+        /// </code>
+        /// </example>
+        public static void SendFakeSyncObject(this NetworkConnection connection, NetworkIdentity behaviorOwner, Type targetType, Action<NetworkWriter> customAction)
+        {
+            if (connection == null || behaviorOwner == null)
                 return;
 
             NetworkWriterPooled writer = NetworkWriterPool.Get();
             NetworkWriterPooled writer2 = NetworkWriterPool.Get();
             MakeCustomSyncWriter(behaviorOwner, targetType, customAction, null, writer, writer2);
-            target.Connection.Send(new EntityStateMessage() { netId = behaviorOwner.netId, payload = writer.ToArraySegment() });
+            connection.Send(new EntityStateMessage() { netId = behaviorOwner.netId, payload = writer.ToArraySegment() });
             NetworkWriterPool.Return(writer);
             NetworkWriterPool.Return(writer2);
         }
