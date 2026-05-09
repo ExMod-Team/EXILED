@@ -23,11 +23,13 @@ namespace Exiled.API.Structs
         /// <param name="role">The fake role.</param>
         /// <param name="authority">The authority of the role data.</param>
         /// <param name="unitId">The fake UnitID, if <paramref name="role"/> is an NTF role.</param>
-        public RoleData(RoleTypeId role = RoleTypeId.None, Authority authority = Authority.None, byte unitId = 0)
+        /// <param name="customData">An action used to write custom data if this role data is used to send a fake role. For 99% of uses, just leave this as null.</param>
+        public RoleData(RoleTypeId role, Authority authority = Authority.None, byte unitId = 0, Action<NetworkWriter> customData = null)
         {
             Role = role;
             DataAuthority = authority;
             UnitId = unitId;
+            CustomData = customData;
         }
 
         /// <summary>
@@ -61,6 +63,11 @@ namespace Exiled.API.Structs
             /// Indicates that this <see cref="RoleData"/> can make a player view themselves as a different role.
             /// </summary>
             AffectSelf = 8,
+
+            /// <summary>
+            /// Indicates that this <see cref="RoleData"/> can affect dummies.
+            /// </summary>
+            AffectNPCs = 16,
         }
 
         /// <summary>

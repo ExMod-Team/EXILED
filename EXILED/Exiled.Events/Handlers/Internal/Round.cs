@@ -34,6 +34,7 @@ namespace Exiled.Events.Handlers.Internal
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
+    using PlayerRoles.SpawnData;
     using RelativePositioning;
     using Respawning.NamingRules;
     using UnityEngine;
@@ -45,6 +46,12 @@ namespace Exiled.Events.Handlers.Internal
     /// </summary>
     internal static class Round
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether <see cref="OnRoleSyncEvent"/> is going to be invoked from <see cref="PlayerRoleManager.SendNewRoleInfo"/>.
+        /// </summary>
+        /// <remarks>This is required to check if we can skip writing all the data for a fake role without looking inside the stack trace (very expensive compared to a patch).</remarks>
+        internal static bool SendingNewRoleInfo { get; set; }
+
         /// <inheritdoc cref="Handlers.Player.OnUsedItem" />
         public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable, false));
 
@@ -105,7 +112,7 @@ namespace Exiled.Events.Handlers.Internal
                     if (data.Role == RoleTypeId.None)
                         continue;
 
-                    if (viewer != ev.Player || (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.AffectSelf)
+                    if (viewer != ev.Player)
                     {
                         viewer.FakeRoles[ev.Player] = data;
                     }
@@ -170,7 +177,7 @@ namespace Exiled.Events.Handlers.Internal
                     if (data.Role == RoleTypeId.None)
                         continue;
 
-                    if (player != ev.Player || (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.AffectSelf)
+                    if (player != ev.Player)
                     {
                         ev.Player.FakeRoles[player] = data;
                     }
@@ -181,32 +188,41 @@ namespace Exiled.Events.Handlers.Internal
         /// <summary>
         /// Makes fake role API work.
         /// </summary>
-        /// <param name="ownerHub">The <see cref="ReferenceHub"/> of the player.</param>
+        /// <param name="targetHub">The <see cref="ReferenceHub"/> of the target.</param>
         /// <param name="viewerHub">The <see cref="ReferenceHub"/> of the viewer.</param>
         /// <param name="actualRole">The actual <see cref="RoleTypeId"/>.</param>
         /// <param name="writer">The pooled <see cref="NetworkWriter"/>.</param>
         /// <returns>A role, fake if needed.</returns>
-        public static RoleTypeId OnRoleSyncEvent(ReferenceHub ownerHub, ReferenceHub viewerHub, RoleTypeId actualRole, NetworkWriter writer)
+        public static RoleTypeId OnRoleSyncEvent(ReferenceHub targetHub, ReferenceHub viewerHub, RoleTypeId actualRole, NetworkWriter writer)
         {
-            Player owner = Player.Get(ownerHub);
+            Player target = Player.Get(targetHub);
             Player viewer = Player.Get(viewerHub);
 
-            if (viewer.IsNPC || viewer.IsHost || !viewer.FakeRoles.TryGetValue(owner, out RoleData data) || data.Role == actualRole)
+            if (viewer.IsHost || !viewer.FakeRoles.TryGetValue(target, out RoleData data))
                 return actualRole;
 
-            if (ownerHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
-                return previousRole;
+            if (target == viewer && (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.None)
+                return actualRole;
 
             // if another plugin has written data, we can't reliably modify and expect non-breaking behavior.
             // if we send faulty data we can accidentally soft-dc the entire server which is much worse than a plugin not working.
             if (writer.Position != 0 && (data.DataAuthority & RoleData.Authority.Override) == RoleData.Authority.None)
                 return actualRole;
 
-            writer.Position = 0;
-
-            // I doubt most devs want people who are dead to have fake roles.
-            if (actualRole.IsDead() && (data.DataAuthority & RoleData.Authority.Always) == RoleData.Authority.None)
+            if ((data.DataAuthority & RoleData.Authority.Always) == RoleData.Authority.None && actualRole.IsDead())
                 return actualRole;
+
+            if ((data.DataAuthority & RoleData.Authority.AffectNPCs) == RoleData.Authority.None && target.IsNPC)
+                return actualRole;
+
+            // this check has to be last because otherwise you can get instances where a fake role shouldn't persist due to not having a required Authority,
+            // yet it would still persist because this would return the fake role if it was not here.
+            if (!SendingNewRoleInfo && targetHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
+                return previousRole;
+
+            Log.Info($"RoleSyncEvent called with {viewer.Nickname} as the viewer and {target.Nickname} as the target");
+
+            writer.Position = 0;
 
             if (data.CustomData != null)
             {
@@ -214,32 +230,56 @@ namespace Exiled.Events.Handlers.Internal
             }
             else
             {
-                if (data.Role.GetRoleBase() is PlayerRoles.HumanRole { UsesUnitNames: true })
+                PlayerRoleBase roleBase = data.Role.GetRoleBase();
+
+                if (roleBase is not ISpawnDataReader)
+                    return data.Role;
+
+                switch (roleBase)
                 {
-                    if (data.UnitId != 0)
-                    {
+                    case PlayerRoles.HumanRole { UsesUnitNames: true } when data.UnitId != 0:
                         writer.WriteByte(data.UnitId);
-                    }
-                    else
+                        break;
+
+                    // W stylecop :heart:
+#pragma warning disable SA1013
+                    case PlayerRoles.HumanRole { UsesUnitNames: true }:
+#pragma warning restore SA1013
                     {
                         if (!NamingRulesManager.GeneratedNames.TryGetValue(Team.FoundationForces, out List<string> list))
                             return actualRole;
 
                         writer.WriteByte((byte)list.Count);
+                        break;
                     }
-                }
 
-                if (data.Role.GetRoleBase() is PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo)
-                    writer.WriteByte((byte)flamingo.ServerSpawnReason);
+                    case PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo:
+                        writer.WriteByte((byte)flamingo.ServerSpawnReason);
+                        break;
+                }
 
                 if (data.Role == RoleTypeId.Scp0492)
                 {
-                    writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(owner.MaxHealth), 0, ushort.MaxValue));
+                    writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(target.MaxHealth), 0, ushort.MaxValue));
                     writer.WriteBool(false);
                 }
 
-                writer.WriteRelativePosition(new RelativePosition(owner.Position));
-                writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0.0f, 360f, owner.Rotation.eulerAngles.y) * ushort.MaxValue));
+                if (target.Role is FpcRole role)
+                {
+                    Log.Info("Writing normal FPC stuff");
+
+                    writer.WriteRelativePosition(role.ClientRelativePosition);
+                    writer.WriteUShort(role.FirstPersonController.FpcModule.MouseLook._prevSyncH);
+                }
+                else
+                {
+                    Log.Info("Writing FPC stuff using inefficient method");
+
+                    WaypointBase.GetRelativeRotation(target.Position, Quaternion.Euler(Vector3.up * target.Rotation.eulerAngles.y), out _, out Quaternion relativeRotation);
+
+                    writer.WriteRelativePosition(new RelativePosition(target.Position));
+                    writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0F, 360F, relativeRotation.eulerAngles.y) * ushort.MaxValue));
+                }
             }
 
             return data.Role;
