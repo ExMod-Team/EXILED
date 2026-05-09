@@ -118,17 +118,6 @@ namespace Exiled.API.Features.Pickups
         }
 
         /// <summary>
-        /// Initializes the item as if it was spawned naturally by map generation.
-        /// </summary>
-        public void Distribute() => Base.OnDistributed();
-
-        /// <summary>
-        /// Returns the FirearmPickup in a human-readable format.
-        /// </summary>
-        /// <returns>A string containing FirearmPickup related data.</returns>
-        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}*";
-
-        /// <summary>
         /// Gets or sets the damage for this <see cref="FirearmPickup"/>.
         /// </summary>
         public float Damage { get; set; }
@@ -148,6 +137,17 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         public float DamageFalloffDistance { get; set; }
 
+        /// <summary>
+        /// Initializes the item as if it was spawned naturally by map generation.
+        /// </summary>
+        public void Distribute() => Base.OnDistributed();
+
+        /// <summary>
+        /// Returns the FirearmPickup in a human-readable format.
+        /// </summary>
+        /// <returns>A string containing FirearmPickup related data.</returns>
+        public override string ToString() => $"{Type} ({Serial}) [{Weight}] *{Scale}*";
+
         /// <inheritdoc/>
         internal override void ReadItemInfo(Items.Item item)
         {
@@ -155,7 +155,6 @@ namespace Exiled.API.Features.Pickups
             {
                 MaxAmmo = firearm.PrimaryMagazine.ConstantMaxAmmo;
                 AmmoDrain = firearm.AmmoDrain;
-
                 Damage = firearm.Damage;
                 Inaccuracy = firearm.Inaccuracy;
                 Penetration = firearm.Penetration;
