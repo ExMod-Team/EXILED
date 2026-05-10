@@ -13,18 +13,23 @@ namespace Exiled.API.Extensions
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
+    using System.Text;
 
     using AdminToys;
     using AudioPooling;
     using Cassie;
     using CustomPlayerEffects;
     using Exiled.API.Enums;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
     using Features;
+    using Features.Pools;
+    using HarmonyLib;
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
+    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Keycards;
     using MEC;
@@ -37,6 +42,8 @@ namespace Exiled.API.Extensions
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
     using RelativePositioning;
+    using Respawning;
+    using Unity.Collections.LowLevel.Unsafe;
     using UnityEngine;
     using Utils.Networking;
 
@@ -164,6 +171,12 @@ namespace Exiled.API.Extensions
         public static void PlayBeepSound(this Player player) => SendFakeTargetRpc(player, ReferenceHub._hostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
 
         /// <summary>
+        /// Plays a beep sound that only the target <paramref name="connection"/> can hear.
+        /// </summary>
+        /// <param name="connection">Target to play sound to.</param>
+        public static void PlayBeepSound(this NetworkConnection connection) => connection.SendFakeTargetRpc(ReferenceHub._hostHub.networkIdentity, typeof(AmbientSoundPlayer), nameof(AmbientSoundPlayer.RpcPlaySound), 7);
+
+        /// <summary>
         /// Set <see cref="Player.CustomInfo"/> on the <paramref name="target"/> player that only the <paramref name="player"/> can see.
         /// </summary>
         /// <param name="player">Only this player can see info.</param>
@@ -176,7 +189,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">Target to play.</param>
         /// <param name="position">Position to play on.</param>
-        /// <param name="itemType">Weapon' sound to play.</param>
+        /// <param name="itemType">Weapon's sound to play.</param>
         /// <param name="volume">Sound's volume to set.</param>
         /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
         [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
@@ -1079,7 +1092,7 @@ namespace Exiled.API.Extensions
             NetworkWriterPool.Return(writer2);
         }
 
-        // Get components index in identity.(private)
+        // Get components' index in identity.(private)
         private static int GetComponentIndex(NetworkIdentity identity, Type type)
         {
             return Array.FindIndex(identity.NetworkBehaviours, (x) => x.GetType() == type);
