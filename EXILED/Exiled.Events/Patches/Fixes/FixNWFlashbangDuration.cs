@@ -20,7 +20,8 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(Flashed), nameof(Flashed.IntensityChanged))]
     internal class FixNWFlashbangDuration
     {
-        private static IEnumerable<CodeInstruction> Transpiler()
+#pragma warning disable IDE0060
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             yield return new CodeInstruction(OpCodes.Ret);
         }
