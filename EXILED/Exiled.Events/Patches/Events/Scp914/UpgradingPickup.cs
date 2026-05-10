@@ -11,6 +11,7 @@ namespace Exiled.Events.Patches.Events.Scp914
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp914;
 

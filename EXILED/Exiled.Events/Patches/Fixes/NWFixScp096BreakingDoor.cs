@@ -11,11 +11,16 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
     using Footprinting;
+
     using HarmonyLib;
+
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
+
     using PlayerRoles.PlayableScps.Scp096;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

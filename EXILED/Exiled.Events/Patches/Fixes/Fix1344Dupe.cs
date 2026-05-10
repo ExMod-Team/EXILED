@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Fix1344Dupe.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,7 +11,9 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using Exiled.API.Features.Pools;
+
     using HarmonyLib;
+
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Usables.Scp1344;

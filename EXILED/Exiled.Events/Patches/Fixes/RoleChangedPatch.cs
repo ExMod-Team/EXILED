@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(InventoryItemProvider), nameof(InventoryItemProvider.RoleChanged))]
     internal static class RoleChangedPatch
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler()
         {
             yield return new CodeInstruction(OpCodes.Ret);
         }

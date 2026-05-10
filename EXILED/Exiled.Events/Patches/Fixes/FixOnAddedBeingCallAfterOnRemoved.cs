@@ -17,12 +17,10 @@ namespace Exiled.Events.Patches.Fixes
     using Exiled.API.Features.Pickups;
 
     using HarmonyLib;
+
     using InventorySystem;
     using InventorySystem.Items;
-    using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Pickups;
-
-    using Mirror;
 
     using static HarmonyLib.AccessTools;
 
@@ -33,7 +31,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerAddItem))]
     internal class FixOnAddedBeingCallAfterOnRemoved
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

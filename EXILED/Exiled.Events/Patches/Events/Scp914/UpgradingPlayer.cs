@@ -13,17 +13,16 @@ namespace Exiled.Events.Patches.Events.Scp914
 
     using API.Features;
     using API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp914;
+
     using global::Scp914;
+
     using HarmonyLib;
-    using Mono.Cecil.Cil;
-    using PlayerRoles.FirstPersonControl;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
-    using OpCode = System.Reflection.Emit.OpCode;
     using Scp914 = Handlers.Scp914;
 
     /// <summary>

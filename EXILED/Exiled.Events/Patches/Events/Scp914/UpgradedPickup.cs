@@ -11,6 +11,7 @@ namespace Exiled.Events.Patches.Events.Scp914
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp914;
 
@@ -30,7 +31,7 @@ namespace Exiled.Events.Patches.Events.Scp914
     [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.ProcessPickup))]
     internal static class UpgradedPickup
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

@@ -9,10 +9,11 @@ namespace Exiled.Events.Patches.Fixes
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection.Emit;
 
     using API.Features.Pools;
+
     using HarmonyLib;
+
     using InventorySystem.Configs;
 
     /// <summary>
@@ -22,7 +23,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(InventoryLimits), nameof(InventoryLimits.GetAmmoLimit), new Type[] { typeof(InventorySystem.Items.Armor.BodyArmor), typeof(ItemType), })]
     internal class GetAmmoLimitFix
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

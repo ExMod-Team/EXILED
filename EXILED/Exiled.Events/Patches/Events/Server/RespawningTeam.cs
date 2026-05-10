@@ -13,12 +13,16 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
     using Exiled.API.Features.Waves;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
     using Exiled.Events.Handlers;
+
     using HarmonyLib;
+
     using PlayerRoles;
+
     using Respawning.NamingRules;
     using Respawning.Waves;
 
