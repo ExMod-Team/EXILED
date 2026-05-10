@@ -15,22 +15,22 @@ namespace Exiled.Events.Patches.Events.Player
     using API.Features;
     using API.Features.Pools;
     using API.Features.Roles;
+
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
+
     using InventorySystem;
-    using InventorySystem.Configs;
     using InventorySystem.Items;
-    using InventorySystem.Items.Armor;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables.Scp1344;
+
     using LabApi.Events.Arguments.PlayerEvents;
     using LabApi.Events.Handlers;
-    using Mirror;
 
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
-    using static UnityEngine.GraphicsBuffer;
 
     using Player = Handlers.Player;
 
@@ -197,7 +197,7 @@ namespace Exiled.Events.Patches.Events.Player
                 Inventory inventory = ev.Player.Inventory;
                 if (InventoryItemProvider.KeepItemsAfterEscaping && ev.Reason == API.Enums.SpawnReason.Escaped)
                 {
-                    List<ItemPickupBase> list = new List<ItemPickupBase>();
+                    List<ItemPickupBase> list = new();
 
                     HashSet<ushort> hashSet = HashSetPool<ushort>.Pool.Get();
                     foreach (KeyValuePair<ushort, ItemBase> item2 in inventory.UserInventory.Items)

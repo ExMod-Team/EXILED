@@ -13,12 +13,16 @@ namespace Exiled.API.Features
     using System.Text;
 
     using Exiled.API.Features.Pools;
+
     using global::Cassie;
     using global::Cassie.Interpreters;
+
     using MEC;
+
     using PlayerRoles;
+
     using PlayerStatsSystem;
-    using Respawning;
+
     using Respawning.NamingRules;
 
     using CustomFirearmHandler = DamageHandlers.FirearmDamageHandler;
@@ -57,7 +61,9 @@ namespace Exiled.API.Features
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
         /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
+#pragma warning disable IDE0060 // TODO: Deleted the unused param
         public static void MessageTranslated(string message, string translation, bool isHeld = false, bool isNoisy = true, bool isSubtitles = true)
+#pragma warning restore IDE0060
         {
             new CassieAnnouncement(new CassieTtsPayload(message, translation, isHeld), 0f, isNoisy ? 1 : 0).AddToQueue();
         }
@@ -167,7 +173,7 @@ namespace Exiled.API.Features
                 return string.Empty;
             }
 
-            NumberInterpreter numberInterpreter = (NumberInterpreter)CassieTtsAnnouncer.Interpreters.FirstOrDefault((CassieInterpreter x) => x is NumberInterpreter);
+            NumberInterpreter numberInterpreter = (NumberInterpreter)CassieTtsAnnouncer.Interpreters.FirstOrDefault(x => x is NumberInterpreter);
             if (numberInterpreter == null)
             {
                 return string.Empty;
@@ -222,7 +228,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="word">The word to check.</param>
         /// <returns><see langword="true"/> if the word is valid; otherwise, <see langword="false"/>.</returns>
-        public static bool IsValid(string word) => CassieTtsAnnouncer.TryGetDatabase(out CassieLineDatabase cassieLineDatabase) ? cassieLineDatabase.AllLines.Any(line => line.ApiName.ToUpper() == word.ToUpper()) : false;
+        public static bool IsValid(string word) => CassieTtsAnnouncer.TryGetDatabase(out CassieLineDatabase cassieLineDatabase) && cassieLineDatabase.AllLines.Any(line => line.ApiName.ToUpper() == word.ToUpper());
 
         /// <summary>
         /// Gets a value indicating whether the given sentence is all valid C.A.S.S.I.E word.

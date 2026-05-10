@@ -13,11 +13,15 @@ namespace Exiled.Events.Patches.Events.Map
 
     using API.Features;
     using API.Features.Pools;
+
     using Exiled.API.Extensions;
     using Exiled.Events.EventArgs.Map;
     using Exiled.Events.Patches.Generic;
+
     using HarmonyLib;
+
     using InventorySystem.Items.ThrowableProjectiles;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

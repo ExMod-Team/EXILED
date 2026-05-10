@@ -121,9 +121,9 @@ namespace Exiled.Installer
                 Release targetRelease = FindRelease(args, releases);
 
                 Console.WriteLine(Resources.Program_MainSafe_Release_found_);
-                Console.WriteLine(FormatRelease(targetRelease!));
+                Console.WriteLine(FormatRelease(targetRelease));
 
-                ReleaseAsset? exiledAsset = targetRelease!.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
+                ReleaseAsset? exiledAsset = targetRelease.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
                 if (exiledAsset is null)
                 {
                     Console.WriteLine(Resources.Program_MainSafe_____ASSETS____);

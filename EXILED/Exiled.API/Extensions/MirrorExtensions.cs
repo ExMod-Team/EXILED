@@ -13,7 +13,6 @@ namespace Exiled.API.Extensions
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
-    using System.Text;
 
     using AdminToys;
 
@@ -24,17 +23,14 @@ namespace Exiled.API.Extensions
     using CustomPlayerEffects;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
 
     using Features;
-    using Features.Pools;
 
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Keycards;
 
@@ -51,8 +47,6 @@ namespace Exiled.API.Extensions
     using PlayerRoles.Voice;
 
     using RelativePositioning;
-
-    using Respawning;
 
     using UnityEngine;
 
@@ -254,7 +248,9 @@ namespace Exiled.API.Extensions
         /// <param name="origin">The direction of the blood decal.</param>
         /// <param name="roleTypeId">The RoleTypeId from who blood come from.</param>
         /// <param name="gettingShotSoundIndex">The sound than player get when getting shot.</param>
+#pragma warning disable IDE0060 // TODO: Deleted the unused param
         public static void PlaceBlood(this Player player, Vector3 position, Vector3 origin, RoleTypeId roleTypeId, int gettingShotSoundIndex)
+#pragma warning restore IDE0060
         {
             if (!roleTypeId.TryGetRoleBase(out PlayerRoleBase playerRoleBase) || playerRoleBase is not IBleedableRole)
                 return;
@@ -541,7 +537,9 @@ namespace Exiled.API.Extensions
         /// <param name="makeHold">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isHeld.</param>
         /// <param name="makeNoise">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isNoisy.</param>
         /// <param name="isSubtitles">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isSubtitles.</param>
+#pragma warning disable IDE0060 // TODO: Deleted the unused param
         public static void MessageTranslated(this Player player, string words, string translation, string customSubtitles, bool makeHold = false, bool makeNoise = true, bool isSubtitles = true)
+#pragma warning restore IDE0060
         {
             CassieAnnouncement announcement = new(new CassieTtsPayload(words, customSubtitles, makeHold), 0, makeNoise ? 1 : 0);
 
@@ -988,7 +986,7 @@ namespace Exiled.API.Extensions
             // Write syncdata position data
             int position3 = owner.Position;
             owner.Position = position;
-            owner.WriteByte((byte)(position3 - position2 & 255));
+            owner.WriteByte((byte)((position3 - position2) & 255));
             owner.Position = position3;
 
             // Copy owner to observer

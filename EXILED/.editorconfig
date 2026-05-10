@@ -19,10 +19,23 @@ ij_wrap_on_typing = false
 csharp_style_var_for_built_in_types = false:error
 csharp_style_var_when_type_is_apparent = false:error
 csharp_style_var_elsewhere = false:error
-dotnet_diagnostic.IDE0305.severity = none
+dotnet_diagnostic.IDE0005.severity = warning
+dotnet_diagnostic.IDE0019.severity = warning
+dotnet_diagnostic.IDE0031.severity = warning
+dotnet_diagnostic.IDE0048.severity = warning
+dotnet_diagnostic.IDE0055.severity = warning
+dotnet_diagnostic.IDE0060.severity = warning
+dotnet_diagnostic.IDE0090.severity = warning
+dotnet_diagnostic.IDE0200.severity = warning
+dotnet_diagnostic.IDE0350.severity = warning
+dotnet_diagnostic.IDE0370.severity = warning
 
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+csharp_using_directive_placement = inside_namespace
+# dotnet_analyzer_diagnostic.category-Style.severity = warning
 # ReSharper properties
-resharper_csharp_max_line_length = 400
+resharper_csharp_max_line_length = 250
 
 [*.properties]
 ij_properties_align_group_field_declarations = false

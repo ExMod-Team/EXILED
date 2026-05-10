@@ -11,10 +11,14 @@ namespace Exiled.API.Extensions
     using System.Linq;
 
     using Enums;
+
     using Features;
+
     using InventorySystem.Items.Scp1509;
+
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
+
     using PlayerStatsSystem;
 
     /// <summary>

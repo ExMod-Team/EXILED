@@ -12,12 +12,17 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using CustomPlayerEffects;
+
     using Enums;
+
     using Extensions;
+
     using PlayerRoles;
+
     using Respawning;
     using Respawning.Waves;
     using Respawning.Waves.Generic;
+
     using UnityEngine;
 
     /// <summary>
