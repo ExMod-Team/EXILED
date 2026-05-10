@@ -65,7 +65,9 @@ namespace Exiled.Events.Handlers.Internal
                 PrefabAttribute attribute = prefabType.GetPrefabAttribute();
                 if (prefabs.TryGetValue(attribute.AssetId, out (GameObject, Component) tuple))
                 {
-                    GameObject gameObject = tuple.Item1;
+                    if (attribute.Name != tuple.Item1.name)
+                        Log.Warn($"Not valid Name {prefabType}: {attribute.Name} ({attribute.AssetId}) -> {tuple.Item1.name} ({attribute.AssetId})");
+
                     PrefabHelper.Prefabs.Add(prefabType, prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.Item1.name.Contains(attribute.Name)).Value);
                     prefabs.Remove(attribute.AssetId);
                     continue;
@@ -74,6 +76,8 @@ namespace Exiled.Events.Handlers.Internal
                 KeyValuePair<uint, (GameObject, Component)>? value = prefabs.FirstOrDefault(x => x.Value.Item1.name == attribute.Name);
                 if (value.HasValue)
                 {
+                    Log.Warn($"Not valid AssetId {prefabType}: {attribute.Name} ({attribute.AssetId}) -> {value.Value.Value.Item1.name} ({value.Value.Key})");
+
                     PrefabHelper.Prefabs.Add(prefabType, prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.Item1.name.Contains(attribute.Name)).Value);
                     prefabs.Remove(value.Value.Key);
                     continue;
