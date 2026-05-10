@@ -122,7 +122,7 @@ namespace Exiled.API.Extensions
 
                 return ReadOnlySyncVarDirtyBitsValue;
 
-                ulong GetBit(MethodInfo setter)
+                static ulong GetBit(MethodInfo setter)
                 {
                     List<CodeInstruction> instructions = PatchProcessor.GetOriginalInstructions(setter);
 
