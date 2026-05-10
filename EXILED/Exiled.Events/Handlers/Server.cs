@@ -33,6 +33,11 @@ namespace Exiled.Events.Handlers
         public static Event RoundStarted { get; set; } = new();
 
         /// <summary>
+        /// Invoked after the start of a new round.
+        /// </summary>
+        public static Event<RoundStartingEventArgs> RoundStarting { get; set; } = new();
+
+        /// <summary>
         /// Invoked after all players have spawned at the start of a new round.
         /// </summary>
         public static Event AllPlayersSpawned { get; set; } = new();
@@ -136,6 +141,12 @@ namespace Exiled.Events.Handlers
         /// Called before waiting for players.
         /// </summary>
         public static void OnWaitingForPlayers() => WaitingForPlayers.InvokeSafely();
+
+        /// <summary>
+        /// Called before the start of a new round.
+        /// </summary>
+        /// <param name="ev">The <see cref="RoundStartingEventArgs"/> instance.</param>
+        public static void OnRoundStarting(RoundStartingEventArgs ev) => RoundStarting.InvokeSafely(ev);
 
         /// <summary>
         /// Called after the start of a new round.

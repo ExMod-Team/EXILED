@@ -269,7 +269,8 @@ namespace Exiled.Events.Patches.Events.Item
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
+            int offset = 2;
+            int index = newInstructions.FindIndex(x => x.opcode == OpCodes.Brfalse_S) + offset;
 
             Label returnLabel = generator.DefineLabel();
 

@@ -414,7 +414,19 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Destroy this item.
         /// </summary>
-        public void Destroy() => Owner.RemoveItem(this);
+        public void Destroy()
+        {
+            if (Owner.RemoveItem(this))
+                return;
+
+            if (Base != null)
+            {
+                BaseToItem.Remove(Base);
+
+                if (Base.gameObject != null)
+                    Object.Destroy(Base.gameObject);
+            }
+        }
 
         /// <summary>
         /// Creates the <see cref="Pickup"/> that based on this <see cref="Item"/>.

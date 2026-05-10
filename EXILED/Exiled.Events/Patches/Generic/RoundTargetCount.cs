@@ -52,11 +52,12 @@ namespace Exiled.Events.Patches.Generic
 
             newInstructions.InsertRange(0, new CodeInstruction[]
             {
-                // if (Round.IgnoredPlayers.Contains(hub))
+                // if (Round.IgnoredPlayers.Contains(player))
                 // return false;
                 new(OpCodes.Call, PropertyGetter(typeof(Round), nameof(Round.IgnoredPlayers))),
                 new(OpCodes.Ldarg_1),
-                new(OpCodes.Callvirt, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                new(OpCodes.Callvirt, Method(typeof(HashSet<Player>), nameof(HashSet<Player>.Contains))),
                 new(OpCodes.Brfalse_S, skip),
 
                 new(OpCodes.Ldc_I4_0),

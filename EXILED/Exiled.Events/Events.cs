@@ -30,12 +30,10 @@ namespace Exiled.Events
     /// </summary>
     public sealed class Events : Plugin<Config>
     {
-        private static Events instance;
-
         /// <summary>
         /// Gets the plugin instance.
         /// </summary>
-        public static Events Instance => instance;
+        public static Events Instance { get; private set; }
 
         /// <inheritdoc/>
         public override PluginPriority Priority { get; } = PluginPriority.First;
@@ -48,7 +46,7 @@ namespace Exiled.Events
         /// <inheritdoc/>
         public override void OnEnabled()
         {
-            instance = this;
+            Instance = this;
             base.OnEnabled();
 
             Stopwatch watch = Stopwatch.StartNew();

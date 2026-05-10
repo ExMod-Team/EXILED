@@ -40,7 +40,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Isinst, typeof(MapGeneration.Distributors.Locker)),
                     new(OpCodes.Dup),
                     new(OpCodes.Brfalse_S, jump),
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(API.Features.Lockers.Locker))[0]),
+                    new(OpCodes.Call, Method(typeof(API.Features.Lockers.Locker), nameof(API.Features.Lockers.Locker.Get), new[] { typeof(MapGeneration.Distributors.Locker) })),
                     new CodeInstruction(OpCodes.Pop).WithLabels(jump),
                 });
 

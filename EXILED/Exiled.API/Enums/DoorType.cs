@@ -374,5 +374,10 @@ namespace Exiled.API.Enums
         /// Represents the door in <see cref="RoomType.HczLoadingBay"/>.
         /// </summary>
         HczLoadingBay,
+
+        /// <summary>
+        /// Represents a spawnable unsecured gate.
+        /// </summary>
+        SpawnableUnsecuredGate,
     }
 }

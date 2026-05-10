@@ -12,6 +12,7 @@ namespace Exiled.API.Enums
     /// <summary>
     /// Type of prefab.
     /// </summary>
+    /// <seealso cref="Features.PrefabHelper"/>
     public enum PrefabType
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member

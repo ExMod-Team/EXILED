@@ -291,7 +291,7 @@ namespace Exiled.API.Features
             });
 
             if (ignored)
-                Round.IgnoredPlayers.Add(npc.ReferenceHub);
+                Round.IgnoredPlayers.Add(npc);
 
             Dictionary.Add(npc.GameObject, npc);
             return npc;
@@ -334,7 +334,7 @@ namespace Exiled.API.Features
         {
             try
             {
-                Round.IgnoredPlayers.Remove(ReferenceHub);
+                Round.IgnoredPlayers.Remove(this);
                 Dictionary.Remove(ReferenceHub.gameObject);
                 NetworkServer.Destroy(ReferenceHub.gameObject);
             }

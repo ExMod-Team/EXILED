@@ -14,9 +14,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
-
     using UnityEngine;
-
     using YamlDotNet.Core;
     using YamlDotNet.Core.Events;
     using YamlDotNet.Serialization;
@@ -30,19 +28,26 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         public bool Accepts(Type type)
         {
             Type baseType = Nullable.GetUnderlyingType(type) ?? type;
-            return baseType == typeof(Vector2) || baseType == typeof(Vector3) || baseType == typeof(Vector4);
+            return baseType == typeof(Vector2) || baseType == typeof(Vector3) || baseType == typeof(Vector4) || baseType == typeof(Quaternion);
         }
 
         /// <inheritdoc cref="IYamlTypeConverter" />
         public object ReadYaml(IParser parser, Type type)
         {
-            Type baseType = Nullable.GetUnderlyingType(type) ?? type;
+            Type baseType = Nullable.GetUnderlyingType(type);
+
+            bool isNullable = true;
+            if (baseType == null)
+            {
+                isNullable = false;
+                baseType = type;
+            }
 
             if (parser.TryConsume(out Scalar scalar))
             {
                 if (string.IsNullOrEmpty(scalar.Value) || scalar.Value.Equals("null", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (Nullable.GetUnderlyingType(type) != null)
+                    if (isNullable)
                         return null;
 
                     Log.Error($"Cannot assign null to non-nullable type {baseType.FullName}.");
@@ -75,7 +80,11 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                 coordinates.Add(coordinate);
             }
 
-            object vector = Activator.CreateInstance(baseType, coordinates.ToArray());
+            object vector;
+            if (isNullable)
+                vector = Activator.CreateInstance(type, Activator.CreateInstance(baseType, coordinates.ToArray()));
+            else
+                vector = Activator.CreateInstance(type, coordinates.ToArray());
 
             ListPool<object>.Pool.Return(coordinates);
 
@@ -110,6 +119,13 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                 coordinates["y"] = vector4.y;
                 coordinates["z"] = vector4.z;
                 coordinates["w"] = vector4.w;
+            }
+            else if (value is Quaternion quaternion)
+            {
+                coordinates["x"] = quaternion.x;
+                coordinates["y"] = quaternion.y;
+                coordinates["z"] = quaternion.z;
+                coordinates["w"] = quaternion.w;
             }
 
             emitter.Emit(new MappingStart());

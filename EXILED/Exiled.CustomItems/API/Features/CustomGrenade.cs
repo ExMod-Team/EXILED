@@ -19,10 +19,14 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.Events.EventArgs.Player;
 
     using Footprinting;
+
+    using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
+
     using Mirror;
+
     using UnityEngine;
 
     using Object = UnityEngine.Object;
@@ -70,31 +74,43 @@ namespace Exiled.CustomItems.API.Features
         /// <returns>The <see cref="Pickup"/> spawned.</returns>
         public virtual Pickup Throw(Vector3 position, float force, float weight, float fuseTime = 3f, ItemType grenadeType = ItemType.GrenadeHE, Player? player = null)
         {
-            if (player is null)
-                player = Server.Host;
+            player ??= Server.Host;
 
-            player.Role.Is(out FpcRole fpcRole);
-            Vector3 velocity = fpcRole.FirstPersonController.FpcModule.Motor.Velocity;
+            Vector3 velocity = Vector3.zero;
+            Quaternion rotation = Quaternion.identity;
 
-            Throwable throwable = (Throwable)Item.Create(grenadeType, player);
+            if (player != Server.Host)
+            {
+                if (player.Role.Is(out FpcRole fpcRole))
+                    velocity = fpcRole.FirstPersonController.FpcModule.Motor.Velocity;
 
-            ThrownProjectile thrownProjectile = Object.Instantiate(throwable.Base.Projectile, position, throwable.Owner.CameraTransform.rotation);
+                if (player.CameraTransform != null)
+                    rotation = player.CameraTransform.rotation;
+            }
+
+            InventoryItemLoader.TryGetItem(grenadeType, out ThrowableItem template);
+
+            ThrownProjectile thrownProjectile = Object.Instantiate(template.Projectile, position, rotation);
 
             PickupSyncInfo newInfo = new()
             {
-                ItemId = throwable.Type,
-                Locked = !throwable.Base._repickupable,
+                ItemId = grenadeType,
+                Locked = !template._repickupable,
                 Serial = ItemSerialGenerator.GenerateNext(),
                 WeightKg = weight,
             };
+
             if (thrownProjectile is TimeGrenade time)
                 time._fuseTime = fuseTime;
+
             thrownProjectile.NetworkInfo = newInfo;
-            thrownProjectile.PreviousOwner = new Footprint(throwable.Owner.ReferenceHub);
+            thrownProjectile.PreviousOwner = player.Footprint;
             NetworkServer.Spawn(thrownProjectile.gameObject);
             thrownProjectile.InfoReceivedHook(default, newInfo);
+
             if (thrownProjectile.TryGetComponent(out Rigidbody component))
-                throwable.Base.PropelBody(component, throwable.Base.FullThrowSettings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(velocity));
+                template.PropelBody(component, template.FullThrowSettings.StartTorque, ThrowableNetworkHandler.GetLimitedVelocity(velocity));
+
             thrownProjectile.ServerActivate();
 
             return Pickup.Get(thrownProjectile);

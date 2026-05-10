@@ -44,9 +44,9 @@ namespace Exiled.API.Enums
         Bleeding,
 
         /// <summary>
-        /// Blurs the player's screen.
+        /// Make the player screen darker.
         /// </summary>
-        Blinded,
+        Blindness,
 
         /// <summary>
         /// Increases damage the player receives. Does not apply any standalone damage.
@@ -256,7 +256,7 @@ namespace Exiled.API.Enums
         PitDeath,
 
         /// <summary>
-        /// <see cref="CustomPlayerEffects.Blurred"/>.
+        /// Blurs the player's screen.
         /// </summary>
         Blurred,
 

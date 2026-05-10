@@ -16,6 +16,7 @@ namespace Exiled.API.Features.Doors
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
     using Interactables.Interobjects;
+    using Interactables.Interobjects.DoorButtons;
     using Interactables.Interobjects.DoorUtils;
     using MEC;
     using Mirror;
@@ -201,12 +202,8 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         public bool AllowsScp106
         {
-            get => Base is IScp106PassableDoor door && door.IsScp106Passable;
-            set
-            {
-                if (Base is IScp106PassableDoor door)
-                    door.IsScp106Passable = value;
-            }
+            get => Base is not IScp106PassableDoor door || door.IsScp106Passable;
+            set => (Base as IScp106PassableDoor)?.IsScp106Passable = value;
         }
 
         /// <summary>
@@ -297,6 +294,11 @@ namespace Exiled.API.Features.Doors
         /// Gets the door's <see cref="ZoneType"/>.
         /// </summary>
         public ZoneType Zone => Room?.Zone ?? ZoneType.Unspecified;
+
+        /// <summary>
+        /// Gets the door's <see cref="ButtonVariant"/>.
+        /// </summary>
+        public ButtonVariant[] Buttons => Base.Buttons;
 
         /// <summary>
         /// Gets a <see cref="List{T}"/> containing all <see cref="Features.Room"/>'s that are connected with <see cref="Door"/>.
@@ -636,7 +638,7 @@ namespace Exiled.API.Features.Doors
                     },
                     "Cargo Elevator Door" => DoorType.ElevatorServerRoom,
                     "Nuke Elevator Door" => DoorType.ElevatorNuke,
-                    "Elevator Door" or "Elevator Door 02" or "Elevator Door 01" => (Base as Interactables.Interobjects.ElevatorDoor)?.Group switch
+                    not null when Base is Interactables.Interobjects.ElevatorDoor elevatorGroup => elevatorGroup?.Group switch
                     {
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
@@ -645,6 +647,7 @@ namespace Exiled.API.Features.Doors
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
                         _ => DoorType.UnknownElevator,
                     },
+                    "Spawnable Unsecured Pryable GateDoor" => DoorType.SpawnableUnsecuredGate,
                     _ => DoorType.UnknownDoor,
                 };
             }

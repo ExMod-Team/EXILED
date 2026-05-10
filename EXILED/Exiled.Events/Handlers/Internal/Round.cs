@@ -15,6 +15,7 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Core.UserSettings;
+    using Exiled.API.Features.Doors;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Roles;
@@ -23,17 +24,14 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.Events.EventArgs.Scp049;
     using Exiled.Loader;
     using Exiled.Loader.Features;
+    using Interactables.Interobjects.DoorUtils;
     using InventorySystem;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
-    using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using InventorySystem.Items.Usables.Scp330;
     using PlayerRoles;
-    using PlayerRoles.FirstPersonControl;
     using PlayerRoles.RoleAssign;
-    using UnityEngine;
-    using Utils.Networking;
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -60,6 +58,10 @@ namespace Exiled.Events.Handlers.Internal
 
             if (Events.Instance.Config.Debug)
                 Patches.Events.Map.Generating.Benchmark();
+
+            // TODO: Remove when this has been fixed https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/1560
+            Door door = Door.Get(DoorType.Scp079Armory);
+            door.AllowsScp106 = false;
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRestartingRound" />
@@ -94,9 +96,6 @@ namespace Exiled.Events.Handlers.Internal
         {
             if (ev.Role.IsDead() || !ev.Role.IsFpcRole())
                 ev.IsAllowed = false;
-
-            if (ev.DamageHandlerBase is Exiled.Events.Patches.Fixes.FixMarshmallowManFF fixMarshamllowManFf)
-                ev.DamageHandlerBase = fixMarshamllowManFf.MarshmallowItem.NewDamageHandler;
         }
 
         /// <inheritdoc cref="Scp049.OnActivatingSense(ActivatingSenseEventArgs)" />
