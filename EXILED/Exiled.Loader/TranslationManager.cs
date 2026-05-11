@@ -211,10 +211,7 @@ namespace Exiled.Loader
         /// <returns>The <see cref="ITranslation"/> of the desired plugin.</returns>
         private static ITranslation LoadDefaultTranslation(this IPlugin<IConfig> plugin, Dictionary<string, object> rawTranslations)
         {
-            if (rawTranslations is null)
-            {
-                rawTranslations = Loader.Deserializer.Deserialize<Dictionary<string, object>>(Read()) ?? DictionaryPool<string, object>.Pool.Get();
-            }
+            rawTranslations ??= Loader.Deserializer.Deserialize<Dictionary<string, object>>(Read()) ?? DictionaryPool<string, object>.Pool.Get();
 
             if (!rawTranslations.TryGetValue(plugin.Prefix, out object rawDeserializedTranslation))
             {

@@ -121,12 +121,13 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Primitive"/>.</returns>
         public static Primitive Create(Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
         {
-            Primitive primitive = new(Object.Instantiate(Prefab));
-
-            primitive.Position = position ?? Vector3.zero;
-            primitive.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            primitive.Scale = scale ?? Vector3.one;
-            primitive.Color = color ?? Color.gray;
+            Primitive primitive = new(Object.Instantiate(Prefab))
+            {
+                Position = position ?? Vector3.zero,
+                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
+                Scale = scale ?? Vector3.one,
+                Color = color ?? Color.gray,
+            };
 
             if (spawn)
                 primitive.Spawn();
@@ -146,11 +147,12 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Primitive"/>.</returns>
         public static Primitive Create(PrimitiveType primitiveType /*= PrimitiveType.Sphere*/, Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
         {
-            Primitive primitive = new(Object.Instantiate(Prefab));
-
-            primitive.Position = position ?? Vector3.zero;
-            primitive.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            primitive.Scale = scale ?? Vector3.one;
+            Primitive primitive = new(Object.Instantiate(Prefab))
+            {
+                Position = position ?? Vector3.zero,
+                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
+                Scale = scale ?? Vector3.one,
+            };
 
             primitive.Base.NetworkPrimitiveType = primitiveType;
             primitive.Color = color ?? Color.gray;
@@ -174,12 +176,13 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Primitive"/>.</returns>
         public static Primitive Create(PrimitiveType primitiveType /*= PrimitiveType.Sphere*/, PrimitiveFlags flags, Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
         {
-            Primitive primitive = new(Object.Instantiate(Prefab));
-
-            primitive.Position = position ?? Vector3.zero;
-            primitive.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            primitive.Scale = scale ?? Vector3.one;
-            primitive.Flags = flags;
+            Primitive primitive = new(Object.Instantiate(Prefab))
+            {
+                Position = position ?? Vector3.zero,
+                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
+                Scale = scale ?? Vector3.one,
+                Flags = flags,
+            };
 
             primitive.Base.NetworkPrimitiveType = primitiveType;
             primitive.Color = color ?? Color.gray;
@@ -197,12 +200,13 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Primitive"/>.</returns>
         public static Primitive Create(PrimitiveSettings primitiveSettings)
         {
-            Primitive primitive = new(Object.Instantiate(Prefab));
-
-            primitive.Position = primitiveSettings.Position;
-            primitive.Rotation = Quaternion.Euler(primitiveSettings.Rotation);
-            primitive.Scale = primitiveSettings.Scale;
-            primitive.Flags = primitiveSettings.Flags;
+            Primitive primitive = new(Object.Instantiate(Prefab))
+            {
+                Position = primitiveSettings.Position,
+                Rotation = Quaternion.Euler(primitiveSettings.Rotation),
+                Scale = primitiveSettings.Scale,
+                Flags = primitiveSettings.Flags,
+            };
 
             primitive.Base.NetworkPrimitiveType = primitiveSettings.PrimitiveType;
             primitive.Color = primitiveSettings.Color;
