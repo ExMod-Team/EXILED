@@ -7,20 +7,11 @@
 
 namespace Exiled.Events.Patches.Events.Item
 {
-    using System.Collections.Generic;
-    using System.Reflection.Emit;
-
-    using API.Features.Pools;
     using Exiled.Events.Attributes;
-    using Exiled.Events.EventArgs.Item;
 
     using Handlers;
 
-    using HarmonyLib;
-
     using InventorySystem.Items.Firearms;
-
-    using static HarmonyLib.AccessTools;
 
     /// <summary>
     /// Patches <see cref="Firearm" />.

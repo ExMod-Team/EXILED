@@ -13,7 +13,9 @@ namespace Exiled.Events.Patches.Events.Item
     using API.Features;
     using API.Features.Pickups;
     using API.Features.Pools;
+
     using Attributes;
+
     using Exiled.Events.EventArgs.Item;
 
     using Footprinting;
@@ -21,6 +23,7 @@ namespace Exiled.Events.Patches.Events.Item
     using HarmonyLib;
 
     using Interactables.Interobjects.DoorUtils;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

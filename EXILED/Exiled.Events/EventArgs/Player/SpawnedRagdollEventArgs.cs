@@ -13,8 +13,11 @@ namespace Exiled.Events.EventArgs.Player
 
     using PlayerRoles;
     using PlayerRoles.Ragdolls;
+
     using PlayerStatsSystem;
+
     using RelativePositioning;
+
     using UnityEngine;
 
     /// <summary>

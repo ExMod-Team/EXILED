@@ -8,12 +8,10 @@
 namespace Exiled.Events.Patches.Events.Item
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Items;
     using API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
 

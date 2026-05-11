@@ -12,6 +12,7 @@ namespace Exiled.CreditTags.Features
     using System.IO;
 
     using Cryptography;
+
     using Exiled.API.Features;
     using Exiled.CreditTags.Enums;
 

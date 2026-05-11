@@ -22,6 +22,7 @@ namespace Exiled.Loader
     using Exiled.API.Features.Pools;
 
     using LabApi.Loader.Features.Plugins.Configuration;
+
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
 

@@ -12,10 +12,15 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
     using Attributes;
+
     using EventArgs.Player;
+
     using HarmonyLib;
+
     using Interactables.Interobjects.DoorUtils;
+
     using LabApi.Events.Arguments.PlayerEvents;
     using LabApi.Events.Handlers;
 

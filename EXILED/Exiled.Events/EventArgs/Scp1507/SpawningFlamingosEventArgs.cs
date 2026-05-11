@@ -13,8 +13,8 @@ namespace Exiled.Events.EventArgs.Scp1507
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+
     using PlayerRoles.PlayableScps.Scp1507;
-    using Utils.NonAllocLINQ;
 
     /// <summary>
     /// Contains all information before flamingos get spawned.

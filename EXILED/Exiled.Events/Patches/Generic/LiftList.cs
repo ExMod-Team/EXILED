@@ -11,6 +11,7 @@ namespace Exiled.Events.Patches.Generic
     using API.Features;
 
     using HarmonyLib;
+
     using Interactables.Interobjects;
 
     /// <summary>

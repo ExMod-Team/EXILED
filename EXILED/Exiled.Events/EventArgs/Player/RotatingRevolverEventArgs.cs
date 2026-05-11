@@ -10,11 +10,7 @@ namespace Exiled.Events.EventArgs.Player
     using API.Features;
     using API.Features.Items;
 
-    using Exiled.API.Features.Items.FirearmModules.Primary;
-
     using Interfaces;
-
-    using InventorySystem.Items.Firearms.Modules;
 
     using FirearmBase = InventorySystem.Items.Firearms.Firearm;
 

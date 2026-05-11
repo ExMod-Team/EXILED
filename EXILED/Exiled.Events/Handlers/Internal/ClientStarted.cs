@@ -13,8 +13,11 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
+
     using Mirror;
+
     using PlayerRoles.Ragdolls;
+
     using UnityEngine;
 
     /// <summary>

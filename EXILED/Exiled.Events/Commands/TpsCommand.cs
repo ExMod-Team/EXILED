@@ -10,6 +10,7 @@ namespace Exiled.Events.Commands
     using System;
 
     using CommandSystem;
+
     using Exiled.API.Features;
 
     /// <summary>

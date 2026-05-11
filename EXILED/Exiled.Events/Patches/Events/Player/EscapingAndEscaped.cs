@@ -15,10 +15,14 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features;
     using API.Features.Pools;
+
     using EventArgs.Player;
+
     using Exiled.API.Features.Roles;
     using Exiled.Events.Attributes;
+
     using HarmonyLib;
+
     using LabApi.Events.Arguments.PlayerEvents;
 
     using static HarmonyLib.AccessTools;

@@ -11,10 +11,14 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using API.Features.Pools;
+
     using CentralAuth;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

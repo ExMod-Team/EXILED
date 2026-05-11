@@ -7,10 +7,12 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using API.Features;
+    using Exiled.API.Features;
     using Exiled.API.Features.Doors;
+
     using Interactables;
     using Interactables.Interobjects.DoorUtils;
+
     using Interfaces;
 
     /// <summary>

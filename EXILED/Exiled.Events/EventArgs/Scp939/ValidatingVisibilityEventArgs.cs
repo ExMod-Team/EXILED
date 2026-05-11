@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ValidatingVisibilityEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,10 +7,10 @@
 
 namespace Exiled.Events.EventArgs.Scp939
 {
-    using API.Features;
-
     using Exiled.API.Enums;
+    using Exiled.API.Features;
     using Exiled.API.Features.Roles;
+
     using Interfaces;
 
     /// <summary>
@@ -36,7 +36,9 @@ namespace Exiled.Events.EventArgs.Scp939
             Scp939 = Player.Role.As<Scp939Role>();
             Target = Player.Get(target);
             TargetVisibilityState = state;
+#pragma warning disable format
             IsAllowed = TargetVisibilityState is not(Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
+#pragma warning restore format
             IsLateSeen = TargetVisibilityState is Scp939VisibilityState.SeenByRange;
         }
 
