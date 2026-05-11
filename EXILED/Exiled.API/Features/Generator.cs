@@ -12,8 +12,11 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
+
     using Exiled.API.Interfaces;
+
     using Interactables.Interobjects.DoorUtils;
+
     using MapGeneration.Distributors;
 
     using UnityEngine;

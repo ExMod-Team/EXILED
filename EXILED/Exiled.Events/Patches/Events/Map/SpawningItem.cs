@@ -10,12 +10,12 @@ namespace Exiled.Events.Patches.Events.Map
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.API.Features.Doors;
-    using Exiled.API.Features.Pools;
-
     using Attributes;
 
     using EventArgs.Map;
+
+    using Exiled.API.Features.Doors;
+    using Exiled.API.Features.Pools;
 
     using HarmonyLib;
 

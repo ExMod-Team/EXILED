@@ -16,9 +16,12 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces;
+
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorUtils;
+
     using UnityEngine;
+
     using Utils;
 
     using static Interactables.Interobjects.ElevatorChamber;

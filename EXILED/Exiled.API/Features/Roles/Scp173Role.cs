@@ -11,12 +11,15 @@ namespace Exiled.API.Features.Roles
     using System.Linq;
 
     using Exiled.API.Features.Hazards;
+
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.Subroutines;
+
     using UnityEngine;
 
     using Scp173GameRole = PlayerRoles.PlayableScps.Scp173.Scp173Role;

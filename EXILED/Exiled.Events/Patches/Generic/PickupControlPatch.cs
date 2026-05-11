@@ -12,10 +12,9 @@ namespace Exiled.Events.Patches.Generic
     using System.Linq;
     using System.Reflection.Emit;
 
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pools;
-
-    using Exiled.API.Features.Items;
 
     using HarmonyLib;
 

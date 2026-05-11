@@ -11,7 +11,9 @@ namespace Exiled.API.Features.Waves
     using System.Linq;
 
     using Exiled.API.Enums;
+
     using PlayerRoles;
+
     using Respawning;
     using Respawning.Announcements;
     using Respawning.Waves;

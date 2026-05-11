@@ -10,11 +10,11 @@ namespace Exiled.Events.Commands.Config
     using System;
     using System.Collections.Generic;
 
+    using CommandSystem;
+
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Interfaces;
-
-    using CommandSystem;
 
     using Loader;
 

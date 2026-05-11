@@ -10,11 +10,10 @@ namespace Exiled.Events
     using System;
     using System.Diagnostics;
 
-    using Exiled.API.Enums;
-    using Exiled.API.Features;
-
     using CentralAuth;
 
+    using Exiled.API.Enums;
+    using Exiled.API.Features;
     using Exiled.API.Features.Core.UserSettings;
     using Exiled.Events.Features;
 

@@ -8,7 +8,9 @@
 namespace Exiled.Events.EventArgs.Scp106
 {
     using Exiled.API.Features;
+
     using Interfaces;
+
     using PlayerRoles.PlayableScps.Scp106;
 
     using Scp106Role = API.Features.Roles.Scp106Role;

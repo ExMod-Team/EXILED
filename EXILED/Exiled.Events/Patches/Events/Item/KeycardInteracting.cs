@@ -10,12 +10,11 @@ namespace Exiled.Events.Patches.Events.Item
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Attributes;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pools;
-
-    using Attributes;
-
     using Exiled.Events.EventArgs.Item;
 
     using Footprinting;

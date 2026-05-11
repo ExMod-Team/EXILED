@@ -17,7 +17,9 @@ namespace Exiled.Events.Patches.Events.Map
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Map;
+
     using HarmonyLib;
+
     using MapGeneration;
     using MapGeneration.RoomConnectors.Spawners;
 

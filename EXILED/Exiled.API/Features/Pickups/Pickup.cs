@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features.Pickups
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -24,7 +23,9 @@ namespace Exiled.API.Features.Pickups
     using InventorySystem.Items.Usables.Scp244;
 
     using Mirror;
+
     using RelativePositioning;
+
     using UnityEngine;
 
     using BaseAmmoPickup = InventorySystem.Items.Firearms.Ammo.AmmoPickup;

@@ -11,9 +11,9 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection;
     using System.Reflection.Emit;
 
-    using Exiled.API.Features.Pools;
-
     using CustomPlayerEffects;
+
+    using Exiled.API.Features.Pools;
 
     using HarmonyLib;
 

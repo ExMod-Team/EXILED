@@ -14,8 +14,11 @@ namespace Exiled.API.Features.Hazards
     using Exiled.API.Enums;
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
+
     using global::Hazards;
+
     using PlayerRoles.PlayableScps.Scp939;
+
     using UnityEngine;
 
     /// <summary>

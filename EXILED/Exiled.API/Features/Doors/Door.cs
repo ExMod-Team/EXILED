@@ -15,11 +15,15 @@ namespace Exiled.API.Features.Doors
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
+
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorButtons;
     using Interactables.Interobjects.DoorUtils;
+
     using MEC;
+
     using Mirror;
+
     using UnityEngine;
 
     using BaseBreakableDoor = Interactables.Interobjects.BreakableDoor;

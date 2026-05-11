@@ -13,12 +13,17 @@ namespace Exiled.API.Features.DamageHandlers
     using System.Linq;
 
     using Enums;
+
     using Exiled.API.Features.Items;
+
     using Extensions;
+
     using InventorySystem.Items.Scp1509;
+
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
     using PlayerRoles.PlayableScps.Scp939;
+
     using PlayerStatsSystem;
 
     using BaseHandler = PlayerStatsSystem.DamageHandlerBase;

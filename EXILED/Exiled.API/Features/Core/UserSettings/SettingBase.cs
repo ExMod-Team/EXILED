@@ -14,6 +14,7 @@ namespace Exiled.API.Features.Core.UserSettings
 
     using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces;
+
     using global::UserSettings.ServerSpecific;
 
     /// <summary>

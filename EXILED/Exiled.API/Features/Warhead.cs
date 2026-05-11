@@ -11,9 +11,13 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
 
     using Enums;
+
     using Exiled.API.Extensions;
+
     using Interactables.Interobjects.DoorUtils;
+
     using Mirror;
+
     using UnityEngine;
 
     /// <summary>

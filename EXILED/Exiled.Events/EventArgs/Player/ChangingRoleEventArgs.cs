@@ -11,9 +11,8 @@ namespace Exiled.Events.EventArgs.Player
     using System.Linq;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features;
-
     using Exiled.API.Extensions;
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
 
     using Interfaces;
