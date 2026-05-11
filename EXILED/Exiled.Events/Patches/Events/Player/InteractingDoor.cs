@@ -171,7 +171,7 @@ namespace Exiled.Events.Patches.Events.Player
 #pragma warning disable SA1402
     internal static class ChangeNWLogic
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

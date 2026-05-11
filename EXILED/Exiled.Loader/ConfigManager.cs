@@ -543,7 +543,7 @@ namespace Exiled.Loader
             {
                 Log.Warn($"LabAPI Plugin {plugin.Name} doesn't have default properties, generating...");
                 PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
-                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties));
                 return true;
             }
 
@@ -555,7 +555,7 @@ namespace Exiled.Loader
             {
                 Log.Error($"{plugin.Name} properties could not be loaded, default properties will be loaded instead!\n{yamlException}");
                 PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
-                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties));
             }
 
             return true;

@@ -32,7 +32,7 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(CylinderAmmoModule), nameof(CylinderAmmoModule.RotateCylinder))]
     internal class RotatingRevolver
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

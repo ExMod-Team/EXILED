@@ -38,6 +38,7 @@ namespace Exiled.Events.EventArgs.Scp939
         {
             Player = Player.Get(hub);
             AmnesticCloud = Hazard.Get<AmnesticCloudHazard>(cloud);
+            NewState = cloudState;
             Scp939 = Player.Role.As<Scp939Role>();
         }
 

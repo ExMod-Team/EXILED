@@ -29,7 +29,7 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.CurInstance), MethodType.Setter)]
     internal static class ChangedItem
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
             int index = newInstructions.Count - 1;

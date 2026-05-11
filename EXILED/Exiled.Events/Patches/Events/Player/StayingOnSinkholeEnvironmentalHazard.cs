@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
-    using System.Reflection.Emit;
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
@@ -25,15 +24,11 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.OnStay))]
     internal static class StayingOnSinkholeEnvironmentalHazard
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ret = generator.DefineLabel();
-
-            newInstructions.InsertRange(0, StayingOnEnvironmentalHazard.GetInstructions(ret));
-
-            newInstructions[newInstructions.Count - 1].WithLabels(ret);
+            newInstructions.InsertRange(0, StayingOnEnvironmentalHazard.GetInstructions());
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

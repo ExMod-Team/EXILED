@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(VoiceChatMutes), nameof(VoiceChatMutes.LoadMutes))]
     internal static class VoiceChatMutesClear
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

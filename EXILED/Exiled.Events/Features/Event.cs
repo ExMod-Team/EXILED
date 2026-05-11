@@ -10,7 +10,6 @@ namespace Exiled.Events.Features
     using System;
     using System.Buffers;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
@@ -138,7 +137,7 @@ namespace Exiled.Events.Features
             if (handler == null)
                 return;
 
-            Registration registration = new Registration(handler, priority);
+            Registration registration = new(handler, priority);
             int index = innerEvent.BinarySearch(registration, RegisterComparable);
             if (index < 0)
             {
@@ -177,7 +176,7 @@ namespace Exiled.Events.Features
             if (handler == null)
                 return;
 
-            AsyncRegistration registration = new AsyncRegistration(handler, 0);
+            AsyncRegistration registration = new(handler, 0);
             int index = innerAsyncEvent.BinarySearch(registration, AsyncRegisterComparable);
             if (index < 0)
             {

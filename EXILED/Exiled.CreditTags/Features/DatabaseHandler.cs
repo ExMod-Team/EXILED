@@ -55,7 +55,7 @@ namespace Exiled.CreditTags.Features
         /// <summary>
         /// Gets the path to the cache directory.
         /// </summary>
-        private static DirectoryInfo CacheDirectory { get; } = new (Path.Combine(Paths.Configs, "CreditTags"));
+        private static DirectoryInfo CacheDirectory { get; } = new(Path.Combine(Paths.Configs, "CreditTags"));
 
         /// <summary>
         /// Gets the path to the cache file.

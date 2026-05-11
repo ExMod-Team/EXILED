@@ -40,10 +40,10 @@ namespace Exiled.Events.EventArgs.Scp330
         {
             Player = Player.Get(referenceHub);
             UsageCount = usage;
-            ShouldSever = usage >= 2;
+            ShouldSever = shouldSever;
             ShouldPlaySound = shouldPlaySound;
             IsAllowed = Player.IsHuman;
-            Candy = Scp330Candies.GetRandom();
+            Candy = candy;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Generating.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -521,7 +521,7 @@ namespace Exiled.Events.Patches.Events.Map
                     Spawned.Add(new AtlasZoneGenerator.SpawnedRoomData
                     {
                         ChosenCandidate = spawnableRoom,
-                        Instance = null!,
+                        Instance = null,
                         Interpretation = interpretation,
                     });
 
@@ -545,7 +545,7 @@ namespace Exiled.Events.Patches.Events.Map
                 Spawned.Add(new AtlasZoneGenerator.SpawnedRoomData
                 {
                     ChosenCandidate = room,
-                    Instance = null!,
+                    Instance = null,
                     Interpretation = interpretation,
                 });
 

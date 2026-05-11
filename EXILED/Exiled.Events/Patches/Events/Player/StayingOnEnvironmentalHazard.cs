@@ -30,7 +30,7 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnStay))]
     internal static class StayingOnEnvironmentalHazard
     {
-        internal static CodeInstruction[] GetInstructions(Label ret) => new CodeInstruction[]
+        internal static CodeInstruction[] GetInstructions() => new CodeInstruction[]
         {
             // Player.Get(player)
             new(OpCodes.Ldarg_1),
@@ -46,15 +46,11 @@ namespace Exiled.Events.Patches.Events.Player
             new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnStayingOnEnvironmentalHazard))),
         };
 
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            Label ret = generator.DefineLabel();
-
-            newInstructions.InsertRange(0, GetInstructions(ret));
-
-            newInstructions[newInstructions.Count - 1].WithLabels(ret);
+            newInstructions.InsertRange(0, GetInstructions());
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

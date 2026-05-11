@@ -36,9 +36,7 @@ namespace Exiled.Events.Patches.Generic
     [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerCreatePickup), typeof(ItemBase), typeof(PickupSyncInfo), typeof(Vector3), typeof(Quaternion), typeof(bool), typeof(Action<ItemPickupBase>))]
     internal static class PickupControlPatch
     {
-        private static IEnumerable<CodeInstruction> Transpiler(
-            IEnumerable<CodeInstruction> instructions,
-            ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
@@ -72,7 +70,7 @@ namespace Exiled.Events.Patches.Generic
     [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.SpawnPickup))]
     internal static class TriggerPickupControlPatch
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

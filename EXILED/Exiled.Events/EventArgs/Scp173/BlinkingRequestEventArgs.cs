@@ -33,7 +33,7 @@ namespace Exiled.Events.EventArgs.Scp173
         {
             Player = player;
             Scp173 = player.Role.As<Scp173Role>();
-            Targets = targets.Select(target => Player.Get(target)).ToList();
+            Targets = targets.Select(Player.Get).ToList();
         }
 
         /// <summary>

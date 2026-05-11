@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Scp1576TransmissionEnded.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -25,7 +25,7 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(InventorySystem.Items.Usables.Scp1576.Scp1576Item), nameof(Scp1576Item.ServerStopTransmitting))]
     public class Scp1576TransmissionEnded
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
                 List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

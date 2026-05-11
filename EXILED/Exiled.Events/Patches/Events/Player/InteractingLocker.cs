@@ -13,10 +13,12 @@ namespace Exiled.Events.Patches.Events.Player
 
     using API.Features;
     using API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
     using HarmonyLib;
+
     using MapGeneration.Distributors;
 
     using static HarmonyLib.AccessTools;
@@ -29,7 +31,7 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
     internal static class InteractingLocker
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

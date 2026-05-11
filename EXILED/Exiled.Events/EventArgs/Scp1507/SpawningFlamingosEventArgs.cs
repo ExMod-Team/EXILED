@@ -30,7 +30,7 @@ namespace Exiled.Events.EventArgs.Scp1507
         public SpawningFlamingosEventArgs(Player newAlpha, bool isAllowed = true)
         {
             Player = newAlpha;
-            SpawnablePlayers = ReferenceHub.AllHubs.Where(Scp1507Spawner.ValidatePlayer).Select(x => Player.Get(x)).ToHashSet();
+            SpawnablePlayers = ReferenceHub.AllHubs.Where(Scp1507Spawner.ValidatePlayer).Select(Player.Get).ToHashSet();
             IsAllowed = isAllowed;
         }
 

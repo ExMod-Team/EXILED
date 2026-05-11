@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(CustomLiteNetLib4MirrorTransport), nameof(CustomLiteNetLib4MirrorTransport.ProcessConnectionRequest))]
     internal static class PreAuthenticating
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
@@ -39,7 +39,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction[]
                 {
                     // userid
-                    new CodeInstruction(OpCodes.Ldloc_S, 10),
+                    new(OpCodes.Ldloc_S, 10),
 
                     // ipaddress
                     new (OpCodes.Ldloc_S, 15),

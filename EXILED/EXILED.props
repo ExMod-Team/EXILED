@@ -35,6 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <DebugType>Portable</DebugType>
   </PropertyGroup>
 
