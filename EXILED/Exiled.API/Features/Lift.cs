@@ -83,7 +83,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value of the internal doors list.
         /// </summary>
-        public IReadOnlyCollection<Doors.ElevatorDoor> Doors => internalDoorsList.Select(x => Door.Get<Doors.ElevatorDoor>(x)).ToList();
+        public IReadOnlyCollection<Doors.ElevatorDoor> Doors => internalDoorsList.Select(Door.Get<Doors.ElevatorDoor>).ToList();
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Player"/> in the <see cref="Room"/>.

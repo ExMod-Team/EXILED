@@ -9,7 +9,7 @@ namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
 
     using Exiled.Events.Attributes;
 

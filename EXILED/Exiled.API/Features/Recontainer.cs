@@ -187,7 +187,9 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="announcement">The announcement to play.</param>
         /// <param name="glitchyMultiplier">The glitchy multiplier.</param>
+#pragma warning disable IDE0060 // TODO: glitchyMultiplier is not used
         public static void PlayAnnouncement(string announcement, float glitchyMultiplier) => Base.PlayAnnouncement(announcement, false, false, null);
+#pragma warning restore IDE0060
 
         /// <summary>
         /// Begins the overcharge procedure.

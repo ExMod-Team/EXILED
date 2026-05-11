@@ -162,7 +162,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of players that are currently viewing SCP-173. Can be empty.
         /// </summary>
-        public IEnumerable<Player> ObservingPlayers => ObserversTracker.Observers.Select(x => Player.Get(x));
+        public IEnumerable<Player> ObservingPlayers => ObserversTracker.Observers.Select(Player.Get);
 
         /// <summary>
         /// Gets SCP-173's max move speed.

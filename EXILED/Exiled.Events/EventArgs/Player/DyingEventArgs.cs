@@ -10,9 +10,9 @@ namespace Exiled.Events.EventArgs.Player
     using System.Collections.Generic;
     using System.Linq;
 
-    using API.Features;
-    using API.Features.DamageHandlers;
-    using API.Features.Items;
+    using Exiled.API.Features;
+    using Exiled.API.Features.DamageHandlers;
+    using Exiled.API.Features.Items;
 
     using Interfaces;
 

@@ -12,7 +12,7 @@ namespace Exiled.Events.Patches.Events.Server
     using System.Linq;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
 
     using Exiled.API.Features.Waves;
     using Exiled.Events.Attributes;

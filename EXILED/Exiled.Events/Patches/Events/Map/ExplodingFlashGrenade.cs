@@ -11,8 +11,8 @@ namespace Exiled.Events.Patches.Events.Map
     using System.Linq;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pools;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
 
     using Exiled.API.Extensions;
     using Exiled.Events.EventArgs.Map;

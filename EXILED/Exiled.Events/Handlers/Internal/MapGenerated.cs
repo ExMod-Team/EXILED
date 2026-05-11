@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.Handlers.Internal
 {
-    using API.Features;
+    using Exiled.API.Features;
 
     using Exiled.API.Features.Lockers;
 

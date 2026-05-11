@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Scp106
 {
-    using API.Features;
+    using Exiled.API.Features;
     using Interfaces;
     using PlayerRoles.PlayableScps.Scp106;
 

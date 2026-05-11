@@ -199,10 +199,10 @@ namespace Exiled.API.Features.Items.Keycards
 
                 goto add;
 
-                cont:
+            cont:
                 continue;
 
-                add:
+            add:
                 matches.Add(type);
             }
 

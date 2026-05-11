@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.Patches.Fixes
 {
-    using API.Features.DamageHandlers;
+    using Exiled.API.Features.DamageHandlers;
 
     using HarmonyLib;
 

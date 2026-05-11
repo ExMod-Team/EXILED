@@ -164,10 +164,10 @@ namespace Exiled.API.Features.Pickups.Keycards
 
                 goto add;
 
-                cont:
+            cont:
                 continue;
 
-                add:
+            add:
                 matches.Add(type);
             }
 

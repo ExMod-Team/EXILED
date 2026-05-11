@@ -102,7 +102,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -131,7 +131,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -160,7 +160,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))

@@ -7,12 +7,12 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System;
-
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items.ToggleableLights;
     using InventorySystem.Items.ToggleableLights.Flashlight;
     using InventorySystem.Items.ToggleableLights.Lantern;
+
     using Utils.Networking;
 
     /// <summary>

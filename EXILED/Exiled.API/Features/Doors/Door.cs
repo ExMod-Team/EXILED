@@ -421,7 +421,7 @@ namespace Exiled.API.Features.Doors
             {
                 door.IsOpen = false;
                 door.ChangeLock(lockType);
-                Timing.CallDelayed(duration, () => door.Unlock());
+                Timing.CallDelayed(duration, door.Unlock);
             }
         }
 
@@ -448,7 +448,7 @@ namespace Exiled.API.Features.Doors
             {
                 door.IsOpen = false;
                 door.ChangeLock(lockType);
-                Timing.CallDelayed(duration, () => door.Unlock());
+                Timing.CallDelayed(duration, door.Unlock);
             }
         }
 

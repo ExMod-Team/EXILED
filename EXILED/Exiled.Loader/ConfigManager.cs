@@ -13,13 +13,12 @@ namespace Exiled.Loader
     using System.Linq;
     using System.Reflection;
 
-    using API.Enums;
-    using API.Extensions;
-    using API.Interfaces;
-
+    using Exiled.API.Enums;
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
     using Exiled.API.Features.Pools;
+    using Exiled.API.Interfaces;
 
     using LabApi.Loader.Features.Plugins.Configuration;
 

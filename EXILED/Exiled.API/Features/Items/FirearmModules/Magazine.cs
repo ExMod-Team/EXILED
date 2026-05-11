@@ -7,12 +7,12 @@
 
 namespace Exiled.API.Features.Items.FirearmModules
 {
-    using System;
-
     using Exiled.API.Features.Items.FirearmModules.Barrel;
     using Exiled.API.Features.Items.FirearmModules.Primary;
+
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.Modules.Scp127;
+
     using UnityEngine;
 
     /// <summary>

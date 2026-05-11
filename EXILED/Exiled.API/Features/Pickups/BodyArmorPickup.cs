@@ -18,8 +18,6 @@ namespace Exiled.API.Features.Pickups
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
 
-    using UnityEngine;
-
     using BaseBodyArmor = InventorySystem.Items.Armor.BodyArmorPickup;
 
     /// <summary>

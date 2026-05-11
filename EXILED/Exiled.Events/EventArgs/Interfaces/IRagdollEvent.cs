@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Interfaces
 {
-    using API.Features;
+    using Exiled.API.Features;
 
     /// <summary>
     /// Event args used for all <see cref="API.Features.Ragdoll" /> related events.

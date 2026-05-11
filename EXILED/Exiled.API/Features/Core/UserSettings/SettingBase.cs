@@ -419,7 +419,7 @@ namespace Exiled.API.Features.Core.UserSettings
 
             setting = list.Find(x => x.Id == settingBase.SettingId);
 
-            invoke:
+        invoke:
 
             if (setting.OriginalDefinition == null)
             {

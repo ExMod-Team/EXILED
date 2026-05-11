@@ -238,7 +238,7 @@ namespace Exiled.API.Features
         public static void Start(bool isAutomatic, bool suppressSubtitles = false, Player trigger = null)
         {
             Controller.InstantPrepare();
-            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger == null ? null : trigger.ReferenceHub);
+            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger?.ReferenceHub);
         }
 
         /// <summary>

@@ -116,7 +116,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets all the dead zombies.
         /// </summary>
-        public IEnumerable<Player> DeadZombies => Scp049ResurrectAbility.DeadZombies.Select(x => Player.Get(x));
+        public IEnumerable<Player> DeadZombies => Scp049ResurrectAbility.DeadZombies.Select(Player.Get);
 
         /// <summary>
         /// Gets all the resurrected players.

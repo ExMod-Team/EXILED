@@ -376,7 +376,7 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         /// <param name="pickups">An <see cref="IEnumerable{T}"/> of <see cref="ItemPickupBase"/> to convert into an <see cref="IEnumerable{T}"/> of <see cref="Pickup"/>.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> of <see cref="Pickup"/> containing all existing <see cref="ItemPickupBase"/> instances.</returns>
-        public static IEnumerable<Pickup> Get(IEnumerable<ItemPickupBase> pickups) => pickups.Select(ipb => Get(ipb));
+        public static IEnumerable<Pickup> Get(IEnumerable<ItemPickupBase> pickups) => pickups.Select(Get);
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{T}"/> of <see cref="Pickup"/> containing all existing <see cref="ItemPickupBase"/> instances given an <see cref="ItemType"/>.
