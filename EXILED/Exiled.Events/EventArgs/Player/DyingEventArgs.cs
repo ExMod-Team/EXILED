@@ -37,9 +37,7 @@ namespace Exiled.Events.EventArgs.Player
         {
             DamageHandler = new CustomDamageHandler(target, damageHandler);
             Player = target;
-#pragma warning disable CS0618
             ItemsToDrop = Player.Items.ToList();
-#pragma warning restore CS0618
             Attacker = DamageHandler.BaseIs(out CustomAttackerHandler attackerDamageHandler) ? attackerDamageHandler.Attacker : null;
         }
 
