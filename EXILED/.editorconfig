@@ -34,6 +34,9 @@ dotnet_diagnostic.IDE0350.severity = warning
 dotnet_diagnostic.IDE0370.severity = warning
 
 dotnet_diagnostic.IDE0028.severity = none
+dotnet_diagnostic.IDE0034.severity = none
+dotnet_diagnostic.IDE0056.severity = none
+dotnet_diagnostic.IDE0057.severity = none
 dotnet_diagnostic.IDE0290.severity = none
 dotnet_diagnostic.IDE0300.severity = none
 dotnet_diagnostic.IDE0301.severity = none
@@ -41,6 +44,7 @@ dotnet_diagnostic.IDE0302.severity = none
 dotnet_diagnostic.IDE0303.severity = none
 dotnet_diagnostic.IDE0304.severity = none
 dotnet_diagnostic.IDE0305.severity = none
+dotnet_diagnostic.IDE0306.severity = none
 dotnet_diagnostic.IDE0340.severity = none
 
 dotnet_sort_system_directives_first = true
