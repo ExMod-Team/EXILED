@@ -36,9 +36,7 @@ namespace Exiled.Events.EventArgs.Scp939
             Scp939 = Player.Role.As<Scp939Role>();
             Target = Player.Get(target);
             TargetVisibilityState = state;
-#pragma warning disable format
-            IsAllowed = TargetVisibilityState is not(Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
-#pragma warning restore format
+            IsAllowed = TargetVisibilityState is not (Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
             IsLateSeen = TargetVisibilityState is Scp939VisibilityState.SeenByRange;
         }
 

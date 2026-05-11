@@ -129,7 +129,7 @@ namespace Exiled.API.Features.Hazards
                 Scp939AmnesticCloudInstance scp939AmnesticCloudInstance => new AmnesticCloudHazard(scp939AmnesticCloudInstance),
                 SinkholeEnvironmentalHazard sinkholeEnvironmentalHazard => new SinkholeHazard(sinkholeEnvironmentalHazard),
                 global::Hazards.TemporaryHazard temporaryHazard => new TemporaryHazard(temporaryHazard),
-                _ => new Hazard(environmentalHazard)
+                _ => new Hazard(environmentalHazard),
             };
 
         /// <summary>

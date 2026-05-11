@@ -70,7 +70,7 @@ namespace Exiled.API.Features.Objectives
             ObjectiveType.HumanDamage => FactionInfluenceManager.Objectives.OfType<BaseHumanDamageObjective>().First(),
             ObjectiveType.HumanKill => FactionInfluenceManager.Objectives.OfType<BaseHumanKillObjective>().First(),
             ObjectiveType.Escape => FactionInfluenceManager.Objectives.OfType<BaseEscapeObjective>().First(),
-            _ => null
+            _ => null,
         });
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Exiled.API.Features.Objectives
                 BaseHumanDamageObjective humanDamageObjective => new HumanDamageObjective(humanDamageObjective),
                 BaseHumanKillObjective humanKillObjective => new HumanKillObjective(humanKillObjective),
                 BaseEscapeObjective escapeObjective => new EscapeObjective(escapeObjective),
-                _ => new Objective(factionObjectiveBase)
+                _ => new Objective(factionObjectiveBase),
             };
         }
 

@@ -310,7 +310,8 @@ namespace Exiled.API.Extensions
                         writer.WriteRelativePosition(new RelativePosition(origin));
                         writer.WriteByte(255);
                         writer.WriteRoleType(RoleTypeId.ClassD);
-                    }, true);
+                    },
+                    true);
 #pragma warning restore SA1116 // Split parameters should start on line after declaration
                 }
 

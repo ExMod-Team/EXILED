@@ -895,7 +895,7 @@ namespace Exiled.CustomRoles.API.Features
             }
 
             float totalchance = 0f;
-            List<(float chance, Vector3 pos)> spawnPointPool = new(4);
+            List<(float Chance, Vector3 Pos)> spawnPointPool = new(4);
 
             void Add(Vector3 pos, float chance)
             {

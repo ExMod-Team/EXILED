@@ -237,7 +237,7 @@ namespace Exiled.API.Features.Items
                         ItemType.KeycardCustomManagement => new ManagementKeycard(keycard),
                         ItemType.KeycardCustomMetalCase => new MetalKeycard(keycard),
                         _ => new Keycard(keycard),
-                    }
+                    },
                 },
                 UsableItem usable => usable switch
                 {
@@ -342,7 +342,7 @@ namespace Exiled.API.Features.Items
                     ItemType.KeycardCustomManagement => new ManagementKeycard(type),
                     ItemType.KeycardCustomMetalCase => new MetalKeycard(type),
                     _ => new Keycard(type, owner),
-                }
+                },
             },
             UsableItem usable => usable switch
             {

@@ -248,7 +248,7 @@ namespace Exiled.API.Extensions
             NtfMiniWave => SpawnableFaction.NtfMiniWave,
             ChaosSpawnWave => SpawnableFaction.ChaosWave,
             ChaosMiniWave => SpawnableFaction.ChaosMiniWave,
-            _ => SpawnableFaction.None
+            _ => SpawnableFaction.None,
         };
 
         /// <summary>

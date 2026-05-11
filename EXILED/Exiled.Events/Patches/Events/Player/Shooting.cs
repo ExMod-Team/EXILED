@@ -101,9 +101,9 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel2),
             };
 
-            newInstructions.InsertRange( // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up
-                noTargetIndex,
-                noTargetInstructions);
+            // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up
+            newInstructions.InsertRange(noTargetIndex, noTargetInstructions);
+
             newInstructions[noTargetIndex].WithLabels(noTargetLabels);
 
             newInstructions.InsertRange(

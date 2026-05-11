@@ -541,7 +541,7 @@ namespace Exiled.API.Features
                 "HCZ_EZ_Checkpoint Part" => gameObject.transform.position.z switch
                 {
                     > 95 => RoomType.HczEzCheckpointA,
-                    _ => RoomType.HczEzCheckpointB
+                    _ => RoomType.HczEzCheckpointB,
                 },
                 _ => RoomType.Unknown,
             };

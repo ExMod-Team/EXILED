@@ -123,7 +123,7 @@ namespace Exiled.API.Features
             float value = 0;
             string[] lines = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            CassiePlaybackModifiers modifiers = new();
+            CassiePlaybackModifiers modifiers = default(CassiePlaybackModifiers);
             StringBuilder builder = StringBuilderPool.Pool.Get();
 
             for (int i = 0; i < lines.Length; i++)

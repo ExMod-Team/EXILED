@@ -597,7 +597,7 @@ namespace Exiled.API.Features.Doors
                 PryableDoor prbl => new Gate(prbl, rooms),
                 Interactables.Interobjects.BasicNonInteractableDoor nonInteractableDoor => new BasicNonInteractableDoor(nonInteractableDoor, rooms),
                 Interactables.Interobjects.BasicDoor basicDoor => new BasicDoor(basicDoor, rooms),
-                _ => new Door(doorVariant, rooms)
+                _ => new Door(doorVariant, rooms),
             };
         }
 

@@ -206,7 +206,7 @@ namespace Exiled.API.Features.Core.UserSettings
             SSTwoButtonsSetting twoButtonsSetting => new TwoButtonsSetting(twoButtonsSetting),
             SSPlaintextSetting plainTextSetting => new UserTextInputSetting(plainTextSetting),
             SSSliderSetting sliderSetting => new SliderSetting(sliderSetting),
-            _ => new SettingBase(settingBase)
+            _ => new SettingBase(settingBase),
         };
 
         /// <summary>

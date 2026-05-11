@@ -25,8 +25,14 @@ namespace Exiled.Installer
 
     using Version = SemanticVersioning.Version;
 
+    /// <summary>
+    /// TODO: Add doc IDK NEED HELP FOR DOC.
+    /// </summary>
     internal enum PathResolution
     {
+        /// <summary>
+        /// TODO: Add doc IDK NEED HELP FOR DOC.
+        /// </summary>
         Undefined,
 
         /// <summary>
@@ -40,6 +46,9 @@ namespace Exiled.Installer
         Exiled,
     }
 
+    /// <summary>
+    /// TODO: Add doc IDK NEED HELP FOR DOC.
+    /// </summary>
     internal static class Program
     {
         private const long RepoID = 833723500;
@@ -56,12 +65,11 @@ namespace Exiled.Installer
         // Force use of LF because the file uses LF
         private static readonly Dictionary<string, string> Markup = Resources.Markup.Trim().Split('\n').ToDictionary(s => s.Split(':')[0], s => s.Split(':', 2)[1]);
 
-        private static async Task Main(string[] args)
-        {
-            Console.OutputEncoding = new UTF8Encoding(false, false);
-            await CommandSettings.Parse(args).ConfigureAwait(false);
-        }
-
+        /// <summary>
+        /// TODO: Add doc IDK NEED HELP FOR DOC.
+        /// </summary>
+        /// <param name="args">Todo doc.</param>
+        /// <returns>todo fuck doc.</returns>
         internal static async Task MainSafe(CommandSettings args)
         {
             bool error = false;
@@ -164,6 +172,12 @@ namespace Exiled.Installer
 
             if (args.Exit)
                 Environment.Exit(error ? 1 : 0);
+        }
+
+        private static async Task Main(string[] args)
+        {
+            Console.OutputEncoding = new UTF8Encoding(false, false);
+            await CommandSettings.Parse(args).ConfigureAwait(false);
         }
 
         private static async Task<IEnumerable<Release>> GetReleases()

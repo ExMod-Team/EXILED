@@ -69,7 +69,7 @@ namespace Exiled.API.Features.Waves
             Faction.FoundationStaff when IsMiniWave => SpawnableFaction.NtfMiniWave,
             Faction.FoundationStaff => SpawnableFaction.NtfWave,
             Faction.FoundationEnemy when IsMiniWave => SpawnableFaction.ChaosMiniWave,
-            _ => SpawnableFaction.ChaosWave
+            _ => SpawnableFaction.ChaosWave,
         };
 
         /// <summary>

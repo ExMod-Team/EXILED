@@ -69,7 +69,7 @@ namespace Exiled.API.Features.Items.FirearmModules
                     MagazineModule magazine => magazine switch
                     {
                         Scp127MagazineModule scp127MagazineModule => new Scp127Magazine(scp127MagazineModule),
-                        _ => new NormalMagazine(magazine)
+                        _ => new NormalMagazine(magazine),
                     },
                     _ => null,
                 },

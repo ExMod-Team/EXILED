@@ -271,7 +271,7 @@ namespace Exiled.API.Features.DamageHandlers
                         FirearmType.E11SR => DamageType.E11Sr,
                         FirearmType.FSP9 => DamageType.Fsp9,
                         FirearmType.FRMG0 => DamageType.Frmg0,
-                        _ => DamageType.Firearm
+                        _ => DamageType.Firearm,
                     };
 
                 case PlayerStatsSystem.AttackerDamageHandler attackerDamageHandler:
