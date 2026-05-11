@@ -67,10 +67,10 @@ namespace Exiled.API.Features.Items
         /// <param name="dropItem">Whether or not 1344 should be dropped.</param>
         public void Deactivate(bool dropItem = false)
         {
-            if (Status is not (Scp1344Status.Active or Scp1344Status.Stabbing or Scp1344Status.Dropping))
-            {
+#pragma warning disable IDE0055
+            if (Status is not(Scp1344Status.Active or Scp1344Status.Stabbing or Scp1344Status.Dropping))
                 return;
-            }
+#pragma warning restore IDE0055
 
             Base.Owner.DisableWearables(WearableElements.Scp1344Goggles);
             Base.ActivateFinalEffects();

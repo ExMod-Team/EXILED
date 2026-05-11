@@ -7,16 +7,15 @@
 
 namespace Exiled.Events.Patches.Generic
 {
-    using Exiled.API.Extensions;
-
 #pragma warning disable SA1402
     using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
-    using Exiled.API.Features.Pools;
     using Exiled.API.Features.Items;
+    using Exiled.API.Features.Pools;
 
     using Footprinting;
 
