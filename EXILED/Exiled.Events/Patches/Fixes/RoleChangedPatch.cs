@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(InventoryItemProvider), nameof(InventoryItemProvider.RoleChanged))]
     internal static class RoleChangedPatch
     {
-#pragma warning disable IDE0060
+#pragma warning disable IDE0060 // IEnumerable<CodeInstruction> instructions argument is needed for Harmony but it's not used in the code making unused error
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             yield return new CodeInstruction(OpCodes.Ret);
