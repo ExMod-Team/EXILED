@@ -32,10 +32,11 @@ namespace Exiled.Events.Patches.Events.Scp939
     [HarmonyPatch(typeof(EnvironmentalMimicry), nameof(EnvironmentalMimicry.ServerProcessCmd))]
     internal static class PlayingSound
     {
-#pragma warning disable IDE0060 // TODO: This is bad practice should be reworked.
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
-#pragma warning restore IDE0060
         {
+            // TODO: This is bad practice should be reworked.
+            _ = instructions;
+
             List<CodeInstruction> newInstructions = new();
 
             LocalBuilder option = generator.DeclareLocal(typeof(byte));
