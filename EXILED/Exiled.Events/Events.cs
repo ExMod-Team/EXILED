@@ -153,8 +153,8 @@ namespace Exiled.Events
             {
                 Patcher = new Patcher();
 #if DEBUG
-                bool lastDebugStatus = Harmony.DEBUG;
-                Harmony.DEBUG = true;
+                bool lastDebugStatus = HarmonyLib.Harmony.DEBUG;
+                HarmonyLib.Harmony.DEBUG = true;
 #endif
                 Patcher.PatchAll(!Config.UseDynamicPatching, out int failedPatch);
 
@@ -163,7 +163,7 @@ namespace Exiled.Events
                 else
                     Log.Error($"Patching failed! There are {failedPatch} broken patches.");
 #if DEBUG
-                Harmony.DEBUG = lastDebugStatus;
+                HarmonyLib.Harmony.DEBUG = lastDebugStatus;
 #endif
             }
             catch (Exception exception)
