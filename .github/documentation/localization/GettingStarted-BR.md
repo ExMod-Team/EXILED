@@ -1,21 +1,28 @@
-# Documento de Baixo Nível do Exiled
-*(Escrito por [KadeDev](https://github.com/KadeDev) para a comunidade) (Traduzido por [Firething](https://github.com/Firething))*
+# Tutorial do EXILED
+*(Escrito por [KadeDev](https://github.com/KadeDev) para a comunidade, revisado e traduzido por [Unbistrackted](https://github.com/Unbistrackted) e [Firething](https://github.com/Firething))*
 
 ## Manual de Instruções
 ### Introdução
-Exiled é uma API de baixo nível, o que significa que você pode chamar funções do jogo sem precisar de vários bloatwares de API.
+Como dito anteriormente, o EXILED é um framework de alto nível que nos permite chamar funções do jogo sem ter nenhum tipo de complicação ou quase nenhuma perda de performance.
 
-Isso permite com que o Exiled atualize-se facilmente, e ele pode ser atualizado antes mesmo da atualização chegar ao jogo.
+Isso permite que o projeto seja atualizado de forma mais simples, sem precisar que desenvolvedores atualizem seus plugins toda vez que o jogo atualizar. (Isso se não houver códigos que foram alterados/tornados obsoletos em versões majors do EXILED)
 
-Isso também permite que desenvolvedores de plug-in não precisem atualizar seus códigos sempre que houver uma atualização do Exiled ou SCP:SL. Na realidade, eles nem precisarão atualizar seus plug-ins!
+O guia a seguir irá te ensinar o básico de como criar seu primeiro plugin!
 
-Esse documento mostrará a você os básicos de como se fazer um Plug-in para o Exiled. A partir daqui, você poderá mostrar ao mundo as coisas criativas que você pode criar com essa framework!
+### Guia
+O [Plug-in de Exemplo](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Example) mostra o que são eventos e como criar eles de forma correta. Usar esse exemplo ajudará você a aprender a como usar o Exiled apropriadamente. Dentro desse existem elementos que são importantes, portanto acompanhe o código durante o tutorial.
 
-### Exemplo de Plug-in
-Um [Exemplo de Plug-in](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Example) que é um plug-in simples que mostra eventos e como fazer eles adequadamente. Usar esse exemplo ajudará você a aprender a como usar o Exiled apropriadamente. Há alguns aspectos nesse plug-in que são importantes, falaremos sobre eles.
+#### ``OnEnable`` e ``OnDisable``+ Atualizações Dinâmicas
+O EXILED possuí um comando chamado **Reload**, que recarrega todos os plug-ins instalados. 
 
-#### Atualizações Dinâmicas em On Enable + On Disable
-Exiled é uma framework que tem um comando de **Reload** que pode ser usado para recarregar todos os plug-ins e obter novos. Isso significa que você deve fazer com que seus plug-ins sejam **Dinamicamente Atualizáveis.** Isso significa que toda variável, evento, corrotina, etc *deve* ser atribuída quando ativada e anulada quando desativada. O método **On Enable** deve ativar todos, e o método **On Disable** deve desativar todos. Mas talvez você esteja se perguntando 'E o **On Reload**'? Essa função tem como objetivo carregar variáveis estáticas para que toda constante estática que você fizer não seja apagada. Então você poderia fazer algo assim:
+Ele funciona desativando o plugin e ativando-o novamente, além de chamar a função ``OnReload`` que entraremos em detalhes abaixo.
+
+Lembrando que toda variável, evento, corrotina, etc. *deve* ser atribuído ou criado quando o plugin é ativado e anulada quando o mesmo é desativado.
+
+> [!IMPORTANT]  
+> Você **DEVE** usar o método ``OnEnable`` para ativar o Plug-in, e ``OnDisable`` desativa-lo. 
+
+Mas talvez você deve estar se perguntando: "Mas então para que serve o ``OnReload``?" Essa função tem como objetivo recarregar as variáveis estáticas de dentro do seu plugin. Então você poderia fazer algo assim:
 ```csharp
 public static int StaticCount = 0;
 public int counter = 0;
@@ -24,13 +31,13 @@ public override void OnEnable()
 {
     counter = StaticCount;
     counter++;
-    Info(counter);
+    Log.Info(counter);
 }
 
 public override void OnDisable()
 {
     counter++;
-    Info(counter);
+    Log.Info(counter);
 }
 
 public override void OnReload()
@@ -41,34 +48,46 @@ public override void OnReload()
 
 E o resultado seria:
 ```bash
-# On enable fires
+# O servidor é iniciado...
+# OnEnable é chamado.
 1
-# Reload command
-# On Disable fires
+# Comando Reload é executado por alguém...
+# OnDisable é chamado.
 2
-# On Reload fires
-# On Enable fires again
+# OnReload é chamado.
+"counter" é guardado dentro de "StaticCount"
+# E então OnEnabled é chamado novamente.
 3
 
 ```
-(Claro, excluindo qualquer coisa além das respostas reais)
-Sem fazer isso, teria ido apenas para o 1 e então para o 2 novamente.
+Sem fazer isso, teria apenas mostrado no console ``1`` e então para o ``2`` novamente.
 
 ### Jogadores + Eventos
-Agora que terminamos de fazer com que nossos plug-ins sejam **Dinamicamente Atualizáveis**, podemos focar em tentar interagir com jogadores por meio de eventos!
+Agora que entendemos como os métodos de entrada/inicializaçãos dos plug-ins funcionam, podemos focar em como interagir com jogadores por meio de eventos!
 
-Um evento é bem interessante, ele permite com que o SCP:SL se comunique com o Exiled e depois com o Exiled para todos os plug-ins!
+Um evento é uma forma do jogo notificar seu plug-in quando algo acontece, por exemplo quando um jogador entrar, tomar dano, morrer, etc.
 
-Você pode ouvir os eventos do seu plug-in adicionando isso à parte superior do arquivo de origem do plug-in principal:
+> [!IMPORTANT]  
+> Você **PRECISA** referenciar o arquivo `Exiled.Events.dll` para que você consiga usar os eventos. (Ou apenas baixe o pacote [Nuget do Exiled](https://www.nuget.org/packages/ExMod.Exiled)!)
+
+Para começar a ouvir um evento, iremos utilizar uma nova classe chamada "EventHandlers", que irá gerenciar nossos eventos.
+
+Na classe EventHandlers:
+
 ```csharp
-using EXILED;
+public class EventHandlers
+{
+    public void PlayerVerified(VerifiedEventArgs ev)
+    {
+        // Códigos 1
+        // Códigos 2
+        // Códigos 3
+    }
+}
 ```
-E então você precisa referenciar o arquivo `Exiled.Events.dll` para que você realmente obtenha eventos.
-
-Para referenciar um evento, nós estaremos utilizando uma nova classe que criamos; denominada "EventHandlers". O gerenciador de eventos não é fornecido por padrão; você deve criá-lo.
 
 
-Nós podemos referenciá-lo no void OnEnable e OnDisable assim:
+E depois nós podemos referenciá-lo no ``OnEnable`` e ``OnDisable`` desse jeito:
 
 `MainClass.cs`
 ```csharp
@@ -76,50 +95,37 @@ using Player = Exiled.Events.Handlers.Player;
 
 public EventHandlers EventHandler;
 
-public override OnEnable()
+public override void OnEnable()
 {
-    // Registre a classe de gerenciador de evento. E adicione o evento
-    // ao ouvinte de eventos 'EXILED_Events' para que obtenhamos o evento.
     EventHandler = new EventHandlers();
+    // += significa que você vai estar se atribuindo ao evento, que nesse caso você vai ouvir toda vez que ele for chamado.
     Player.Verified += EventHandler.PlayerVerified;
 }
 
-public override OnDisable()
+public override void OnDisable()
 {
-    // Torne-o dinamicamente atualizável.
-    // Fazemos isso ao remover o ouvinte para o evento e então anulando o gerenciador de eventos.
-    // Esse processo deve ser repetido para cada evento.
+    // Precisamos desatribuir o evento e depois, anular o gerenciador de eventos.
+    // A linha abaixo deve ser repetida para cada evento.
     Player.Verified -= EventHandler.PlayerVerified;
     EventHandler = null;
 }
 ```
 
-E na classe EventHandlers, faríamos:
+Agora toda vez que um jogador é autenticado após entrar no servidor podemos executar nosso código customizado! É importante destacar que todos eventos têm diferentes argumentos, e cada tipo tem propriedades diferentes associadas.
+
+O EXILED já fornece uma função para enviar um broadcast, então a usaremos em nosso exemplo:
 
 ```csharp
 public class EventHandlers
 {
     public void PlayerVerified(VerifiedEventArgs ev)
     {
-
-    }
-}
-```
-Agora conseguimos nos conectar a um evento de jogador verificado que é executado sempre que um jogador é autenticado após entrar no servidor! É importante destacar que todos eventos têm diferentes argumentos de evento, e cada tipo de argumento de evento tem propriedades diferentes associadas.
-
-O EXILED já fornece uma função de aviso (broadcast), então a usaremos em nosso evento:
-
-```csharp
-public class EventHandlers
-{
-    public void PlayerVerified(VerifiedEventArgs ev)
-    {
-        ev.Player.Broadcast(5, "<color=lime>Bem-vindo ao meu servidor maneiro!</color>");
+        ev.Player.Broadcast(5, "<color=lime>Bem-vindo(a) ao meu servidor!</color>");
     }
 }
 ```
 
-Como destacado acima, todo evento tem diferentes argumentos. Abaixo há um evento diferente que desliga os portões de Tesla para jogadores da Nine-Tailed Fox.
+Outro exemplo seria um evento que desliga as Teslas para todos os MTFs. (Incluindo guardas)
 
 `MainClass.cs`
 ```csharp
@@ -127,15 +133,15 @@ using Player = Exiled.Events.Handlers.Player;
 
 public EventHandlers EventHandler;
 
-public override OnEnable()
+public override void OnEnable()
 {
     EventHandler = new EventHandlers();
     Player.TriggeringTesla += EventHandler.TriggeringTesla;
 }
 
-public override OnDisable()
+public override void OnDisable()
 {
-    // Não se esqueça, eventos devem ser desconectados e anulados no metódo Disable.
+    // Não se esqueça, eventos devem ser desatribuídos e anulados nesse metódo!
     Player.TriggeringTesla -= EventHandler.TriggeringTesla;
     EventHandler = null;
 }
@@ -150,10 +156,10 @@ public class EventHandlers
     public void TriggeringTesla(TriggeringTeslaEventArgs ev)
     {
         // Desativa o evento para jogadores da equipe da Fundação.
-        // Isso pode ser feito ao verificar o lado (side) do jogador.
+        // Isso pode ser feito ao verificar o lado da classe (Player::Role.Side) do jogador.
         if (ev.Player.Role.Side == Side.Mtf) {
-            // Desative o acionamento da Tesla ao definir o ev.IsTriggerable para 'false'.
-            // Jogadores que tiverem uma patente na FTM não irão mais ativar portões de Tesla.
+            // Desative o acionamento da Tesla mudando o valor de 'ev.IsTriggerable' para 'false'.
+            // Lembrando que isso desabilita para todos os MTFs, incluindo Guardas! 
             ev.IsTriggerable = false;
         }
     }
@@ -162,33 +168,37 @@ public class EventHandlers
 
 
 ### Configurações
-A maioria dos plug-ins do Exiled contém configurações. As configurações permitem que os gerentes de servidor modifiquem os plug-ins livremente, embora sejam limitadas à configuração que o desenvolvedor do plug-in fornece.
+Grande partes dos plug-ins precisam de configurações, isso permite que os donos de servidores modifiquem-os livremente.
 
-Primeiro crie uma classe `config.cs` e mude a herança do seu plug-in de `Plugin<>` para `Plugin<Config>`
+Primeiro crie uma classe chmada `Config` e mude a herança do seu plug-in de `Plugin<>` para `Plugin<Config>`
 
-Agora você precisa fazer essa configuração herdar `IConfig`. Após herdar de `IConfig`, adicione uma propriedade para a classe titulada como `IsEnabled` e `Debug`. Sua classe de Configuração agora deve se assemelhar a isso:
+Agora você precisa fazer essa classe herdar `IConfig`, e depois implementar o contrato dela criando `IsEnabled` e `Debug`. Sua classe de Configuração agora deve se assemelhar a isso:
 
 ```csharp
     public class Config : IConfig
     {
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true; // Se você não colocar "= true", o seu plugin não sera habilitado quando o servidor iniciar!
         public bool Debug { get; set; }
     }
 ```
 
-Você pode adicionar qualquer opção de configuração ali e referenciá-la assim:
+Você pode adicionar qualquer opção de configuração e referenciá-la assim: 
 
 `Config.cs`
 ```csharp
     public class Config : IConfig
     {
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
         public bool Debug { get; set; }
-        public string TextThatINeed { get; set; } = "esse é o padrão";
+        public string TextThatINeed { get; set; } = "Texto para testes";
     }
 ```
 
+> [!NOTE] 
+> Você não precisa verificar se `IsEnabled == true` ou não, o Loader do Exiled já faz isso automaticamente.
+
 `MainClass.cs`
+
 ```csharp
    public override OnEnabled()
    {
@@ -196,11 +206,11 @@ Você pode adicionar qualquer opção de configuração ali e referenciá-la ass
    }
 ```
 
-E parabéns! Você fez o seu primeiro Plug-in para o Exiled! É importante destacar que todos os plug-ins **devem** ter uma configuração IsEnabled. Essa configuração permite que donos de servidor ativem e desativem o plug-in quando quiserem. A configuração IsEnabled será lida pelo carregador do Exiled (seu plug-in não precisa verificar se `IsEnabled == true` ou não).
+Pronto, você está preparado para fazer Plug-ins usando o Exiled! 
 
 ### E agora?
-Se você quiser mais informações, você deve entrar no nosso [discord!](https://discord.gg/PyUkWTg)
+Se você quiser mais informações, entre no nosso [Servidor do Discord!](https://discord.gg/PyUkWTg)
 
-Nós temos um canal de #resources que você pode considerar útil, assim como colaboradores do EXILED e desenvolvedores de plug-in que estariam dispostos a ajudá-lo na criação de seus plug-ins.
+Nós temos um canal de recursos chamado ``#resources`` que você pode considerar útil, assim como vários outros desenvolvedores que iram te ajudar a desenvolver seus plug-ins!
 
-Ou você poderia ler sobre todos os eventos que nós temos! Se você deseja verificá-los, veja [aqui!](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)
+Ou você poderia ler sobre todos os eventos que nós temos! Bem [aqui](https://github.com/ExMod-Team/EXILED/tree/master/EXILED/Exiled.Events/EventArgs)!

@@ -10,7 +10,6 @@ namespace Exiled.Events.Handlers
     using System;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features;
 
 #pragma warning disable IDE0079
 #pragma warning disable IDE0060
@@ -30,7 +29,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after a player triggers the attack as an SCP.
         /// </summary>
-        public static Event<HitEventArgs> Hit { get; set; } = new ();
+        public static Event<HitEventArgs> Hit { get; set; } = new();
 
         /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
@@ -87,7 +86,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>. In other words, it is invoked after the animation finishes but before the <see cref="API.Features.Items.Usable"/> is actually used.
         /// </summary>
-        public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new ();
+        public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new();
 
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> uses an <see cref="API.Features.Items.Usable"/>.
@@ -97,6 +96,11 @@ namespace Exiled.Events.Handlers
         /// changed during their health increase, won't fire.
         /// </remarks>
         public static Event<UsedItemEventArgs> UsedItem { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> consumes an <see cref="API.Features.Items.Consumable"/>. In other words, it is invoked before the consumable item logic are applied.
+        /// </summary>
+        public static Event<ConsumingItemEventArgs> ConsumingItem { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> has stopped the use of a <see cref="API.Features.Items.Usable"/>.
@@ -722,6 +726,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="UsedItemEventArgs"/> instance.</param>
         public static void OnUsedItem(UsedItemEventArgs ev) => UsedItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> consumes a <see cref="API.Features.Items.Consumable"/> item.
+        /// </summary>
+        /// <param name="ev">The <see cref="ConsumingItemEventArgs"/> instance.</param>
+        public static void OnConsumingItem(ConsumingItemEventArgs ev) => ConsumingItem.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> has stopped the use of a <see cref="API.Features.Items.Usable"/> item.

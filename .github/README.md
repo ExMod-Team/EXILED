@@ -26,91 +26,68 @@
 Localized READMEs
 </h1>
 
-<div align="center">
-  <div>
-    <img src="https://flagsapi.com/US/flat/64.png" height=30>
-    <br>
-    <a href="documentation/README.md">English</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/RU/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-Русский.md">Русский</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/CN/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-中文.md">中文</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/ES/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-ES.md">Español</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/PL/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-PL.md">Polski</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/BR/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-BR.md">Português-BR</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/IT/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-IT.md">Italiano</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/CZ/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-CS.md">Čeština</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/DK/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-DK.md">Dansk</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/TR/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-TR.md">Türkçe</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/DE/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-DE.md">Deutsch</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/FR/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-FR.md">Français</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/KR/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-KR.md">한국어</a>
-  </div>
-  <br>
-  <div>
-    <img src="https://flagsapi.com/TH/flat/64.png" height=30>
-    <br>
-    <a href="documentation/localization/README-ไทย.md">ไทย</a>
-  </div>
-</div>
+<table align="center">
+    <tr>
+        <td align="center">
+            <img src="https://flagsapi.com/US/flat/64.png" height=30><br>
+            <a href="documentation/README.md">English</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/RU/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-Русский.md">Русский</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/CN/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-中文.md">中文</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/ES/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-ES.md">Español</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/PL/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-PL.md">Polski</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/BR/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-BR.md">Português-BR</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/IT/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-IT.md">Italiano</a>
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <img src="https://flagsapi.com/CZ/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-CS.md">Čeština</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/DK/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-DK.md">Dansk</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/TR/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-TR.md">Türkçe</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/DE/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-DE.md">Deutsch</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/FR/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-FR.md">Français</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/KR/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-KR.md">한국어</a>
+        </td>
+        <td align="center">
+            <img src="https://flagsapi.com/TH/flat/64.png" height=30><br>
+            <a href="documentation/localization/README-ไทย.md">ไทย</a>
+        </td>
+    </tr>
+</table>
 
 <h5 align="center">This repo is a fork of <a href="https://github.com/Exiled-Team/EXILED">Exiled-Team/EXILED</a> after changes in project leadership.</h5>
 <h6 align="center">You can access the commit this update was forked from <a href="https://github.com/Exiled-Team/EXILED/tree/8b03fe7d9d2fe7ebffd5e6d1d038fc3881cdeb70">here</a>.</h6>

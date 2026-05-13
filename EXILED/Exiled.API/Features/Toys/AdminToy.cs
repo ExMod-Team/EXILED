@@ -12,8 +12,11 @@ namespace Exiled.API.Features.Toys
     using AdminToys;
 
     using Enums;
+
     using Exiled.API.Interfaces;
+
     using Footprinting;
+
     using Mirror;
 
     using UnityEngine;
@@ -101,7 +104,33 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets or sets the scale of the toy.
+        /// Gets or sets the local position of the toy relative to its parent.
+        /// </summary>
+        public Vector3 LocalPosition
+        {
+            get => Transform.localPosition;
+            set
+            {
+                Transform.localPosition = value;
+                AdminToyBase.NetworkPosition = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the local rotation of the toy relative to its parent.
+        /// </summary>
+        public Quaternion LocalRotation
+        {
+            get => Transform.localRotation;
+            set
+            {
+                Transform.localRotation = value;
+                AdminToyBase.NetworkRotation = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the local scale of the toy.
         /// </summary>
         public Vector3 Scale
         {

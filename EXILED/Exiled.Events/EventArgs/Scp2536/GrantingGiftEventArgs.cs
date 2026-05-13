@@ -8,6 +8,7 @@
 namespace Exiled.Events.EventArgs.Scp2536
 {
     using Christmas.Scp2536;
+
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
 

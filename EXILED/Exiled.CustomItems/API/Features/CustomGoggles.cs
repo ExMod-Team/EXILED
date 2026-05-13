@@ -8,6 +8,7 @@
 namespace Exiled.CustomItems.API.Features
 {
     using EventArgs;
+
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
@@ -17,6 +18,8 @@ namespace Exiled.CustomItems.API.Features
     using InventorySystem.Items.Usables.Scp1344;
 
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
+
+    using PlayerStatsSystem;
 
     /// <summary>
     /// The Custom Goggles base class.
@@ -56,6 +59,7 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         protected override void SubscribeEvents()
         {
+            PlayerStats.OnAnyPlayerDied += OnOwnerDied;
             InventorySystem.InventoryExtensions.OnInventoryDropped += RemoveSafely;
             Exiled.Events.Handlers.Player.UsingItem += OnInternalUsingItem;
             Exiled.Events.Handlers.Player.ItemRemoved += OnInternalItemRemoved;
@@ -68,6 +72,7 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         protected override void UnsubscribeEvents()
         {
+            PlayerStats.OnAnyPlayerDied -= OnOwnerDied;
             InventorySystem.InventoryExtensions.OnInventoryDropped -= RemoveSafely;
             Exiled.Events.Handlers.Player.UsingItem -= OnInternalUsingItem;
             Exiled.Events.Handlers.Player.ItemRemoved -= OnInternalItemRemoved;
@@ -213,6 +218,8 @@ namespace Exiled.CustomItems.API.Features
 
             InternalRemove(ev.Player, ev.Scp1344);
         }
+
+        private void OnOwnerDied(ReferenceHub hub, DamageHandlerBase handler) => RemoveSafely(hub);
 
         private void RemoveSafely(ReferenceHub hub)
         {

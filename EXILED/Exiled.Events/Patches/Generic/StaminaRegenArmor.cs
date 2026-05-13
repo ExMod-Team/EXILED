@@ -7,11 +7,11 @@
 
 namespace Exiled.Events.Patches.Generic
 {
-    using Exiled.API.Features;
     using Exiled.API.Features.Items;
 #pragma warning disable SA1313
 
     using HarmonyLib;
+
     using InventorySystem.Items.Armor;
 
     /// <summary>

@@ -5,9 +5,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace Exiled.API.Interfaces
+namespace Exiled.API.Interfaces.Audio
 {
     using System;
+
+    using Exiled.API.Structs.Audio;
 
     /// <summary>
     /// Represents a source of PCM audio data.
@@ -28,6 +30,11 @@ namespace Exiled.API.Interfaces
         /// Gets or sets the current playback position in seconds.
         /// </summary>
         double CurrentTime { get; set; }
+
+        /// <summary>
+        /// Gets the metadata of the streaming track.
+        /// </summary>
+        TrackData TrackInfo { get; }
 
         /// <summary>
         /// Reads a sequence of PCM samples into the specified buffer.

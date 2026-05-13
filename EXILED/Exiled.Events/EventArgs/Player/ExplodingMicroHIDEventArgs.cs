@@ -9,6 +9,7 @@ namespace Exiled.Events.EventArgs.Player
 {
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+
     using InventorySystem.Items.MicroHID;
 
     /// <summary>

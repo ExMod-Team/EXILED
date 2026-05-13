@@ -12,18 +12,12 @@ namespace Exiled.API.Features.DamageHandlers
     using Enums;
 
     using Exiled.API.Extensions;
-    using Exiled.API.Features.Pickups.Projectiles;
 
     using Footprinting;
 
     using InventorySystem;
-    using InventorySystem.Items;
-    using InventorySystem.Items.Firearms;
-    using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Scp1509;
-
-    using Items;
 
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp096;
@@ -34,8 +28,6 @@ namespace Exiled.API.Features.DamageHandlers
     using PlayerStatsSystem;
 
     using UnityEngine;
-
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// Allows generic damage to a player.
@@ -70,8 +62,7 @@ namespace Exiled.API.Features.DamageHandlers
             cassieAnnouncement ??= DamageHandlerBase.CassieAnnouncement.Default;
             customCassieAnnouncement = cassieAnnouncement;
 
-            if (customCassieAnnouncement is not null)
-                customCassieAnnouncement.Announcement ??= $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
+            customCassieAnnouncement?.Announcement ??= $"{player.Nickname} killed by {attacker.Nickname} utilizing {damageType}";
 
             Attacker = attacker != null ? attacker.Footprint : Server.Host.Footprint;
             AllowSelfDamage = true;
@@ -194,16 +185,14 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.Scp096Other:
                     Scp096Role curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
 
-                    if (curr096 != null)
-                        curr096._lastOwner = attacker.ReferenceHub;
+                    curr096?._lastOwner = attacker.ReferenceHub;
 
                     Base = new Scp096DamageHandler(curr096, damage, Scp096DamageHandler.AttackType.SlapRight);
                     break;
                 case DamageType.Scp939:
                     Scp939Role curr939 = attacker.ReferenceHub.roleManager.CurrentRole as Scp939Role ?? new Scp939Role();
 
-                    if (curr939 != null)
-                        curr939._lastOwner = attacker.ReferenceHub;
+                    curr939?._lastOwner = attacker.ReferenceHub;
 
                     Base = new Scp939DamageHandler(curr939, damage, Scp939DamageType.LungeTarget);
                     break;
