@@ -13,6 +13,7 @@ namespace Exiled.API.Features.Toys
     using AdminToys;
 
     using Enums;
+
     using Exiled.API.Interfaces;
 
     using UnityEngine;

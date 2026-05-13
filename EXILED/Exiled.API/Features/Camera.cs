@@ -12,10 +12,14 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
+
     using MapGeneration;
+
     using PlayerRoles.PlayableScps.Scp079.Cameras;
+
     using UnityEngine;
 
     using CameraType = Enums.CameraType;

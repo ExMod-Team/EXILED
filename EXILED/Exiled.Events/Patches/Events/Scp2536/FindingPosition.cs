@@ -11,13 +11,13 @@ namespace Exiled.Events.Patches.Events.Scp2536
     using System.Reflection.Emit;
 
     using Christmas.Scp2536;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
-    using Exiled.Events.EventArgs.Scp244;
     using Exiled.Events.EventArgs.Scp2536;
+
     using HarmonyLib;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 

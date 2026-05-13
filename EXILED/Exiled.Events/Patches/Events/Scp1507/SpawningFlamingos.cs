@@ -16,7 +16,9 @@ namespace Exiled.Events.Patches.Events.Scp1507
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1507;
+
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp1507;
 
     using static HarmonyLib.AccessTools;

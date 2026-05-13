@@ -20,7 +20,7 @@
     <PublicBeta>false</PublicBeta>
 
     <HarmonyVersion>2.4.2</HarmonyVersion>
-    <StyleCopVersion>1.1.118</StyleCopVersion>
+    <StyleCopVersion>1.2.0-beta.556</StyleCopVersion>
     <SemanticVersioningVersion>2.0.2</SemanticVersioningVersion>
 
     <Copyright>Copyright © $(Authors) 2020 - $([System.DateTime]::Now.ToString("yyyy"))</Copyright>
@@ -35,6 +35,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <DebugType>Portable</DebugType>
   </PropertyGroup>
 

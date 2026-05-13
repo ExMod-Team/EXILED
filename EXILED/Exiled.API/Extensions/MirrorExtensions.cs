@@ -13,7 +13,6 @@ namespace Exiled.API.Extensions
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
-    using System.Text;
 
     using AdminToys;
 
@@ -24,17 +23,16 @@ namespace Exiled.API.Extensions
     using CustomPlayerEffects;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
 
     using Features;
-    using Features.Pools;
+
+    using HarmonyLib;
 
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Keycards;
 
@@ -52,7 +50,7 @@ namespace Exiled.API.Extensions
 
     using RelativePositioning;
 
-    using Respawning;
+    using Unity.Collections.LowLevel.Unsafe;
 
     using UnityEngine;
 
@@ -115,19 +113,38 @@ namespace Exiled.API.Extensions
                         if (setMethod is null)
                             continue;
 
-                        MethodBody methodBody = setMethod.GetMethodBody();
-
-                        if (methodBody is null)
-                            continue;
-
-                        byte[] bytecodes = methodBody.GetILAsByteArray();
+                        ulong bit = GetBit(setMethod);
 
                         if (!SyncVarDirtyBitsValue.ContainsKey($"{property.ReflectedType.Name}.{property.Name}"))
-                            SyncVarDirtyBitsValue.Add($"{property.ReflectedType.Name}.{property.Name}", bytecodes[bytecodes.LastIndexOf((byte)OpCodes.Ldc_I8.Value) + 1]);
+                            SyncVarDirtyBitsValue.Add($"{property.ReflectedType.Name}.{property.Name}", bit);
                     }
                 }
 
                 return ReadOnlySyncVarDirtyBitsValue;
+
+                static ulong GetBit(MethodInfo setter)
+                {
+                    List<CodeInstruction> instructions = PatchProcessor.GetOriginalInstructions(setter);
+
+                    object operand = null;
+                    ulong bit;
+                    try
+                    {
+                        operand = instructions.Single(c => c.opcode == OpCodes.Ldc_I8).operand;
+                        long casted = (long)operand;
+
+                        // Standard casting doesn't work here because IL doesn't have a specific instruction for unsigned ulongs, it just loads it as a long and uses that.
+                        // Because of that, harmony here gives it back as a long, and standard casting would clamp the value if it was ever big enough, so we need an unsafe cast.
+                        bit = UnsafeUtility.As<long, ulong>(ref casted);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Error finding dirty bit in method {setter.ReflectedType.Name}.{setter.Name}! Found operand type: {operand?.GetType().Name ?? "Null"}. Exception: {ex}");
+                        return 0;
+                    }
+
+                    return bit;
+                }
             }
         }
 
@@ -254,7 +271,9 @@ namespace Exiled.API.Extensions
         /// <param name="origin">The direction of the blood decal.</param>
         /// <param name="roleTypeId">The RoleTypeId from who blood come from.</param>
         /// <param name="gettingShotSoundIndex">The sound than player get when getting shot.</param>
+#pragma warning disable IDE0060 // TODO: Deleted the unused param
         public static void PlaceBlood(this Player player, Vector3 position, Vector3 origin, RoleTypeId roleTypeId, int gettingShotSoundIndex)
+#pragma warning restore IDE0060
         {
             if (!roleTypeId.TryGetRoleBase(out PlayerRoleBase playerRoleBase) || playerRoleBase is not IBleedableRole)
                 return;
@@ -291,7 +310,8 @@ namespace Exiled.API.Extensions
                         writer.WriteRelativePosition(new RelativePosition(origin));
                         writer.WriteByte(255);
                         writer.WriteRoleType(RoleTypeId.ClassD);
-                    }, true);
+                    },
+                    true);
 #pragma warning restore SA1116 // Split parameters should start on line after declaration
                 }
 
@@ -541,7 +561,9 @@ namespace Exiled.API.Extensions
         /// <param name="makeHold">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isHeld.</param>
         /// <param name="makeNoise">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isNoisy.</param>
         /// <param name="isSubtitles">Same on <see cref="Cassie.MessageTranslated(string, string, bool, bool, bool)"/>'s isSubtitles.</param>
+#pragma warning disable IDE0060 // TODO: Deleted the unused param
         public static void MessageTranslated(this Player player, string words, string translation, string customSubtitles, bool makeHold = false, bool makeNoise = true, bool isSubtitles = true)
+#pragma warning restore IDE0060
         {
             CassieAnnouncement announcement = new(new CassieTtsPayload(words, customSubtitles, makeHold), 0, makeNoise ? 1 : 0);
 
@@ -988,7 +1010,7 @@ namespace Exiled.API.Extensions
             // Write syncdata position data
             int position3 = owner.Position;
             owner.Position = position;
-            owner.WriteByte((byte)(position3 - position2 & 255));
+            owner.WriteByte((byte)((position3 - position2) & 255));
             owner.Position = position3;
 
             // Copy owner to observer
