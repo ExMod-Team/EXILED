@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="RemovingTargetEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Scp096
 {
-    using API.Features;
+    using Exiled.API.Features;
 
     using Interfaces;
 

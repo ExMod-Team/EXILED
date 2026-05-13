@@ -9,7 +9,7 @@ namespace Exiled.Events
 {
     using System.ComponentModel;
 
-    using API.Interfaces;
+    using Exiled.API.Interfaces;
 
     /// <inheritdoc cref="IConfig"/>
     public sealed class Config : IConfig

@@ -30,7 +30,7 @@ namespace Exiled.API.Enums
         Tantrum,
 
         /// <summary>
-        /// Should never happen
+        /// Should never happen.
         /// </summary>
         Unknown,
     }

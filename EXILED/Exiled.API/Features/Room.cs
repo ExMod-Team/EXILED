@@ -12,18 +12,26 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
     using MapGeneration;
     using MapGeneration.Holidays;
     using MapGeneration.Rooms;
+
     using MEC;
+
     using Mirror;
+
     using PlayerRoles.PlayableScps.Scp079;
+
     using RelativePositioning;
+
     using UnityEngine;
+
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -429,15 +437,15 @@ namespace Exiled.API.Features
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             RoomIdentifierToRoom.Add(Identifier, this);
 
-            Zone = Identifier.Zone.GetZone();
-
-            if (Zone is ZoneType.Unspecified)
-                Log.Warn($"[ZONETYPE UNKNOWN] {Identifier} Zone : {Identifier?.Zone}");
-
             Type = FindType(gameObject);
 
             if (Type is RoomType.Unknown)
                 Log.Warn($"[ROOMTYPE UNKNOWN] {Identifier} Name : {gameObject?.name.RemoveBracketsOnEndOfName()} Shape : {Identifier?.Shape}");
+
+            Zone = Type is RoomType.Pocket ? ZoneType.Pocket : Identifier.Zone.GetZone();
+
+            if (Zone is ZoneType.Unspecified)
+                Log.Warn($"[ZONETYPE UNKNOWN] {Identifier} Zone : {Identifier?.Zone}");
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 
@@ -500,7 +508,7 @@ namespace Exiled.API.Features
                 "HCZ_Corner_Deep" => RoomType.HczCornerDeep,
                 "HCZ_Straight" => RoomType.HczStraight,
                 "HCZ_Straight_C" => RoomType.HczStraightC,
-                "HCZ_Straight_PipeRoom"=> RoomType.HczStraightPipeRoom,
+                "HCZ_Straight_PipeRoom" => RoomType.HczStraightPipeRoom,
                 "HCZ_Straight Variant" => RoomType.HczStraightVariant,
                 "HCZ_ChkpA" => RoomType.HczElevatorA,
                 "HCZ_ChkpB" => RoomType.HczElevatorB,
@@ -533,7 +541,7 @@ namespace Exiled.API.Features
                 "HCZ_EZ_Checkpoint Part" => gameObject.transform.position.z switch
                 {
                     > 95 => RoomType.HczEzCheckpointA,
-                    _ => RoomType.HczEzCheckpointB
+                    _ => RoomType.HczEzCheckpointB,
                 },
                 _ => RoomType.Unknown,
             };

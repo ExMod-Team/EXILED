@@ -10,10 +10,11 @@ namespace Exiled.Events.Patches.Events.Item
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pickups;
-    using API.Features.Pools;
     using Attributes;
+
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pickups;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Item;
 
     using Footprinting;
@@ -21,6 +22,7 @@ namespace Exiled.Events.Patches.Events.Item
     using HarmonyLib;
 
     using Interactables.Interobjects.DoorUtils;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

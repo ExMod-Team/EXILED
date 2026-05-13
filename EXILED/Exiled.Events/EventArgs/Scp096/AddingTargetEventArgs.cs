@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Scp096
 {
-    using API.Features;
+    using Exiled.API.Features;
 
     using Interfaces;
 
