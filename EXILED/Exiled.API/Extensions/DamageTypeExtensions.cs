@@ -14,10 +14,13 @@ namespace Exiled.API.Extensions
 
     using Features;
 
+    using InventorySystem.Items.MicroHID.Modules;
     using InventorySystem.Items.Scp1509;
 
+    using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
+    using PlayerRoles.PlayableScps.Scp939;
 
     using PlayerStatsSystem;
 

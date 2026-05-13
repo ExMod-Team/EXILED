@@ -8,6 +8,7 @@
 namespace Exiled.API.Enums
 {
     using Features;
+
     using PlayerRoles;
 
     /// <summary>
@@ -329,32 +330,32 @@ namespace Exiled.API.Enums
         Scp3114SkinSteal,
 
         /// <summary>
-        /// Damage cause by the <see cref="ExplosionType.SCP018"/> of <see cref="ItemType.SCP018"/>."/>
+        /// Damage cause by the <see cref="ExplosionType.SCP018"/> of <see cref="ItemType.SCP018"/>."/>.
         /// </summary>
         ExplosionScp018,
 
         /// <summary>
-        /// Damage cause by the <see cref="ExplosionType.Cola"/> of combining <see cref="ItemType.SCP207"/> with <see cref="ItemType.AntiSCP207"/>."/>
+        /// Damage cause by the <see cref="ExplosionType.Cola"/> of combining <see cref="ItemType.SCP207"/> with <see cref="ItemType.AntiSCP207"/>."/>.
         /// </summary>
         ExplosionCola,
 
         /// <summary>
-        /// Damage cause by the <see cref="ExplosionType.PinkCandy"/> of <see cref="InventorySystem.Items.Usables.Scp330.CandyKindID.Pink"/>."/>
+        /// Damage cause by the <see cref="ExplosionType.PinkCandy"/> of <see cref="InventorySystem.Items.Usables.Scp330.CandyKindID.Pink"/>."/>.
         /// </summary>
         ExplosionPinkCandy,
 
         /// <summary>
-        /// Damage cause by the ray <see cref="ExplosionType.Disruptor"/> of <see cref="ItemType.ParticleDisruptor"/>."/>
+        /// Damage cause by the ray <see cref="ExplosionType.Disruptor"/> of <see cref="ItemType.ParticleDisruptor"/>."/>.
         /// </summary>
         ExplosionDisruptor,
 
         /// <summary>
-        /// Damage cause by the <see cref="ExplosionType.Jailbird"/> of <see cref="ItemType.Jailbird"/>."/>
+        /// Damage cause by the <see cref="ExplosionType.Jailbird"/> of <see cref="ItemType.Jailbird"/>."/>.
         /// </summary>
         ExplosionJailbird,
 
         /// <summary>
-        /// Damage cause by the explosion of <see cref="ExplosionType.Custom"/> or any other not valid ExplosionType."/>
+        /// Damage cause by the explosion of <see cref="ExplosionType.Custom"/> or any other not valid ExplosionType."/>.
         /// </summary>
         ExplosionCustom,
 
