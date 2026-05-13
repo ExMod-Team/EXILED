@@ -7,10 +7,12 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using API.Features;
+    using Exiled.API.Features;
     using Exiled.API.Features.Doors;
+
     using Interactables;
     using Interactables.Interobjects.DoorUtils;
+
     using Interfaces;
 
     /// <summary>
@@ -33,6 +35,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
+        /// <seealso cref="EventArgs.Item.KeycardInteractingEventArgs"/>
         public InteractingDoorEventArgs(Player player, DoorVariant door, byte colliderId, bool isAllowed)
         {
             Player = player;

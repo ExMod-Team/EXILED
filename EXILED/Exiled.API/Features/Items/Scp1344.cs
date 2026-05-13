@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Items
 
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp1344;
+
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
 
     /// <summary>
@@ -66,10 +67,8 @@ namespace Exiled.API.Features.Items
         /// <param name="dropItem">Whether or not 1344 should be dropped.</param>
         public void Deactivate(bool dropItem = false)
         {
-            if (Status is not(Scp1344Status.Active or Scp1344Status.Stabbing or Scp1344Status.Dropping))
-            {
+            if (Status is not (Scp1344Status.Active or Scp1344Status.Stabbing or Scp1344Status.Dropping))
                 return;
-            }
 
             Base.Owner.DisableWearables(WearableElements.Scp1344Goggles);
             Base.ActivateFinalEffects();

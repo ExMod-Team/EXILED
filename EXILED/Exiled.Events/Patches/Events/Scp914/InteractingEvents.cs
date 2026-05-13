@@ -10,7 +10,8 @@ namespace Exiled.Events.Patches.Events.Scp914
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features;
+    using Exiled.API.Features;
+
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp914;
@@ -39,8 +40,8 @@ namespace Exiled.Events.Patches.Events.Scp914
 
             Label ret = generator.DefineLabel();
 
-            int offset = 1;
-            int index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Stloc_1) + offset;
+            int offset = -3;
+            int index = newInstructions.FindLastIndex(i => i.OperandIs(GetDeclaredConstructors(typeof(LabApi.Events.Arguments.Scp914Events.Scp914KnobChangingEventArgs))[0])) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
@@ -75,7 +76,7 @@ namespace Exiled.Events.Patches.Events.Scp914
             });
 
             offset = -3;
-            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Newobj) + offset;
+            index = newInstructions.FindLastIndex(i => i.OperandIs(GetDeclaredConstructors(typeof(LabApi.Events.Arguments.Scp914Events.Scp914ActivatingEventArgs))[0])) + offset;
 
             newInstructions.InsertRange(index, new[]
             {

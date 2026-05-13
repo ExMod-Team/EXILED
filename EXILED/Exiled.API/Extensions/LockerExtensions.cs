@@ -7,9 +7,8 @@
 
 namespace Exiled.API.Extensions
 {
-    using System;
-
     using Exiled.API.Enums;
+
     using MapGeneration.Distributors;
 
     /// <summary>
@@ -49,6 +48,7 @@ namespace Exiled.API.Extensions
             "AdrenalineMedkitStructure" => LockerType.Adrenaline,
             "MicroHIDpedestal" => LockerType.MicroHid,
             "SCP_127_Container" => LockerType.Scp127Pedestal,
+            "Scp1509PedestalStructure Variant" => LockerType.Scp1509Pedestal,
             _ => LockerType.Unknown,
         };
     }

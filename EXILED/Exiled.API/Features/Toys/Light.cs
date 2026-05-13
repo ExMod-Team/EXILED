@@ -13,6 +13,7 @@ namespace Exiled.API.Features.Toys
     using AdminToys;
 
     using Enums;
+
     using Exiled.API.Interfaces;
 
     using UnityEngine;
@@ -151,12 +152,11 @@ namespace Exiled.API.Features.Toys
                 Position = position ?? Vector3.zero,
                 Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
                 Scale = scale ?? Vector3.one,
+                Color = color ?? Color.gray,
             };
 
             if (spawn)
                 light.Spawn();
-
-            light.Color = color ?? Color.gray;
 
             return light;
         }

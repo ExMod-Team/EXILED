@@ -14,8 +14,11 @@ namespace Exiled.Events.Patches.Events.Scp939
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp939;
     using Exiled.Events.Handlers;
+
     using HarmonyLib;
+
     using Mirror;
+
     using PlayerRoles.PlayableScps.Scp939;
 
     using static HarmonyLib.AccessTools;
@@ -28,7 +31,7 @@ namespace Exiled.Events.Patches.Events.Scp939
     [HarmonyPatch(typeof(Scp939LungeAbility), nameof(Scp939LungeAbility.TriggerLunge))]
     internal static class Lunge
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

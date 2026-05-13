@@ -15,6 +15,7 @@ namespace Exiled.Events.Patches.Events.Scp559
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp559;
+
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
@@ -76,6 +77,8 @@ namespace Exiled.Events.Patches.Events.Scp559
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
+
+            ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
 }

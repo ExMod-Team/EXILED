@@ -10,6 +10,7 @@ namespace Exiled.API.Enums
     using System;
 
     using Exiled.API.Features.Doors;
+
     using Interactables.Interobjects;
 
     /// <summary>
@@ -374,5 +375,10 @@ namespace Exiled.API.Enums
         /// Represents the door in <see cref="RoomType.HczLoadingBay"/>.
         /// </summary>
         HczLoadingBay,
+
+        /// <summary>
+        /// Represents a spawnable unsecured gate.
+        /// </summary>
+        SpawnableUnsecuredGate,
     }
 }

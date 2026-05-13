@@ -25,8 +25,11 @@ namespace Exiled.CustomRoles.API.Features
     using Exiled.CustomItems.API.Features;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Loader;
+
     using InventorySystem.Configs;
+
     using MEC;
+
     using PlayerRoles;
 
     using UnityEngine;
@@ -109,6 +112,11 @@ namespace Exiled.CustomRoles.API.Features
         /// Gets or sets the possible spawn locations for this role.
         /// </summary>
         public virtual SpawnProperties SpawnProperties { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets the minimum number of players connected needed in order to add the role.
+        /// </summary>
+        public virtual int MinPlayers { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether players keep their current position when gaining this role.
@@ -638,7 +646,7 @@ namespace Exiled.CustomRoles.API.Features
                     ability.AddAbility(player);
             }
 
-            if (CustomRoles.Instance!.Config.GotRoleHint.Show)
+            if (CustomRoles.Instance.Config.GotRoleHint.Show)
                 ShowMessage(player);
 
             ShowBroadcast(player);
@@ -694,7 +702,7 @@ namespace Exiled.CustomRoles.API.Features
             player.UniqueRole = string.Empty;
             player.TryRemoveCustomeRoleFriendlyFire(Name);
 
-            if (RemovalKillsPlayer)
+            if (RemovalKillsPlayer && player.Role.Type != RoleTypeId.Destroyed)
                 player.Role.Set(RoleTypeId.Spectator);
         }
 
@@ -791,12 +799,18 @@ namespace Exiled.CustomRoles.API.Features
         }
 
         /// <summary>
+        /// Returns the CustomRole in a human-readable format.
+        /// </summary>
+        /// <returns>A string containing CustomRole-related data.</returns>
+        public override string ToString() => $"{Name} ({Id})";
+
+        /// <summary>
         /// Tries to register this role.
         /// </summary>
         /// <returns>True if the role registered properly.</returns>
         internal bool TryRegister()
         {
-            if (!CustomRoles.Instance!.Config.IsEnabled)
+            if (!CustomRoles.Instance.Config.IsEnabled)
                 return false;
 
             if (!Registered.Contains(this))
@@ -881,7 +895,7 @@ namespace Exiled.CustomRoles.API.Features
             }
 
             float totalchance = 0f;
-            List<(float chance, Vector3 pos)> spawnPointPool = new(4);
+            List<(float Chance, Vector3 Pos)> spawnPointPool = new(4);
 
             void Add(Vector3 pos, float chance)
             {
@@ -974,7 +988,7 @@ namespace Exiled.CustomRoles.API.Features
         /// Shows the spawn message to the player.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to show the message to.</param>
-        protected virtual void ShowMessage(Player player) => player.ShowHint(string.Format(CustomRoles.Instance!.Config.GotRoleHint.Content, Name, Description), CustomRoles.Instance.Config.GotRoleHint.Duration);
+        protected virtual void ShowMessage(Player player) => player.ShowHint(string.Format(CustomRoles.Instance.Config.GotRoleHint.Content, Name, Description), CustomRoles.Instance.Config.GotRoleHint.Duration);
 
         /// <summary>
         /// Shows the spawn broadcast to the player.

@@ -7,15 +7,15 @@
 
 namespace Exiled.Events.Patches.Generic
 {
-    using Exiled.API.Extensions;
-
 #pragma warning disable SA1402
     using System;
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pools;
+    using Exiled.API.Extensions;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Items;
+    using Exiled.API.Features.Pools;
 
     using Footprinting;
 
@@ -122,6 +122,12 @@ namespace Exiled.Events.Patches.Generic
                 if (attacker == victim)
                 {
                     Log.Debug("CheckFriendlyFirePlayerRules, Attacker player was equal to Victim, likely suicide");
+                    return true;
+                }
+
+                if (victim.CurrentItem is Marshmallow { Evil: true })
+                {
+                    Log.Debug("CheckFriendlyFirePlayerRules, NW Fix victim not getting hit");
                     return true;
                 }
 

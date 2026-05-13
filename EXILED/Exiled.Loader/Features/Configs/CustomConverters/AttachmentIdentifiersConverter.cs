@@ -11,7 +11,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
     using System.Collections.Generic;
     using System.IO;
 
-    using API.Structs;
+    using Exiled.API.Structs;
 
     using InventorySystem.Items.Firearms.Attachments;
 

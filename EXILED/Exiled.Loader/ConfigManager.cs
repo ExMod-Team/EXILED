@@ -13,14 +13,15 @@ namespace Exiled.Loader
     using System.Linq;
     using System.Reflection;
 
-    using API.Enums;
-    using API.Extensions;
-    using API.Interfaces;
-
+    using Exiled.API.Enums;
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
+    using Exiled.API.Features.Attributes;
     using Exiled.API.Features.Pools;
+    using Exiled.API.Interfaces;
 
     using LabApi.Loader.Features.Plugins.Configuration;
+
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
 
@@ -73,6 +74,93 @@ namespace Exiled.Loader
         }
 
         /// <summary>
+        /// Validates plugin config.
+        /// </summary>
+        /// <param name="plugin">Plugin which config is validated.</param>
+        /// <param name="config">Validated config.</param>
+        /// <returns>Config after validation is passed.</returns>
+        public static IConfig ValidateConfig(this IPlugin<IConfig> plugin, IConfig config)
+        {
+            int validated = 0;
+            foreach (PropertyInfo propertyInfo in config.GetType().GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
+            {
+                try
+                {
+                    ValidateType(config, plugin.Config, propertyInfo, ref validated);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Failed to validate config: {ex}");
+                }
+            }
+
+            if (validated > 0)
+                Log.Info($"Plugin {plugin.Name} has successfully passed {validated} config validations!");
+
+            return config;
+        }
+
+        /// <summary>
+        /// Performs a validation for property and all its properties in <paramref name="propertyInfo"/>'s type.
+        /// </summary>
+        /// <param name="instance">Plugin which config is validated.</param>
+        /// <param name="defaultInstance">Validated config.</param>
+        /// <param name="propertyInfo">Property which will be validated.</param>
+        /// <param name="validated">Amount of successfully passed validations.</param>
+        public static void ValidateType(object instance, object defaultInstance, PropertyInfo propertyInfo, ref int validated)
+        {
+            object value = propertyInfo.GetValue(instance, null);
+            object defaultValue = propertyInfo.GetValue(defaultInstance, null);
+
+            bool hasValidateChildrenAttribute = false;
+            try
+            {
+                foreach (Attribute attribute in propertyInfo.GetCustomAttributes())
+                {
+                    hasValidateChildrenAttribute |= attribute is ValidateChildrenAttribute;
+                    if (attribute is not IValidator validator)
+                        continue;
+
+                    try
+                    {
+                        if (!validator.Check(value))
+                        {
+                            Log.Error($"Value {value} in config ({propertyInfo.Name.ToSnakeCase()}) has failed validation for attribute {attribute.GetType().Name}. Default value ({defaultValue}) will be used instead.");
+                            propertyInfo.SetValue(instance, defaultValue);
+                            continue;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Value {value} in config ({propertyInfo.Name.ToSnakeCase()}) has failed validation for attribute {attribute.GetType().Name}. Default value ({defaultValue}) will be used instead.");
+                        Log.Error($"Validation error message: {ex.Message}");
+                        propertyInfo.SetValue(instance, defaultValue);
+                        continue;
+                    }
+
+                    validated++;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error while validating value of property '{propertyInfo.Name}': {ex.Message}. Default value ({defaultValue}) will be used instead.");
+                return;
+            }
+
+            if (hasValidateChildrenAttribute || (!LoaderPlugin.Config.EnableDeepValidation && !(propertyInfo.PropertyType.Namespace?.Contains("System") ?? false)))
+            {
+                foreach (PropertyInfo property in propertyInfo.PropertyType.GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
+                {
+                    ConstructorInfo ctor = property.PropertyType.GetConstructor(Type.EmptyTypes);
+                    if (ctor is null)
+                        continue;
+
+                    ValidateType(value, ctor.Invoke(null, null), property, ref validated);
+                }
+            }
+        }
+
+        /// <summary>
         /// Loads the config of a plugin using the distribution.
         /// </summary>
         /// <param name="plugin">The plugin which config will be loaded.</param>
@@ -106,7 +194,7 @@ namespace Exiled.Loader
             try
             {
                 string rawConfigString = Loader.Serializer.Serialize(rawDeserializedConfig);
-                config = (IConfig)Loader.Deserializer.Deserialize(rawConfigString, plugin.Config.GetType());
+                config = ValidateConfig(plugin, (IConfig)Loader.Deserializer.Deserialize(rawConfigString, plugin.Config.GetType()));
                 plugin.Config.CopyProperties(config);
             }
             catch (YamlException yamlException)
@@ -135,7 +223,7 @@ namespace Exiled.Loader
 
             try
             {
-                config = (IConfig)Loader.Deserializer.Deserialize(File.ReadAllText(plugin.ConfigPath), plugin.Config.GetType());
+                config = ValidateConfig(plugin, (IConfig)Loader.Deserializer.Deserialize(File.ReadAllText(plugin.ConfigPath), plugin.Config.GetType()));
                 plugin.Config.CopyProperties(config);
             }
             catch (YamlException yamlException)
@@ -446,13 +534,16 @@ namespace Exiled.Loader
             ISerializer serializer = LabApi.Loader.Features.Yaml.YamlConfigParser.Serializer;
             IDeserializer deserializer = LabApi.Loader.Features.Yaml.YamlConfigParser.Deserializer;
 
-            string configPath = Path.Combine(Paths.IndividualConfigs, plugin.Name, $"{Server.Port}-properties.yml");
+            string directory = Path.Combine(Paths.IndividualConfigs, plugin.Name);
+            string configPath = Path.Combine(directory, $"{Server.Port}-properties.yml");
+
+            Directory.CreateDirectory(directory);
 
             if (!File.Exists(configPath))
             {
                 Log.Warn($"LabAPI Plugin {plugin.Name} doesn't have default properties, generating...");
                 PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
-                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties));
                 return true;
             }
 
@@ -464,7 +555,7 @@ namespace Exiled.Loader
             {
                 Log.Error($"{plugin.Name} properties could not be loaded, default properties will be loaded instead!\n{yamlException}");
                 PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
-                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties));
             }
 
             return true;

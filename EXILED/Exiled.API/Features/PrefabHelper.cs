@@ -14,7 +14,12 @@ namespace Exiled.API.Features
 
     using Exiled.API.Enums;
     using Exiled.API.Features.Attributes;
+
+    using MapGeneration.Distributors;
+    using MapGeneration.RoomConnectors;
+
     using Mirror;
+
     using UnityEngine;
 
     /// <summary>
@@ -30,7 +35,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IReadOnlyDictionary{TKey,TValue}"/> of <see cref="PrefabType"/> and their corresponding <see cref="GameObject"/>.
         /// </summary>
-        public static IReadOnlyDictionary<PrefabType, (GameObject, Component)> PrefabToGameObjectAndComponent => Prefabs;
+        public static IReadOnlyDictionary<PrefabType, (GameObject GameObject, Component Component)> PrefabToGameObjectAndComponent => Prefabs;
 
         /// <summary>
         /// Gets a <see cref="IReadOnlyDictionary{TKey,TValue}"/> of <see cref="PrefabType"/> and their corresponding <see cref="GameObject"/>.
@@ -55,6 +60,11 @@ namespace Exiled.API.Features
         /// <returns>Returns the <see cref="GameObject"/>.</returns>
         public static GameObject GetPrefab(PrefabType prefabType)
         {
+            if (prefabType is PrefabType.HCZOneSided or PrefabType.HCZTwoSided)
+            {
+                prefabType = PrefabType.HCZBreakableDoor;
+            }
+
             if (Prefabs.TryGetValue(prefabType, out (GameObject, Component) prefab))
                 return prefab.Item1;
 
@@ -100,8 +110,29 @@ namespace Exiled.API.Features
             if (!TryGetPrefab(prefabType, out GameObject gameObject))
                 return null;
 
-            GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation ?? Quaternion.identity);
+            rotation ??= Quaternion.identity;
+
+            GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation.Value);
+
+            if (newGameObject.TryGetComponent(out StructurePositionSync positionSync))
+            {
+                positionSync.Network_position = position;
+                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / 5.625F);
+            }
+
+            if (prefabType is PrefabType.HCZOneSided or PrefabType.HCZTwoSided or PrefabType.HCZBreakableDoor)
+            {
+                newGameObject.GetComponent<WallableSmallNodeRoomConnector>().Network_syncBitmask = prefabType switch
+                {
+                    PrefabType.HCZTwoSided => 0b00000000,
+                    PrefabType.HCZOneSided => 0b00000001,
+                    PrefabType.HCZBreakableDoor => 0b00000011,
+                    _ => 0,
+                };
+            }
+
             NetworkServer.Spawn(newGameObject);
+
             return newGameObject;
         }
 

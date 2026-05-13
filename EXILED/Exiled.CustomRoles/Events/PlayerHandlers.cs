@@ -9,7 +9,6 @@ namespace Exiled.CustomRoles.Events
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
 
     using Exiled.API.Enums;
     using Exiled.API.Features;
@@ -75,7 +74,7 @@ namespace Exiled.CustomRoles.Events
 
             foreach (CustomRole role in CustomRole.Registered)
             {
-                if (role.Role == ev.Player.Role.Type && !role.IgnoreSpawnSystem && role.SpawnChance > 0 && !role.Check(ev.Player) && (role.SpawnProperties is null || role.SpawnedPlayers < role.SpawnProperties.Limit))
+                if (role.Role == ev.Player.Role.Type && !role.IgnoreSpawnSystem && role.SpawnChance > 0 && !role.Check(ev.Player) && (role.SpawnProperties is null || role.SpawnedPlayers < role.SpawnProperties.Limit) && (role.MinPlayers is 0 || Server.PlayerConnectedCount >= role.MinPlayers))
                 {
                     eligibleRoles.Add(role);
                     totalChance += role.SpawnChance;

@@ -17,19 +17,21 @@ namespace Exiled.Loader
     using System.Security.Principal;
     using System.Threading;
 
-    using API.Enums;
-    using API.Interfaces;
-
     using CommandSystem.Commands.Shared;
 
+    using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
+    using Exiled.API.Interfaces;
+
     using Features;
     using Features.Configs;
     using Features.Configs.CustomConverters;
+
     using LabApi.Loader;
     using LabApi.Loader.Features.Misc;
     using LabApi.Loader.Features.Plugins.Configuration;
+
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NodeDeserializers;
 
@@ -511,7 +513,7 @@ namespace Exiled.Loader
 
             EnablePlugins();
 
-            BuildInfoCommand.ModDescription = string.Join(
+            BuildInfoCommand.ModDescription += string.Join(
                 "\n",
                 AppDomain.CurrentDomain.GetAssemblies()
                     .Where(a => a.FullName.StartsWith("Exiled.", StringComparison.OrdinalIgnoreCase))
@@ -635,7 +637,10 @@ namespace Exiled.Loader
                     continue;
 
                 if (PluginLoader.EnabledPlugins.Any(p => p.Name == plugin.Name) || Plugins.Any(p => p.Name == plugin.Name) || LabAPIPlugins.Keys.Any(p => p.Name == plugin.Name))
+                {
+                    Log.Info("Skipping loading duplicate LabAPI plugin " + plugin.Name);
                     continue;
+                }
 
                 Log.Info("Successfully loaded LabAPI plugin " + plugin.Name);
                 LabAPIPlugins.Add(plugin, attempt);

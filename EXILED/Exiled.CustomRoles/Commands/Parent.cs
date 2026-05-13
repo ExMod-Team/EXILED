@@ -33,7 +33,7 @@ namespace Exiled.CustomRoles.Commands
         public override string[] Aliases { get; } = { "cr", "crs" };
 
         /// <inheritdoc/>
-        public override string Description { get; } = string.Empty;
+        public override string Description { get; } = "The parent command for EXILED custom roles";
 
         /// <inheritdoc/>
         public override void LoadGeneratedCommands()
@@ -41,12 +41,13 @@ namespace Exiled.CustomRoles.Commands
             RegisterCommand(Give.Instance);
             RegisterCommand(Info.Instance);
             RegisterCommand(List.List.Instance);
+            RegisterCommand(Get.Instance);
         }
 
         /// <inheritdoc/>
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            response = "Invalid subcommand! Available: give, info, list";
+            response = "Invalid subcommand! Available: give, info, list, get";
             return false;
         }
     }

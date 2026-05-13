@@ -126,6 +126,11 @@ namespace Exiled.Events.Handlers
         public static Event<PlacingPickupIntoPocketDimensionEventArgs> PlacingPickupIntoPocketDimension { get; set; } = new();
 
         /// <summary>
+        /// Invoked after a map seed has been chosen, but before it is used.
+        /// </summary>
+        public static Event<GeneratingEventArgs> Generating { get; set; } = new();
+
+        /// <summary>
         /// Called before placing a decal.
         /// </summary>
         /// <param name="ev">The <see cref="PlacingBulletHoleEventArgs"/> instance.</param>
@@ -249,5 +254,11 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="PlacingPickupIntoPocketDimensionEventArgs"/> instnace.</param>
         public static void OnPlacingPickupIntoPocketDimension(PlacingPickupIntoPocketDimensionEventArgs ev) => PlacingPickupIntoPocketDimension.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called after a map seed has been chosen, but before it is used.
+        /// </summary>
+        /// <param name="ev">The <see cref="GeneratingEventArgs"/> instnace.</param>
+        public static void OnGenerating(GeneratingEventArgs ev) => Generating.InvokeSafely(ev);
     }
 }

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="NameTagDetailFix.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -12,9 +12,12 @@ namespace Exiled.Events.Patches.Fixes
 
     using Exiled.API.Extensions;
     using Exiled.API.Features.Pools;
+
     using HarmonyLib;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
+
     using Mirror;
 
     using static HarmonyLib.AccessTools;

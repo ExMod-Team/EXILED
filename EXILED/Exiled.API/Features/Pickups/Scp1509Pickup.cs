@@ -9,13 +9,14 @@ namespace Exiled.API.Features.Pickups
 {
     using Exiled.API.Features.Items;
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Scp1509;
 
     using BaseScp1509 = InventorySystem.Items.Scp1509.Scp1509Pickup;
 
     /// <summary>
-    /// A wrapper class for a Radio pickup.
+    /// A wrapper class for a Scp1509 pickup.
     /// </summary>
     public class Scp1509Pickup : Pickup, IWrapper<BaseScp1509>
     {

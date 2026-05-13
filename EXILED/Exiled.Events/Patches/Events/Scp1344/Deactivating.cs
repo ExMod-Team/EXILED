@@ -4,7 +4,6 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
 namespace Exiled.Events.Patches.Events.Scp1344
@@ -12,9 +11,11 @@ namespace Exiled.Events.Patches.Events.Scp1344
     using Exiled.API.Features.Items;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1344;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Usables.Scp1344;
-    using InventorySystem.Items.Usables.Scp244;
+
     using UnityEngine;
 
     /// <summary>
@@ -34,39 +35,48 @@ namespace Exiled.Events.Patches.Events.Scp1344
             if (__instance._useTime == 0)
             {
                 TryingDeactivatingEventArgs ev = new(Item.Get(__instance));
-                Exiled.Events.Handlers.Scp1344.OnTryingDeactivating(ev);
+                Handlers.Scp1344.OnTryingDeactivating(ev);
 
                 if (!ev.IsAllowed)
                 {
-                    return StopDeactivation(__instance);
+                    return StopDeactivation(__instance, Scp1344Status.Active);
                 }
             }
 
-            if (__instance._useTime + Time.deltaTime >= 5.1f)
+            if (__instance._useTime + Time.deltaTime >= Scp1344Item.DeactivationTime)
             {
                 DeactivatingEventArgs deactivating = new(Item.Get(__instance));
-                Exiled.Events.Handlers.Scp1344.OnDeactivating(deactivating);
+                Handlers.Scp1344.OnDeactivating(deactivating);
 
                 if (!deactivating.IsAllowed)
                 {
-                    return StopDeactivation(__instance);
+                    return StopDeactivation(__instance, deactivating.NewStatus);
                 }
 
                 __instance.ActivateFinalEffects();
                 __instance.ServerDropItem(__instance);
 
                 DeactivatedEventArgs ev = new(Item.Get(__instance));
-                Exiled.Events.Handlers.Scp1344.OnDeactivated(ev);
+                Handlers.Scp1344.OnDeactivated(ev);
                 return false;
             }
 
             return true;
         }
 
-        private static bool StopDeactivation(Scp1344Item instance)
+        private static bool StopDeactivation(Scp1344Item instance, Scp1344Status newStatus)
         {
-            instance.Status = Scp1344Status.Active;
-            instance.ServerSetStatus(Scp1344Status.Active);
+            instance.Status = newStatus;
+            instance.ServerSetStatus(newStatus);
+
+            if (newStatus == Scp1344Status.Idle)
+            {
+                instance._useTime = 0f;
+                instance._savedIntensity = 0;
+                instance._cancelationTime = 0f;
+                instance.OwnerInventory?.ServerSelectItem(0);
+            }
+
             return false;
         }
     }

@@ -16,8 +16,11 @@ namespace Exiled.API.Features.Lockers
     using Exiled.API.Extensions;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items.Pickups;
+
     using MapGeneration.Distributors;
+
     using UnityEngine;
 
     /// <summary>
@@ -290,6 +293,12 @@ namespace Exiled.API.Features.Lockers
 
             return Spawnpoint.position;
         }
+
+        /// <summary>
+        /// Returns the Door in a human-readable format.
+        /// </summary>
+        /// <returns>A string containing Door-related data.</returns>
+        public override string ToString() => $"({string.Join(",", AcceptableTypes)}) [{string.Join(",", ToBeSpawned)}] *{Cooldown}* ={IsOpen}=";
 
         /// <summary>
         /// Gets the chamber by its <see cref="LockerChamber"/>.

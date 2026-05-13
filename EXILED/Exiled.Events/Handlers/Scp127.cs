@@ -9,6 +9,7 @@ namespace Exiled.Events.Handlers
 {
     using Exiled.Events.EventArgs.Scp127;
     using Exiled.Events.Features;
+
     using LabApi.Events.Arguments.Scp127Events;
 
 #pragma warning disable SA1623
@@ -43,6 +44,9 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="Scp127TalkingEventArgs"/> instance.</param>
         public static void OnTalking(Scp127TalkingEventArgs ev)
         {
+            if (!Talking.Patched)
+                return;
+
             TalkingEventArgs eventArgs = new(API.Features.Items.Item.Get<API.Features.Items.Scp127>(ev.Scp127Item.Base), ev.VoiceLine, ev.Priority, ev.IsAllowed);
             Talking.InvokeSafely(eventArgs);
 
@@ -64,6 +68,9 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="Scp127GainingExperienceEventArgs"/> instance.</param>
         public static void OnGainingExperience(Scp127GainingExperienceEventArgs ev)
         {
+            if (!GainingExperience.Patched)
+                return;
+
             GainingExperienceEventArgs eventArgs = new(API.Features.Items.Item.Get<API.Features.Items.Scp127>(ev.Scp127Item.Base), ev.ExperienceGain, ev.IsAllowed);
             GainingExperience.InvokeSafely(eventArgs);
 

@@ -13,11 +13,13 @@
 
 
 
+
+
 ---
 title: NW Documentation
 ---
 
-Last Update (14.2.0.4)
+Last Update (14.2.0.6)
 
 ### Index
 
@@ -155,6 +157,7 @@ Last Update (14.2.0.4)
 - [HintTranslations](#hinttranslations)
 - [HintType](#hinttype)
 - [HitboxType](#hitboxtype)
+- [HitmarkerType](#hitmarkertype)
 - [HitResult](#hitresult)
 - [HolidayType](#holidaytype)
 - [HotkeysTranslation](#hotkeystranslation)
@@ -2413,6 +2416,18 @@ Last Update (14.2.0.4)
 
 </details>
 
+### HitmarkerType
+
+<details><summary><b>HitmarkerType</b></summary>
+
+```
+ [0] = None
+ [1] = Regular
+ [2] = Blocked
+```
+
+</details>
+
 ### HitResult
 
 <details><summary><b>InventorySystem.Items.Autosync.MeleeAutoSync+HitResult</b></summary>
@@ -2603,6 +2618,7 @@ Last Update (14.2.0.4)
  [26] = MicroHidDamaged
  [27] = Scp127OnEquip
  [28] = SnakeHint
+ [29] = FirearmSprintSpeed
 ```
 
 </details>
@@ -3550,6 +3566,8 @@ Last Update (14.2.0.4)
  [15] = InvalidProtocol
  [16] = NatMessage
  [17] = Empty
+ [18] = ReliableMerged
+ [19] = Total
 ```
 
 </details>
@@ -5665,7 +5683,7 @@ Last Update (14.2.0.4)
  [7] = Mimicry
  [8] = Scp1576
  [9] = PreGameLobby
- [9] = PreGameLobby
+ [10] = Scp1507
 ```
 
 </details>
@@ -5848,35 +5866,39 @@ Last Update (14.2.0.4)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.2.0.4"
+```md title="Latest Updated: 14.2.0.6"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"
 * In C#, inheritance is a process in which one object acquires all the properties and behaviors of its parent object automatically.
 
 
-Scp956DamageHandler : StandardDamageHandler
-SnowballDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.CustomReasonDamageHandler : StandardDamageHandler
-PlayerStatsSystem.CustomReasonFirearmDamageHandler : FirearmDamageHandler
-PlayerStatsSystem.DisruptorDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.ExplosionDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.FirearmDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.GrayCandyDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.JailbirdDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.MicroHidDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.RecontainmentDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.Scp018DamageHandler : AttackerDamageHandler
-PlayerStatsSystem.Scp049DamageHandler : ScpDamageHandler
-PlayerStatsSystem.Scp096DamageHandler : ScpDamageHandler
-PlayerStatsSystem.ScpDamageHandler : AttackerDamageHandler
-PlayerStatsSystem.SilentDamageHandler : StandardDamageHandler
-PlayerStatsSystem.UniversalDamageHandler : StandardDamageHandler
-PlayerStatsSystem.WarheadDamageHandler : StandardDamageHandler
-PlayerRoles.PlayableScps.Scp939.Scp939DamageHandler : AttackerDamageHandler
-PlayerRoles.PlayableScps.Scp3114.Scp3114DamageHandler : AttackerDamageHandler
-PlayerRoles.PlayableScps.Scp1507.Scp1507DamageHandler : AttackerDamageHandler
-InventorySystem.Items.Scp1509.Scp1509DamageHandler : AttackerDamageHandler
+- PlayerStatsSystem.DamageHandlerBase
+  - PlayerStatsSystem.StandardDamageHandler : PlayerStatsSystem.DamageHandlerBase, 
+    - PlayerStatsSystem.AttackerDamageHandler : PlayerStatsSystem.StandardDamageHandler, 
+      - PlayerStatsSystem.ScpDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+        - PlayerStatsSystem.Scp049DamageHandler : PlayerStatsSystem.ScpDamageHandler, 
+        - PlayerStatsSystem.Scp096DamageHandler : PlayerStatsSystem.ScpDamageHandler, 
+      - PlayerStatsSystem.FirearmDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+        - PlayerStatsSystem.CustomReasonFirearmDamageHandler : PlayerStatsSystem.FirearmDamageHandler, 
+      - SnowballDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerStatsSystem.DisruptorDamageHandler : PlayerStatsSystem.AttackerDamageHandler, DisintegrateDeathAnimation+IDisintegrateDamageHandler
+      - PlayerStatsSystem.ExplosionDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerStatsSystem.GrayCandyDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerStatsSystem.JailbirdDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerStatsSystem.MarshmallowDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerStatsSystem.MicroHidDamageHandler : PlayerStatsSystem.AttackerDamageHandler, DisintegrateDeathAnimation+IDisintegrateDamageHandler
+      - PlayerStatsSystem.RecontainmentDamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerStatsSystem.Scp018DamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerRoles.PlayableScps.Scp939.Scp939DamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - PlayerRoles.PlayableScps.Scp3114.Scp3114DamageHandler : PlayerStatsSystem.AttackerDamageHandler, PlayerRoles.Ragdolls.IRagdollInspectOverride
+      - PlayerRoles.PlayableScps.Scp1507.Scp1507DamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+      - InventorySystem.Items.Scp1509.Scp1509DamageHandler : PlayerStatsSystem.AttackerDamageHandler, 
+    - Scp956DamageHandler : PlayerStatsSystem.StandardDamageHandler, 
+    - PlayerStatsSystem.CustomReasonDamageHandler : PlayerStatsSystem.StandardDamageHandler, 
+    - PlayerStatsSystem.SilentDamageHandler : PlayerStatsSystem.StandardDamageHandler, PlayerStatsSystem.Modifiers.IDeathRagdollModifier, PlayerStatsSystem.Modifiers.IDeathInventoryModifier
+    - PlayerStatsSystem.UniversalDamageHandler : PlayerStatsSystem.StandardDamageHandler, 
+    - PlayerStatsSystem.WarheadDamageHandler : PlayerStatsSystem.StandardDamageHandler, 
 
 ```
 </details>

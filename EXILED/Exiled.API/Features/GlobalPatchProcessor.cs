@@ -86,7 +86,7 @@ namespace Exiled.API.Features
                     }
 
                     if (string.IsNullOrEmpty(patchGroup.GroupId))
-                        throw new ArgumentNullException("GroupId");
+                        throw new ArgumentNullException(nameof(patchGroup.GroupId));
 
                     if (string.IsNullOrEmpty(groupId) || patchGroup.GroupId != groupId)
                         continue;
@@ -147,40 +147,36 @@ namespace Exiled.API.Features
                     goto Unpatch;
 
                 if (string.IsNullOrEmpty(patchGroup.GroupId))
-                    throw new ArgumentNullException("GroupId");
+                    throw new ArgumentNullException(nameof(patchGroup.GroupId));
 
                 if (string.IsNullOrEmpty(groupId) || patchGroup.GroupId != groupId)
                     continue;
 
-                Unpatch:
+            Unpatch:
                 bool hasMethodBody = methodBase.HasMethodBody();
                 if (hasMethodBody)
                 {
-                    patchInfo.Postfixes.Do(
-                        delegate(Patch patchInfo)
-                        {
-                            harmony.Unpatch(methodBase, patchInfo.PatchMethod);
-                        });
-                    patchInfo.Prefixes.Do(
-                        delegate(Patch patchInfo)
-                        {
-                            harmony.Unpatch(methodBase, patchInfo.PatchMethod);
-                        });
-                }
-
-                patchInfo.Transpilers.Do(
-                    delegate(Patch patchInfo)
+                    patchInfo.Postfixes.Do((patchInfo) =>
                     {
                         harmony.Unpatch(methodBase, patchInfo.PatchMethod);
                     });
+                    patchInfo.Prefixes.Do((patchInfo) =>
+                    {
+                        harmony.Unpatch(methodBase, patchInfo.PatchMethod);
+                    });
+                }
+
+                patchInfo.Transpilers.Do((patchInfo) =>
+                {
+                    harmony.Unpatch(methodBase, patchInfo.PatchMethod);
+                });
 
                 if (hasMethodBody)
                 {
-                    patchInfo.Finalizers.Do(
-                        delegate(Patch patchInfo)
-                        {
-                            harmony.Unpatch(methodBase, patchInfo.PatchMethod);
-                        });
+                    patchInfo.Finalizers.Do((patchInfo) =>
+                    {
+                        harmony.Unpatch(methodBase, patchInfo.PatchMethod);
+                    });
                 }
 
                 PatchedGroupMethodsValue.Remove(methodBase);

@@ -12,9 +12,13 @@ namespace Exiled.API.Features.Roles
 
     using Exiled.API.Enums;
     using Exiled.API.Features.Doors;
+
     using Interactables.Interobjects.DoorUtils;
+
     using MapGeneration;
+
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.Scp079;
@@ -23,7 +27,9 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.PlayableScps.Scp079.Rewards;
     using PlayerRoles.Subroutines;
     using PlayerRoles.Voice;
+
     using RelativePositioning;
+
     using Utils.NonAllocLINQ;
 
     using Mathf = UnityEngine.Mathf;
