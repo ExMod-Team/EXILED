@@ -67,9 +67,13 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets a value indicating whether the item is currently being used.
+        /// Gets or sets a value indicating whether the item is currently being used.
         /// </summary>
-        public bool IsUsing => Base.IsUsing;
+        public bool IsUsing
+        {
+            get => Base.IsUsing;
+            set => UsableItemsController.ServerEmulateMessage(Serial, value ? StatusMessage.StatusType.Start : StatusMessage.StatusType.Cancel);
+        }
 
         /// <summary>
         /// Gets or sets how long it takes to use the item.
