@@ -197,6 +197,21 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="scpNumber">SCP Number. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
         /// <param name="info">Hit Information.</param>
+        [Obsolete("Use this instead CustomScpTermination(string, CustomHandler)")]
+        public static void CustomScpTermination(string scpNumber, DamageHandlers.DamageHandlerBase info)
+        {
+            if (scpNumber.StartsWith("SCP", StringComparison.InvariantCultureIgnoreCase))
+                scpNumber = scpNumber.Remove(0, 3);
+
+            if (info is CustomHandler customHandler)
+                CustomScpTermination(scpNumber, customHandler);
+        }
+
+        /// <summary>
+        /// Announces the termination of a custom SCP Number.
+        /// </summary>
+        /// <param name="scpNumber">SCP Number. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
+        /// <param name="info">Hit Information.</param>
         public static void CustomScpTermination(string scpNumber, CustomHandler info)
         {
             if (info is null)
