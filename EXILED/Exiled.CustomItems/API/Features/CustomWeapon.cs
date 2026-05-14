@@ -161,6 +161,19 @@ namespace Exiled.CustomItems.API.Features
         }
 
         /// <inheritdoc/>
+        protected override void OnAcquired(Player player, Item item, bool displayMessage)
+        {
+            // MaxMagazineAmmo writes to MagazineModule._defaultCapacity, which is per-instance state and is not
+            // carried over when the item is re-created (e.g. dropped and picked back up). Re-assert it here so the
+            // custom ClipSize survives every base-game capacity clamp (reload, attachment changes) no matter how
+            // the weapon entered the inventory.
+            if (ClipSize > 0 && item is Firearm firearm)
+                firearm.MaxMagazineAmmo = ClipSize;
+
+            base.OnAcquired(player, item, displayMessage);
+        }
+
+        /// <inheritdoc/>
         protected override void SubscribeEvents()
         {
             Exiled.Events.Handlers.Player.ReloadingWeapon += OnInternalReloading;
@@ -257,8 +270,6 @@ namespace Exiled.CustomItems.API.Features
 
             if (ClipSize > 0)
             {
-                ev.Firearm.MaxMagazineAmmo = ClipSize;
-
                 int ammoChambered = ((AutomaticActionModule?)ev.Firearm.Base.Modules.FirstOrDefault(x => x is AutomaticActionModule))?.SyncAmmoChambered ?? 0;
                 int ammoToGive = ClipSize - ammoChambered;
 
