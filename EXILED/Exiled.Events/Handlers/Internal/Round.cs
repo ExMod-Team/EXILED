@@ -11,6 +11,7 @@ namespace Exiled.Events.Handlers.Internal
     using System.Linq;
 
     using CentralAuth;
+
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features;
@@ -24,14 +25,16 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.Events.EventArgs.Scp049;
     using Exiled.Loader;
     using Exiled.Loader.Features;
-    using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
+
     using PlayerRoles;
     using PlayerRoles.RoleAssign;
+
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -40,7 +43,7 @@ namespace Exiled.Events.Handlers.Internal
     internal static class Round
     {
         /// <inheritdoc cref="Handlers.Player.OnUsedItem" />
-        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable, false));
+        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new(hub, usable, false));
 
         /// <inheritdoc cref="Handlers.Server.OnWaitingForPlayers" />
         public static void OnWaitingForPlayers()

@@ -18,7 +18,7 @@ namespace Exiled.API.Enums
     public enum LczFacilityLayout
     {
         /// <summary>
-        /// Represents an unknown layout. This value is only used if you try to access <see cref="Map.LczLayout"/> prematurely or if an error occured.
+        /// Represents an unknown layout. This value is only used if you try to access <see cref="Map.LczLayout"/> prematurely or if an error occurred.
         /// </summary>
         Unknown,
 

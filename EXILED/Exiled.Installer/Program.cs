@@ -25,8 +25,14 @@ namespace Exiled.Installer
 
     using Version = SemanticVersioning.Version;
 
+    /// <summary>
+    /// TODO: Add doc IDK NEED HELP FOR DOC.
+    /// </summary>
     internal enum PathResolution
     {
+        /// <summary>
+        /// TODO: Add doc IDK NEED HELP FOR DOC.
+        /// </summary>
         Undefined,
 
         /// <summary>
@@ -40,6 +46,9 @@ namespace Exiled.Installer
         Exiled,
     }
 
+    /// <summary>
+    /// TODO: Add doc IDK NEED HELP FOR DOC.
+    /// </summary>
     internal static class Program
     {
         private const long RepoID = 833723500;
@@ -56,12 +65,11 @@ namespace Exiled.Installer
         // Force use of LF because the file uses LF
         private static readonly Dictionary<string, string> Markup = Resources.Markup.Trim().Split('\n').ToDictionary(s => s.Split(':')[0], s => s.Split(':', 2)[1]);
 
-        private static async Task Main(string[] args)
-        {
-            Console.OutputEncoding = new UTF8Encoding(false, false);
-            await CommandSettings.Parse(args).ConfigureAwait(false);
-        }
-
+        /// <summary>
+        /// TODO: Add doc IDK NEED HELP FOR DOC.
+        /// </summary>
+        /// <param name="args">Todo doc.</param>
+        /// <returns>todo fuck doc.</returns>
         internal static async Task MainSafe(CommandSettings args)
         {
             bool error = false;
@@ -121,9 +129,9 @@ namespace Exiled.Installer
                 Release targetRelease = FindRelease(args, releases);
 
                 Console.WriteLine(Resources.Program_MainSafe_Release_found_);
-                Console.WriteLine(FormatRelease(targetRelease!));
+                Console.WriteLine(FormatRelease(targetRelease));
 
-                ReleaseAsset? exiledAsset = targetRelease!.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
+                ReleaseAsset? exiledAsset = targetRelease.Assets.FirstOrDefault(a => a.Name.Equals(ExiledAssetName, StringComparison.OrdinalIgnoreCase));
                 if (exiledAsset is null)
                 {
                     Console.WriteLine(Resources.Program_MainSafe_____ASSETS____);
@@ -155,6 +163,7 @@ namespace Exiled.Installer
             }
             catch (Exception ex)
             {
+                error = true;
                 Console.WriteLine(ex);
                 Console.WriteLine(Resources.Program_MainSafe_Read_the_exception_message__read_the_readme__and_if_you_still_don_t_understand_what_to_do__then_contact__support_in_our_discord_server_with_the_attached_screenshot_of_the_full_exception);
                 if (!args.Exit)
@@ -163,6 +172,12 @@ namespace Exiled.Installer
 
             if (args.Exit)
                 Environment.Exit(error ? 1 : 0);
+        }
+
+        private static async Task Main(string[] args)
+        {
+            Console.OutputEncoding = new UTF8Encoding(false, false);
+            await CommandSettings.Parse(args).ConfigureAwait(false);
         }
 
         private static async Task<IEnumerable<Release>> GetReleases()

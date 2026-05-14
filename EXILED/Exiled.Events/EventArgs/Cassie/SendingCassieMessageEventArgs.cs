@@ -11,8 +11,11 @@ namespace Exiled.Events.EventArgs.Cassie
     using System.Text;
 
     using Exiled.API.Features.Pools;
+
     using global::Cassie;
+
     using Interfaces;
+
     using Subtitles;
 
     /// <summary>

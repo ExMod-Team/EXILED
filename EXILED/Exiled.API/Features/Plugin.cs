@@ -15,9 +15,13 @@ namespace Exiled.API.Features
     using System.Reflection;
 
     using CommandSystem;
+
     using Enums;
+
     using Extensions;
+
     using Interfaces;
+
     using RemoteAdmin;
 
     /// <summary>
@@ -122,9 +126,7 @@ namespace Exiled.API.Features
 
                         if (typeof(ParentCommand).IsAssignableFrom(commandHandlerType))
                         {
-                            ParentCommand parentCommand = GetCommand(commandHandlerType) as ParentCommand;
-
-                            if (parentCommand == null)
+                            if (GetCommand(commandHandlerType) is not ParentCommand parentCommand)
                             {
                                 if (!toRegister.TryGetValue(commandHandlerType, out List<ICommand> list))
                                     toRegister.Add(commandHandlerType, new() { command });

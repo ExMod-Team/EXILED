@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Objectives
 {
     using Exiled.API.Interfaces;
+
     using Respawning.Objectives;
 
     /// <summary>

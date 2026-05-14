@@ -7,8 +7,8 @@
 
 namespace Exiled.Events.Patches.Fixes
 {
-    using Exiled.Events.Attributes;
     using HarmonyLib;
+
     using Interactables.Interobjects;
 
     /// <summary>

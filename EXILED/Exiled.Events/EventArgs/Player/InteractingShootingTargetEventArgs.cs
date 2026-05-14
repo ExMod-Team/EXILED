@@ -11,9 +11,9 @@ namespace Exiled.Events.EventArgs.Player
 
     using AdminToys;
 
-    using API.Enums;
-    using API.Features;
-    using API.Features.Toys;
+    using Exiled.API.Enums;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Toys;
 
     using Interfaces;
 
