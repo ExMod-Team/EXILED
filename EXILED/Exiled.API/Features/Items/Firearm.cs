@@ -13,6 +13,7 @@ namespace Exiled.API.Features.Items
     using CameraShaking;
 
     using Enums;
+
     using Exiled.API.Features.Items.FirearmModules;
     using Exiled.API.Features.Items.FirearmModules.Barrel;
     using Exiled.API.Features.Items.FirearmModules.Primary;
