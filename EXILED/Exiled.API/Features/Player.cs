@@ -4004,7 +4004,7 @@ namespace Exiled.API.Features
         /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
         /// </summary>
         /// <param name="maxDistance">Maximum distance of raycast.</param>
-        /// <param name="disableHitboxes">Whether the current player hitboxes should be disabled. If <c>true</c>, <paramref name="hitboxIdentity"/> might be parented to current player.</param>
+        /// <param name="disableHitboxes">Whether the current player hitboxes should be disabled. If <c>false</c>, <paramref name="hitboxIdentity"/> might be parented to current player.</param>
         /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
         /// <param name="hitboxIdentity">Found <see cref="HitboxIdentity"/> or <c>null</c>.</param>
         /// <returns><c>true</c> if <paramref name="hitboxIdentity"/> was successfully found. Otherwise, <c>false</c>.</returns>
