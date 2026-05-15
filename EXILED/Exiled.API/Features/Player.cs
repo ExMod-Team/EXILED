@@ -4000,17 +4000,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Tries to raycast.
-        /// </summary>
-        /// <param name="maxDistance">Maximum distance of raycast.</param>
-        /// <param name="layerMask">Layer masks to be applied to raycast.</param>
-        /// <param name="hit">Calculated <see cref="RaycastHit"/> or <c>default</c>.</param>
-        /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
-        /// <seealso cref="TryGetRaycast(float, LayerMasks, out RaycastHit)"/>
-        /// <seealso cref="TryGetRaycastedPlayer"/>
-        public bool TryGetRaycast(float maxDistance, int layerMask, out RaycastHit hit) => TryGetRaycast(maxDistance, (LayerMasks)layerMask, out hit);
-
-        /// <summary>
         /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
         /// </summary>
         /// <param name="maxDistance">Maximum distance of raycast.</param>
