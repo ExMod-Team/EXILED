@@ -3986,7 +3986,18 @@ namespace Exiled.API.Features
         /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
         /// <seealso cref="TryGetRaycast(float, int, out RaycastHit)"/>
         /// <seealso cref="TryGetRaycastedPlayer"/>
-        public bool TryGetRaycast(float maxDistance, LayerMasks layerMasks, out RaycastHit hit) => TryGetRaycast(maxDistance, (int)layerMasks, out hit);
+        public bool TryGetRaycast(float maxDistance, LayerMasks layerMasks, out RaycastHit hit)
+        {
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
+
+            bool result = Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, (int)layerMasks);
+
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
+
+            return result;
+        }
 
         /// <summary>
         /// Tries to raycast.
@@ -3997,18 +4008,7 @@ namespace Exiled.API.Features
         /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
         /// <seealso cref="TryGetRaycast(float, LayerMasks, out RaycastHit)"/>
         /// <seealso cref="TryGetRaycastedPlayer"/>
-        public bool TryGetRaycast(float maxDistance, int layerMask, out RaycastHit hit)
-        {
-            if ((layerMask & 8192) == 8192)
-                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
-
-            bool result = Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, layerMask);
-
-            if ((layerMask & 8192) == 8192)
-                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
-
-            return result;
-        }
+        public bool TryGetRaycast(float maxDistance, int layerMask, out RaycastHit hit) => TryGetRaycast(maxDistance, (LayerMasks)layerMask, out hit);
 
         /// <summary>
         /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
