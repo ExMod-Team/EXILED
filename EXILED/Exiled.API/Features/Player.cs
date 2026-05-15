@@ -3997,30 +3997,33 @@ namespace Exiled.API.Features
         /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
         /// <seealso cref="TryGetRaycast(float, LayerMasks, out RaycastHit)"/>
         /// <seealso cref="TryGetRaycastedPlayer"/>
-        public bool TryGetRaycast(float maxDistance, int layerMask, out RaycastHit hit) =>
-            Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, layerMask);
+        public bool TryGetRaycast(float maxDistance, int layerMask, out RaycastHit hit)
+        {
+            if ((layerMask & 8192) == 8192)
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
+
+            bool result = Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, layerMask);
+
+            if ((layerMask & 8192) == 8192)
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
+
+            return result;
+        }
 
         /// <summary>
         /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
         /// </summary>
         /// <param name="maxDistance">Maximum distance of raycast.</param>
-        /// <param name="disableHitboxes">Whether the current player hitboxes should be disabled. If <c>false</c>, <paramref name="hitboxIdentity"/> might be parented to current player.</param>
         /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
         /// <param name="hitboxIdentity">Found <see cref="HitboxIdentity"/> or <c>null</c>.</param>
         /// <returns><c>true</c> if <paramref name="hitboxIdentity"/> was successfully found. Otherwise, <c>false</c>.</returns>
         /// <seealso cref="TryGetRaycastedPlayer"/>
-        public bool TryGetRaycastedHitbox(float maxDistance, bool disableHitboxes, LayerMasks additionalMasks, [MaybeNullWhen(false)] out HitboxIdentity hitboxIdentity)
+        public bool TryGetRaycastedHitbox(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out HitboxIdentity hitboxIdentity)
         {
             hitboxIdentity = null;
 
-            if (disableHitboxes)
-                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
-
             if (TryGetRaycast(maxDistance, LayerMasks.Hitbox | additionalMasks, out RaycastHit hit))
                 hitboxIdentity = hit.collider.gameObject.GetComponent<HitboxIdentity>();
-
-            if (disableHitboxes)
-                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
 
             return hitboxIdentity != null;
         }
@@ -4037,7 +4040,7 @@ namespace Exiled.API.Features
         {
             target = null;
 
-            if (!TryGetRaycastedHitbox(maxDistance, true, additionalMasks, out HitboxIdentity hitboxIdentity))
+            if (!TryGetRaycastedHitbox(maxDistance, additionalMasks, out HitboxIdentity hitboxIdentity))
                 return false;
 
             target = Get(hitboxIdentity.TargetHub);
