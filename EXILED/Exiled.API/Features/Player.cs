@@ -3984,7 +3984,6 @@ namespace Exiled.API.Features
         /// <param name="layerMasks">Layer masks to be applied to raycast.</param>
         /// <param name="hit">Calculated <see cref="RaycastHit"/> or <c>default</c>.</param>
         /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
-        /// <seealso cref="TryGetRaycast(float, int, out RaycastHit)"/>
         /// <seealso cref="TryGetRaycastedPlayer"/>
         public bool TryGetRaycast(float maxDistance, LayerMasks layerMasks, out RaycastHit hit)
         {
