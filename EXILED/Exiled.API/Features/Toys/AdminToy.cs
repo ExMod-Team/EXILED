@@ -176,11 +176,21 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the <see cref="AdminToy"/> by <see cref="AdminToys.AdminToyBase"/>.
         /// </summary>
-        /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> to convert into an admintoy.</param>
+        /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> to convert into an AdminToy.</param>
         /// <typeparam name="T">The specified <see cref="AdminToy"/> type.</typeparam>
-        /// <returns>The admintoy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
+        /// <returns>The AdminToy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
         public static T Get<T>(AdminToyBase adminToyBase)
             where T : AdminToy => Get(adminToyBase) as T;
+
+        /// <summary>
+        /// Gets the <see cref="AdminToy"/> by <see cref="GameObject"/>.
+        /// </summary>
+        /// <param name="gameObject">The <see cref="GameObject"/> to convert into AdminToy.</param>
+        /// <typeparam name="T">The specified <see cref="AdminToy"/> type.</typeparam>
+        /// <returns>The AdminToy wrapper for the given <see cref="AdminToys.AdminToyBase"/>.</returns>
+        public static T Get<T>(GameObject gameObject)
+            where T : AdminToy
+            => Get(gameObject.GetComponent<AdminToyBase>()) as T;
 
         /// <summary>
         /// Spawns the toy into the game. Use <see cref="UnSpawn"/> to remove it.
