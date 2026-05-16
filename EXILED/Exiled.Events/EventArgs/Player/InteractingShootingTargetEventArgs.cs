@@ -78,7 +78,7 @@ namespace Exiled.Events.EventArgs.Player
             {
                 if (!ShootingTarget.IsSynced)
                 {
-                    Log.Warn("Attempted to set MaxHp while target is in local mode. Set target's IsSynced to true before setting IsAllowed.");
+                    Log.Warn("Attempted to set MaxHp while target is in local mode. Set target's IsSynced to true before setting NewMaxHp.");
                     return;
                 }
 
@@ -96,7 +96,7 @@ namespace Exiled.Events.EventArgs.Player
             {
                 if (!ShootingTarget.IsSynced)
                 {
-                    Log.Warn("Attempted to set AutoResetTime while target is in local mode. Set target's IsSynced to true before setting IsAllowed.");
+                    Log.Warn("Attempted to set AutoResetTime while target is in local mode. Set target's IsSynced to true before setting NewAutoResetTime.");
                     return;
                 }
 
