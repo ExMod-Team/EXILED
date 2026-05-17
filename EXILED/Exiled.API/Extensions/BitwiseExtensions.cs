@@ -69,12 +69,6 @@ namespace Exiled.API.Extensions
         /// <returns><see langword="true"/> if value is presented in flag. Otherwise, <see langword="false"/>.</returns>
         [Obsolete("Use Enum::HasFlag instead.")]
         public static bool HasFlagFast<T>(this T flag, T value)
-            where T : Enum
-        {
-            long flagValue = Convert.ToInt64(flag);
-            long valueValue = Convert.ToInt64(value);
-
-            return (flagValue & valueValue) == valueValue;
-        }
+            where T : Enum => flag.HasFlag(value);
     }
 }
