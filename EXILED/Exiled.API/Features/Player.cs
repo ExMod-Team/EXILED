@@ -50,7 +50,9 @@ namespace Exiled.API.Features
     using Mirror.LiteNetLib4Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.FirstPersonControl.Thirdperson;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
+    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
@@ -58,6 +60,9 @@ namespace Exiled.API.Features
     using RelativePositioning;
     using RemoteAdmin;
     using RoundRestarting;
+
+    using Unity.Collections.LowLevel.Unsafe;
+
     using UnityEngine;
     using Utils;
     using Utils.Networking;
@@ -836,6 +841,67 @@ namespace Exiled.API.Features
                     return;
 
                 voiceRole.VoiceModule.CurrentChannel = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the player's wearable elements.
+        /// </summary>
+        /// <seealso cref="EnableWearables"/> <seealso cref="DisableWearables"/>
+        public WearableElementType Wearables
+        {
+            get
+            {
+                if (!WearableSync.TryGetData(ReferenceHub, out WearableSyncMessage data))
+                    return WearableElementType.None;
+
+                WearableElements flags = data.Flags;
+                WearableElementType exiledFlags = WearableElementType.None;
+
+                if (flags.HasFlag(WearableElements.Armor) && data.Payload.Length is 1)
+                {
+                    ItemType armor = (ItemType)UnsafeUtility.As<byte, sbyte>(ref data.Payload[0]);
+
+                    exiledFlags = armor.GetWearableElementType();
+                }
+
+                return (WearableElementType)flags | exiledFlags;
+            }
+
+            set
+            {
+                if (value is WearableElementType.None)
+                {
+                    Log.Info("None");
+
+                    WearableSyncMessage wearableSyncMessage = new(ReferenceHub);
+                    WearableSync.UpdateDatabaseEntry(wearableSyncMessage);
+                    NetworkServer.SendToAll(wearableSyncMessage, 0, false);
+                    return;
+                }
+
+                WearableSync.PayloadWriter.Reset();
+                Log.Info("newWearables" + value);
+
+                if (value.HasFlag(WearableElementType.ArmorDefault))
+                {
+                    ItemType displayedArmor = value.HasFlag(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
+                        value.HasFlag(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
+                        value.HasFlag(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
+                        CurrentArmor?.Type ?? ItemType.None;
+
+                    if (displayedArmor is not ItemType.None)
+                        WearableSync.PayloadWriter.WriteSByte((sbyte)displayedArmor);
+                    else
+                        value &= ~WearableElementType.ArmorDefault;
+
+                    value &= ~WearableElementType.ArmorLight | WearableElementType.ArmorCombat | WearableElementType.ArmorHeavy;
+                    Log.Info("DiplayedArmor" + displayedArmor);
+                }
+
+                WearableSyncMessage wearableSyncMessage2 = new(ReferenceHub, (WearableElements)value, WearableSync.PayloadWriter);
+                WearableSync.UpdateDatabaseEntry(wearableSyncMessage2);
+                NetworkServer.SendToAll(wearableSyncMessage2, 0, false);
             }
         }
 
@@ -2504,6 +2570,20 @@ namespace Exiled.API.Features
         /// Clears the player's brodcast. Doesn't get logged to the console.
         /// </summary>
         public void ClearBroadcasts() => Server.Broadcast.TargetClearElements(Connection);
+
+        /// <summary>
+        /// Enables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to enable.</param>
+        /// <seealso cref="DisableWearables"/>
+        public void EnableWearables(WearableElementType wearableElements) => Wearables |= wearableElements;
+
+        /// <summary>
+        /// Disables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to disable.</param>
+        /// <seealso cref="EnableWearables"/>
+        public void DisableWearables(WearableElementType wearableElements) => Wearables &= ~wearableElements;
 
         /// <summary>
         /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to the player's inventory.
