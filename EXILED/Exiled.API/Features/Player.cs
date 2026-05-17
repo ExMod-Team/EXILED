@@ -9,6 +9,7 @@ namespace Exiled.API.Features
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -4078,6 +4079,64 @@ namespace Exiled.API.Features
             component = GetComponent<T>(type);
 
             return component is not null;
+        }
+
+        /// <summary>
+        /// Tries to raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="layerMasks">Layer masks to be applied to raycast.</param>
+        /// <param name="hit">Calculated <see cref="RaycastHit"/> or <c>default</c>.</param>
+        /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycast(float maxDistance, LayerMasks layerMasks, out RaycastHit hit)
+        {
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
+
+            bool result = Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, (int)layerMasks);
+
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="hitboxIdentity">Found <see cref="HitboxIdentity"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="hitboxIdentity"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycastedHitbox(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out HitboxIdentity hitboxIdentity)
+        {
+            hitboxIdentity = null;
+
+            if (TryGetRaycast(maxDistance, LayerMasks.Hitbox | additionalMasks, out RaycastHit hit))
+                hitboxIdentity = hit.collider.gameObject.GetComponent<HitboxIdentity>();
+
+            return hitboxIdentity != null;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="Player"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="target">Found <see cref="Player"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="target"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedHitbox"/>
+        public bool TryGetRaycastedPlayer(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out Player target)
+        {
+            target = null;
+
+            if (!TryGetRaycastedHitbox(maxDistance, additionalMasks, out HitboxIdentity hitboxIdentity))
+                return false;
+
+            target = Get(hitboxIdentity.TargetHub);
+            return target != null;
         }
 
         /// <inheritdoc/>
