@@ -279,6 +279,7 @@ namespace Exiled.Events.Handlers
             SpawningGrenadeEffectEventArgs exiledEv = new(Pickup.Get<TimeGrenadeProjectile>(ev.TimedGrenade.Base), true);
             SpawningGrenadeEffect.InvokeSafely(exiledEv);
 
+            ev.Position = exiledEv.Position;
             ev.IsAllowed = exiledEv.IsAllowed;
         }
     }
