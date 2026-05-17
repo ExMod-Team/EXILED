@@ -273,6 +273,9 @@ namespace Exiled.Events.Handlers
         /// <param name="ev">The <see cref="LabApi.Events.Arguments.ServerEvents.ProjectileExplodingEventArgs"/> instance.</param>
         public static void OnSpawningGrenadeEffect(LabApi.Events.Arguments.ServerEvents.ProjectileExplodingEventArgs ev)
         {
+            if (!SpawningGrenadeEffect.Patched)
+                return;
+
             SpawningGrenadeEffectEventArgs exiledEv = new(Pickup.Get<TimeGrenadeProjectile>(ev.TimedGrenade.Base), true);
             SpawningGrenadeEffect.InvokeSafely(exiledEv);
 
