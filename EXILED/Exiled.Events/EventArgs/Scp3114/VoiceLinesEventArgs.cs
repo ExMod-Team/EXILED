@@ -60,8 +60,19 @@ namespace Exiled.Events.EventArgs.Scp3114
             get => VoiceLine.Label;
             set
             {
-                if (value != VoiceLine.Label)
-                    VoiceLine = GetVoiceLinesDefinition(value);
+                if (value == VoiceLine.Label)
+                    return;
+
+                foreach (VoiceLinesDefinition voiceLinesDefinition in Scp3114VoiceLines._voiceLines)
+                {
+                    if (voiceLinesDefinition.Label != value)
+                        continue;
+
+                    VoiceLine = voiceLinesDefinition;
+                    return;
+                }
+
+                Log.Error($"[{typeof(VoiceLinesEventArgs)}.{nameof(VoiceLinesName)}] didn't found VoiceLinesName: {value}");
             }
         }
 
@@ -80,17 +91,5 @@ namespace Exiled.Events.EventArgs.Scp3114
 
         /// <inheritdoc/>
         public bool IsAllowed { get; set; }
-
-        private VoiceLinesDefinition GetVoiceLinesDefinition(VoiceLinesName lineToPlay)
-        {
-            foreach (VoiceLinesDefinition voiceLinesDefinition in Scp3114VoiceLines._voiceLines)
-            {
-                if (voiceLinesDefinition.Label == lineToPlay)
-                    return voiceLinesDefinition;
-            }
-
-            Log.Error($"[{typeof(VoiceLinesEventArgs)}.{nameof(GetVoiceLinesDefinition)}] return Null");
-            return null;
-        }
     }
 }
