@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Audio.PcmSources
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -29,7 +30,7 @@ namespace Exiled.API.Features.Audio.PcmSources
         private const string ApiEndpoint = "https://api.voicerss.org/";
         private const string AudioFormat = "48khz_16bit_mono";
 
-        private static readonly Dictionary<string, DateTime> BlacklistKeys = new();
+        private static readonly ConcurrentDictionary<string, DateTime> BlacklistKeys = new();
 
         private IPcmSource internalSource;
         private CancellationTokenSource cts;
@@ -111,16 +112,10 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public bool IsReady => isReady;
 
-        /// <summary>
-        /// Reads PCM data from the audio source into the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer to fill with PCM data.</param>
-        /// <param name="offset">The offset in the buffer at which to begin writing.</param>
-        /// <param name="count">The maximum number of samples to read.</param>
-        /// <returns>The number of samples read.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
-            if (isFailed)
+            if (isFailed || isDisposed)
                 return 0;
 
             if (!isReady || internalSource == null)
@@ -132,47 +127,38 @@ namespace Exiled.API.Features.Audio.PcmSources
             return internalSource.Read(buffer, offset, count);
         }
 
-        /// <summary>
-        /// Seeks to the specified position in seconds.
-        /// </summary>
-        /// <param name="seconds">The target position in seconds.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
             if (isReady && internalSource != null)
                 internalSource.Seek(seconds);
         }
 
-        /// <summary>
-        /// Resets playback to the beginning.
-        /// </summary>
+        /// <inheritdoc/>
         public void Reset()
         {
             if (isReady && internalSource != null)
                 internalSource.Reset();
         }
 
-        /// <summary>
-        /// Releases all resources used by the <see cref="VoiceRssTtsSource"/>.
-        /// </summary>
+        /// <inheritdoc/>
         public void Dispose()
         {
+            isReady = false;
+            isDisposed = true;
+
             if (downloadRoutine.IsRunning)
                 downloadRoutine.IsRunning = false;
 
-            if (cts != null)
-            {
-                cts?.Cancel();
-                cts?.Dispose();
-                cts = null;
-            }
+            Interlocked.Exchange(ref cts, null);
 
             internalSource?.Dispose();
-            isReady = false;
-            isDisposed = true;
+            internalSource = null;
         }
 
         private IEnumerator<float> DownloadRoutine(string text, IEnumerable<string> apiKeys, string language, string voice, int rate)
         {
+            CancellationToken token = cts.Token;
             string clampedRate = Math.Clamp(rate, -10, 10).ToString();
             string textEscaped = Uri.EscapeDataString(text);
             string langEscaped = Uri.EscapeDataString(language);
@@ -191,20 +177,19 @@ namespace Exiled.API.Features.Audio.PcmSources
                     if (DateTime.UtcNow.Day == exhaustedAt.Day)
                         continue;
 
-                    BlacklistKeys.Remove(apiKey);
+                    BlacklistKeys.Remove(apiKey, out _);
                 }
 
                 string url = $"{ApiEndpoint}?key={Uri.EscapeDataString(apiKey)}&hl={langEscaped}&c=WAV&f={AudioFormat}&r={clampedRate}&src={textEscaped}{voiceEscaped}";
 
-                UnityWebRequest request = null;
-
+                UnityWebRequest request;
                 try
                 {
                     request = UnityWebRequest.Get(url);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"[VoiceRssTtsSource] Failed to get Url '{url}. Error: {ex.Message}");
+                    Log.Error($"[VoiceRssTtsSource] Failed to create request for URL '{url}'. Error: {ex.Message}");
                     break;
                 }
 
@@ -212,9 +197,12 @@ namespace Exiled.API.Features.Audio.PcmSources
                 {
                     yield return Timing.WaitUntilDone(request.SendWebRequest());
 
+                    if (isDisposed || token.IsCancellationRequested)
+                        yield break;
+
                     if (request.result != UnityWebRequest.Result.Success)
                     {
-                        Log.Error($"[VoiceRssTtsSource] Network Error: {request.error}.");
+                        Log.Error($"[VoiceRssTtsSource] Network error: {request.error}");
                         break;
                     }
 
@@ -225,15 +213,13 @@ namespace Exiled.API.Features.Audio.PcmSources
 
                         if (errorMessage.Contains("limit") || errorMessage.Contains("expired") || errorMessage.Contains("inactive") || errorMessage.Contains("API key"))
                         {
-                            Log.Warn($"[VoiceRssTtsSource] Key issue, key: '{apiKey}', Error : {errorMessage}. Switching to another key...");
+                            Log.Warn($"[VoiceRssTtsSource] Key exhausted: '{apiKey}'. Error: {errorMessage}. Trying next key...");
                             BlacklistKeys[apiKey] = DateTime.UtcNow;
                             continue;
                         }
-                        else
-                        {
-                            Log.Error($"[VoiceRssTtsSource] API Error: {errorMessage}");
-                            break;
-                        }
+
+                        Log.Error($"[VoiceRssTtsSource] API error: {errorMessage}");
+                        break;
                     }
 
                     rawBytes = request.downloadHandler.data;
@@ -248,23 +234,14 @@ namespace Exiled.API.Features.Audio.PcmSources
                 yield break;
             }
 
-            if (cts == null || cts.Token.IsCancellationRequested)
+            if (isDisposed || token.IsCancellationRequested)
                 yield break;
 
-            CancellationToken token = cts.Token;
-            Task<AudioData> toPcmTask = Task.Run(
-                () =>
-            {
-                if (token.IsCancellationRequested)
-                    return default;
+            Task<AudioData> toPcmTask = Task.Run(() => WavUtility.WavToPcm(rawBytes), token);
 
-                return WavUtility.WavToPcm(rawBytes);
-            },
-                token);
+            yield return Timing.WaitUntilTrue(() => toPcmTask.IsCompleted || isDisposed || token.IsCancellationRequested);
 
-            yield return Timing.WaitUntilTrue(() => toPcmTask.IsCompleted || (cts != null && cts.Token.IsCancellationRequested));
-
-            if (cts == null || cts.Token.IsCancellationRequested)
+            if (isDisposed || token.IsCancellationRequested)
                 yield break;
 
             if (toPcmTask.IsFaulted)

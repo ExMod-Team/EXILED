@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Audio.PcmSources
     using System.Collections.Generic;
     using System.Linq;
 
+    using Exiled.API.Features.Pools;
     using Exiled.API.Interfaces.Audio;
     using Exiled.API.Structs.Audio;
 
@@ -28,7 +29,6 @@ namespace Exiled.API.Features.Audio.PcmSources
         private readonly object sourcesLock = new();
 
         private volatile IPcmSource[] sources;
-
         private float[] tempBuffer;
 
         /// <summary>
@@ -37,11 +37,7 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <param name="initialSources">An array of <see cref="IPcmSource"/> instances to mix.</param>
         public MixerSource(IEnumerable<IPcmSource> initialSources)
         {
-            if (initialSources != null)
-                sources = initialSources.Where(s => s != null).ToArray();
-            else
-                sources = Array.Empty<IPcmSource>();
-
+            sources = initialSources?.Where(source => source != null).ToArray() ?? Array.Empty<IPcmSource>();
             TrackInfo = new TrackData { Path = "Audio Mixer", Duration = 0 };
         }
 
@@ -60,16 +56,12 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <summary>
         /// Gets or sets a value indicating whether the mixer should stay alive and output silence even when all internal sources have finished playing.
         /// </summary>
-        public bool KeepAlive { get; set; } = false;
+        public bool KeepAlive { get; set; }
 
-        /// <summary>
-        /// Gets the metadata of the mixer track.
-        /// </summary>
+        /// <inheritdoc/>
         public TrackData TrackInfo { get; }
 
-        /// <summary>
-        /// Gets the maximum total duration of all active sources in the mixer, in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double TotalDuration
         {
             get
@@ -79,9 +71,7 @@ namespace Exiled.API.Features.Audio.PcmSources
             }
         }
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds across all active sources.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
             get
@@ -92,9 +82,7 @@ namespace Exiled.API.Features.Audio.PcmSources
             set => Seek(value);
         }
 
-        /// <summary>
-        /// Gets a value indicating whether all internal sources have ended and <see cref="KeepAlive"/> is set to false.
-        /// </summary>
+        /// <inheritdoc/>
         public bool Ended
         {
             get
@@ -104,13 +92,7 @@ namespace Exiled.API.Features.Audio.PcmSources
             }
         }
 
-        /// <summary>
-        /// Reads a sequence of mixed PCM samples from all active sources into the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The destination buffer to fill with mixed PCM data.</param>
-        /// <param name="offset">The zero-based index in <paramref name="buffer"/> at which to begin writing.</param>
-        /// <param name="count">The maximum number of samples to read and mix.</param>
-        /// <returns>The number of samples written to the <paramref name="buffer"/>.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
             IPcmSource[] currentSources = sources;
@@ -121,32 +103,16 @@ namespace Exiled.API.Features.Audio.PcmSources
                 return KeepAlive ? count : 0;
             }
 
-            int maxRead = 0;
-            bool needsCleanup = false;
-
-            if (currentSources.Length == 1)
-            {
-                IPcmSource src = currentSources[0];
-                if (src.Ended)
-                {
-                    Array.Clear(buffer, offset, count);
-                    CleanupEndedSources();
-                    return KeepAlive ? count : 0;
-                }
-
-                maxRead = src.Read(buffer, offset, count);
-                return KeepAlive ? count : maxRead;
-            }
+            Array.Clear(buffer, offset, count);
 
             if (tempBuffer == null || tempBuffer.Length < count)
                 tempBuffer = new float[count];
 
-            Array.Clear(buffer, offset, count);
+            int maxRead = 0;
+            bool needsCleanup = false;
 
-            for (int i = currentSources.Length - 1; i >= 0; i--)
+            foreach (IPcmSource src in currentSources)
             {
-                IPcmSource src = currentSources[i];
-
                 if (src.Ended)
                 {
                     needsCleanup = true;
@@ -156,9 +122,8 @@ namespace Exiled.API.Features.Audio.PcmSources
                 int read = src.Read(tempBuffer, 0, count);
                 if (read > maxRead)
                     maxRead = read;
-
-                for (int j = 0; j < read; j++)
-                    buffer[offset + j] += tempBuffer[j];
+                for (int i = 0; i < read; i++)
+                    buffer[offset + i] += tempBuffer[i];
             }
 
             for (int i = 0; i < maxRead; i++)
@@ -170,10 +135,7 @@ namespace Exiled.API.Features.Audio.PcmSources
             return KeepAlive ? count : maxRead;
         }
 
-        /// <summary>
-        /// Seeks to the specified position in seconds for all active sources in the mixer.
-        /// </summary>
-        /// <param name="seconds">The target position in seconds.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
             IPcmSource[] currentSources = sources;
@@ -181,9 +143,7 @@ namespace Exiled.API.Features.Audio.PcmSources
                 pcmSource.Seek(seconds);
         }
 
-        /// <summary>
-        /// Resets the playback position to the start for all active sources in the mixer.
-        /// </summary>
+        /// <inheritdoc/>
         public void Reset()
         {
             IPcmSource[] currentSources = sources;
@@ -191,9 +151,7 @@ namespace Exiled.API.Features.Audio.PcmSources
                 pcmSource.Reset();
         }
 
-        /// <summary>
-        /// Releases all resources used by the <see cref="MixerSource"/> and automatically disposes of all internal sources.
-        /// </summary>
+        /// <inheritdoc/>
         public void Dispose()
         {
             lock (sourcesLock)
@@ -216,9 +174,10 @@ namespace Exiled.API.Features.Audio.PcmSources
 
             lock (sourcesLock)
             {
-                List<IPcmSource> newList = sources.ToList();
+                List<IPcmSource> newList = ListPool<IPcmSource>.Pool.Get(sources);
                 newList.Add(source);
                 sources = newList.ToArray();
+                ListPool<IPcmSource>.Pool.Return(newList);
             }
         }
 
@@ -232,16 +191,18 @@ namespace Exiled.API.Features.Audio.PcmSources
             if (source == null)
                 return;
 
-            if (dispose)
-                source.Dispose();
-
             lock (sourcesLock)
             {
-                List<IPcmSource> newList = sources.ToList();
+                List<IPcmSource> newList = ListPool<IPcmSource>.Pool.Get(sources);
                 if (newList.Remove(source))
                 {
                     sources = newList.ToArray();
+
+                    if (dispose)
+                        source.Dispose();
                 }
+
+                ListPool<IPcmSource>.Pool.Return(newList);
             }
         }
 
@@ -249,21 +210,26 @@ namespace Exiled.API.Features.Audio.PcmSources
         {
             lock (sourcesLock)
             {
-                List<IPcmSource> newList = sources.ToList();
+                List<IPcmSource> currentSources = ListPool<IPcmSource>.Pool.Get(sources);
                 bool changed = false;
 
-                for (int i = newList.Count - 1; i >= 0; i--)
+                for (int i = currentSources.Count - 1; i >= 0; i--)
                 {
-                    if (newList[i].Ended)
-                    {
-                        newList[i].Dispose();
-                        newList.RemoveAt(i);
-                        changed = true;
-                    }
+                    IPcmSource source = currentSources[i];
+
+                    if (!source.Ended)
+                        continue;
+
+                    source.Dispose();
+                    currentSources.RemoveAt(i);
+
+                    changed = true;
                 }
 
                 if (changed)
-                    sources = newList.ToArray();
+                    sources = currentSources.ToArray();
+
+                ListPool<IPcmSource>.Pool.Return(currentSources);
             }
         }
     }

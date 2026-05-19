@@ -33,40 +33,6 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <summary>
         /// Initializes a new instance of the <see cref="PreloadedPcmSource"/> class.
         /// </summary>
-        /// <param name="path">The path to the audio file.</param>
-        public PreloadedPcmSource(string path)
-        {
-            TrackInfo = new TrackData { Path = path, Duration = 0.0 };
-            cts = new CancellationTokenSource();
-            Task.Run(
-                () =>
-            {
-                try
-                {
-                    AudioData result = WavUtility.WavToPcm(path);
-
-                    if (!cts.Token.IsCancellationRequested)
-                    {
-                        data = result.Pcm;
-                        TrackInfo = result.TrackInfo;
-                        isReady = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (!cts.Token.IsCancellationRequested)
-                    {
-                        Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
-                        isFailed = true;
-                    }
-                }
-            },
-                cts.Token);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PreloadedPcmSource"/> class.
-        /// </summary>
         /// <param name="pcmData">The raw PCM float array.</param>
         public PreloadedPcmSource(float[] pcmData)
         {
@@ -76,26 +42,55 @@ namespace Exiled.API.Features.Audio.PcmSources
         }
 
         /// <summary>
-        /// Gets the metadata of the loaded track.
+        /// Initializes a new instance of the <see cref="PreloadedPcmSource"/> class.
         /// </summary>
+        /// <param name="path">The path to the audio file.</param>
+        public PreloadedPcmSource(string path)
+        {
+            TrackInfo = new TrackData { Path = path, Duration = 0.0 };
+
+            cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+
+            Task.Run(
+                () =>
+                {
+                    try
+                    {
+                        AudioData result = WavUtility.WavToPcm(path);
+
+                        if (!token.IsCancellationRequested)
+                        {
+                            data = result.Pcm;
+                            TrackInfo = result.TrackInfo;
+                            isReady = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!token.IsCancellationRequested)
+                        {
+                            Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
+                            isFailed = true;
+                        }
+                    }
+                },
+                token);
+        }
+
+        /// <inheritdoc/>
         public TrackData TrackInfo { get; private set; }
 
-        /// <summary>
-        /// Gets a value indicating whether the end of the PCM data buffer has been reached.
-        /// </summary>
-        public bool Ended => isFailed || isDisposed || (isReady && pos >= data.Length);
+        /// <inheritdoc/>
+        public bool Ended => isFailed || isDisposed || (isReady && data != null && pos >= data.Length);
 
-        /// <summary>
-        /// Gets the total duration of the audio in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double TotalDuration => isReady && data != null ? (double)data.Length / VoiceChatSettings.SampleRate : 0.0;
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
-            get => isReady ? (double)pos / VoiceChatSettings.SampleRate : 0.0;
+            get => isReady && data != null ? (double)pos / VoiceChatSettings.SampleRate : 0.0;
             set => Seek(value);
         }
 
@@ -105,16 +100,10 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public bool IsReady => isReady;
 
-        /// <summary>
-        /// Reads a sequence of PCM samples from the preloaded buffer into the specified array.
-        /// </summary>
-        /// <param name="buffer">The destination array to copy the samples into.</param>
-        /// <param name="offset">The zero-based index in <paramref name="buffer"/> at which to begin storing the data.</param>
-        /// <param name="count">The maximum number of samples to read.</param>
-        /// <returns>The number of samples read into <paramref name="buffer"/>.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
-            if (isFailed)
+            if (isFailed || isDisposed)
                 return 0;
 
             if (!isReady || data == null)
@@ -130,22 +119,17 @@ namespace Exiled.API.Features.Audio.PcmSources
             return read;
         }
 
-        /// <summary>
-        /// Seeks to the specified position in seconds.
-        /// </summary>
-        /// <param name="seconds">The target position in seconds.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
-            if (!isReady || data == null)
+            if (!isReady || data == null || data.Length == 0)
                 return;
 
             long targetIndex = (long)(seconds * VoiceChatSettings.SampleRate);
-            pos = (int)Math.Max(0, Math.Min(targetIndex, data.Length));
+            pos = (int)Math.Clamp(targetIndex, 0, data.Length);
         }
 
-        /// <summary>
-        /// Resets the read position to the beginning of the PCM data buffer.
-        /// </summary>
+        /// <inheritdoc/>
         public void Reset()
         {
             pos = 0;
@@ -154,12 +138,7 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public void Dispose()
         {
-            if (cts != null)
-            {
-                cts.Cancel();
-                cts.Dispose();
-                cts = null;
-            }
+            Interlocked.Exchange(ref cts, null);
 
             data = null;
             isReady = false;

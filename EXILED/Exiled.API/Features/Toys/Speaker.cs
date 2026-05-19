@@ -92,7 +92,7 @@ namespace Exiled.API.Features.Toys
         private CoroutineHandle playBackRoutine;
 
         private BlockingCollection<(byte[] Data, int Length)> packetQueue;
-        private CancellationTokenSource proccesCts;
+        private CancellationTokenSource processCts;
         private volatile IAudioFilter activeFilter;
 
         private int nextScheduledEventIndex;
@@ -1046,8 +1046,9 @@ namespace Exiled.API.Features.Toys
 
             BlockingCollection<(byte[], int)> localQueue = new(PacketQueueCapacity);
             packetQueue = localQueue;
-            proccesCts = new CancellationTokenSource();
-            CancellationToken token = proccesCts.Token;
+            processCts = new CancellationTokenSource();
+            CancellationToken token = processCts.Token;
+            IPcmSource source = CurrentSource;
 
             new Thread(() =>
             {
@@ -1059,17 +1060,17 @@ namespace Exiled.API.Features.Toys
 
                 try
                 {
-                    while (!token.IsCancellationRequested && CurrentSource != null && !CurrentSource.Ended)
+                    while (!token.IsCancellationRequested && !source.Ended)
                     {
                         if (isPitchDefault)
                         {
-                            int read = CurrentSource.Read(localFrame, 0, FrameSize);
+                            int read = source.Read(localFrame, 0, FrameSize);
                             if (read < FrameSize)
                                 Array.Clear(localFrame, read, FrameSize - read);
                         }
                         else
                         {
-                            ResampleFrame(CurrentSource, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
+                            ResampleFrame(source, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
                         }
 
                         activeFilter?.Process(localFrame);
@@ -1103,13 +1104,7 @@ namespace Exiled.API.Features.Toys
 
         private void StopProccesThread()
         {
-            if (proccesCts != null)
-            {
-                proccesCts.Cancel();
-                proccesCts.Dispose();
-                proccesCts = null;
-            }
-
+            Interlocked.Exchange(ref processCts, null);
             packetQueue = null;
         }
 

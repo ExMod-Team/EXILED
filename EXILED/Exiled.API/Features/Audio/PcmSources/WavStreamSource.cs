@@ -44,37 +44,23 @@ namespace Exiled.API.Features.Audio.PcmSources
             internalBuffer = ArrayPool<byte>.Shared.Rent(VoiceChatSettings.PacketSizePerChannel * 2);
         }
 
-        /// <summary>
-        /// Gets the metadata of the streaming track.
-        /// </summary>
+        /// <inheritdoc/>
         public TrackData TrackInfo { get; }
 
-        /// <summary>
-        /// Gets the total duration of the audio in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double TotalDuration => (endPosition - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
             get => (stream.Position - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
             set => Seek(value);
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the end of the stream has been reached.
-        /// </summary>
+        /// <inheritdoc/>
         public bool Ended => stream.Position >= endPosition;
 
-        /// <summary>
-        /// Reads PCM data from the stream into the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer to fill with PCM data.</param>
-        /// <param name="offset">The offset in the buffer at which to begin writing.</param>
-        /// <param name="count">The maximum number of samples to read.</param>
-        /// <returns>The number of samples read.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
             count = Math.Min(count, buffer.Length - offset);
@@ -107,10 +93,7 @@ namespace Exiled.API.Features.Audio.PcmSources
             return shortSpan.Length;
         }
 
-        /// <summary>
-        /// Seeks to the specified position in the stream.
-        /// </summary>
-        /// <param name="seconds">The position in seconds to seek to.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
             long newPos = Math.Clamp(startPosition + ((long)(seconds * VoiceChatSettings.SampleRate) * 2), startPosition, endPosition);
@@ -121,17 +104,13 @@ namespace Exiled.API.Features.Audio.PcmSources
             stream.Position = newPos;
         }
 
-        /// <summary>
-        /// Resets the stream position to the start.
-        /// </summary>
+        /// <inheritdoc/>
         public void Reset()
         {
             stream.Position = startPosition;
         }
 
-        /// <summary>
-        /// Releases all resources used by the <see cref="WavStreamSource"/>.
-        /// </summary>
+        /// <inheritdoc/>
         public void Dispose()
         {
             stream?.Dispose();

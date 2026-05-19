@@ -45,28 +45,20 @@ namespace Exiled.API.Features.Audio.PcmSources
             downloadRoutine = Timing.RunCoroutine(Download(url));
         }
 
-        /// <summary>
-        /// Gets the metadata of the preloaded track.
-        /// </summary>
+        /// <inheritdoc/>
         public TrackData TrackInfo { get; private set; }
 
-        /// <summary>
-        /// Gets the total duration of the audio in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double TotalDuration => isReady && internalSource != null ? internalSource.TotalDuration : 0.0;
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
             get => isReady && internalSource != null ? internalSource.CurrentTime : 0.0;
             set => Seek(value);
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the end of the playback has been reached.
-        /// </summary>
+        /// <inheritdoc/>
         public bool Ended => isFailed || isDisposed || (isReady && internalSource != null && internalSource.Ended);
 
         /// <inheritdoc/>
@@ -75,13 +67,7 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public bool IsReady => isReady;
 
-        /// <summary>
-        /// Reads PCM data from the audio source into the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer to fill with PCM data.</param>
-        /// <param name="offset">The offset in the buffer at which to begin writing.</param>
-        /// <param name="count">The maximum number of samples to read.</param>
-        /// <returns>The number of samples read.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
             if (isFailed)
@@ -96,77 +82,69 @@ namespace Exiled.API.Features.Audio.PcmSources
             return internalSource.Read(buffer, offset, count);
         }
 
-        /// <summary>
-        /// Seeks to the specified position in the playback.
-        /// </summary>
-        /// <param name="seconds">The position in seconds to seek to.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
             if (isReady && internalSource != null)
                 internalSource.Seek(seconds);
         }
 
-        /// <summary>
-        /// Resets the playback position to the start.
-        /// </summary>
+        /// <inheritdoc/>
         public void Reset()
         {
             if (isReady && internalSource != null)
                 internalSource.Reset();
         }
 
-        /// <summary>
-        /// Releases all resources used by the <see cref="WebWavPcmSource"/>.
-        /// </summary>
+        /// <inheritdoc/>
         public void Dispose()
         {
+            isDisposed = true;
+            isReady = false;
+
             if (downloadRoutine.IsRunning)
                 downloadRoutine.IsRunning = false;
 
-            if (cts != null)
+            Interlocked.Exchange(ref cts, null);
+
+            if (webRequest != null)
             {
-                cts.Cancel();
-                cts.Dispose();
-                cts = null;
+                webRequest.Abort();
+                webRequest.Dispose();
+                webRequest = null;
             }
 
-            webRequest?.Abort();
-            webRequest?.Dispose();
-            webRequest = null;
-
             internalSource?.Dispose();
-            isReady = false;
-            isDisposed = true;
+            internalSource = null;
         }
 
         private IEnumerator<float> Download(string url)
         {
-            UnityWebRequest request = null;
+            CancellationToken token = cts.Token;
+            byte[] rawBytes = null;
 
+            UnityWebRequest request;
             try
             {
                 request = UnityWebRequest.Get(url);
-                webRequest = request;
             }
             catch (Exception ex)
             {
-                Log.Error($"[WebWavPcmSource] Failed to download audio! URL: {url} | Error: {ex.Message}");
+                Log.Error($"[WebWavPcmSource] Failed to create request. URL: {url} | Error: {ex.Message}");
                 isFailed = true;
                 yield break;
             }
-
-            byte[] rawBytes = null;
 
             using (request)
             {
                 yield return Timing.WaitUntilDone(request.SendWebRequest());
 
-                if (isDisposed)
+                if (isDisposed || token.IsCancellationRequested)
                     yield break;
 
                 if (request.result != UnityWebRequest.Result.Success)
                 {
-                    Log.Error($"[WebWavPcmSource] Failed to download audio! URL: {url} | Error: {request.error}");
+                    Log.Error($"[WebWavPcmSource] Failed to download! URL: {url} | Error: {request.error}");
                     isFailed = true;
                     yield break;
                 }
@@ -174,30 +152,19 @@ namespace Exiled.API.Features.Audio.PcmSources
                 rawBytes = request.downloadHandler.data;
             }
 
-            webRequest = null;
-
-            if (isDisposed || cts == null || cts.Token.IsCancellationRequested)
+            if (isDisposed || token.IsCancellationRequested)
                 yield break;
 
-            CancellationToken token = cts.Token;
-            Task<AudioData> toPcmTask = Task.Run(
-                () =>
-            {
-                if (token.IsCancellationRequested)
-                    return default;
+            Task<AudioData> toPcmTask = Task.Run(() => WavUtility.WavToPcm(rawBytes), token);
 
-                return WavUtility.WavToPcm(rawBytes);
-            },
-                token);
+            yield return Timing.WaitUntilTrue(() => toPcmTask.IsCompleted || token.IsCancellationRequested);
 
-            yield return Timing.WaitUntilTrue(() => toPcmTask.IsCompleted || (cts != null && cts.Token.IsCancellationRequested));
-
-            if (isDisposed || cts == null || cts.Token.IsCancellationRequested)
+            if (isDisposed || token.IsCancellationRequested)
                 yield break;
 
             if (toPcmTask.IsFaulted)
             {
-                Log.Error($"[WebPreloadWavPcmSource] Failed to read the downloaded file! Ensure the link points to a valid .WAV file. Error: {toPcmTask.Exception?.InnerException?.Message ?? toPcmTask.Exception?.Message}");
+                Log.Error($"[WebWavPcmSource] Failed to parse WAV. Ensure URL points to a valid 16-bit mono 48kHz WAV.\nError: {toPcmTask.Exception?.InnerException?.Message ?? toPcmTask.Exception?.Message}");
                 isFailed = true;
                 yield break;
             }
@@ -213,7 +180,7 @@ namespace Exiled.API.Features.Audio.PcmSources
             }
             catch (Exception ex)
             {
-                Log.Error($"[WebPreloadWavPcmSource] Failed to read the downloaded file! Ensure the link points to a valid .WAV file. Error:  {ex.InnerException?.Message ?? ex.Message}");
+                Log.Error($"[WebWavPcmSource] Failed to create internal source.\nError: {ex.InnerException?.Message ?? ex.Message}");
                 isFailed = true;
             }
         }
