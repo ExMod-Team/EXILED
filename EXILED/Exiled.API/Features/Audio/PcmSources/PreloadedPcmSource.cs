@@ -26,9 +26,9 @@ namespace Exiled.API.Features.Audio.PcmSources
         private float[] data;
         private CancellationTokenSource cts;
 
-        private volatile bool isReady = false;
-        private volatile bool isFailed = false;
-        private volatile bool isDisposed = false;
+        private volatile bool isReady;
+        private volatile bool isFailed;
+        private volatile bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PreloadedPcmSource"/> class.
@@ -125,29 +125,24 @@ namespace Exiled.API.Features.Audio.PcmSources
             if (!isReady || data == null || data.Length == 0)
                 return;
 
-            long targetIndex = (long)(seconds * VoiceChatSettings.SampleRate);
-            pos = (int)Math.Clamp(targetIndex, 0, data.Length);
+            pos = (int)Math.Clamp(seconds * VoiceChatSettings.SampleRate, 0, data.Length);
         }
 
         /// <inheritdoc/>
-        public void Reset()
-        {
-            pos = 0;
-        }
+        public void Reset() => pos = 0;
 
         /// <inheritdoc/>
         public void Dispose()
         {
+            isDisposed = true;
+            isReady = false;
+
             CancellationTokenSource localCts = Interlocked.Exchange(ref cts, null);
             if (localCts != null)
             {
                 localCts.Cancel();
                 localCts.Dispose();
             }
-
-            data = null;
-            isReady = false;
-            isDisposed = true;
         }
     }
 }
