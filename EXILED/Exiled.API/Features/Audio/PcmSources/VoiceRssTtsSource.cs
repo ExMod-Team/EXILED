@@ -150,7 +150,12 @@ namespace Exiled.API.Features.Audio.PcmSources
             if (downloadRoutine.IsRunning)
                 downloadRoutine.IsRunning = false;
 
-            Interlocked.Exchange(ref cts, null);
+            CancellationTokenSource localCts = Interlocked.Exchange(ref cts, null);
+            if (localCts != null)
+            {
+                localCts.Cancel();
+                localCts.Dispose();
+            }
 
             internalSource?.Dispose();
             internalSource = null;

@@ -138,7 +138,12 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public void Dispose()
         {
-            Interlocked.Exchange(ref cts, null);
+            CancellationTokenSource localCts = Interlocked.Exchange(ref cts, null);
+            if (localCts != null)
+            {
+                localCts.Cancel();
+                localCts.Dispose();
+            }
 
             data = null;
             isReady = false;

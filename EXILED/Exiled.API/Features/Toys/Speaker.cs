@@ -1104,7 +1104,13 @@ namespace Exiled.API.Features.Toys
 
         private void StopProccesThread()
         {
-            Interlocked.Exchange(ref processCts, null);
+            CancellationTokenSource localCts = Interlocked.Exchange(ref processCts, null);
+            if (localCts != null)
+            {
+                localCts.Cancel();
+                localCts.Dispose();
+            }
+
             packetQueue = null;
         }
 

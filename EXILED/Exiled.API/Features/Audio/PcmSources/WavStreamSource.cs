@@ -28,8 +28,10 @@ namespace Exiled.API.Features.Audio.PcmSources
         private readonly long endPosition;
         private readonly long startPosition;
         private readonly FileStream stream;
+        private readonly object streamLock = new();
 
         private byte[] internalBuffer;
+        private volatile bool isDisposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WavStreamSource"/> class.
@@ -53,12 +55,19 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public double CurrentTime
         {
-            get => (stream.Position - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
+            get => isDisposed ? 0.0 : (stream.Position - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
             set => Seek(value);
         }
 
         /// <inheritdoc/>
-        public bool Ended => stream.Position >= endPosition;
+        public bool Ended
+        {
+            get
+            {
+                lock (streamLock)
+                    return isDisposed || stream.Position >= endPosition;
+            }
+        }
 
         /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
@@ -96,6 +105,9 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public void Seek(double seconds)
         {
+            if (isDisposed)
+                return;
+
             long newPos = Math.Clamp(startPosition + ((long)(seconds * VoiceChatSettings.SampleRate) * 2), startPosition, endPosition);
 
             if (newPos % 2 != 0)
