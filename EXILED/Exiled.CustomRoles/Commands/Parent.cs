@@ -33,7 +33,7 @@ namespace Exiled.CustomRoles.Commands
         public override string[] Aliases { get; } = { "cr", "crs" };
 
         /// <inheritdoc/>
-        public override string Description { get; } = string.Empty;
+        public override string Description { get; } = "The parent command for EXILED custom roles";
 
         /// <inheritdoc/>
         public override void LoadGeneratedCommands()
