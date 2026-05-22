@@ -70,7 +70,7 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
-            if (isFailed)
+            if (isFailed || isDisposed)
                 return 0;
 
             if (!isReady || internalSource == null)
@@ -79,7 +79,14 @@ namespace Exiled.API.Features.Audio.PcmSources
                 return count;
             }
 
-            return internalSource.Read(buffer, offset, count);
+            IPcmSource source = internalSource;
+            if (source == null)
+            {
+                Array.Clear(buffer, offset, count);
+                return count;
+            }
+
+            return source.Read(buffer, offset, count);
         }
 
         /// <inheritdoc/>
@@ -105,7 +112,12 @@ namespace Exiled.API.Features.Audio.PcmSources
             if (downloadRoutine.IsRunning)
                 downloadRoutine.IsRunning = false;
 
-            Interlocked.Exchange(ref cts, null);
+            CancellationTokenSource localCts = Interlocked.Exchange(ref cts, null);
+            if (localCts != null)
+            {
+                localCts.Cancel();
+                localCts.Dispose();
+            }
 
             if (webRequest != null)
             {
