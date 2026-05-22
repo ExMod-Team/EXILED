@@ -9,6 +9,7 @@
 namespace Exiled.API.Features.Toys
 {
     using System;
+    using System.Buffers;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading;
@@ -987,6 +988,8 @@ namespace Exiled.API.Features.Toys
                     {
                         if (packet.Length > 2)
                             SendAudioMessage(new AudioMessage(ControllerId, packet.Data, packet.Length));
+
+                        ArrayPool<byte>.Shared.Return(packet.Data);
                     }
 
                     if (packetQueue != null && !packetQueue.IsCompleted)
@@ -1077,7 +1080,7 @@ namespace Exiled.API.Features.Toys
 
                         int length = encoder.Encode(localFrame, localEncoded);
 
-                        byte[] packet = new byte[length];
+                        byte[] packet = ArrayPool<byte>.Shared.Rent(length);
                         Array.Copy(localEncoded, packet, length);
 
                         localQueue.TryAdd((packet, length), -1, token);

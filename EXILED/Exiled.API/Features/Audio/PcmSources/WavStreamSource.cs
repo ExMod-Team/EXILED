@@ -31,11 +31,7 @@ namespace Exiled.API.Features.Audio.PcmSources
         private readonly FileStream stream;
 
         private byte[] internalBuffer;
-
-        private long currentPosition;
-        private long pendingSeek = -1;
-
-        private volatile bool isDisposed = false;
+        private volatile bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WavStreamSource"/> class.
@@ -46,9 +42,8 @@ namespace Exiled.API.Features.Audio.PcmSources
             stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 64 * 1024, FileOptions.SequentialScan);
             TrackInfo = WavUtility.SkipHeader(stream);
             startPosition = stream.Position;
-            currentPosition = startPosition;
             endPosition = stream.Length;
-            internalBuffer = new byte[VoiceChatSettings.PacketSizePerChannel * 2];
+            internalBuffer = ArrayPool<byte>.Shared.Rent(VoiceChatSettings.PacketSizePerChannel * 2);
         }
 
         /// <inheritdoc/>
@@ -60,12 +55,12 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public double CurrentTime
         {
-            get => isDisposed ? 0.0 : (Interlocked.Read(ref currentPosition) - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
+            get => isDisposed ? 0.0 : (stream.Position - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
             set => Seek(value);
         }
 
         /// <inheritdoc/>
-        public bool Ended => isDisposed || Interlocked.Read(ref currentPosition) >= endPosition;
+        public bool Ended => isDisposed || stream.Position >= endPosition;
 
         /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
@@ -78,16 +73,6 @@ namespace Exiled.API.Features.Audio.PcmSources
 
             try
             {
-                long seekTarget = Interlocked.Exchange(ref pendingSeek, -1);
-                if (seekTarget != -1)
-                    stream.Position = seekTarget;
-
-                if (stream.Position >= endPosition)
-                {
-                    Array.Clear(buffer, offset, count);
-                    return 0;
-                }
-
                 count = Math.Min(count, buffer.Length - offset);
 
                 if (count <= 0)
@@ -95,12 +80,13 @@ namespace Exiled.API.Features.Audio.PcmSources
 
                 int bytesNeeded = count * 2;
 
-                if (internalBuffer == null || internalBuffer.Length < bytesNeeded)
-                    internalBuffer = new byte[bytesNeeded];
+                if (internalBuffer.Length < bytesNeeded)
+                {
+                    ArrayPool<byte>.Shared.Return(internalBuffer);
+                    internalBuffer = ArrayPool<byte>.Shared.Rent(bytesNeeded);
+                }
 
                 int bytesRead = stream.Read(internalBuffer, 0, bytesNeeded);
-
-                Interlocked.Exchange(ref currentPosition, stream.Position);
 
                 if (bytesRead == 0)
                     return 0;
@@ -134,18 +120,21 @@ namespace Exiled.API.Features.Audio.PcmSources
             if (newPos % 2 != 0)
                 newPos--;
 
-            Interlocked.Exchange(ref pendingSeek, newPos);
-            Interlocked.Exchange(ref currentPosition, newPos);
+            stream.Position = newPos;
         }
 
         /// <inheritdoc/>
-        public void Reset() => Seek(0);
+        public void Reset() => stream.Position = startPosition;
 
         /// <inheritdoc/>
         public void Dispose()
         {
             isDisposed = true;
             stream?.Dispose();
+
+            byte[] buf = Interlocked.Exchange(ref internalBuffer, null);
+            if (buf != null)
+                ArrayPool<byte>.Shared.Return(buf);
         }
     }
 }
