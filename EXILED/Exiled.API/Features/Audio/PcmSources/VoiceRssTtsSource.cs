@@ -124,7 +124,14 @@ namespace Exiled.API.Features.Audio.PcmSources
                 return count;
             }
 
-            return internalSource.Read(buffer, offset, count);
+            IPcmSource source = internalSource;
+            if (source == null)
+            {
+                Array.Clear(buffer, offset, count);
+                return count;
+            }
+
+            return source.Read(buffer, offset, count);
         }
 
         /// <inheritdoc/>
