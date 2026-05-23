@@ -853,6 +853,7 @@ namespace Exiled.API.Features.Toys
                 return;
 
             Stop();
+            StopFade();
             ClearEvents();
             Transform.SetParent(null);
 
