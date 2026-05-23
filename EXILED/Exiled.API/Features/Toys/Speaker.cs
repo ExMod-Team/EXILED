@@ -697,7 +697,9 @@ namespace Exiled.API.Features.Toys
             if (!playBackRoutine.IsRunning)
                 return;
 
-            CurrentSource.Reset();
+            ResetEncoder();
+            Filter?.Reset();
+            CurrentSource?.Reset();
         }
 
         /// <summary>
@@ -1014,9 +1016,7 @@ namespace Exiled.API.Features.Toys
                             timeAccumulator = 0f;
                             nextScheduledEventIndex = 0;
 
-                            ResetEncoder();
-                            Filter?.Reset();
-                            CurrentSource.Reset();
+                            RestartTrack();
 
                             OnPlaybackLooped?.Invoke();
                             SpeakerEvents.OnPlaybackLooped(this);
