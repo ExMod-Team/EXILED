@@ -697,6 +697,8 @@ namespace Exiled.API.Features.Toys
             if (!playBackRoutine.IsRunning)
                 return;
 
+            nextScheduledEventIndex = 0;
+
             ResetEncoder();
             Filter?.Reset();
             CurrentSource?.Reset();
@@ -1014,7 +1016,6 @@ namespace Exiled.API.Features.Toys
                         if (Loop)
                         {
                             timeAccumulator = 0f;
-                            nextScheduledEventIndex = 0;
 
                             RestartTrack();
 
