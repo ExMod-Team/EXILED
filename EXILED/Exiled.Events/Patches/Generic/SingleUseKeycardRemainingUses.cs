@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="SingleUseKeycardRemainingUses.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -12,7 +12,9 @@ namespace Exiled.Events.Patches.Generic
 
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pools;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Keycards;
 
     using static HarmonyLib.AccessTools;

@@ -25,8 +25,11 @@ namespace Exiled.CustomRoles.API.Features
     using Exiled.CustomItems.API.Features;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Loader;
+
     using InventorySystem.Configs;
+
     using MEC;
+
     using PlayerRoles;
 
     using UnityEngine;
@@ -643,7 +646,7 @@ namespace Exiled.CustomRoles.API.Features
                     ability.AddAbility(player);
             }
 
-            if (CustomRoles.Instance!.Config.GotRoleHint.Show)
+            if (CustomRoles.Instance.Config.GotRoleHint.Show)
                 ShowMessage(player);
 
             ShowBroadcast(player);
@@ -807,7 +810,7 @@ namespace Exiled.CustomRoles.API.Features
         /// <returns>True if the role registered properly.</returns>
         internal bool TryRegister()
         {
-            if (!CustomRoles.Instance!.Config.IsEnabled)
+            if (!CustomRoles.Instance.Config.IsEnabled)
                 return false;
 
             if (!Registered.Contains(this))
@@ -892,7 +895,7 @@ namespace Exiled.CustomRoles.API.Features
             }
 
             float totalchance = 0f;
-            List<(float chance, Vector3 pos)> spawnPointPool = new(4);
+            List<(float Chance, Vector3 Pos)> spawnPointPool = new(4);
 
             void Add(Vector3 pos, float chance)
             {
@@ -985,7 +988,7 @@ namespace Exiled.CustomRoles.API.Features
         /// Shows the spawn message to the player.
         /// </summary>
         /// <param name="player">The <see cref="Player"/> to show the message to.</param>
-        protected virtual void ShowMessage(Player player) => player.ShowHint(string.Format(CustomRoles.Instance!.Config.GotRoleHint.Content, Name, Description), CustomRoles.Instance.Config.GotRoleHint.Duration);
+        protected virtual void ShowMessage(Player player) => player.ShowHint(string.Format(CustomRoles.Instance.Config.GotRoleHint.Content, Name, Description), CustomRoles.Instance.Config.GotRoleHint.Duration);
 
         /// <summary>
         /// Shows the spawn broadcast to the player.
