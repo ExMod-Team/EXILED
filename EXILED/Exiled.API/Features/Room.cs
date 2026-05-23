@@ -429,15 +429,15 @@ namespace Exiled.API.Features
             Identifier = gameObject.GetComponent<RoomIdentifier>();
             RoomIdentifierToRoom.Add(Identifier, this);
 
-            Zone = Identifier.Zone.GetZone();
-
-            if (Zone is ZoneType.Unspecified)
-                Log.Warn($"[ZONETYPE UNKNOWN] {Identifier} Zone : {Identifier?.Zone}");
-
             Type = FindType(gameObject);
 
             if (Type is RoomType.Unknown)
                 Log.Warn($"[ROOMTYPE UNKNOWN] {Identifier} Name : {gameObject?.name.RemoveBracketsOnEndOfName()} Shape : {Identifier?.Shape}");
+
+            Zone = Type is RoomType.Pocket ? ZoneType.Pocket : Identifier.Zone.GetZone();
+
+            if (Zone is ZoneType.Unspecified)
+                Log.Warn($"[ZONETYPE UNKNOWN] {Identifier} Zone : {Identifier?.Zone}");
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 

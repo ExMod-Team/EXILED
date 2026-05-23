@@ -99,6 +99,11 @@ namespace Exiled.Events.Handlers
         public static Event<UsedItemEventArgs> UsedItem { get; set; } = new();
 
         /// <summary>
+        /// Invoked before a <see cref="API.Features.Player"/> consumes an <see cref="API.Features.Items.Consumable"/>. In other words, it is invoked before the consumable item logic are applied.
+        /// </summary>
+        public static Event<ConsumingItemEventArgs> ConsumingItem { get; set; } = new();
+
+        /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> has stopped the use of a <see cref="API.Features.Items.Usable"/>.
         /// </summary>
         public static Event<CancellingItemUseEventArgs> CancellingItemUse { get; set; } = new();
@@ -652,6 +657,11 @@ namespace Exiled.Events.Handlers
         public static Event<Scp1576TransmissionEndedEventArgs> Scp1576TransmissionEnded { get; set; } = new();
 
         /// <summary>
+        /// Invoked before new information about wearables is sent to clients.
+        /// </summary>
+        public static Event<ChangingWearablesEventArgs> ChangingWearables { get; set; } = new();
+
+        /// <summary>
         /// Called before a player's emotion changed.
         /// </summary>
         /// <param name="ev">The <see cref="ChangingEmotionEventArgs"/> instance.</param>
@@ -722,6 +732,12 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="UsedItemEventArgs"/> instance.</param>
         public static void OnUsedItem(UsedItemEventArgs ev) => UsedItem.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a <see cref="API.Features.Player"/> consumes a <see cref="API.Features.Items.Consumable"/> item.
+        /// </summary>
+        /// <param name="ev">The <see cref="ConsumingItemEventArgs"/> instance.</param>
+        public static void OnConsumingItem(ConsumingItemEventArgs ev) => ConsumingItem.InvokeSafely(ev);
 
         /// <summary>
         /// Called before a <see cref="API.Features.Player"/> has stopped the use of a <see cref="API.Features.Items.Usable"/> item.
@@ -1430,9 +1446,15 @@ namespace Exiled.Events.Handlers
         public static void OnInteractingEmergencyButton(InteractingEmergencyButtonEventArgs ev) => InteractingEmergencyButton.InvokeSafely(ev);
 
         /// <summary>
-        /// Called after a 1576 transmisiion has ended.
+        /// Called after a 1576 transmission has ended.
         /// </summary>
         /// <param name="ev">The <see cref="Scp1576TransmissionEndedEventArgs"/> instance.</param>
         public static void OnScp1576TransmissionEnded(Scp1576TransmissionEndedEventArgs ev) => Scp1576TransmissionEnded.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before new information about wearables is sent to clients.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingWearablesEventArgs"/> instance.</param>
+        public static void OnChangingWearables(ChangingWearablesEventArgs ev) => ChangingWearables.InvokeSafely(ev);
     }
 }

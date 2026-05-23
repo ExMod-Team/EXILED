@@ -86,7 +86,7 @@ namespace Exiled.API.Features
                     }
 
                     if (string.IsNullOrEmpty(patchGroup.GroupId))
-                        throw new ArgumentNullException("GroupId");
+                        throw new ArgumentNullException(nameof(patchGroup.GroupId));
 
                     if (string.IsNullOrEmpty(groupId) || patchGroup.GroupId != groupId)
                         continue;
@@ -147,7 +147,7 @@ namespace Exiled.API.Features
                     goto Unpatch;
 
                 if (string.IsNullOrEmpty(patchGroup.GroupId))
-                    throw new ArgumentNullException("GroupId");
+                    throw new ArgumentNullException(nameof(patchGroup.GroupId));
 
                 if (string.IsNullOrEmpty(groupId) || patchGroup.GroupId != groupId)
                     continue;

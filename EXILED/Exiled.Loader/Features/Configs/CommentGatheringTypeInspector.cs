@@ -27,7 +27,7 @@ namespace Exiled.Loader.Features.Configs
         /// <param name="innerTypeDescriptor">The inner type description instance.</param>
         public CommentGatheringTypeInspector(ITypeInspector innerTypeDescriptor)
         {
-            this.innerTypeDescriptor = innerTypeDescriptor ?? throw new ArgumentNullException("innerTypeDescriptor");
+            this.innerTypeDescriptor = innerTypeDescriptor ?? throw new ArgumentNullException(nameof(innerTypeDescriptor));
         }
 
         /// <inheritdoc/>
