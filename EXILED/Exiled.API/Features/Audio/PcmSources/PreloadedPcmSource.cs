@@ -58,21 +58,14 @@ namespace Exiled.API.Features.Audio.PcmSources
                     try
                     {
                         AudioData result = WavUtility.WavToPcm(path);
-
-                        if (!token.IsCancellationRequested)
-                        {
-                            data = result.Pcm;
-                            TrackInfo = result.TrackInfo;
-                            isReady = true;
-                        }
+                        data = result.Pcm;
+                        TrackInfo = result.TrackInfo;
+                        isReady = true;
                     }
-                    catch (Exception ex)
+                    catch (Exception ex) when (ex is not OperationCanceledException)
                     {
-                        if (!token.IsCancellationRequested)
-                        {
-                            Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
-                            isFailed = true;
-                        }
+                        Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
+                        isFailed = true;
                     }
                 },
                 token);
