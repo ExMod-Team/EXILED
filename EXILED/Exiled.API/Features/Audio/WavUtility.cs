@@ -282,9 +282,9 @@ namespace Exiled.API.Features.Audio
             Span<byte> headerBuffer = stackalloc byte[12];
             stream.Read(headerBuffer);
 
-            int rate;
-            int bits;
-            int channels;
+            int rate = 0;
+            int bits = 0;
+            int channels = 0;
 
             Span<byte> chunkHeader = stackalloc byte[8];
             while (true)
