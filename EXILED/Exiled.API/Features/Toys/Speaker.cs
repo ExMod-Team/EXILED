@@ -648,7 +648,6 @@ namespace Exiled.API.Features.Toys
             if (clearQueue)
                 TrackQueue.Clear();
 
-            StopFade();
             ResetEncoder();
             StopProccesThread();
             ClearScheduledEvents();
@@ -698,7 +697,7 @@ namespace Exiled.API.Features.Toys
             if (!playBackRoutine.IsRunning)
                 return;
 
-            CurrentTime = 0.0;
+            CurrentSource.Reset();
         }
 
         /// <summary>

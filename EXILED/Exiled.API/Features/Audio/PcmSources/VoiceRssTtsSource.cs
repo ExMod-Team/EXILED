@@ -122,15 +122,15 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public void Seek(double seconds)
         {
-            if (isReady && internalSource != null)
-                internalSource.Seek(seconds);
+            if (isReady)
+                internalSource?.Seek(seconds);
         }
 
         /// <inheritdoc/>
         public void Reset()
         {
-            if (isReady && internalSource != null)
-                internalSource.Reset();
+            if (isReady)
+                internalSource?.Reset();
         }
 
         /// <inheritdoc/>
