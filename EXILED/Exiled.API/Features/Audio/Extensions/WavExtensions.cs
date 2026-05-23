@@ -17,51 +17,11 @@ namespace Exiled.API.Features.Audio.Extensions
     using Exiled.API.Interfaces.Audio;
     using Exiled.API.Structs.Audio;
 
-    using UnityEngine;
-
     /// <summary>
     /// Provides methods to play 16-bit, mono, 48 kHz WAV files or web streams via Speaker.
     /// </summary>
     public static class WavExtensions
     {
-        /// <summary>
-        /// Rents a speaker from the pool, plays a local wav file or web stream one time, and automatically returns it to the pool afterwards. (File must be 16 bit, mono and 48khz.)
-        /// </summary>
-        /// <param name="path">The path/url or custom name/key (if <paramref name="settings"/> has <see cref="PlaybackSettings.UseCache"/> set to true) to the wav file.</param>
-        /// <param name="parent">The parent transform, if any.</param>
-        /// <param name="position">The local position of the speaker.</param>
-        /// <param name="settings">The optional audio and network settings. If null, default settings are used.</param>
-        /// <returns><c>true</c> if the audio file was successfully found, loaded, and playback started; otherwise, <c>false</c>.</returns>
-        public static bool PlayWavFromPool(string path, Transform parent = null, Vector3? position = null, in PlaybackSettings? settings = null)
-        {
-            if (string.IsNullOrEmpty(path))
-            {
-                Log.Error("[Speaker] Provided path/url or name cannot be null or empty!");
-                return false;
-            }
-
-            PlaybackSettings settingsFull = settings ?? new PlaybackSettings();
-
-            if (!settingsFull.UseCache && !WavUtility.TryValidatePath(path, out string errorMessage))
-            {
-                Log.Error($"[Speaker] {errorMessage}");
-                return false;
-            }
-
-            IPcmSource source;
-            try
-            {
-                source = WavUtility.CreatePcmSource(path, settingsFull.Stream, settingsFull.UseCache);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"[Speaker] Failed to initialize audio source for PlayFromPool. Path: '{path}'.\n{ex}");
-                return false;
-            }
-
-            return Speaker.PlayFromPool(source, parent, position, settingsFull);
-        }
-
         /// <summary>
         /// Plays a local wav file or web URL through this speaker. (File must be 16-bit, mono, and 48kHz.)
         /// </summary>
@@ -126,7 +86,7 @@ namespace Exiled.API.Features.Audio.Extensions
                     continue;
                 }
 
-                if (!WavUtility.TryValidatePath(path, out string error))
+                if (!useCache && !WavUtility.TryValidatePath(path, out string error))
                 {
                     Log.Error($"[Speaker] Skipping invalid path in mix: {path}. Reason: {error}");
                     continue;

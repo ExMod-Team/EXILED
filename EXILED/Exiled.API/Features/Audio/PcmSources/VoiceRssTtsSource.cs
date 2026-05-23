@@ -36,9 +36,9 @@ namespace Exiled.API.Features.Audio.PcmSources
         private CancellationTokenSource cts;
         private CoroutineHandle downloadRoutine;
 
-        private volatile bool isReady = false;
-        private volatile bool isFailed = false;
-        private volatile bool isDisposed = false;
+        private volatile bool isReady;
+        private volatile bool isFailed;
+        private volatile bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VoiceRssTtsSource"/> class.
@@ -82,28 +82,20 @@ namespace Exiled.API.Features.Audio.PcmSources
             downloadRoutine = Timing.RunCoroutine(DownloadRoutine(text, apiKeys, language, voice, rate));
         }
 
-        /// <summary>
-        /// Gets the metadata of the loaded track.
-        /// </summary>
+        /// <inheritdoc/>
         public TrackData TrackInfo { get; private set; }
 
-        /// <summary>
-        /// Gets the total duration of the audio in seconds. Returns 0 while the download is in progress.
-        /// </summary>
+        /// <inheritdoc/>
         public double TotalDuration => isReady && internalSource != null ? internalSource.TotalDuration : 0.0;
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
             get => isReady && internalSource != null ? internalSource.CurrentTime : 0.0;
             set => Seek(value);
         }
 
-        /// <summary>
-        /// Gets a value indicating whether playback has ended or the download has failed.
-        /// </summary>
+        /// <inheritdoc/>
         public bool Ended => isFailed || isDisposed || (isReady && internalSource != null && internalSource.Ended);
 
         /// <inheritdoc/>
@@ -124,14 +116,7 @@ namespace Exiled.API.Features.Audio.PcmSources
                 return count;
             }
 
-            IPcmSource source = internalSource;
-            if (source == null)
-            {
-                Array.Clear(buffer, offset, count);
-                return count;
-            }
-
-            return source.Read(buffer, offset, count);
+            return internalSource.Read(buffer, offset, count);
         }
 
         /// <inheritdoc/>

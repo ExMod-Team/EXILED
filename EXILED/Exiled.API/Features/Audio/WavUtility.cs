@@ -10,12 +10,19 @@ namespace Exiled.API.Features.Audio
     using System;
     using System.Buffers;
     using System.Buffers.Binary;
+    using System.Collections.Generic;
     using System.IO;
     using System.Runtime.InteropServices;
 
     using Exiled.API.Features.Audio.PcmSources;
+    using Exiled.API.Features.Toys;
     using Exiled.API.Interfaces.Audio;
     using Exiled.API.Structs.Audio;
+
+    using MEC;
+
+    using UnityEngine;
+    using UnityEngine.Networking;
 
     using VoiceChat;
 
@@ -36,7 +43,12 @@ namespace Exiled.API.Features.Audio
         public static IPcmSource CreatePcmSource(string path, bool stream = false, bool cache = false)
         {
             if (cache)
-                return new CachedPcmSource(path, path);
+            {
+                if (!AudioDataStorage.AudioStorage.ContainsKey(path))
+                    CacheWav(path, path);
+
+                return new CachedPcmSource(path);
+            }
 
             if (path.StartsWith("http"))
                 return new WebWavPcmSource(path);
@@ -45,6 +57,137 @@ namespace Exiled.API.Features.Audio
                 return new WavStreamSource(path);
 
             return new PreloadedPcmSource(path);
+        }
+
+        /// <summary>
+        /// Rents a speaker from the pool, plays a local wav file or web stream one time, and automatically returns it to the pool afterwards. (File must be 16 bit, mono and 48khz.)
+        /// </summary>
+        /// <param name="path">The path/url or custom name/key (if <paramref name="settings"/> has <see cref="PlaybackSettings.UseCache"/> set to true) to the wav file.</param>
+        /// <param name="parent">The parent transform, if any.</param>
+        /// <param name="position">The local position of the speaker.</param>
+        /// <param name="settings">The optional audio and network settings. If null, default settings are used.</param>
+        /// <returns><c>true</c> if the audio file was successfully found, loaded, and playback started; otherwise, <c>false</c>.</returns>
+        public static bool PlayWavFromPool(string path, Transform parent = null, Vector3? position = null, in PlaybackSettings? settings = null)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                Log.Error("[Speaker] Provided path/url or name cannot be null or empty!");
+                return false;
+            }
+
+            PlaybackSettings settingsFull = settings ?? new PlaybackSettings();
+
+            if (!settingsFull.UseCache && !TryValidatePath(path, out string errorMessage))
+            {
+                Log.Error($"[Speaker] {errorMessage}");
+                return false;
+            }
+
+            IPcmSource source;
+            try
+            {
+                source = CreatePcmSource(path, settingsFull.Stream, settingsFull.UseCache);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[Speaker] Failed to initialize audio source for PlayFromPool. Path: '{path}'.\n{ex}");
+                return false;
+            }
+
+            return Speaker.PlayFromPool(source, parent, position, settingsFull);
+        }
+
+        /// <summary>
+        /// Loads and stores a local .wav file under the specified name.
+        /// </summary>
+        /// <param name="name">The unique storage key to assign to this audio.</param>
+        /// <param name="path">The absolute path to the local .wav file.</param>
+        /// <returns><c>true</c> if the file was successfully loaded and stored; otherwise, <c>false</c>.</returns>
+        public static bool CacheWav(string name, string path)
+        {
+            if (!AudioDataStorage.ValidateName(name))
+                return false;
+
+            if (AudioDataStorage.AudioStorage.ContainsKey(name))
+            {
+                Log.Warn($"[AudioDataStorage] An entry with the key '{name}' already exists. Skipping add.");
+                return false;
+            }
+
+            if (path.StartsWith("http"))
+            {
+                Log.Error($"[AudioDataStorage] '{path}' is a URL. Use AudioDataStorage.AddUrl() for web sources.");
+                return false;
+            }
+
+            if (!File.Exists(path))
+            {
+                Log.Error($"[AudioDataStorage] Local file not found: '{path}'");
+                return false;
+            }
+
+            try
+            {
+                AudioData parsed = WavToPcm(path);
+                return AudioDataStorage.AudioStorage.TryAdd(name, parsed);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[AudioDataStorage] Failed to load '{path}' into storage:\n{ex}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Starts an asynchronous download of a .wav file from the specified URL and adds it to the storage.
+        /// </summary>
+        /// <param name="name">The unique storage key to assign.</param>
+        /// <param name="url">The HTTP or HTTPS URL pointing to a valid .wav file.</param>
+        /// <returns>A <see cref="CoroutineHandle"/> for the running download coroutine.</returns>
+        public static CoroutineHandle CacheWavUrl(string name, string url) => Timing.RunCoroutine(CacheUrlCoroutine(name, url));
+
+        /// <summary>
+        /// Starts an asynchronous download of a .wav file from the specified URL and adds it to the storage.
+        /// </summary>
+        /// <param name="name">The unique storage key to assign.</param>
+        /// <param name="url">The HTTP or HTTPS URL pointing to a valid .wav file.</param>
+        /// <returns>A MEC-compatible <see cref="IEnumerator{T}"/> of <see cref="float"/>.</returns>
+        public static IEnumerator<float> CacheUrlCoroutine(string name, string url)
+        {
+            if (!AudioDataStorage.ValidateName(name))
+                yield break;
+
+            if (string.IsNullOrEmpty(url) || !url.StartsWith("http"))
+            {
+                Log.Error($"[AudioDataStorage] Invalid URL for key '{name}': '{url}'. Must start with http/https.");
+                yield break;
+            }
+
+            if (AudioDataStorage.AudioStorage.ContainsKey(name))
+            {
+                Log.Warn($"[AudioDataStorage] An entry with the key '{name}' already exists. Skipping download.");
+                yield break;
+            }
+
+            using UnityWebRequest www = UnityWebRequest.Get(url);
+            yield return Timing.WaitUntilDone(www.SendWebRequest());
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Log.Error($"[AudioDataStorage] Download failed for '{url}': {www.error}");
+                yield break;
+            }
+
+            try
+            {
+                AudioData parsed = WavToPcm(www.downloadHandler.data);
+                parsed.TrackInfo.Path = url;
+                AudioDataStorage.AudioStorage.TryAdd(name, parsed);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[AudioDataStorage] Failed to parse downloaded WAV from '{url}':\n{ex}");
+            }
         }
 
         /// <summary>
@@ -95,7 +238,6 @@ namespace Exiled.API.Features.Audio
         public static AudioData WavToPcm(byte[] data)
         {
             using MemoryStream ms = new(data, 0, data.Length);
-
             return ParseWavSpanToPcm(ms, data.AsSpan());
         }
 
@@ -140,9 +282,9 @@ namespace Exiled.API.Features.Audio
             Span<byte> headerBuffer = stackalloc byte[12];
             stream.Read(headerBuffer);
 
-            int rate = 0;
-            int bits = 0;
-            int channels = 0;
+            int rate;
+            int bits;
+            int channels;
 
             Span<byte> chunkHeader = stackalloc byte[8];
             while (true)

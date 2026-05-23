@@ -5,11 +5,9 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-#pragma warning disable SA1129 // Do not use default value type constructor
 namespace Exiled.API.Features.Toys
 {
     using System;
-    using System.Buffers;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading;
@@ -92,8 +90,10 @@ namespace Exiled.API.Features.Toys
         private CoroutineHandle fadeRoutine;
         private CoroutineHandle playBackRoutine;
 
-        private BlockingCollection<(byte[] Data, int Length)> packetQueue;
         private CancellationTokenSource processCts;
+        private BlockingCollection<(byte[] Data, int Length)> packetQueue;
+
+        private volatile IPcmSource currentSource;
         private volatile IAudioFilter activeFilter;
 
         private int nextScheduledEventIndex;
@@ -185,7 +185,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets a value indicating whether this speaker is currently pooled in the speaker pool.
         /// </summary>
-        public bool IsPooled { get; private set; } = false;
+        public bool IsPooled { get; private set; }
 
         /// <summary>
         /// Gets or sets the play mode for this speaker, determining how audio is sent to players.
@@ -229,6 +229,12 @@ namespace Exiled.API.Features.Toys
 
                 if (playBackRoutine.IsAliveAndPaused == value)
                     return;
+
+                if (value && CurrentSource is ILiveSource)
+                {
+                    Log.Warn("[Speaker] Cannot pause or resume playback of a live source.");
+                    return;
+                }
 
                 playBackRoutine.IsAliveAndPaused = value;
                 if (value)
@@ -297,10 +303,14 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets the currently playing audio source.
+        /// Gets or sets the currently playing audio source.
         /// <para>Pre-made sources are available in the <see cref="Audio.PcmSources"/> namespace.</para>
         /// </summary>
-        public IPcmSource CurrentSource { get; internal set; }
+        public IPcmSource CurrentSource
+        {
+            get => currentSource;
+            set => currentSource = value;
+        }
 
         /// <summary>
         /// Gets the metadata information (Title, Artist, Duration) of the last played audio track.
@@ -984,13 +994,8 @@ namespace Exiled.API.Features.Toys
                 {
                     timeAccumulator -= FrameTime;
 
-                    if (packetQueue != null && packetQueue.TryTake(out (byte[] Data, int Length) packet))
-                    {
-                        if (packet.Length > 2)
-                            SendAudioMessage(new AudioMessage(ControllerId, packet.Data, packet.Length));
-
-                        ArrayPool<byte>.Shared.Return(packet.Data);
-                    }
+                    if (packetQueue != null && packetQueue.TryTake(out (byte[] Data, int Length) packet) && packet.Length > 2)
+                        SendAudioMessage(new AudioMessage(ControllerId, packet.Data, packet.Length));
 
                     if (packetQueue != null && !packetQueue.IsCompleted)
                         continue;
@@ -1051,7 +1056,6 @@ namespace Exiled.API.Features.Toys
             packetQueue = localQueue;
             processCts = new CancellationTokenSource();
             CancellationToken token = processCts.Token;
-            IPcmSource source = CurrentSource;
 
             new Thread(() =>
             {
@@ -1063,33 +1067,30 @@ namespace Exiled.API.Features.Toys
 
                 try
                 {
-                    while (!token.IsCancellationRequested && !source.Ended)
+                    while (!token.IsCancellationRequested && !currentSource.Ended)
                     {
                         if (isPitchDefault)
                         {
-                            int read = source.Read(localFrame, 0, FrameSize);
+                            int read = currentSource.Read(localFrame, 0, FrameSize);
                             if (read < FrameSize)
                                 Array.Clear(localFrame, read, FrameSize - read);
                         }
                         else
                         {
-                            ResampleFrame(source, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
+                            ResampleFrame(currentSource, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
                         }
 
                         activeFilter?.Process(localFrame);
 
                         int length = encoder.Encode(localFrame, localEncoded);
 
-                        byte[] packet = ArrayPool<byte>.Shared.Rent(length);
+                        byte[] packet = new byte[length];
                         Array.Copy(localEncoded, packet, length);
 
                         localQueue.TryAdd((packet, length), -1, token);
                     }
                 }
-                catch (OperationCanceledException)
-                {
-                }
-                catch (Exception ex)
+                catch (Exception ex) when (ex is not OperationCanceledException)
                 {
                     Log.Error($"[Speaker] Encode worker error.\nException Details: {ex}");
                 }

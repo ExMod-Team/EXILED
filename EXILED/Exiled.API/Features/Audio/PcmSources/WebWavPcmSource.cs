@@ -26,13 +26,12 @@ namespace Exiled.API.Features.Audio.PcmSources
     public sealed class WebWavPcmSource : IPcmSource, IAsyncPcmSource
     {
         private IPcmSource internalSource;
-        private UnityWebRequest webRequest;
         private CancellationTokenSource cts;
         private CoroutineHandle downloadRoutine;
 
-        private volatile bool isReady = false;
-        private volatile bool isFailed = false;
-        private volatile bool isDisposed = false;
+        private volatile bool isReady;
+        private volatile bool isFailed;
+        private volatile bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebWavPcmSource"/> class.
@@ -79,28 +78,21 @@ namespace Exiled.API.Features.Audio.PcmSources
                 return count;
             }
 
-            IPcmSource source = internalSource;
-            if (source == null)
-            {
-                Array.Clear(buffer, offset, count);
-                return count;
-            }
-
-            return source.Read(buffer, offset, count);
+            return internalSource.Read(buffer, offset, count);
         }
 
         /// <inheritdoc/>
         public void Seek(double seconds)
         {
-            if (isReady && internalSource != null)
-                internalSource.Seek(seconds);
+            if (isReady)
+                internalSource?.Seek(seconds);
         }
 
         /// <inheritdoc/>
         public void Reset()
         {
-            if (isReady && internalSource != null)
-                internalSource.Reset();
+            if (isReady)
+                internalSource?.Reset();
         }
 
         /// <inheritdoc/>
@@ -117,13 +109,6 @@ namespace Exiled.API.Features.Audio.PcmSources
             {
                 localCts.Cancel();
                 localCts.Dispose();
-            }
-
-            if (webRequest != null)
-            {
-                webRequest.Abort();
-                webRequest.Dispose();
-                webRequest = null;
             }
 
             internalSource?.Dispose();

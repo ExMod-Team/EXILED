@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Audio.PcmSources
 {
     using System;
+    using System.Buffers;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -29,7 +30,6 @@ namespace Exiled.API.Features.Audio.PcmSources
         private readonly object sourcesLock = new();
 
         private volatile IPcmSource[] sources;
-        private float[] tempBuffer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MixerSource"/> class with the specified initial sources.
@@ -105,34 +105,41 @@ namespace Exiled.API.Features.Audio.PcmSources
 
             Array.Clear(buffer, offset, count);
 
-            if (tempBuffer == null || tempBuffer.Length < count)
-                tempBuffer = new float[count];
+            float[] temp = ArrayPool<float>.Shared.Rent(count);
 
-            int maxRead = 0;
-            bool needsCleanup = false;
-
-            foreach (IPcmSource src in currentSources)
+            try
             {
-                if (src.Ended)
+                int maxRead = 0;
+                bool needsCleanup = false;
+
+                foreach (IPcmSource src in currentSources)
                 {
-                    needsCleanup = true;
-                    continue;
+                    if (src.Ended)
+                    {
+                        needsCleanup = true;
+                        continue;
+                    }
+
+                    int read = src.Read(temp, 0, count);
+                    if (read > maxRead)
+                        maxRead = read;
+
+                    for (int i = 0; i < read; i++)
+                        buffer[offset + i] += temp[i];
                 }
 
-                int read = src.Read(tempBuffer, 0, count);
-                if (read > maxRead)
-                    maxRead = read;
-                for (int i = 0; i < read; i++)
-                    buffer[offset + i] += tempBuffer[i];
+                for (int i = 0; i < maxRead; i++)
+                    buffer[offset + i] = Mathf.Clamp(buffer[offset + i], -1f, 1f);
+
+                if (needsCleanup)
+                    CleanupEndedSources();
+
+                return KeepAlive ? count : maxRead;
             }
-
-            for (int i = 0; i < maxRead; i++)
-                buffer[offset + i] = Mathf.Clamp(buffer[offset + i], -1f, 1f);
-
-            if (needsCleanup)
-                CleanupEndedSources();
-
-            return KeepAlive ? count : maxRead;
+            finally
+            {
+                ArrayPool<float>.Shared.Return(temp);
+            }
         }
 
         /// <inheritdoc/>
