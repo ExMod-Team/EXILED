@@ -89,12 +89,11 @@ namespace Exiled.API.Features.Toys
         private OpusEncoder encoder;
         private CoroutineHandle fadeRoutine;
         private CoroutineHandle playBackRoutine;
-
         private CancellationTokenSource processCts;
-        private BlockingCollection<(byte[] Data, int Length)> packetQueue;
 
         private volatile IPcmSource currentSource;
         private volatile IAudioFilter activeFilter;
+        private volatile BlockingCollection<(byte[] Data, int Length)> packetQueue;
 
         private int nextScheduledEventIndex;
         private int idChangeFrame;
@@ -1109,17 +1108,21 @@ namespace Exiled.API.Features.Toys
 
                 try
                 {
-                    while (!token.IsCancellationRequested && !currentSource.Ended)
+                    while (!token.IsCancellationRequested)
                     {
+                        IPcmSource source = currentSource;
+                        if (source == null || source.Ended)
+                            break;
+
                         if (isPitchDefault)
                         {
-                            int read = currentSource.Read(localFrame, 0, FrameSize);
+                            int read = source.Read(localFrame, 0, FrameSize);
                             if (read < FrameSize)
                                 Array.Clear(localFrame, read, FrameSize - read);
                         }
                         else
                         {
-                            ResampleFrame(currentSource, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
+                            ResampleFrame(source, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
                         }
 
                         activeFilter?.Process(localFrame);
