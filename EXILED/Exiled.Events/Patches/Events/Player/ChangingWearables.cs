@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ChangingWearables.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,7 +11,6 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using Exiled.API.Enums;
-    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
@@ -102,11 +101,11 @@ namespace Exiled.Events.Patches.Events.Player
             if (value is WearableElementType.None)
                 return WearableElements.None;
 
-            if (value.HasFlagFast(WearableElementType.ArmorDefault))
+            if (value.HasFlag(WearableElementType.ArmorDefault))
             {
-                ItemType displayedArmor = value.HasFlagFast(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
-                    value.HasFlagFast(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
-                    value.HasFlagFast(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
+                ItemType displayedArmor = value.HasFlag(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
+                    value.HasFlag(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
+                    value.HasFlag(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
                     ev.Player.CurrentArmor?.Type ?? ItemType.None;
 
                 WearableSync.PayloadWriter.WriteSByte((sbyte)displayedArmor);

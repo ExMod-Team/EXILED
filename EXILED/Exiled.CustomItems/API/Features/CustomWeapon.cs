@@ -121,6 +121,9 @@ namespace Exiled.CustomItems.API.Features
                 if (!Attachments.IsEmpty())
                     firearm.AddAttachment(Attachments);
 
+                if (ClipSize > 0)
+                    firearm.MagazineAmmo = ClipSize;
+
                 int ammo = firearm.MagazineAmmo;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
