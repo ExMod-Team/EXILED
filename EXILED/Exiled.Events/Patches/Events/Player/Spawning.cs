@@ -35,25 +35,6 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(RoleSpawnpointManager), nameof(RoleSpawnpointManager.SetPosition))]
     internal static class Spawning
     {
-        private static void ApplyRotation(IFpcRole fpcRole, SpawningEventArgs ev)
-        {
-            if (!ev.IsRotationModified || fpcRole == null || fpcRole.FpcModule == null)
-                return;
-
-            Timing.RunCoroutine(WaitForMouseLookAndApply(fpcRole.FpcModule, ev.SpawningRotation), fpcRole.FpcModule.gameObject);
-        }
-
-        private static IEnumerator<float> WaitForMouseLookAndApply(FirstPersonMovementModule fpcModule, Vector2 rotation)
-        {
-            yield return Timing.WaitUntilFalse(() => fpcModule != null && fpcModule.MouseLook == null);
-
-            if (fpcModule == null)
-                yield break;
-
-            yield return Timing.WaitForOneFrame;
-            fpcModule.ServerOverrideRotation(rotation);
-        }
-
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
@@ -101,6 +82,25 @@ namespace Exiled.Events.Patches.Events.Player
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static void ApplyRotation(IFpcRole fpcRole, SpawningEventArgs ev)
+        {
+            if (!ev.IsRotationModified || fpcRole == null || fpcRole.FpcModule == null)
+                return;
+
+            Timing.RunCoroutine(WaitForMouseLookAndApply(fpcRole.FpcModule, ev.SpawningRotation), fpcRole.FpcModule.gameObject);
+        }
+
+        private static IEnumerator<float> WaitForMouseLookAndApply(FirstPersonMovementModule fpcModule, Vector2 rotation)
+        {
+            yield return Timing.WaitUntilFalse(() => fpcModule != null && fpcModule.MouseLook == null);
+
+            if (fpcModule == null)
+                yield break;
+
+            yield return Timing.WaitForOneFrame;
+            fpcModule.ServerOverrideRotation(rotation);
         }
     }
 }
