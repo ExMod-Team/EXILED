@@ -9,6 +9,7 @@ namespace Exiled.API.Features
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -64,6 +65,7 @@ namespace Exiled.API.Features
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
+    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
@@ -75,6 +77,8 @@ namespace Exiled.API.Features
     using RemoteAdmin;
 
     using RoundRestarting;
+
+    using Unity.Collections.LowLevel.Unsafe;
 
     using UnityEngine;
 
@@ -852,6 +856,67 @@ namespace Exiled.API.Features
                     return;
 
                 voiceRole.VoiceModule.CurrentChannel = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the player's wearable elements.
+        /// </summary>
+        /// <seealso cref="EnableWearables"/> <seealso cref="DisableWearables"/>
+        public WearableElementType Wearables
+        {
+            get
+            {
+                if (!WearableSync.TryGetData(ReferenceHub, out WearableSyncMessage data))
+                    return WearableElementType.None;
+
+                WearableElements flags = data.Flags;
+                WearableElementType exiledFlags = WearableElementType.None;
+
+                if (flags.HasFlag(WearableElements.Armor) && data.Payload.Length is 1)
+                {
+                    ItemType armor = (ItemType)UnsafeUtility.As<byte, sbyte>(ref data.Payload[0]);
+
+                    exiledFlags = armor.GetWearableElementType();
+                }
+
+                return (WearableElementType)flags | exiledFlags;
+            }
+
+            set
+            {
+                if (value is WearableElementType.None)
+                {
+                    Log.Info("None");
+
+                    WearableSyncMessage wearableSyncMessage = new(ReferenceHub);
+                    WearableSync.UpdateDatabaseEntry(wearableSyncMessage);
+                    NetworkServer.SendToAll(wearableSyncMessage, 0, false);
+                    return;
+                }
+
+                WearableSync.PayloadWriter.Reset();
+                Log.Info("newWearables" + value);
+
+                if (value.HasFlag(WearableElementType.ArmorDefault))
+                {
+                    ItemType displayedArmor = value.HasFlag(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
+                        value.HasFlag(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
+                        value.HasFlag(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
+                        CurrentArmor?.Type ?? ItemType.None;
+
+                    if (displayedArmor is not ItemType.None)
+                        WearableSync.PayloadWriter.WriteSByte((sbyte)displayedArmor);
+                    else
+                        value &= ~WearableElementType.ArmorDefault;
+
+                    value &= ~WearableElementType.ArmorLight | WearableElementType.ArmorCombat | WearableElementType.ArmorHeavy;
+                    Log.Info("DiplayedArmor" + displayedArmor);
+                }
+
+                WearableSyncMessage wearableSyncMessage2 = new(ReferenceHub, (WearableElements)value, WearableSync.PayloadWriter);
+                WearableSync.UpdateDatabaseEntry(wearableSyncMessage2);
+                NetworkServer.SendToAll(wearableSyncMessage2, 0, false);
             }
         }
 
@@ -2529,6 +2594,20 @@ namespace Exiled.API.Features
         public void ClearBroadcasts() => Server.Broadcast.TargetClearElements(Connection);
 
         /// <summary>
+        /// Enables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to enable.</param>
+        /// <seealso cref="DisableWearables"/>
+        public void EnableWearables(WearableElementType wearableElements) => Wearables |= wearableElements;
+
+        /// <summary>
+        /// Disables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to disable.</param>
+        /// <seealso cref="EnableWearables"/>
+        public void DisableWearables(WearableElementType wearableElements) => Wearables &= ~wearableElements;
+
+        /// <summary>
         /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to the player's inventory.
         /// </summary>
         /// <param name="ammoType">The <see cref="AmmoType"/> to be added.</param>
@@ -3999,6 +4078,64 @@ namespace Exiled.API.Features
             component = GetComponent<T>(type);
 
             return component is not null;
+        }
+
+        /// <summary>
+        /// Tries to raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="layerMasks">Layer masks to be applied to raycast.</param>
+        /// <param name="hit">Calculated <see cref="RaycastHit"/> or <c>default</c>.</param>
+        /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycast(float maxDistance, LayerMasks layerMasks, out RaycastHit hit)
+        {
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
+
+            bool result = Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, (int)layerMasks);
+
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="hitboxIdentity">Found <see cref="HitboxIdentity"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="hitboxIdentity"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycastedHitbox(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out HitboxIdentity hitboxIdentity)
+        {
+            hitboxIdentity = null;
+
+            if (TryGetRaycast(maxDistance, LayerMasks.Hitbox | additionalMasks, out RaycastHit hit))
+                hitboxIdentity = hit.collider.gameObject.GetComponent<HitboxIdentity>();
+
+            return hitboxIdentity != null;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="Player"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="target">Found <see cref="Player"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="target"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedHitbox"/>
+        public bool TryGetRaycastedPlayer(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out Player target)
+        {
+            target = null;
+
+            if (!TryGetRaycastedHitbox(maxDistance, additionalMasks, out HitboxIdentity hitboxIdentity))
+                return false;
+
+            target = Get(hitboxIdentity.TargetHub);
+            return target != null;
         }
 
         /// <inheritdoc/>

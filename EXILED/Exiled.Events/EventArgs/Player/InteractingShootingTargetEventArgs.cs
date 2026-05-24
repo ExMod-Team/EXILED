@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using AdminToys;
 
     using Exiled.API.Enums;
@@ -74,7 +72,11 @@ namespace Exiled.Events.EventArgs.Player
             set
             {
                 if (!ShootingTarget.IsSynced)
-                    throw new InvalidOperationException("Attempted to set MaxHp while target is in local mode. Set target's IsSynced to true before setting IsAllowed.");
+                {
+                    Log.Warn("Attempted to set MaxHp while target is in local mode. Set target's IsSynced to true before setting NewMaxHp.");
+                    return;
+                }
+
                 field = Mathf.Clamp(value, 1, 256);
             }
         }
@@ -88,7 +90,11 @@ namespace Exiled.Events.EventArgs.Player
             set
             {
                 if (!ShootingTarget.IsSynced)
-                    throw new InvalidOperationException("Attempted to set AutoResetTime while target is in local mode. Set target's IsSynced to true before setting IsAllowed.");
+                {
+                    Log.Warn("Attempted to set AutoResetTime while target is in local mode. Set target's IsSynced to true before setting NewAutoResetTime.");
+                    return;
+                }
+
                 field = Mathf.Clamp(value, 0, 10);
             }
         }
