@@ -230,7 +230,7 @@ namespace Exiled.API.Features.Toys
                 if (playBackRoutine.IsAliveAndPaused == value)
                     return;
 
-                if (value && CurrentSource is ILiveSource)
+                if (value && currentSource is ILiveSource)
                 {
                     Log.Warn("[Speaker] Cannot pause or resume playback of a live source.");
                     return;
@@ -258,18 +258,18 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public double CurrentTime
         {
-            get => CurrentSource?.CurrentTime ?? 0.0;
+            get => currentSource?.CurrentTime ?? 0.0;
             set
             {
-                if (CurrentSource == null)
+                if (currentSource == null)
                     return;
 
                 StopProccesThread();
 
-                CurrentSource.CurrentTime = value;
+                currentSource.CurrentTime = value;
 
                 ResetEncoder();
-                Filter?.Reset();
+                activeFilter?.Reset();
                 UpdateNextScheduledEventIndex();
 
                 if (playBackRoutine.IsRunning)
@@ -281,7 +281,7 @@ namespace Exiled.API.Features.Toys
         /// Gets the total duration of the current track in seconds.
         /// Returns 0 if not playing.
         /// </summary>
-        public double TotalDuration => CurrentSource?.TotalDuration ?? 0.0;
+        public double TotalDuration => currentSource?.TotalDuration ?? 0.0;
 
         /// <summary>
         /// Gets the remaining playback time in seconds.
@@ -358,7 +358,7 @@ namespace Exiled.API.Features.Toys
                 if (isPitchDefault)
                     return;
 
-                if (CurrentSource != null && (CurrentSource is ILiveSource || (CurrentSource is MixerSource mixer && mixer.ContainsLiveSource)))
+                if (currentSource != null && (currentSource is ILiveSource || (currentSource is MixerSource mixer && mixer.ContainsLiveSource)))
                 {
                     field = 1f;
                     isPitchDefault = true;
@@ -582,7 +582,7 @@ namespace Exiled.API.Features.Toys
             speaker.Predicate = settingsFull.Predicate;
             speaker.TargetPlayer = settingsFull.TargetPlayer;
             speaker.TargetPlayers = settingsFull.TargetPlayers;
-            speaker.Filter = settingsFull.Filter;
+            speaker.activeFilter = settingsFull.Filter;
 
             speaker.ReturnToPoolAfter = true;
 
@@ -659,10 +659,10 @@ namespace Exiled.API.Features.Toys
             TryInitializePlayBack();
             Stop(clearQueue);
 
-            CurrentSource = customSource;
-            LastTrackInfo = CurrentSource.TrackInfo;
+            currentSource = customSource;
+            LastTrackInfo = currentSource.TrackInfo;
 
-            if (CurrentSource is ILiveSource)
+            if (currentSource is ILiveSource)
                 Pitch = 1.0f;
 
             playBackRoutine = Timing.RunCoroutine(PlayBackCoroutine().CancelWith(GameObject));
@@ -693,9 +693,9 @@ namespace Exiled.API.Features.Toys
             StopProccesThread();
             ClearScheduledEvents();
 
-            Filter?.Reset();
-            CurrentSource?.Dispose();
-            CurrentSource = null;
+            activeFilter?.Reset();
+            currentSource?.Dispose();
+            currentSource = null;
         }
 
         /// <summary>
@@ -741,8 +741,8 @@ namespace Exiled.API.Features.Toys
             nextScheduledEventIndex = 0;
 
             ResetEncoder();
-            Filter?.Reset();
-            CurrentSource?.Reset();
+            activeFilter?.Reset();
+            currentSource?.Reset();
         }
 
         /// <summary>
@@ -924,7 +924,7 @@ namespace Exiled.API.Features.Toys
             TargetPlayers = null;
 
             Pitch = 1f;
-            Filter = null;
+            activeFilter = null;
             isPitchDefault = true;
             needsSyncWait = false;
 
@@ -1045,7 +1045,7 @@ namespace Exiled.API.Features.Toys
                     if (packetQueue != null && !packetQueue.IsCompleted)
                         continue;
 
-                    bool trackFailed = CurrentSource is IAsyncPcmSource asyncSource && asyncSource.IsFailed;
+                    bool trackFailed = currentSource is IAsyncPcmSource asyncSource && asyncSource.IsFailed;
 
                     if (!trackFailed)
                     {
