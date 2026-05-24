@@ -37,30 +37,23 @@ namespace Exiled.Events.Patches.Events.Player
     [HarmonyPatch(typeof(RoleSpawnpointManager), nameof(RoleSpawnpointManager.SetPosition))]
     internal static class Spawning
     {
-        /// <summary>
-        /// fghdv.
-        /// </summary>
-        /// <param name="fpcRole">dfs.</param>
-        /// <param name="horizontalRotation">sdf.</param>
-        internal static void ApplyRotation(IFpcRole fpcRole, float horizontalRotation)
+        private static void ApplyRotation(IFpcRole fpcRole, SpawningEventArgs ev)
         {
-            if (fpcRole == null || fpcRole.FpcModule == null)
+            if (!ev.IsRotationModified || fpcRole == null || fpcRole.FpcModule == null)
                 return;
 
-            Timing.RunCoroutine(WaitForMouseLookAndApply(fpcRole.FpcModule, horizontalRotation));
+            Timing.RunCoroutine(WaitForMouseLookAndApply(fpcRole.FpcModule, ev.SpawningRotation), fpcRole.FpcModule.gameObject);
         }
 
-        private static IEnumerator<float> WaitForMouseLookAndApply(FirstPersonMovementModule fpcModule, float rotation)
+        private static IEnumerator<float> WaitForMouseLookAndApply(FirstPersonMovementModule fpcModule, Vector2 rotation)
         {
-            while (fpcModule != null)
-            {
-                yield return Timing.WaitUntilFalse(() => fpcModule.MouseLook == null);
+            yield return Timing.WaitUntilFalse(() => fpcModule != null && fpcModule.MouseLook == null);
 
-                yield return Timing.WaitForOneFrame;
-                fpcModule.ServerOverrideRotation(new Vector2(0f, rotation));
-
+            if (fpcModule == null)
                 yield break;
-            }
+
+            yield return Timing.WaitForOneFrame;
+            fpcModule.ServerOverrideRotation(rotation);
         }
 
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
@@ -100,14 +93,15 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Call, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
                 new(OpCodes.Stloc_2),
 
-                // horizontalRotation = ev.HorizontalRotation;
+                // horizontalRotation = ev.SpawningRotation.y;
                 new(OpCodes.Ldloc, ev.LocalIndex),
-                new(OpCodes.Call, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.HorizontalRotation))),
+                new(OpCodes.Call, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.SpawningRotation))),
+                new(OpCodes.Ldfld, Field(typeof(Vector2), nameof(Vector2.y))),
                 new(OpCodes.Stloc_3),
 
-                // ApplyRotation(fpcRole, horizontalRotation)
+                // ApplyRotation(fpcRole, ev.SpawningRotation)
                 new(OpCodes.Ldloc_0),
-                new(OpCodes.Ldloc_3),
+                new(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Call, Method(typeof(Spawning), nameof(ApplyRotation))),
             });
 
