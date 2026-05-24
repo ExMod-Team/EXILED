@@ -8,12 +8,10 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
-    using Exiled.API.Features.Roles;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
