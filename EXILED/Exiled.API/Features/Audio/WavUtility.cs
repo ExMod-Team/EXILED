@@ -15,13 +15,11 @@ namespace Exiled.API.Features.Audio
     using System.Runtime.InteropServices;
 
     using Exiled.API.Features.Audio.PcmSources;
-    using Exiled.API.Features.Toys;
     using Exiled.API.Interfaces.Audio;
     using Exiled.API.Structs.Audio;
 
     using MEC;
 
-    using UnityEngine;
     using UnityEngine.Networking;
 
     using VoiceChat;
