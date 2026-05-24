@@ -13,6 +13,7 @@ namespace Exiled.Events.Patches.Events.Server
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Server;
+
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;

@@ -7,12 +7,12 @@
 
 namespace Exiled.API.Features.Items.FirearmModules
 {
-    using System;
-
     using Exiled.API.Features.Items.FirearmModules.Barrel;
     using Exiled.API.Features.Items.FirearmModules.Primary;
+
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.Modules.Scp127;
+
     using UnityEngine;
 
     /// <summary>
@@ -69,7 +69,7 @@ namespace Exiled.API.Features.Items.FirearmModules
                     MagazineModule magazine => magazine switch
                     {
                         Scp127MagazineModule scp127MagazineModule => new Scp127Magazine(scp127MagazineModule),
-                        _ => new NormalMagazine(magazine)
+                        _ => new NormalMagazine(magazine),
                     },
                     _ => null,
                 },

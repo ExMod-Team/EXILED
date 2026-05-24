@@ -15,22 +15,33 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using CommandSystem.Commands.RemoteAdmin.Cleanup;
+
     using Decals;
+
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
 
     using Interactables.Interobjects;
+
     using InventorySystem;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
+
     using Items;
+
     using LightContainmentZoneDecontamination;
+
     using MapGeneration;
+
     using PlayerRoles.Ragdolls;
+
     using RemoteAdmin;
+
     using UnityEngine;
+
     using Utils;
     using Utils.Networking;
 
@@ -45,10 +56,6 @@ namespace Exiled.API.Features
         /// Gets a list of <see cref="PocketDimensionTeleport"/>s on the map.
         /// </summary>
         internal static List<PocketDimensionTeleport> TeleportsValue = new();
-
-        private static AmbientSoundPlayer ambientSoundPlayer;
-
-        private static SqueakSpawner squeakSpawner;
 
         /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
@@ -123,12 +130,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="global::AmbientSoundPlayer"/>.
         /// </summary>
-        public static AmbientSoundPlayer AmbientSoundPlayer => ambientSoundPlayer ??= ReferenceHub._hostHub.GetComponent<AmbientSoundPlayer>();
+        public static AmbientSoundPlayer AmbientSoundPlayer => field ??= ReferenceHub._hostHub.GetComponent<AmbientSoundPlayer>();
 
         /// <summary>
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
-        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindFirstObjectByType<SqueakSpawner>();
+        public static SqueakSpawner SqueakSpawner => field ??= Object.FindFirstObjectByType<SqueakSpawner>();
 
         /// <summary>
         /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.

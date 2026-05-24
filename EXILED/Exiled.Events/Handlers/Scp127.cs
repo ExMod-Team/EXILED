@@ -9,6 +9,7 @@ namespace Exiled.Events.Handlers
 {
     using Exiled.Events.EventArgs.Scp127;
     using Exiled.Events.Features;
+
     using LabApi.Events.Arguments.Scp127Events;
 
 #pragma warning disable SA1623

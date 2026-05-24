@@ -12,7 +12,9 @@ namespace Exiled.API.Features.Items
 
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items.Scp1509;
+
     using PlayerRoles;
 
     /// <summary>

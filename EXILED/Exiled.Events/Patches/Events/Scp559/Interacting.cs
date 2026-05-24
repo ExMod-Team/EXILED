@@ -15,6 +15,7 @@ namespace Exiled.Events.Patches.Events.Scp559
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp559;
+
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;

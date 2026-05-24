@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="PlacingMimicPoint.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -14,7 +14,9 @@ namespace Exiled.Events.Patches.Events.Scp939
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp939;
+
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp939.Mimicry;
 
     using static HarmonyLib.AccessTools;

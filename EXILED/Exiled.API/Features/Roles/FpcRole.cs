@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using Exiled.API.Features.Pools;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Thirdperson;
@@ -18,8 +19,11 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.Spectating;
     using PlayerRoles.Visibility;
     using PlayerRoles.Voice;
+
     using PlayerStatsSystem;
+
     using RelativePositioning;
+
     using UnityEngine;
 
     /// <summary>
@@ -27,8 +31,6 @@ namespace Exiled.API.Features.Roles
     /// </summary>
     public abstract class FpcRole : Role, IVoiceRole
     {
-        private bool isUsingStamina = true;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FpcRole"/> class.
         /// </summary>
@@ -37,6 +39,7 @@ namespace Exiled.API.Features.Roles
             : base(baseRole)
         {
             FirstPersonController = baseRole;
+            IsUsingStamina = true;
         }
 
         /// <summary>
@@ -190,12 +193,12 @@ namespace Exiled.API.Features.Roles
         /// </summary>
         public bool IsUsingStamina
         {
-            get => isUsingStamina;
+            get;
             set
             {
                 if (!value)
                     Owner.ResetStamina();
-                isUsingStamina = value;
+                field = value;
             }
         }
 
