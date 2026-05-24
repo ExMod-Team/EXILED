@@ -129,7 +129,7 @@ namespace Exiled.API.Features.Audio
         /// <returns>A <see cref="TrackData"/> struct containing the parsed file information.</returns>
         public static TrackData SkipHeader(Stream stream)
         {
-            TrackData trackData = new();
+            TrackData trackData = default(TrackData);
 
             if (stream.Length < 12)
             {

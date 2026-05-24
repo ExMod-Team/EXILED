@@ -11,9 +11,11 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
 
     using Enums;
-    using Exiled.API.Extensions;
+
     using Interactables.Interobjects.DoorUtils;
+
     using Mirror;
+
     using UnityEngine;
 
     /// <summary>
@@ -34,7 +36,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the cached <see cref="AlphaWarheadOutsitePanel"/> component.
         /// </summary>
-        public static AlphaWarheadOutsitePanel OutsitePanel => field != null ? field : (field = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>());
+        public static AlphaWarheadOutsitePanel OutsitePanel => field?.gameObject != null ? field : (field = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>());
 
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the warhead lever.
@@ -129,17 +131,17 @@ namespace Exiled.API.Features
                 if (IsDetonated)
                     return;
 
-                LeverStatus = value.HasFlagFast(WarheadStatus.Armed);
+                LeverStatus = value.HasFlag(WarheadStatus.Armed);
 
-                if (!IsInProgress && value.HasFlagFast(WarheadStatus.InProgress))
+                if (!IsInProgress && value.HasFlag(WarheadStatus.InProgress))
                     Start();
-                else if (!value.HasFlagFast(WarheadStatus.InProgress))
+                else if (!value.HasFlag(WarheadStatus.InProgress))
                     Stop();
 
-                if (value.HasFlagFast(WarheadStatus.Detonated))
+                if (value.HasFlag(WarheadStatus.Detonated))
                     Detonate();
 
-                if (!IsOnCooldown && value.HasFlagFast(WarheadStatus.OnCooldown))
+                if (!IsOnCooldown && value.HasFlag(WarheadStatus.OnCooldown))
                     RemainingCooldown = Controller._cooldown;
             }
         }
@@ -238,7 +240,7 @@ namespace Exiled.API.Features
         public static void Start(bool isAutomatic, bool suppressSubtitles = false, Player trigger = null)
         {
             Controller.InstantPrepare();
-            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger == null ? null : trigger.ReferenceHub);
+            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger?.ReferenceHub);
         }
 
         /// <summary>

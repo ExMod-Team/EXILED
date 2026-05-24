@@ -10,7 +10,6 @@ namespace Exiled.Events.Handlers
     using System;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features;
 
 #pragma warning disable IDE0079
 #pragma warning disable IDE0060
@@ -30,7 +29,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after a player triggers the attack as an SCP.
         /// </summary>
-        public static Event<HitEventArgs> Hit { get; set; } = new ();
+        public static Event<HitEventArgs> Hit { get; set; } = new();
 
         /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
@@ -87,7 +86,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>. In other words, it is invoked after the animation finishes but before the <see cref="API.Features.Items.Usable"/> is actually used.
         /// </summary>
-        public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new ();
+        public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new();
 
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> uses an <see cref="API.Features.Items.Usable"/>.
@@ -655,6 +654,11 @@ namespace Exiled.Events.Handlers
         /// Invoked after transmission has ended.
         /// </summary>
         public static Event<Scp1576TransmissionEndedEventArgs> Scp1576TransmissionEnded { get; set; } = new();
+
+        /// <summary>
+        /// Invoked before new information about wearables is sent to clients.
+        /// </summary>
+        public static Event<ChangingWearablesEventArgs> ChangingWearables { get; set; } = new();
 
         /// <summary>
         /// Called before a player's emotion changed.
@@ -1441,9 +1445,15 @@ namespace Exiled.Events.Handlers
         public static void OnInteractingEmergencyButton(InteractingEmergencyButtonEventArgs ev) => InteractingEmergencyButton.InvokeSafely(ev);
 
         /// <summary>
-        /// Called after a 1576 transmisiion has ended.
+        /// Called after a 1576 transmission has ended.
         /// </summary>
         /// <param name="ev">The <see cref="Scp1576TransmissionEndedEventArgs"/> instance.</param>
         public static void OnScp1576TransmissionEnded(Scp1576TransmissionEndedEventArgs ev) => Scp1576TransmissionEnded.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before new information about wearables is sent to clients.
+        /// </summary>
+        /// <param name="ev">The <see cref="ChangingWearablesEventArgs"/> instance.</param>
+        public static void OnChangingWearables(ChangingWearablesEventArgs ev) => ChangingWearables.InvokeSafely(ev);
     }
 }

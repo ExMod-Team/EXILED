@@ -7,15 +7,15 @@
 
 namespace Exiled.Events.EventArgs.Server
 {
-    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Features;
     using Exiled.API.Features.Waves;
     using Exiled.Events.EventArgs.Interfaces;
+
     using PlayerRoles;
     using PlayerRoles.Spectating;
-    using Respawning;
+
     using Respawning.Objectives;
     using Respawning.Waves;
 

@@ -18,6 +18,7 @@ namespace Exiled.Events.Patches.Events.Server
     using Exiled.Events.EventArgs.Server;
 
     using HarmonyLib;
+
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;

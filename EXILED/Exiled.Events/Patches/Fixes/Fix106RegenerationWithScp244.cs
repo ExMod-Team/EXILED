@@ -10,10 +10,14 @@ namespace Exiled.Events.Patches.Fixes
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
     using CustomPlayerEffects;
+
+    using Exiled.API.Features.Pools;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Usables.Scp244.Hypothermia;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp106;
 
