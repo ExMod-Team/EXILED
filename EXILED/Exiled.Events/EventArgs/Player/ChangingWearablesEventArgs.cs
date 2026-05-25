@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ChangingWearablesEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -34,7 +34,7 @@ namespace Exiled.Events.EventArgs.Player
 
             WearableElementType exiledFlags = WearableElementType.None;
 
-            if (newWearables.HasFlagFast(WearableElements.Armor) && WearableSync.PayloadWriter.buffer.Length is 1)
+            if (newWearables.HasFlag(WearableElements.Armor) && WearableSync.PayloadWriter.buffer.Length is 1)
             {
                 ItemType armor = (ItemType)UnsafeUtility.As<byte, sbyte>(ref WearableSync.PayloadWriter.buffer[0]);
                 exiledFlags = armor.GetWearableElementType();

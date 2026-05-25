@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using AdminToys;
 
     using Exiled.API.Enums;
