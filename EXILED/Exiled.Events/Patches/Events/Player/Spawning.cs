@@ -72,7 +72,7 @@ namespace Exiled.Events.Patches.Events.Player
                 new(OpCodes.Call, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
                 new(OpCodes.Stloc_2),
 
-                // ApplyRotation(fpcRole, ev.SpawningRotation)
+                // ApplyRotation(fpcRole, ev)
                 new(OpCodes.Ldloc_0),
                 new(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Call, Method(typeof(Spawning), nameof(ApplyRotation))),
