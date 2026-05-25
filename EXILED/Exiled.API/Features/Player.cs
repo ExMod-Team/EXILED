@@ -64,7 +64,6 @@ namespace Exiled.API.Features
 
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
-    using PlayerRoles.FirstPersonControl.Thirdperson;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
     using PlayerRoles.RoleAssign;
@@ -874,7 +873,7 @@ namespace Exiled.API.Features
                 WearableElements flags = data.Flags;
                 WearableElementType exiledFlags = WearableElementType.None;
 
-                if (flags.HasFlagFast(WearableElements.Armor) && data.Payload.Length is 1)
+                if (flags.HasFlag(WearableElements.Armor) && data.Payload.Length is 1)
                 {
                     ItemType armor = (ItemType)UnsafeUtility.As<byte, sbyte>(ref data.Payload[0]);
 
@@ -899,11 +898,11 @@ namespace Exiled.API.Features
                 WearableSync.PayloadWriter.Reset();
                 Log.Info("newWearables" + value);
 
-                if (value.HasFlagFast(WearableElementType.ArmorDefault))
+                if (value.HasFlag(WearableElementType.ArmorDefault))
                 {
-                    ItemType displayedArmor = value.HasFlagFast(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
-                        value.HasFlagFast(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
-                        value.HasFlagFast(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
+                    ItemType displayedArmor = value.HasFlag(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
+                        value.HasFlag(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
+                        value.HasFlag(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
                         CurrentArmor?.Type ?? ItemType.None;
 
                     if (displayedArmor is not ItemType.None)
