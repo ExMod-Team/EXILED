@@ -66,6 +66,7 @@ namespace Exiled.Events.Handlers.Internal
             {
                 PrefabType prefabType = EnumUtils<PrefabType>.Values[i];
                 PrefabAttribute attribute = prefabType.GetPrefabAttribute();
+                Log.Info($"{prefabType} {attribute.AssetId}/{attribute.Name}");
                 if (prefabs.TryGetValue(attribute.AssetId, out (GameObject, Component) tuple))
                 {
                     if (attribute.Name != tuple.Item1.name)
@@ -76,13 +77,13 @@ namespace Exiled.Events.Handlers.Internal
                     continue;
                 }
 
-                KeyValuePair<uint, (GameObject, Component)>? value = prefabs.FirstOrDefault(x => x.Value.Item1.name == attribute.Name);
-                if (value.HasValue)
+                if (TryGet(attribute.Name, out KeyValuePair<uint, (GameObject, Component)> value))
                 {
-                    Log.Warn($"Not valid AssetId {prefabType}: {attribute.Name} ({attribute.AssetId}) -> {value.Value.Value.Item1.name} ({value.Value.Key})");
+                    Log.Error($"{prefabType} {value}");
+                    Log.Warn($"Not valid AssetId {prefabType}: {attribute.Name} ({attribute.AssetId}) -> {value.Value.Item1.name} ({value.Key})");
 
                     PrefabHelper.Prefabs.Add(prefabType, prefabs.FirstOrDefault(prefab => prefab.Key == attribute.AssetId || prefab.Value.Item1.name.Contains(attribute.Name)).Value);
-                    prefabs.Remove(value.Value.Key);
+                    prefabs.Remove(value.Key);
                     continue;
                 }
 
@@ -91,6 +92,20 @@ namespace Exiled.Events.Handlers.Internal
 
             foreach (KeyValuePair<uint, (GameObject, Component)> missing in prefabs)
                 Log.Warn($"Missing prefab in {nameof(PrefabType)}: {missing.Value.Item1.name} ({missing.Key})");
+
+            return;
+
+            bool TryGet(string name, out KeyValuePair<uint, (GameObject, Component)> tuple)
+            {
+                foreach (KeyValuePair<uint, (GameObject, Component)> kvp in prefabs.Where(kvp => kvp.Value.Item1.name == name))
+                {
+                    tuple = kvp;
+                    return true;
+                }
+
+                tuple = default;
+                return false;
+            }
         }
     }
 }
