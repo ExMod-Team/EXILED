@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Pickups
     using System;
 
     using Exiled.API.Enums;
+    using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
@@ -58,7 +59,11 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets the <see cref="Enums.AmmoType"/>.
         /// </summary>
-        public AmmoType AmmoType { get; set; }
+        public AmmoType AmmoType
+        {
+            get => AmmoItemType.GetAmmoType();
+            set => AmmoItemType = value.GetItemType();
+        }
 
         /// <summary>
         /// Gets or sets the <see cref="ItemType"/>.
