@@ -16,13 +16,20 @@ namespace Exiled.API.Features
     using CommandSystem.Commands.RemoteAdmin.Dummies;
     using Exiled.API.Enums;
     using Exiled.API.Features.CustomStats;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Roles;
     using Footprinting;
+    using InventorySystem;
+    using InventorySystem.Items.Usables;
+    using InventorySystem.Items.Usables.Scp330;
     using MEC;
     using Mirror;
     using NetworkManagerUtils.Dummies;
     using PlayerRoles;
+    using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.Subroutines;
     using PlayerStatsSystem;
+    using RelativePositioning;
     using UnityEngine;
 
     /// <summary>
@@ -354,6 +361,310 @@ namespace Exiled.API.Features
             {
                 this?.Destroy();
             });
+        }
+
+        /// <summary>
+        /// Moves this Npc by a direction relative to where they are looking.
+        /// </summary>
+        /// <param name="dir">Direction where Npc should move relative to where they are looking.</param>
+        /// <param name="distance">The distance that the Npc should move by.</param>
+        /// <returns>True if successful.</returns>
+        public bool TryMoveRelative(Vector3 dir, float distance)
+        {
+            if (Role is not FpcRole)
+                return false;
+
+            Vector3 vector = CameraTransform.TransformDirection(dir).NormalizeIgnoreY();
+            Position += vector * distance;
+            return true;
+        }
+
+        /// <summary>
+        /// Makes the Npc look more left or more right.
+        /// </summary>
+        /// <param name="amount">Amount that will be added to horizontal (in degrees).</param>
+        /// <returns>True if successful.</returns>
+        public bool TryAddHorizontalLook(float amount)
+        {
+            if (Role is not FpcRole fpcRole)
+                return false;
+
+            fpcRole.FirstPersonController.FpcModule.MouseLook.CurrentHorizontal += amount;
+            return true;
+        }
+
+        /// <summary>
+        /// Makes the Npc look more up or more down.
+        /// </summary>
+        /// <param name="amount">Amount that will be added to vertical (in degrees).</param>
+        /// <returns>True if successful.</returns>
+        public bool TryAddVerticalLook(float amount)
+        {
+            if (Role is not FpcRole fpcRole)
+                return false;
+
+            fpcRole.FirstPersonController.FpcModule.MouseLook.CurrentVertical += amount;
+            return true;
+        }
+
+        /// <summary>
+        /// Forces Npc to look at certain point.
+        /// </summary>
+        /// <param name="position">Position to look at.</param>
+        /// <param name="lerp">The amount in percentage how much to look at the position, 1 is full and will immediately look at the point.</param>
+        /// <returns>True if successful.</returns>
+        public bool TryLookAtPoint(Vector3 position, float lerp = 1)
+        {
+            if (Role is not FpcRole fpcRole)
+                return false;
+
+            fpcRole.FirstPersonController.LookAtPoint(position, lerp);
+            return true;
+        }
+
+        /// <summary>
+        /// Forces Npc to look at a certain direction.
+        /// </summary>
+        /// <param name="dir">The direction to look at.</param>
+        /// <param name="lerp">The amount in percentage how much to look at the direction, 1 is full and will immediately look at the target direction.</param>
+        /// <returns>True if successful.</returns>
+        public bool TryLookAtDirection(Vector3 dir, float lerp = 1)
+        {
+            if (Role is not FpcRole fpcRole)
+                return false;
+
+            fpcRole.FirstPersonController.LookAtDirection(dir, lerp);
+            return true;
+        }
+
+        /// <summary>
+        /// Makes the Npc jump by amount of strength.
+        /// </summary>
+        /// <param name="jumpStrength">The strength used to jump. Null will choose the default one.</param>
+        /// <returns>True if successful.</returns>
+        public bool Jump(float? jumpStrength = null)
+        {
+            if (Role is not FpcRole fpcRole)
+            {
+                return false;
+            }
+
+            fpcRole.Jump(jumpStrength);
+            return true;
+        }
+
+        /// <summary>
+        /// Makes the Npc eat certain kind of candy.
+        /// </summary>
+        /// <param name="candyKind">The kind of candy to eat.</param>
+        /// <returns>True if successful.</returns>
+        public bool EatCandy(CandyKindID candyKind)
+        {
+            foreach(Item? item in Items)
+            {
+                if (item is not Scp330 scp330)
+                {
+                    continue;
+                }
+
+                return EatCandy(scp330, candyKind);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Makes the Npc eat certain kind of candy.
+        /// </summary>
+        /// <param name="from">The <see cref="Scp330"/> bag.</param>
+        /// <param name="candyKind">The kind of candy to eat.</param>
+        /// <returns>True if successful.</returns>
+        public bool EatCandy(Scp330 from, CandyKindID candyKind)
+        {
+            for (int i = 0; i < from.Candies.Count; i++)
+            {
+                if (from.Base.Candies[i] == candyKind)
+                {
+                    from.Base.ServerSelectCandy(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets actions that can be done by the Dummy.
+        /// </summary>
+        /// <returns><see cref="IReadOnlyList{DummyAction}"/>.</returns>
+        public IReadOnlyList<DummyAction> GetActions()
+        {
+            return DummyActionCollector.ServerGetActions(ReferenceHub);
+        }
+
+        /// <summary>
+        /// Equips Item.
+        /// <see cref="Inventory.PopulateDummyAction"/>.
+        /// </summary>
+        /// <param name="item">The <see cref="Item"/> to equip.</param>
+        public void EquipItem(Item item)
+        {
+            Inventory?.ServerSelectItem(item.Serial);
+        }
+
+        /// <summary>
+        /// Equips nothing.
+        /// <see cref="Inventory.PopulateDummyAction"/>.
+        /// </summary>
+        public void HolsterItem()
+        {
+            Inventory?.ServerSelectItem(0);
+        }
+
+        /// <summary>
+        /// Forces the Npc to stop using item.
+        /// </summary>
+        /// <param name="item">The <see cref="Item"/> to cancel usage of.</param>
+        public void CancelUseItem(Item item)
+        {
+            UsableItemsController.ServerEmulateMessage(item.Serial, StatusMessage.StatusType.Cancel);
+        }
+
+        /// <summary>
+        /// Forces the Npc to shoot.
+        /// </summary>
+        /// <param name="hold">Specifies if the shooting is to be held.</param>
+        /// <returns>True if successful.</returns>
+        public bool Shoot(bool hold) =>
+            RunItemAction(CurrentItem, ActionName.Shoot, hold);
+
+        /// <summary>
+        /// Forces the Npc to reload.
+        /// </summary>
+        /// <param name="hold">Specifies if the reloading is to be held.</param>
+        /// <returns>True if successful.</returns>
+        public bool Reload(bool hold) =>
+            RunItemAction(CurrentItem, ActionName.Reload, hold);
+
+        /// <summary>
+        /// Forces the Npc to zoom.
+        /// </summary>
+        /// <param name="hold">Specifies if the zooming is to be held.</param>
+        /// <returns>True if successful.</returns>
+        public bool Zoom(bool hold) =>
+            RunItemAction(CurrentItem, ActionName.Zoom, hold);
+
+        /// <summary>
+        /// Forces the Npc to run generic action with item.
+        /// </summary>
+        /// <param name="item">The <see cref="Item"/> to run action for.</param>
+        /// <param name="name">The name of action to force.</param>
+        /// <param name="hold">Specifies if the action is to be held.</param>
+        /// <returns>True if successful.</returns>
+        public bool RunItemAction(Item item, ActionName name, bool hold = true) =>
+            RunAction(item?.DummyEmulator, name, hold);
+
+        /// <summary>
+        /// Forces the Npc to stop generic action with item.
+        /// </summary>
+        /// <param name="item">The <see cref="Item"/> to stop action for.</param>
+        /// <param name="name">The name of action to stop.</param>
+        /// <returns>True if successful.</returns>
+        public bool StopItemAction(Item item, ActionName name) =>
+            StopAction(item?.DummyEmulator, name);
+
+        /// <summary>
+        /// Checks if certain action is currently active.
+        /// </summary>
+        /// <param name="item">The <see cref="Item"/> to check action for.</param>
+        /// <param name="name">The name of action to check.</param>
+        /// <returns>True if action is actively executed and emulator is not null.</returns>
+        public bool IsBeingDone(Item item, ActionName name) =>
+            IsBeingDone(item?.DummyEmulator, name);
+
+        /// <summary>
+        /// Forces the Npc to run generic action with subroutine.
+        /// </summary>
+        /// <param name="subroutine">The <see cref="SubroutineBase"/> to run action for.</param>
+        /// <param name="name">The name of action to force.</param>
+        /// <param name="hold">Specifies if the action is to be held.</param>
+        /// <typeparam name="T"><see cref="SubroutineBase"/>.</typeparam>
+        /// <returns>True if successful.</returns>
+        public bool RunSubroutineAction<T>(T subroutine, ActionName name, bool hold = true)
+            where T : SubroutineBase =>
+            RunAction(subroutine?.DummyEmulator, name, hold);
+
+        /// <summary>
+        /// Forces the Npc to stop generic action with subroutine.
+        /// </summary>
+        /// <param name="subroutine">The <see cref="SubroutineBase"/> to stop action for.</param>
+        /// <param name="name">The name of action to stop.</param>
+        /// <typeparam name="T"><see cref="SubroutineBase"/>.</typeparam>
+        /// <returns>True if successful.</returns>
+        public bool StopSubroutineAction<T>(T subroutine, ActionName name)
+            where T : SubroutineBase =>
+            StopAction(subroutine?.DummyEmulator, name);
+
+        /// <summary>
+        /// Checks if certain action is currently active.
+        /// </summary>
+        /// <param name="subroutine">The <see cref="SubroutineBase"/> to check action for.</param>
+        /// <param name="name">The name of action to check.</param>
+        /// <typeparam name="T"><see cref="SubroutineBase"/>.</typeparam>
+        /// <returns>True if action is actively executed and emulator is not null.</returns>
+        public bool IsBeingDone<T>(T subroutine, ActionName name)
+            where T : SubroutineBase =>
+            IsBeingDone(subroutine?.DummyEmulator, name);
+
+        /// <summary>
+        /// Forces the Npc to run generic action with emulator.
+        /// </summary>
+        /// <param name="emulator">The <see cref="DummyKeyEmulator"/> to run action for.</param>
+        /// <param name="name">The name of action to force.</param>
+        /// <param name="hold">Specifies if the action is to be held.</param>
+        /// <returns>True if successful.</returns>
+        public bool RunAction(DummyKeyEmulator? emulator, ActionName name, bool hold)
+        {
+            if (emulator == null)
+            {
+                return false;
+            }
+
+            emulator.AddEntry(name, !hold);
+            return true;
+        }
+
+        /// <summary>
+        /// Forces the Npc to stop generic action with emulator.
+        /// </summary>
+        /// <param name="emulator">The <see cref="DummyKeyEmulator"/> to stop action for.</param>
+        /// <param name="name">The name of action to stop.</param>
+        /// <returns>True if successful.</returns>
+        public bool StopAction(DummyKeyEmulator? emulator, ActionName name)
+        {
+            if (emulator == null)
+            {
+                return false;
+            }
+
+            emulator.RemoveEntry(name);
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if certain action is currently active.
+        /// </summary>
+        /// <param name="emulator">The <see cref="DummyKeyEmulator"/> to check action for.</param>
+        /// <param name="name">The name of action to check.</param>
+        /// <returns>True if action is actively executed and emulator is not null.</returns>
+        public bool IsBeingDone(DummyKeyEmulator? emulator, ActionName name)
+        {
+            if (emulator == null)
+            {
+                return false;
+            }
+
+            return emulator.GetAction(name, false);
         }
     }
 }
