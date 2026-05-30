@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Toys
 {
+    using System;
+
     using AdminToys;
 
     using Exiled.API.Enums;
@@ -15,6 +17,8 @@ namespace Exiled.API.Features.Toys
     using UnityEngine;
 
     using static AdminToys.InvisibleInteractableToy;
+
+    using Object = UnityEngine.GameObject;
 
     /// <summary>
     /// A wrapper class for <see cref="InvisibleInteractableToy"/>.
@@ -31,6 +35,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
+        [Obsolete("This is only valid as a default component", false)]
         public static InvisibleInteractableToy Prefab { get; } = PrefabHelper.GetPrefab<InvisibleInteractableToy>(PrefabType.InvisibleInteractableToy);
 
         /// <summary>
@@ -115,7 +120,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
         public static InteractableToy Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, bool spawn = true)
         {
-            InteractableToy toy = new(Object.Instantiate(Prefab, parent))
+            InteractableToy toy = new(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.InvisibleInteractableToy), parent).GetComponent<InvisibleInteractableToy>())
             {
                 Shape = shape,
                 IsLocked = isLocked,

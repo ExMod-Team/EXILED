@@ -7,6 +7,8 @@
 
 namespace Exiled.API.Features.Toys
 {
+    using System;
+
     using AdminToys;
 
     using Enums;
@@ -14,6 +16,8 @@ namespace Exiled.API.Features.Toys
     using Exiled.API.Interfaces;
 
     using UnityEngine;
+
+    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="CapybaraToy"/>.
@@ -30,6 +34,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
+        [Obsolete("This is only valid as a default component", false)]
         public static CapybaraToy Prefab { get; } = PrefabHelper.GetPrefab<CapybaraToy>(PrefabType.CapybaraToy);
 
         /// <summary>
@@ -80,7 +85,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Capybara"/>.</returns>
         public static Capybara Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, bool collidable = true, bool spawn = true)
         {
-            Capybara toy = new(Object.Instantiate(Prefab, parent))
+            Capybara toy = new(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.CapybaraToy), parent).GetComponent<CapybaraToy>())
             {
                 Collidable = collidable,
             };

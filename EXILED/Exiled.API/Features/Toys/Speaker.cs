@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Toys
 {
+    using System;
     using System.Collections.Generic;
 
     using AdminToys;
@@ -14,7 +15,8 @@ namespace Exiled.API.Features.Toys
     using Exiled.API.Interfaces;
     using UnityEngine;
     using VoiceChat.Networking;
-    using VoiceChat.Playbacks;
+
+    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="SpeakerToy"/>.
@@ -31,6 +33,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
+        [Obsolete("This is only valid as a default component", false)]
         public static SpeakerToy Prefab => PrefabHelper.GetPrefab<SpeakerToy>(PrefabType.SpeakerToy);
 
         /// <summary>
@@ -109,7 +112,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Speaker"/>.</returns>
         public static Speaker Create(Vector3? position, Vector3? rotation, Vector3? scale, bool spawn)
         {
-            Speaker speaker = new(UnityEngine.Object.Instantiate(Prefab))
+            Speaker speaker = new(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.SpeakerToy)).GetComponent<SpeakerToy>())
             {
                 Position = position ?? Vector3.zero,
                 Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
@@ -131,7 +134,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Speaker"/>.</returns>
         public static Speaker Create(Transform transform, bool spawn, bool worldPositionStays = true)
         {
-            Speaker speaker = new(Object.Instantiate(Prefab, transform, worldPositionStays))
+            Speaker speaker = new(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.SpeakerToy), transform, worldPositionStays).GetComponent<SpeakerToy>())
             {
                 Position = transform.position,
                 Rotation = transform.rotation,
