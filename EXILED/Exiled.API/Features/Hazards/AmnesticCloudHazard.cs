@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Hazards
 {
-    using System;
-
     using Exiled.API.Enums;
     using PlayerRoles.PlayableScps.Scp939;
 
@@ -34,7 +32,6 @@ namespace Exiled.API.Features.Hazards
         /// <summary>
         /// Gets the amnestic cloud prefab.
         /// </summary>
-        [Obsolete("This only work as default component")]
         public static Scp939AmnesticCloudInstance AmnesticCloudPrefab
         {
             get
