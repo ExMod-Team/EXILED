@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System;
-
     using AdminToys;
 
     using Exiled.API.Enums;
@@ -17,8 +15,6 @@ namespace Exiled.API.Features.Toys
     using UnityEngine;
 
     using CameraType = Enums.CameraType;
-
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="AdminToys.AdminToyBase"/>.
@@ -35,31 +31,26 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab for EzArm Camera prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static Scp079CameraToy EzArmCameraPrefab { get; } = PrefabHelper.GetPrefab<Scp079CameraToy>(PrefabType.EzArmCameraToy);
 
         /// <summary>
         /// Gets the prefab for Ez Camera prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static Scp079CameraToy EzCameraPrefab { get; } = PrefabHelper.GetPrefab<Scp079CameraToy>(PrefabType.EzCameraToy);
 
         /// <summary>
         /// Gets the prefab for Hcz Camera prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static Scp079CameraToy HczCameraPrefab { get; } = PrefabHelper.GetPrefab<Scp079CameraToy>(PrefabType.HczCameraToy);
 
         /// <summary>
         /// Gets the prefab for Lcz Camera prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static Scp079CameraToy LczCameraPrefab { get; } = PrefabHelper.GetPrefab<Scp079CameraToy>(PrefabType.LczCameraToy);
 
         /// <summary>
         /// Gets the prefab for Sz Camera prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static Scp079CameraToy SzCameraPrefab { get; } = PrefabHelper.GetPrefab<Scp079CameraToy>(PrefabType.SzCameraToy);
 
         /// <summary>
@@ -146,23 +137,23 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="CameraToy"/>.</returns>
         public static CameraToy Create(Transform parent = null, CameraType type = CameraType.EzArmCameraToy, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, string name = "New Camera", Room room = null, Vector2? verticalConstraint = null, Vector2? horizontalConstraint = null, Vector2? zoomConstraint = null, bool spawn = true)
         {
-            PrefabType? prefabType = type switch
+            Scp079CameraToy prefab = type switch
             {
-                CameraType.EzArmCameraToy => PrefabType.EzArmCameraToy,
-                CameraType.EzCameraToy => PrefabType.EzCameraToy,
-                CameraType.HczCameraToy => PrefabType.HczCameraToy,
-                CameraType.LczCameraToy => PrefabType.LczCameraToy,
-                CameraType.SzCameraToy => PrefabType.SzCameraToy,
+                CameraType.EzArmCameraToy => EzArmCameraPrefab,
+                CameraType.EzCameraToy => EzCameraPrefab,
+                CameraType.HczCameraToy => HczCameraPrefab,
+                CameraType.LczCameraToy => LczCameraPrefab,
+                CameraType.SzCameraToy => SzCameraPrefab,
                 _ => null,
             };
 
-            if (prefabType == null)
+            if (prefab == null)
             {
                 Log.Warn("Invalid Camera Type for prefab");
                 return null;
             }
 
-            CameraToy toy = new(Object.Instantiate(PrefabHelper.GetPrefab(prefabType.Value), parent).GetComponent<Scp079CameraToy>())
+            CameraToy toy = new(Object.Instantiate(prefab, parent))
             {
                 Name = name,
             };

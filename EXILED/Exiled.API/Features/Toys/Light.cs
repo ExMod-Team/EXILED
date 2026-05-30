@@ -35,7 +35,6 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static LightSourceToy Prefab => PrefabHelper.GetPrefab<LightSourceToy>(PrefabType.LightSourceToy);
 
         /// <summary>
@@ -147,7 +146,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Light"/>.</returns>
         public static Light Create(Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
         {
-            Light light = new(UnityEngine.Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.LightSourceToy)).GetComponent<LightSourceToy>())
+            Light light = new(UnityEngine.Object.Instantiate(Prefab))
             {
                 Position = position ?? Vector3.zero,
                 Rotation = Quaternion.Euler(rotation ?? Vector3.zero),

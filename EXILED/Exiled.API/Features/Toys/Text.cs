@@ -7,16 +7,12 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System;
-
     using AdminToys;
 
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
 
     using UnityEngine;
-
-    using Object = UnityEngine.GameObject;
 
     /// <summary>
     /// A wrapper class for <see cref="TextToy"/>.
@@ -33,7 +29,6 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static TextToy Prefab { get; } = PrefabHelper.GetPrefab<TextToy>(PrefabType.TextToy);
 
         /// <summary>
@@ -106,7 +101,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Text"/>.</returns>
         public static Text Create(Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, string text = "Default Text", Vector2? displaySize = null, Transform parent = null, bool spawn = true)
         {
-            Text textToy = new(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.TextToy).GetComponent<TextToy>(), parent))
+            Text textToy = new(Object.Instantiate(Prefab, parent))
             {
                 TextFormat = text,
                 DisplaySize = displaySize ?? new Vector3(50, 50),

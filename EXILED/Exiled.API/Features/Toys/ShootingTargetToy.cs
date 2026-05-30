@@ -49,19 +49,16 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab for Sport Shooting Target.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static ShootingTarget SportShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.SportTarget);
 
         /// <summary>
         /// Gets the prefab for DBoy Shooting Target.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static ShootingTarget DboyShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.DBoyTarget);
 
         /// <summary>
         /// Gets the prefab for Binary Shooting Target.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
         public static ShootingTarget BinaryShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.BinaryTarget);
 
         /// <summary>
@@ -181,19 +178,19 @@ namespace Exiled.API.Features.Toys
             {
                 case ShootingTargetType.ClassD:
                     {
-                        shootingTargetToy = new(Object.Instantiate(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.DBoyTarget).GetComponent<ShootingTarget>())));
+                        shootingTargetToy = new(Object.Instantiate(DboyShootingTargetPrefab));
                         break;
                     }
 
                 case ShootingTargetType.Binary:
                     {
-                        shootingTargetToy = new(Object.Instantiate(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.BinaryTarget).GetComponent<ShootingTarget>())));
+                        shootingTargetToy = new(Object.Instantiate(BinaryShootingTargetPrefab));
                         break;
                     }
 
                 default:
                     {
-                        shootingTargetToy = new(Object.Instantiate(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.SportTarget).GetComponent<ShootingTarget>())));
+                        shootingTargetToy = new(Object.Instantiate(SportShootingTargetPrefab));
                         break;
                     }
             }
