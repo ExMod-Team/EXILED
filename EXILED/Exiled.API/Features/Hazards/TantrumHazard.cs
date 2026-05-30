@@ -7,10 +7,13 @@
 
 namespace Exiled.API.Features.Hazards
 {
+    using System;
+
     using Exiled.API.Enums;
     using global::Hazards;
     using Mirror;
     using RelativePositioning;
+
     using UnityEngine;
 
     /// <summary>
@@ -33,6 +36,7 @@ namespace Exiled.API.Features.Hazards
         /// <summary>
         /// Gets the tantrum prefab.
         /// </summary>
+        [Obsolete("This only work as default component")]
         public static TantrumEnvironmentalHazard TantrumPrefab
         {
             get
@@ -88,7 +92,7 @@ namespace Exiled.API.Features.Hazards
         /// <returns>The <see cref="TantrumHazard"/> instance.</returns>
         public static TantrumHazard PlaceTantrum(Vector3 position, bool isActive = true)
         {
-            TantrumEnvironmentalHazard tantrum = Object.Instantiate(TantrumPrefab);
+            TantrumEnvironmentalHazard tantrum = UnityEngine.Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.TantrumObj)).GetComponent<TantrumEnvironmentalHazard>();
 
             if (!isActive)
                 tantrum.SynchronizedPosition = new(position);
