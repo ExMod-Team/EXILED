@@ -79,6 +79,8 @@ namespace Exiled.Events.Handlers.Internal
                 for (int i = 0; i < EnumUtils<PrefabType>.Values.Length; i++)
                 {
                     PrefabType prefabType = EnumUtils<PrefabType>.Values[i];
+                    if (prefabType is PrefabType.HCZOneSided or PrefabType.HCZTwoSided)
+                        continue;
 
                     // skip obsolete prefabs
                     if (typeof(PrefabType).GetField(prefabType.ToString()).GetCustomAttribute<ObsoleteAttribute>() != null)

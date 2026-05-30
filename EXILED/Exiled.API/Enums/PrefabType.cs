@@ -31,11 +31,10 @@ namespace Exiled.API.Enums
         [Prefab(3038351124, "LCZ BreakableDoor")]
         LCZBreakableDoor,
 
-        [Obsolete("This prefab no longer exists")]
+        // TODO: refactor HCZ door wall connector support
         [Prefab(400539138, "HCZ OneSided")]
         HCZOneSided,
 
-        [Obsolete("This prefab no longer exists")]
         [Prefab(2060920286, "HCZ TwoSided")]
         HCZTwoSided,
 
