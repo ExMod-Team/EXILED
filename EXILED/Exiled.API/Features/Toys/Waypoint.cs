@@ -7,16 +7,12 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System;
-
     using AdminToys;
 
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
 
     using UnityEngine;
-
-    using Object = UnityEngine.Object;
 
     /// <summary>
     /// A wrapper class for <see cref="WaypointToy"/>.
@@ -33,8 +29,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        [Obsolete("This is only valid as a default component", false)]
-        public static WaypointToy Prefab { get; } = PrefabHelper.GetPrefab<WaypointToy>(PrefabType.WaypointToy);
+        public static WaypointToy Prefab { get; internal set; }
 
         /// <summary>
         /// Gets the base <see cref="WaypointToy"/>.
@@ -111,7 +106,7 @@ namespace Exiled.API.Features.Toys
         /// <returns>The new <see cref="Waypoint"/>.</returns>
         public static Waypoint Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, float priority = 0f, bool visualizeBounds = false, bool spawn = true)
         {
-            Waypoint toy = new(Object.Instantiate(PrefabHelper.GetPrefab(PrefabType.WaypointToy).GetComponent<WaypointToy>(), parent))
+            Waypoint toy = new(Object.Instantiate(Prefab, parent))
             {
                 Priority = priority,
                 BoundsSize = scale ?? Vector3.one * 255.9961f,

@@ -44,11 +44,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
         /// <returns>The corresponding <see cref="PrefabAttribute"/>.</returns>
-        public static PrefabAttribute GetPrefabAttribute(this PrefabType prefabType)
-        {
-            Type type = prefabType.GetType();
-            return type.GetField(Enum.GetName(type, prefabType)).GetCustomAttribute<PrefabAttribute>();
-        }
+        public static PrefabAttribute GetPrefabAttribute(this PrefabType prefabType) => typeof(PrefabType).GetField(prefabType.ToString()).GetCustomAttribute<PrefabAttribute>();
 
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
@@ -57,7 +53,9 @@ namespace Exiled.API.Features
         /// <returns>Returns the <see cref="GameObject"/>.</returns>
         public static GameObject GetPrefab(PrefabType prefabType)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             if (prefabType is PrefabType.HCZOneSided or PrefabType.HCZTwoSided)
+#pragma warning restore CS0618 // Type or member is obsolete
             {
                 prefabType = PrefabType.HCZBreakableDoor;
             }
@@ -86,7 +84,6 @@ namespace Exiled.API.Features
         /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
         /// <typeparam name="T">The <see cref="Component"/> type.</typeparam>
         /// <returns>Returns the <see cref="Component"/>.</returns>
-        [Obsolete("This only work as default component")]
         public static T GetPrefab<T>(PrefabType prefabType)
             where T : Component
         {
@@ -118,6 +115,7 @@ namespace Exiled.API.Features
                 positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / 5.625F);
             }
 
+#pragma warning disable CS0618 // Type or member is obsolete
             if (prefabType is PrefabType.HCZOneSided or PrefabType.HCZTwoSided or PrefabType.HCZBreakableDoor)
             {
                 newGameObject.GetComponent<WallableSmallNodeRoomConnector>().Network_syncBitmask = prefabType switch
@@ -128,6 +126,7 @@ namespace Exiled.API.Features
                     _ => 0
                 };
             }
+#pragma warning restore CS0618 // Type or member is obsolete
 
             NetworkServer.Spawn(newGameObject);
 
