@@ -193,6 +193,13 @@ namespace Exiled.API.Features.Lockers
         public bool CanInteract => Base.CanInteract;
 
         /// <summary>
+        /// Converts LockerChamber to Chamber.
+        /// </summary>
+        /// <param name="lockerChamber">The LockerChamber.</param>
+        /// <returns>EXILED Chamber.</returns>
+        public static implicit operator Chamber(LockerChamber lockerChamber) => Get(lockerChamber);
+
+        /// <summary>
         /// Adds an item to the current chamber.
         /// </summary>
         /// <param name="item">The pickup to add.</param>

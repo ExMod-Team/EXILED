@@ -46,7 +46,7 @@ namespace Exiled.Events.EventArgs.Player
         public InteractingShootingTargetEventArgs(Player player, ShootingTarget shootingTarget, ShootingTargetButton targetButton, int maxHp, int autoResetTime, bool isAllowed = true)
         {
             Player = player;
-            ShootingTarget = ShootingTargetToy.Get(shootingTarget);
+            ShootingTarget = shootingTarget;
             TargetButton = targetButton;
             IsAllowed = isAllowed;
             NewMaxHp = maxHp;

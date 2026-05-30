@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System.Linq;
-
     using AdminToys;
 
     using Enums;
@@ -86,6 +84,13 @@ namespace Exiled.API.Features.Toys
             get => Base.NetworkPrimitiveFlags;
             set => Base.NetworkPrimitiveFlags = value;
         }
+
+        /// <summary>
+        /// Converts PrimitiveObjectToy to Primitive.
+        /// </summary>
+        /// <param name="primitiveObjectToy">The PrimitiveObjectToy.</param>
+        /// <returns>EXILED Primitive.</returns>
+        public static implicit operator Primitive(PrimitiveObjectToy primitiveObjectToy) => (Primitive)Get(primitiveObjectToy);
 
         /// <summary>
         /// Creates a new <see cref="Primitive"/>.
@@ -216,17 +221,6 @@ namespace Exiled.API.Features.Toys
                 primitive.Spawn();
 
             return primitive;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Primitive"/> belonging to the <see cref="PrimitiveObjectToy"/>.
-        /// </summary>
-        /// <param name="primitiveObjectToy">The <see cref="PrimitiveObjectToy"/> instance.</param>
-        /// <returns>The corresponding <see cref="Primitive"/> instance.</returns>
-        public static Primitive Get(PrimitiveObjectToy primitiveObjectToy)
-        {
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == primitiveObjectToy);
-            return adminToy is not null ? adminToy as Primitive : new(primitiveObjectToy);
         }
     }
 }

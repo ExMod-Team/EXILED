@@ -78,6 +78,13 @@ namespace Exiled.API.Features.Toys
         public byte WaypointId => Base._waypointId;
 
         /// <summary>
+        /// Converts WaypointToy to Waypoint.
+        /// </summary>
+        /// <param name="waypointToy">The WaypointToy.</param>
+        /// <returns>EXILED Waypoint.</returns>
+        public static implicit operator Waypoint(WaypointToy waypointToy) => (Waypoint)Get(waypointToy);
+
+        /// <summary>
         /// Creates a new <see cref="Waypoint"/> with a specific position and size (bounds).
         /// </summary>
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
@@ -109,7 +116,7 @@ namespace Exiled.API.Features.Toys
             Waypoint toy = new(Object.Instantiate(Prefab, parent))
             {
                 Priority = priority,
-                BoundsSize = scale ?? (Vector3.one * 255.9961f),
+                BoundsSize = scale ?? (Vector3.one * WaypointToy.MaxBounds),
                 VisualizeBounds = visualizeBounds,
             };
 

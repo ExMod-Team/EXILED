@@ -310,6 +310,13 @@ namespace Exiled.API.Features.Doors
         internal List<Room> RoomsValue { get; } = new List<Room>();
 
         /// <summary>
+        /// Converts DoorVariant to Door.
+        /// </summary>
+        /// <param name="doorVariant">The DoorVariant.</param>
+        /// <returns>EXILED Door.</returns>
+        public static implicit operator Door(DoorVariant doorVariant) => Get(doorVariant);
+
+        /// <summary>
         /// Gets the door object associated with a specific <see cref="DoorVariant"/>, or creates a new one if there isn't one.
         /// </summary>
         /// <param name="doorVariant">The base-game <see cref="DoorVariant"/>.</param>
