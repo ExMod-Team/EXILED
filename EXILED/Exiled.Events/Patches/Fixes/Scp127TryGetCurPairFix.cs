@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Fixes
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patches <see cref="Scp127Hitscan.TryGetCurPair"/> to work and return false when the item has no owner.
+    /// Patches <see cref="Scp127Hitscan.TryGetCurPair"/> to work and return false when the module has no owner.
     /// </summary>
     [HarmonyPatch(typeof(Scp127Hitscan), nameof(Scp127Hitscan.TryGetCurPair))]
     public class Scp127TryGetCurPairFix
