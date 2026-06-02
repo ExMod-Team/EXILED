@@ -15,22 +15,40 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using CommandSystem.Commands.RemoteAdmin.Cleanup;
+
     using Decals;
+
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
 
     using Interactables.Interobjects;
+
     using InventorySystem;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Autosync;
+    using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
+
     using Items;
+
     using LightContainmentZoneDecontamination;
+
     using MapGeneration;
+
+    using Mirror;
+
     using PlayerRoles.Ragdolls;
+
+    using RelativePositioning;
+
     using RemoteAdmin;
+
     using UnityEngine;
+
     using Utils;
     using Utils.Networking;
 
@@ -435,6 +453,110 @@ namespace Exiled.API.Features
         /// <param name="direction">The direction of the blood decal.</param>
         [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
         public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0;
+
+        /// <summary>
+        /// Spawns a blood decal.
+        /// </summary>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="sourcePosition">The source position of the blood decal.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnBlood(Vector3 position, Vector3 sourcePosition) => SpawnDecal(position, sourcePosition, DecalPoolType.Blood, FirearmType.Com15);
+
+        /// <summary>
+        /// Spawns a blood decal for the specified players.
+        /// </summary>
+        /// <param name="players">The players for which to spawn the blood decal.</param>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="sourcePosition">The source position of the blood decal.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnBlood(IEnumerable<Player> players, Vector3 position, Vector3 sourcePosition) => SpawnDecal(players, position, sourcePosition, DecalPoolType.Blood, FirearmType.Com15);
+
+        /// <summary>
+        /// Spawns a decal.
+        /// </summary>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The source position of the decal.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnDecal(Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = (Firearm)Item.Get(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            using (new AutosyncRpc(impactEffectsModule.ItemId, out NetworkWriter writer))
+            {
+                writer.WriteByte(impactEffectsModule.SyncId);
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Spawns a decal for the specified targets.
+        /// </summary>
+        /// <param name="targets">The targets for which to spawn the decal.</param>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The source position of the decal.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnDecal(IEnumerable<Player> targets, Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = (Firearm)Item.Get(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
+
+            using (new AutosyncRpc(impactEffectsModule.ItemId, hub => targetHubs.Contains(hub), out NetworkWriter writer))
+            {
+                writer.WriteByte(impactEffectsModule.SyncId);
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Gets all the near cameras.

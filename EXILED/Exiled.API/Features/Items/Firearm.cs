@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Items
     using System.Linq;
 
     using CameraShaking;
+
     using Enums;
 
     using Exiled.API.Features.Items.FirearmModules;
@@ -20,11 +21,17 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
+
     using Extensions;
+
+    using InventorySystem;
+    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
+
+    using UnityEngine;
 
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
 
@@ -73,6 +80,10 @@ namespace Exiled.API.Features.Items
 
                     case AnimatorReloaderModuleBase animatorReloaderModule:
                         AnimatorReloaderModule = animatorReloaderModule;
+                        break;
+
+                    case ImpactEffectsModule impactEffectsModule:
+                        ImpactEffectsModule = impactEffectsModule;
                         break;
 
                     default:
@@ -150,6 +161,11 @@ namespace Exiled.API.Features.Items
         /// Gets an animator reloader module for the current firearm.
         /// </summary>
         public AnimatorReloaderModuleBase AnimatorReloaderModule { get; }
+
+        /// <summary>
+        /// Gets an impact effects module for the current firearm.
+        /// </summary>
+        public ImpactEffectsModule ImpactEffectsModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of ammo in the firearm magazine.

@@ -15,10 +15,16 @@ namespace Exiled.API.Features
     using System.Runtime.CompilerServices;
 
     using Core;
+
     using CustomPlayerEffects;
     using CustomPlayerEffects.Danger;
+
     using DamageHandlers;
+
+    using Decals;
+
     using Enums;
+
     using Exiled.API.Features.Core.Interfaces;
     using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Doors;
@@ -29,25 +35,36 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Roles;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
+
     using Extensions;
+
     using Footprinting;
+
     using global::Scp914;
+
     using Hints;
+
     using Interactables.Interobjects;
+
     using InventorySystem;
     using InventorySystem.Disarming;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
+    using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
+
     using MapGeneration.Distributors;
     using MapGeneration.Rooms;
+
     using MEC;
+
     using Mirror;
     using Mirror.LiteNetLib4Mirror;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Thirdperson;
@@ -56,16 +73,22 @@ namespace Exiled.API.Features
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
+
     using PlayerStatsSystem;
+
     using RelativePositioning;
+
     using RemoteAdmin;
+
     using RoundRestarting;
 
     using Unity.Collections.LowLevel.Unsafe;
 
     using UnityEngine;
+
     using Utils;
     using Utils.Networking;
+
     using VoiceChat;
     using VoiceChat.Playbacks;
 
@@ -3844,6 +3867,56 @@ namespace Exiled.API.Features
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
+
+        /// <summary>
+        /// Spawns a blood decal for this player.
+        /// </summary>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="sourcePosition">The source position of the blood decal.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public bool SpawnBlood(Vector3 position, Vector3 sourcePosition) => SpawnDecal(position, sourcePosition, DecalPoolType.Blood);
+
+        /// <summary>
+        /// Spawns a decal for this player.
+        /// </summary>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The source position of the decal.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public bool SpawnDecal(Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = (Firearm)Item.Get(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            using (new AutosyncRpc(impactEffectsModule.ItemId, ReferenceHub, out NetworkWriter writer))
+            {
+                writer.WriteByte(impactEffectsModule.SyncId);
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
+            }
+
+            return true;
+        }
 
         /// <inheritdoc cref="Map.GetNearCameras(Vector3, float)"/>
         public IEnumerable<Camera> GetNearCameras(float toleration = 15f) => Map.GetNearCameras(Position, toleration);
