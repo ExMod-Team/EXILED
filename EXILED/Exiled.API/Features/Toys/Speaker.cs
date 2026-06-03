@@ -1135,7 +1135,10 @@ namespace Exiled.API.Features.Toys
                         localQueue.TryAdd((packet, length), -1, token);
                     }
                 }
-                catch (Exception ex) when (ex is not OperationCanceledException)
+                catch (OperationCanceledException)
+                {
+                }
+                catch (Exception ex)
                 {
                     Log.Error($"[Speaker] Encode worker error.\nException Details: {ex}");
                 }
