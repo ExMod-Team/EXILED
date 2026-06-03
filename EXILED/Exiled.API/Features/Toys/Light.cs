@@ -18,6 +18,8 @@ namespace Exiled.API.Features.Toys
 
     using UnityEngine;
 
+    using Object = UnityEngine.Object;
+
     /// <summary>
     /// A wrapper class for <see cref="LightSourceToy"/>.
     /// </summary>
@@ -129,36 +131,62 @@ namespace Exiled.API.Features.Toys
         /// Creates a new <see cref="Light"/>.
         /// </summary>
         /// <param name="position">The position of the <see cref="Light"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Light"/>.</param>
-        /// <param name="scale">The scale of the <see cref="Light"/>.</param>
-        /// <param name="spawn">Whether the <see cref="Light"/> should be initially spawned.</param>
+        /// <param name="color">The color of the <see cref="Light"/>.</param>
         /// <returns>The new <see cref="Light"/>.</returns>
-        public static Light Create(Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool spawn = true)
-            => Create(position, rotation, scale, spawn, null);
+        public static Light Create(Vector3 position, Color color) => Create(position: position, color: color, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="Light"/>.
         /// </summary>
-        /// <param name="position">The position of the <see cref="Light"/>.</param>
-        /// <param name="rotation">The rotation of the <see cref="Light"/>.</param>
+        /// <param name="parent">The transform to create this <see cref="Light"/> on.</param>
+        /// <param name="position">The local position of the <see cref="Light"/>.</param>
+        /// <param name="rotation">The local rotation of the <see cref="Light"/>.</param>
         /// <param name="scale">The scale of the <see cref="Light"/>.</param>
-        /// <param name="spawn">Whether the <see cref="Light"/> should be initially spawned.</param>
         /// <param name="color">The color of the <see cref="Light"/>.</param>
+        /// <param name="intensity">The intensity of the light.</param>
+        /// <param name="range">The range of the light.</param>
+        /// <param name="spotAngle">The angle of the light.</param>
+        /// <param name="innerSpotAngle">The inner angle of the light.</param>
+        /// <param name="shadowStrength">The shadow strength of the light.</param>
+        /// <param name="lightType">The type of light the Light emits.</param>
+        /// <param name="shadowType">The type of shadows the light casts.</param>
+        /// <param name="spawn">Whether the <see cref="Light"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Light"/>.</returns>
-        public static Light Create(Vector3? position /*= null*/, Vector3? rotation /*= null*/, Vector3? scale /*= null*/, bool spawn /*= true*/, Color? color /*= null*/)
+        public static Light Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, Color? color = null, float? intensity = null, float? range = null, float? spotAngle = null, float? innerSpotAngle = null, float? shadowStrength = null, LightType? lightType = null, LightShadows? shadowType = null, bool spawn = true)
         {
-            Light light = new(UnityEngine.Object.Instantiate(Prefab))
+            Light toy = new(Object.Instantiate(Prefab, parent))
             {
-                Position = position ?? Vector3.zero,
-                Rotation = Quaternion.Euler(rotation ?? Vector3.zero),
+                LocalPosition = position ?? Vector3.zero,
+                LocalRotation = rotation ?? Quaternion.identity,
                 Scale = scale ?? Vector3.one,
-                Color = color ?? Color.gray,
+                Color = color ?? Color.white,
             };
 
-            if (spawn)
-                light.Spawn();
+            if (intensity.HasValue)
+                toy.Intensity = intensity.Value;
 
-            return light;
+            if (range.HasValue)
+                toy.Range = range.Value;
+
+            if (spotAngle.HasValue)
+                toy.SpotAngle = spotAngle.Value;
+
+            if (innerSpotAngle.HasValue)
+                toy.InnerSpotAngle = innerSpotAngle.Value;
+
+            if (shadowStrength.HasValue)
+                toy.ShadowStrength = shadowStrength.Value;
+
+            if (lightType.HasValue)
+                toy.LightType = lightType.Value;
+
+            if (shadowType.HasValue)
+                toy.ShadowType = shadowType.Value;
+
+            if (spawn)
+                toy.Spawn();
+
+            return toy;
         }
 
         /// <summary>
