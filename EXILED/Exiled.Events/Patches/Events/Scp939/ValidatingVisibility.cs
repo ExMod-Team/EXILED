@@ -44,25 +44,22 @@ namespace Exiled.Events.Patches.Events.Scp939
             Label ret = generator.DefineLabel();
             Label end = generator.DefineLabel();
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(i => i.LoadsConstant(0)) + offset;
+            int index = newInstructions.FindIndex(i => i.LoadsConstant(0));
 
             newInstructions[index].labels.Add(ret);
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.None, false));
 
-            offset = 0;
-            index = newInstructions.FindIndex(i => i.LoadsConstant(1)) + offset;
+            index = newInstructions.FindIndex(i => i.LoadsConstant(1));
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.SeenAsScp));
 
-            offset = 2;
+            int offset = 4;
             index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(AlphaWarheadController), nameof(AlphaWarheadController.Detonated)))) + offset;
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.SeenByDetonation));
 
-            offset = 0;
-            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_3) + offset;
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_3);
 
             // just pre-check for SeenByLastTime or NotSeen VisibilityState, and then il inject
             newInstructions.InsertRange(index, Enumerable.Concat(
@@ -77,8 +74,7 @@ namespace Exiled.Events.Patches.Events.Scp939
                 },
                 CallEvent(generator, ev, ret)));
 
-            offset = 0;
-            index = newInstructions.FindLastIndex(i => i.LoadsField(Field(typeof(Scp939VisibilityController), nameof(Scp939VisibilityController.LastSeen)))) + offset;
+            index = newInstructions.FindLastIndex(i => i.LoadsField(Field(typeof(Scp939VisibilityController), nameof(Scp939VisibilityController.LastSeen))));
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.SeenByRange));
 
