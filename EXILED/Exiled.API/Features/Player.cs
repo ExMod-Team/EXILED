@@ -3892,7 +3892,7 @@ namespace Exiled.API.Features
                 return false;
             }
 
-            Firearm firearm = (Firearm)Item.Get(itemBase);
+            Firearm firearm = Item.Get<Firearm>(itemBase);
             if (firearm == null)
             {
                 Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
