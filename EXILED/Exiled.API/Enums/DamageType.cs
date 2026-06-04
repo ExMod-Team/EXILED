@@ -147,7 +147,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.None"/>.
         /// </summary>
-        Scp939,
+        Scp939None,
 
         /// <summary>
         /// Damage caused by <see cref="RoleTypeId.Scp0492"/>.

@@ -123,7 +123,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
         public static bool IsScp(this DamageType type, bool checkItems = true) => type switch
         {
-            DamageType.Scp or DamageType.Scp049 or DamageType.Scp096SlapLeft or DamageType.Scp096SlapRight or DamageType.Scp096Charge or DamageType.Scp096GateKill or DamageType.Scp096Other or DamageType.Scp106 or DamageType.Scp173 or DamageType.Scp939 or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary or DamageType.Scp0492 or DamageType.Scp3114 or DamageType.Scp3114SkinSteal => true,
+            DamageType.Scp or DamageType.Scp049 or DamageType.Scp096SlapLeft or DamageType.Scp096SlapRight or DamageType.Scp096Charge or DamageType.Scp096GateKill or DamageType.Scp096Other or DamageType.Scp106 or DamageType.Scp173 or DamageType.Scp939None or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary or DamageType.Scp0492 or DamageType.Scp3114 or DamageType.Scp3114SkinSteal => true,
             DamageType.Scp018 or DamageType.Scp207 when checkItems => true,
             _ => false,
         };
@@ -140,7 +140,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
-        public static bool IsScp939(this DamageType type) => type is DamageType.Scp939 or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary;
+        public static bool IsScp939(this DamageType type) => type is DamageType.Scp939None or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary;
 
         /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp049"/>>.
@@ -249,7 +249,7 @@ namespace Exiled.API.Extensions
                         Scp939DamageType.Claw => DamageType.Scp939Claw,
                         Scp939DamageType.LungeTarget => DamageType.Scp939LungeTarget,
                         Scp939DamageType.LungeSecondary => DamageType.Scp939LungeSecondary,
-                        _ => DamageType.Scp939,
+                        _ => DamageType.Scp939None,
                     };
                 case Scp3114DamageHandler scp3114DamageHandler:
                     return scp3114DamageHandler.Subtype switch

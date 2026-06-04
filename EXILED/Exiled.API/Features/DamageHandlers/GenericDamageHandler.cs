@@ -189,7 +189,7 @@ namespace Exiled.API.Features.DamageHandlers
 
                     Base = new Scp096DamageHandler(curr096, damage, Scp096DamageHandler.AttackType.SlapRight);
                     break;
-                case DamageType.Scp939:
+                case DamageType.Scp939None:
                     Scp939Role curr939 = attacker.ReferenceHub.roleManager.CurrentRole as Scp939Role ?? new Scp939Role();
 
                     curr939?._lastOwner = attacker.ReferenceHub;
