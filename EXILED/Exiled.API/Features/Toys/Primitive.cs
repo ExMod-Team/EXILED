@@ -35,7 +35,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static PrimitiveObjectToy Prefab => PrefabHelper.GetPrefab<PrimitiveObjectToy>(PrefabType.PrimitiveObjectToy);
+        public static PrimitiveObjectToy Prefab { get; internal set; }
 
         /// <summary>
         /// Gets the base <see cref="PrimitiveObjectToy"/>.
