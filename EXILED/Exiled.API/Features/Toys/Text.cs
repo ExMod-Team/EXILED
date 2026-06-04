@@ -62,7 +62,7 @@ namespace Exiled.API.Features.Toys
         public static implicit operator Text(TextToy textToy) => (Text)Get(textToy);
 
         /// <summary>
-        /// Creates a new <see cref="Text"/> at the specified position.
+        /// Creates a new <see cref="Text"/>.
         /// </summary>
         /// <param name="position">The local position of the <see cref="Text"/>.</param>
         /// <param name="text">The text content to display.</param>
