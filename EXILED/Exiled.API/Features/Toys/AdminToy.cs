@@ -161,7 +161,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public byte MovementSmoothing
         {
-            get => AdminToyBase.MovementSmoothing;
+            get => AdminToyBase.NetworkMovementSmoothing;
             set => AdminToyBase.NetworkMovementSmoothing = value;
         }
 
@@ -170,7 +170,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         public bool IsStatic
         {
-            get => AdminToyBase.IsStatic;
+            get => AdminToyBase.NetworkIsStatic;
             set => AdminToyBase.NetworkIsStatic = value;
         }
 

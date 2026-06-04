@@ -20,6 +20,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
     using PlayerRoles.PlayableScps.Scp3114;
 
     using static HarmonyLib.AccessTools;
+    using static PlayerRoles.PlayableScps.Scp3114.Scp3114VoiceLines;
 
     /// <summary>
     ///     Patches <see cref="Scp3114VoiceLines.ServerPlayConditionally" />.
@@ -37,29 +38,31 @@ namespace Exiled.Events.Patches.Events.Scp3114
 
             LocalBuilder ev = generator.DeclareLocal(typeof(VoiceLinesEventArgs));
 
-            int offset = 1;
-            int index = newInstructions.FindIndex(instruction => instruction.opcode == OpCodes.Blt_S) + offset;
+            int offset = 3;
+            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(VoiceLinesDefinition), nameof(VoiceLinesDefinition.TryDrawNext)))) + offset;
 
             newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // this.Owner
-                new(OpCodes.Ldarg_0),
-                new(OpCodes.Callvirt, PropertyGetter(typeof(Scp3114VoiceLines), nameof(Scp3114VoiceLines.Owner))),
+                // this
+                new CodeInstruction(OpCodes.Ldarg_0).MoveLabelsFrom(newInstructions[index]),
 
                 // voiceLinesDefinition
                 new(OpCodes.Ldloc_0),
 
+                // clipId
+                new(OpCodes.Ldloc_2),
+
                 // true
                 new(OpCodes.Ldc_I4_1),
 
-                // VoiceLinesEventArgs ev = new VoiceLinesEventArgs(ReferenceHub, VoiceLinesDefinition, bool);
+                // VoiceLinesEventArgs ev = new VoiceLinesEventArgs(Scp3114VoiceLines, VoiceLinesDefinition, byte, bool);
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(VoiceLinesEventArgs))[0]),
                 new(OpCodes.Dup),
                 new(OpCodes.Dup),
                 new(OpCodes.Stloc_S, ev.LocalIndex),
 
                 // Handlers.Scp3114.OnVoiceLines(ev);
-                new(OpCodes.Call, Method(typeof(Handlers.Scp3114), nameof(Handlers.Scp3114.OnVoiceLines))),
+                new(OpCodes.Call, Method(typeof(Scp3114), nameof(Scp3114.OnVoiceLines))),
 
                 // if(!ev.IsAllowed)
                 //     return;
@@ -70,6 +73,11 @@ namespace Exiled.Events.Patches.Events.Scp3114
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceLinesEventArgs), nameof(VoiceLinesEventArgs.VoiceLine))),
                 new(OpCodes.Stloc_S, 0),
+
+                // clipId = ev.ClipId;
+                new(OpCodes.Ldloc_S, ev.LocalIndex),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(VoiceLinesEventArgs), nameof(VoiceLinesEventArgs.ClipId))),
+                new(OpCodes.Stloc_S, 2),
             });
 
             newInstructions[newInstructions.Count - 1].labels.Add(returnLabel);

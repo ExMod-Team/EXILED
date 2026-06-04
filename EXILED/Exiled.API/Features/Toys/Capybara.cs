@@ -30,7 +30,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static CapybaraToy Prefab { get; } = PrefabHelper.GetPrefab<CapybaraToy>(PrefabType.CapybaraToy);
+        public static CapybaraToy Prefab { get; internal set; }
 
         /// <summary>
         /// Gets the base <see cref="CapybaraToy"/>.
@@ -90,11 +90,10 @@ namespace Exiled.API.Features.Toys
             Capybara toy = new(Object.Instantiate(Prefab, parent))
             {
                 Collidable = collidable,
+                LocalPosition = position ?? Vector3.zero,
+                LocalRotation = rotation ?? Quaternion.identity,
+                Scale = scale ?? Vector3.one,
             };
-
-            toy.Transform.localPosition = position ?? Vector3.zero;
-            toy.Transform.localRotation = rotation ?? Quaternion.identity;
-            toy.Transform.localScale = scale ?? Vector3.one;
 
             if (spawn)
                 toy.Spawn();
