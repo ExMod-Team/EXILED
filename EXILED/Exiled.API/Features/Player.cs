@@ -3906,14 +3906,13 @@ namespace Exiled.API.Features
                 return false;
             }
 
-            using (new AutosyncRpc(impactEffectsModule.ItemId, ReferenceHub, out NetworkWriter writer))
+            impactEffectsModule.SendRpc(ReferenceHub, writer =>
             {
-                writer.WriteByte(impactEffectsModule.SyncId);
                 writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
                 writer.WriteByte((byte)decalType);
                 writer.WriteRelativePosition(new RelativePosition(position));
                 writer.WriteRelativePosition(new RelativePosition(sourcePosition));
-            }
+            });
 
             return true;
         }

@@ -501,14 +501,13 @@ namespace Exiled.API.Features
                 return false;
             }
 
-            using (new AutosyncRpc(impactEffectsModule.ItemId, out NetworkWriter writer))
+            impactEffectsModule.SendRpc(writer =>
             {
-                writer.WriteByte(impactEffectsModule.SyncId);
                 writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
                 writer.WriteByte((byte)decalType);
                 writer.WriteRelativePosition(new RelativePosition(position));
                 writer.WriteRelativePosition(new RelativePosition(sourcePosition));
-            }
+            });
 
             return true;
         }
@@ -546,14 +545,13 @@ namespace Exiled.API.Features
 
             HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
 
-            using (new AutosyncRpc(impactEffectsModule.ItemId, hub => targetHubs.Contains(hub), out NetworkWriter writer))
+            impactEffectsModule.SendRpc(targetHubs.Contains, writer =>
             {
-                writer.WriteByte(impactEffectsModule.SyncId);
                 writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
                 writer.WriteByte((byte)decalType);
                 writer.WriteRelativePosition(new RelativePosition(position));
                 writer.WriteRelativePosition(new RelativePosition(sourcePosition));
-            }
+            });
 
             return true;
         }
