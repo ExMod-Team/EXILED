@@ -12,8 +12,6 @@ namespace Exiled.API.Features
 
     using Enums;
 
-    using Exiled.API.Extensions;
-
     using Interactables.Interobjects.DoorUtils;
 
     using Mirror;
@@ -133,17 +131,17 @@ namespace Exiled.API.Features
                 if (IsDetonated)
                     return;
 
-                LeverStatus = value.HasFlagFast(WarheadStatus.Armed);
+                LeverStatus = value.HasFlag(WarheadStatus.Armed);
 
-                if (!IsInProgress && value.HasFlagFast(WarheadStatus.InProgress))
+                if (!IsInProgress && value.HasFlag(WarheadStatus.InProgress))
                     Start();
-                else if (!value.HasFlagFast(WarheadStatus.InProgress))
+                else if (!value.HasFlag(WarheadStatus.InProgress))
                     Stop();
 
-                if (value.HasFlagFast(WarheadStatus.Detonated))
+                if (value.HasFlag(WarheadStatus.Detonated))
                     Detonate();
 
-                if (!IsOnCooldown && value.HasFlagFast(WarheadStatus.OnCooldown))
+                if (!IsOnCooldown && value.HasFlag(WarheadStatus.OnCooldown))
                     RemainingCooldown = Controller._cooldown;
             }
         }
