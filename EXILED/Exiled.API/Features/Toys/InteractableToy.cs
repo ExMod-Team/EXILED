@@ -31,7 +31,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static InvisibleInteractableToy Prefab { get; } = PrefabHelper.GetPrefab<InvisibleInteractableToy>(PrefabType.InvisibleInteractableToy);
+        public static InvisibleInteractableToy Prefab { get; internal set; }
 
         /// <summary>
         /// Gets the base <see cref="InvisibleInteractableToy"/>.
@@ -71,21 +71,6 @@ namespace Exiled.API.Features.Toys
         /// <param name="invisibleInteractableToy">The InvisibleInteractableToy.</param>
         /// <returns>EXILED InteractableToy.</returns>
         public static implicit operator InteractableToy(InvisibleInteractableToy invisibleInteractableToy) => (InteractableToy)Get(invisibleInteractableToy);
-
-        /// <summary>
-        /// Creates a new <see cref="InteractableToy"/> at the specified position.
-        /// </summary>
-        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
-        /// <returns>The new <see cref="InteractableToy"/>.</returns>
-        public static InteractableToy Create(Vector3 position) => Create(position: position, spawn: true);
-
-        /// <summary>
-        /// Creates a new <see cref="InteractableToy"/> with a specific position and shape.
-        /// </summary>
-        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
-        /// <param name="shape">The shape of the collider.</param>
-        /// <returns>The new <see cref="InteractableToy"/>.</returns>
-        public static InteractableToy Create(Vector3 position, ColliderShape shape) => Create(position: position, shape: shape, spawn: true);
 
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/>.
