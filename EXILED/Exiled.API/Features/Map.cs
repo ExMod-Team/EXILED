@@ -451,8 +451,8 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
         /// <param name="direction">The direction of the blood decal.</param>
-        [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
-        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0;
+        [Obsolete("Use SpawnBlood(Vector3, Vector3) instead.")]
+        public static void PlaceBlood(Vector3 position, Vector3 direction) => SpawnBlood(position, direction);
 
         /// <summary>
         /// Spawns a blood decal.

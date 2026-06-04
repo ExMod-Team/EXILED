@@ -265,6 +265,7 @@ namespace Exiled.API.Extensions
         /// <param name="origin">The direction of the blood decal.</param>
         /// <param name="roleTypeId">The RoleTypeId from who blood come from.</param>
         /// <param name="gettingShotSoundIndex">The sound than player get when getting shot.</param>
+        [Obsolete("Use Player::SpawnBlood(Vector3, Vector3) instead.")]
         public static void PlaceBlood(this Player player, Vector3 position, Vector3 origin, RoleTypeId roleTypeId, int gettingShotSoundIndex)
         {
             if (!roleTypeId.TryGetRoleBase(out PlayerRoleBase playerRoleBase) || playerRoleBase is not IBleedableRole)
