@@ -85,7 +85,7 @@ namespace Exiled.API.Features.Toys
         public static implicit operator Waypoint(WaypointToy waypointToy) => (Waypoint)Get(waypointToy);
 
         /// <summary>
-        /// Creates a new <see cref="Waypoint"/>.
+        /// Creates a new <see cref="Waypoint"/> with a specific position and size (bounds).
         /// </summary>
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
         /// <param name="size">The size of the bounds (Applied to NetworkBoundsSize).</param>

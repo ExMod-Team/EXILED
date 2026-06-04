@@ -31,7 +31,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static InvisibleInteractableToy Prefab { get; internal set; }
+        public static InvisibleInteractableToy Prefab { get; } = PrefabHelper.GetPrefab<InvisibleInteractableToy>(PrefabType.InvisibleInteractableToy);
 
         /// <summary>
         /// Gets the base <see cref="InvisibleInteractableToy"/>.
@@ -73,7 +73,22 @@ namespace Exiled.API.Features.Toys
         public static implicit operator InteractableToy(InvisibleInteractableToy invisibleInteractableToy) => (InteractableToy)Get(invisibleInteractableToy);
 
         /// <summary>
-        /// Creates a new <see cref="InteractableToy"/>.
+        /// Creates a new <see cref="InteractableToy"/> at the specified position.
+        /// </summary>
+        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
+        /// <returns>The new <see cref="InteractableToy"/>.</returns>
+        public static InteractableToy Create(Vector3 position) => Create(position: position, spawn: true);
+
+        /// <summary>
+        /// Creates a new <see cref="InteractableToy"/> with a specific position and shape.
+        /// </summary>
+        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
+        /// <param name="shape">The shape of the collider.</param>
+        /// <returns>The new <see cref="InteractableToy"/>.</returns>
+        public static InteractableToy Create(Vector3 position, ColliderShape shape) => Create(position: position, shape: shape, spawn: true);
+
+        /// <summary>
+        /// Creates a new <see cref="InteractableToy"/> with a specific position, shape, and interaction duration.
         /// </summary>
         /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
         /// <param name="shape">The shape of the collider.</param>
@@ -82,16 +97,16 @@ namespace Exiled.API.Features.Toys
         public static InteractableToy Create(Vector3 position, ColliderShape shape, float duration) => Create(position: position, shape: shape, interactionDuration: duration, spawn: true);
 
         /// <summary>
-        /// Creates a new <see cref="InteractableToy"/>.
+        /// Creates a new <see cref="InteractableToy"/> from a Transform.
         /// </summary>
-        /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>
+        /// <param name="transform">The transform to create this <see cref="InteractableToy"/> on.</param>
         /// <param name="shape">The shape of the collider.</param>
         /// <param name="interactionDuration">How long the interaction takes.</param>
         /// <param name="isLocked">Whether the object is locked.</param>
         /// <param name="spawn">Whether the <see cref="InteractableToy"/> should be initially spawned.</param>
         /// <returns>The new <see cref="InteractableToy"/>.</returns>
-        public static InteractableToy Create(Vector3 position, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, bool spawn = true)
-            => Create(position: position, shape: shape, interactionDuration: interactionDuration, isLocked: isLocked, spawn: spawn);
+        public static InteractableToy Create(Transform transform, ColliderShape shape = ColliderShape.Sphere, float interactionDuration = 1f, bool isLocked = false, bool spawn = true)
+            => Create(parent: transform, shape: shape, interactionDuration: interactionDuration, isLocked: isLocked, spawn: spawn);
 
         /// <summary>
         /// Creates a new <see cref="InteractableToy"/>.
@@ -112,10 +127,11 @@ namespace Exiled.API.Features.Toys
                 Shape = shape,
                 IsLocked = isLocked,
                 InteractionDuration = interactionDuration,
-                LocalPosition = position ?? Vector3.zero,
-                LocalRotation = rotation ?? Quaternion.identity,
-                Scale = scale ?? Vector3.one,
             };
+
+            toy.Transform.localPosition = position ?? Vector3.zero;
+            toy.Transform.localRotation = rotation ?? Quaternion.identity;
+            toy.Transform.localScale = scale ?? Vector3.one;
 
             if (spawn)
                 toy.Spawn();
