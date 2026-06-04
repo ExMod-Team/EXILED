@@ -9,8 +9,6 @@ namespace Exiled.API.Features.Pickups
 {
     using System;
 
-    using Exiled.API.Features.Items.FirearmModules;
-    using Exiled.API.Features.Items.FirearmModules.Primary;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items;
