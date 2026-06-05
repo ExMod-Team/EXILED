@@ -17,6 +17,8 @@ namespace Exiled.CustomRoles.Events
     using Exiled.CustomRoles.API.Features;
     using Exiled.Events.EventArgs.Player;
 
+    using UnityEngine;
+
     /// <summary>
     /// Handles general events for players.
     /// </summary>
@@ -66,9 +68,7 @@ namespace Exiled.CustomRoles.Events
         internal void OnSpawned(SpawnedEventArgs ev)
         {
             if (!ValidSpawnReasons.Contains(ev.Reason) || ev.Player.HasAnyCustomRole())
-            {
                 return;
-            }
 
             float totalChance = 0f;
             List<CustomRole> eligibleRoles = new(8);
@@ -83,17 +83,13 @@ namespace Exiled.CustomRoles.Events
             }
 
             if (eligibleRoles.Count == 0)
-            {
                 return;
-            }
 
-            float lotterySize = Math.Max(100f, totalChance);
+            float lotterySize = Mathf.Max(100f, totalChance);
             float randomRoll = (float)Loader.Loader.Random.NextDouble() * lotterySize;
 
             if (randomRoll >= totalChance)
-            {
                 return;
-            }
 
             foreach (CustomRole candidateRole in eligibleRoles)
             {
@@ -103,23 +99,9 @@ namespace Exiled.CustomRoles.Events
                     continue;
                 }
 
-                if (candidateRole.SpawnProperties is null)
-                {
-                    candidateRole.AddRole(ev.Player);
-                    break;
-                }
-
-                int newSpawnCount = candidateRole.SpawnedPlayers++;
-                if (newSpawnCount <= candidateRole.SpawnProperties.Limit)
-                {
-                    candidateRole.AddRole(ev.Player);
-                    break;
-                }
-                else
-                {
-                    candidateRole.SpawnedPlayers--;
-                    randomRoll -= candidateRole.SpawnChance;
-                }
+                candidateRole.SpawnedPlayers++;
+                candidateRole.AddRole(ev.Player);
+                break;
             }
         }
     }
