@@ -55,11 +55,6 @@ namespace Exiled.CustomRoles.API.Features
         public static HashSet<CustomRole> Registered { get; } = new();
 
         /// <summary>
-        /// Gets or sets a value indicating whether the role is enabled.
-        /// </summary>
-        public virtual bool IsEnabled { get; set; } = true;
-
-        /// <summary>
         /// Gets or sets the custom RoleID of the role.
         /// </summary>
         public abstract uint Id { get; set; }
@@ -329,39 +324,6 @@ namespace Exiled.CustomRoles.API.Features
         }
 
         /// <summary>
-        /// Registers all the <see cref="CustomRole"/>'s present in the current plugin's config.
-        /// </summary>
-        /// <param name="source">The source containing the custom roles.</param>
-        /// <param name="ignoredRoles">An optional collection of <see cref="CustomRole"/>s to ignore during registration.</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="CustomRole"/> which contains all registered <see cref="CustomRole"/>'s.</returns>
-        public static IEnumerable<CustomRole> RegisterRolesFromSource(object source, IEnumerable<CustomRole>? ignoredRoles = null)
-        {
-            List<CustomRole> roles = new();
-
-            if (source == null)
-                return roles;
-
-            PropertyInfo[] properties = source.GetType().GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                if (!typeof(CustomRole).IsAssignableFrom(property.PropertyType))
-                    continue;
-
-                if (property.GetValue(source) is not CustomRole configRole)
-                    continue;
-
-                if (ignoredRoles != null && ignoredRoles.Any(ignored => ignored.GetType() == configRole.GetType()))
-                    continue;
-
-                if (configRole.TryRegister())
-                    roles.Add(configRole);
-            }
-
-            return roles;
-        }
-
-        /// <summary>
         /// Registers all the <see cref="CustomRole"/>'s present in the current assembly.
         /// </summary>
         /// <param name="skipReflection">Whether reflection is skipped (more efficient if you are not using your custom item classes as config objects).</param>
@@ -523,39 +485,6 @@ namespace Exiled.CustomRoles.API.Features
         /// <param name="isIgnored">A value indicating whether the target roles should be ignored.</param>
         /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="CustomRole"/> which contains all unregistered <see cref="CustomRole"/>'s.</returns>
         public static IEnumerable<CustomRole> UnregisterRoles(IEnumerable<CustomRole> targetRoles, bool isIgnored = false) => UnregisterRoles(targetRoles.Select(x => x.GetType()), isIgnored);
-
-        /// <summary>
-        /// Unregisters all the <see cref="CustomRole"/>'s present in the current plugin's config.
-        /// </summary>
-        /// <param name="source">The source containing the target roles.</param>
-        /// <param name="ignoredRoles">An optional collection of <see cref="CustomRole"/>s to ignore during unregisteration.</param>
-        /// <returns>A <see cref="IEnumerable{T}"/> of <see cref="CustomRole"/> which contains all unregistered <see cref="CustomRole"/>'s.</returns>
-        public static IEnumerable<CustomRole> UnregisterFromSource(object source, IEnumerable<CustomRole>? ignoredRoles = null)
-        {
-            List<CustomRole> roles = new();
-
-            if (source == null)
-                return roles;
-
-            PropertyInfo[] properties = source.GetType().GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                if (!typeof(CustomRole).IsAssignableFrom(property.PropertyType))
-                    continue;
-
-                if (property.GetValue(source) is not CustomRole configRole)
-                    continue;
-
-                if (ignoredRoles != null && ignoredRoles.Any(ignored => ignored.GetType() == configRole.GetType()))
-                    continue;
-
-                if (configRole.TryUnregister())
-                    roles.Add(configRole);
-            }
-
-            return roles;
-        }
 
         /// <summary>
         /// ResyncCustomRole Friendly Fire with Player (Append, or Overwrite).
@@ -880,12 +809,6 @@ namespace Exiled.CustomRoles.API.Features
         {
             if (!CustomRoles.Instance!.Config.IsEnabled)
                 return false;
-
-            if (!IsEnabled)
-            {
-                Log.Debug($"Custom role {Name} is not enabled and will not be registered.");
-                return false;
-            }
 
             if (!Registered.Contains(this))
             {
