@@ -11,7 +11,10 @@ namespace Exiled.API.Features.Pickups
 
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features.Items.FirearmModules;
+    using Exiled.API.Features.Items.FirearmModules.Primary;
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
@@ -185,13 +188,28 @@ namespace Exiled.API.Features.Pickups
         protected override void InitializeProperties(ItemBase itemBase)
         {
             base.InitializeProperties(itemBase);
-            if (!(itemBase as Firearm).TryGetModule(out IPrimaryAmmoContainerModule magazine))
+            if (itemBase is not Firearm firearm)
             {
-                Log.Error($"firearm prefab {itemBase.ItemTypeId} doesnt have an primary magazine module(unexpected)");
+                Log.Error("FirearmPickup::InitializeProperties called with a non-firearm item!");
                 return;
             }
 
-            MaxAmmo = magazine.AmmoMax;
+            foreach (ModuleBase module in firearm.Modules)
+            {
+                switch (module)
+                {
+                    case IPrimaryAmmoContainerModule primaryAmmoModule:
+                        MaxAmmo = primaryAmmoModule.AmmoMax;
+                        break;
+
+                    case HitscanHitregModuleBase hitregModule:
+                        Damage = hitregModule.BaseDamage;
+                        Inaccuracy = hitregModule.BaseBulletInaccuracy;
+                        Penetration = hitregModule.BasePenetration;
+                        DamageFalloffDistance = hitregModule.DamageFalloffDistance;
+                        break;
+                }
+            }
         }
     }
 }

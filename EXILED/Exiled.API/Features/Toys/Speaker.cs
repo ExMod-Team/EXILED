@@ -31,7 +31,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static SpeakerToy Prefab => PrefabHelper.GetPrefab<SpeakerToy>(PrefabType.SpeakerToy);
+        public static SpeakerToy Prefab { get; internal set; }
 
         /// <summary>
         /// Gets the base <see cref="SpeakerToy"/>.
