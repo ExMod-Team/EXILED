@@ -1019,7 +1019,7 @@ namespace Exiled.API.Features
                 if (!ActiveArtificialHealthProcesses.Any())
                     AddAhp(value);
 
-                AhpStat.AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
+                AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
 
                 ahp?.Limit = value;
             }
@@ -1056,7 +1056,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
         /// </summary>
-        public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
+        public IEnumerable<AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
 
         /// <summary>
         /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
@@ -3914,8 +3914,8 @@ namespace Exiled.API.Features
         /// <param name="efficacy">Percent of incoming damage absorbed by this stat.</param>
         /// <param name="sustain">The number of seconds to delay the start of the decay.</param>
         /// <param name="persistant">Whether the process is removed when the value hits 0.</param>
-        /// <returns>The <see cref="AhpStat.AhpProcess"/> instance..</returns>
-        public AhpStat.AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
+        /// <returns>The <see cref="AhpProcess"/> instance..</returns>
+        public AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
         {
             return ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);

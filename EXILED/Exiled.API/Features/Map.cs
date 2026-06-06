@@ -300,7 +300,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Forces the light containment zone decontamination process.
         /// </summary>
-        public static void StartDecontamination() => DecontaminationController.Singleton.FinishDecontamination();
+        public static void StartDecontamination() => DecontaminationController.Singleton.DecontaminationOverride = DecontaminationController.DecontaminationStatus.Forced;
 
         /// <summary>
         /// Turns on all lights in the facility.
