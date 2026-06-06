@@ -447,10 +447,10 @@ namespace Exiled.API.Features
         public static void Clean(DecalPoolType decalType) => Clean(decalType, int.MaxValue);
 
         /// <summary>
-        /// Places a blood decal.
+        /// Places a blood decal using a raycast.
         /// </summary>
-        /// <param name="position">The position of the blood decal.</param>
-        /// <param name="direction">The direction of the blood decal.</param>
+        /// <param name="position">The origin position of the raycast.</param>
+        /// <param name="direction">The direction in which the raycast is fired to detect a surface.</param>
         public static void PlaceBlood(Vector3 position, Vector3 direction)
         {
             if (Physics.Raycast(position, direction, out RaycastHit hitInfo, ImpactEffectsModule.ReceivingLayers))
@@ -461,7 +461,7 @@ namespace Exiled.API.Features
         /// Spawns a blood decal.
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
-        /// <param name="sourcePosition">The source position of the blood decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
         /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
         public static bool SpawnBlood(Vector3 position, Vector3 sourcePosition) => SpawnDecal(position, sourcePosition, DecalPoolType.Blood, FirearmType.Com15);
 
@@ -470,7 +470,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="players">The players for which to spawn the blood decal.</param>
         /// <param name="position">The position of the blood decal.</param>
-        /// <param name="sourcePosition">The source position of the blood decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
         /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
         public static bool SpawnBlood(IEnumerable<Player> players, Vector3 position, Vector3 sourcePosition) => SpawnDecal(players, position, sourcePosition, DecalPoolType.Blood, FirearmType.Com15);
 
@@ -478,7 +478,7 @@ namespace Exiled.API.Features
         /// Spawns a decal.
         /// </summary>
         /// <param name="position">The position of the decal.</param>
-        /// <param name="sourcePosition">The source position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
         /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
         /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
         /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
@@ -520,7 +520,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="targets">The targets for which to spawn the decal.</param>
         /// <param name="position">The position of the decal.</param>
-        /// <param name="sourcePosition">The source position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
         /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
         /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
         /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>

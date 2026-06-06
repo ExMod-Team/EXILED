@@ -3864,14 +3864,21 @@ namespace Exiled.API.Features
         public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
             this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
-        /// <inheritdoc cref="Map.SpawnBlood(Vector3, Vector3)"/>
-        public void PlaceBlood(Vector3 direction) => SpawnBlood(Position, direction);
+        /// <summary>
+        /// Place a blood decal for this player using a raycast from the player's position.
+        /// </summary>
+        /// <param name="direction">The direction in which the raycast is fired to detect a surface.</param>
+        public void PlaceBlood(Vector3 direction)
+        {
+            if (Physics.Raycast(Position, direction, out RaycastHit hitInfo, ImpactEffectsModule.ReceivingLayers))
+                SpawnBlood(hitInfo.point + (hitInfo.normal * Decal.SurfaceDistance), -hitInfo.normal);
+        }
 
         /// <summary>
         /// Spawns a blood decal for this player.
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
-        /// <param name="sourcePosition">The source position of the blood decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
         /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
         public bool SpawnBlood(Vector3 position, Vector3 sourcePosition) => SpawnDecal(position, sourcePosition, DecalPoolType.Blood);
 
@@ -3879,7 +3886,7 @@ namespace Exiled.API.Features
         /// Spawns a decal for this player.
         /// </summary>
         /// <param name="position">The position of the decal.</param>
-        /// <param name="sourcePosition">The source position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
         /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
         /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
         /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
