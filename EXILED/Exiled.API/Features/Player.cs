@@ -3864,8 +3864,7 @@ namespace Exiled.API.Features
         public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
             this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
-        /// <inheritdoc cref="SpawnBlood(Vector3, Vector3)"/>
-        [Obsolete("Use Player::SpawnBlood(Vector3, Vector3) instead.")]
+        /// <inheritdoc cref="Map.SpawnBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => SpawnBlood(Position, direction);
 
         /// <summary>
