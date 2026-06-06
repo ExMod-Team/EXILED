@@ -451,8 +451,11 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
         /// <param name="direction">The direction of the blood decal.</param>
-        [Obsolete("Use SpawnBlood(Vector3, Vector3) instead.")]
-        public static void PlaceBlood(Vector3 position, Vector3 direction) => SpawnBlood(position, direction);
+        public static void PlaceBlood(Vector3 position, Vector3 direction)
+        {
+            if (Physics.Raycast(position, direction, out RaycastHit hitInfo, ImpactEffectsModule.ReceivingLayers))
+                SpawnBlood(hitInfo.point + (hitInfo.normal * Decal.SurfaceDistance), -hitInfo.normal);
+        }
 
         /// <summary>
         /// Spawns a blood decal.
