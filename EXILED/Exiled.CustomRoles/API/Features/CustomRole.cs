@@ -350,14 +350,14 @@ namespace Exiled.CustomRoles.API.Features
                 if (!typeof(CustomRole).IsAssignableFrom(property.PropertyType))
                     continue;
 
-                if (property.GetValue(source) is not CustomRole configRole)
+                if (property.GetValue(source) is not CustomRole sourceRole)
                     continue;
 
-                if (ignoredRoles != null && ignoredTypes.Contains(configRole.GetType()))
+                if (ignoredTypes != null && ignoredTypes.Contains(sourceRole.GetType()))
                     continue;
 
-                if (configRole.TryRegister())
-                    roles.Add(configRole);
+                if (sourceRole.TryRegister())
+                    roles.Add(sourceRole);
             }
 
             return roles;
@@ -548,14 +548,14 @@ namespace Exiled.CustomRoles.API.Features
                 if (!typeof(CustomRole).IsAssignableFrom(property.PropertyType))
                     continue;
 
-                if (property.GetValue(source) is not CustomRole configRole)
+                if (property.GetValue(source) is not CustomRole sourceRole)
                     continue;
 
-                if (ignoredRoles != null && ignoredTypes.Contains(configRole.GetType()))
+                if (ignoredTypes != null && ignoredTypes.Contains(sourceRole.GetType()))
                     continue;
 
-                if (configRole.TryUnregister())
-                    roles.Add(configRole);
+                if (sourceRole.TryUnregister())
+                    roles.Add(sourceRole);
             }
 
             return roles;
