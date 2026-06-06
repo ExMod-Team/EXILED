@@ -341,6 +341,8 @@ namespace Exiled.CustomRoles.API.Features
             if (source == null)
                 return roles;
 
+            HashSet<Type>? ignoredTypes = ignoredRoles?.Select(x => x.GetType()).ToHashSet();
+
             PropertyInfo[] properties = source.GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
@@ -351,7 +353,7 @@ namespace Exiled.CustomRoles.API.Features
                 if (property.GetValue(source) is not CustomRole configRole)
                     continue;
 
-                if (ignoredRoles != null && ignoredRoles.Any(ignored => ignored.GetType() == configRole.GetType()))
+                if (ignoredRoles != null && ignoredTypes.Contains(configRole.GetType()))
                     continue;
 
                 if (configRole.TryRegister())
@@ -537,6 +539,8 @@ namespace Exiled.CustomRoles.API.Features
             if (source == null)
                 return roles;
 
+            HashSet<Type>? ignoredTypes = ignoredRoles?.Select(x => x.GetType()).ToHashSet();
+
             PropertyInfo[] properties = source.GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
@@ -547,7 +551,7 @@ namespace Exiled.CustomRoles.API.Features
                 if (property.GetValue(source) is not CustomRole configRole)
                     continue;
 
-                if (ignoredRoles != null && ignoredRoles.Any(ignored => ignored.GetType() == configRole.GetType()))
+                if (ignoredRoles != null && ignoredTypes.Contains(configRole.GetType()))
                     continue;
 
                 if (configRole.TryUnregister())
