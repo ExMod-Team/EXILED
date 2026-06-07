@@ -29,6 +29,7 @@ namespace Exiled.API.Extensions
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
+    using Exiled.API.Interfaces;
 
     using Features;
     using Features.Pools;
@@ -63,6 +64,8 @@ namespace Exiled.API.Extensions
     using UnityEngine;
 
     using Utils.Networking;
+
+    using static InventorySystem.Items.Firearms.Modules.AutomaticActionModule;
 
     using Firearm = Features.Items.Firearm;
 
@@ -274,6 +277,137 @@ namespace Exiled.API.Extensions
 
                 player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub, null));
             });
+        }
+
+        /// <summary>
+        /// Plays a gun sound to the specified player.
+        /// </summary>
+        /// <param name="firearm">The firearm whose <see cref="AudioModule"/> to use.</param>
+        /// <param name="index">The index of the audio clip to play.</param>
+        /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
+        /// <param name="range">The range of the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
+        /// <param name="position">The world position the sound originates from.</param>
+        /// <param name="shooterVisible">Whether the shooter is visible to the target. If <see langword="false"/>, the sound will be played at <paramref name="position"/> instead of on the firearm's transform.</param>
+        /// <param name="target">The player to send the sound to.</param>
+        /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
+        public static bool PlaySound(this Firearm firearm, int index, MixerChannel channel, float range, float pitch, Vector3 position, bool shooterVisible, Player target)
+        {
+            if (firearm.AudioModule == null)
+            {
+                Log.Error($"Firearm {firearm} doesn't have an audio module.");
+                return false;
+            }
+
+            if (target == null)
+            {
+                Log.Error("Target player is null.");
+                return false;
+            }
+
+            firearm.AudioModule.SendRpc(target.ReferenceHub, writer =>
+                firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+
+            return true;
+        }
+
+        /// <summary>
+        /// Plays a gun sound to the specified players.
+        /// </summary>
+        /// <param name="firearm">The firearm whose <see cref="AudioModule"/> to use.</param>
+        /// <param name="index">The index of the audio clip to play.</param>
+        /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
+        /// <param name="range">The range of the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
+        /// <param name="position">The world position the sound originates from.</param>
+        /// <param name="shooterVisible">Whether the shooter is visible to the target. If <see langword="false"/>, the sound will be played at <paramref name="position"/> instead of on the firearm's transform.</param>
+        /// <param name="targets">The players to send the sound to.</param>
+        /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
+        public static bool PlaySound(this Firearm firearm, int index, MixerChannel channel, float range, float pitch, Vector3 position, bool shooterVisible, IEnumerable<Player> targets)
+        {
+            if (firearm.AudioModule == null)
+            {
+                Log.Error($"Firearm {firearm} doesn't have an audio module.");
+                return false;
+            }
+
+            if (targets == null)
+            {
+                Log.Error("Failed to play sound, targets is null.");
+                return false;
+            }
+
+            HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
+
+            firearm.AudioModule.SendRpc(targetHubs.Contains, writer =>
+                firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+
+            return true;
+        }
+
+        /// <summary>
+        /// Sends a RPC to the specified players.
+        /// </summary>
+        /// <param name="firearm">The firearm whose <see cref="ImpactEffectsModule"/> to use for sending the RPC.</param>
+        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
+        /// <param name="target">The player to send the RPC to.</param>
+        /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
+        /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
+        public static bool SendRpc(this Firearm firearm, MessageHeader header, Player target, byte chambersFired = 1)
+        {
+            if (firearm.AutomaticActionModule == null)
+            {
+                Log.Error($"Failed to send RPC, firearm {firearm.Type} does not have an AutomaticActionModule.");
+                return false;
+            }
+
+            if (target?.GameObject == null)
+            {
+                Log.Error("Failed to send RPC, target player is null.");
+                return false;
+            }
+
+            firearm.AutomaticActionModule.SendRpc(target.ReferenceHub, writer =>
+            {
+                writer.WriteSubheader(header);
+                if (header == MessageHeader.RpcFire)
+                    writer.WriteByte(chambersFired);
+            });
+
+            return true;
+        }
+
+        /// <summary>
+        /// Sends a RPC to the specified players.
+        /// </summary>
+        /// <param name="firearm">The firearm whose <see cref="ImpactEffectsModule"/> to use for sending the RPC.</param>
+        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
+        /// <param name="targets">The players to send the RPC to.</param>
+        /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
+        /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
+        public static bool SendRpc(this Firearm firearm, MessageHeader header, IEnumerable<Player> targets, byte chambersFired = 1)
+        {
+            if (firearm.AutomaticActionModule == null)
+            {
+                Log.Error($"Failed to send RPC, firearm {firearm.Type} does not have an AutomaticActionModule.");
+                return false;
+            }
+
+            if (targets == null)
+            {
+                Log.Error("Failed to send RPC, targets is null.");
+                return false;
+            }
+
+            HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
+            firearm.AutomaticActionModule.SendRpc(targetHubs.Contains, writer =>
+            {
+                writer.WriteSubheader(header);
+                if (header == MessageHeader.RpcFire)
+                    writer.WriteByte(chambersFired);
+            });
+
+            return true;
         }
 
         /// <summary>

@@ -11,6 +11,8 @@ namespace Exiled.API.Features.Items
     using System.Collections.Generic;
     using System.Linq;
 
+    using AudioPooling;
+
     using CameraShaking;
 
     using Enums;
@@ -27,13 +29,18 @@ namespace Exiled.API.Features.Items
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
+    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
 
+    using Mirror;
+
     using UnityEngine;
 
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
+    using static InventorySystem.Items.Firearms.Modules.AutomaticActionModule;
+    using static UnityEngine.GraphicsBuffer;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
     using FirearmPickup = Pickups.FirearmPickup;
@@ -72,6 +79,8 @@ namespace Exiled.API.Features.Items
 
                     case IAmmoContainerModule ammoModule:
                         BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
+                        if (module is AutomaticActionModule automaticActionModule)
+                            AutomaticActionModule = automaticActionModule;
                         break;
 
                     case HitscanHitregModuleBase hitregModule:
@@ -84,6 +93,10 @@ namespace Exiled.API.Features.Items
 
                     case ImpactEffectsModule impactEffectsModule:
                         ImpactEffectsModule = impactEffectsModule;
+                        break;
+
+                    case AudioModule audioModule:
+                        AudioModule = audioModule;
                         break;
 
                     default:
@@ -166,6 +179,16 @@ namespace Exiled.API.Features.Items
         /// Gets an impact effects module for the current firearm.
         /// </summary>
         public ImpactEffectsModule ImpactEffectsModule { get; }
+
+        /// <summary>
+        /// Gets an automatic action module for the current firearm.
+        /// </summary>
+        public AutomaticActionModule AutomaticActionModule { get; }
+
+        /// <summary>
+        /// Gets an audio module for the current firearm.
+        /// </summary>
+        public AudioModule AudioModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of ammo in the firearm magazine.
@@ -780,6 +803,74 @@ namespace Exiled.API.Features.Items
 
             AnimatorReloaderModule.IsUnloading = true;
             AnimatorReloaderModule.SendRpcHeaderWithRandomByte(ReloaderMessageHeader.Unload);
+        }
+
+        /// <summary>
+        /// Plays a firearm sound to nearby players.
+        /// </summary>
+        /// <param name="index">The index of the audio clip to play.</param>
+        /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
+        /// <param name="range">The range within which nearby players can hear the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
+        /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
+        public bool PlaySound(int index, MixerChannel channel, float range, float pitch)
+        {
+            if (AudioModule == null)
+            {
+                Log.Error($"Failed to play sound, firearm {Type} does not have an AudioModule.");
+                return false;
+            }
+
+            AudioModule.ServerSendToNearbyPlayers(index, channel, range, pitch);
+            return true;
+        }
+
+        /// <summary>
+        /// Simulates a fire.
+        /// </summary>
+        /// <param name="chambersFired">The number of chambers fired.</param>
+        /// <returns><see langword="true"/> if both the sound,RPC and impact effects were sent successfully; <see langword="false"/> if either <see cref="AudioModule"/> or <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
+        public bool FakeFire(byte chambersFired = 1)
+        {
+            // Todo: Get it from GunSounTypes instead of hardcoding it when pr 808 merged.
+            bool soundFlag = PlaySound(1, MixerChannel.Weapons, 12f, 1f);
+            bool visualFlag = SendRpc(MessageHeader.RpcFire, chambersFired);
+            bool impactEffects = ImpactEffectsModule != null;
+            if (impactEffects)
+            {
+                Transform camera = Owner.CameraTransform;
+                float maxDist = HitscanHitregModule.FullDamageDistance + HitscanHitregModule.DamageFalloffDistance;
+
+                if (Physics.Raycast(camera.position, camera.forward, out RaycastHit hit, maxDist, HitscanHitregModuleBase.HitregMask))
+                    ImpactEffectsModule.ServerProcessHit(hit, camera.position, true);
+            }
+
+            return soundFlag && visualFlag && impactEffects;
+        }
+
+        /// <summary>
+        /// Sends a RPC to the specified players.
+        /// </summary>
+        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
+        /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
+        /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
+        public bool SendRpc(MessageHeader header, byte chambersFired = 1)
+        {
+            if (AutomaticActionModule == null)
+            {
+                Log.Error($"Failed to send RPC, firearm {Type} does not have an AutomaticActionModule.");
+                return false;
+            }
+
+            AutomaticActionModule.SendRpc(
+                writer =>
+                {
+                    writer.WriteSubheader(header);
+                    if (header == MessageHeader.RpcFire)
+                        writer.WriteByte(chambersFired);
+                }, true);
+
+            return true;
         }
 
         /// <summary>
