@@ -95,7 +95,6 @@ namespace Exiled.API.Features
 
     using static DamageHandlers.DamageHandlerBase;
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
-    using static UnityEngine.GraphicsBuffer;
 
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
     using Firearm = Items.Firearm;
