@@ -16,24 +16,36 @@ namespace Exiled.API.Extensions
     using System.Text;
 
     using AdminToys;
+
     using AudioPooling;
+
     using Cassie;
+
     using CustomPlayerEffects;
+
+    using Decals;
+
     using Exiled.API.Enums;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
+
     using Features;
     using Features.Pools;
+
     using HarmonyLib;
+
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Keycards;
+
     using MEC;
+
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.Blood;
     using PlayerRoles.FirstPersonControl;
@@ -41,11 +53,18 @@ namespace Exiled.API.Extensions
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
+
     using RelativePositioning;
+
     using Respawning;
+
     using Unity.Collections.LowLevel.Unsafe;
+
     using UnityEngine;
+
     using Utils.Networking;
+
+    using Firearm = Features.Items.Firearm;
 
     /// <summary>
     /// A set of extensions for <see cref="Mirror"/> Networking.
@@ -255,6 +274,57 @@ namespace Exiled.API.Extensions
 
                 player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub, null));
             });
+        }
+
+        /// <summary>
+        /// Spawns a blood decal for this player.
+        /// </summary>
+        /// <param name="player">Target to spawn blood decal for.</param>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnBlood(this Player player, Vector3 position, Vector3 sourcePosition) => SpawnDecal(player, position, sourcePosition, DecalPoolType.Blood);
+
+        /// <summary>
+        /// Spawns a decal for this player.
+        /// </summary>
+        /// <param name="player">Target to spawn decal for.</param>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnDecal(this Player player, Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = Item.Get<Firearm>(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            impactEffectsModule.SendRpc(player.ReferenceHub, writer =>
+            {
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
+            });
+
+            return true;
         }
 
         /// <summary>

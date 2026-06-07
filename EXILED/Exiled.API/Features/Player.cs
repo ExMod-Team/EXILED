@@ -3867,55 +3867,6 @@ namespace Exiled.API.Features
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
 
-        /// <summary>
-        /// Spawns a blood decal for this player.
-        /// </summary>
-        /// <param name="position">The position of the blood decal.</param>
-        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
-        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
-        public bool SpawnBlood(Vector3 position, Vector3 sourcePosition) => SpawnDecal(position, sourcePosition, DecalPoolType.Blood);
-
-        /// <summary>
-        /// Spawns a decal for this player.
-        /// </summary>
-        /// <param name="position">The position of the decal.</param>
-        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
-        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
-        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
-        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
-        public bool SpawnDecal(Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
-        {
-            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
-            {
-                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
-                return false;
-            }
-
-            Firearm firearm = Item.Get<Firearm>(itemBase);
-            if (firearm == null)
-            {
-                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
-                return false;
-            }
-
-            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
-            if (impactEffectsModule == null)
-            {
-                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
-                return false;
-            }
-
-            impactEffectsModule.SendRpc(ReferenceHub, writer =>
-            {
-                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
-                writer.WriteByte((byte)decalType);
-                writer.WriteRelativePosition(new RelativePosition(position));
-                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
-            });
-
-            return true;
-        }
-
         /// <inheritdoc cref="Map.GetNearCameras(Vector3, float)"/>
         public IEnumerable<Camera> GetNearCameras(float toleration = 15f) => Map.GetNearCameras(Position, toleration);
 
