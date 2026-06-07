@@ -3864,15 +3864,8 @@ namespace Exiled.API.Features
         public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
             this.PlayGunSound(Position, itemType, pitch, clipIndex);
 
-        /// <summary>
-        /// Place a blood decal for this player using a raycast from the player's position.
-        /// </summary>
-        /// <param name="direction">The direction in which the raycast is fired to detect a surface.</param>
-        public void PlaceBlood(Vector3 direction)
-        {
-            if (Physics.Raycast(Position, direction, out RaycastHit hitInfo, ImpactEffectsModule.ReceivingLayers))
-                SpawnBlood(hitInfo.point + (hitInfo.normal * Decal.SurfaceDistance), -hitInfo.normal);
-        }
+        /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
+        public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
 
         /// <summary>
         /// Spawns a blood decal for this player.
