@@ -286,6 +286,15 @@ namespace Exiled.API.Extensions
         public static bool SpawnBlood(this Player player, Vector3 position, Vector3 sourcePosition) => SpawnDecal(player, position, sourcePosition, DecalPoolType.Blood);
 
         /// <summary>
+        /// Spawns a blood decal for the specified players.
+        /// </summary>
+        /// <param name="players">The players for which to spawn the blood decal.</param>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnBlood(this IEnumerable<Player> players, Vector3 position, Vector3 sourcePosition) => SpawnDecal(players, position, sourcePosition, DecalPoolType.Blood, FirearmType.Com15);
+
+        /// <summary>
         /// Spawns a decal for this player.
         /// </summary>
         /// <param name="player">Target to spawn decal for.</param>
@@ -317,6 +326,50 @@ namespace Exiled.API.Extensions
             }
 
             impactEffectsModule.SendRpc(player.ReferenceHub, writer =>
+            {
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
+            });
+
+            return true;
+        }
+
+        /// <summary>
+        /// Spawns a decal for the specified targets.
+        /// </summary>
+        /// <param name="targets">The targets for which to spawn the decal.</param>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnDecal(this IEnumerable<Player> targets, Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = Item.Get<Firearm>(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
+
+            impactEffectsModule.SendRpc(targetHubs.Contains, writer =>
             {
                 writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
                 writer.WriteByte((byte)decalType);
