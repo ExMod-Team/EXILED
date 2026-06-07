@@ -52,6 +52,7 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Attachments;
+    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Usables;
@@ -94,6 +95,7 @@ namespace Exiled.API.Features
 
     using static DamageHandlers.DamageHandlerBase;
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
+    using static UnityEngine.GraphicsBuffer;
 
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
     using Firearm = Items.Firearm;
@@ -3866,6 +3868,21 @@ namespace Exiled.API.Features
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
+
+        /// <summary>
+        /// Sends a damage indicator to player.
+        /// </summary>
+        /// <param name="dmgDealt">The amount of damage dealt. Controls the size of the indicator.</param>
+        /// <param name="position">The world position the damage originated from.</param>
+        /// <param name="sendSpectatorsToo">If true, spectators watching this player will also see the indicator.</param>
+        public void SendDamageIndicator(float dmgDealt, Vector3 position, bool sendSpectatorsToo = true)
+        {
+            DamageIndicatorMessage damageIndicatorMessage = new(dmgDealt, position);
+            if (sendSpectatorsToo)
+                Connection.Send(damageIndicatorMessage);
+            else
+                damageIndicatorMessage.SendToSpectatorsOf(ReferenceHub, true);
+        }
 
         /// <inheritdoc cref="Map.GetNearCameras(Vector3, float)"/>
         public IEnumerable<Camera> GetNearCameras(float toleration = 15f) => Map.GetNearCameras(Position, toleration);
