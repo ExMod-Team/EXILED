@@ -340,7 +340,7 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
-        /// Sends a RPC to the specified players.
+        /// Sends a RPC.
         /// </summary>
         /// <param name="firearm">The <see cref="Firearm"/> to send the RPC from.</param>
         /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
@@ -368,7 +368,7 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
-        /// Sends a RPC to the specified players.
+        /// Sends a RPC to the specified player.
         /// </summary>
         /// <param name="firearm">The firearm whose <see cref="ImpactEffectsModule"/> to use for sending the RPC.</param>
         /// <param name="target">The player to send the RPC to.</param>

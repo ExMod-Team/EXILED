@@ -3873,7 +3873,7 @@ namespace Exiled.API.Features
         public void SendHitEffect(float dmgDealt, Vector3 position, bool sendSpectatorsToo = true)
         {
             DamageIndicatorMessage damageIndicatorMessage = new(dmgDealt, position);
-            if (sendSpectatorsToo)
+            if (!sendSpectatorsToo)
                 Connection.Send(damageIndicatorMessage);
             else
                 damageIndicatorMessage.SendToSpectatorsOf(ReferenceHub, true);
