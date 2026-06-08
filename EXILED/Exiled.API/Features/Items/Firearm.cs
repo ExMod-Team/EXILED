@@ -816,7 +816,7 @@ namespace Exiled.API.Features.Items
         {
             // Todo: Get it from GunSounTypes instead of hardcoding it when pr 808 merged.
             bool soundFlag = PlaySound(1, MixerChannel.Weapons, 12f, 1f);
-            bool visualFlag = this.SendActionModuleRpc(MessageHeader.RpcFire, chambersFired);
+            bool visualFlag = this.SendAutoActionModuleRpc(MessageHeader.RpcFire, chambersFired);
             bool impactEffectsFlag = ImpactEffectsModule != null;
             if (impactEffectsFlag)
             {

@@ -348,7 +348,7 @@ namespace Exiled.API.Extensions
         /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
         /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
         /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
-        public static bool SendActionModuleRpc(this Firearm firearm, MessageHeader header, byte chambersFired = 1)
+        public static bool SendAutoActionModuleRpc(this Firearm firearm, MessageHeader header, byte chambersFired = 1)
         {
             AutomaticActionModule automaticActionModule = firearm.AutomaticActionModule;
             if (automaticActionModule == null)
@@ -377,7 +377,7 @@ namespace Exiled.API.Extensions
         /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
         /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
         /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
-        public static bool SendActionModuleRpc(this Firearm firearm, Player target, MessageHeader header, byte chambersFired = 1)
+        public static bool SendAutoActionModuleRpc(this Firearm firearm, Player target, MessageHeader header, byte chambersFired = 1)
         {
             AutomaticActionModule automaticActionModule = firearm.AutomaticActionModule;
             if (automaticActionModule == null)
@@ -410,7 +410,7 @@ namespace Exiled.API.Extensions
         /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
         /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
         /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
-        public static bool SendActionModuleRpc(this Firearm firearm, IEnumerable<Player> targets, MessageHeader header, byte chambersFired = 1)
+        public static bool SendAutoActionModuleRpc(this Firearm firearm, IEnumerable<Player> targets, MessageHeader header, byte chambersFired = 1)
         {
             AutomaticActionModule automaticActionModule = firearm.AutomaticActionModule;
             if (automaticActionModule == null)
