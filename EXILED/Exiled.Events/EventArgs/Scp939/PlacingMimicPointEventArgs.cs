@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Scp939
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
+
     using RelativePositioning;
 
     /// <summary>

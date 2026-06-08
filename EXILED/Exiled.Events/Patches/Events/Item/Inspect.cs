@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Inspect.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -15,7 +15,9 @@ namespace Exiled.Events.Patches.Events.Item
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.Keycards;

@@ -14,15 +14,23 @@ namespace Exiled.API.Features
 
     using CommandSystem;
     using CommandSystem.Commands.RemoteAdmin.Dummies;
+
     using Exiled.API.Enums;
     using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Roles;
+
     using Footprinting;
+
     using MEC;
+
     using Mirror;
+
     using NetworkManagerUtils.Dummies;
+
     using PlayerRoles;
+
     using PlayerStatsSystem;
+
     using UnityEngine;
 
     /// <summary>
@@ -102,7 +110,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -131,7 +139,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -160,7 +168,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -291,7 +299,7 @@ namespace Exiled.API.Features
             });
 
             if (ignored)
-                Round.IgnoredPlayers.Add(npc.ReferenceHub);
+                Round.IgnoredPlayers.Add(npc);
 
             Dictionary.Add(npc.GameObject, npc);
             return npc;
@@ -334,7 +342,7 @@ namespace Exiled.API.Features
         {
             try
             {
-                Round.IgnoredPlayers.Remove(ReferenceHub);
+                Round.IgnoredPlayers.Remove(this);
                 Dictionary.Remove(ReferenceHub.gameObject);
                 NetworkServer.Destroy(ReferenceHub.gameObject);
             }

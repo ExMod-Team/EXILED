@@ -60,7 +60,11 @@ namespace Exiled.API.Features.Toys
         public Bounds Bounds
         {
             get => new(Position, Base.NetworkBoundsSize);
-            set => Base.NetworkBoundsSize = value.size;
+            set
+            {
+                Position = value.center;
+                Base.NetworkBoundsSize = value.size;
+            }
         }
 
         /// <summary>
@@ -78,7 +82,7 @@ namespace Exiled.API.Features.Toys
         public byte WaypointId => Base._waypointId;
 
         /// <summary>
-        /// Creates a new <see cref="Waypoint"/> with a specific position and size (bounds).
+        /// Creates a new <see cref="Waypoint"/>.
         /// </summary>
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>
         /// <param name="size">The size of the bounds (Applied to NetworkBoundsSize).</param>
@@ -86,7 +90,7 @@ namespace Exiled.API.Features.Toys
         public static Waypoint Create(Vector3 position, Vector3 size) => Create(position: position, scale: size, spawn: true);
 
         /// <summary>
-        /// Creates a new <see cref="Waypoint"/> based on a Transform.
+        /// Creates a new <see cref="Waypoint"/>.
         /// </summary>
         /// <param name="transform">The transform to spawn at (LocalScale is applied to Bounds).</param>
         /// <param name="size">The size of the bounds (Applied to NetworkBoundsSize).</param>
@@ -109,12 +113,11 @@ namespace Exiled.API.Features.Toys
             Waypoint toy = new(Object.Instantiate(Prefab, parent))
             {
                 Priority = priority,
-                BoundsSize = scale ?? Vector3.one * 255.9961f,
                 VisualizeBounds = visualizeBounds,
+                BoundsSize = scale ?? (Vector3.one * WaypointToy.MaxBounds),
+                LocalPosition = position ?? Vector3.zero,
+                LocalRotation = rotation ?? Quaternion.identity,
             };
-
-            toy.Transform.localPosition = position ?? Vector3.zero;
-            toy.Transform.localRotation = rotation ?? Quaternion.identity;
 
             if (spawn)
                 toy.Spawn();

@@ -64,10 +64,6 @@ namespace Exiled.API.Features
         /// </summary>
         internal static List<PocketDimensionTeleport> TeleportsValue = new();
 
-        private static AmbientSoundPlayer ambientSoundPlayer;
-
-        private static SqueakSpawner squeakSpawner;
-
         /// <summary>
         /// Gets a value indicating whether decontamination has begun in the light containment zone.
         /// </summary>
@@ -141,12 +137,12 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the <see cref="global::AmbientSoundPlayer"/>.
         /// </summary>
-        public static AmbientSoundPlayer AmbientSoundPlayer => ambientSoundPlayer ??= ReferenceHub._hostHub.GetComponent<AmbientSoundPlayer>();
+        public static AmbientSoundPlayer AmbientSoundPlayer => field ??= ReferenceHub._hostHub.GetComponent<AmbientSoundPlayer>();
 
         /// <summary>
         /// Gets the <see cref="global::SqueakSpawner"/>.
         /// </summary>
-        public static SqueakSpawner SqueakSpawner => squeakSpawner ??= Object.FindFirstObjectByType<SqueakSpawner>();
+        public static SqueakSpawner SqueakSpawner => field ??= Object.FindFirstObjectByType<SqueakSpawner>();
 
         /// <summary>
         /// Sends a staff message to all players online with <see cref="PlayerPermissions.AdminChat"/> permission.
@@ -311,7 +307,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Forces the light containment zone decontamination process.
         /// </summary>
-        public static void StartDecontamination() => DecontaminationController.Singleton.FinishDecontamination();
+        public static void StartDecontamination() => DecontaminationController.Singleton.DecontaminationOverride = DecontaminationController.DecontaminationStatus.Forced;
 
         /// <summary>
         /// Turns on all lights in the facility.

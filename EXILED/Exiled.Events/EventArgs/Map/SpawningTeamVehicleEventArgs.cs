@@ -8,7 +8,7 @@
 namespace Exiled.Events.EventArgs.Map
 {
     using Exiled.Events.EventArgs.Interfaces;
-    using Respawning;
+
     using Respawning.Waves;
 
     /// <summary>
