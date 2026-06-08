@@ -227,30 +227,42 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="player">Target to play.</param>
         /// <param name="position">Position to play on.</param>
-        /// <param name="itemType">Weapon' sound to play.</param>
-        /// <param name="volume">Sound's volume to set.</param>
-        /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
-        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
-        public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
-            => PlayGunSound(player, position, itemType.GetFirearmType(), volume, audioClipId);
+        /// <param name="firearmType">Weapon's sound to play.</param>
+        /// <param name="pitch">Speed of sound.</param>
+        /// <param name="clipIndex">Index of clip.</param>
+        [Obsolete("This method is deprecated, use PlayGunSound(this Player, FirearmType, int, Vector3, MixerChannel, float, float) instead.")]
+        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0) => player.PlayGunSound(firearmType, clipIndex, position, pitch: pitch);
 
         /// <summary>
         /// Plays a gun sound that only the <paramref name="player"/> can hear.
         /// </summary>
         /// <param name="player">Target to play.</param>
-        /// <param name="position">Position to play on.</param>
         /// <param name="firearmType">Weapon's sound to play.</param>
-        /// <param name="pitch">Speed of sound.</param>
         /// <param name="clipIndex">Index of clip.</param>
-        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0)
+        /// <param name="position">Position to play on.</param>
+        /// <param name="mixerChannel">Audio's mixer channel.</param>
+        /// <param name="range">Max range of sound.</param>
+        /// <param name="pitch">Speed of sound.</param>
+        public static void PlayGunSound(this Player player, FirearmType firearmType, int clipIndex, Vector3 position, MixerChannel mixerChannel = MixerChannel.Weapons, float range = 12f, float pitch = 1)
         {
-            if (firearmType is FirearmType.ParticleDisruptor or FirearmType.None)
+            if (firearmType is FirearmType.None)
+            {
+                Log.Error($"Failed to play gun sound for player {player.Nickname} because firearm type was None.");
                 return;
+            }
 
-            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[firearmType];
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to get ItemBase for firearm type {firearmType} when trying to play gun sound for player {player.Nickname}");
+                return;
+            }
 
+            Firearm firearm = Item.Get<Firearm>(itemBase);
             if (firearm == null)
+            {
+                Log.Error($"Failed to get Firearm for firearm type {firearmType} when trying to play gun sound.");
                 return;
+            }
 
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
@@ -261,20 +273,15 @@ namespace Exiled.API.Extensions
                 player.Connection.Send(writer);
             }
 
-            firearm.BarrelAmmo = 1;
-            firearm.BarrelMagazine.IsCocked = true;
             player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
 
-            if (!firearm.Base.TryGetModule(out AudioModule audioModule))
-                return;
-
-            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
+            Timing.CallDelayed(0.1f, () =>
             {
-                audioModule.SendRpc(player.ReferenceHub, writer =>
-                    audioModule.ServerSend(writer, clipIndex, pitch, MixerChannel.Weapons, 12f, position, false));
+                if (!player.IsConnected)
+                    return;
 
+                firearm.PlaySound(clipIndex, mixerChannel, range, pitch, position, false, player);
                 player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
-
                 player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub, null));
             });
         }
@@ -305,9 +312,7 @@ namespace Exiled.API.Extensions
                 return false;
             }
 
-            firearm.AudioModule.SendRpc(target.ReferenceHub, writer =>
-                firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
-
+            firearm.AudioModule.SendRpc(target.ReferenceHub, writer => firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
             return true;
         }
 
@@ -339,8 +344,33 @@ namespace Exiled.API.Extensions
 
             HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
 
-            firearm.AudioModule.SendRpc(targetHubs.Contains, writer =>
-                firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+            firearm.AudioModule.SendRpc(targetHubs.Contains, writer => firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+            return true;
+        }
+
+        /// <summary>
+        /// Sends a RPC to the specified players.
+        /// </summary>
+        /// <param name="firearm">The <see cref="Firearm"/> to send the RPC from.</param>
+        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
+        /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
+        /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
+        public static bool SendRpc(this Firearm firearm, MessageHeader header, byte chambersFired = 1)
+        {
+            AutomaticActionModule automaticActionModule = firearm.AutomaticActionModule;
+            if (automaticActionModule == null)
+            {
+                Log.Error($"Failed to send RPC, firearm {firearm.Type} does not have an AutomaticActionModule.");
+                return false;
+            }
+
+            automaticActionModule.SendRpc(
+                writer =>
+                {
+                    writer.WriteSubheader(header);
+                    if (header == MessageHeader.RpcFire)
+                        writer.WriteByte(chambersFired);
+                }, true);
 
             return true;
         }
@@ -349,13 +379,14 @@ namespace Exiled.API.Extensions
         /// Sends a RPC to the specified players.
         /// </summary>
         /// <param name="firearm">The firearm whose <see cref="ImpactEffectsModule"/> to use for sending the RPC.</param>
-        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
         /// <param name="target">The player to send the RPC to.</param>
+        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
         /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
         /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
-        public static bool SendRpc(this Firearm firearm, MessageHeader header, Player target, byte chambersFired = 1)
+        public static bool SendRpc(this Firearm firearm, Player target, MessageHeader header, byte chambersFired = 1)
         {
-            if (firearm.AutomaticActionModule == null)
+            AutomaticActionModule automaticActionModule = firearm.AutomaticActionModule;
+            if (automaticActionModule == null)
             {
                 Log.Error($"Failed to send RPC, firearm {firearm.Type} does not have an AutomaticActionModule.");
                 return false;
@@ -367,7 +398,7 @@ namespace Exiled.API.Extensions
                 return false;
             }
 
-            firearm.AutomaticActionModule.SendRpc(target.ReferenceHub, writer =>
+            automaticActionModule.SendRpc(target.ReferenceHub, writer =>
             {
                 writer.WriteSubheader(header);
                 if (header == MessageHeader.RpcFire)
@@ -381,13 +412,14 @@ namespace Exiled.API.Extensions
         /// Sends a RPC to the specified players.
         /// </summary>
         /// <param name="firearm">The firearm whose <see cref="ImpactEffectsModule"/> to use for sending the RPC.</param>
-        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
         /// <param name="targets">The players to send the RPC to.</param>
+        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
         /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
         /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
-        public static bool SendRpc(this Firearm firearm, MessageHeader header, IEnumerable<Player> targets, byte chambersFired = 1)
+        public static bool SendRpc(this Firearm firearm, IEnumerable<Player> targets, MessageHeader header, byte chambersFired = 1)
         {
-            if (firearm.AutomaticActionModule == null)
+            AutomaticActionModule automaticActionModule = firearm.AutomaticActionModule;
+            if (automaticActionModule == null)
             {
                 Log.Error($"Failed to send RPC, firearm {firearm.Type} does not have an AutomaticActionModule.");
                 return false;
@@ -400,7 +432,7 @@ namespace Exiled.API.Extensions
             }
 
             HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
-            firearm.AutomaticActionModule.SendRpc(targetHubs.Contains, writer =>
+            automaticActionModule.SendRpc(targetHubs.Contains, writer =>
             {
                 writer.WriteSubheader(header);
                 if (header == MessageHeader.RpcFire)

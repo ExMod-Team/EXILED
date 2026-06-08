@@ -14,14 +14,14 @@ namespace Exiled.API.Features
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
+    using AudioPooling;
+
     using Core;
 
     using CustomPlayerEffects;
     using CustomPlayerEffects.Danger;
 
     using DamageHandlers;
-
-    using Decals;
 
     using Enums;
 
@@ -3856,14 +3856,8 @@ namespace Exiled.API.Features
             Connection.Send(new RoundRestartMessage(roundRestartType, delay, newPort, reconnect, false));
         }
 
-        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, byte, byte)"/>
-        [Obsolete("Use PlayGunSound(Player, Vector3, FirearmType, byte, byte) instead.")]
-        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0)
-            => PlayGunSound(type.GetFirearmType(), volume, audioClipId);
-
-        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, FirearmType, float, int)"/>
-        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
-            this.PlayGunSound(Position, itemType, pitch, clipIndex);
+        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, FirearmType, int, Vector3, MixerChannel, float, float)"/>
+        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) => this.PlayGunSound(itemType, clipIndex, Position, pitch: pitch);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
@@ -3871,10 +3865,10 @@ namespace Exiled.API.Features
         /// <summary>
         /// Sends a damage indicator to player.
         /// </summary>
-        /// <param name="dmgDealt">The amount of damage dealt. Controls the size of the indicator.</param>
+        /// <param name="dmgDealt">The amount of damage dealt. Controls the size of the damage indicator.</param>
         /// <param name="position">The world position the damage originated from.</param>
         /// <param name="sendSpectatorsToo">If true, spectators watching this player will also see the indicator.</param>
-        public void SendDamageIndicator(float dmgDealt, Vector3 position, bool sendSpectatorsToo = true)
+        public void SendHitEffect(float dmgDealt, Vector3 position, bool sendSpectatorsToo = true)
         {
             DamageIndicatorMessage damageIndicatorMessage = new(dmgDealt, position);
             if (sendSpectatorsToo)
@@ -3896,8 +3890,7 @@ namespace Exiled.API.Features
         /// Teleports the player to the given object, with no offset.
         /// </summary>
         /// <param name="obj">The object to teleport to.</param>
-        public void Teleport(object obj)
-            => Teleport(obj, Vector3.zero);
+        public void Teleport(object obj) => Teleport(obj, Vector3.zero);
 
         /// <summary>
         /// Teleports the player to the given object, offset by the defined offset value.

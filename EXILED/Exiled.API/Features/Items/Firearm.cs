@@ -829,14 +829,14 @@ namespace Exiled.API.Features.Items
         /// Simulates a fire.
         /// </summary>
         /// <param name="chambersFired">The number of chambers fired.</param>
-        /// <returns><see langword="true"/> if both the sound,RPC and impact effects were sent successfully; <see langword="false"/> if either <see cref="AudioModule"/> or <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
+        /// <returns><see langword="true"/> if the sound, RPC, and impact effects were all submitted successfully; <see langword="false"/> if either <see cref="AudioModule"/> or <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
         public bool FakeFire(byte chambersFired = 1)
         {
             // Todo: Get it from GunSounTypes instead of hardcoding it when pr 808 merged.
             bool soundFlag = PlaySound(1, MixerChannel.Weapons, 12f, 1f);
-            bool visualFlag = SendRpc(MessageHeader.RpcFire, chambersFired);
-            bool impactEffects = ImpactEffectsModule != null;
-            if (impactEffects)
+            bool visualFlag = this.SendRpc(MessageHeader.RpcFire, chambersFired);
+            bool impactEffectsFlag = ImpactEffectsModule != null;
+            if (impactEffectsFlag)
             {
                 Transform camera = Owner.CameraTransform;
                 float maxDist = HitscanHitregModule.FullDamageDistance + HitscanHitregModule.DamageFalloffDistance;
@@ -845,32 +845,7 @@ namespace Exiled.API.Features.Items
                     ImpactEffectsModule.ServerProcessHit(hit, camera.position, true);
             }
 
-            return soundFlag && visualFlag && impactEffects;
-        }
-
-        /// <summary>
-        /// Sends a RPC to the specified players.
-        /// </summary>
-        /// <param name="header">The <see cref="MessageHeader"/> type of RPC to send.</param>
-        /// <param name="chambersFired">The number of chambers fired. Only used when <paramref name="header"/> is <see cref="MessageHeader.RpcFire"/>.</param>
-        /// <returns><see langword="true"/> if the RPC was sent successfully; <see langword="false"/> if <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
-        public bool SendRpc(MessageHeader header, byte chambersFired = 1)
-        {
-            if (AutomaticActionModule == null)
-            {
-                Log.Error($"Failed to send RPC, firearm {Type} does not have an AutomaticActionModule.");
-                return false;
-            }
-
-            AutomaticActionModule.SendRpc(
-                writer =>
-                {
-                    writer.WriteSubheader(header);
-                    if (header == MessageHeader.RpcFire)
-                        writer.WriteByte(chambersFired);
-                }, true);
-
-            return true;
+            return soundFlag && visualFlag && impactEffectsFlag;
         }
 
         /// <summary>
