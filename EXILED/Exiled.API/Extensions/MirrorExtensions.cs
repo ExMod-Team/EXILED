@@ -291,7 +291,8 @@ namespace Exiled.API.Extensions
         /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
         public static bool PlaySound(this Firearm firearm, int index, MixerChannel channel, float range, float pitch, Vector3 position, bool shooterVisible, Player target)
         {
-            if (firearm.AudioModule == null)
+            AudioModule audioModule = firearm.AudioModule;
+            if (audioModule == null)
             {
                 Log.Error($"Firearm {firearm} doesn't have an audio module.");
                 return false;
@@ -303,7 +304,7 @@ namespace Exiled.API.Extensions
                 return false;
             }
 
-            firearm.AudioModule.SendRpc(target.ReferenceHub, writer => firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+            audioModule.SendRpc(target.ReferenceHub, writer => audioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
             return true;
         }
 
@@ -321,7 +322,8 @@ namespace Exiled.API.Extensions
         /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
         public static bool PlaySound(this Firearm firearm, int index, MixerChannel channel, float range, float pitch, Vector3 position, bool shooterVisible, IEnumerable<Player> targets)
         {
-            if (firearm.AudioModule == null)
+            AudioModule audioModule = firearm.AudioModule;
+            if (audioModule == null)
             {
                 Log.Error($"Firearm {firearm} doesn't have an audio module.");
                 return false;
@@ -335,7 +337,7 @@ namespace Exiled.API.Extensions
 
             HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
 
-            firearm.AudioModule.SendRpc(targetHubs.Contains, writer => firearm.AudioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+            audioModule.SendRpc(targetHubs.Contains, writer => audioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
             return true;
         }
 
