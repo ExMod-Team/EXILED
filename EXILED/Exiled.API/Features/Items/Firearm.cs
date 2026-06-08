@@ -25,21 +25,15 @@ namespace Exiled.API.Features.Items
 
     using Extensions;
 
-    using InventorySystem;
-    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
-
-    using Mirror;
 
     using UnityEngine;
 
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
     using static InventorySystem.Items.Firearms.Modules.AutomaticActionModule;
-    using static UnityEngine.GraphicsBuffer;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
     using FirearmPickup = Pickups.FirearmPickup;

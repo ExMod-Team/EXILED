@@ -25,12 +25,11 @@ namespace Exiled.API.Extensions
     using Decals;
 
     using Exiled.API.Enums;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
-    using Exiled.API.Interfaces;
 
     using Features;
-    using Features.Pools;
 
     using HarmonyLib;
 
@@ -53,8 +52,6 @@ namespace Exiled.API.Extensions
     using PlayerRoles.Voice;
 
     using RelativePositioning;
-
-    using Respawning;
 
     using Unity.Collections.LowLevel.Unsafe;
 
@@ -364,7 +361,8 @@ namespace Exiled.API.Extensions
                     writer.WriteSubheader(header);
                     if (header == MessageHeader.RpcFire)
                         writer.WriteByte(chambersFired);
-                }, true);
+                },
+                true);
 
             return true;
         }
