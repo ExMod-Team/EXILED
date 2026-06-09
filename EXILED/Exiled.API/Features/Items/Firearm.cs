@@ -818,13 +818,12 @@ namespace Exiled.API.Features.Items
         /// </summary>
         /// <param name="rpcHeader">Rpc header for fire type like fire or dry fire.</param>
         /// <param name="chambersFired">The number of chambers fired.</param>
-        public void FakeFire(MessageHeader rpcHeader = MessageHeader.RpcFire, byte chambersFired = 1)
+        /// <param name="soundIndex">The index of the sound to play. 0 is DryFire, 1 is default gunshot.</param>
+        public void FakeFire(MessageHeader rpcHeader = MessageHeader.RpcFire, byte chambersFired = 1, byte soundIndex = 1)
         {
-            // Todo: Get it from GunSounTypes instead of hardcoding it when pr 808 merged.
-            PlaySound(1, MixerChannel.Weapons, AudioModule.FinalGunshotRange, AudioModule.RandomPitch);
+            PlaySound(soundIndex, MixerChannel.Weapons, AudioModule.FinalGunshotRange, AudioModule.RandomPitch);
 
-#pragma warning disable IDE0031 // Use null propagation
-            if (AutomaticActionModule != null)
+            if (AutomaticActionModule?.gameObject != null)
             {
                 AutomaticActionModule.SendRpc(
                 writer =>
@@ -835,7 +834,6 @@ namespace Exiled.API.Features.Items
                 },
                 true);
             }
-#pragma warning restore IDE0031 // Use null propagation
 
             if (ImpactEffectsModule != null)
             {
