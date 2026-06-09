@@ -795,7 +795,7 @@ namespace Exiled.API.Features.Items
         /// <param name="range">The range within which nearby players can hear the sound.</param>
         /// <param name="pitch">The pitch of the sound.</param>
         /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
-        public bool PlaySound(int index, MixerChannel channel, float range, float pitch)
+        public bool PlaySound(int index, MixerChannel channel, float? range = null, float? pitch = null)
         {
             if (AudioModule == null)
             {
@@ -803,7 +803,13 @@ namespace Exiled.API.Features.Items
                 return false;
             }
 
-            AudioModule.ServerSendToNearbyPlayers(index, channel, range, pitch);
+            if (!range.HasValue)
+                range = AudioModule.FinalGunshotRange;
+
+            if (!pitch.HasValue)
+                pitch = AudioModule.RandomPitch;
+
+            AudioModule.ServerSendToNearbyPlayers(index, channel, range.Value, pitch.Value);
             return true;
         }
 
@@ -815,8 +821,9 @@ namespace Exiled.API.Features.Items
         public void FakeFire(MessageHeader rpcHeader = MessageHeader.RpcFire, byte chambersFired = 1)
         {
             // Todo: Get it from GunSounTypes instead of hardcoding it when pr 808 merged.
-            PlaySound(1, MixerChannel.Weapons, 12f, 1f);
+            PlaySound(1, MixerChannel.Weapons, AudioModule.FinalGunshotRange, AudioModule.RandomPitch);
 
+#pragma warning disable IDE0031 // Use null propagation
             if (AutomaticActionModule != null)
             {
                 AutomaticActionModule.SendRpc(
@@ -828,6 +835,7 @@ namespace Exiled.API.Features.Items
                 },
                 true);
             }
+#pragma warning restore IDE0031 // Use null propagation
 
             if (ImpactEffectsModule != null)
             {

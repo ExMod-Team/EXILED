@@ -59,8 +59,6 @@ namespace Exiled.API.Extensions
 
     using Utils.Networking;
 
-    using static InventorySystem.Items.Firearms.Modules.AutomaticActionModule;
-
     using Firearm = Features.Items.Firearm;
 
     /// <summary>
@@ -234,7 +232,7 @@ namespace Exiled.API.Extensions
         /// <param name="mixerChannel">Audio's mixer channel.</param>
         /// <param name="range">Max range of sound.</param>
         /// <param name="pitch">Speed of sound.</param>
-        public static void PlayGunSound(this Player player, FirearmType firearmType, int clipIndex, Vector3 position, MixerChannel mixerChannel = MixerChannel.Weapons, float range = 12f, float pitch = 1)
+        public static void PlayGunSound(this Player player, FirearmType firearmType, int clipIndex, Vector3 position, MixerChannel mixerChannel = MixerChannel.Weapons, float? range = null, float? pitch = null)
         {
             if (firearmType is FirearmType.None)
             {
@@ -258,7 +256,7 @@ namespace Exiled.API.Extensions
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
                 writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
-                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub, null).Write(writer);
+                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.Tutorial, player.ReferenceHub, null).Write(writer);
                 writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
                 writer.WriteUShort(0);
                 player.Connection.Send(writer);
@@ -271,7 +269,7 @@ namespace Exiled.API.Extensions
                 if (!player.IsConnected)
                     return;
 
-                firearm.PlaySound(clipIndex, mixerChannel, range, pitch, position, false, player);
+                firearm.PlaySound(player, clipIndex, mixerChannel, position, shooterVisible: false, range, pitch);
                 player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
                 player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub, null));
             });
@@ -281,15 +279,15 @@ namespace Exiled.API.Extensions
         /// Plays a gun sound to the specified player.
         /// </summary>
         /// <param name="firearm">The firearm whose <see cref="AudioModule"/> to use.</param>
+        /// <param name="target">The player to send the sound to.</param>
         /// <param name="index">The index of the audio clip to play.</param>
         /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
-        /// <param name="range">The range of the sound.</param>
-        /// <param name="pitch">The pitch of the sound.</param>
         /// <param name="position">The world position the sound originates from.</param>
         /// <param name="shooterVisible">Whether the shooter is visible to the target. If <see langword="false"/>, the sound will be played at <paramref name="position"/> instead of on the firearm's transform.</param>
-        /// <param name="target">The player to send the sound to.</param>
+        /// <param name="range">The range of the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
         /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
-        public static bool PlaySound(this Firearm firearm, int index, MixerChannel channel, float range, float pitch, Vector3 position, bool shooterVisible, Player target)
+        public static bool PlaySound(this Firearm firearm, Player target, int index, MixerChannel channel, Vector3 position, bool shooterVisible, float? range = null, float? pitch = null)
         {
             AudioModule audioModule = firearm.AudioModule;
             if (audioModule == null)
@@ -304,7 +302,13 @@ namespace Exiled.API.Extensions
                 return false;
             }
 
-            audioModule.SendRpc(target.ReferenceHub, writer => audioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+            if (!range.HasValue)
+                range = audioModule.FinalGunshotRange;
+
+            if (!pitch.HasValue)
+                pitch = audioModule.RandomPitch;
+
+            audioModule.SendRpc(target.ReferenceHub, writer => audioModule.ServerSend(writer, index, pitch.Value, channel, range.Value, position, shooterVisible));
             return true;
         }
 
@@ -312,15 +316,15 @@ namespace Exiled.API.Extensions
         /// Plays a gun sound to the specified players.
         /// </summary>
         /// <param name="firearm">The firearm whose <see cref="AudioModule"/> to use.</param>
+        /// <param name="targets">The players to send the sound to.</param>
         /// <param name="index">The index of the audio clip to play.</param>
         /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
-        /// <param name="range">The range of the sound.</param>
-        /// <param name="pitch">The pitch of the sound.</param>
         /// <param name="position">The world position the sound originates from.</param>
         /// <param name="shooterVisible">Whether the shooter is visible to the target. If <see langword="false"/>, the sound will be played at <paramref name="position"/> instead of on the firearm's transform.</param>
-        /// <param name="targets">The players to send the sound to.</param>
+        /// <param name="range">The range of the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
         /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
-        public static bool PlaySound(this Firearm firearm, int index, MixerChannel channel, float range, float pitch, Vector3 position, bool shooterVisible, IEnumerable<Player> targets)
+        public static bool PlaySound(this Firearm firearm, IEnumerable<Player> targets, int index, MixerChannel channel, Vector3 position, bool shooterVisible, float? range = null, float? pitch = null)
         {
             AudioModule audioModule = firearm.AudioModule;
             if (audioModule == null)
@@ -335,9 +339,15 @@ namespace Exiled.API.Extensions
                 return false;
             }
 
+            if (!range.HasValue)
+                range = audioModule.FinalGunshotRange;
+
+            if (!pitch.HasValue)
+                pitch = audioModule.RandomPitch;
+
             HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
 
-            audioModule.SendRpc(targetHubs.Contains, writer => audioModule.ServerSend(writer, index, pitch, channel, range, position, shooterVisible));
+            audioModule.SendRpc(targetHubs.Contains, writer => audioModule.ServerSend(writer, index, pitch.Value, channel, range.Value, position, shooterVisible));
             return true;
         }
 
