@@ -87,6 +87,7 @@ namespace Exiled.API.Features.Toys
         private static readonly Vector3 SpeakerParkPosition = Vector3.down * 999;
 
         private OpusEncoder encoder;
+        private Thread processThread;
         private CoroutineHandle fadeRoutine;
         private CoroutineHandle playBackRoutine;
         private CancellationTokenSource processCts;
@@ -262,14 +263,13 @@ namespace Exiled.API.Features.Toys
             get => currentSource?.CurrentTime ?? 0.0;
             set
             {
-                if (currentSource == null)
+                if (currentSource == null || value < 0.0)
                     return;
 
                 StopProccesThread();
 
                 currentSource.CurrentTime = value;
 
-                ResetEncoder();
                 activeFilter?.Reset();
                 UpdateNextScheduledEventIndex();
 
@@ -1036,9 +1036,6 @@ namespace Exiled.API.Features.Toys
             {
                 double currentTime = Time.unscaledTimeAsDouble;
 
-                if (currentTime - nextSendTime > PacketQueueCapacity * FrameTime)
-                    nextSendTime = currentTime;
-
                 while (currentTime >= nextSendTime)
                 {
                     nextSendTime += FrameTime;
@@ -1103,60 +1100,64 @@ namespace Exiled.API.Features.Toys
             processCts = new CancellationTokenSource();
             CancellationToken token = processCts.Token;
 
-            new Thread(() =>
-            {
-                float[] localFrame = new float[FrameSize];
-                byte[] localEncoded = new byte[VoiceChatSettings.MaxEncodedSize];
-                float[] localResampleBuffer = Array.Empty<float>();
-                double localResampleTime = 0.0;
-                int localResampleBufferFilled = 0;
-
-                try
-                {
-                    while (!token.IsCancellationRequested)
-                    {
-                        IPcmSource source = currentSource;
-                        if (source == null || source.Ended)
-                            break;
-
-                        if (isPitchDefault)
-                        {
-                            int read = source.Read(localFrame, 0, FrameSize);
-                            if (read < FrameSize)
-                                Array.Clear(localFrame, read, FrameSize - read);
-                        }
-                        else
-                        {
-                            ResampleFrame(source, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
-                        }
-
-                        activeFilter?.Process(localFrame);
-
-                        int length = encoder.Encode(localFrame, localEncoded);
-
-                        byte[] packet = new byte[length];
-                        Array.Copy(localEncoded, packet, length);
-
-                        localQueue.TryAdd((packet, length), -1, token);
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                }
-                catch (Exception ex)
-                {
-                    Log.Error($"[Speaker] Encode worker error.\nException Details: {ex}");
-                }
-                finally
-                {
-                    localQueue.CompleteAdding();
-                }
-            })
+            processThread = new Thread(() => ProcessLoop(localQueue, token))
             {
                 IsBackground = true,
                 Priority = System.Threading.ThreadPriority.BelowNormal,
                 Name = $"[Exiled Speaker Api] Speaker.ProcessThread Id:[{ControllerId}]",
-            }.Start();
+            };
+
+            processThread.Start();
+        }
+
+        private void ProcessLoop(BlockingCollection<(byte[] Data, int Lenght)> localQueue, CancellationToken token)
+        {
+            float[] localFrame = new float[FrameSize];
+            byte[] localEncoded = new byte[VoiceChatSettings.MaxEncodedSize];
+            float[] localResampleBuffer = Array.Empty<float>();
+            double localResampleTime = 0.0;
+            int localResampleBufferFilled = 0;
+
+            try
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    IPcmSource source = currentSource;
+                    if (source == null || source.Ended)
+                        break;
+
+                    if (isPitchDefault)
+                    {
+                        int read = source.Read(localFrame, 0, FrameSize);
+                        if (read < FrameSize)
+                            Array.Clear(localFrame, read, FrameSize - read);
+                    }
+                    else
+                    {
+                        ResampleFrame(source, localFrame, ref localResampleBuffer, ref localResampleTime, ref localResampleBufferFilled);
+                    }
+
+                    activeFilter?.Process(localFrame);
+
+                    int length = encoder.Encode(localFrame, localEncoded);
+
+                    byte[] packet = new byte[length];
+                    Array.Copy(localEncoded, packet, length);
+
+                    localQueue.TryAdd((packet, length), -1, token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[Speaker] Encode worker error.\nException Details: {ex}");
+            }
+            finally
+            {
+                localQueue.CompleteAdding();
+            }
         }
 
         private void StopProccesThread()
@@ -1168,6 +1169,10 @@ namespace Exiled.API.Features.Toys
                 localCts.Dispose();
             }
 
+            if (processThread != null && processThread.IsAlive)
+                processThread.Join();
+
+            processThread = null;
             packetQueue = null;
         }
 

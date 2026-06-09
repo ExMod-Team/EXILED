@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Audio.PcmSources
 {
     using System;
+    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -22,6 +23,8 @@ namespace Exiled.API.Features.Audio.PcmSources
     /// </summary>
     public sealed class PreloadedPcmSource : IPcmSource, IAsyncPcmSource
     {
+        private readonly object trackInfoLock = new();
+
         private int pos;
         private float[] data;
         private CancellationTokenSource cts;
@@ -52,27 +55,24 @@ namespace Exiled.API.Features.Audio.PcmSources
             cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
 
-            Task.Run(
-                () =>
-                {
-                    try
-                    {
-                        AudioData result = WavUtility.WavToPcm(path);
-                        data = result.Pcm;
-                        TrackInfo = result.TrackInfo;
-                        isReady = true;
-                    }
-                    catch (Exception ex) when (ex is not OperationCanceledException)
-                    {
-                        Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
-                        isFailed = true;
-                    }
-                },
-                token);
+            Task.Run(() => ReadAudio(path), token);
         }
 
         /// <inheritdoc/>
-        public TrackData TrackInfo { get; private set; }
+        public TrackData TrackInfo
+        {
+            get
+            {
+                lock (trackInfoLock)
+                    return field;
+            }
+
+            private set
+            {
+                lock (trackInfoLock)
+                    field = value;
+            }
+        }
 
         /// <inheritdoc/>
         public bool Ended => isFailed || isDisposed || (isReady && data != null && pos >= data.Length);
@@ -135,6 +135,25 @@ namespace Exiled.API.Features.Audio.PcmSources
             {
                 localCts.Cancel();
                 localCts.Dispose();
+            }
+        }
+
+        private void ReadAudio(string path)
+        {
+            try
+            {
+                AudioData result = WavUtility.WavToPcm(path);
+                data = result.Pcm;
+                TrackInfo = result.TrackInfo;
+                isReady = true;
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
+                isFailed = true;
             }
         }
     }
