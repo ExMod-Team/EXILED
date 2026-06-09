@@ -810,15 +810,26 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Simulates a fire.
         /// </summary>
+        /// <param name="rpcHeader">Rpc header for fire type like fire or dry fire.</param>
         /// <param name="chambersFired">The number of chambers fired.</param>
-        /// <returns><see langword="true"/> if the sound, RPC, and impact effects were all submitted successfully; <see langword="false"/> if either <see cref="AudioModule"/> or <see cref="AutomaticActionModule"/> is <see langword="null"/>.</returns>
-        public bool FakeFire(byte chambersFired = 1)
+        public void FakeFire(MessageHeader rpcHeader = MessageHeader.RpcFire, byte chambersFired = 1)
         {
             // Todo: Get it from GunSounTypes instead of hardcoding it when pr 808 merged.
-            bool soundFlag = PlaySound(1, MixerChannel.Weapons, 12f, 1f);
-            bool visualFlag = this.SendAutomaticActionModuleRpc(MessageHeader.RpcFire, chambersFired);
-            bool impactEffectsFlag = ImpactEffectsModule != null;
-            if (impactEffectsFlag)
+            PlaySound(1, MixerChannel.Weapons, 12f, 1f);
+
+            if (AutomaticActionModule != null)
+            {
+                AutomaticActionModule.SendRpc(
+                writer =>
+                {
+                    writer.WriteSubheader(rpcHeader);
+                    if (rpcHeader == MessageHeader.RpcFire)
+                        writer.WriteByte(chambersFired);
+                },
+                true);
+            }
+
+            if (ImpactEffectsModule != null)
             {
                 Transform camera = Owner.CameraTransform;
                 float maxDist = HitscanHitregModule.FullDamageDistance + HitscanHitregModule.DamageFalloffDistance;
@@ -826,8 +837,6 @@ namespace Exiled.API.Features.Items
                 if (Physics.Raycast(camera.position, camera.forward, out RaycastHit hit, maxDist, HitscanHitregModuleBase.HitregMask))
                     ImpactEffectsModule.ServerProcessHit(hit, camera.position, true);
             }
-
-            return soundFlag && visualFlag && impactEffectsFlag;
         }
 
         /// <summary>
