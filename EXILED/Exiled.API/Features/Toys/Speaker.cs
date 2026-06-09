@@ -81,7 +81,7 @@ namespace Exiled.API.Features.Toys
         private const int ResampleBufferPadding = 10;
         private const float PitchTolerance = 0.0001f;
         private const int FrameSize = VoiceChatSettings.PacketSizePerChannel;
-        private const float FrameTime = (float)FrameSize / VoiceChatSettings.SampleRate;
+        private const double FrameTime = (double)FrameSize / VoiceChatSettings.SampleRate;
 
         private static readonly Queue<Speaker> Pool;
         private static readonly Vector3 SpeakerParkPosition = Vector3.down * 999;
@@ -98,6 +98,7 @@ namespace Exiled.API.Features.Toys
         private int nextScheduledEventIndex;
         private int idChangeFrame;
         private bool needsSyncWait;
+        private double nextSendTime;
         private bool isPitchDefault = true;
         private bool isPlayBackInitialized;
 
@@ -244,6 +245,7 @@ namespace Exiled.API.Features.Toys
                 }
                 else
                 {
+                    nextSendTime = Time.unscaledTimeAsDouble;
                     StartProccesThread();
                     OnPlaybackResumed?.Invoke();
                     SpeakerEvents.OnPlaybackResumed(this);
@@ -1011,6 +1013,8 @@ namespace Exiled.API.Features.Toys
 
         private IEnumerator<float> PlayBackCoroutine()
         {
+            StartProccesThread();
+
             if (needsSyncWait)
             {
                 int framesPassed = Time.frameCount - idChangeFrame;
@@ -1026,17 +1030,18 @@ namespace Exiled.API.Features.Toys
             OnPlaybackStarted?.Invoke();
             SpeakerEvents.OnPlaybackStarted(this);
 
-            float timeAccumulator = 0f;
-
-            StartProccesThread();
+            nextSendTime = Time.unscaledTimeAsDouble;
 
             while (true)
             {
-                timeAccumulator += Time.deltaTime;
+                double currentTime = Time.unscaledTimeAsDouble;
 
-                while (timeAccumulator >= FrameTime)
+                if (currentTime - nextSendTime > PacketQueueCapacity * FrameTime)
+                    nextSendTime = currentTime;
+
+                while (currentTime >= nextSendTime)
                 {
-                    timeAccumulator -= FrameTime;
+                    nextSendTime += FrameTime;
 
                     if (packetQueue != null && packetQueue.TryTake(out (byte[] Data, int Length) packet) && packet.Length > 2)
                         SendAudioMessage(new AudioMessage(ControllerId, packet.Data, packet.Length));
@@ -1055,12 +1060,12 @@ namespace Exiled.API.Features.Toys
 
                         if (Loop)
                         {
-                            timeAccumulator = 0f;
-
                             RestartTrack();
 
                             OnPlaybackLooped?.Invoke();
                             SpeakerEvents.OnPlaybackLooped(this);
+
+                            nextSendTime = Time.unscaledTimeAsDouble;
 
                             StartProccesThread();
                             continue;
