@@ -7,10 +7,10 @@
 
 namespace Exiled.API.Features.Roles
 {
+    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features.Pools;
 
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
