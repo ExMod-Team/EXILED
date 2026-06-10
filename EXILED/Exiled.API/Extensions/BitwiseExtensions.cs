@@ -68,7 +68,7 @@ namespace Exiled.API.Extensions
         /// <typeparam name="T">The type of the enum.</typeparam>
         /// <returns><see langword="true"/> if value is presented in flag. Otherwise, <see langword="false"/>.</returns>
         [Obsolete("Use Enum::HasFlag instead.")]
-        public static bool HasFlag<T>(this T flag, T value)
+        public static bool HasFlagFast<T>(this T flag, T value)
             where T : Enum => flag.HasFlag(value);
     }
 }

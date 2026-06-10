@@ -73,7 +73,7 @@ namespace Exiled.Events.Patches.Events.Map
                     continue;
 
                 // LifeIdentifier check is needed to fix NW Bug https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/2811
-                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub) && instance.PreviousOwner.LifeIdentifier == player.Footprint.LifeIdentifier)
+                if (!IndividualFriendlyFire.CheckFriendlyFirePlayer(instance.PreviousOwner, player.ReferenceHub) && instance.PreviousOwner.LifeIdentifier != player.Footprint.LifeIdentifier)
                     continue;
 
                 if (Physics.Linecast(instance.transform.position, player.CameraTransform.position, instance.BlindingMask))
