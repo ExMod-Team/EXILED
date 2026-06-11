@@ -63,7 +63,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Ldloc_S, effectsController),
                 new(OpCodes.Callvirt, Method(typeof(PlayerEffectsController), nameof(PlayerEffectsController.GetEffect)).MakeGenericMethod(typeof(Blindness))),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(Blindness), nameof(Blindness.Intensity))),
-                new(OpCodes.Ldc_I4_S, 100),
+                new(OpCodes.Ldc_I4, (int)Blindness.MaxHealableIntensity),
                 new(OpCodes.Bge_S, retTrue),
 
                 new(OpCodes.Br_S, @continue),
