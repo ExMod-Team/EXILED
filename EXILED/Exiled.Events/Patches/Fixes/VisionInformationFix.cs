@@ -58,7 +58,7 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Callvirt, PropertyGetter(typeof(SeveredEyes), nameof(SeveredEyes.IsEnabled))),
                 new(OpCodes.Brtrue_S, retTrue),
 
-                // if (effectsController.GetEffect<Blindness>().Intensity >= 100)
+                // if (effectsController.GetEffect<Blindness>().Intensity >= Blindness.MaxHealableIntensity)
                 //     return true;
                 new(OpCodes.Ldloc_S, effectsController),
                 new(OpCodes.Callvirt, Method(typeof(PlayerEffectsController), nameof(PlayerEffectsController.GetEffect)).MakeGenericMethod(typeof(Blindness))),
