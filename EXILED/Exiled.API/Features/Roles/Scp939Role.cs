@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features.Roles
 {
-    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Enums;
@@ -230,12 +229,6 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating the position of SCP-939's mimic point. May be <see langword="null"/> if <see cref="MimicryPointActive"/> is <see langword="false"/>.
         /// </summary>
         public Vector3? MimicryPointPosition => MimicPointController.Active ? MimicPointController.MimicPointTransform.position : null;
-
-        /// <summary>
-        /// Gets a list of players this SCP-939 instance can see regardless of their movement.
-        /// </summary>
-        [Obsolete("Force visible doesnt work for 939. This Feature not working already and will be removed.")]
-        public List<Player> VisiblePlayers { get; }
 
         /// <summary>
         /// Gets the <see cref="Scp939GameRole"/> instance.
