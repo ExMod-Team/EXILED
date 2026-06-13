@@ -22,6 +22,7 @@ namespace Exiled.Events.Patches.Fixes
     /// <summary>
     /// Patches <see cref="VisionInformation.CheckIsInDarkness"/>.
     /// Fix for effects that blind the player are not perceived as blindness.
+    /// Bug reported to NW (https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/3125).
     /// </summary>
     [HarmonyPatch(typeof(VisionInformation), nameof(VisionInformation.CheckIsInDarkness))]
     internal class VisionInformationFix
