@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using System;
-
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Interfaces;
@@ -22,6 +20,8 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class SpawningEventArgs : IPlayerEvent
     {
+        private Vector2 spawningRotation;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SpawningEventArgs" /> class.
         /// </summary>
@@ -32,7 +32,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <inheritdoc cref="Position" />
         /// </param>
         /// <param name="rotation">
-        /// <inheritdoc cref="HorizontalRotation" />
+        /// <inheritdoc cref="SpawningRotation" />
         /// </param>
         /// <param name="newRole">
         /// the spawned player's new <see cref="PlayerRoleBase">role</see>.
@@ -41,7 +41,7 @@ namespace Exiled.Events.EventArgs.Player
         {
             Player = player;
             Position = position;
-            HorizontalRotation = rotation;
+            spawningRotation = new Vector2(0, rotation);
             NewRole = Role.Create(newRole);
         }
 
@@ -64,17 +64,24 @@ namespace Exiled.Events.EventArgs.Player
         /// <remarks>
         /// Rotation will apply only for <see cref="FpcRole"/>.
         /// </remarks>
-        public float HorizontalRotation { get; set; }
-
-        /// <summary>
-        /// Gets the player's old <see cref="PlayerRoleBase">role</see>.
-        /// </summary>
-        [Obsolete("Removed because the method is no longer provide OldRole since version 14.0. Use Player.Role instead")]
-        public Role OldRole => Player.Role;
+        public Vector2 SpawningRotation
+        {
+            get => spawningRotation;
+            set
+            {
+                spawningRotation = value;
+                IsRotationModified = true;
+            }
+        }
 
         /// <summary>
         /// Gets the player's new <see cref="PlayerRoleBase">role</see>.
         /// </summary>
         public Role NewRole { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the spawning rotation was modified.
+        /// </summary>
+        public bool IsRotationModified { get; private set; }
     }
 }
