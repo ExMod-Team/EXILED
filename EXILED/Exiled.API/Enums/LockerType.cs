@@ -7,23 +7,15 @@
 
 namespace Exiled.API.Enums
 {
-    using System;
-
     /// <summary>
     /// Unique identifier for different types of <see cref="Features.Lockers.Locker"/>s.
     /// </summary>
     public enum LockerType
     {
         /// <summary>
-        /// The pedestal used by SCP items.
-        /// </summary>
-        [Obsolete("This value is not used.")]
-        Pedestal,
-
-        /// <summary>
         /// Large weapon locker.
         /// </summary>
-        LargeGun,
+        LargeGun = 1,
 
         /// <summary>
         /// Locker for rifles, known as a rifle rack.
@@ -49,12 +41,6 @@ namespace Exiled.API.Enums
         /// Unknown type of locker.
         /// </summary>
         Unknown,
-
-        /// <summary>
-        /// Unknown type of locker.
-        /// </summary>
-        [Obsolete("Use LockerType.Unknown", true)]
-        Unknow = Unknown,
 
         /// <summary>
         /// MircoHid pedestal.
