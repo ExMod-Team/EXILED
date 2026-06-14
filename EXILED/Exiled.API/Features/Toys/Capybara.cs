@@ -47,6 +47,13 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Converts CapybaraToy to Capybara.
+        /// </summary>
+        /// <param name="capybaraToy">The CapybaraToy.</param>
+        /// <returns>EXILED Capybara.</returns>
+        public static implicit operator Capybara(CapybaraToy capybaraToy) => (Capybara)Get(capybaraToy);
+
+        /// <summary>
         /// Creates a new <see cref="Capybara"/> at the specified position.
         /// </summary>
         /// <param name="position">The local position of the <see cref="Capybara"/>.</param>

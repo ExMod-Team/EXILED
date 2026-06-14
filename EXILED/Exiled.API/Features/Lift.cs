@@ -162,9 +162,13 @@ namespace Exiled.API.Features
         };
 
         /// <summary>
-        /// Gets the <see cref="ElevatorGroup"/>.
+        /// Gets or sets the <see cref="ElevatorGroup"/>.
         /// </summary>
-        public ElevatorGroup Group => Base.AssignedGroup;
+        public ElevatorGroup Group
+        {
+            get => Base.NetworkAssignedGroup;
+            set => Base.NetworkAssignedGroup = value;
+        }
 
         /// <summary>
         /// Gets a value indicating whether the lift is operative.
@@ -221,6 +225,13 @@ namespace Exiled.API.Features
         public Doors.ElevatorDoor CurrentDestination => Door.Get<Doors.ElevatorDoor>(Base.DestinationDoor);
 
         /// <summary>
+        /// Converts ElevatorChamber to Lift.
+        /// </summary>
+        /// <param name="elevatorChamber">The ElevatorChamber.</param>
+        /// <returns>EXILED Lift.</returns>
+        public static implicit operator Lift(ElevatorChamber elevatorChamber) => Get(elevatorChamber);
+
+        /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Lift"/> which contains all the <see cref="Lift"/> instances from the specified <see cref="Status"/>.
         /// </summary>
         /// <param name="status">The specified <see cref="ElevatorChamber"/>.</param>
@@ -232,7 +243,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="elevator">The <see cref="ElevatorChamber"/> instance.</param>
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
-        public static Lift Get(ElevatorChamber elevator) => ElevatorChamberToLift.TryGetValue(elevator, out Lift lift) ? lift : new(elevator);
+        public static Lift Get(ElevatorChamber elevator) => elevator == null ? null : ElevatorChamberToLift.TryGetValue(elevator, out Lift lift) ? lift : new(elevator);
 
         /// <summary>
         /// Gets the <see cref="Lift"/> corresponding to the specified <see cref="ElevatorType"/>, if any.

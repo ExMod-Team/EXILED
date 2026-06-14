@@ -175,6 +175,13 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Converts AdminToyBase to AdminToy.
+        /// </summary>
+        /// <param name="adminToyBase">The AdminToyBase.</param>
+        /// <returns>EXILED AdminToy.</returns>
+        public static implicit operator AdminToy(AdminToyBase adminToyBase) => Get(adminToyBase);
+
+        /// <summary>
         /// Gets the <see cref="AdminToy"/> belonging to the <see cref="AdminToys.AdminToyBase"/>.
         /// </summary>
         /// <param name="adminToyBase">The <see cref="AdminToys.AdminToyBase"/> instance.</param>

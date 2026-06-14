@@ -236,6 +236,13 @@ namespace Exiled.API.Features
         internal List<Room> NearestRoomsValue { get; } = new();
 
         /// <summary>
+        /// Converts RoomIdentifier to Room.
+        /// </summary>
+        /// <param name="roomIdentifier">The RoomIdentifier.</param>
+        /// <returns>EXILED Room.</returns>
+        public static implicit operator Room(RoomIdentifier roomIdentifier) => Get(roomIdentifier);
+
+        /// <summary>
         /// Gets a <see cref="Room"/> given the specified <see cref="RoomType"/>.
         /// </summary>
         /// <param name="roomType">The <see cref="RoomType"/> to search for.</param>

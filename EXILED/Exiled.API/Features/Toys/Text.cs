@@ -55,6 +55,13 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Converts TextToy to Text.
+        /// </summary>
+        /// <param name="textToy">The TextToy.</param>
+        /// <returns>EXILED Text.</returns>
+        public static implicit operator Text(TextToy textToy) => (Text)Get(textToy);
+
+        /// <summary>
         /// Creates a new <see cref="Text"/>.
         /// </summary>
         /// <param name="position">The local position of the <see cref="Text"/>.</param>

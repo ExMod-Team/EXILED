@@ -8,7 +8,6 @@
 namespace Exiled.API.Features.Toys
 {
     using System;
-    using System.Linq;
 
     using AdminToys;
 
@@ -128,6 +127,13 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Converts LightSourceToy to Light.
+        /// </summary>
+        /// <param name="lightSourceToy">The LightSourceToy.</param>
+        /// <returns>EXILED Light.</returns>
+        public static implicit operator Light(LightSourceToy lightSourceToy) => (Light)Get(lightSourceToy);
+
+        /// <summary>
         /// Creates a new <see cref="Light"/>.
         /// </summary>
         /// <param name="position">The position of the <see cref="Light"/>.</param>
@@ -187,17 +193,6 @@ namespace Exiled.API.Features.Toys
                 toy.Spawn();
 
             return toy;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Light"/> belonging to the <see cref="LightSourceToy"/>.
-        /// </summary>
-        /// <param name="lightSourceToy">The <see cref="LightSourceToy"/> instance.</param>
-        /// <returns>The corresponding <see cref="LightSourceToy"/> instance.</returns>
-        public static Light Get(LightSourceToy lightSourceToy)
-        {
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
-            return adminToy is not null ? adminToy as Light : new(lightSourceToy);
         }
     }
 }

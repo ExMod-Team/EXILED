@@ -82,6 +82,13 @@ namespace Exiled.API.Features.Toys
         public byte WaypointId => Base._waypointId;
 
         /// <summary>
+        /// Converts WaypointToy to Waypoint.
+        /// </summary>
+        /// <param name="waypointToy">The WaypointToy.</param>
+        /// <returns>EXILED Waypoint.</returns>
+        public static implicit operator Waypoint(WaypointToy waypointToy) => (Waypoint)Get(waypointToy);
+
+        /// <summary>
         /// Creates a new <see cref="Waypoint"/>.
         /// </summary>
         /// <param name="position">The position of the <see cref="Waypoint"/>.</param>

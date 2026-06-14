@@ -245,6 +245,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Converts Scp079Generator to Generator.
+        /// </summary>
+        /// <param name="scp079Generator">The Scp079Generator.</param>
+        /// <returns>EXILED Generator.</returns>
+        public static implicit operator Generator(Scp079Generator scp079Generator) => Get(scp079Generator);
+
+        /// <summary>
         /// Gets the <see cref="Generator"/> belonging to the <see cref="Scp079Generator"/>, if any.
         /// </summary>
         /// <param name="scp079Generator">The <see cref="Scp079Generator"/> instance.</param>

@@ -420,6 +420,13 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Converts SpeakerToy to Speaker.
+        /// </summary>
+        /// <param name="speakerToy">The SpeakerToy.</param>
+        /// <returns>EXILED Speaker.</returns>
+        public static implicit operator Speaker(SpeakerToy speakerToy) => (Speaker)Get(speakerToy);
+
+        /// <summary>
         /// Creates a new <see cref="Speaker"/>.
         /// </summary>
         /// <param name="parent">The parent transform to attach the <see cref="Speaker"/> to.</param>

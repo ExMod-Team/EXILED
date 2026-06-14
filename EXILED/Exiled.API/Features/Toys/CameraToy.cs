@@ -104,6 +104,13 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Converts Scp079CameraToy to CameraToy.
+        /// </summary>
+        /// <param name="scp079CameraToy">The Scp079CameraToy.</param>
+        /// <returns>EXILED CameraToy.</returns>
+        public static implicit operator CameraToy(Scp079CameraToy scp079CameraToy) => (CameraToy)Get(scp079CameraToy);
+
+        /// <summary>
         /// Creates a new <see cref="CameraToy"/> with a specified type.
         /// </summary>
         /// <param name="type">The <see cref="CameraType"/> of the camera.</param>

@@ -66,6 +66,13 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
+        /// Converts InvisibleInteractableToy to InteractableToy.
+        /// </summary>
+        /// <param name="invisibleInteractableToy">The InvisibleInteractableToy.</param>
+        /// <returns>EXILED InteractableToy.</returns>
+        public static implicit operator InteractableToy(InvisibleInteractableToy invisibleInteractableToy) => (InteractableToy)Get(invisibleInteractableToy);
+
+        /// <summary>
         /// Creates a new <see cref="InteractableToy"/>.
         /// </summary>
         /// <param name="position">The local position of the <see cref="InteractableToy"/>.</param>

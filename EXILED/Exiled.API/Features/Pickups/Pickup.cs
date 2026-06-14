@@ -295,6 +295,13 @@ namespace Exiled.API.Features.Pickups
         public bool IsSpawned => NetworkServer.spawned.ContainsValue(Base.netIdentity);
 
         /// <summary>
+        /// Converts ItemPickupBase to Pickup.
+        /// </summary>
+        /// <param name="itemPickupBase">The ItemPickupBase.</param>
+        /// <returns>EXILED Pickup.</returns>
+        public static implicit operator Pickup(ItemPickupBase itemPickupBase) => Get(itemPickupBase);
+
+        /// <summary>
         /// Gets an existing <see cref="Pickup"/> or creates a new instance of one.
         /// </summary>
         /// <param name="pickupBase">The <see cref="ItemPickupBase"/> to convert into a <see cref="Pickup"/>.</param>

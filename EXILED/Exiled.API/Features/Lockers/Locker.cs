@@ -123,7 +123,7 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         public ushort OpenedChambers
         {
-            get => Base.OpenedChambers;
+            get => Base.NetworkOpenedChambers;
             set => Base.NetworkOpenedChambers = value;
         }
 
@@ -147,6 +147,13 @@ namespace Exiled.API.Features.Lockers
                 return randomChamber.Spawnpoint.position;
             }
         }
+
+        /// <summary>
+        /// Converts BaseLocker to Locker.
+        /// </summary>
+        /// <param name="baseLocker">The BaseLocker.</param>
+        /// <returns>EXILED Locker.</returns>
+        public static implicit operator Locker?(BaseLocker baseLocker) => Get(baseLocker);
 
         /// <summary>
         /// Gets the <see cref="Locker"/> belonging to the <see cref="BaseLocker"/>, if any.

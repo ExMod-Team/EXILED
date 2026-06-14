@@ -9,7 +9,6 @@ namespace Exiled.API.Features.Toys
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Enums;
 
@@ -147,6 +146,13 @@ namespace Exiled.API.Features.Toys
         public ShootingTargetType Type { get; }
 
         /// <summary>
+        /// Converts ShootingTarget to ShootingTargetToy.
+        /// </summary>
+        /// <param name="shootingTarget">The ShootingTarget.</param>
+        /// <returns>EXILED ShootingTargetToy.</returns>
+        public static implicit operator ShootingTargetToy(ShootingTarget shootingTarget) => (ShootingTargetToy)Get(shootingTarget);
+
+        /// <summary>
         /// Creates a new <see cref="ShootingTargetToy"/>.
         /// </summary>
         /// <param name="type">The <see cref="ShootingTargetType"/> of the <see cref="ShootingTargetToy"/>.</param>
@@ -184,20 +190,6 @@ namespace Exiled.API.Features.Toys
                 toy.Spawn();
 
             return toy;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ShootingTargetToy"/> belonging to the <see cref="ShootingTarget"/>.
-        /// </summary>
-        /// <param name="shootingTarget">The <see cref="ShootingTarget"/> instance.</param>
-        /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
-        public static ShootingTargetToy Get(ShootingTarget shootingTarget)
-        {
-            if (shootingTarget == null)
-                return null;
-
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
-            return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
         }
 
         /// <summary>
