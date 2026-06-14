@@ -164,6 +164,11 @@ namespace Exiled.API.Enums
         HIDChamber,
 
         /// <summary>
+        /// Represents the HID_LAB door.
+        /// </summary>
+        HIDLab,
+
+        /// <summary>
         /// Represents the INTERCOM door.
         /// </summary>
         Intercom = 31,
