@@ -71,11 +71,6 @@ namespace Exiled.API.Features
             return new Vector4(t.position.x, t.position.y, t.position.z, t.eulerAngles.y);
         }).ToList();
 
-        /// <summary>
-        /// Gets offset for spawning near pedestals.
-        /// </summary>
-        public static Vector3 PedestalOffset { get; } = new(0, -Scp559Spawnpoint.PedestalHeight, 0);
-
         /// <inheritdoc/>
         public Scp559Cake Base { get; }
 
