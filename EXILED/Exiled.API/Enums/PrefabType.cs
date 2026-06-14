@@ -102,10 +102,6 @@ namespace Exiled.API.Enums
         [Prefab(1925130715, "FirearmPickup")]
         FirearmPickup,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(1925130715, "Com15Pickup")]
-        Com15Pickup,
-
         [Prefab(2808038258, "MedkitPickup")]
         MedkitPickup = 28,
 
