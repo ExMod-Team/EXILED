@@ -11,8 +11,8 @@ namespace Exiled.Example.Commands
 
     using CommandSystem;
 
+    using Exiled.API.Enums;
     using Exiled.API.Features;
-    using Exiled.API.Features.Pickups;
 
     /// <summary>
     /// This is an example of how commands should be made.
@@ -34,18 +34,26 @@ namespace Exiled.Example.Commands
         {
             Player player = Player.Get(sender);
 
-            Log.Warn($"{player.Items.Count} -- {player.Inventory.UserInventory.Items.Count}");
+            if (!Enum.TryParse(arguments.At(0), out FirearmType itemType))
+            {
+                response = "notitem type.";
+                return false;
+            }
 
-            foreach (Player item in Player.List)
-                Log.Warn(item);
+            if (!float.TryParse(arguments.At(1), out float pitch))
+            {
+                response = "not index.";
+                return false;
+            }
 
-            foreach (Pickup pickup in Pickup.List)
-                Log.Warn($"{pickup.Type} ({pickup.Serial}) -- {pickup.Position}");
+            if (!byte.TryParse(arguments.At(2), out byte clipIndex))
+            {
+                response = "not index.";
+                return false;
+            }
 
-            foreach (PocketDimensionTeleport teleport in Map.PocketDimensionTeleports)
-                Log.Warn($"{teleport._type}");
+            player.PlayGunSound(itemType, pitch, clipIndex);
 
-            player.ClearInventory();
             response = $"{player.Nickname} sent the command!";
 
             // Return true if the command was executed successfully; otherwise, false.

@@ -219,6 +219,26 @@ namespace Exiled.API.Extensions
             => PlayGunSound(player, position, itemType.GetFirearmType(), volume, audioClipId);
 
         /// <summary>
+        /// Plays a gun sound for a specific player at a given position using the specified firearm type.
+        /// </summary>
+        /// <param name="player">The player who will hear the sound.</param>
+        /// <param name="position">World position where the sound will be played.</param>
+        /// <param name="firearmType">Type of firearm whose sound set will be used.</param>
+        /// <param name="pitch">Playback pitch for the sound. Default is 1.</param>
+        /// <param name="soundType">Which sound from the firearm's sound set to play (for example Fire, Cock, etc.).</param>
+        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, GunSoundType soundType = GunSoundType.Fire)
+        {
+            int index = firearmType.GetItemType().GetGunSoundIndex(soundType);
+            if (index == -1)
+            {
+                Log.Warn($"Failed to find gun sound for {firearmType} with sound type {soundType}.");
+                return;
+            }
+
+            player.PlayGunSound(position, firearmType, pitch, index);
+        }
+
+        /// <summary>
         /// Plays a gun sound that only the <paramref name="player"/> can hear.
         /// </summary>
         /// <param name="player">Target to play.</param>
@@ -228,7 +248,7 @@ namespace Exiled.API.Extensions
         /// <param name="clipIndex">Index of clip.</param>
         public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0)
         {
-            if (firearmType is FirearmType.ParticleDisruptor or FirearmType.None)
+            if (firearmType is FirearmType.None)
                 return;
 
             Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[firearmType];
