@@ -86,8 +86,9 @@ namespace Exiled.API.Features.Toys
         private static readonly Queue<Speaker> Pool;
         private static readonly Vector3 SpeakerParkPosition = Vector3.down * 999;
 
+        private readonly object opusLock = new();
+
         private OpusEncoder encoder;
-        private Thread processThread;
         private CoroutineHandle fadeRoutine;
         private CoroutineHandle playBackRoutine;
         private CancellationTokenSource processCts;
@@ -994,6 +995,7 @@ namespace Exiled.API.Features.Toys
                 return;
 
             isPlayBackInitialized = true;
+
             encoder = new(OpusApplicationType.Audio);
 
             // 3002 => OPUS_SIGNAL_MUSIC (https://github.com/xiph/opus/blob/2d862ea14b233e5a3f3afaf74d96050691af3cd5/include/opus_defines.h#L229)
@@ -1004,10 +1006,13 @@ namespace Exiled.API.Features.Toys
 
         private void ResetEncoder()
         {
-            if (encoder != null && encoder._handle != IntPtr.Zero)
+            lock (opusLock)
             {
-                // 4028 => OPUS_RESET_STATE (https://github.com/xiph/opus/blob/2d862ea14b233e5a3f3afaf74d96050691af3cd5/include/opus_defines.h#L710)
-                OpusWrapper.SetEncoderSetting(encoder._handle, (OpusCtlSetRequest)4028, 0);
+                if (encoder != null && encoder._handle != IntPtr.Zero)
+                {
+                    // 4028 => OPUS_RESET_STATE (https://github.com/xiph/opus/blob/2d862ea14b233e5a3f3afaf74d96050691af3cd5/include/opus_defines.h#L710)
+                    OpusWrapper.SetEncoderSetting(encoder._handle, (OpusCtlSetRequest)4028, 0);
+                }
             }
         }
 
@@ -1100,14 +1105,12 @@ namespace Exiled.API.Features.Toys
             processCts = new CancellationTokenSource();
             CancellationToken token = processCts.Token;
 
-            processThread = new Thread(() => ProcessLoop(localQueue, token))
+            new Thread(() => ProcessLoop(localQueue, token))
             {
                 IsBackground = true,
                 Priority = System.Threading.ThreadPriority.BelowNormal,
                 Name = $"[Exiled Speaker Api] Speaker.ProcessThread Id:[{ControllerId}]",
-            };
-
-            processThread.Start();
+            }.Start();
         }
 
         private void ProcessLoop(BlockingCollection<(byte[] Data, int Lenght)> localQueue, CancellationToken token)
@@ -1139,7 +1142,14 @@ namespace Exiled.API.Features.Toys
 
                     activeFilter?.Process(localFrame);
 
-                    int length = encoder.Encode(localFrame, localEncoded);
+                    int length;
+                    lock (opusLock)
+                    {
+                        if (encoder == null)
+                            break;
+
+                        length = encoder.Encode(localFrame, localEncoded);
+                    }
 
                     byte[] packet = new byte[length];
                     Array.Copy(localEncoded, packet, length);
@@ -1169,10 +1179,6 @@ namespace Exiled.API.Features.Toys
                 localCts.Dispose();
             }
 
-            if (processThread != null && processThread.IsAlive)
-                processThread.Join();
-
-            processThread = null;
             packetQueue = null;
         }
 
@@ -1297,7 +1303,12 @@ namespace Exiled.API.Features.Toys
 
             Stop();
             ClearEvents();
-            encoder?.Dispose();
+
+            lock (opusLock)
+            {
+                encoder?.Dispose();
+                encoder = null;
+            }
         }
 
         private void ClearEvents()
