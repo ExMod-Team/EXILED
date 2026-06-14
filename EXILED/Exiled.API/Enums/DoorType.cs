@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Enums
 {
-    using System;
-
     using Exiled.API.Features.Doors;
 
     using Interactables.Interobjects;
@@ -166,28 +164,9 @@ namespace Exiled.API.Enums
         HIDChamber,
 
         /// <summary>
-        /// Represents the HID_UPPER door.
-        /// </summary>
-        [Obsolete("This Door has been renamed too HID_LAB.")]
-        HIDUpper,
-
-        /// <summary>
-        /// Represents the HID_LAB door.
-        /// </summary>
-#pragma warning disable CS0618
-        HIDLab = HIDUpper,
-#pragma warning restore CS0618
-
-        /// <summary>
-        /// Represents the HID_LOWER door.
-        /// </summary>
-        [Obsolete("This Door has been removed from the game.")]
-        HIDLower,
-
-        /// <summary>
         /// Represents the INTERCOM door.
         /// </summary>
-        Intercom,
+        Intercom = 31,
 
         /// <summary>
         /// Represents the LCZ_ARMORY door.
@@ -210,15 +189,9 @@ namespace Exiled.API.Enums
         LightContainmentDoor,
 
         /// <summary>
-        /// Represents the NUKE_ARMORY door.
-        /// </summary>
-        [Obsolete("This Door has been removed from the game.")]
-        NukeArmory,
-
-        /// <summary>
         /// Represents the NUKE_SURFACE door.
         /// </summary>
-        NukeSurface,
+        NukeSurface = 37,
 
         /// <summary>
         /// Represents any of the Class-D cell doors.
@@ -251,15 +224,9 @@ namespace Exiled.API.Enums
         CheckpointGateB,
 
         /// <summary>
-        /// Represents a door than Yamato never implemented.
-        /// </summary>
-        [Obsolete("This Door has never been in the game.")]
-        SurfaceDoor,
-
-        /// <summary>
         /// Represents the CHECKPOINT_EZ_HCZ_A door.
         /// </summary>
-        CheckpointEzHczA,
+        CheckpointEzHczA = 45,
 
         /// <summary>
         /// Represents the CHECKPOINT_EZ_HCZ_B door.
