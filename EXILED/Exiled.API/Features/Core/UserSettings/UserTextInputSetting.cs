@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="UserTextInputSetting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -20,22 +20,6 @@ namespace Exiled.API.Features.Core.UserSettings
     /// </summary>
     public class UserTextInputSetting : SettingBase, IWrapper<SSPlaintextSetting>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserTextInputSetting"/> class.
-        /// </summary>
-        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
-        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
-        /// <param name="placeHolder"><inheritdoc cref="PlaceHolder"/></param>
-        /// <param name="characterLimit"><inheritdoc cref="CharacterLimit"/></param>
-        /// <param name="contentType"><inheritdoc cref="ContentType"/></param>
-        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
-        public UserTextInputSetting(int id, string label, string placeHolder, int characterLimit, TMP_InputField.ContentType contentType, string hintDescription)
-            : this(new SSPlaintextSetting(id, label, placeHolder, characterLimit, contentType, hintDescription))
-        {
-            Base = (SSPlaintextSetting)base.Base;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UserTextInputSetting"/> class.
         /// </summary>

@@ -133,16 +133,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this window is broken.
-        /// </summary>
-        [Obsolete("You should use IsBroken Propperty now", true)]
-        public bool SyncStatus
-        {
-            get => Base._prevStatus;
-            set => Base._prevStatus = value;
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating who is the LastAttacker.
         /// </summary>
         public Player LastAttacker

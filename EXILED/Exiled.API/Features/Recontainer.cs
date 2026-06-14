@@ -35,12 +35,6 @@ namespace Exiled.API.Features
         public static IEnumerable<Door> ContainmentGates => Door.Get(door => Base._containmentGates.Contains(door.Base));
 
         /// <summary>
-        /// Gets a value indicating whether the C.A.S.S.I.E is currently busy.
-        /// </summary>
-        [Obsolete("Use Cassie.IsSpeaking instead")]
-        public static bool IsCassieBusy => Cassie.IsSpeaking;
-
-        /// <summary>
         /// Gets a value about how many generator have been activated.
         /// </summary>
         public static int EngagedGeneratorCount => Base._prevEngaged;
@@ -62,12 +56,6 @@ namespace Exiled.API.Features
             get => ContainmentGates.All(door => door.IsLocked);
             set => Base.SetContainmentDoors(IsContainmentZoneOpen, value);
         }
-
-        /// <summary>
-        /// Gets or sets the delay to wait before overcharging.
-        /// </summary>
-        [Obsolete("Will be removed in Exiled 10, patch the Cassie079RecontainAnnouncement ctor if you need this functionality")]
-        public static float OverchargeDelay { get; set; }
 
         /// <summary>
         /// Gets or sets the lockdown duration.

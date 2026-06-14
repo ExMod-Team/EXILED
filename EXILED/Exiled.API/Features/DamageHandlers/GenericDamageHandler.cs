@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.DamageHandlers
 {
-    using System;
-
     using Enums;
 
     using Exiled.API.Extensions;
@@ -245,22 +243,6 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new CustomReasonDamageHandler(damageText ?? genericDamageText, damage, cassieAnnouncement.Announcement);
                     break;
             }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GenericDamageHandler"/> class.
-        /// Transform input data to custom generic handler.
-        /// </summary>
-        /// <param name="player"> Current player (Target). </param>
-        /// <param name="attacker"> Attacker. </param>
-        /// <param name="damage"> Damage quantity. </param>
-        /// <param name="damageType"> Damage type. </param>
-        /// <param name="cassieAnnouncement"> Custom cassie announcment. </param>
-        /// <param name="damageText"> Text to provide to player death screen. </param>
-        [Obsolete("This constructor will be deleted in Exiled 10")]
-        public GenericDamageHandler(Player player, Player attacker, float damage, DamageType damageType, DamageHandlerBase.CassieAnnouncement cassieAnnouncement, string damageText)
-            : this(player, attacker, damage, damageType, cassieAnnouncement, damageText, false)
-        {
         }
 
         /// <summary>

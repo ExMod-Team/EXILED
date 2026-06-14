@@ -72,15 +72,9 @@ namespace Exiled.API.Features
         }).ToList();
 
         /// <summary>
-        /// Gets or sets offset for spawning near pedestals.
+        /// Gets offset for spawning near pedestals.
         /// </summary>
-        public static Vector3 PedestalOffset
-        {
-            get => new(0, -Scp559Spawnpoint.PedestalHeight, 0);
-
-            [Obsolete("Setter no longer works")]
-            set { }
-        }
+        public static Vector3 PedestalOffset { get; } = new(0, -Scp559Spawnpoint.PedestalHeight, 0);
 
         /// <inheritdoc/>
         public Scp559Cake Base { get; }

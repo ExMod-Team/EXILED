@@ -136,12 +136,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets the <see cref="UnityEngine.Bounds"/> representing the space inside the lift.
-        /// </summary>
-        [Obsolete("It's now necessary to use RelativeBounds instead", true)]
-        public Bounds Bounds => Base.WorldspaceBounds.Bounds;
-
-        /// <summary>
         /// Gets the <see cref="Utils.RelativeBounds"/> representing the space inside the lift.
         /// </summary>
         public RelativeBounds RelativeBounds => Base.WorldspaceBounds;

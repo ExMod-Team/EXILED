@@ -7,12 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Scp173
 {
-    using System;
-
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
-
-    using Hazards;
 
     using PlayerRoles.Subroutines;
 
@@ -29,22 +25,16 @@ namespace Exiled.Events.EventArgs.Scp173
         /// <param name="player">
         /// <inheritdoc cref="Player" />
         /// </param>
-        /// <param name="tantrumHazard">
-        /// <inheritdoc cref="TantrumHazard" />
-        /// </param>
         /// <param name="cooldown">
         /// <inheritdoc cref="Cooldown" />
         /// </param>
         /// <param name="isAllowed">
         /// <inheritdoc cref="IsAllowed" />
         /// </param>
-        public PlacingTantrumEventArgs(Player player, TantrumEnvironmentalHazard tantrumHazard, AbilityCooldown cooldown, bool isAllowed = true)
+        public PlacingTantrumEventArgs(Player player, AbilityCooldown cooldown, bool isAllowed = true)
         {
             Player = player;
             Scp173 = Player.Role.As<Scp173Role>();
-#pragma warning disable CS0618
-            TantrumHazard = tantrumHazard;
-#pragma warning restore CS0618
             Cooldown = cooldown;
             IsAllowed = isAllowed;
         }
@@ -53,12 +43,6 @@ namespace Exiled.Events.EventArgs.Scp173
         /// Gets the player's <see cref="Scp173Role" /> instance.
         /// </summary>
         public Scp173Role Scp173 { get; }
-
-        /// <summary>
-        /// Gets the <see cref="TantrumEnvironmentalHazard" />.
-        /// </summary>
-        [Obsolete("This propperty is always null")]
-        public TantrumEnvironmentalHazard TantrumHazard { get; }
 
         /// <summary>
         /// Gets the tantrum <see cref="AbilityCooldown"/>.

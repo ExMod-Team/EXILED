@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features.Pickups
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -64,12 +63,6 @@ namespace Exiled.API.Features.Pickups
         /// Gets a value indicating whether this is a worn item.
         /// </summary>
         public bool IsWorn { get; } = true;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether excess ammo should be removed when the armor is dropped.
-        /// </summary>
-        [Obsolete("Propetry is internal, and controls armor remove logic for clearing inventory")]
-        public bool RemoveExcessOnDrop { get; set; }
 
         /// <summary>
         /// Gets or sets how strong the helmet on the armor is.
