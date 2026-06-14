@@ -13,9 +13,14 @@ namespace Exiled.API.Enums
     public enum LockerType
     {
         /// <summary>
+        /// Unknown type of locker.
+        /// </summary>
+        Unknown,
+
+        /// <summary>
         /// Large weapon locker.
         /// </summary>
-        LargeGun = 1,
+        LargeGun,
 
         /// <summary>
         /// Locker for rifles, known as a rifle rack.
@@ -38,14 +43,9 @@ namespace Exiled.API.Enums
         Adrenaline,
 
         /// <summary>
-        /// Unknown type of locker.
-        /// </summary>
-        Unknown,
-
-        /// <summary>
         /// MircoHid pedestal.
         /// </summary>
-        MicroHid,
+        MicroHid = 7,
 
         /// <summary>
         /// Experimental weapon locker.
