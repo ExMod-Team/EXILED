@@ -106,7 +106,7 @@ namespace Exiled.API.Features.Core
         /// <param name="index">Index of an argument.</param>
         /// <param name="result">Returned value. May be <c>null</c>.</param>
         /// <returns><c>true</c> if succeeded. Otherwise, <c>false</c>.</returns>
-        public bool GetFloat(uint index, out float result) => TryGetValue(index, out result);
+        public bool TryGetFloat(uint index, out float result) => TryGetValue(index, out result);
 
         /// <summary>
         /// Tries to get a value as an <see cref="Player"/> from specified position.
