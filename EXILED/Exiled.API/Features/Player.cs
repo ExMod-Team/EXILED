@@ -1418,8 +1418,6 @@ namespace Exiled.API.Features
             if (gameObject == null)
                 return null;
 
-            gameObject = gameObject.transform.root.gameObject;
-
             if (Dictionary.TryGetValue(gameObject, out Player player))
                 return player;
 
@@ -1428,6 +1426,10 @@ namespace Exiled.API.Features
 
             if (ReferenceHub.TryGetHub(gameObject, out ReferenceHub hub))
                 return new(hub);
+
+            HitboxIdentity hitboxIdentity = gameObject.GetComponentInChildren<HitboxIdentity>(false);
+            if (hitboxIdentity != null)
+                return Get(hitboxIdentity.TargetHub);
 
             return null;
         }
