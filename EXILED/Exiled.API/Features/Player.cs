@@ -1385,7 +1385,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="collider"><see cref="Collider"/>.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(Collider collider) => Get(collider.transform.root.gameObject);
+        public static Player Get(Collider collider) => Get(collider.gameObject);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to a specific netId, if any.
@@ -1417,6 +1417,8 @@ namespace Exiled.API.Features
         {
             if (gameObject == null)
                 return null;
+
+            gameObject = gameObject.transform.root.gameObject;
 
             if (Dictionary.TryGetValue(gameObject, out Player player))
                 return player;
