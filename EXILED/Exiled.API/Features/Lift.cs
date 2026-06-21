@@ -257,7 +257,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="gameObject">The <see cref="UnityEngine.GameObject"/>.</param>
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
-        public static Lift Get(GameObject gameObject) => Get(lift => lift.GameObject == gameObject).FirstOrDefault();
+        public static Lift Get(GameObject gameObject) => Get(gameObject.GetComponentInParent<ElevatorChamber>(false));
 
         /// <summary>
         /// Gets the <see cref="Lift"/> belonging to the <see cref="Vector3"/>, if any.
