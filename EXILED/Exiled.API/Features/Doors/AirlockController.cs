@@ -76,7 +76,16 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         /// <param name="controller">Base-game controller.</param>
         /// <returns>Instance of <see cref="AirlockController"/>.</returns>
-        public static AirlockController Get(BaseController controller) => controller != null ? (BaseToExiledControllers.TryGetValue(controller, out AirlockController airlockController) ? airlockController : new AirlockController(controller)) : null;
+        public static AirlockController Get(BaseController controller)
+        {
+            if (controller == null)
+                return null;
+
+            if (!BaseToExiledControllers.TryGetValue(controller, out AirlockController airlockController))
+                return airlockController;
+
+            return new AirlockController(controller);
+        }
 
         /// <summary>
         /// Gets the <see cref="AirlockController"/> by one of it's subdoors.
