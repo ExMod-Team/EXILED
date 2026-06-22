@@ -210,6 +210,11 @@ namespace Exiled.API.Features
         public Transform Transform => Base.transform;
 
         /// <summary>
+        /// Gets a value indicating whether the Camera is the Main of it's Room.
+        /// </summary>
+        public bool IsMain => Base.IsMain;
+
+        /// <summary>
         /// Gets the camera's name.
         /// </summary>
         public string Name => Base.Label;
