@@ -15,6 +15,7 @@ namespace Exiled.API.Features
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
     using MapGeneration;
+    using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
     using UnityEngine;
 
@@ -295,7 +296,14 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="cameraId">The camera id to be searched for.</param>
         /// <returns>The <see cref="Camera"/> with the given id or <see langword="null"/> if not found.</returns>
-        public static Camera Get(uint cameraId) => List.FirstOrDefault(camera => camera.Id == cameraId);
+        public static Camera Get(uint cameraId) => Get((ushort)cameraId); // TODO: Removed this method and only keep UShort
+
+        /// <summary>
+        /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
+        /// </summary>
+        /// <param name="cameraId">The camera id to be searched for.</param>
+        /// <returns>The <see cref="Camera"/> with the given id or <see langword="null"/> if not found.</returns>
+        public static Camera Get(ushort cameraId) => Scp079InteractableBase.TryGetInteractable(cameraId, out Scp079InteractableBase scp079) ? Get(scp079.gameObject) : null;
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraName"/>.
