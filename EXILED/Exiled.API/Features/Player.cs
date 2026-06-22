@@ -1427,8 +1427,7 @@ namespace Exiled.API.Features
             if (ReferenceHub.TryGetHub(gameObject, out ReferenceHub hub))
                 return new(hub);
 
-            HitboxIdentity hitboxIdentity = gameObject.GetComponentInChildren<HitboxIdentity>(false);
-            if (hitboxIdentity != null)
+            if (gameObject.GetComponentInChildren<HitboxIdentity>(false) is HitboxIdentity hitboxIdentity)
                 return Get(hitboxIdentity.TargetHub);
 
             return null;
