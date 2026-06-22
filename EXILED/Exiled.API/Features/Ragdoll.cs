@@ -411,7 +411,7 @@ namespace Exiled.API.Features
         /// <returns>A <see cref="Ragdoll"/> or <see langword="null"/> if not found.</returns>
         public static Ragdoll Get(BasicRagdoll ragdoll)
         {
-            if (ragdoll is null)
+            if (ragdoll == null)
                 return null;
 
             if (BasicRagdollToRagdoll.TryGetValue(ragdoll, out Ragdoll doll))

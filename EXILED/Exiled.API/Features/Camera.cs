@@ -281,7 +281,7 @@ namespace Exiled.API.Features
         /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
         public static Camera Get(Scp079Camera camera079)
         {
-            if (camera079 is null)
+            if (camera079 == null)
                 return null;
 
             if (Camera079ToCamera.TryGetValue(camera079, out Camera camera))

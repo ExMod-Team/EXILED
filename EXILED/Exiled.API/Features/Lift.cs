@@ -231,7 +231,7 @@ namespace Exiled.API.Features
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
         public static Lift Get(ElevatorChamber elevator)
         {
-            if (elevator is null)
+            if (elevator == null)
                 return null;
 
             if (ElevatorChamberToLift.TryGetValue(elevator, out Lift lift))

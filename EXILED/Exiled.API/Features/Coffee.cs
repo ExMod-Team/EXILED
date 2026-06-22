@@ -104,7 +104,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Coffee"/> instance.</returns>
         public static Coffee Get(BaseCoffee baseCoffee)
         {
-            if (baseCoffee is null)
+            if (baseCoffee == null)
                 return null;
 
             if (BaseToWrapper.TryGetValue(baseCoffee, out Coffee coffee))
