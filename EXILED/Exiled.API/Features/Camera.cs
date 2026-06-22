@@ -284,6 +284,13 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets the <see cref="Camera"/> belonging to the <see cref="GameObject"/>, if any.
+        /// </summary>
+        /// <param name="gameObject">The base <see cref="GameObject"/>.</param>
+        /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
+        public static Camera Get(GameObject gameObject) => !gameObject ? null : Get(gameObject.GetComponentInParent<Scp079Camera>(false));
+
+        /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
         /// </summary>
         /// <param name="cameraId">The camera id to be searched for.</param>
