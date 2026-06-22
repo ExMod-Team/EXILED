@@ -17,6 +17,7 @@ namespace Exiled.API.Features
     using MapGeneration;
     using PlayerRoles.PlayableScps.Scp079;
     using PlayerRoles.PlayableScps.Scp079.Cameras;
+    using PlayerRoles.PlayableScps.Scp079.GUI;
     using UnityEngine;
 
     using CameraType = Enums.CameraType;
@@ -290,6 +291,20 @@ namespace Exiled.API.Features
         /// <param name="gameObject">The base <see cref="UnityEngine.GameObject"/>.</param>
         /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
         public static Camera Get(GameObject gameObject) => !gameObject ? null : Get(gameObject.GetComponentInParent<Scp079Camera>(false));
+
+        /// <summary>
+        /// Gets the <see cref="Camera"/> near this <see cref="Generator"/>, if any.
+        /// </summary>
+        /// <param name="generator">The camera where gene <see cref="Generator"/>.</param>
+        /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
+        public static Camera Get(Generator generator) => generator == null ? null : Get(Scp079GeneratorNotification.GetGeneratorCamera(generator.Base));
+
+        /// <summary>
+        /// Gets the <see cref="Camera"/> the best camera nearest and same room <see cref="Vector3"/>, if any.
+        /// </summary>
+        /// <param name="position">The camera where gene <see cref="Vector3"/>.</param>
+        /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
+        public static Camera Get(Vector3 position) => Get(Scp079ScannerNotification.GetBestCamera(position));
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
