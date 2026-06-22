@@ -210,14 +210,8 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="shootingTarget">The <see cref="ShootingTarget"/> instance.</param>
         /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
-        public static ShootingTargetToy Get(ShootingTarget shootingTarget)
-        {
-            if (shootingTarget == null)
-                return null;
-
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
-            return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
-        }
+        [Obsolete("This method is deprecated, please use the generic Get<T> method instead.")]
+        public static ShootingTargetToy Get(ShootingTarget shootingTarget) => Get<ShootingTargetToy>(shootingTarget);
 
         /// <summary>
         /// Clears the target and resets its health.
