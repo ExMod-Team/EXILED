@@ -46,7 +46,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Blurs the affected player's screen.
         /// </summary>
-        Blinded,
+        Blindness,
 
         /// <summary>
         /// Increases damage the affected player receives. Does not apply any standalone damage.

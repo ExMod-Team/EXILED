@@ -12,9 +12,8 @@ namespace Exiled.API.Features.Toys
     using System.Linq;
 
     using Enums;
-    using Exiled.API.Interfaces;
 
-    using Mirror;
+    using Exiled.API.Interfaces;
 
     using PlayerStatsSystem;
 
@@ -134,20 +133,6 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets or sets the size scale of the target.
-        /// </summary>
-        public new Vector3 Scale
-        {
-            get => GameObject.transform.localScale;
-            set
-            {
-                NetworkServer.UnSpawn(GameObject);
-                GameObject.transform.localScale = value;
-                NetworkServer.Spawn(GameObject);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the target is in sync mode.
         /// </summary>
         public bool IsSynced
@@ -166,43 +151,39 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="type">The <see cref="ShootingTargetType"/> of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="position">The position of the <see cref="ShootingTargetToy"/>.</param>
+        /// <returns>The new <see cref="ShootingTargetToy"/>.</returns>
+        public static ShootingTargetToy Create(ShootingTargetType type, Vector3 position) => Create(type: type, position: position, spawn: true);
+
+        /// <summary>
+        /// Creates a new <see cref="ShootingTargetToy"/>.
+        /// </summary>
+        /// <param name="parent">The transform to create this <see cref="ShootingTargetToy"/> on.</param>
+        /// <param name="position">The position of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="rotation">The rotation of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="scale">The scale of the <see cref="ShootingTargetToy"/>.</param>
+        /// <param name="type">The <see cref="ShootingTargetType"/> of the <see cref="ShootingTargetToy"/>.</param>
         /// <param name="spawn">Whether the <see cref="ShootingTargetToy"/> should be initially spawned.</param>
         /// <returns>The new <see cref="ShootingTargetToy"/>.</returns>
-        public static ShootingTargetToy Create(ShootingTargetType type, Vector3? position = null, Vector3? rotation = null, Vector3? scale = null, bool spawn = true)
+        public static ShootingTargetToy Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, ShootingTargetType type = ShootingTargetType.Sport, bool spawn = true)
         {
-            ShootingTargetToy shootingTargetToy;
-
-            switch (type)
+            ShootingTarget prefab = type switch
             {
-                case ShootingTargetType.ClassD:
-                    {
-                        shootingTargetToy = new(Object.Instantiate(DboyShootingTargetPrefab));
-                        break;
-                    }
+                ShootingTargetType.ClassD => DboyShootingTargetPrefab,
+                ShootingTargetType.Binary => BinaryShootingTargetPrefab,
+                _ => SportShootingTargetPrefab,
+            };
 
-                case ShootingTargetType.Binary:
-                    {
-                        shootingTargetToy = new(Object.Instantiate(BinaryShootingTargetPrefab));
-                        break;
-                    }
-
-                default:
-                    {
-                        shootingTargetToy = new(Object.Instantiate(SportShootingTargetPrefab));
-                        break;
-                    }
-            }
-
-            shootingTargetToy.Position = position ?? Vector3.zero;
-            shootingTargetToy.Rotation = Quaternion.Euler(rotation ?? Vector3.zero);
-            shootingTargetToy.Scale = scale ?? Vector3.one;
+            ShootingTargetToy toy = new(Object.Instantiate(prefab, parent))
+            {
+                LocalPosition = position ?? Vector3.zero,
+                LocalRotation = rotation ?? Quaternion.identity,
+                Scale = scale ?? Vector3.one,
+            };
 
             if (spawn)
-                shootingTargetToy.Spawn();
+                toy.Spawn();
 
-            return shootingTargetToy;
+            return toy;
         }
 
         /// <summary>

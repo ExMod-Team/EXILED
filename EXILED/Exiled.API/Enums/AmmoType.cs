@@ -40,13 +40,13 @@ namespace Exiled.API.Enums
 
         /// <summary>
         /// 12 gauge shotgun ammo.
-        /// Used by <see cref="ItemType.GunShotgun"/>
+        /// Used by <see cref="ItemType.GunShotgun"/>.
         /// </summary>
         Ammo12Gauge,
 
         /// <summary>
         /// 44 Caliber Revolver Ammo
-        /// Used by <see cref="ItemType.GunRevolver"/>
+        /// Used by <see cref="ItemType.GunRevolver"/>.
         /// </summary>
         Ammo44Cal,
     }
