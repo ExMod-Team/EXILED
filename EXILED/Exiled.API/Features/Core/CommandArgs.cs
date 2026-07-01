@@ -5,11 +5,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-using System.Globalization;
-
 namespace Exiled.API.Features.Core
 {
     using System;
+    using System.Globalization;
     using System.Linq;
     using System.Text.RegularExpressions;
 
@@ -40,22 +39,21 @@ namespace Exiled.API.Features.Core
         /// <param name="cultureInfo"><see cref="CultureInfo"/> to be used with float-pointing number conversions.</param>
         /// <returns>An instance of <see cref="CommandArgs"/>.</returns>
         /// <remarks>
-        /// Usage of <paramref name="useRegex"/> allows to separate arguments not by space char, but also with quotes.
-        /// For example, command with structure
+        /// Usage of <paramref name="useRegex"/> allows to separate arguments not by space char, but also with quotes. For example, command with structure:
         /// <code>commandName one "two three" four</code>
-        /// will be separated into
+        /// will be separated into:
         /// <code>{ "one", "two three", "four" }</code>
         /// </remarks>
         public static CommandArgs Parse(ArraySegment<string> arguments, bool useRegex = false, CultureInfo cultureInfo = null)
         {
             if (!useRegex)
-                return new(arguments.Array, cultureInfo ?? CultureInfo.CurrentCulture);
+                return new CommandArgs(arguments.Array, cultureInfo ?? CultureInfo.CurrentCulture);
 
             string[] result = Regex.Matches(string.Join(" ", arguments), @"""([^""]*)""|(\S+)")
                 .Select(m => m.Groups[1].Success ? m.Groups[1].Value : m.Value)
                 .ToArray();
 
-            return new(result, cultureInfo ?? CultureInfo.CurrentCulture);
+            return new CommandArgs(result, cultureInfo ?? CultureInfo.CurrentCulture);
         }
 
         /// <summary>
@@ -84,13 +82,7 @@ namespace Exiled.API.Features.Core
         /// </summary>
         /// <param name="index">Index of an argument.</param>
         /// <returns>Returned value or <c>null</c>.</returns>
-        public string GetString(uint index)
-        {
-            if (index >= args.Length)
-                return null;
-
-            return args[index];
-        }
+        public string GetString(uint index) => index >= args.Length ? null : args[index];
 
         /// <summary>
         /// Tries to get a value as an <see cref="int"/> from specified position.
@@ -128,7 +120,7 @@ namespace Exiled.API.Features.Core
         /// Gets a value as a generic type.
         /// </summary>
         /// <param name="index">Index of a value.</param>
-        /// <typeparam name="T">Type of object to be casted to.</typeparam>
+        /// <typeparam name="T">Type of object to be cast to.</typeparam>
         /// <returns>Casted value or <c>null</c>.</returns>
         public T GetValue<T>(uint index)
         {
@@ -150,7 +142,7 @@ namespace Exiled.API.Features.Core
         /// </summary>
         /// <param name="index">Index of a value.</param>
         /// <param name="result">Casted value.</param>
-        /// <typeparam name="T">Type of object to be casted to.</typeparam>
+        /// <typeparam name="T">Type of object to be cast to.</typeparam>
         /// <returns><c>true</c> if value of specific type was successfully retrieved. Otherwise, <c>false</c>.</returns>
         public bool TryGetValue<T>(uint index, out T result)
         {
