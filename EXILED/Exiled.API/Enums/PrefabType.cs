@@ -268,7 +268,7 @@ namespace Exiled.API.Enums
         Scp096Ragdoll = 98,
 
         [Prefab(1862774274, "Zombie Ragdoll")]
-        Scp049_2Ragdoll,
+        Scp0492Ragdoll,
 
         [Prefab(3175759689, "SCP-939 Ragdoll")]
         Scp939Ragdoll = 102,
