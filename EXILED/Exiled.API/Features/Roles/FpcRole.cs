@@ -7,7 +7,6 @@
 
 namespace Exiled.API.Features.Roles
 {
-    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Features.Pools;
@@ -19,8 +18,6 @@ namespace Exiled.API.Features.Roles
     using PlayerRoles.Spectating;
     using PlayerRoles.Visibility;
     using PlayerRoles.Voice;
-
-    using PlayerStatsSystem;
 
     using RelativePositioning;
 
@@ -265,19 +262,6 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating whether this role is protected by a hume shield.
         /// </summary>
         public bool IsHumeShieldedRole => this is IHumeShieldRole;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the player has noclip enabled.
-        /// </summary>
-        /// <returns><see cref="bool"/> indicating status.</returns>
-        /// <remarks>For permitting a player to enter and exit noclip freely, see <see cref="Player.IsNoclipPermitted"/>.</remarks>
-        /// <seealso cref="Player.IsNoclipPermitted"/>
-        [Obsolete("Use Player::IsNoclipEnabled instead")]
-        public bool IsNoclipEnabled
-        {
-            get => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().HasFlag(AdminFlags.Noclip);
-            set => Owner.ReferenceHub.playerStats.GetModule<AdminFlagsStat>().SetFlag(AdminFlags.Noclip, value);
-        }
 
         /// <summary>
         /// Gets or sets a prefab ragdoll for this role.

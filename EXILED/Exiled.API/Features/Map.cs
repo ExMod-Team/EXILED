@@ -436,14 +436,6 @@ namespace Exiled.API.Features
         public static void Clean(DecalPoolType decalType) => Clean(decalType, int.MaxValue);
 
         /// <summary>
-        /// Places a blood decal.
-        /// </summary>
-        /// <param name="position">The position of the blood decal.</param>
-        /// <param name="direction">The direction of the blood decal.</param>
-        [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
-        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0;
-
-        /// <summary>
         /// Gets all the near cameras.
         /// </summary>
         /// <param name="position">The position from which starting to search cameras.</param>
@@ -491,18 +483,6 @@ namespace Exiled.API.Features
             if ((item = projectileType.GetItemType()) is ItemType.None)
                 return;
             ExplosionUtils.ServerSpawnEffect(position, item);
-        }
-
-        /// <summary>
-        /// Plays a gun sound at the specified position.
-        /// </summary>
-        /// <param name="position">Position to play the sound at.</param>
-        /// <param name="firearmType">The type of firearm to play the sound of.</param>
-        /// <param name="maxDistance">The maximum distance the sound can be heard from.</param>
-        /// <param name="audioClipId">The audio clip ID to play.</param>
-        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
-        public static void PlayGunSound(Vector3 position, ItemType firearmType, byte maxDistance = 45, byte audioClipId = 0)
-        {
         }
 
         /// <summary>
