@@ -60,8 +60,14 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
         public override AmmoType AmmoType
         {
             get => Magazine.AmmoType.GetAmmoType();
-
             set => MagazineModule._ammoType = value.GetItemType();
+        }
+
+        /// <inheritdoc/>
+        public override ItemType AmmoItemType
+        {
+            get => Magazine.AmmoType;
+            set => MagazineModule._ammoType = value;
         }
 
         /// <summary>
