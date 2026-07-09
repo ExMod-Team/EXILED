@@ -626,9 +626,7 @@ namespace Exiled.API.Features
         public bool RunAction(DummyKeyEmulator? emulator, ActionName name, bool hold)
         {
             if (emulator == null)
-            {
                 return false;
-            }
 
             emulator.AddEntry(name, !hold);
             return true;
@@ -643,9 +641,7 @@ namespace Exiled.API.Features
         public bool StopAction(DummyKeyEmulator? emulator, ActionName name)
         {
             if (emulator == null)
-            {
                 return false;
-            }
 
             emulator.RemoveEntry(name);
             return true;
@@ -658,13 +654,6 @@ namespace Exiled.API.Features
         /// <param name="name">The name of action to check.</param>
         /// <returns>True if action is actively executed and emulator is not null.</returns>
         public bool IsBeingDone(DummyKeyEmulator? emulator, ActionName name)
-        {
-            if (emulator == null)
-            {
-                return false;
-            }
-
-            return emulator.GetAction(name, false);
-        }
+            => emulator?.GetAction(name, false) ?? false;
     }
 }
