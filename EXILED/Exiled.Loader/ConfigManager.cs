@@ -147,16 +147,16 @@ namespace Exiled.Loader
                 return;
             }
 
-            if (hasValidateChildrenAttribute || (!LoaderPlugin.Config.EnableDeepValidation && !(propertyInfo.PropertyType.Namespace?.Contains("System") ?? false)))
-            {
-                foreach (PropertyInfo property in propertyInfo.PropertyType.GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
-                {
-                    ConstructorInfo ctor = property.PropertyType.GetConstructor(Type.EmptyTypes);
-                    if (ctor is null)
-                        continue;
+            if (!hasValidateChildrenAttribute)
+                return;
 
-                    ValidateType(value, ctor.Invoke(null, null), property, ref validated);
-                }
+            foreach (PropertyInfo property in propertyInfo.PropertyType.GetProperties().Where(x => x.GetMethod != null && x.SetMethod != null))
+            {
+                ConstructorInfo ctor = property.PropertyType.GetConstructor(Type.EmptyTypes);
+                if (ctor is null)
+                    continue;
+
+                ValidateType(value, ctor.Invoke(null, null), property, ref validated);
             }
         }
 

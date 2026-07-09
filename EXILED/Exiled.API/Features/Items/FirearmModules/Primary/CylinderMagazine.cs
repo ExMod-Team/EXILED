@@ -62,6 +62,13 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
             set => CylinderModule.AmmoType = value.GetItemType();
         }
 
+        /// <inheritdoc/>
+        public override ItemType AmmoItemType
+        {
+            get => Magazine.AmmoType;
+            set => CylinderModule.AmmoType = value;
+        }
+
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of chambers in cylindric magazine.
         /// </summary>
