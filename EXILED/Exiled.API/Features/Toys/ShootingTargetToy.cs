@@ -49,17 +49,17 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab for Sport Shooting Target.
         /// </summary>
-        public static ShootingTarget SportShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.SportTarget);
+        public static ShootingTarget SportShootingTargetPrefab { get; internal set; }
 
         /// <summary>
         /// Gets the prefab for DBoy Shooting Target.
         /// </summary>
-        public static ShootingTarget DboyShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.DBoyTarget);
+        public static ShootingTarget DboyShootingTargetPrefab { get; internal set; }
 
         /// <summary>
         /// Gets the prefab for Binary Shooting Target.
         /// </summary>
-        public static ShootingTarget BinaryShootingTargetPrefab => PrefabHelper.GetPrefab<ShootingTarget>(PrefabType.BinaryTarget);
+        public static ShootingTarget BinaryShootingTargetPrefab { get; internal set; }
 
         /// <summary>
         /// Gets the base-game <see cref="ShootingTarget"/> for this target.
@@ -210,14 +210,8 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="shootingTarget">The <see cref="ShootingTarget"/> instance.</param>
         /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
-        public static ShootingTargetToy Get(ShootingTarget shootingTarget)
-        {
-            if (shootingTarget == null)
-                return null;
-
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
-            return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
-        }
+        [Obsolete("This method is deprecated, please use the generic Get<T> method instead.")]
+        public static ShootingTargetToy Get(ShootingTarget shootingTarget) => Get<ShootingTargetToy>(shootingTarget);
 
         /// <summary>
         /// Clears the target and resets its health.

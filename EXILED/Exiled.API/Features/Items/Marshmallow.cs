@@ -51,9 +51,9 @@ namespace Exiled.API.Features.Items
         public bool Evil => Base.EvilMode;
 
         /// <summary>
-        /// Gets or sets the <see cref="AhpStat.AhpProcess"/> of the marshmallow man that would be used if he was evil.
+        /// Gets or sets the <see cref="AhpProcess"/> of the marshmallow man that would be used if he was evil.
         /// </summary>
-        public AhpStat.AhpProcess EvilAhpProcess
+        public AhpProcess EvilAhpProcess
         {
             get => Base.EvilAHPProcess;
             set
@@ -91,8 +91,8 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Makes the owner of this marshmallow evil. You CANNOT undo this without resetting the player.
         /// </summary>
-        /// <param name="evilProcess">The <see cref="AhpStat.AhpProcess"/> of the new evil player.</param>
-        public void MakeEvil(AhpStat.AhpProcess evilProcess = null)
+        /// <param name="evilProcess">The <see cref="AhpProcess"/> of the new evil player.</param>
+        public void MakeEvil(AhpProcess evilProcess = null)
         {
             if (Evil)
                 return;
