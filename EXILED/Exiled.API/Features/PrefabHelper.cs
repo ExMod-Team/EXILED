@@ -98,7 +98,8 @@ namespace Exiled.API.Features
         /// <param name="rotation">The <see cref="Quaternion"/> rotation of the <see cref="GameObject"/>.</param>
         /// <param name="spawn">Whether the <see cref="PrefabType"/> should be initially spawned.</param>
         /// <returns>Returns the <see cref="GameObject"/> instantied.</returns>
-        public static GameObject Spawn(PrefabType prefabType, Vector3 position = default, Quaternion? rotation = null, bool spawn = true)
+        // TOOD: Only keep this method for Exiled 10
+        public static GameObject Spawn(PrefabType prefabType, Vector3 position /*= default*/, Quaternion? rotation /*= null*/, bool spawn /*= true*/)
         {
             if (!TryGetPrefab(prefabType, out GameObject gameObject))
                 return null;
@@ -118,6 +119,16 @@ namespace Exiled.API.Features
 
             return newGameObject;
         }
+
+        /// <summary>
+        /// Spawns the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
+        /// </summary>
+        /// <param name="prefabType">The <see cref="PrefabType"/>.</param>
+        /// <param name="position">The <see cref="Vector3"/> position where the <see cref="GameObject"/> will spawn.</param>
+        /// <param name="rotation">The <see cref="Quaternion"/> rotation of the <see cref="GameObject"/>.</param>
+        /// <returns>Returns the <see cref="GameObject"/> instantied.</returns>
+        public static GameObject Spawn(PrefabType prefabType, Vector3 position = default, Quaternion? rotation = null)
+            => Spawn(prefabType, position, rotation, true);
 
         /// <summary>
         /// Spawns the <see cref="GameObject"/> of the specified <see cref="PrefabType"/>.
