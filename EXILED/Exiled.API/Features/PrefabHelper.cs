@@ -111,7 +111,7 @@ namespace Exiled.API.Features
             if (newGameObject.TryGetComponent(out StructurePositionSync positionSync))
             {
                 positionSync.Network_position = position;
-                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / 5.625F);
+                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / StructurePositionSync.ConversionRate);
             }
 
             if (spawn)
