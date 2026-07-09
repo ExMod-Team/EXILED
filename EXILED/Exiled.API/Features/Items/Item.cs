@@ -195,18 +195,7 @@ namespace Exiled.API.Features.Items
         /// Gets the emulator for dummy actions if this item inherits <see cref="AutosyncItem"/>.
         /// </summary>
         /// <remarks>Returns null if this item does not inherit <see cref="AutosyncItem"/>.</remarks>
-        public DummyKeyEmulator DummyEmulator
-        {
-            get
-            {
-                if (Base is AutosyncItem item)
-                {
-                    return item.DummyEmulator;
-                }
-
-                return null;
-            }
-        }
+        public DummyKeyEmulator DummyEmulator => (Base as AutosyncItem)?.DummyEmulator;
 
         /// <summary>
         /// Gets or sets a reason for adding this item to the inventory.
