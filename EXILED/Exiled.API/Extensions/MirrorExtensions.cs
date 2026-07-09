@@ -25,6 +25,7 @@ namespace Exiled.API.Extensions
     using Exiled.API.Features.Pickups.Keycards;
     using Features;
     using Features.Pools;
+    using HarmonyLib;
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
@@ -42,6 +43,7 @@ namespace Exiled.API.Extensions
     using PlayerRoles.Voice;
     using RelativePositioning;
     using Respawning;
+    using Unity.Collections.LowLevel.Unsafe;
     using UnityEngine;
     using Utils.Networking;
 
@@ -105,19 +107,38 @@ namespace Exiled.API.Extensions
                         if (setMethod is null)
                             continue;
 
-                        MethodBody methodBody = setMethod.GetMethodBody();
-
-                        if (methodBody is null)
-                            continue;
-
-                        byte[] bytecodes = methodBody.GetILAsByteArray();
+                        ulong bit = GetBit(setMethod);
 
                         if (!SyncVarDirtyBitsValue.ContainsKey($"{property.ReflectedType.Name}.{property.Name}"))
-                            SyncVarDirtyBitsValue.Add($"{property.ReflectedType.Name}.{property.Name}", bytecodes[bytecodes.LastIndexOf((byte)OpCodes.Ldc_I8.Value) + 1]);
+                            SyncVarDirtyBitsValue.Add($"{property.ReflectedType.Name}.{property.Name}", bit);
                     }
                 }
 
                 return ReadOnlySyncVarDirtyBitsValue;
+
+                ulong GetBit(MethodInfo setter)
+                {
+                    List<CodeInstruction> instructions = PatchProcessor.GetOriginalInstructions(setter);
+
+                    object operand = null;
+                    ulong bit;
+                    try
+                    {
+                        operand = instructions.Single(c => c.opcode == OpCodes.Ldc_I8).operand;
+                        long casted = (long)operand;
+
+                        // Standard casting doesn't work here because IL doesn't have a specific instruction for unsigned ulongs, it just loads it as a long and uses that.
+                        // Because of that, harmony here gives it back as a long, and standard casting would clamp the value if it was ever big enough, so we need an unsafe cast.
+                        bit = UnsafeUtility.As<long, ulong>(ref casted);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Error finding dirty bit in method {setter.ReflectedType.Name}.{setter.Name}! Found operand type: {operand?.GetType().Name ?? "Null"}. Exception: {ex}");
+                        return 0;
+                    }
+
+                    return bit;
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Marshmallow.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -10,6 +10,7 @@ namespace Exiled.API.Features.Items
     using CustomPlayerEffects;
     using Exiled.API.Interfaces;
     using InventorySystem.Items.MarshmallowMan;
+    using InventorySystem.Items.Usables;
     using PlayerStatsSystem;
     using UnityEngine;
 
@@ -50,9 +51,9 @@ namespace Exiled.API.Features.Items
         public bool Evil => Base.EvilMode;
 
         /// <summary>
-        /// Gets or sets the <see cref="AhpStat.AhpProcess"/> of the marshmallow man that would be used if he was evil.
+        /// Gets or sets the <see cref="AhpProcess"/> of the marshmallow man that would be used if he was evil.
         /// </summary>
-        public AhpStat.AhpProcess EvilAhpProcess
+        public AhpProcess EvilAhpProcess
         {
             get => Base.EvilAHPProcess;
             set
@@ -90,13 +91,13 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Makes the owner of this marshmallow evil. You CANNOT undo this without resetting the player.
         /// </summary>
-        /// <param name="evilProcess">The <see cref="AhpStat.AhpProcess"/> of the new evil player.</param>
-        public void MakeEvil(AhpStat.AhpProcess evilProcess = null)
+        /// <param name="evilProcess">The <see cref="AhpProcess"/> of the new evil player.</param>
+        public void MakeEvil(AhpProcess evilProcess = null)
         {
             if (Evil)
                 return;
 
-            Base.ReleaseEvil(evilProcess ?? EvilAhpProcess ?? Owner.GetModule<AhpStat>().ServerAddProcess(450F, 450F, 0F, 1F, 0F, true));
+            Base.ReleaseEvil(evilProcess ?? EvilAhpProcess ?? Owner.GetModule<AhpStat>().ServerAddProcess(Scp021J.MaxEvilAHP, Scp021J.MaxEvilAHP, 0F, 1F, 0F, true));
         }
     }
 }

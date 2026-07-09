@@ -8,6 +8,7 @@
 namespace Exiled.CustomItems.API.Features
 {
     using EventArgs;
+
     using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
@@ -17,6 +18,8 @@ namespace Exiled.CustomItems.API.Features
     using InventorySystem.Items.Usables.Scp1344;
 
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
+
+    using PlayerStatsSystem;
 
     /// <summary>
     /// The Custom Goggles base class.
@@ -56,6 +59,8 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         protected override void SubscribeEvents()
         {
+            PlayerStats.OnAnyPlayerDied += OnOwnerDied;
+            InventorySystem.InventoryExtensions.OnInventoryDropped += RemoveSafely;
             Exiled.Events.Handlers.Player.UsingItem += OnInternalUsingItem;
             Exiled.Events.Handlers.Player.ItemRemoved += OnInternalItemRemoved;
             Exiled.Events.Handlers.Scp1344.Deactivating += OnInternalDeactivating;
@@ -67,6 +72,8 @@ namespace Exiled.CustomItems.API.Features
         /// <inheritdoc/>
         protected override void UnsubscribeEvents()
         {
+            PlayerStats.OnAnyPlayerDied -= OnOwnerDied;
+            InventorySystem.InventoryExtensions.OnInventoryDropped -= RemoveSafely;
             Exiled.Events.Handlers.Player.UsingItem -= OnInternalUsingItem;
             Exiled.Events.Handlers.Player.ItemRemoved -= OnInternalItemRemoved;
             Exiled.Events.Handlers.Scp1344.Deactivating -= OnInternalDeactivating;
@@ -175,11 +182,11 @@ namespace Exiled.CustomItems.API.Features
 
         private void InternalRemove(Player player, Scp1344 goggles)
         {
-            if (!Remove1344Effect)
-                player.DisableEffect(EffectType.Scp1344);
-
             if (CanBeRemoveSafely)
             {
+                if (!Remove1344Effect)
+                    player.DisableEffect(EffectType.Scp1344);
+
                 player.DisableEffect(EffectType.Blinded);
                 player.ReferenceHub?.DisableWearables(WearableElements.Scp1344Goggles);
             }
@@ -210,6 +217,32 @@ namespace Exiled.CustomItems.API.Features
                 return;
 
             InternalRemove(ev.Player, ev.Scp1344);
+        }
+
+        private void OnOwnerDied(ReferenceHub hub, DamageHandlerBase handler) => RemoveSafely(hub);
+
+        private void RemoveSafely(ReferenceHub hub)
+        {
+            if (!Player.TryGet(hub, out Player owner))
+                return;
+
+            foreach (Item item in owner.Items)
+            {
+                if (item.Type != ItemType.SCP1344)
+                    continue;
+
+                if (item is not Scp1344 { IsWorn: true } scp1344)
+                    continue;
+
+                if (!Check(item))
+                    continue;
+
+                if (!CanBeRemoveSafely)
+                    continue;
+
+                scp1344.Status = Scp1344Status.Idle;
+                InternalRemove(owner, scp1344);
+            }
         }
     }
 }

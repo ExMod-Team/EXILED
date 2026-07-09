@@ -14,9 +14,7 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
 
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
-
     using UnityEngine;
-
     using YamlDotNet.Core;
     using YamlDotNet.Core.Events;
     using YamlDotNet.Serialization;
@@ -36,13 +34,20 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
         /// <inheritdoc cref="IYamlTypeConverter" />
         public object ReadYaml(IParser parser, Type type)
         {
-            Type baseType = Nullable.GetUnderlyingType(type) ?? type;
+            Type baseType = Nullable.GetUnderlyingType(type);
+
+            bool isNullable = true;
+            if (baseType == null)
+            {
+                baseType = type;
+                isNullable = false;
+            }
 
             if (parser.TryConsume(out Scalar scalar))
             {
                 if (string.IsNullOrEmpty(scalar.Value) || scalar.Value.Equals("null", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (Nullable.GetUnderlyingType(type) != null)
+                    if (isNullable)
                         return null;
 
                     Log.Error($"Cannot assign null to non-nullable type {baseType.FullName}.");
@@ -83,7 +88,11 @@ namespace Exiled.Loader.Features.Configs.CustomConverters
                 }
             }
 
-            object color = Activator.CreateInstance(type, coordinates.ToArray());
+            object color;
+            if (isNullable)
+                color = Activator.CreateInstance(type, Activator.CreateInstance(baseType, coordinates.ToArray()));
+            else
+                color = Activator.CreateInstance(type, coordinates.ToArray());
 
             ListPool<object>.Pool.Return(coordinates);
 

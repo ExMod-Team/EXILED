@@ -31,8 +31,6 @@ namespace Exiled.Events.EventArgs.Player
             Handler = handler;
             HitboxType = hitboxType;
             DamageAmount = damageAmount;
-            DamageMultiplier = (Player.Health + Player.ArtificialHealth - AntiScp207.DeathSaveHealth) / damageAmount;
-            IsAllowed = true;
         }
 
         /// <summary>
@@ -46,14 +44,9 @@ namespace Exiled.Events.EventArgs.Player
         public float DamageAmount { get; }
 
         /// <summary>
-        /// Gets or sets the multiplier for the damage that is applied when the event is allowed.
+        /// Gets or sets the health amount the player will have after being saved from death.
         /// </summary>
-        public float DamageMultiplier { get; set; }
-
-        /// <summary>
-        /// Gets or sets the multiplier for the damage that if event denied.
-        /// </summary>
-        public float DeniedDamageMultiplier { get; set; } = 1;
+        public float DeathSaveHealth { get; set; } = AntiScp207.DeathSaveHealth;
 
         /// <summary>
         /// Gets the damage handler that describes the incoming damage.
@@ -69,6 +62,6 @@ namespace Exiled.Events.EventArgs.Player
         /// Gets or sets a value indicating whether the event is allowed.
         /// If set to <c>false</c>, the event will be denied.
         /// </summary>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
     }
 }
