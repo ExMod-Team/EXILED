@@ -312,24 +312,6 @@ namespace Exiled.API.Features
         public static Camera Get(Vector3 position) => Get(Scp079ScannerNotification.GetBestCamera(position));
 
         /// <summary>
-        /// Gets the <see cref="Camera"/> belonging to the <see cref="GameObject"/>, if any.
-        /// </summary>
-        /// <param name="gameObject">The <see cref="GameObject"/> of the camera.</param>
-        /// <returns>A <see cref="Camera"/> or <see langword="null"/> if not found.</returns>
-        public static Camera Get(GameObject gameObject)
-        {
-            foreach (Camera camera in List)
-            {
-                if (camera.GameObject == gameObject)
-                {
-                    return camera;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
         /// </summary>
         /// <param name="cameraId">The camera id to be searched for.</param>
