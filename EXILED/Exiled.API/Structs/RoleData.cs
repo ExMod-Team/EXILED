@@ -35,6 +35,9 @@ namespace Exiled.API.Structs
         /// <summary>
         /// Represents flags for how Exiled should handle edge cases.
         /// </summary>
+        /// <remarks>Simply having an authority does not make a direct impact. This enum largely exists to constrict possibly
+        /// unwanted behavior, so make sure your RoleData actually does what behavior you want.
+        /// (I. E. <see cref="Authority.AffectSelf"/> will not make a RoleData affect the viewer UNLESS they are the target).</remarks>
         [Flags]
         public enum Authority
         {

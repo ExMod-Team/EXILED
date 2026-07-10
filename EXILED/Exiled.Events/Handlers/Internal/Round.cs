@@ -22,6 +22,7 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.API.Structs;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp049;
+    using Exiled.Events.Patches.Generic;
     using Exiled.Loader;
     using Exiled.Loader.Features;
     using InventorySystem;
@@ -49,7 +50,7 @@ namespace Exiled.Events.Handlers.Internal
         /// <summary>
         /// Gets or sets a value indicating whether <see cref="OnRoleSyncEvent"/> is going to be invoked from <see cref="PlayerRoleManager.SendNewRoleInfo"/>.
         /// </summary>
-        /// <remarks>This is required to check if we can skip writing all the data for a fake role without looking inside the stack trace (very expensive compared to a patch).</remarks>
+        /// <remarks>This is required to check if we can skip writing all the data for a fake role without looking inside the stack trace (very expensive compared to the patch at <see cref="RoleSyncCallerCheck"/>).</remarks>
         internal static bool SendingNewRoleInfo { get; set; }
 
         /// <inheritdoc cref="Handlers.Player.OnUsedItem" />
@@ -128,7 +129,7 @@ namespace Exiled.Events.Handlers.Internal
 
             foreach (Player viewer in Player.Enumerable.Where(p => !p.IsNPC && !p.IsHost))
             {
-                if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && (data.DataAuthority & RoleData.Authority.Persist) == RoleData.Authority.None)
+                if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && !data.DataAuthority.HasFlag(RoleData.Authority.Persist))
                     viewer.FakeRoles.Remove(ev.Player);
             }
         }
@@ -201,26 +202,24 @@ namespace Exiled.Events.Handlers.Internal
             if (viewer.IsHost || !viewer.FakeRoles.TryGetValue(target, out RoleData data))
                 return actualRole;
 
-            if (target == viewer && (data.DataAuthority & RoleData.Authority.AffectSelf) == RoleData.Authority.None)
+            if (target == viewer && !data.DataAuthority.HasFlag(RoleData.Authority.AffectSelf))
                 return actualRole;
 
             // if another plugin has written data, we can't reliably modify and expect non-breaking behavior.
             // if we send faulty data we can accidentally soft-dc the entire server which is much worse than a plugin not working.
-            if (writer.Position != 0 && (data.DataAuthority & RoleData.Authority.Override) == RoleData.Authority.None)
+            if (writer.Position != 0 && !data.DataAuthority.HasFlag(RoleData.Authority.Override))
                 return actualRole;
 
-            if ((data.DataAuthority & RoleData.Authority.Always) == RoleData.Authority.None && actualRole.IsDead())
+            if (!data.DataAuthority.HasFlag(RoleData.Authority.Always) && actualRole.IsDead())
                 return actualRole;
 
-            if ((data.DataAuthority & RoleData.Authority.AffectNPCs) == RoleData.Authority.None && target.IsNPC)
+            if (!data.DataAuthority.HasFlag(RoleData.Authority.AffectNPCs) && target.IsNPC)
                 return actualRole;
 
             // this check has to be last because otherwise you can get instances where a fake role shouldn't persist due to not having a required Authority,
             // yet it would still persist because this would return the fake role if it was not here.
             if (!SendingNewRoleInfo && targetHub.roleManager.PreviouslySentRole.TryGetValue(viewerHub.netId, out RoleTypeId previousRole) && previousRole == data.Role)
                 return previousRole;
-
-            Log.Info($"RoleSyncEvent called with {viewer.Nickname} as the viewer and {target.Nickname} as the target");
 
             writer.Position = 0;
 
@@ -258,7 +257,7 @@ namespace Exiled.Events.Handlers.Internal
                         break;
                 }
 
-                if (data.Role == RoleTypeId.Scp0492)
+                if (data.Role is RoleTypeId.Scp0492)
                 {
                     writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(target.MaxHealth), 0, ushort.MaxValue));
                     writer.WriteBool(false);
@@ -266,15 +265,11 @@ namespace Exiled.Events.Handlers.Internal
 
                 if (target.Role is FpcRole role)
                 {
-                    Log.Info("Writing normal FPC stuff");
-
                     writer.WriteRelativePosition(role.ClientRelativePosition);
                     writer.WriteUShort(role.FirstPersonController.FpcModule.MouseLook._prevSyncH);
                 }
                 else
                 {
-                    Log.Info("Writing FPC stuff using inefficient method");
-
                     WaypointBase.GetRelativeRotation(target.Position, Quaternion.Euler(Vector3.up * target.Rotation.eulerAngles.y), out _, out Quaternion relativeRotation);
 
                     writer.WriteRelativePosition(new RelativePosition(target.Position));
