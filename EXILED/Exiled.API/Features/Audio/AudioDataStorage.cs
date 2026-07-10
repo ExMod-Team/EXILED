@@ -7,17 +7,11 @@
 
 namespace Exiled.API.Features.Audio
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
 
     using Exiled.API.Structs.Audio;
 
-    using MEC;
-
     using RoundRestarting;
-
-    using UnityEngine.Networking;
 
     /// <summary>
     /// Manages a global in-memory storage of decoded PCM audio data. Once stored, audio can be played using <see cref="PcmSources.CachedPcmSource"/>.
@@ -39,47 +33,6 @@ namespace Exiled.API.Features.Audio
         /// Gets or sets a value indicating whether the storage is automatically cleared when a round restart is triggered.
         /// </summary>
         public static bool ClearOnRoundRestart { get; set; } = true;
-
-        /// <summary>
-        /// Loads and stores a local .wav file under the specified name.
-        /// </summary>
-        /// <param name="name">The unique storage key to assign to this audio.</param>
-        /// <param name="path">The absolute path to the local .wav file.</param>
-        /// <returns><c>true</c> if the file was successfully loaded and stored; otherwise, <c>false</c>.</returns>
-        public static bool AddWav(string name, string path)
-        {
-            if (!ValidateName(name))
-                return false;
-
-            if (AudioStorage.ContainsKey(name))
-            {
-                Log.Warn($"[AudioDataStorage] An entry with the key '{name}' already exists. Skipping add.");
-                return false;
-            }
-
-            if (path.StartsWith("http"))
-            {
-                Log.Error($"[AudioDataStorage] '{path}' is a URL. Use AudioDataStorage.AddUrl() for web sources.");
-                return false;
-            }
-
-            if (!File.Exists(path))
-            {
-                Log.Error($"[AudioDataStorage] Local file not found: '{path}'");
-                return false;
-            }
-
-            try
-            {
-                AudioData parsed = WavUtility.WavToPcm(path);
-                return AudioStorage.TryAdd(name, parsed);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"[AudioDataStorage] Failed to load '{path}' into storage:\n{ex}");
-                return false;
-            }
-        }
 
         /// <summary>
         /// Stores raw PCM audio samples under the specified name.
@@ -131,58 +84,6 @@ namespace Exiled.API.Features.Audio
         }
 
         /// <summary>
-        /// Starts an asynchronous download of a .wav file from the specified URL and adds it to the  storage.
-        /// </summary>
-        /// <param name="name">The unique storage key to assign.</param>
-        /// <param name="url">The HTTP or HTTPS URL pointing to a valid .wav file.</param>
-        /// <returns>A <see cref="CoroutineHandle"/> for the running download coroutine.</returns>
-        public static CoroutineHandle AddWavUrl(string name, string url) => Timing.RunCoroutine(AddUrlCoroutine(name, url));
-
-        /// <summary>
-        /// Starts an asynchronous download of a .wav file from the specified URL and adds it to the storage.
-        /// </summary>
-        /// <param name="name">The unique storage key to assign.</param>
-        /// <param name="url">The HTTP or HTTPS URL pointing to a valid .wav file.</param>
-        /// <returns>A MEC-compatible <see cref="IEnumerator{T}"/> of <see cref="float"/>.</returns>
-        public static IEnumerator<float> AddUrlCoroutine(string name, string url)
-        {
-            if (!ValidateName(name))
-                yield break;
-
-            if (string.IsNullOrEmpty(url) || !url.StartsWith("http"))
-            {
-                Log.Error($"[AudioDataStorage] Invalid URL for key '{name}': '{url}'. Must start with http/https.");
-                yield break;
-            }
-
-            if (AudioStorage.ContainsKey(name))
-            {
-                Log.Warn($"[AudioDataStorage] An entry with the key '{name}' already exists. Skipping download.");
-                yield break;
-            }
-
-            using UnityWebRequest www = UnityWebRequest.Get(url);
-            yield return Timing.WaitUntilDone(www.SendWebRequest());
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Log.Error($"[AudioDataStorage] Download failed for '{url}': {www.error}");
-                yield break;
-            }
-
-            try
-            {
-                AudioData parsed = WavUtility.WavToPcm(www.downloadHandler.data);
-                parsed.TrackInfo.Path = url;
-                AudioStorage.TryAdd(name, parsed);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"[AudioDataStorage] Failed to parse downloaded WAV from '{url}':\n{ex}");
-            }
-        }
-
-        /// <summary>
         /// Removes a stored audio entry by name.
         /// </summary>
         /// <param name="name">The storage name/key to remove.</param>
@@ -194,7 +95,12 @@ namespace Exiled.API.Features.Audio
         /// </summary>
         public static void Clear() => AudioStorage.Clear();
 
-        private static bool ValidateName(string name)
+        /// <summary>
+        /// Validates that the storage name (key) is valid.
+        /// </summary>
+        /// <param name="name">The storage name (key) to validate.</param>
+        /// <returns>True when name is valid; otherwise false.</returns>
+        internal static bool ValidateName(string name)
         {
             if (!string.IsNullOrEmpty(name))
                 return true;
