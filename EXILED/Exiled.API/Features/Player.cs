@@ -2052,32 +2052,45 @@ namespace Exiled.API.Features
         /// Drops an <see cref="Item"/> from the player's inventory by its <see cref="ItemType"/>.
         /// </summary>
         /// <param name="item">The specified <see cref="ItemType"/> to be dropped.</param>
-        /// <param name="isThrown">Is the item Thrown?.</param>
+        /// <param name="isThrown">Whether the item should be thrown.</param>
+        /// <param name="amount">The number of matching items to remove.</param>
         /// <returns>A value indicating whether the <see cref="Item"/> was dropped.</returns>
-        public bool DropItem(ItemType item, bool isThrown = false)
+        public bool DropItem(ItemType item, bool isThrown = false, int amount = 1)
         {
-            Item itemtodrop = Items.FirstOrDefault(tempItem => tempItem.Type == item);
-            if (itemtodrop == null)
+            if (amount <= 0)
                 return false;
 
-            DropItem(itemtodrop, isThrown);
-            return true;
+            List<Item> itemsToDrop = Items.Where(i => i?.Type == item).Take(amount).ToList();
+
+            if (itemsToDrop.Count == 0)
+                return false;
+
+            foreach (Item i in itemsToDrop)
+                DropItem(i, isThrown);
+
+            return itemsToDrop.Count > 0;
         }
 
         /// <summary>
         /// Drops an item from the player's inventory.
         /// </summary>
         /// <param name="item">The specified <see cref="ItemType"/> to be dropped.</param>
-        /// <returns>dropped <see cref="Pickup"/>.</returns>
-        public Pickup DropItem(ItemType item)
+        /// <param name="amount">The number of matching items to remove.</param>
+        /// <returns>A list of dropped <see cref="Pickup"/>s.</returns>
+        public List<Pickup> DropItem(ItemType item, int amount = 1)
         {
-            Item itemtodrop = Items.FirstOrDefault(tempItem => tempItem.Type == item);
-            if (itemtodrop == null)
-                return null;
+            List<Pickup> pickups = new();
 
-            return Pickup.Get(Inventory.ServerDropItem(itemtodrop.Serial));
+            if (amount <= 0)
+                return pickups;
+
+            List<Item> itemsToDrop = Items.Where(i => i?.Type == item).Take(amount).ToList();
+
+            foreach (Item i in itemsToDrop)
+                pickups.Add(DropItem(i));
+
+            return pickups;
         }
-
         /// <summary>
         /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
