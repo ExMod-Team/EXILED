@@ -34,6 +34,7 @@ namespace Exiled.Events.Handlers.Internal
     using Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.SpawnData;
     using RelativePositioning;
@@ -121,12 +122,9 @@ namespace Exiled.Events.Handlers.Internal
             }
         }
 
-        /// <inheritdoc cref="Handlers.Player.OnDying(DyingEventArgs)" />
-        public static void OnDying(DyingEventArgs ev)
+        /// <inheritdoc cref="Handlers.Player.OnDied(DiedEventArgs)" />
+        public static void OnDied(DiedEventArgs ev)
         {
-            if (!ev.IsAllowed)
-                return;
-
             foreach (Player viewer in Player.Enumerable.Where(p => !p.IsNPC && !p.IsHost))
             {
                 if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && !data.DataAuthority.HasFlag(RoleData.Authority.Persist))
@@ -255,12 +253,11 @@ namespace Exiled.Events.Handlers.Internal
                     case PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo:
                         writer.WriteByte((byte)flamingo.ServerSpawnReason);
                         break;
-                }
 
-                if (data.Role is RoleTypeId.Scp0492)
-                {
-                    writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(target.MaxHealth), 0, ushort.MaxValue));
-                    writer.WriteBool(false);
+                    case ZombieRole:
+                        writer.WriteUShort((ushort)Mathf.Clamp(Mathf.CeilToInt(target.MaxHealth), 0, ushort.MaxValue));
+                        writer.WriteBool(false);
+                        break;
                 }
 
                 if (target.Role is FpcRole role)
