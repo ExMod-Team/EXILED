@@ -200,6 +200,7 @@ namespace Exiled.API.Features.Pickups
                 {
                     case IPrimaryAmmoContainerModule primaryAmmoModule:
                         MaxAmmo = primaryAmmoModule.AmmoMax;
+                        AmmoItemType = primaryAmmoModule.AmmoType;
                         break;
 
                     case HitscanHitregModuleBase hitregModule:
