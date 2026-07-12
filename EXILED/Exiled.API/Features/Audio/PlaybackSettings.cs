@@ -15,8 +15,6 @@ namespace Exiled.API.Features.Audio
     using Exiled.API.Features.Toys;
     using Exiled.API.Interfaces.Audio;
 
-    using Mirror;
-
     /// <summary>
     /// Represents all configurable audio and network settings for play from pool method.
     /// </summary>
@@ -68,7 +66,7 @@ namespace Exiled.API.Features.Audio
         /// <summary>
         /// Gets or sets the Mirror network channel used for sending audio packets.
         /// </summary>
-        public int Channel { get; set; } = Channels.ReliableOrdered2;
+        public int Channel { get; set; } = Speaker.DefaultChannel;
 
         /// <summary>
         /// Gets or sets the play mode determining how the audio is sent to players.
