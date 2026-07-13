@@ -68,12 +68,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.IsVerified))),
                     new(OpCodes.Brtrue_S, jmp),
 
-                    // if (!Player.IsNpc)
-                    //  goto continueLabel;
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.IsNPC))),
-                    new(OpCodes.Brfalse_S, continueLabel),
-
                     // jmp
                     // player
                     new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).WithLabels(jmp),
