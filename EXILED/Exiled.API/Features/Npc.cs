@@ -263,6 +263,7 @@ namespace Exiled.API.Features
 
             Timing.CallDelayed(SpawnSetRoleDelay, () =>
             {
+                npc.IsVerified = true;
                 npc.Role.Set(role, SpawnReason.ForceClass);
                 npc.Position = position;
                 npc.CustomHealthStat = (HealthStat)npc.ReferenceHub.playerStats._dictionarizedTypes[typeof(HealthStat)];
