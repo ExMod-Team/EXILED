@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Audio.PcmSources
     using System.Buffers;
     using System.IO;
     using System.Runtime.InteropServices;
+    using System.Threading;
 
     using Exiled.API.Features.Audio;
     using Exiled.API.Interfaces.Audio;
@@ -30,6 +31,7 @@ namespace Exiled.API.Features.Audio.PcmSources
         private readonly FileStream stream;
 
         private byte[] internalBuffer;
+        private volatile bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WavStreamSource"/> class.
@@ -44,75 +46,75 @@ namespace Exiled.API.Features.Audio.PcmSources
             internalBuffer = ArrayPool<byte>.Shared.Rent(VoiceChatSettings.PacketSizePerChannel * 2);
         }
 
-        /// <summary>
-        /// Gets the metadata of the streaming track.
-        /// </summary>
+        /// <inheritdoc/>
         public TrackData TrackInfo { get; }
 
-        /// <summary>
-        /// Gets the total duration of the audio in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double TotalDuration => (endPosition - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
-            get => (stream.Position - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
+            get => isDisposed ? 0.0 : (stream.Position - startPosition) / 2.0 / VoiceChatSettings.SampleRate;
             set => Seek(value);
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the end of the stream has been reached.
-        /// </summary>
-        public bool Ended => stream.Position >= endPosition;
+        /// <inheritdoc/>
+        public bool Ended => isDisposed || stream.Position >= endPosition;
 
-        /// <summary>
-        /// Reads PCM data from the stream into the specified buffer.
-        /// </summary>
-        /// <param name="buffer">The buffer to fill with PCM data.</param>
-        /// <param name="offset">The offset in the buffer at which to begin writing.</param>
-        /// <param name="count">The maximum number of samples to read.</param>
-        /// <returns>The number of samples read.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
-            count = Math.Min(count, buffer.Length - offset);
-
-            if (count <= 0)
-                return 0;
-
-            int bytesNeeded = count * 2;
-
-            if (internalBuffer.Length < bytesNeeded)
+            if (isDisposed)
             {
-                ArrayPool<byte>.Shared.Return(internalBuffer);
-                internalBuffer = ArrayPool<byte>.Shared.Rent(bytesNeeded);
+                Array.Clear(buffer, offset, count);
+                return 0;
             }
 
-            int bytesRead = stream.Read(internalBuffer, 0, bytesNeeded);
+            try
+            {
+                count = Math.Min(count, buffer.Length - offset);
 
-            if (bytesRead == 0)
+                if (count <= 0)
+                    return 0;
+
+                int bytesNeeded = count * 2;
+
+                if (internalBuffer.Length < bytesNeeded)
+                {
+                    ArrayPool<byte>.Shared.Return(internalBuffer);
+                    internalBuffer = ArrayPool<byte>.Shared.Rent(bytesNeeded);
+                }
+
+                int bytesRead = stream.Read(internalBuffer, 0, bytesNeeded);
+
+                if (bytesRead == 0)
+                    return 0;
+
+                if (bytesRead % 2 != 0)
+                    bytesRead--;
+
+                Span<byte> byteSpan = internalBuffer.AsSpan(0, bytesRead);
+                Span<short> shortSpan = MemoryMarshal.Cast<byte, short>(byteSpan);
+
+                for (int i = 0; i < shortSpan.Length; i++)
+                    buffer[offset + i] = shortSpan[i] * Divide;
+
+                return shortSpan.Length;
+            }
+            catch (ObjectDisposedException)
+            {
+                Array.Clear(buffer, offset, count);
                 return 0;
-
-            if (bytesRead % 2 != 0)
-                bytesRead--;
-
-            Span<byte> byteSpan = internalBuffer.AsSpan(0, bytesRead);
-            Span<short> shortSpan = MemoryMarshal.Cast<byte, short>(byteSpan);
-
-            for (int i = 0; i < shortSpan.Length; i++)
-                buffer[offset + i] = shortSpan[i] * Divide;
-
-            return shortSpan.Length;
+            }
         }
 
-        /// <summary>
-        /// Seeks to the specified position in the stream.
-        /// </summary>
-        /// <param name="seconds">The position in seconds to seek to.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
+            if (isDisposed)
+                return;
+
             long newPos = Math.Clamp(startPosition + ((long)(seconds * VoiceChatSettings.SampleRate) * 2), startPosition, endPosition);
 
             if (newPos % 2 != 0)
@@ -121,25 +123,18 @@ namespace Exiled.API.Features.Audio.PcmSources
             stream.Position = newPos;
         }
 
-        /// <summary>
-        /// Resets the stream position to the start.
-        /// </summary>
-        public void Reset()
-        {
-            stream.Position = startPosition;
-        }
+        /// <inheritdoc/>
+        public void Reset() => stream.Position = startPosition;
 
-        /// <summary>
-        /// Releases all resources used by the <see cref="WavStreamSource"/>.
-        /// </summary>
+        /// <inheritdoc/>
         public void Dispose()
         {
+            isDisposed = true;
             stream?.Dispose();
-            if (internalBuffer != null)
-            {
-                ArrayPool<byte>.Shared.Return(internalBuffer);
-                internalBuffer = null;
-            }
+
+            byte[] buf = Interlocked.Exchange(ref internalBuffer, null);
+            if (buf != null)
+                ArrayPool<byte>.Shared.Return(buf);
         }
     }
 }

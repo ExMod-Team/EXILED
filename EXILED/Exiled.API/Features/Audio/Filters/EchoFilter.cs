@@ -171,10 +171,12 @@ namespace Exiled.API.Features.Audio.Filters
             float alpha = Mathf.Sin(w0) / (2f * 0.7071f);
 
             float a0 = 1f + alpha;
-            b0 = ((1f - Mathf.Cos(w0)) / 2f) / a0;
-            b1 = (1f - Mathf.Cos(w0)) / a0;
-            b2 = ((1f - Mathf.Cos(w0)) / 2f) / a0;
-            a1 = (-2f * Mathf.Cos(w0)) / a0;
+            float w0Cos = Mathf.Cos(w0);
+            float oneMinusW0Cos = 1f - w0Cos;
+            b0 = (oneMinusW0Cos / 2f) / a0;
+            b1 = oneMinusW0Cos / a0;
+            b2 = (oneMinusW0Cos / 2f) / a0;
+            a1 = (-2f * w0Cos) / a0;
             a2 = (1f - alpha) / a0;
         }
     }

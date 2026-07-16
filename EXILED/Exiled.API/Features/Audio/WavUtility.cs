@@ -10,12 +10,17 @@ namespace Exiled.API.Features.Audio
     using System;
     using System.Buffers;
     using System.Buffers.Binary;
+    using System.Collections.Generic;
     using System.IO;
     using System.Runtime.InteropServices;
 
     using Exiled.API.Features.Audio.PcmSources;
     using Exiled.API.Interfaces.Audio;
     using Exiled.API.Structs.Audio;
+
+    using MEC;
+
+    using UnityEngine.Networking;
 
     using VoiceChat;
 
@@ -36,7 +41,12 @@ namespace Exiled.API.Features.Audio
         public static IPcmSource CreatePcmSource(string path, bool stream = false, bool cache = false)
         {
             if (cache)
-                return new CachedPcmSource(path, path);
+            {
+                if (!AudioDataStorage.AudioStorage.ContainsKey(path))
+                    CacheWav(path, path);
+
+                return new CachedPcmSource(path);
+            }
 
             if (path.StartsWith("http"))
                 return new WebWavPcmSource(path);
@@ -45,6 +55,99 @@ namespace Exiled.API.Features.Audio
                 return new WavStreamSource(path);
 
             return new PreloadedPcmSource(path);
+        }
+
+        /// <summary>
+        /// Loads and stores a local .wav file under the specified name.
+        /// </summary>
+        /// <param name="name">The unique storage key to assign to this audio.</param>
+        /// <param name="path">The absolute path to the local .wav file.</param>
+        /// <returns><c>true</c> if the file was successfully loaded and stored; otherwise, <c>false</c>.</returns>
+        public static bool CacheWav(string name, string path)
+        {
+            if (!AudioDataStorage.ValidateName(name))
+                return false;
+
+            if (AudioDataStorage.AudioStorage.ContainsKey(name))
+            {
+                Log.Warn($"[AudioDataStorage] An entry with the key '{name}' already exists. Skipping add.");
+                return false;
+            }
+
+            if (path.StartsWith("http"))
+            {
+                Log.Error($"[AudioDataStorage] '{path}' is a URL. Use AudioDataStorage.AddUrl() for web sources.");
+                return false;
+            }
+
+            if (!File.Exists(path))
+            {
+                Log.Error($"[AudioDataStorage] Local file not found: '{path}'");
+                return false;
+            }
+
+            try
+            {
+                AudioData parsed = WavToPcm(path);
+                return AudioDataStorage.AudioStorage.TryAdd(name, parsed);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[AudioDataStorage] Failed to load '{path}' into storage:\n{ex}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Starts an asynchronous download of a .wav file from the specified URL and adds it to the storage.
+        /// </summary>
+        /// <param name="name">The unique storage key to assign.</param>
+        /// <param name="url">The HTTP or HTTPS URL pointing to a valid .wav file.</param>
+        /// <returns>A <see cref="CoroutineHandle"/> for the running download coroutine.</returns>
+        public static CoroutineHandle CacheWavUrl(string name, string url) => Timing.RunCoroutine(CacheUrlCoroutine(name, url));
+
+        /// <summary>
+        /// Starts an asynchronous download of a .wav file from the specified URL and adds it to the storage.
+        /// </summary>
+        /// <param name="name">The unique storage key to assign.</param>
+        /// <param name="url">The HTTP or HTTPS URL pointing to a valid .wav file.</param>
+        /// <returns>A MEC-compatible <see cref="IEnumerator{T}"/> of <see cref="float"/>.</returns>
+        public static IEnumerator<float> CacheUrlCoroutine(string name, string url)
+        {
+            if (!AudioDataStorage.ValidateName(name))
+                yield break;
+
+            if (string.IsNullOrEmpty(url) || !url.StartsWith("http"))
+            {
+                Log.Error($"[AudioDataStorage] Invalid URL for key '{name}': '{url}'. Must start with http/https.");
+                yield break;
+            }
+
+            if (AudioDataStorage.AudioStorage.ContainsKey(name))
+            {
+                Log.Warn($"[AudioDataStorage] An entry with the key '{name}' already exists. Skipping download.");
+                yield break;
+            }
+
+            using UnityWebRequest www = UnityWebRequest.Get(url);
+            yield return Timing.WaitUntilDone(www.SendWebRequest());
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Log.Error($"[AudioDataStorage] Download failed for '{url}': {www.error}");
+                yield break;
+            }
+
+            try
+            {
+                AudioData parsed = WavToPcm(www.downloadHandler.data);
+                parsed.TrackInfo.Path = url;
+                AudioDataStorage.AudioStorage.TryAdd(name, parsed);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[AudioDataStorage] Failed to parse downloaded WAV from '{url}':\n{ex}");
+            }
         }
 
         /// <summary>
@@ -95,7 +198,6 @@ namespace Exiled.API.Features.Audio
         public static AudioData WavToPcm(byte[] data)
         {
             using MemoryStream ms = new(data, 0, data.Length);
-
             return ParseWavSpanToPcm(ms, data.AsSpan());
         }
 
