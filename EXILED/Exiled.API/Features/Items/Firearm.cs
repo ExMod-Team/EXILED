@@ -10,6 +10,8 @@ namespace Exiled.API.Features.Items
     using System.Collections.Generic;
     using System.Linq;
 
+    using AudioPooling;
+
     using CameraShaking;
 
     using Enums;
@@ -28,7 +30,10 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
 
+    using UnityEngine;
+
     using static InventorySystem.Items.Firearms.Modules.AnimatorReloaderModuleBase;
+    using static InventorySystem.Items.Firearms.Modules.AutomaticActionModule;
 
     using BaseFirearm = InventorySystem.Items.Firearms.Firearm;
     using FirearmPickup = Pickups.FirearmPickup;
@@ -67,6 +72,8 @@ namespace Exiled.API.Features.Items
 
                     case IAmmoContainerModule ammoModule:
                         BarrelMagazine ??= (BarrelMagazine)Magazine.Get(ammoModule);
+                        if (module is AutomaticActionModule automaticActionModule)
+                            AutomaticActionModule = automaticActionModule;
                         break;
 
                     case HitscanHitregModuleBase hitregModule:
@@ -75,6 +82,14 @@ namespace Exiled.API.Features.Items
 
                     case AnimatorReloaderModuleBase animatorReloaderModule:
                         AnimatorReloaderModule = animatorReloaderModule;
+                        break;
+
+                    case ImpactEffectsModule impactEffectsModule:
+                        ImpactEffectsModule = impactEffectsModule;
+                        break;
+
+                    case AudioModule audioModule:
+                        AudioModule = audioModule;
                         break;
 
                     default:
@@ -151,6 +166,21 @@ namespace Exiled.API.Features.Items
         /// Gets an animator reloader module for the current firearm.
         /// </summary>
         public AnimatorReloaderModuleBase AnimatorReloaderModule { get; }
+
+        /// <summary>
+        /// Gets an impact effects module for the current firearm.
+        /// </summary>
+        public ImpactEffectsModule ImpactEffectsModule { get; }
+
+        /// <summary>
+        /// Gets an automatic action module for the current firearm.
+        /// </summary>
+        public AutomaticActionModule AutomaticActionModule { get; }
+
+        /// <summary>
+        /// Gets an audio module for the current firearm.
+        /// </summary>
+        public AudioModule AudioModule { get; }
 
         /// <summary>
         /// Gets or sets the amount of ammo in the firearm magazine.
@@ -758,6 +788,64 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
+        /// Plays a firearm sound to nearby players.
+        /// </summary>
+        /// <param name="index">The index of the audio clip to play.</param>
+        /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
+        /// <param name="range">The range within which nearby players can hear the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
+        /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
+        public bool PlaySound(int index, MixerChannel channel, float? range = null, float? pitch = null)
+        {
+            if (AudioModule == null)
+            {
+                Log.Error($"Failed to play sound, firearm {Type} does not have an AudioModule.");
+                return false;
+            }
+
+            if (!range.HasValue)
+                range = AudioModule.FinalGunshotRange;
+
+            if (!pitch.HasValue)
+                pitch = AudioModule.RandomPitch;
+
+            AudioModule.ServerSendToNearbyPlayers(index, channel, range.Value, pitch.Value);
+            return true;
+        }
+
+        /// <summary>
+        /// Simulates a fire.
+        /// </summary>
+        /// <param name="rpcHeader">Rpc header for fire type like fire or dry fire.</param>
+        /// <param name="chambersFired">The number of chambers fired.</param>
+        /// <param name="soundIndex">The index of the sound to play. 0 is DryFire, 1 is default gunshot.</param>
+        public void FakeFire(MessageHeader rpcHeader = MessageHeader.RpcFire, byte chambersFired = 1, byte soundIndex = 1)
+        {
+            PlaySound(soundIndex, MixerChannel.Weapons, AudioModule.FinalGunshotRange, AudioModule.RandomPitch);
+
+            if (AutomaticActionModule?.gameObject != null)
+            {
+                AutomaticActionModule.SendRpc(
+                writer =>
+                {
+                    writer.WriteSubheader(rpcHeader);
+                    if (rpcHeader == MessageHeader.RpcFire)
+                        writer.WriteByte(chambersFired);
+                },
+                true);
+            }
+
+            if (ImpactEffectsModule != null)
+            {
+                Transform camera = Owner.CameraTransform;
+                float maxDist = HitscanHitregModule.FullDamageDistance + HitscanHitregModule.DamageFalloffDistance;
+
+                if (Physics.Raycast(camera.position, camera.forward, out RaycastHit hit, maxDist, HitscanHitregModuleBase.HitregMask))
+                    ImpactEffectsModule.ServerProcessHit(hit, camera.position, true);
+            }
+        }
+
+        /// <summary>
         /// Clones current <see cref="Firearm"/> object.
         /// </summary>
         /// <returns> New <see cref="Firearm"/> object. </returns>
@@ -804,6 +892,7 @@ namespace Exiled.API.Features.Items
             if (pickup is FirearmPickup firearmPickup)
             {
                 PrimaryMagazine.MaxAmmo = firearmPickup.MaxAmmo;
+                PrimaryMagazine.AmmoItemType = firearmPickup.AmmoItemType;
                 AmmoDrain = firearmPickup.AmmoDrain;
                 Damage = firearmPickup.Damage;
                 Inaccuracy = firearmPickup.Inaccuracy;

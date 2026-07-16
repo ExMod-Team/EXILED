@@ -110,7 +110,8 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by weapon.</returns>
         public static bool IsWeapon(this DamageType type, bool checkNonFirearm = true) => type switch
         {
-            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 => true,
+
+            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 or DamageType.Scp127 => true,
             DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire or DamageType.Jailbird when checkNonFirearm => true,
             _ => false,
         };

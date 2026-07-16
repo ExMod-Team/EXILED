@@ -153,8 +153,16 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         /// <param name="locker">The <see cref="BaseLocker"/> to get.</param>
         /// <returns>A <see cref="Locker"/> or <see langword="null"/> if not found.</returns>
-        public static Locker? Get(BaseLocker locker) => locker == null ? null :
-            BaseToExiledLockers.TryGetValue(locker, out Locker supply) ? supply : new Locker(locker);
+        public static Locker? Get(BaseLocker locker)
+        {
+            if (locker == null)
+                return null;
+
+            if (BaseToExiledLockers.TryGetValue(locker, out Locker supply))
+                return supply;
+
+            return new Locker(locker);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Locker"/> given the specified <see cref="ZoneType"/>.

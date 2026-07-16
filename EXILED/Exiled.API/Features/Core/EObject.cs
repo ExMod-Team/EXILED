@@ -767,17 +767,7 @@ namespace Exiled.API.Features.Core
         }
 
         /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = 23;
-                hash = (hash * 29) + Base.GetHashCode();
-                hash = (hash * 29) + Name.GetHashCode();
-                hash = (hash * 29) + Tag.GetHashCode();
-                return hash;
-            }
-        }
+        public override int GetHashCode() => HashCode.Combine(Base, Name, Tag);
 
         /// <inheritdoc/>
         public override bool Equals(object other) => other is not null && other is EObject && other == this;
