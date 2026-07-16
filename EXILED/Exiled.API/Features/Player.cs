@@ -2162,6 +2162,7 @@ namespace Exiled.API.Features
 
             return pickups;
         }
+
         /// <summary>
         /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
