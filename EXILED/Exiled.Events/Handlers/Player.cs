@@ -1453,7 +1453,7 @@ namespace Exiled.Events.Handlers
             if (!ShowingHitMarker.Patched)
                 return;
 
-            ShowingHitMarkerEventArgs ev = new(labEv.Player.ReferenceHub, labEv.Size, labEv.PlayAudio, labEv.Hitmarker, labEv.IsAllowed)
+            ShowingHitMarkerEventArgs ev = new(labEv.Player.ReferenceHub, labEv.Size, labEv.PlayAudio, labEv.Hitmarker, labEv.IsAllowed);
             ShowingHitMarker.InvokeSafely(ev);
             labEv.Size = ev.Size;
             labEv.PlayAudio = ev.ShouldPlayAudio;
