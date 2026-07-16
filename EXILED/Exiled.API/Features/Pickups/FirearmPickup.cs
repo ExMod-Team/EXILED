@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Pickups
 {
     using System;
 
+    using Exiled.API.Enums;
+    using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items;
@@ -54,6 +56,20 @@ namespace Exiled.API.Features.Pickups
         /// </summary>
         [Obsolete("Feature deprecated")]
         public bool IsDistributed { get; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="Enums.AmmoType"/>.
+        /// </summary>
+        public AmmoType AmmoType
+        {
+            get => AmmoItemType.GetAmmoType();
+            set => AmmoItemType = value.GetItemType();
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="ItemType"/>.
+        /// </summary>
+        public ItemType AmmoItemType { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating how much ammo can contain this <see cref="FirearmPickup"/>.
@@ -155,6 +171,7 @@ namespace Exiled.API.Features.Pickups
             if (item is Items.Firearm firearm)
             {
                 MaxAmmo = firearm.PrimaryMagazine.ConstantMaxAmmo;
+                AmmoItemType = firearm.PrimaryMagazine.AmmoItemType;
                 AmmoDrain = firearm.AmmoDrain;
                 Damage = firearm.Damage;
                 Inaccuracy = firearm.Inaccuracy;
@@ -181,6 +198,7 @@ namespace Exiled.API.Features.Pickups
                 {
                     case IPrimaryAmmoContainerModule primaryAmmoModule:
                         MaxAmmo = primaryAmmoModule.AmmoMax;
+                        AmmoItemType = primaryAmmoModule.AmmoType;
                         break;
 
                     case HitscanHitregModuleBase hitregModule:

@@ -1375,7 +1375,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="sender">The command sender.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(CommandSender sender) => Get(sender.SenderId);
+        public static Player Get(CommandSender sender) => sender is null ? null : Get(sender.SenderId);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to the <see cref="global::ReferenceHub"/>, if any.
@@ -1399,7 +1399,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="collider"><see cref="Collider"/>.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(Collider collider) => Get(collider.transform.root.gameObject);
+        public static Player Get(Collider collider) => Get(collider?.gameObject);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to a specific netId, if any.
@@ -1413,14 +1413,14 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="netIdentity">The player's <see cref="Mirror.NetworkIdentity"/>.</param>
         /// <returns>The <see cref="Player"/> owning the <see cref="Mirror.NetworkIdentity"/>, or <see langword="null"/> if not found.</returns>
-        public static Player Get(NetworkIdentity netIdentity) => Get(netIdentity.netId);
+        public static Player Get(NetworkIdentity netIdentity) => !netIdentity ? null : Get(netIdentity.netId);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to a specific <see cref="NetworkConnection"/>, if any.
         /// </summary>
         /// <param name="conn">The player's <see cref="NetworkConnection"/>.</param>
         /// <returns>The <see cref="Player"/> owning the <see cref="NetworkConnection"/>, or <see langword="null"/> if not found.</returns>
-        public static Player Get(NetworkConnection conn) => Get(conn.identity);
+        public static Player Get(NetworkConnection conn) => Get(conn?.identity);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to the <see cref="UnityEngine.GameObject"/>, if any.
@@ -1440,6 +1440,9 @@ namespace Exiled.API.Features
 
             if (ReferenceHub.TryGetHub(gameObject, out ReferenceHub hub))
                 return new(hub);
+
+            if (gameObject.GetComponentInChildren<HitboxIdentity>(false) is HitboxIdentity hitboxIdentity)
+                return Get(hitboxIdentity.TargetHub);
 
             return null;
         }

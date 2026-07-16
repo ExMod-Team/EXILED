@@ -305,6 +305,15 @@ namespace Exiled.API.Features.Lockers
         /// </summary>
         /// <param name="chamber"><see cref="LockerChamber"/>.</param>
         /// <returns><see cref="Chamber"/>.</returns>
-        internal static Chamber Get(LockerChamber chamber) => chamber == null ? null : Chambers.TryGetValue(chamber, out Chamber chmb) ? chmb : new(chamber, Locker.Get(x => x.Chambers.Any(x => x.Base == chamber)).FirstOrDefault());
+        internal static Chamber Get(LockerChamber chamber)
+        {
+            if (chamber == null)
+                return null;
+
+            if (Chambers.TryGetValue(chamber, out Chamber chmb))
+                return chmb;
+
+            return new(chamber, Locker.Get(x => x.Chambers.Any(x => x.Base == chamber)).FirstOrDefault());
+        }
     }
 }

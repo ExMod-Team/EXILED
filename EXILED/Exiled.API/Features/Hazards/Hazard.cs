@@ -151,9 +151,9 @@ namespace Exiled.API.Features.Hazards
         /// <summary>
         /// Gets the hazard by it's <see cref="GameObject"/>.
         /// </summary>
-        /// <param name="obj">Game object.</param>
-        /// <returns><see cref="Hazard"/> in given <see cref="Features.Room"/>.</returns>
-        public static Hazard Get(GameObject obj) => Get(x => x.Base.gameObject == obj).FirstOrDefault();
+        /// <param name="gameObject">Game object.</param>
+        /// <returns><see cref="Hazard"/> with given <see cref="GameObject"/>.</returns>
+        public static Hazard Get(GameObject gameObject) => !gameObject ? null : Get(gameObject.GetComponentInParent<EnvironmentalHazard>(false));
 
         /// <summary>
         /// Gets the <see cref="IEnumerable{T}"/> of <see cref="Hazard"/> based on predicate.
