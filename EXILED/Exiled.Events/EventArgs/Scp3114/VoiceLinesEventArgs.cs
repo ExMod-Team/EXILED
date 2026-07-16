@@ -22,20 +22,17 @@ namespace Exiled.Events.EventArgs.Scp3114
         /// <summary>
         /// Initializes a new instance of the <see cref="VoiceLinesEventArgs" /> class.
         /// </summary>
-        /// <param name="player">
-        /// <inheritdoc cref="Player" />
-        /// </param>
-        /// <param name="voiceLine">
-        /// <inheritdoc cref="VoiceLine" />
-        /// </param>
-        /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
-        /// </param>
-        public VoiceLinesEventArgs(ReferenceHub player, VoiceLinesDefinition voiceLine, bool isAllowed = true)
+        /// <param name="scp3114VoiceLines"><inheritdoc cref="Scp3114VoiceLines" /> </param>
+        /// <param name="voiceLineDefinition"><inheritdoc cref="VoiceLine" /> </param>
+        /// <param name="clipId"><inheritdoc cref="ClipId" /> </param>
+        /// <param name="isAllowed"><inheritdoc cref="IsAllowed" /></param>
+        public VoiceLinesEventArgs(PlayerRoles.PlayableScps.Scp3114.Scp3114VoiceLines scp3114VoiceLines, VoiceLinesDefinition voiceLineDefinition, byte clipId, bool isAllowed = true)
         {
-            Player = Player.Get(player);
+            Scp3114VoiceLines = scp3114VoiceLines;
+            Player = Player.Get(scp3114VoiceLines.Owner);
             Scp3114 = Player.Role.As<Scp3114Role>();
-            VoiceLine = voiceLine;
+            VoiceLine = voiceLineDefinition;
+            ClipId = clipId;
             IsAllowed = isAllowed;
         }
 
@@ -46,9 +43,51 @@ namespace Exiled.Events.EventArgs.Scp3114
         public Scp3114Role Scp3114 { get; }
 
         /// <summary>
+        /// Gets the <see cref="PlayerRoles.PlayableScps.Scp3114.Scp3114VoiceLines" />.
+        /// </summary>
+        public PlayerRoles.PlayableScps.Scp3114.Scp3114VoiceLines Scp3114VoiceLines { get; }
+
+        /// <summary>
         /// Gets or sets the <see cref="VoiceLinesDefinition" />.
         /// </summary>
         public VoiceLinesDefinition VoiceLine { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="PlayerRoles.PlayableScps.Scp3114.Scp3114VoiceLines.VoiceLinesName" />.
+        /// </summary>
+        public VoiceLinesName VoiceLinesName
+        {
+            get => VoiceLine.Label;
+            set
+            {
+                if (value == VoiceLine.Label)
+                    return;
+
+                foreach (VoiceLinesDefinition voiceLinesDefinition in Scp3114VoiceLines._voiceLines)
+                {
+                    if (voiceLinesDefinition.Label != value)
+                        continue;
+
+                    VoiceLine = voiceLinesDefinition;
+                    return;
+                }
+
+                Log.Error($"[{typeof(VoiceLinesEventArgs)}.{nameof(VoiceLinesName)}] didn't found VoiceLinesName: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="VoiceLinesDefinition" />.
+        /// </summary>
+        public byte ClipId
+        {
+            get => (byte)VoiceLine._lastIndex;
+            set
+            {
+                value = (byte)(value % VoiceLine._order.Count);
+                VoiceLine._lastIndex = value;
+            }
+        }
 
         /// <inheritdoc/>
         public bool IsAllowed { get; set; }

@@ -43,5 +43,10 @@ namespace Exiled.API.Enums
         /// SCP-939 sees another player for a while, after it's out of range.
         /// </summary>
         SeenByLastTime,
+
+        /// <summary>
+        /// SCP-939 sees another player, who is the last human player in the round.
+        /// </summary>
+        SeenByLastHuman,
     }
 }

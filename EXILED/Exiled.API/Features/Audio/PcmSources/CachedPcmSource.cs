@@ -47,38 +47,6 @@ namespace Exiled.API.Features.Audio.PcmSources
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CachedPcmSource"/> class. Fetches cached audio or loads a local WAV file into the cache if not present.
-        /// </summary>
-        /// <param name="name">The custom name/key to assign to this audio in the cache.</param>
-        /// <param name="path">The absolute path to the local audio file.</param>
-        public CachedPcmSource(string name, string path)
-        {
-            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(path))
-            {
-                Log.Error($"[CachedPcmSource] Cannot initialize CachedPcmSource. Invalid name: '{name}' or path: '{path}'.");
-                throw new ArgumentException("Name or path cannot be null or empty.");
-            }
-
-            if (!AudioDataStorage.AudioStorage.ContainsKey(name))
-            {
-                if (!AudioDataStorage.AddWav(name, path))
-                {
-                    Log.Error($"[CachedPcmSource] Failed to load local file '{path}' into cache under the name '{name}'.");
-                    throw new FileNotFoundException($"Failed to cache and load '{path}'.");
-                }
-            }
-
-            if (!AudioDataStorage.AudioStorage.TryGetValue(name, out AudioData cachedAudio))
-            {
-                Log.Error($"[CachedPcmSource] Audio with name '{name}' could not be retrieved from storage after adding.");
-                throw new InvalidOperationException($"Failed to retrieve '{name}' from storage after caching.");
-            }
-
-            data = cachedAudio.Pcm;
-            TrackInfo = cachedAudio.TrackInfo;
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="CachedPcmSource"/> class by fetching cached audio or injecting raw PCM samples into the cache if not present.
         /// </summary>
         /// <param name="name">The custom name/key to assign to this audio in the cache.</param>
@@ -110,37 +78,23 @@ namespace Exiled.API.Features.Audio.PcmSources
             TrackInfo = cachedAudio.TrackInfo;
         }
 
-        /// <summary>
-        /// Gets the metadata of the loaded track.
-        /// </summary>
+        /// <inheritdoc/>
         public TrackData TrackInfo { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the end of the PCM data buffer has been reached.
-        /// </summary>
+        /// <inheritdoc/>
         public bool Ended => pos >= data.Length;
 
-        /// <summary>
-        /// Gets the total duration of the audio in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double TotalDuration => (double)data.Length / VoiceChatSettings.SampleRate;
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
             get => (double)pos / VoiceChatSettings.SampleRate;
             set => Seek(value);
         }
 
-        /// <summary>
-        /// Reads a sequence of PCM samples from the cached buffer into the specified array.
-        /// </summary>
-        /// <param name="buffer">The destination array.</param>
-        /// <param name="offset">The index to start writing.</param>
-        /// <param name="count">The maximum number of samples to read.</param>
-        /// <returns>The actual number of samples read.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
             int read = Math.Min(count, data.Length - pos);
@@ -150,23 +104,15 @@ namespace Exiled.API.Features.Audio.PcmSources
             return read;
         }
 
-        /// <summary>
-        /// Seeks to the specified position in seconds.
-        /// </summary>
-        /// <param name="seconds">The target position in seconds.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
             long targetIndex = (long)(seconds * VoiceChatSettings.SampleRate);
             pos = (int)Math.Max(0, Math.Min(targetIndex, data.Length));
         }
 
-        /// <summary>
-        /// Resets the read position to the beginning of the PCM data buffer.
-        /// </summary>
-        public void Reset()
-        {
-            pos = 0;
-        }
+        /// <inheritdoc/>
+        public void Reset() => pos = 0;
 
         /// <inheritdoc/>
         public void Dispose()
