@@ -39,9 +39,9 @@ namespace Exiled.Events.EventArgs.Player
         }
 
         /// <summary>
-        /// Gets or sets the player that the hitmarker is being shown to.
+        /// Gets the player that the hitmarker is being shown to.
         /// </summary>
-        public Player Player { get; set; }
+        public Player Player { get; }
 
         /// <summary>
         /// Gets or sets the target size multiplier.
