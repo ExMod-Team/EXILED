@@ -1935,10 +1935,7 @@ namespace Exiled.API.Features
         /// This method can be further optimized by only using static RoleData instances in your Funcs.
         /// </para>
         /// </remarks>
-        public void SetAppearance(Func<Player, RoleData> generator)
-        {
-            FakeRoleGenerator.Add(generator);
-        }
+        public void SetAppearance(Func<Player, RoleData> generator) => FakeRoleGenerator.Add(generator);
 
         /// <summary>
         /// Fakes this players role to other viewers.
@@ -1963,9 +1960,7 @@ namespace Exiled.API.Features
         /// <param name="authority">How to handle edge cases.</param>
         /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
         public void SetAppearance(Player player, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte unitId = 0)
-        {
-            FakeRoles[player] = new RoleData(fakeRole, authority, unitId);
-        }
+            => FakeRoles[player] = new RoleData(fakeRole, authority, unitId);
 
         /// <summary>
         /// Forces the player's client to play the weapon reload animation, bypassing server-side checks.
