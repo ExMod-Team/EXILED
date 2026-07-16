@@ -226,7 +226,16 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="elevator">The <see cref="ElevatorChamber"/> instance.</param>
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
-        public static Lift Get(ElevatorChamber elevator) => ElevatorChamberToLift.TryGetValue(elevator, out Lift lift) ? lift : new(elevator);
+        public static Lift Get(ElevatorChamber elevator)
+        {
+            if (elevator == null)
+                return null;
+
+            if (ElevatorChamberToLift.TryGetValue(elevator, out Lift lift))
+                return lift;
+
+            return new(elevator);
+        }
 
         /// <summary>
         /// Gets the <see cref="Lift"/> corresponding to the specified <see cref="ElevatorType"/>, if any.
@@ -254,7 +263,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="gameObject">The <see cref="UnityEngine.GameObject"/>.</param>
         /// <returns>A <see cref="Lift"/> or <see langword="null"/> if not found.</returns>
-        public static Lift Get(GameObject gameObject) => Get(lift => lift.GameObject == gameObject).FirstOrDefault();
+        public static Lift Get(GameObject gameObject) => !gameObject ? null : Get(gameObject.GetComponentInParent<ElevatorChamber>(false));
 
         /// <summary>
         /// Gets the <see cref="Lift"/> belonging to the <see cref="Vector3"/>, if any.

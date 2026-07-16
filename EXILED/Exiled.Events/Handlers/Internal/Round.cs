@@ -26,7 +26,10 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.Loader;
     using Exiled.Loader.Features;
 
+    using global::Scp914.Processors;
+
     using InventorySystem;
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
@@ -49,6 +52,7 @@ namespace Exiled.Events.Handlers.Internal
         public static void OnWaitingForPlayers()
         {
             GenerateAttachments();
+            AddMissingScp914Processors();
             MultiAdminFeatures.CallEvent(MultiAdminFeatures.EventType.WAITING_FOR_PLAYERS);
 
             if (Events.Instance.Config.ShouldReloadConfigsAtRoundRestart)
@@ -174,6 +178,31 @@ namespace Exiled.Events.Handlers.Internal
 
                 ListPool<AttachmentIdentifier>.Pool.Return(attachmentIdentifiers);
                 HashSetPool<AttachmentSlot>.Pool.Return(attachmentsSlots);
+            }
+        }
+
+        private static void AddMissingScp914Processors()
+        {
+            foreach (KeyValuePair<ItemType, ItemBase> entry in InventoryItemLoader.AvailableItems)
+            {
+                ItemType itemType = entry.Key;
+                ItemBase item = entry.Value;
+
+                if (item is null || item.TryGetComponent<Scp914ItemProcessor>(out _))
+                {
+                    continue;
+                }
+
+                ItemType[] outputs = new[] { itemType };
+
+                StandardItemProcessor processor = item.gameObject.AddComponent<StandardItemProcessor>();
+
+                processor._roughOutputs = outputs;
+                processor._coarseOutputs = outputs;
+                processor._oneToOneOutputs = outputs;
+                processor._fineOutputs = outputs;
+                processor._veryFineOutputs = outputs;
+                processor._fireUpgradeTrigger = false;
             }
         }
     }

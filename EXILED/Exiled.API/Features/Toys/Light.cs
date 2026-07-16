@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System.Linq;
-
     using AdminToys;
 
     using Enums;
@@ -176,17 +174,6 @@ namespace Exiled.API.Features.Toys
                 toy.Spawn();
 
             return toy;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Light"/> belonging to the <see cref="LightSourceToy"/>.
-        /// </summary>
-        /// <param name="lightSourceToy">The <see cref="LightSourceToy"/> instance.</param>
-        /// <returns>The corresponding <see cref="LightSourceToy"/> instance.</returns>
-        public static Light Get(LightSourceToy lightSourceToy)
-        {
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
-            return adminToy is not null ? adminToy as Light : new(lightSourceToy);
         }
     }
 }

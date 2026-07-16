@@ -9,7 +9,6 @@ namespace Exiled.API.Features.Toys
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Enums;
 
@@ -184,20 +183,6 @@ namespace Exiled.API.Features.Toys
                 toy.Spawn();
 
             return toy;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="ShootingTargetToy"/> belonging to the <see cref="ShootingTarget"/>.
-        /// </summary>
-        /// <param name="shootingTarget">The <see cref="ShootingTarget"/> instance.</param>
-        /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
-        public static ShootingTargetToy Get(ShootingTarget shootingTarget)
-        {
-            if (shootingTarget == null)
-                return null;
-
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == shootingTarget);
-            return adminToy is not null ? adminToy as ShootingTargetToy : new(shootingTarget);
         }
 
         /// <summary>

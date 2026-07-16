@@ -22,7 +22,10 @@ namespace Exiled.API.Extensions
 
     using CustomPlayerEffects;
 
+    using Decals;
+
     using Exiled.API.Enums;
+    using Exiled.API.Features.Items;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups.Keycards;
 
@@ -41,7 +44,6 @@ namespace Exiled.API.Extensions
     using Mirror;
 
     using PlayerRoles;
-    using PlayerRoles.Blood;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Scp1507;
@@ -55,6 +57,8 @@ namespace Exiled.API.Extensions
     using UnityEngine;
 
     using Utils.Networking;
+
+    using Firearm = Features.Items.Firearm;
 
     /// <summary>
     /// A set of extensions for <see cref="Mirror"/> Networking.
@@ -210,103 +214,233 @@ namespace Exiled.API.Extensions
         /// Plays a gun sound that only the <paramref name="player"/> can hear.
         /// </summary>
         /// <param name="player">Target to play.</param>
-        /// <param name="position">Position to play on.</param>
         /// <param name="firearmType">Weapon's sound to play.</param>
-        /// <param name="pitch">Speed of sound.</param>
         /// <param name="clipIndex">Index of clip.</param>
-        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0)
+        /// <param name="position">Position to play on.</param>
+        /// <param name="mixerChannel">Audio's mixer channel.</param>
+        /// <param name="range">Max range of sound.</param>
+        /// <param name="pitch">Speed of sound.</param>
+        public static void PlayGunSound(this Player player, FirearmType firearmType, int clipIndex, Vector3 position, MixerChannel mixerChannel = MixerChannel.Weapons, float? range = null, float? pitch = null)
         {
-            if (firearmType is FirearmType.ParticleDisruptor or FirearmType.None)
+            if (firearmType is FirearmType.None)
+            {
+                Log.Error($"Failed to play gun sound for player {player.Nickname} because firearm type was None.");
                 return;
+            }
 
-            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[firearmType];
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to get ItemBase for firearm type {firearmType} when trying to play gun sound for player {player.Nickname}");
+                return;
+            }
 
+            Firearm firearm = Item.Get<Firearm>(itemBase);
             if (firearm == null)
+            {
+                Log.Error($"Failed to get Firearm for firearm type {firearmType} when trying to play gun sound.");
                 return;
+            }
 
             using (NetworkWriterPooled writer = NetworkWriterPool.Get())
             {
                 writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
-                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub, null).Write(writer);
+                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.Tutorial, player.ReferenceHub, null).Write(writer);
                 writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
                 writer.WriteUShort(0);
                 player.Connection.Send(writer);
             }
 
-            firearm.BarrelAmmo = 1;
-            firearm.BarrelMagazine.IsCocked = true;
             player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
 
-            if (!firearm.Base.TryGetModule(out AudioModule audioModule))
-                return;
-
-            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
+            Timing.CallDelayed(0.1f, () =>
             {
-                audioModule.SendRpc(player.ReferenceHub, writer =>
-                    audioModule.ServerSend(writer, clipIndex, pitch, MixerChannel.Weapons, 12f, position, false));
+                if (!player.IsConnected)
+                    return;
 
+                firearm.PlaySound(player, clipIndex, mixerChannel, position, shooterVisible: false, range, pitch);
                 player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
-
                 player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub, null));
             });
         }
 
         /// <summary>
-        /// Place blood that only the <paramref name="player"/> can see.
+        /// Plays a gun sound to the specified player.
         /// </summary>
-        /// <param name="player">Target to play.</param>
-        /// <param name="position">The position of the blood decal.</param>
-        /// <param name="origin">The direction of the blood decal.</param>
-        /// <param name="roleTypeId">The RoleTypeId from who blood come from.</param>
-        /// <param name="gettingShotSoundIndex">The sound than player get when getting shot.</param>
-#pragma warning disable IDE0060 // TODO: Deleted the unused param
-        public static void PlaceBlood(this Player player, Vector3 position, Vector3 origin, RoleTypeId roleTypeId, int gettingShotSoundIndex)
-#pragma warning restore IDE0060
+        /// <param name="firearm">The firearm whose <see cref="AudioModule"/> to use.</param>
+        /// <param name="target">The player to send the sound to.</param>
+        /// <param name="index">The index of the audio clip to play.</param>
+        /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
+        /// <param name="position">The world position the sound originates from.</param>
+        /// <param name="shooterVisible">Whether the shooter is visible to the target. If <see langword="false"/>, the sound will be played at <paramref name="position"/> instead of on the firearm's transform.</param>
+        /// <param name="range">The range of the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
+        /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
+        public static bool PlaySound(this Firearm firearm, Player target, int index, MixerChannel channel, Vector3 position, bool shooterVisible, float? range = null, float? pitch = null)
         {
-            if (!roleTypeId.TryGetRoleBase(out PlayerRoleBase playerRoleBase) || playerRoleBase is not IBleedableRole)
-                return;
-
-            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[FirearmType.Com15];
-
-            if (firearm == null)
-                return;
-
-            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
+            AudioModule audioModule = firearm.AudioModule;
+            if (audioModule == null)
             {
-                writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
-                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub, null).Write(writer);
-                writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
-                writer.WriteUShort(0);
-                player.Connection.Send(writer);
+                Log.Error($"Firearm {firearm} doesn't have an audio module.");
+                return false;
             }
 
-            player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
-
-            if (!firearm.Base.TryGetModule(out ImpactEffectsModule impactEffectsModule))
-                return;
-
-            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
+            if (target == null)
             {
-                using (NetworkWriterPooled writer = NetworkWriterPool.Get())
-                {
-#pragma warning disable SA1116 // Split parameters should start on line after declaration
-                    impactEffectsModule.SendRpc(writer =>
-                    {
-                        writer.WriteSubheader(ImpactEffectsModule.RpcType.PlayerHit);
-                        writer.WriteReferenceHub(Server.Host.ReferenceHub);
-                        writer.WriteRelativePosition(new RelativePosition(position));
-                        writer.WriteRelativePosition(new RelativePosition(origin));
-                        writer.WriteByte(255);
-                        writer.WriteRoleType(RoleTypeId.ClassD);
-                    },
-                    true);
-#pragma warning restore SA1116 // Split parameters should start on line after declaration
-                }
+                Log.Error("Target player is null.");
+                return false;
+            }
 
-                player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
+            if (!range.HasValue)
+                range = audioModule.FinalGunshotRange;
 
-                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub, null));
+            if (!pitch.HasValue)
+                pitch = audioModule.RandomPitch;
+
+            audioModule.SendRpc(target.ReferenceHub, writer => audioModule.ServerSend(writer, index, pitch.Value, channel, range.Value, position, shooterVisible));
+            return true;
+        }
+
+        /// <summary>
+        /// Plays a gun sound to the specified players.
+        /// </summary>
+        /// <param name="firearm">The firearm whose <see cref="AudioModule"/> to use.</param>
+        /// <param name="targets">The players to send the sound to.</param>
+        /// <param name="index">The index of the audio clip to play.</param>
+        /// <param name="channel">The <see cref="MixerChannel"/> to play the sound on.</param>
+        /// <param name="position">The world position the sound originates from.</param>
+        /// <param name="shooterVisible">Whether the shooter is visible to the target. If <see langword="false"/>, the sound will be played at <paramref name="position"/> instead of on the firearm's transform.</param>
+        /// <param name="range">The range of the sound.</param>
+        /// <param name="pitch">The pitch of the sound.</param>
+        /// <returns><see langword="true"/> if the sound was played successfully; <see langword="false"/> if <see cref="AudioModule"/> is <see langword="null"/>.</returns>
+        public static bool PlaySound(this Firearm firearm, IEnumerable<Player> targets, int index, MixerChannel channel, Vector3 position, bool shooterVisible, float? range = null, float? pitch = null)
+        {
+            AudioModule audioModule = firearm.AudioModule;
+            if (audioModule == null)
+            {
+                Log.Error($"Firearm {firearm} doesn't have an audio module.");
+                return false;
+            }
+
+            if (targets == null)
+            {
+                Log.Error("Failed to play sound, targets is null.");
+                return false;
+            }
+
+            if (!range.HasValue)
+                range = audioModule.FinalGunshotRange;
+
+            if (!pitch.HasValue)
+                pitch = audioModule.RandomPitch;
+
+            HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
+
+            audioModule.SendRpc(targetHubs.Contains, writer => audioModule.ServerSend(writer, index, pitch.Value, channel, range.Value, position, shooterVisible));
+            return true;
+        }
+
+        /// <summary>
+        /// Spawns a blood decal for this player.
+        /// </summary>
+        /// <param name="player">Target to spawn blood decal for.</param>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnBlood(this Player player, Vector3 position, Vector3 sourcePosition) => SpawnDecal(player, position, sourcePosition, DecalPoolType.Blood);
+
+        /// <summary>
+        /// Spawns a blood decal for the specified players.
+        /// </summary>
+        /// <param name="players">The players for which to spawn the blood decal.</param>
+        /// <param name="position">The position of the blood decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnBlood(this IEnumerable<Player> players, Vector3 position, Vector3 sourcePosition) => SpawnDecal(players, position, sourcePosition, DecalPoolType.Blood, FirearmType.Com15);
+
+        /// <summary>
+        /// Spawns a decal for this player.
+        /// </summary>
+        /// <param name="player">Target to spawn decal for.</param>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnDecal(this Player player, Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = Item.Get<Firearm>(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            impactEffectsModule.SendRpc(player.ReferenceHub, writer =>
+            {
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
             });
+
+            return true;
+        }
+
+        /// <summary>
+        /// Spawns a decal for the specified targets.
+        /// </summary>
+        /// <param name="targets">The targets for which to spawn the decal.</param>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnDecal(this IEnumerable<Player> targets, Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = Item.Get<Firearm>(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            HashSet<ReferenceHub> targetHubs = targets.Select(p => p.ReferenceHub).ToHashSet();
+
+            impactEffectsModule.SendRpc(targetHubs.Contains, writer =>
+            {
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
+            });
+
+            return true;
         }
 
         /// <summary>

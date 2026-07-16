@@ -49,6 +49,7 @@ namespace Exiled.API.Features
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Firearms.Attachments;
+    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Usables;
@@ -1364,7 +1365,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="sender">The command sender.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(CommandSender sender) => Get(sender.SenderId);
+        public static Player Get(CommandSender sender) => sender is null ? null : Get(sender.SenderId);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to the <see cref="global::ReferenceHub"/>, if any.
@@ -1388,7 +1389,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="collider"><see cref="Collider"/>.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(Collider collider) => Get(collider.transform.root.gameObject);
+        public static Player Get(Collider collider) => Get(collider?.gameObject);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to a specific netId, if any.
@@ -1402,14 +1403,14 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="netIdentity">The player's <see cref="Mirror.NetworkIdentity"/>.</param>
         /// <returns>The <see cref="Player"/> owning the <see cref="Mirror.NetworkIdentity"/>, or <see langword="null"/> if not found.</returns>
-        public static Player Get(NetworkIdentity netIdentity) => Get(netIdentity.netId);
+        public static Player Get(NetworkIdentity netIdentity) => !netIdentity ? null : Get(netIdentity.netId);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to a specific <see cref="NetworkConnection"/>, if any.
         /// </summary>
         /// <param name="conn">The player's <see cref="NetworkConnection"/>.</param>
         /// <returns>The <see cref="Player"/> owning the <see cref="NetworkConnection"/>, or <see langword="null"/> if not found.</returns>
-        public static Player Get(NetworkConnection conn) => Get(conn.identity);
+        public static Player Get(NetworkConnection conn) => Get(conn?.identity);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to the <see cref="UnityEngine.GameObject"/>, if any.
@@ -1429,6 +1430,9 @@ namespace Exiled.API.Features
 
             if (ReferenceHub.TryGetHub(gameObject, out ReferenceHub hub))
                 return new(hub);
+
+            if (gameObject.GetComponentInChildren<HitboxIdentity>(false) is HitboxIdentity hitboxIdentity)
+                return Get(hitboxIdentity.TargetHub);
 
             return null;
         }
@@ -3847,9 +3851,23 @@ namespace Exiled.API.Features
             Connection.Send(new RoundRestartMessage(roundRestartType, delay, newPort, reconnect, false));
         }
 
-        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, FirearmType, float, int)"/>
-        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
-            this.PlayGunSound(Position, itemType, pitch, clipIndex);
+        /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
+        public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
+
+        /// <summary>
+        /// Sends a damage indicator to player.
+        /// </summary>
+        /// <param name="dmgDealt">The amount of damage dealt. Controls the size of the damage indicator.</param>
+        /// <param name="position">The world position the damage originated from.</param>
+        /// <param name="sendSpectatorsToo">If true, spectators watching this player will also see the indicator.</param>
+        public void SendHitEffect(float dmgDealt, Vector3 position, bool sendSpectatorsToo = true)
+        {
+            DamageIndicatorMessage damageIndicatorMessage = new(dmgDealt, position);
+            if (!sendSpectatorsToo)
+                Connection.Send(damageIndicatorMessage);
+            else
+                damageIndicatorMessage.SendToSpectatorsOf(ReferenceHub, true);
+        }
 
         /// <inheritdoc cref="Map.GetNearCameras(Vector3, float)"/>
         public IEnumerable<Camera> GetNearCameras(float toleration = 15f) => Map.GetNearCameras(Position, toleration);
@@ -3864,8 +3882,7 @@ namespace Exiled.API.Features
         /// Teleports the player to the given object, with no offset.
         /// </summary>
         /// <param name="obj">The object to teleport to.</param>
-        public void Teleport(object obj)
-            => Teleport(obj, Vector3.zero);
+        public void Teleport(object obj) => Teleport(obj, Vector3.zero);
 
         /// <summary>
         /// Teleports the player to the given object, offset by the defined offset value.

@@ -49,5 +49,10 @@ namespace Exiled.API.Enums
         /// Used by <see cref="ItemType.GunRevolver"/>.
         /// </summary>
         Ammo44Cal,
+
+        /// <summary>
+        /// Custom has been modified by a plugin
+        /// </summary>
+        Custom,
     }
 }

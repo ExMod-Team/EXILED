@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System.Linq;
-
     using AdminToys;
 
     using Enums;
@@ -147,17 +145,6 @@ namespace Exiled.API.Features.Toys
                 toy.Spawn();
 
             return toy;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="Primitive"/> belonging to the <see cref="PrimitiveObjectToy"/>.
-        /// </summary>
-        /// <param name="primitiveObjectToy">The <see cref="PrimitiveObjectToy"/> instance.</param>
-        /// <returns>The corresponding <see cref="Primitive"/> instance.</returns>
-        public static Primitive Get(PrimitiveObjectToy primitiveObjectToy)
-        {
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == primitiveObjectToy);
-            return adminToy is not null ? adminToy as Primitive : new(primitiveObjectToy);
         }
     }
 }
