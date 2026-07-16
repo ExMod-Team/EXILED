@@ -1442,6 +1442,7 @@ namespace Exiled.Events.Handlers
             labEv.Size = ev.Size;
             labEv.PlayAudio = ev.ShouldPlayAudio;
             labEv.Hitmarker = ev.HitmarkerType;
+            labEv.IsAllowed = ev.IsAllowed;
         }
 
         /// <summary>
