@@ -30,12 +30,16 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="hitmarkerType">
         /// <inheritdoc cref="HitmarkerType" />
         /// </param>
-        public ShowingHitMarkerEventArgs(ReferenceHub hub, float size, bool shouldPlayAudio, HitmarkerType hitmarkerType)
+        /// <param name="isAllowed">
+        /// <inheritdoc cref="IsAllowed" />
+        /// </param>
+        public ShowingHitMarkerEventArgs(ReferenceHub hub, float size, bool shouldPlayAudio, HitmarkerType hitmarkerType, bool isAllowed)
         {
             Player = Player.Get(hub);
             Size = size;
             ShouldPlayAudio = shouldPlayAudio;
             HitmarkerType = hitmarkerType;
+            IsAllowed = isAllowed;
         }
 
         /// <summary>
@@ -61,6 +65,6 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets or sets a value indicating whether the hitmarker should be shown.
         /// </summary>
-        public bool IsAllowed { get; set; } = true;
+        public bool IsAllowed { get; set; }
     }
 }
