@@ -13,6 +13,8 @@ namespace Exiled.Events.EventArgs.Scp939
 
     using Interfaces;
 
+    using PlayerRoles.PlayableScps.HumanTracker;
+
     /// <summary>
     /// Contains all information before SCP-939 sees the player.
     /// </summary>
@@ -35,7 +37,11 @@ namespace Exiled.Events.EventArgs.Scp939
             Player = Player.Get(player);
             Scp939 = Player.Role.As<Scp939Role>();
             Target = Player.Get(target);
-            TargetVisibilityState = state;
+            TargetVisibilityState = state switch
+            {
+                Scp939VisibilityState.SeenByDetonation when !Warhead.IsDetonated && LastHumanTracker.IsLastTarget(target) => Scp939VisibilityState.SeenByLastHuman,
+                _ => state,
+            };
             IsAllowed = TargetVisibilityState is not (Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
             IsLateSeen = TargetVisibilityState is Scp939VisibilityState.SeenByRange;
         }

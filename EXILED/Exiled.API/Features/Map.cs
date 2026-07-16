@@ -27,6 +27,9 @@ namespace Exiled.API.Features
     using Interactables.Interobjects;
 
     using InventorySystem;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Autosync;
+    using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
 
@@ -36,7 +39,11 @@ namespace Exiled.API.Features
 
     using MapGeneration;
 
+    using Mirror;
+
     using PlayerRoles.Ragdolls;
+
+    using RelativePositioning;
 
     using RemoteAdmin;
 
@@ -300,7 +307,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Forces the light containment zone decontamination process.
         /// </summary>
-        public static void StartDecontamination() => DecontaminationController.Singleton.FinishDecontamination();
+        public static void StartDecontamination() => DecontaminationController.Singleton.DecontaminationOverride = DecontaminationController.DecontaminationStatus.Forced;
 
         /// <summary>
         /// Turns on all lights in the facility.
@@ -436,12 +443,64 @@ namespace Exiled.API.Features
         public static void Clean(DecalPoolType decalType) => Clean(decalType, int.MaxValue);
 
         /// <summary>
-        /// Places a blood decal.
+        /// Places a blood decal using a raycast.
+        /// </summary>
+        /// <param name="position">The origin position of the raycast.</param>
+        /// <param name="direction">The direction in which the raycast is fired to detect a surface.</param>
+        public static void PlaceBlood(Vector3 position, Vector3 direction)
+        {
+            if (Physics.Raycast(position, direction, out RaycastHit hitInfo, ImpactEffectsModule.ReceivingLayers))
+                SpawnBlood(hitInfo.point + (hitInfo.normal * Decal.SurfaceDistance), -hitInfo.normal);
+        }
+
+        /// <summary>
+        /// Spawns a blood decal.
         /// </summary>
         /// <param name="position">The position of the blood decal.</param>
-        /// <param name="direction">The direction of the blood decal.</param>
-        [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
-        public static void PlaceBlood(Vector3 position, Vector3 direction) => _ = 0;
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <returns><see langword="true"/> if the blood decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnBlood(Vector3 position, Vector3 sourcePosition) => SpawnDecal(position, sourcePosition, DecalPoolType.Blood, FirearmType.Com15);
+
+        /// <summary>
+        /// Spawns a decal.
+        /// </summary>
+        /// <param name="position">The position of the decal.</param>
+        /// <param name="sourcePosition">The raycast origin used to determine the decal's orientation.</param>
+        /// <param name="decalType">The <see cref="Decals.DecalPoolType"/>.</param>
+        /// <param name="firearmType">The <see cref="Enums.FirearmType"/> to use.</param>
+        /// <returns><see langword="true"/> if the decal was successfully spawned; otherwise, <see langword="false"/>.</returns>
+        public static bool SpawnDecal(Vector3 position, Vector3 sourcePosition, DecalPoolType decalType, FirearmType firearmType = FirearmType.Com15)
+        {
+            if (!InventoryItemLoader.TryGetItem(firearmType.GetItemType(), out ItemBase itemBase))
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            Firearm firearm = Item.Get<Firearm>(itemBase);
+            if (firearm == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find a Firearm for {firearmType}.");
+                return false;
+            }
+
+            ImpactEffectsModule impactEffectsModule = firearm.ImpactEffectsModule;
+            if (impactEffectsModule == null)
+            {
+                Log.Error($"Failed to spawn decal: Could not find an ImpactEffectsModule for {firearmType}.");
+                return false;
+            }
+
+            impactEffectsModule.SendRpc(writer =>
+            {
+                writer.WriteSubheader(ImpactEffectsModule.RpcType.ImpactDecal);
+                writer.WriteByte((byte)decalType);
+                writer.WriteRelativePosition(new RelativePosition(position));
+                writer.WriteRelativePosition(new RelativePosition(sourcePosition));
+            });
+
+            return true;
+        }
 
         /// <summary>
         /// Gets all the near cameras.

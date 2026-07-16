@@ -103,7 +103,16 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="baseCoffee">The <see cref="BaseCoffee"/> instance.</param>
         /// <returns>The <see cref="Coffee"/> instance.</returns>
-        public static Coffee Get(BaseCoffee baseCoffee) => BaseToWrapper.TryGetValue(baseCoffee, out Coffee coffee) ? coffee : new(baseCoffee);
+        public static Coffee Get(BaseCoffee baseCoffee)
+        {
+            if (baseCoffee == null)
+                return null;
+
+            if (BaseToWrapper.TryGetValue(baseCoffee, out Coffee coffee))
+                return coffee;
+
+            return new(baseCoffee);
+        }
 
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of <see cref="Coffee"/> matching the condition.

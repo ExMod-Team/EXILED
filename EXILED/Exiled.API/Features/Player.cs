@@ -9,9 +9,12 @@ namespace Exiled.API.Features
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
+
+    using AudioPooling;
 
     using Core;
 
@@ -48,6 +51,7 @@ namespace Exiled.API.Features
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Firearms.Attachments;
+    using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Usables;
@@ -64,6 +68,7 @@ namespace Exiled.API.Features
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
+    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
@@ -75,6 +80,8 @@ namespace Exiled.API.Features
     using RemoteAdmin;
 
     using RoundRestarting;
+
+    using Unity.Collections.LowLevel.Unsafe;
 
     using UnityEngine;
 
@@ -856,6 +863,67 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the player's wearable elements.
+        /// </summary>
+        /// <seealso cref="EnableWearables"/> <seealso cref="DisableWearables"/>
+        public WearableElementType Wearables
+        {
+            get
+            {
+                if (!WearableSync.TryGetData(ReferenceHub, out WearableSyncMessage data))
+                    return WearableElementType.None;
+
+                WearableElements flags = data.Flags;
+                WearableElementType exiledFlags = WearableElementType.None;
+
+                if (flags.HasFlag(WearableElements.Armor) && data.Payload.Length is 1)
+                {
+                    ItemType armor = (ItemType)UnsafeUtility.As<byte, sbyte>(ref data.Payload[0]);
+
+                    exiledFlags = armor.GetWearableElementType();
+                }
+
+                return (WearableElementType)flags | exiledFlags;
+            }
+
+            set
+            {
+                if (value is WearableElementType.None)
+                {
+                    Log.Info("None");
+
+                    WearableSyncMessage wearableSyncMessage = new(ReferenceHub);
+                    WearableSync.UpdateDatabaseEntry(wearableSyncMessage);
+                    NetworkServer.SendToAll(wearableSyncMessage, 0, false);
+                    return;
+                }
+
+                WearableSync.PayloadWriter.Reset();
+                Log.Info("newWearables" + value);
+
+                if (value.HasFlag(WearableElementType.ArmorDefault))
+                {
+                    ItemType displayedArmor = value.HasFlag(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
+                        value.HasFlag(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
+                        value.HasFlag(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
+                        CurrentArmor?.Type ?? ItemType.None;
+
+                    if (displayedArmor is not ItemType.None)
+                        WearableSync.PayloadWriter.WriteSByte((sbyte)displayedArmor);
+                    else
+                        value &= ~WearableElementType.ArmorDefault;
+
+                    value &= ~WearableElementType.ArmorLight | WearableElementType.ArmorCombat | WearableElementType.ArmorHeavy;
+                    Log.Info("DiplayedArmor" + displayedArmor);
+                }
+
+                WearableSyncMessage wearableSyncMessage2 = new(ReferenceHub, (WearableElements)value, WearableSync.PayloadWriter);
+                WearableSync.UpdateDatabaseEntry(wearableSyncMessage2);
+                NetworkServer.SendToAll(wearableSyncMessage2, 0, false);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the player is transmitting on a Radio.
         /// </summary>
         public bool IsTransmitting => PersonalRadioPlayback.IsTransmitting(ReferenceHub);
@@ -954,7 +1022,7 @@ namespace Exiled.API.Features
                 if (!ActiveArtificialHealthProcesses.Any())
                     AddAhp(value);
 
-                AhpStat.AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
+                AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
 
                 ahp?.Limit = value;
             }
@@ -991,7 +1059,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
         /// </summary>
-        public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
+        public IEnumerable<AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
 
         /// <summary>
         /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
@@ -1307,7 +1375,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="sender">The command sender.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(CommandSender sender) => Get(sender.SenderId);
+        public static Player Get(CommandSender sender) => sender is null ? null : Get(sender.SenderId);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to the <see cref="global::ReferenceHub"/>, if any.
@@ -1331,7 +1399,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="collider"><see cref="Collider"/>.</param>
         /// <returns>A <see cref="Player"/> or <see langword="null"/> if not found.</returns>
-        public static Player Get(Collider collider) => Get(collider.transform.root.gameObject);
+        public static Player Get(Collider collider) => Get(collider?.gameObject);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to a specific netId, if any.
@@ -1345,14 +1413,14 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="netIdentity">The player's <see cref="Mirror.NetworkIdentity"/>.</param>
         /// <returns>The <see cref="Player"/> owning the <see cref="Mirror.NetworkIdentity"/>, or <see langword="null"/> if not found.</returns>
-        public static Player Get(NetworkIdentity netIdentity) => Get(netIdentity.netId);
+        public static Player Get(NetworkIdentity netIdentity) => !netIdentity ? null : Get(netIdentity.netId);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to a specific <see cref="NetworkConnection"/>, if any.
         /// </summary>
         /// <param name="conn">The player's <see cref="NetworkConnection"/>.</param>
         /// <returns>The <see cref="Player"/> owning the <see cref="NetworkConnection"/>, or <see langword="null"/> if not found.</returns>
-        public static Player Get(NetworkConnection conn) => Get(conn.identity);
+        public static Player Get(NetworkConnection conn) => Get(conn?.identity);
 
         /// <summary>
         /// Gets the <see cref="Player"/> belonging to the <see cref="UnityEngine.GameObject"/>, if any.
@@ -1372,6 +1440,9 @@ namespace Exiled.API.Features
 
             if (ReferenceHub.TryGetHub(gameObject, out ReferenceHub hub))
                 return new(hub);
+
+            if (gameObject.GetComponentInChildren<HitboxIdentity>(false) is HitboxIdentity hitboxIdentity)
+                return Get(hitboxIdentity.TargetHub);
 
             return null;
         }
@@ -2573,6 +2644,20 @@ namespace Exiled.API.Features
         /// Clears the player's brodcast. Doesn't get logged to the console.
         /// </summary>
         public void ClearBroadcasts() => Server.Broadcast.TargetClearElements(Connection);
+
+        /// <summary>
+        /// Enables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to enable.</param>
+        /// <seealso cref="DisableWearables"/>
+        public void EnableWearables(WearableElementType wearableElements) => Wearables |= wearableElements;
+
+        /// <summary>
+        /// Disables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to disable.</param>
+        /// <seealso cref="EnableWearables"/>
+        public void DisableWearables(WearableElementType wearableElements) => Wearables &= ~wearableElements;
 
         /// <summary>
         /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to the player's inventory.
@@ -3778,8 +3863,8 @@ namespace Exiled.API.Features
         /// <param name="efficacy">Percent of incoming damage absorbed by this stat.</param>
         /// <param name="sustain">The number of seconds to delay the start of the decay.</param>
         /// <param name="persistant">Whether the process is removed when the value hits 0.</param>
-        /// <returns>The <see cref="AhpStat.AhpProcess"/> instance..</returns>
-        public AhpStat.AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
+        /// <returns>The <see cref="AhpProcess"/> instance..</returns>
+        public AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
         {
             return ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
@@ -3827,13 +3912,28 @@ namespace Exiled.API.Features
         public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0)
             => PlayGunSound(type.GetFirearmType(), volume, audioClipId);
 
-        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, FirearmType, float, int)"/>
-        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0) =>
-            this.PlayGunSound(Position, itemType, pitch, clipIndex);
+        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, FirearmType, int, Vector3, MixerChannel, float?, float?)"/>
+        [Obsolete("Use Player::PlayGunSound(FirearmType, int, Vector3, MixerChannel, float?, float?) instead of this.")]
+        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0)
+            => this.PlayGunSound(itemType, clipIndex, Position, pitch: pitch);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
-        [Obsolete("Use PlaceBlood(this Player, Vector3, Vector3, RoleTypeId, int) instead.")]
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);
+
+        /// <summary>
+        /// Sends a damage indicator to player.
+        /// </summary>
+        /// <param name="dmgDealt">The amount of damage dealt. Controls the size of the damage indicator.</param>
+        /// <param name="position">The world position the damage originated from.</param>
+        /// <param name="sendSpectatorsToo">If true, spectators watching this player will also see the indicator.</param>
+        public void SendHitEffect(float dmgDealt, Vector3 position, bool sendSpectatorsToo = true)
+        {
+            DamageIndicatorMessage damageIndicatorMessage = new(dmgDealt, position);
+            if (!sendSpectatorsToo)
+                Connection.Send(damageIndicatorMessage);
+            else
+                damageIndicatorMessage.SendToSpectatorsOf(ReferenceHub, true);
+        }
 
         /// <inheritdoc cref="Map.GetNearCameras(Vector3, float)"/>
         public IEnumerable<Camera> GetNearCameras(float toleration = 15f) => Map.GetNearCameras(Position, toleration);
@@ -3848,8 +3948,7 @@ namespace Exiled.API.Features
         /// Teleports the player to the given object, with no offset.
         /// </summary>
         /// <param name="obj">The object to teleport to.</param>
-        public void Teleport(object obj)
-            => Teleport(obj, Vector3.zero);
+        public void Teleport(object obj) => Teleport(obj, Vector3.zero);
 
         /// <summary>
         /// Teleports the player to the given object, offset by the defined offset value.
@@ -4045,6 +4144,64 @@ namespace Exiled.API.Features
             component = GetComponent<T>(type);
 
             return component is not null;
+        }
+
+        /// <summary>
+        /// Tries to raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="layerMasks">Layer masks to be applied to raycast.</param>
+        /// <param name="hit">Calculated <see cref="RaycastHit"/> or <c>default</c>.</param>
+        /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycast(float maxDistance, LayerMasks layerMasks, out RaycastHit hit)
+        {
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
+
+            bool result = Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, (int)layerMasks);
+
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="hitboxIdentity">Found <see cref="HitboxIdentity"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="hitboxIdentity"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycastedHitbox(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out HitboxIdentity hitboxIdentity)
+        {
+            hitboxIdentity = null;
+
+            if (TryGetRaycast(maxDistance, LayerMasks.Hitbox | additionalMasks, out RaycastHit hit))
+                hitboxIdentity = hit.collider.gameObject.GetComponent<HitboxIdentity>();
+
+            return hitboxIdentity != null;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="Player"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="target">Found <see cref="Player"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="target"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedHitbox"/>
+        public bool TryGetRaycastedPlayer(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out Player target)
+        {
+            target = null;
+
+            if (!TryGetRaycastedHitbox(maxDistance, additionalMasks, out HitboxIdentity hitboxIdentity))
+                return false;
+
+            target = Get(hitboxIdentity.TargetHub);
+            return target != null;
         }
 
         /// <inheritdoc/>
