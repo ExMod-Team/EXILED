@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Audio.PcmSources
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     using Exiled.API.Features.Audio;
@@ -21,36 +22,15 @@ namespace Exiled.API.Features.Audio.PcmSources
     /// </summary>
     public sealed class PreloadedPcmSource : IPcmSource, IAsyncPcmSource
     {
-        private float[] data;
+        private readonly object trackInfoLock = new();
+
         private int pos;
+        private float[] data;
+        private CancellationTokenSource cts;
 
-        private volatile bool isReady = false;
-        private volatile bool isFailed = false;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PreloadedPcmSource"/> class.
-        /// </summary>
-        /// <param name="path">The path to the audio file.</param>
-        public PreloadedPcmSource(string path)
-        {
-            TrackInfo = new TrackData { Path = path, Duration = 0.0 };
-
-            Task.Run(() =>
-            {
-                try
-                {
-                    AudioData result = WavUtility.WavToPcm(path);
-                    data = result.Pcm;
-                    TrackInfo = result.TrackInfo;
-                    isReady = true;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
-                    isFailed = true;
-                }
-            });
-        }
+        private volatile bool isReady;
+        private volatile bool isFailed;
+        private volatile bool isDisposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PreloadedPcmSource"/> class.
@@ -64,26 +44,45 @@ namespace Exiled.API.Features.Audio.PcmSources
         }
 
         /// <summary>
-        /// Gets the metadata of the loaded track.
+        /// Initializes a new instance of the <see cref="PreloadedPcmSource"/> class.
         /// </summary>
-        public TrackData TrackInfo { get; private set; }
+        /// <param name="path">The path to the audio file.</param>
+        public PreloadedPcmSource(string path)
+        {
+            TrackInfo = new TrackData { Path = path, Duration = 0.0 };
 
-        /// <summary>
-        /// Gets a value indicating whether the end of the PCM data buffer has been reached.
-        /// </summary>
-        public bool Ended => isFailed || (isReady && pos >= data.Length);
+            cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
 
-        /// <summary>
-        /// Gets the total duration of the audio in seconds.
-        /// </summary>
+            Task.Run(() => ReadAudio(path), token);
+        }
+
+        /// <inheritdoc/>
+        public TrackData TrackInfo
+        {
+            get
+            {
+                lock (trackInfoLock)
+                    return field;
+            }
+
+            private set
+            {
+                lock (trackInfoLock)
+                    field = value;
+            }
+        }
+
+        /// <inheritdoc/>
+        public bool Ended => isFailed || isDisposed || (isReady && data != null && pos >= data.Length);
+
+        /// <inheritdoc/>
         public double TotalDuration => isReady && data != null ? (double)data.Length / VoiceChatSettings.SampleRate : 0.0;
 
-        /// <summary>
-        /// Gets or sets the current playback position in seconds.
-        /// </summary>
+        /// <inheritdoc/>
         public double CurrentTime
         {
-            get => isReady ? (double)pos / VoiceChatSettings.SampleRate : 0.0;
+            get => isReady && data != null ? (double)pos / VoiceChatSettings.SampleRate : 0.0;
             set => Seek(value);
         }
 
@@ -93,16 +92,10 @@ namespace Exiled.API.Features.Audio.PcmSources
         /// <inheritdoc/>
         public bool IsReady => isReady;
 
-        /// <summary>
-        /// Reads a sequence of PCM samples from the preloaded buffer into the specified array.
-        /// </summary>
-        /// <param name="buffer">The destination array to copy the samples into.</param>
-        /// <param name="offset">The zero-based index in <paramref name="buffer"/> at which to begin storing the data.</param>
-        /// <param name="count">The maximum number of samples to read.</param>
-        /// <returns>The number of samples read into <paramref name="buffer"/>.</returns>
+        /// <inheritdoc/>
         public int Read(float[] buffer, int offset, int count)
         {
-            if (isFailed)
+            if (isFailed || isDisposed)
                 return 0;
 
             if (!isReady || data == null)
@@ -118,30 +111,49 @@ namespace Exiled.API.Features.Audio.PcmSources
             return read;
         }
 
-        /// <summary>
-        /// Seeks to the specified position in seconds.
-        /// </summary>
-        /// <param name="seconds">The target position in seconds.</param>
+        /// <inheritdoc/>
         public void Seek(double seconds)
         {
-            if (!isReady || data == null)
+            if (!isReady || data == null || data.Length == 0)
                 return;
 
-            long targetIndex = (long)(seconds * VoiceChatSettings.SampleRate);
-            pos = (int)Math.Max(0, Math.Min(targetIndex, data.Length));
+            pos = (int)Math.Clamp(seconds * VoiceChatSettings.SampleRate, 0, data.Length);
         }
 
-        /// <summary>
-        /// Resets the read position to the beginning of the PCM data buffer.
-        /// </summary>
-        public void Reset()
-        {
-            pos = 0;
-        }
+        /// <inheritdoc/>
+        public void Reset() => pos = 0;
 
         /// <inheritdoc/>
         public void Dispose()
         {
+            isDisposed = true;
+            isReady = false;
+
+            CancellationTokenSource localCts = Interlocked.Exchange(ref cts, null);
+            if (localCts != null)
+            {
+                localCts.Cancel();
+                localCts.Dispose();
+            }
+        }
+
+        private void ReadAudio(string path)
+        {
+            try
+            {
+                AudioData result = WavUtility.WavToPcm(path);
+                data = result.Pcm;
+                TrackInfo = result.TrackInfo;
+                isReady = true;
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[PreloadedPcmSource] Failed to load audio from path: {path} | Error: {ex.Message}");
+                isFailed = true;
+            }
         }
     }
 }
