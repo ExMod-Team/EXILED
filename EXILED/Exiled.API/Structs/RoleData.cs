@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="RoleData.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -24,7 +24,7 @@ namespace Exiled.API.Structs
         /// <param name="authority">The authority of the role data.</param>
         /// <param name="unitId">The fake UnitID, if <paramref name="role"/> is an NTF role.</param>
         /// <param name="customData">An action used to write custom data if this role data is used to send a fake role. For 99% of uses, just leave this as null.</param>
-        public RoleData(RoleTypeId role, Authority authority = Authority.None, byte unitId = 0, Action<NetworkWriter> customData = null)
+        public RoleData(RoleTypeId role = RoleTypeId.None, Authority authority = Authority.None, byte unitId = 0, Action<NetworkWriter> customData = null)
         {
             Role = role;
             DataAuthority = authority;
@@ -91,7 +91,7 @@ namespace Exiled.API.Structs
         /// <summary>
         /// Gets or sets the authority of this <see cref="RoleData"/> instance. see <see cref="Authority"/> for details.
         /// </summary>
-        public Authority DataAuthority { get; set; } = Authority.None;
+        public Authority DataAuthority { get; set; }
 
         /// <summary>
         /// Gets or sets custom data written to network writers when fake data is generated.
