@@ -7,7 +7,7 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System.Linq;
+    using System;
 
     using AdminToys;
 
