@@ -34,19 +34,23 @@ namespace Exiled.Events.Patches.Generic
             int offset = 3;
             int index = newInstructions.FindIndex(x => x.Calls(PropertyGetter(typeof(NetworkBehaviour), nameof(NetworkBehaviour.netId)))) + offset;
 
+            // Make branch if allHub.netId == receiver.netId call "HandleEvent"
             Label oldTarget = (Label)newInstructions[index].operand;
             newInstructions[index].operand = eventLabel;
 
             offset = 3;
             index = newInstructions.FindIndex(x => x.opcode == OpCodes.Isinst && x.OperandIs(typeof(IFpcRole))) + offset;
 
+            // Make branch if allHub.roleManager.CurrentRole is not IFpcRole call "HandleEvent"
             newInstructions[index].operand = eventLabel;
 
+            // insert HandleEvent call to right before where the above branches normally went so once HandleEvent is done, method continues normally
             offset = 0;
             index = newInstructions.FindLastIndex(x => x.labels.Contains(oldTarget)) + offset;
 
             newInstructions.InsertRange(index, new[]
             {
+                // Branch to ahead of where this inserted IL ends.
                 new(OpCodes.Br_S, oldTarget),
 
                 new CodeInstruction(OpCodes.Ldloc_S, 5).WithLabels(eventLabel),
@@ -63,7 +67,7 @@ namespace Exiled.Events.Patches.Generic
 
         private static void HandleEvent(ReferenceHub target, ReferenceHub viewer)
         {
-            NetworkWriterPooled writer = NetworkWriterPool.Get();
+            using NetworkWriterPooled writer = NetworkWriterPool.Get();
 
             RoleTypeId role = target.GetRoleId();
             RoleTypeId fakeRole = Handlers.Internal.Round.OnRoleSyncEvent(target, viewer, role, writer);
