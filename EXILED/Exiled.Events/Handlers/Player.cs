@@ -1431,8 +1431,9 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Called before a player is shown a hitmarker.
         /// </summary>
-        /// <param name="ev">The <see cref="ShowingHitMarkerEventArgs"/> instance.</param>
-        public static void OnShowingHitMarker(ShowingHitMarkerEventArgs ev) => ShowingHitMarker.InvokeSafely(ev);
+        /// <param name="ev">The <see cref="PlayerCheckedHitmarkerEventArgs"/> instance.</param>
+        public static void OnShowingHitMarker(PlayerSendingHitmarkerEventArgs ev)
+            => ShowingHitMarker.InvokeSafely(new(ev.Player.ReferenceHub, ev.Size, ev.PlayAudio, ev.Hitmarker));
 
         /// <summary>
         /// Called before Emergency Release Button is pressed.
