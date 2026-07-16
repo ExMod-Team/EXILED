@@ -168,7 +168,8 @@ namespace Exiled.API.Extensions
             ItemType.Ammo762x39 => AmmoType.Nato762,
             ItemType.Ammo12gauge => AmmoType.Ammo12Gauge,
             ItemType.Ammo44cal => AmmoType.Ammo44Cal,
-            _ => AmmoType.None,
+            ItemType.None => AmmoType.None,
+            _ => AmmoType.Custom,
         };
 
         /// <summary>

@@ -359,17 +359,15 @@ namespace Exiled.API.Features
             if (points == null || points.Length - offset < 2 || count - offset < 2)
                 return;
 
-            ArraySegment<byte> data;
-            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
-            {
-                writer.WriteUShort((ushort)typeof(DrawableLineMessage).FullName.GetStableHashCode());
-                writer.WriteFloatNullable(duration);
-                writer.WriteColorNullable(color);
-                writer.WriteInt(count);
-                for (int i = offset; i < count + offset; i++)
-                    writer.Write(points[i]);
-                data = writer.ToArraySegment();
-            }
+            using NetworkWriterPooled writer = NetworkWriterPool.Get();
+
+            writer.WriteUShort((ushort)typeof(DrawableLineMessage).FullName.GetStableHashCode());
+            writer.WriteFloatNullable(duration);
+            writer.WriteColorNullable(color);
+            writer.WriteInt(count);
+            for (int i = offset; i < count + offset; i++)
+                writer.Write(points[i]);
+            ArraySegment<byte> data = writer.ToArraySegment();
 
             if (players != null)
             {

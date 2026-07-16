@@ -89,7 +89,7 @@ namespace Exiled.Events.Patches.Events.Player
             if (!ev.IsRotationModified || fpcRole == null || fpcRole.FpcModule == null)
                 return;
 
-            Timing.RunCoroutine(WaitForMouseLookAndApply(fpcRole.FpcModule, ev.SpawningRotation), fpcRole.FpcModule.gameObject);
+            Timing.RunCoroutine(WaitForMouseLookAndApply(fpcRole.FpcModule, ev.SpawningRotation), ev.Player.GameObject);
         }
 
         private static IEnumerator<float> WaitForMouseLookAndApply(FirstPersonMovementModule fpcModule, Vector2 rotation)

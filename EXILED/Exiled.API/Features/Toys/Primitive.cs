@@ -7,7 +7,7 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System.Linq;
+    using System;
 
     using AdminToys;
 
@@ -154,10 +154,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="primitiveObjectToy">The <see cref="PrimitiveObjectToy"/> instance.</param>
         /// <returns>The corresponding <see cref="Primitive"/> instance.</returns>
-        public static Primitive Get(PrimitiveObjectToy primitiveObjectToy)
-        {
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == primitiveObjectToy);
-            return adminToy is not null ? adminToy as Primitive : new(primitiveObjectToy);
-        }
+        [Obsolete("This method is deprecated, please use the generic Get<T> method instead.")]
+        public static Primitive Get(PrimitiveObjectToy primitiveObjectToy) => Get<Primitive>(primitiveObjectToy);
     }
 }

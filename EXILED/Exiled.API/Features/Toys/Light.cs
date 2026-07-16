@@ -194,10 +194,7 @@ namespace Exiled.API.Features.Toys
         /// </summary>
         /// <param name="lightSourceToy">The <see cref="LightSourceToy"/> instance.</param>
         /// <returns>The corresponding <see cref="LightSourceToy"/> instance.</returns>
-        public static Light Get(LightSourceToy lightSourceToy)
-        {
-            AdminToy adminToy = List.FirstOrDefault(x => x.AdminToyBase == lightSourceToy);
-            return adminToy is not null ? adminToy as Light : new(lightSourceToy);
-        }
+        [Obsolete("This method is deprecated, please use the generic Get<T> method instead.")]
+        public static Light Get(LightSourceToy lightSourceToy) => Get<Light>(lightSourceToy);
     }
 }
