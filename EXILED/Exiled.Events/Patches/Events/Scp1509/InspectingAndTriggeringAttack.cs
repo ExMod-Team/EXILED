@@ -14,7 +14,9 @@ namespace Exiled.Events.Patches.Events.Scp1509
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Scp1509;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Scp1509;
 
     using static HarmonyLib.AccessTools;
@@ -59,7 +61,8 @@ namespace Exiled.Events.Patches.Events.Scp1509
                 new(OpCodes.Brfalse_S, retLabel),
             });
 
-            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldarg_0);
+            offset = 2;
+            index = newInstructions.FindLastIndex(x => x.opcode == OpCodes.Ldloc_2) + offset;
 
             newInstructions.InsertRange(index, new[]
             {

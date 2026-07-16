@@ -12,13 +12,15 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Exiled.API.Interfaces;
+
     using MapGeneration;
+
     using UnityEngine;
 
     /// <summary>
     /// Represents a cake.
     /// </summary>
-    [Obsolete("Only availaible for Christmas and AprilFools.")]
+    [Obsolete("Only available for Christmas and AprilFools.")]
     public class Scp559 : IWrapper<Scp559Cake>, IPosition
     {
         /// <summary>

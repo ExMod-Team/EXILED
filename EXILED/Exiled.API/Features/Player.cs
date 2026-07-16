@@ -9,15 +9,20 @@ namespace Exiled.API.Features
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
     using Core;
+
     using CustomPlayerEffects;
     using CustomPlayerEffects.Danger;
+
     using DamageHandlers;
+
     using Enums;
+
     using Exiled.API.Features.Core.Interfaces;
     using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Doors;
@@ -28,11 +33,17 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Roles;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
+
     using Extensions;
+
     using Footprinting;
+
     using global::Scp914;
+
     using Hints;
+
     using Interactables.Interobjects;
+
     using InventorySystem;
     using InventorySystem.Disarming;
     using InventorySystem.Items;
@@ -42,24 +53,38 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
+
     using MapGeneration.Distributors;
     using MapGeneration.Rooms;
+
     using MEC;
+
     using Mirror;
     using Mirror.LiteNetLib4Mirror;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
+    using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
+
     using PlayerStatsSystem;
+
     using RelativePositioning;
+
     using RemoteAdmin;
+
     using RoundRestarting;
+
+    using Unity.Collections.LowLevel.Unsafe;
+
     using UnityEngine;
+
     using Utils;
     using Utils.Networking;
+
     using VoiceChat;
     using VoiceChat.Playbacks;
 
@@ -835,6 +860,67 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the player's wearable elements.
+        /// </summary>
+        /// <seealso cref="EnableWearables"/> <seealso cref="DisableWearables"/>
+        public WearableElementType Wearables
+        {
+            get
+            {
+                if (!WearableSync.TryGetData(ReferenceHub, out WearableSyncMessage data))
+                    return WearableElementType.None;
+
+                WearableElements flags = data.Flags;
+                WearableElementType exiledFlags = WearableElementType.None;
+
+                if (flags.HasFlag(WearableElements.Armor) && data.Payload.Length is 1)
+                {
+                    ItemType armor = (ItemType)UnsafeUtility.As<byte, sbyte>(ref data.Payload[0]);
+
+                    exiledFlags = armor.GetWearableElementType();
+                }
+
+                return (WearableElementType)flags | exiledFlags;
+            }
+
+            set
+            {
+                if (value is WearableElementType.None)
+                {
+                    Log.Info("None");
+
+                    WearableSyncMessage wearableSyncMessage = new(ReferenceHub);
+                    WearableSync.UpdateDatabaseEntry(wearableSyncMessage);
+                    NetworkServer.SendToAll(wearableSyncMessage, 0, false);
+                    return;
+                }
+
+                WearableSync.PayloadWriter.Reset();
+                Log.Info("newWearables" + value);
+
+                if (value.HasFlag(WearableElementType.ArmorDefault))
+                {
+                    ItemType displayedArmor = value.HasFlag(WearableElementType.ArmorLight) ? ItemType.ArmorLight :
+                        value.HasFlag(WearableElementType.ArmorCombat) ? ItemType.ArmorCombat :
+                        value.HasFlag(WearableElementType.ArmorHeavy) ? ItemType.ArmorHeavy :
+                        CurrentArmor?.Type ?? ItemType.None;
+
+                    if (displayedArmor is not ItemType.None)
+                        WearableSync.PayloadWriter.WriteSByte((sbyte)displayedArmor);
+                    else
+                        value &= ~WearableElementType.ArmorDefault;
+
+                    value &= ~WearableElementType.ArmorLight | WearableElementType.ArmorCombat | WearableElementType.ArmorHeavy;
+                    Log.Info("DiplayedArmor" + displayedArmor);
+                }
+
+                WearableSyncMessage wearableSyncMessage2 = new(ReferenceHub, (WearableElements)value, WearableSync.PayloadWriter);
+                WearableSync.UpdateDatabaseEntry(wearableSyncMessage2);
+                NetworkServer.SendToAll(wearableSyncMessage2, 0, false);
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the player is transmitting on a Radio.
         /// </summary>
         public bool IsTransmitting => PersonalRadioPlayback.IsTransmitting(ReferenceHub);
@@ -918,10 +1004,7 @@ namespace Exiled.API.Features
                 if (value > MaxArtificialHealth)
                     MaxArtificialHealth = value;
 
-                AhpStat.AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
-
-                if (ahp is not null)
-                    ahp.CurrentAmount = value;
+                ActiveArtificialHealthProcesses.FirstOrDefault()?.CurrentAmount = value;
             }
         }
 
@@ -936,10 +1019,9 @@ namespace Exiled.API.Features
                 if (!ActiveArtificialHealthProcesses.Any())
                     AddAhp(value);
 
-                AhpStat.AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
+                AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
 
-                if (ahp is not null)
-                    ahp.Limit = value;
+                ahp?.Limit = value;
             }
         }
 
@@ -974,7 +1056,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
         /// </summary>
-        public IEnumerable<AhpStat.AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
+        public IEnumerable<AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
 
         /// <summary>
         /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
@@ -1198,6 +1280,11 @@ namespace Exiled.API.Features
         /// Gets the player's <see cref="Footprinting.Footprint"/>.
         /// </summary>
         public Footprint Footprint => new(ReferenceHub);
+
+        /// <summary>
+        /// Gets the player's UniqueLifeIdentifier.
+        /// </summary>
+        public int LifeIdentifier => ReferenceHub.roleManager.CurrentRole.UniqueLifeIdentifier;
 
         /// <summary>
         /// Gets or sets a value indicating whether the player is spawn protected.
@@ -1537,7 +1624,7 @@ namespace Exiled.API.Features
         /// <param name="newargs">Contains the updated arguments after processing.</param>
         /// <param name="keepEmptyEntries">Determines whether empty entries should be kept in the result.</param>
         /// <returns>An <see cref="IEnumerable{Player}"/> representing the processed players.</returns>
-        public static IEnumerable<Player> GetProcessedData(ArraySegment<string> args, int startIndex, out string[] newargs, bool keepEmptyEntries = false) => RAUtils.ProcessPlayerIdOrNamesList(args, startIndex, out newargs, keepEmptyEntries).Select(hub => Get(hub));
+        public static IEnumerable<Player> GetProcessedData(ArraySegment<string> args, int startIndex, out string[] newargs, bool keepEmptyEntries = false) => RAUtils.ProcessPlayerIdOrNamesList(args, startIndex, out newargs, keepEmptyEntries).Select(Get);
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{Player}"/> containing all players processed based on the arguments specified.
@@ -2324,7 +2411,17 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
         /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
+        public bool UseItem(ItemType usableItem)
+        {
+            if (usableItem.GetTemplate() is not UsableItem)
+                return false;
+
+            Item usable = Item.Create<Usable>(usableItem);
+
+            UseItem(usable);
+            usable.Destroy();
+            return true;
+        }
 
         /// <summary>
         /// Forces the player to use an item.
@@ -2388,7 +2485,8 @@ namespace Exiled.API.Features
             if ((Role.Side != Side.Scp) && !string.IsNullOrEmpty(cassieAnnouncement))
                 Cassie.Message(cassieAnnouncement);
 
-            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
+            Footprint footprint = attacker != null ? attacker.Footprint : Server.Host.Footprint;
+            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(default, footprint, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
         }
 
         /// <summary>
@@ -2494,6 +2592,20 @@ namespace Exiled.API.Features
         /// Clears the player's brodcast. Doesn't get logged to the console.
         /// </summary>
         public void ClearBroadcasts() => Server.Broadcast.TargetClearElements(Connection);
+
+        /// <summary>
+        /// Enables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to enable.</param>
+        /// <seealso cref="DisableWearables"/>
+        public void EnableWearables(WearableElementType wearableElements) => Wearables |= wearableElements;
+
+        /// <summary>
+        /// Disables the specified <see cref="WearableElements"/> on the player.
+        /// </summary>
+        /// <param name="wearableElements">The <see cref="WearableElements"/> flags to disable.</param>
+        /// <seealso cref="EnableWearables"/>
+        public void DisableWearables(WearableElementType wearableElements) => Wearables &= ~wearableElements;
 
         /// <summary>
         /// Adds the amount of a specified <see cref="AmmoType">ammo type</see> to the player's inventory.
@@ -2915,7 +3027,7 @@ namespace Exiled.API.Features
         /// <returns>The <see cref="Item"/> that was added.</returns>
         public Item AddItem(FirearmPickup pickup, IEnumerable<AttachmentIdentifier> identifiers)
         {
-            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, ItemAddReason.AdminCommand, pickup.Serial, pickup.Base));
+            Firearm firearm = Item.Get<Firearm>(Inventory.ServerAddItem(pickup.Type, ItemAddReason.PickedUp, pickup.Serial, pickup.Base));
 
             if (identifiers is not null)
                 firearm.AddAttachment(identifiers);
@@ -3699,8 +3811,8 @@ namespace Exiled.API.Features
         /// <param name="efficacy">Percent of incoming damage absorbed by this stat.</param>
         /// <param name="sustain">The number of seconds to delay the start of the decay.</param>
         /// <param name="persistant">Whether the process is removed when the value hits 0.</param>
-        /// <returns>The <see cref="AhpStat.AhpProcess"/> instance..</returns>
-        public AhpStat.AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
+        /// <returns>The <see cref="AhpProcess"/> instance..</returns>
+        public AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
         {
             return ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
@@ -3968,6 +4080,64 @@ namespace Exiled.API.Features
             return component is not null;
         }
 
+        /// <summary>
+        /// Tries to raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="layerMasks">Layer masks to be applied to raycast.</param>
+        /// <param name="hit">Calculated <see cref="RaycastHit"/> or <c>default</c>.</param>
+        /// <returns><c>true</c> if raycast was successful. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycast(float maxDistance, LayerMasks layerMasks, out RaycastHit hit)
+        {
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, false);
+
+            bool result = Physics.Raycast(CameraTransform.position, CameraTransform.forward, out hit, maxDistance, (int)layerMasks);
+
+            if (layerMasks.HasFlag(LayerMasks.Hitbox))
+                HitscanHitregModuleBase.ToggleColliders(ReferenceHub, true);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="HitboxIdentity"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="hitboxIdentity">Found <see cref="HitboxIdentity"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="hitboxIdentity"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedPlayer"/>
+        public bool TryGetRaycastedHitbox(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out HitboxIdentity hitboxIdentity)
+        {
+            hitboxIdentity = null;
+
+            if (TryGetRaycast(maxDistance, LayerMasks.Hitbox | additionalMasks, out RaycastHit hit))
+                hitboxIdentity = hit.collider.gameObject.GetComponent<HitboxIdentity>();
+
+            return hitboxIdentity != null;
+        }
+
+        /// <summary>
+        /// Tries to get a <see cref="Player"/> from a raycast.
+        /// </summary>
+        /// <param name="maxDistance">Maximum distance of raycast.</param>
+        /// <param name="additionalMasks">Additional LayerMasks that should be applied to raycast. <see cref="LayerMasks.Hitbox"/> will be applied by default.</param>
+        /// <param name="target">Found <see cref="Player"/> or <c>null</c>.</param>
+        /// <returns><c>true</c> if <paramref name="target"/> was successfully found. Otherwise, <c>false</c>.</returns>
+        /// <seealso cref="TryGetRaycastedHitbox"/>
+        public bool TryGetRaycastedPlayer(float maxDistance, LayerMasks additionalMasks, [MaybeNullWhen(false)] out Player target)
+        {
+            target = null;
+
+            if (!TryGetRaycastedHitbox(maxDistance, additionalMasks, out HitboxIdentity hitboxIdentity))
+                return false;
+
+            target = Get(hitboxIdentity.TargetHub);
+            return target != null;
+        }
+
         /// <inheritdoc/>
         public bool HasComponent<T>(bool depthInheritance = false) => depthInheritance
             ? componentsInChildren.Any(comp => typeof(T).IsSubclassOf(comp.GetType()))
@@ -4015,8 +4185,7 @@ namespace Exiled.API.Features
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            Player player = obj as Player;
-            return (object)player != null && ReferenceHub == player.ReferenceHub;
+            return obj is Player player && ReferenceHub == player.ReferenceHub;
         }
 
         /// <inheritdoc />
@@ -4032,7 +4201,7 @@ namespace Exiled.API.Features
         /// <param name="player2">The second player instance.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
 #pragma warning disable SA1201
-        public static bool operator ==(Player player1, Player player2) => player1?.Equals(player2) ?? player2 is null;
+        public static bool operator ==(Player player1, Player player2) => player1?.Equals(player2) ?? (player2 is null);
 
         /// <summary>
         /// Returns whether the two players are different.

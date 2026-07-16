@@ -11,7 +11,9 @@ namespace Exiled.API.Features.Doors
     using System.Linq;
 
     using Exiled.API.Enums;
+
     using Interactables.Interobjects;
+
     using UnityEngine;
 
     /// <summary>

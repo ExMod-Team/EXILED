@@ -15,22 +15,33 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using CommandSystem.Commands.RemoteAdmin.Cleanup;
+
     using Decals;
+
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
 
     using Interactables.Interobjects;
+
     using InventorySystem;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
+
     using Items;
+
     using LightContainmentZoneDecontamination;
+
     using MapGeneration;
+
     using PlayerRoles.Ragdolls;
+
     using RemoteAdmin;
+
     using UnityEngine;
+
     using Utils;
     using Utils.Networking;
 
@@ -289,7 +300,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Forces the light containment zone decontamination process.
         /// </summary>
-        public static void StartDecontamination() => DecontaminationController.Singleton.FinishDecontamination();
+        public static void StartDecontamination() => DecontaminationController.Singleton.DecontaminationOverride = DecontaminationController.DecontaminationStatus.Forced;
 
         /// <summary>
         /// Turns on all lights in the facility.

@@ -8,16 +8,20 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
 
+    using MEC;
+
+    using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.Spawnpoints;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
@@ -35,56 +39,68 @@ namespace Exiled.Events.Patches.Events.Player
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -1;
-
-            // Locate the call to `Transform.position` setter to determine where to insert new instructions.
-            int index = newInstructions.FindIndex(instr => instr.Calls(PropertySetter(typeof(Transform), nameof(Transform.position)))) + offset;
-
-            // Declare the `SpawningEventArgs` local variable.
             LocalBuilder ev = generator.DeclareLocal(typeof(SpawningEventArgs));
 
-            newInstructions.InsertRange(
-            index,
-            new[]
+            int offset = -1;
+            int index = newInstructions.FindIndex(instr => instr.Calls(PropertySetter(typeof(Transform), nameof(Transform.position)))) + offset;
+
+            newInstructions.InsertRange(index, new CodeInstruction[]
             {
-                // Load `ReferenceHub` (argument 0) and get `Player`.
-                new CodeInstruction(OpCodes.Ldarg_0), // Load `hub` (first argument passed to the method).
-                new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })), // Call Player.Get(hub) to get the Player instance.
+                // Player.Get(hub);
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                // Load `position` (local variable 2).
-                new CodeInstruction(OpCodes.Ldloc_2),
+                // spawnLocation
+                new(OpCodes.Ldloc_2),
 
-                // Load `rotation` (local variable 3).
-                new CodeInstruction(OpCodes.Ldloc_3),
+                // horizontalRotation
+                new(OpCodes.Ldloc_3),
 
-                // Load `newRole` (argument 1).
-                new CodeInstruction(OpCodes.Ldarg_1), // Load `newRole` from argument 1.
+                // newRole
+                new(OpCodes.Ldarg_1),
 
-                // Create a new instance of `SpawningEventArgs`.
-                new CodeInstruction(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
+                // SpawningEventArg ev = new SpawningEventArgs(player, spawnLocation, horizontalRotation, newRole);
+                new(OpCodes.Newobj, GetDeclaredConstructors(typeof(SpawningEventArgs))[0]),
+                new(OpCodes.Dup),
+                new(OpCodes.Stloc, ev.LocalIndex),
 
-                // Duplicate the object to store it and pass it around.
-                new CodeInstruction(OpCodes.Dup), // Duplicate the `SpawningEventArgs` object.
-                new CodeInstruction(OpCodes.Stloc, ev.LocalIndex), // Store the duplicated object in a local variable.
+                // Handlers.Player.OnSpawning(ev);
+                new(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
 
-                // Call `Handlers.Player.OnSpawning`.
-                new CodeInstruction(OpCodes.Call, Method(typeof(Handlers.Player), nameof(Handlers.Player.OnSpawning))),
+                // spawnLocation = ev.Position;
+                new(OpCodes.Ldloc, ev.LocalIndex),
+                new(OpCodes.Call, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))),
+                new(OpCodes.Stloc_2),
 
-                // Modify `position` from `ev.Position`.
-                new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex), // Load the `SpawningEventArgs` object stored in the local variable.
-                new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.Position))), // Get the `Position` property from `SpawningEventArgs`.
-                new CodeInstruction(OpCodes.Stloc_2), // Store the position value back in the local variable 2 (`position`).
-
-                // Modify `rotation` from `ev.HorizontalRotation`.
-                new CodeInstruction(OpCodes.Ldloc, ev.LocalIndex), // Load the `SpawningEventArgs` object again.
-                new CodeInstruction(OpCodes.Call, PropertyGetter(typeof(SpawningEventArgs), nameof(SpawningEventArgs.HorizontalRotation))), // Get the `HorizontalRotation` property from `SpawningEventArgs`.
-                new CodeInstruction(OpCodes.Stloc_3), // Store the rotation value back in the local variable 3 (`rotation`).
+                // ApplyRotation(fpcRole, ev)
+                new(OpCodes.Ldloc_0),
+                new(OpCodes.Ldloc, ev.LocalIndex),
+                new(OpCodes.Call, Method(typeof(Spawning), nameof(ApplyRotation))),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
+        }
+
+        private static void ApplyRotation(IFpcRole fpcRole, SpawningEventArgs ev)
+        {
+            if (!ev.IsRotationModified || fpcRole == null || fpcRole.FpcModule == null)
+                return;
+
+            Timing.RunCoroutine(WaitForMouseLookAndApply(fpcRole.FpcModule, ev.SpawningRotation), fpcRole.FpcModule.gameObject);
+        }
+
+        private static IEnumerator<float> WaitForMouseLookAndApply(FirstPersonMovementModule fpcModule, Vector2 rotation)
+        {
+            yield return Timing.WaitUntilFalse(() => fpcModule != null && fpcModule.MouseLook == null);
+
+            if (fpcModule == null)
+                yield break;
+
+            yield return Timing.WaitForOneFrame;
+            fpcModule.ServerOverrideRotation(rotation);
         }
     }
 }

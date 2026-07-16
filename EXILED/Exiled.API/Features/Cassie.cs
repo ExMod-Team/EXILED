@@ -13,16 +13,19 @@ namespace Exiled.API.Features
     using System.Text;
 
     using Exiled.API.Features.Pools;
+
     using global::Cassie;
     using global::Cassie.Interpreters;
+
     using MEC;
+
     using PlayerRoles;
+
     using PlayerStatsSystem;
-    using Respawning;
+
     using Respawning.NamingRules;
 
-    using CustomFirearmHandler = DamageHandlers.FirearmDamageHandler;
-    using CustomHandlerBase = DamageHandlers.DamageHandlerBase;
+    using CustomHandler = DamageHandlers.CustomDamageHandler;
 
     /// <summary>
     /// A set of tools to use in-game C.A.S.S.I.E.
@@ -57,7 +60,9 @@ namespace Exiled.API.Features
         /// <param name="isHeld">Indicates whether C.A.S.S.I.E has to hold the message.</param>
         /// <param name="isNoisy">Indicates whether C.A.S.S.I.E has to make noises during the message.</param>
         /// <param name="isSubtitles">Indicates whether C.A.S.S.I.E has to make subtitles.</param>
+#pragma warning disable IDE0060 // TODO: Deleted the unused param
         public static void MessageTranslated(string message, string translation, bool isHeld = false, bool isNoisy = true, bool isSubtitles = true)
+#pragma warning restore IDE0060
         {
             new CassieAnnouncement(new CassieTtsPayload(message, translation, isHeld), 0f, isNoisy ? 1 : 0).AddToQueue();
         }
@@ -117,7 +122,7 @@ namespace Exiled.API.Features
             float value = 0;
             string[] lines = message.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-            CassiePlaybackModifiers modifiers = new();
+            CassiePlaybackModifiers modifiers = default(CassiePlaybackModifiers);
             StringBuilder builder = StringBuilderPool.Pool.Get();
 
             for (int i = 0; i < lines.Length; i++)
@@ -167,7 +172,7 @@ namespace Exiled.API.Features
                 return string.Empty;
             }
 
-            NumberInterpreter numberInterpreter = (NumberInterpreter)CassieTtsAnnouncer.Interpreters.FirstOrDefault((CassieInterpreter x) => x is NumberInterpreter);
+            NumberInterpreter numberInterpreter = (NumberInterpreter)CassieTtsAnnouncer.Interpreters.FirstOrDefault(x => x is NumberInterpreter);
             if (numberInterpreter == null)
             {
                 return string.Empty;
@@ -188,25 +193,51 @@ namespace Exiled.API.Features
             => CassieScpTerminationAnnouncement.AnnounceScpTermination(scp.ReferenceHub, info);
 
         /// <summary>
-        /// Announces the termination of a custom SCP name.
+        /// Announces the termination of a custom SCP Number.
         /// </summary>
-        /// <param name="scpName">SCP Name. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
+        /// <param name="scpNumber">SCP Number. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
         /// <param name="info">Hit Information.</param>
-        public static void CustomScpTermination(string scpName, CustomHandlerBase info)
+        [Obsolete("Use this instead CustomScpTermination(string, CustomHandler)")]
+        public static void CustomScpTermination(string scpNumber, DamageHandlers.DamageHandlerBase info)
         {
-            string result = scpName;
-            if (info.Is(out MicroHidDamageHandler _))
-                result += " SUCCESSFULLY TERMINATED BY AUTOMATIC SECURITY SYSTEM";
-            else if (info.Is(out WarheadDamageHandler _))
-                result += " SUCCESSFULLY TERMINATED BY ALPHA WARHEAD";
-            else if (info.Is(out UniversalDamageHandler _))
-                result += " LOST IN DECONTAMINATION SEQUENCE";
-            else if (info.BaseIs(out CustomFirearmHandler firearmDamageHandler) && firearmDamageHandler.Attacker is Player attacker)
-                result += " CONTAINEDSUCCESSFULLY " + ConvertTeam(attacker.Role.Team, attacker.UnitName);
+            if (scpNumber.StartsWith("SCP", StringComparison.InvariantCultureIgnoreCase))
+                scpNumber = scpNumber.Remove(0, 3);
 
-            // result += "To be changed";
+            if (info is CustomHandler customHandler)
+                CustomScpTermination(scpNumber, customHandler);
+        }
+
+        /// <summary>
+        /// Announces the termination of a custom SCP Number.
+        /// </summary>
+        /// <param name="scpNumber">SCP Number. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
+        /// <param name="info">Hit Information.</param>
+        public static void CustomScpTermination(string scpNumber, CustomHandler info)
+        {
+            if (info is null)
+                throw new System.ArgumentNullException(nameof(info));
+
+            string result = "SCP " + scpNumber;
+            if (info.Attacker is null)
+            {
+                result += info.Type switch
+                {
+                    Enums.DamageType.Warhead => " SUCCESSFULLY TERMINATED BY ALPHA WARHEAD",
+                    Enums.DamageType.Decontamination => " LOST IN DECONTAMINATION SEQUENCE",
+                    Enums.DamageType.Tesla => " SUCCESSFULLY TERMINATED BY AUTOMATIC SECURITY SYSTEM",
+                    _ => " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED",
+                };
+            }
             else
-                result += " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED";
+            {
+                result += info.Attacker.Role.Team switch
+                {
+                    Team.SCPs => " TERMINATED BY SCP " + string.Join(" ", info.Attacker.Role.Name.Remove(0, 4).ToCharArray()),
+                    Team.Flamingos => " TERMINATED BY SCP 1 5 0 7",
+                    Team.OtherAlive or Team.Dead => " SUCCESSFULLY TERMINATED . TERMINATION CAUSE UNSPECIFIED",
+                    _ => " CONTAINEDSUCCESSFULLY " + ConvertTeam(info.Attacker.Role.Team, info.Attacker.UnitName),
+                };
+            }
 
             float num = AlphaWarheadController.TimeUntilDetonation <= 0f ? 3.5f : 1f;
             GlitchyMessage(result, UnityEngine.Random.Range(0.1f, 0.14f) * num, UnityEngine.Random.Range(0.07f, 0.08f) * num);
@@ -222,7 +253,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="word">The word to check.</param>
         /// <returns><see langword="true"/> if the word is valid; otherwise, <see langword="false"/>.</returns>
-        public static bool IsValid(string word) => CassieTtsAnnouncer.TryGetDatabase(out CassieLineDatabase cassieLineDatabase) ? cassieLineDatabase.AllLines.Any(line => line.ApiName.ToUpper() == word.ToUpper()) : false;
+        public static bool IsValid(string word) => CassieTtsAnnouncer.TryGetDatabase(out CassieLineDatabase cassieLineDatabase) && cassieLineDatabase.AllLines.Any(line => line.ApiName.ToUpper() == word.ToUpper());
 
         /// <summary>
         /// Gets a value indicating whether the given sentence is all valid C.A.S.S.I.E word.

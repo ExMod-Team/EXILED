@@ -29,7 +29,7 @@ namespace Exiled.API.Features.Toys
         /// <summary>
         /// Gets the prefab.
         /// </summary>
-        public static TextToy Prefab { get; } = PrefabHelper.GetPrefab<TextToy>(PrefabType.TextToy);
+        public static TextToy Prefab { get; internal set; }
 
         /// <summary>
         /// Gets the base <see cref="TextToy"/>.
@@ -55,7 +55,7 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Creates a new <see cref="Text"/> at the specified position.
+        /// Creates a new <see cref="Text"/>.
         /// </summary>
         /// <param name="position">The local position of the <see cref="Text"/>.</param>
         /// <param name="text">The text content to display.</param>
@@ -63,7 +63,7 @@ namespace Exiled.API.Features.Toys
         public static Text Create(Vector3 position, string text) => Create(position: position, text: text, spawn: true);
 
         /// <summary>
-        /// Creates a new <see cref="Text"/> with a specific position, text, and display size.
+        /// Creates a new <see cref="Text"/>.
         /// </summary>
         /// <param name="position">The local position of the <see cref="Text"/>.</param>
         /// <param name="text">The text content to display.</param>
@@ -72,48 +72,31 @@ namespace Exiled.API.Features.Toys
         public static Text Create(Vector3 position, string text, Vector2 displaySize) => Create(position: position, text: text, displaySize: displaySize, spawn: true);
 
         /// <summary>
-        /// Creates a new <see cref="Text"/> based on a Transform.
-        /// </summary>
-        /// <param name="transform">The transform to spawn at.</param>
-        /// <param name="text">The text content to display.</param>
-        /// <returns>The new <see cref="Text"/>.</returns>
-        public static Text Create(Transform transform, string text) => Create(parent: transform, text: text, spawn: true);
-
-        /// <summary>
-        /// Creates a new <see cref="Text"/> based on a Transform with custom size.
-        /// </summary>
-        /// <param name="transform">The transform to spawn at.</param>
-        /// <param name="text">The text content to display.</param>
-        /// <param name="displaySize">The display size of the text.</param>
-        /// <returns>The new <see cref="Text"/>.</returns>
-        public static Text Create(Transform transform, string text, Vector2 displaySize) => Create(parent: transform, text: text, displaySize: displaySize, spawn: true);
-
-        /// <summary>
         /// Creates a new <see cref="Text"/>.
         /// </summary>
+        /// <param name="parent">The transform to create this <see cref="Text"/> on.</param>
         /// <param name="position">The local position of the <see cref="Text"/>.</param>
         /// <param name="rotation">The local rotation of the <see cref="Text"/>.</param>
         /// <param name="scale">The local scale of the <see cref="Text"/>.</param>
         /// <param name="text">The text content to display.</param>
         /// <param name="displaySize">The display size of the text.</param>
-        /// <param name="parent">The transform to create this <see cref="Text"/> on.</param>
         /// <param name="spawn">Whether the <see cref="Text"/> should be initially spawned.</param>
         /// <returns>The new <see cref="Text"/>.</returns>
-        public static Text Create(Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, string text = "Default Text", Vector2? displaySize = null, Transform parent = null, bool spawn = true)
+        public static Text Create(Transform parent = null, Vector3? position = null, Quaternion? rotation = null, Vector3? scale = null, string text = "Hello World!", Vector2? displaySize = null, bool spawn = true)
         {
-            Text textToy = new(Object.Instantiate(Prefab, parent))
+            Text toy = new(Object.Instantiate(Prefab, parent))
             {
-                TextFormat = text,
-                DisplaySize = displaySize ?? new Vector3(50, 50),
+                DisplaySize = displaySize ?? new Vector2(50, 50),
                 LocalPosition = position ?? Vector3.zero,
                 LocalRotation = rotation ?? Quaternion.identity,
                 Scale = scale ?? Vector3.one,
+                TextFormat = text,
             };
 
             if (spawn)
-                textToy.Spawn();
+                toy.Spawn();
 
-            return textToy;
+            return toy;
         }
     }
 }

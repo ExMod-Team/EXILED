@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ValidatingVisibilityEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,11 +7,13 @@
 
 namespace Exiled.Events.EventArgs.Scp939
 {
-    using API.Features;
-
     using Exiled.API.Enums;
+    using Exiled.API.Features;
     using Exiled.API.Features.Roles;
+
     using Interfaces;
+
+    using PlayerRoles.PlayableScps.HumanTracker;
 
     /// <summary>
     /// Contains all information before SCP-939 sees the player.
@@ -35,8 +37,12 @@ namespace Exiled.Events.EventArgs.Scp939
             Player = Player.Get(player);
             Scp939 = Player.Role.As<Scp939Role>();
             Target = Player.Get(target);
-            TargetVisibilityState = state;
-            IsAllowed = TargetVisibilityState is not(Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
+            TargetVisibilityState = state switch
+            {
+                Scp939VisibilityState.SeenByDetonation when !Warhead.IsDetonated && LastHumanTracker.IsLastTarget(target) => Scp939VisibilityState.SeenByLastHuman,
+                _ => state,
+            };
+            IsAllowed = TargetVisibilityState is not (Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
             IsLateSeen = TargetVisibilityState is Scp939VisibilityState.SeenByRange;
         }
 

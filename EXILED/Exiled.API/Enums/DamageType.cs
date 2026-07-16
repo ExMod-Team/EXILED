@@ -240,7 +240,7 @@ namespace Exiled.API.Enums
         A7,
 
         /// <summary>
-        /// Damage caused by <see cref="RoleTypeId.Scp3114"/>
+        /// Damage caused by <see cref="RoleTypeId.Scp3114"/>.
         /// </summary>
         Scp3114,
 

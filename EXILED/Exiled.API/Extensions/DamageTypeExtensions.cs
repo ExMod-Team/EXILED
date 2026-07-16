@@ -11,10 +11,14 @@ namespace Exiled.API.Extensions
     using System.Linq;
 
     using Enums;
+
     using Features;
+
     using InventorySystem.Items.Scp1509;
+
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
+
     using PlayerStatsSystem;
 
     /// <summary>
@@ -164,6 +168,8 @@ namespace Exiled.API.Extensions
                     return DamageType.GrayCandy;
                 case Scp1509DamageHandler:
                     return DamageType.Scp1509;
+                case MarshmallowDamageHandler:
+                    return DamageType.Marshmallow;
                 case Scp049DamageHandler scp049DamageHandler:
                     return scp049DamageHandler.DamageSubType switch
                     {
@@ -202,13 +208,6 @@ namespace Exiled.API.Extensions
                             return TranslationIdConversion[translation.Id];
 
                         Log.Warn($"{nameof(DamageTypeExtensions)}.{nameof(damageHandlerBase)}: No matching {nameof(DamageType)} for {nameof(UniversalDamageHandler)} with ID {translation.Id}, type will be reported as {DamageType.Unknown}. Report this to EXILED Devs.");
-                        return DamageType.Unknown;
-                    }
-
-                case AttackerDamageHandler attackerDamageHandler:
-                    {
-                        if (Player.TryGet(attackerDamageHandler.Attacker, out Player attacker) && attacker.CurrentItem?.Type == ItemType.MarshmallowItem)
-                            return DamageType.Marshmallow;
                         return DamageType.Unknown;
                     }
             }

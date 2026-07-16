@@ -15,11 +15,15 @@ namespace Exiled.API.Features.Doors
     using Exiled.API.Extensions;
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
+
     using Interactables.Interobjects;
     using Interactables.Interobjects.DoorButtons;
     using Interactables.Interobjects.DoorUtils;
+
     using MEC;
+
     using Mirror;
+
     using UnityEngine;
 
     using BaseBreakableDoor = Interactables.Interobjects.BreakableDoor;
@@ -421,7 +425,7 @@ namespace Exiled.API.Features.Doors
             {
                 door.IsOpen = false;
                 door.ChangeLock(lockType);
-                Timing.CallDelayed(duration, () => door.Unlock());
+                Timing.CallDelayed(duration, door.Unlock);
             }
         }
 
@@ -448,7 +452,7 @@ namespace Exiled.API.Features.Doors
             {
                 door.IsOpen = false;
                 door.ChangeLock(lockType);
-                Timing.CallDelayed(duration, () => door.Unlock());
+                Timing.CallDelayed(duration, door.Unlock);
             }
         }
 
@@ -593,7 +597,7 @@ namespace Exiled.API.Features.Doors
                 PryableDoor prbl => new Gate(prbl, rooms),
                 Interactables.Interobjects.BasicNonInteractableDoor nonInteractableDoor => new BasicNonInteractableDoor(nonInteractableDoor, rooms),
                 Interactables.Interobjects.BasicDoor basicDoor => new BasicDoor(basicDoor, rooms),
-                _ => new Door(doorVariant, rooms)
+                _ => new Door(doorVariant, rooms),
             };
         }
 
@@ -638,7 +642,7 @@ namespace Exiled.API.Features.Doors
                     },
                     "Cargo Elevator Door" => DoorType.ElevatorServerRoom,
                     "Nuke Elevator Door" => DoorType.ElevatorNuke,
-                    "Elevator Door" or "Elevator Door 02" or "Elevator Door 01" => (Base as Interactables.Interobjects.ElevatorDoor)?.Group switch
+                    not null when Base is Interactables.Interobjects.ElevatorDoor elevatorGroup => elevatorGroup?.Group switch
                     {
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
@@ -647,6 +651,7 @@ namespace Exiled.API.Features.Doors
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
                         _ => DoorType.UnknownElevator,
                     },
+                    "Spawnable Unsecured Pryable GateDoor" => DoorType.SpawnableUnsecuredGate,
                     _ => DoorType.UnknownDoor,
                 };
             }

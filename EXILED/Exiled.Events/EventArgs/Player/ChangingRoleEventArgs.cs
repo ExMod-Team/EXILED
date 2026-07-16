@@ -8,13 +8,20 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using System.Collections.Generic;
+    using System.Linq;
 
-    using API.Enums;
-    using API.Features;
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
+
     using Interfaces;
+
     using InventorySystem;
+
+    using LabApi.Events.Arguments.PlayerEvents;
+    using LabApi.Events.Handlers;
+
     using PlayerRoles;
 
     /// <summary>
@@ -72,10 +79,17 @@ namespace Exiled.Events.EventArgs.Player
                 Items.Clear();
                 Ammo.Clear();
 
-                foreach (ItemType itemType in inventory.Items)
+                PlayerReceivingLoadoutEventArgs playerReceivingLoadoutEventArgs = new(Player.ReferenceHub, inventory.Items.ToList(), inventory.Ammo, !ShouldPreserveInventory);
+                PlayerEvents.OnReceivingLoadout(playerReceivingLoadoutEventArgs);
+                if (!playerReceivingLoadoutEventArgs.IsAllowed)
+                {
+                    return;
+                }
+
+                foreach (ItemType itemType in playerReceivingLoadoutEventArgs.Items)
                     Items.Add(itemType);
 
-                foreach (KeyValuePair<ItemType, ushort> ammoPair in inventory.Ammo)
+                foreach (KeyValuePair<ItemType, ushort> ammoPair in playerReceivingLoadoutEventArgs.Ammo)
                     Ammo.Add(ammoPair.Key, ammoPair.Value);
 
                 field = value;

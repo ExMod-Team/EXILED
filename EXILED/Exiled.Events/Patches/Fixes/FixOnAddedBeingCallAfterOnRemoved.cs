@@ -9,17 +9,18 @@ namespace Exiled.Events.Patches.Fixes
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
-
+    using Exiled.API.Extensions;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pickups;
+    using Exiled.API.Features.Pools;
 
     using HarmonyLib;
+
     using InventorySystem;
     using InventorySystem.Items;
-    using InventorySystem.Items.Firearms.Ammo;
     using InventorySystem.Items.Pickups;
 
     using Mirror;
@@ -37,18 +38,18 @@ namespace Exiled.Events.Patches.Fixes
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
-            int offset = -2;
-            int index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemBase), nameof(ItemBase.OnAdded)))) + offset;
+            Label nonAmmoLabel = generator.DefineLabel();
+            Label eventNullLabel = generator.DefineLabel();
+            Label runEventLabel = generator.DefineLabel();
 
-            newInstructions.InsertRange(
-                index,
-                new[]
-                {
-                    // CallBefore(itemBase, pickup)
-                    new CodeInstruction(OpCodes.Ldloc_1),
-                    new(OpCodes.Ldarg_S, 4),
-                    new(OpCodes.Call, Method(typeof(FixOnAddedBeingCallAfterOnRemoved), nameof(FixOnAddedBeingCallAfterOnRemoved.CallBefore))),
-                });
+            int offset = -1;
+            int index = newInstructions.FindLastIndex(x => x.Calls(PropertyGetter(typeof(NetworkBehaviour), nameof(NetworkBehaviour.isLocalPlayer)))) + offset;
+            Label skipLabel = newInstructions[index].labels.First();
+
+            offset = -2;
+            index = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemBase), nameof(ItemBase.OnAdded)))) + offset;
+
+            newInstructions[index].labels.Add(nonAmmoLabel);
 
             /*
                 // Modify this
@@ -58,30 +59,63 @@ namespace Exiled.Events.Patches.Fixes
                 {
                     onItemAdded(inv._hub, itemBase2, pickup);
                 }
+
                 // To this
-                Action<ReferenceHub, ItemBase, ItemPickupBase> onItemAdded = InventoryExtensions.OnItemAdded;
-                if (onItemAdded != null)
+                if (type.IsAmmo())
                 {
-                    onItemAdded(inv._hub, itemBase2, pickup);
+                  Action<ReferenceHub, ItemBase, ItemPickupBase> onItemAdded = InventoryExtensions.OnItemAdded;
+                  if (onItemAdded != null)
+                    onItemAdded(inv._hub, itemInstance, pickup);
+
+                  itemInstance.OnAdded(pickup);
                 }
-                itemBase2.OnAdded(pickup);
+                else
+                {
+                  itemInstance.OnAdded(pickup);
+
+                  Action<ReferenceHub, ItemBase, ItemPickupBase> onItemAdded = InventoryExtensions.OnItemAdded;
+                  if (onItemAdded != null)
+                    onItemAdded(inv._hub, itemInstance, pickup);
+                }
             */
-            int opCodesToMove = 3;
-            offset = -2;
 
-            int indexOnAdded = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(ItemBase), nameof(ItemBase.OnAdded)))) + offset;
-            offset = 1;
+            newInstructions.InsertRange(
+                index,
+                new[]
+                {
+                    // CallBefore(itemBase, pickup)
+                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldarg_S, 4),
+                    new(OpCodes.Call, Method(typeof(FixOnAddedBeingCallAfterOnRemoved), nameof(FixOnAddedBeingCallAfterOnRemoved.CallBefore))),
 
-            int indexInvoke = newInstructions.FindIndex(instruction => instruction.Calls(Method(typeof(Action<ReferenceHub, ItemBase, ItemPickupBase>), nameof(Action<ReferenceHub, ItemBase, ItemPickupBase>.Invoke)))) + offset;
+                    // if (!type.IsAmmo())
+                    //     goto default behavior
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(ItemExtensions), nameof(ItemExtensions.IsAmmo))),
+                    new(OpCodes.Brfalse_S, nonAmmoLabel),
 
-            // insert new OnAdded before the Event InventoryExtensions.OnItemAdded
-            newInstructions.InsertRange(indexInvoke, newInstructions.GetRange(indexOnAdded, opCodesToMove));
+                    // Event first
+                    new(OpCodes.Ldsfld, Field(typeof(InventoryExtensions), nameof(InventoryExtensions.OnItemAdded))),
+                    new(OpCodes.Dup),
+                    new(OpCodes.Brtrue_S, runEventLabel),
 
-            // move Label to not skip the OnAdded
-            newInstructions[indexInvoke].MoveLabelsFrom(newInstructions[indexInvoke + opCodesToMove]);
+                    // skip if null
+                    new(OpCodes.Pop),
+                    new(OpCodes.Br_S, eventNullLabel),
 
-            // remove the old OnAdded
-            newInstructions.RemoveRange(indexOnAdded, opCodesToMove);
+                    new CodeInstruction(OpCodes.Ldarg_0).WithLabels(runEventLabel),
+                    new(OpCodes.Ldfld, Field(typeof(Inventory), nameof(Inventory._hub))),
+                    new(OpCodes.Ldloc_1),
+                    new(OpCodes.Ldarg_S, 4),
+                    new(OpCodes.Callvirt, Method(typeof(Action<ReferenceHub, ItemBase, ItemPickupBase>), nameof(Action<ReferenceHub, ItemBase, ItemPickupBase>.Invoke))),
+
+                    // THEN OnAdded
+                    new CodeInstruction(OpCodes.Ldloc_1).WithLabels(eventNullLabel),
+                    new(OpCodes.Ldarg_S, 4),
+                    new(OpCodes.Callvirt, Method(typeof(ItemBase), nameof(ItemBase.OnAdded))),
+
+                    new(OpCodes.Br_S, skipLabel),
+                });
 
             for (int z = 0; z < newInstructions.Count; z++)
                 yield return newInstructions[z];

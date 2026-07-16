@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ValidatingVisibility.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,20 +7,18 @@
 
 namespace Exiled.Events.Patches.Events.Scp939
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection.Emit;
 
     using Exiled.API.Enums;
-    using Exiled.API.Extensions;
-    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
 
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp939;
+
     using HarmonyLib;
-    using InventorySystem.Items;
+
     using Mirror;
 
     using PlayerRoles.PlayableScps.Scp939;
@@ -44,25 +42,22 @@ namespace Exiled.Events.Patches.Events.Scp939
             Label ret = generator.DefineLabel();
             Label end = generator.DefineLabel();
 
-            int offset = 0;
-            int index = newInstructions.FindIndex(i => i.LoadsConstant(0)) + offset;
+            int index = newInstructions.FindIndex(i => i.LoadsConstant(0));
 
             newInstructions[index].labels.Add(ret);
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.None, false));
 
-            offset = 0;
-            index = newInstructions.FindIndex(i => i.LoadsConstant(1)) + offset;
+            index = newInstructions.FindIndex(i => i.LoadsConstant(1));
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.SeenAsScp));
 
-            offset = 2;
+            int offset = 4;
             index = newInstructions.FindIndex(i => i.Calls(PropertyGetter(typeof(AlphaWarheadController), nameof(AlphaWarheadController.Detonated)))) + offset;
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.SeenByDetonation));
 
-            offset = 0;
-            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_3) + offset;
+            index = newInstructions.FindLastIndex(i => i.opcode == OpCodes.Ldloc_3);
 
             // just pre-check for SeenByLastTime or NotSeen VisibilityState, and then il inject
             newInstructions.InsertRange(index, Enumerable.Concat(
@@ -77,8 +72,7 @@ namespace Exiled.Events.Patches.Events.Scp939
                 },
                 CallEvent(generator, ev, ret)));
 
-            offset = 0;
-            index = newInstructions.FindLastIndex(i => i.LoadsField(Field(typeof(Scp939VisibilityController), nameof(Scp939VisibilityController.LastSeen)))) + offset;
+            index = newInstructions.FindLastIndex(i => i.LoadsField(Field(typeof(Scp939VisibilityController), nameof(Scp939VisibilityController.LastSeen))));
 
             newInstructions.InsertRange(index, StaticCallEvent(generator, ev, ret, newInstructions[index], Scp939VisibilityState.SeenByRange));
 
@@ -91,7 +85,7 @@ namespace Exiled.Events.Patches.Events.Scp939
         // helper method for injecting instructions
         private static IEnumerable<CodeInstruction> StaticCallEvent(ILGenerator generator, LocalBuilder ev, Label ret, CodeInstruction insertInstuction, Scp939VisibilityState state, bool setLabel = true)
         {
-            CodeInstruction first = new CodeInstruction(OpCodes.Ldc_I4, (int)state);
+            CodeInstruction first = new(OpCodes.Ldc_I4, (int)state);
 
             if (setLabel)
             {

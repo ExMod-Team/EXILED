@@ -20,6 +20,7 @@ namespace Exiled.API.Extensions
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Pickups;
+
     using Structs;
 
     /// <summary>
@@ -192,6 +193,21 @@ namespace Exiled.API.Extensions
             ItemType.ParticleDisruptor => FirearmType.ParticleDisruptor,
             ItemType.GunSCP127 => FirearmType.Scp127,
             _ => FirearmType.None,
+        };
+
+        /// <summary>
+        /// Converts a valid firearm <see cref="ItemType"/> into a <see cref="WearableElementType"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="ItemType"/> to convert.</param>
+        /// <returns>The firearm type of the given item.</returns>
+        public static WearableElementType GetWearableElementType(this ItemType type) => type switch
+        {
+            ItemType.SCP268 => WearableElementType.Scp268Hat,
+            ItemType.ArmorLight => WearableElementType.ArmorLight,
+            ItemType.ArmorCombat => WearableElementType.ArmorCombat,
+            ItemType.ArmorHeavy => WearableElementType.ArmorHeavy,
+            ItemType.SCP1344 => WearableElementType.Scp1344Goggles,
+            _ => WearableElementType.None,
         };
 
         /// <summary>
