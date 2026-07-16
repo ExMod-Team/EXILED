@@ -7,11 +7,14 @@
 
 namespace Exiled.API.Enums
 {
+    using System;
+
     using Exiled.API.Features.Attributes;
 
     /// <summary>
     /// Type of prefab.
     /// </summary>
+    /// <seealso cref="Features.PrefabHelper"/>
     public enum PrefabType
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -28,6 +31,7 @@ namespace Exiled.API.Enums
         [Prefab(3038351124, "LCZ BreakableDoor")]
         LCZBreakableDoor,
 
+        // TODO: refactor HCZ door wall connector support
         [Prefab(400539138, "HCZ OneSided")]
         HCZOneSided,
 
@@ -37,28 +41,28 @@ namespace Exiled.API.Enums
         [Prefab(3343949480, "OpenHallway")]
         HCZOpenHallway,
 
-        [Prefab(3999209566, "OpenHallway Construct A")]
+        [Prefab(3999209566, "Broken Electrical Box Open Connector")]
         HCZOpenHallway_Construct_A,
 
-        [Prefab(38976586, "OpenHallway Clutter A")]
+        [Prefab(38976586, "Pipes Long Open Connector")]
         HCZOpenHallway_Clutter_A,
 
-        [Prefab(1687661105, "OpenHallway Clutter B")]
+        [Prefab(1687661105, "Simple Boxes Open Connector")]
         HCZOpenHallway_Clutter_B,
 
-        [Prefab(147203050, "OpenHallway Clutter C")]
+        [Prefab(147203050, "Pipes Short Open Connector")]
         HCZOpenHallway_Clutter_C,
 
-        [Prefab(1102032353, "OpenHallway Clutter D")]
+        [Prefab(1102032353, "Boxes Ladder Open Connector")]
         HCZOpenHallway_Clutter_D,
 
-        [Prefab(2490430134, "OpenHallway Clutter E")]
+        [Prefab(2490430134, "Tank-Supported Shelf Open Connector")]
         HCZOpenHallway_Clutter_E,
 
-        [Prefab(2673083832, "OpenHallway Clutter F")]
+        [Prefab(2673083832, "Angled Fences Open Connector")]
         HCZOpenHallway_Clutter_F,
 
-        [Prefab(2536312960, "OpenHallway Clutter G")]
+        [Prefab(2536312960, "Huge Orange Pipes Open Connector")]
         HCZOpenHallway_Clutter_G,
 
         [Prefab(2176035362, "HCZ BulkDoor")]
@@ -85,10 +89,11 @@ namespace Exiled.API.Enums
         [Prefab(712426663, "SpeakerToy")]
         SpeakerToy,
 
-        [Prefab(2672653014, "RegularKeycardPickup")]
+        [Prefab(2672653014, "KeycardPickup")]
         RegularKeycardPickup,
 
-        [Prefab(335436768, "ChaosKeycardPickup")]
+        // TODO: remove duplicate with KeycardPickupChaos
+        [Prefab(2842703865, "KeycardPickup_Chaos")]
         ChaosKeycardPickup,
 
         [Prefab(248357067, "RadioPickup")]
@@ -97,6 +102,7 @@ namespace Exiled.API.Enums
         [Prefab(1925130715, "FirearmPickup")]
         FirearmPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(1925130715, "Com15Pickup")]
         Com15Pickup,
 
@@ -118,18 +124,22 @@ namespace Exiled.API.Enums
         [Prefab(4056235189, "Ammo12gaPickup")]
         Ammo12gaPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(212068596, "E11SRPickup")]
         E11SRPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(1982658896, "CrossvecPickup")]
         CrossvecPickup,
 
         [Prefab(2474630775, "Ammo556mmPickup")]
         Ammo556mmPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(3462306180, "Fsp9Pickup")]
         Fsp9Pickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(2405374689, "LogicerPickup")]
         LogicerPickup,
 
@@ -148,6 +158,7 @@ namespace Exiled.API.Enums
         [Prefab(2344368365, "Ammo9mmPickup")]
         Ammo9mmPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(1749039070, "Com18Pickup")]
         Com18Pickup,
 
@@ -175,12 +186,15 @@ namespace Exiled.API.Enums
         [Prefab(3164421243, "Heavy Armor Pickup")]
         HeavyArmorPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(1861159387, "RevolverPickup")]
         RevolverPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(3814984482, "AkPickup")]
         AkPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(3180035653, "ShotgunPickup")]
         ShotgunPickup,
 
@@ -199,9 +213,11 @@ namespace Exiled.API.Enums
         [Prefab(2702950243, "SCP1853Pickup")]
         SCP1853Pickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(3881162440, "DisruptorPickup")]
         DisruptorPickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(504857316, "Com45Pickup")]
         Com45Pickup,
 
@@ -214,9 +230,11 @@ namespace Exiled.API.Enums
         [Prefab(1209253563, "AntiSCP207Pickup")]
         AntiSCP207Pickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(2216560136, "FRMG0Pickup")]
         FRMG0Pickup,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(74988289, "A7Pickup")]
         A7Pickup,
 
@@ -289,49 +307,55 @@ namespace Exiled.API.Enums
         [Prefab(2409733045, "FlashbangProjectile")]
         FlashbangProjectile,
 
-        [Prefab(1062458989, "SCP-173_Ragdoll")]
+        [Prefab(1062458989, "SCP-173 Ragdoll")]
         Scp173Ragdoll,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(1951328980, "Ragdoll_1")]
         Ragdoll1,
 
-        [Prefab(992490681, "SCP-106_Ragdoll")]
+        [Prefab(992490681, "SCP-106 Ragdoll")]
         Scp106Ragdoll,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(3219675689, "Ragdoll_4")]
         Ragdoll4,
 
-        [Prefab(417388851, "Ragdoll_7")]
+        [Prefab(417388851, "SCP-049 Ragdoll")]
         Ragdoll7,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(3185790062, "Ragdoll_6")]
         Ragdoll6,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(2567420661, "Ragdoll_8")]
         Ragdoll8,
 
-        [Prefab(149379640, "SCP-096_Ragdoll")]
+        [Prefab(149379640, "SCP-096 Ragdoll")]
         Scp096Ragdoll,
 
-        [Prefab(1862774274, "Ragdoll_10")]
+        [Prefab(1862774274, "Zombie Ragdoll")]
         Ragdoll10,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(2710373253, "Ragdoll_Tut")]
         RagdollTutorial,
 
+        [Obsolete("This prefab no longer exists")]
         [Prefab(1389252654, "Ragdoll_12")]
         Ragdoll12,
 
-        [Prefab(3175759689, "SCP-939_Ragdoll")]
+        [Prefab(3175759689, "SCP-939 Ragdoll")]
         Scp939Ragdoll,
 
-        [Prefab(3721192489, "Scp3114_Ragdoll")]
+        [Prefab(3721192489, "SCP-3114 Ragdoll")]
         Scp3114Ragdoll,
 
         [Prefab(2588580243, "ElevatorChamber")]
         ElevatorChamber,
 
-        [Prefab(1757973841, "ElevatorChamber_Gates")]
+        [Prefab(1757973841, "ElevatorChamber Gates")]
         ElevatorChamber_Gates,
 
         [Prefab(912031041, "ElevatorChamberNuke")]
@@ -343,7 +367,7 @@ namespace Exiled.API.Enums
         [Prefab(3539746802, "Sinkhole")]
         Sinkhole,
 
-        [Prefab(1548138668, "AutoRagdoll")]
+        [Prefab(1548138668, "Auto Humanoid Ragdoll")]
         AutoRagdoll,
 
         [Prefab(1323017091, "ElevatorChamberCargo")]
@@ -364,7 +388,7 @@ namespace Exiled.API.Enums
         [Prefab(2026969629, "LczCameraToy")]
         LczCameraToy,
 
-        [Prefab(1548138668, "SzCameraToy")]
+        [Prefab(1734743361, "SzCameraToy")]
         SzCameraToy,
 
         [Prefab(2842703865, "KeycardPickup_Chaos")]
@@ -385,78 +409,99 @@ namespace Exiled.API.Enums
         [Prefab(1891631329, "PrismaticCloud")]
         PrismaticCloud,
 
-        [Prefab(3938583646, "TantrumObj (Brown Candy)")]
+        [Prefab(2157375951, "TantrumObj (Brown Candy)")]
         TantrumObjBrownCandy,
 
         [Prefab(1145481038, "Scp1509Pickup")]
         Scp1509Pickup,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(1359696107, "Hubert Moon")]
         HubertMoon,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(4075838184, "Scp018Projectile Halloween")]
         Scp018ProjectileHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(3262457219, "JailbirdPickup Halloween")]
         JailbirdPickupHalloween,
 
         [Prefab(1712001893, "Scp1509PedestalStructure Variant")]
         Scp1509PedestalStructureVariant,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(517392265, "SCP-173 Ragdoll - MrNutty Sombrero Variant")]
         Scp173RagdollMrNuttySombreroVariant,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(2174094462, "SCP-049 Ragdoll Halloween")]
         Scp049RagdollHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(4255002108, "SCP-096 Ragdoll Halloween")]
         Scp096RagdollHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(2556293836, "Zombie Ragdoll Halloween")]
         ZombieRagdollHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(213466224, "SCP-939 Ragdoll Halloween")]
         Scp939RagdollHalloween,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(689741320, "SCP-559 Cake")]
         Scp559Cake,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(2657863153, "SCP-956")]
         Scp956,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(1205960739, "SCP-2536 Tree")]
         Scp2536,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(2102014206, "Snowpile")]
         Snowpile,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(3401975113, "Scp018Projectile Christmas")]
         Scp018ProjectileChristmas,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(3223468476, "SnowballProjectile")]
         SnowballProjectile,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(296717882, "CoalPickup")]
         CoalPickup,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(409273101, "TapePlayerPickup")]
         Scp1507TapePickup,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(3971391978, "Scp021JPickup")]
         Scp021JPickup,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(142820664, "CoalProjectile")]
         CoalProjectile,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(2405470903, "Scp2536Projectile")]
         Scp2536Projectile,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(1496232901, "SCP-173 Ragdoll Variant")]
         Scp173RagdollChristmas,
 
         [Prefab(6069361, "SnowPoop - TantrumObj")]
         SnowTantrum,
 
+        [Obsolete("Only available for Christmas and AprilFools.")]
         [Prefab(3654754970, "SCP-1507 Ragdoll")]
         Scp1507Ragdoll,
     }

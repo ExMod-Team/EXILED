@@ -23,6 +23,8 @@ namespace Exiled.Events.Patches.Events.Player
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables.Scp1344;
+    using LabApi.Events.Arguments.PlayerEvents;
+    using LabApi.Events.Handlers;
     using Mirror;
 
     using PlayerRoles;
@@ -44,8 +46,6 @@ namespace Exiled.Events.Patches.Events.Player
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
             Label returnLabel = generator.DefineLabel();
-            Label continueLabel = generator.DefineLabel();
-            Label jmp = generator.DefineLabel();
 
             LocalBuilder changingRoleEventArgs = generator.DeclareLocal(typeof(ChangingRoleEventArgs));
             LocalBuilder player = generator.DeclareLocal(typeof(API.Features.Player));
@@ -60,21 +60,9 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
                     new(OpCodes.Stloc_S, player.LocalIndex),
 
-                    // if (Player.IsVerified)
-                    //  goto jmp
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.IsVerified))),
-                    new(OpCodes.Brtrue_S, jmp),
-
-                    // if (!Player.IsNpc)
-                    //  goto continueLabel;
-                    new(OpCodes.Ldloc_S, player.LocalIndex),
-                    new(OpCodes.Callvirt, PropertyGetter(typeof(API.Features.Player), nameof(API.Features.Player.IsNPC))),
-                    new(OpCodes.Brfalse_S, continueLabel),
-
                     // jmp
                     // player
-                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex).WithLabels(jmp),
+                    new CodeInstruction(OpCodes.Ldloc_S, player.LocalIndex),
 
                     // newRole
                     new(OpCodes.Ldarg_1),
@@ -120,8 +108,6 @@ namespace Exiled.Events.Patches.Events.Player
                     new(OpCodes.Ldloc_S, changingRoleEventArgs.LocalIndex),
                     new(OpCodes.Callvirt, PropertyGetter(typeof(ChangingRoleEventArgs), nameof(ChangingRoleEventArgs.Player))),
                     new(OpCodes.Call, Method(typeof(ChangingRoleAndSpawned), nameof(UpdatePlayerRole))),
-
-                    new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel),
                 });
 
             int offset = 1;
@@ -230,6 +216,7 @@ namespace Exiled.Events.Patches.Events.Player
                     InventoryItemProvider.OnItemProvided?.Invoke(ev.Player.ReferenceHub, itemBase);
                 }
 
+                PlayerEvents.OnReceivedLoadout(new PlayerReceivedLoadoutEventArgs(ev.Player.ReferenceHub, ev.Items, ev.Ammo, !ev.ShouldPreserveInventory));
                 InventoryItemProvider.InventoriesToReplenish.Enqueue(ev.Player.ReferenceHub);
             }
             catch (Exception exception)
