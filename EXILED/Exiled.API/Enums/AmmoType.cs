@@ -51,7 +51,7 @@ namespace Exiled.API.Enums
         Ammo44Cal,
 
         /// <summary>
-        /// Custom has been modified by a plugin
+        /// Custom has been modified by a plugin.
         /// </summary>
         Custom,
     }
