@@ -363,6 +363,14 @@ namespace Exiled.API.Features
         public static bool TryGet(Scp079Camera camera, out Camera result) => (result = Get(camera)) != null;
 
         /// <summary>
+        /// Gets the <see cref="Camera"/> belonging to the <see cref="Scp079Camera"/>, if any.
+        /// </summary>
+        /// <param name="gameObject">The <see cref="GameObject"/> of the camera.</param>
+        /// <param name="result">The instance of <see cref="Camera"/> which <see cref="Scp079Camera"/> base.</param>
+        /// <returns><see langword="true"/> if <see cref="Camera"/> is not <see langword="null"/>, or <see langword="false"/> if <see cref="Camera"/> is <see langword="null"/>.</returns>
+        public static bool TryGet(GameObject gameObject, out Camera result) => (result = Get(gameObject)) != null;
+
+        /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
         /// </summary>
         /// <param name="cameraId">The id camera to be shearch.</param>
