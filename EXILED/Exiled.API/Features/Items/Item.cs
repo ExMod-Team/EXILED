@@ -15,6 +15,7 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
@@ -34,7 +35,9 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Usables.Scp1576;
     using InventorySystem.Items.Usables.Scp244;
     using InventorySystem.Items.Usables.Scp330;
+
     using NetworkManagerUtils.Dummies;
+
     using UnityEngine;
 
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
@@ -242,7 +245,7 @@ namespace Exiled.API.Features.Items
                         ItemType.KeycardCustomManagement => new ManagementKeycard(keycard),
                         ItemType.KeycardCustomMetalCase => new MetalKeycard(keycard),
                         _ => new Keycard(keycard),
-                    }
+                    },
                 },
                 UsableItem usable => usable switch
                 {
@@ -347,7 +350,7 @@ namespace Exiled.API.Features.Items
                     ItemType.KeycardCustomManagement => new ManagementKeycard(type),
                     ItemType.KeycardCustomMetalCase => new MetalKeycard(type),
                     _ => new Keycard(type, owner),
-                }
+                },
             },
             UsableItem usable => usable switch
             {
@@ -421,7 +424,19 @@ namespace Exiled.API.Features.Items
         /// <summary>
         /// Destroy this item.
         /// </summary>
-        public void Destroy() => Owner.RemoveItem(this);
+        public void Destroy()
+        {
+            if (Owner.RemoveItem(this))
+                return;
+
+            if (Base != null)
+            {
+                BaseToItem.Remove(Base);
+
+                if (Base.gameObject != null)
+                    Object.Destroy(Base.gameObject);
+            }
+        }
 
         /// <summary>
         /// Creates the <see cref="Pickup"/> that based on this <see cref="Item"/>.

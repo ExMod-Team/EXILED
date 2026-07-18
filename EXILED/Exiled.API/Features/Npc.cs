@@ -14,22 +14,30 @@ namespace Exiled.API.Features
 
     using CommandSystem;
     using CommandSystem.Commands.RemoteAdmin.Dummies;
+
     using Exiled.API.Enums;
     using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Roles;
+
     using Footprinting;
+
     using InventorySystem;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
+
     using MEC;
+
     using Mirror;
+
     using NetworkManagerUtils.Dummies;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.Subroutines;
+
     using PlayerStatsSystem;
-    using RelativePositioning;
+
     using UnityEngine;
 
     /// <summary>
@@ -109,7 +117,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -138,7 +146,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -167,7 +175,7 @@ namespace Exiled.API.Features
 
             set
             {
-                if(!value.HasValue)
+                if (!value.HasValue)
                     return;
 
                 if (!GameObject.TryGetComponent(out PlayerFollower follower))
@@ -298,7 +306,7 @@ namespace Exiled.API.Features
             });
 
             if (ignored)
-                Round.IgnoredPlayers.Add(npc.ReferenceHub);
+                Round.IgnoredPlayers.Add(npc);
 
             Dictionary.Add(npc.GameObject, npc);
             return npc;
@@ -341,7 +349,7 @@ namespace Exiled.API.Features
         {
             try
             {
-                Round.IgnoredPlayers.Remove(ReferenceHub);
+                Round.IgnoredPlayers.Remove(this);
                 Dictionary.Remove(ReferenceHub.gameObject);
                 NetworkServer.Destroy(ReferenceHub.gameObject);
             }
@@ -460,7 +468,7 @@ namespace Exiled.API.Features
         /// <returns>True if successful.</returns>
         public bool EatCandy(CandyKindID candyKind)
         {
-            foreach(Item? item in Items)
+            foreach (Item? item in Items)
             {
                 if (item is not Scp330 scp330)
                 {

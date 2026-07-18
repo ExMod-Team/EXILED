@@ -20,6 +20,7 @@ namespace Exiled.API.Extensions
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Pickups;
+
     using Structs;
 
     /// <summary>

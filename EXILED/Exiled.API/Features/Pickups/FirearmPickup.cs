@@ -11,8 +11,6 @@ namespace Exiled.API.Features.Pickups
 
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
-    using Exiled.API.Features.Items.FirearmModules;
-    using Exiled.API.Features.Items.FirearmModules.Primary;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items;

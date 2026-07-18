@@ -9,7 +9,7 @@ namespace Exiled.API.Features.Roles
 {
     using PlayerRoles;
     using PlayerRoles.PlayableScps.HumeShield;
-    using Respawning;
+
     using Respawning.NamingRules;
 
     using HumanGameRole = PlayerRoles.HumanRole;

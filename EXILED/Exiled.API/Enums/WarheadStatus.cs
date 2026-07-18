@@ -7,30 +7,38 @@
 
 namespace Exiled.API.Enums
 {
+    using System;
+
     /// <summary>
     /// All the available warhead statuses.
     /// </summary>
     /// <seealso cref="Features.Warhead.Status"/>
+    [Flags]
     public enum WarheadStatus
     {
         /// <summary>
         /// The warhead is not armed.
         /// </summary>
-        NotArmed,
+        NotArmed = 0,
 
         /// <summary>
         /// The warhead is armed.
         /// </summary>
-        Armed,
+        Armed = 1,
 
         /// <summary>
         /// The warhead detonation is in progress.
         /// </summary>
-        InProgress,
+        InProgress = 2,
 
         /// <summary>
         /// The warhead has detonated.
         /// </summary>
-        Detonated,
+        Detonated = 4,
+
+        /// <summary>
+        /// The warhead is on cooldown.
+        /// </summary>
+        OnCooldown = 8,
     }
 }

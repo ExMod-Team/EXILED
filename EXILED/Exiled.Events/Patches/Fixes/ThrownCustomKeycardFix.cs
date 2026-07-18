@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ThrownCustomKeycardFix.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -13,8 +13,11 @@ namespace Exiled.Events.Patches.Fixes
     using Exiled.API.Extensions;
     using Exiled.API.Features.Items.Keycards;
     using Exiled.API.Features.Pools;
+
     using HarmonyLib;
+
     using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items.Keycards;
     using InventorySystem.Items.Pickups;
 

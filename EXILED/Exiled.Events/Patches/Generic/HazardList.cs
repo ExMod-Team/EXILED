@@ -10,7 +10,9 @@ namespace Exiled.Events.Patches.Generic
 #pragma warning disable SA1313
 
     using Exiled.API.Features.Hazards;
+
     using HarmonyLib;
+
     using Hazards;
 
     /// <summary>
@@ -21,7 +23,7 @@ namespace Exiled.Events.Patches.Generic
     {
         [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.Start))]
         [HarmonyPostfix]
-        private static void Adding(EnvironmentalHazard __instance) => _ = Hazard.Get(__instance);
+        private static void Adding(EnvironmentalHazard __instance) => Hazard.Get(__instance);
 
         [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnDestroy))]
         [HarmonyPostfix]
