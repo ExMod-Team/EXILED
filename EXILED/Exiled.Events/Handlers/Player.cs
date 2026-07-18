@@ -33,6 +33,11 @@ namespace Exiled.Events.Handlers
         public static Event<HitEventArgs> Hit { get; set; } = new ();
 
         /// <summary>
+        /// Invoked before a player is shown a hitmarker.
+        /// </summary>
+        public static Event<ShowingHitMarkerEventArgs> ShowingHitMarker { get; set; } = new ();
+
+        /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
         public static Event<PreAuthenticatingEventArgs> PreAuthenticating { get; set; } = new();
@@ -1438,6 +1443,23 @@ namespace Exiled.Events.Handlers
         /// </summary>
         /// <param name="ev">The <see cref="HitEventArgs"/> instance.</param>
         public static void OnHit(HitEventArgs ev) => Hit.InvokeSafely(ev);
+
+        /// <summary>
+        /// Called before a player is shown a hitmarker.
+        /// </summary>
+        /// <param name="labEv">The <see cref="PlayerSendingHitmarkerEventArgs"/> instance.</param>
+        public static void OnShowingHitMarker(PlayerSendingHitmarkerEventArgs labEv)
+        {
+            if (!ShowingHitMarker.Patched)
+                return;
+
+            ShowingHitMarkerEventArgs ev = new(labEv.Player.ReferenceHub, labEv.Size, labEv.PlayAudio, labEv.Hitmarker, labEv.IsAllowed);
+            ShowingHitMarker.InvokeSafely(ev);
+            labEv.Size = ev.Size;
+            labEv.PlayAudio = ev.ShouldPlayAudio;
+            labEv.Hitmarker = ev.HitmarkerType;
+            labEv.IsAllowed = ev.IsAllowed;
+        }
 
         /// <summary>
         /// Called before Emergency Release Button is pressed.
