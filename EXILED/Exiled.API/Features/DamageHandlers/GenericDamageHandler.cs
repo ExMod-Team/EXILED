@@ -127,15 +127,17 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.GrayCandy:
                     Base = new GrayCandyDamageHandler(Attacker.Hub, damage);
                     break;
-                case DamageType.MicroHid:
+                case DamageType.MicroHidPrimaryFire:
+                case DamageType.MicroHidChargeFire:
+                case DamageType.MicroHidBrokenFire:
                     InventorySystem.Items.MicroHID.MicroHIDItem microHidOwner = new()
                     {
                         Owner = attacker.ReferenceHub,
                     };
                     Base = new MicroHidDamageHandler(damage, microHidOwner);
                     break;
-                case DamageType.Explosion:
-                    Base = new ExplosionDamageHandler(attacker.Footprint, Vector3.zero, damage, 0, ExplosionType.Grenade);
+                case DamageType.ExplosionGrenade:
+                    Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);
                     break;
                 case DamageType.Firearm:
                 case DamageType.AK:
@@ -180,14 +182,14 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.ParticleDisruptor:
                     Base = new DisruptorDamageHandler(new DisruptorShotEvent(default, Attacker, InventorySystem.Items.Firearms.Modules.DisruptorActionModule.FiringState.FiringSingle), Vector3.up, damage);
                     break;
-                case DamageType.Scp096:
+                case DamageType.Scp096Other:
                     Scp096Role curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
 
                     curr096?._lastOwner = attacker.ReferenceHub;
 
                     Base = new Scp096DamageHandler(curr096, damage, Scp096DamageHandler.AttackType.SlapRight);
                     break;
-                case DamageType.Scp939:
+                case DamageType.Scp939None:
                     Scp939Role curr939 = attacker.ReferenceHub.roleManager.CurrentRole as Scp939Role ?? new Scp939Role();
 
                     curr939?._lastOwner = attacker.ReferenceHub;
