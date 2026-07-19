@@ -2120,6 +2120,50 @@ namespace Exiled.API.Features
         public Pickup DropItem(Item item) => item is not null ? Pickup.Get(Inventory.ServerDropItem(item.Serial)) : null;
 
         /// <summary>
+        /// Drops an <see cref="Item"/> from the player's inventory by its <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="item">The specified <see cref="ItemType"/> to be dropped.</param>
+        /// <param name="isThrown">Whether the item should be thrown.</param>
+        /// <param name="amount">The number of matching items to remove.</param>
+        /// <returns>A value indicating whether the <see cref="Item"/> was dropped.</returns>
+        public bool DropItem(ItemType item, bool isThrown = false, int amount = 1)
+        {
+            if (amount <= 0)
+                return false;
+
+            List<Item> itemsToDrop = Items.Where(i => i?.Type == item).Take(amount).ToList();
+
+            if (itemsToDrop.Count == 0)
+                return false;
+
+            foreach (Item i in itemsToDrop)
+                DropItem(i, isThrown);
+
+            return itemsToDrop.Count > 0;
+        }
+
+        /// <summary>
+        /// Drops an item from the player's inventory.
+        /// </summary>
+        /// <param name="item">The specified <see cref="ItemType"/> to be dropped.</param>
+        /// <param name="amount">The number of matching items to remove.</param>
+        /// <returns>A list of dropped <see cref="Pickup"/>s.</returns>
+        public List<Pickup> DropItem(ItemType item, int amount = 1)
+        {
+            List<Pickup> pickups = new();
+
+            if (amount <= 0)
+                return pickups;
+
+            List<Item> itemsToDrop = Items.Where(i => i?.Type == item).Take(amount).ToList();
+
+            foreach (Item i in itemsToDrop)
+                pickups.Add(DropItem(i));
+
+            return pickups;
+        }
+
+        /// <summary>
         /// Drops the held item. Will not do anything if the player is not holding an item.
         /// </summary>
         /// <param name="isThrown">Is the item Thrown?.</param>
@@ -2223,6 +2267,22 @@ namespace Exiled.API.Features
                 Inventory.SendItemsNextFrame = true;
             }
 
+            return true;
+        }
+
+        /// <summary>
+        /// Removes an <see cref="Item"/> from the player's inventory by its <see cref="ItemType"/>.
+        /// </summary>
+        /// <param name="item">The specified <see cref="ItemType"/> to be removed.</param>
+        /// <param name="destroy">Whether to destroy the item.</param>
+        /// <returns>A value indicating whether the <see cref="Item"/> was removed.</returns>
+        public bool RemoveItem(ItemType item, bool destroy = true)
+        {
+            Item itemtoremove = Items.FirstOrDefault(tempItem => tempItem.Type == item);
+            if (itemtoremove == null)
+                return false;
+
+            RemoveItem(itemtoremove, destroy);
             return true;
         }
 
