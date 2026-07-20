@@ -390,9 +390,11 @@ namespace Exiled.API.Features.Items
         /// <param name="identifier">The <see cref="AttachmentIdentifier"/> to add.</param>
         public void AddAttachment(AttachmentIdentifier identifier)
         {
+            uint fallbackCode = AvailableAttachments[FirearmType].FirstOrDefault(attId => attId.Name == identifier.Name).Code;
+
             // Fallback addedCode onto AvailableAttachments' code in case it's 0
-            uint addedCode = identifier.Code == 0
-                ? AvailableAttachments[FirearmType].FirstOrDefault(attId => attId.Name == identifier.Name).Code
+            uint addedCode = identifier.Code == 0 || fallbackCode != identifier.Code
+                ? fallbackCode
                 : identifier.Code;
 
             // Look for conflicting attachment (attachment that occupies the same slot)
