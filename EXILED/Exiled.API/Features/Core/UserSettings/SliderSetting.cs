@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="SliderSetting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -18,25 +18,6 @@ namespace Exiled.API.Features.Core.UserSettings
     /// </summary>
     public class SliderSetting : SettingBase, IWrapper<SSSliderSetting>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SliderSetting"/> class.
-        /// </summary>
-        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
-        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
-        /// <param name="minValue"><inheritdoc cref="MinimumValue"/></param>
-        /// <param name="maxValue"><inheritdoc cref="MaximumValue"/></param>
-        /// <param name="defaultValue"><inheritdoc cref="DefaultValue"/></param>
-        /// <param name="isInteger"><inheritdoc cref="IsInteger"/></param>
-        /// <param name="stringFormat"><inheritdoc cref="StringFormat"/></param>
-        /// <param name="displayFormat"><inheritdoc cref="DisplayFormat"/></param>
-        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
-        public SliderSetting(int id, string label, float minValue, float maxValue, float defaultValue, bool isInteger, string stringFormat, string displayFormat, string hintDescription)
-            : this(new SSSliderSetting(id, label, minValue, maxValue, defaultValue, isInteger, stringFormat, displayFormat, hintDescription))
-        {
-            Base = (SSSliderSetting)base.Base;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SliderSetting"/> class.
         /// </summary>

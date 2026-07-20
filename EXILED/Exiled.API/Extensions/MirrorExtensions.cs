@@ -44,7 +44,6 @@ namespace Exiled.API.Extensions
     using Mirror;
 
     using PlayerRoles;
-    using PlayerRoles.Blood;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.PlayableScps.Scp1507;
@@ -210,29 +209,6 @@ namespace Exiled.API.Extensions
         /// <param name="target">Target to set info.</param>
         /// <param name="info">Setting info.</param>
         public static void SetPlayerInfoForTargetOnly(this Player player, Player target, string info) => player.SendFakeSyncVar(target.ReferenceHub.networkIdentity, typeof(NicknameSync), nameof(NicknameSync.Network_customPlayerInfoString), info);
-
-        /// <summary>
-        /// Plays a gun sound that only the <paramref name="player"/> can hear.
-        /// </summary>
-        /// <param name="player">Target to play.</param>
-        /// <param name="position">Position to play on.</param>
-        /// <param name="itemType">Weapon' sound to play.</param>
-        /// <param name="volume">Sound's volume to set.</param>
-        /// <param name="audioClipId">GunAudioMessage's audioClipId to set (default = 0).</param>
-        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
-        public static void PlayGunSound(this Player player, Vector3 position, ItemType itemType, byte volume, byte audioClipId = 0)
-            => PlayGunSound(player, position, itemType.GetFirearmType(), volume, audioClipId);
-
-        /// <summary>
-        /// Plays a gun sound that only the <paramref name="player"/> can hear.
-        /// </summary>
-        /// <param name="player">Target to play.</param>
-        /// <param name="position">Position to play on.</param>
-        /// <param name="firearmType">Weapon's sound to play.</param>
-        /// <param name="pitch">Speed of sound.</param>
-        /// <param name="clipIndex">Index of clip.</param>
-        [Obsolete("This method is deprecated, use PlayGunSound(this Player, FirearmType, int, Vector3, MixerChannel, float, float) instead.")]
-        public static void PlayGunSound(this Player player, Vector3 position, FirearmType firearmType, float pitch = 1, int clipIndex = 0) => player.PlayGunSound(firearmType, clipIndex, position, pitch: pitch);
 
         /// <summary>
         /// Plays a gun sound that only the <paramref name="player"/> can hear.
@@ -465,65 +441,6 @@ namespace Exiled.API.Extensions
             });
 
             return true;
-        }
-
-        /// <summary>
-        /// Place blood that only the <paramref name="player"/> can see.
-        /// </summary>
-        /// <param name="player">Target to play.</param>
-        /// <param name="position">The position of the blood decal.</param>
-        /// <param name="origin">The direction of the blood decal.</param>
-        /// <param name="roleTypeId">The RoleTypeId from who blood come from.</param>
-        /// <param name="gettingShotSoundIndex">The sound than player get when getting shot.</param>
-        [Obsolete("Use Player::SpawnBlood(Vector3, Vector3) instead.")]
-#pragma warning disable IDE0060 // TODO: Deleted the unused param
-        public static void PlaceBlood(this Player player, Vector3 position, Vector3 origin, RoleTypeId roleTypeId, int gettingShotSoundIndex)
-#pragma warning restore IDE0060
-        {
-            if (!roleTypeId.TryGetRoleBase(out PlayerRoleBase playerRoleBase) || playerRoleBase is not IBleedableRole)
-                return;
-
-            Features.Items.Firearm firearm = Features.Items.Firearm.ItemTypeToFirearmInstance[FirearmType.Com15];
-
-            if (firearm == null)
-                return;
-
-            using (NetworkWriterPooled writer = NetworkWriterPool.Get())
-            {
-                writer.WriteUShort(NetworkMessageId<RoleSyncInfo>.Id);
-                new RoleSyncInfo(Server.Host.ReferenceHub, RoleTypeId.ClassD, player.ReferenceHub, null).Write(writer);
-                writer.WriteRelativePosition(new RelativePosition(0, 0, 0, 0, false));
-                writer.WriteUShort(0);
-                player.Connection.Send(writer);
-            }
-
-            player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), firearm.Identifier);
-
-            if (!firearm.Base.TryGetModule(out ImpactEffectsModule impactEffectsModule))
-                return;
-
-            Timing.CallDelayed(0.1f, () => // due to selecting item we need to delay shot a bit
-            {
-                using (NetworkWriterPooled writer = NetworkWriterPool.Get())
-                {
-#pragma warning disable SA1116 // Split parameters should start on line after declaration
-                    impactEffectsModule.SendRpc(writer =>
-                    {
-                        writer.WriteSubheader(ImpactEffectsModule.RpcType.PlayerHit);
-                        writer.WriteReferenceHub(Server.Host.ReferenceHub);
-                        writer.WriteRelativePosition(new RelativePosition(position));
-                        writer.WriteRelativePosition(new RelativePosition(origin));
-                        writer.WriteByte(255);
-                        writer.WriteRoleType(RoleTypeId.ClassD);
-                    },
-                    true);
-#pragma warning restore SA1116 // Split parameters should start on line after declaration
-                }
-
-                player.SendFakeSyncVar(Server.Host.Inventory.netIdentity, typeof(Inventory), nameof(Inventory.NetworkCurItem), ItemIdentifier.None);
-
-                player.Connection.Send(new RoleSyncInfo(Server.Host.ReferenceHub, Server.Host.Role, player.ReferenceHub, null));
-            });
         }
 
         /// <summary>

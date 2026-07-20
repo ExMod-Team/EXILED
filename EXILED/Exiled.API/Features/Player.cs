@@ -14,8 +14,6 @@ namespace Exiled.API.Features
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    using AudioPooling;
-
     using Core;
 
     using CustomPlayerEffects;
@@ -483,8 +481,6 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets or sets a value indicating whether the player is allowed to enter noclip mode.
         /// </summary>
-        /// <remarks>For forcing the player into noclip mode, see <see cref="FpcRole.IsNoclipEnabled"/>.</remarks>
-        /// <seealso cref="FpcRole.IsNoclipEnabled"/>
         public bool IsNoclipPermitted
         {
             get => FpcNoclip.IsPermitted(ReferenceHub);
@@ -1060,12 +1056,6 @@ namespace Exiled.API.Features
         /// Gets a <see cref="IEnumerable{T}"/> of all active Artificial Health processes on the player.
         /// </summary>
         public IEnumerable<AhpProcess> ActiveArtificialHealthProcesses => ReferenceHub.playerStats.GetModule<AhpStat>()._activeProcesses;
-
-        /// <summary>
-        /// Gets the player's <see cref="PlayerStatsSystem.HumeShieldStat"/>.
-        /// </summary>
-        [Obsolete("Use " + nameof(CustomHumeShieldStat) + " instead.")]
-        public HumeShieldStat HumeShieldStat => CustomHumeShieldStat;
 
         /// <summary>
         /// Gets or sets the item in the player's hand. Value will be <see langword="null"/> if the player is not holding anything.
@@ -3860,16 +3850,6 @@ namespace Exiled.API.Features
 
             Connection.Send(new RoundRestartMessage(roundRestartType, delay, newPort, reconnect, false));
         }
-
-        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, byte, byte)"/>
-        [Obsolete("Use PlayGunSound(Player, Vector3, FirearmType, byte, byte) instead.")]
-        public void PlayGunSound(ItemType type, byte volume, byte audioClipId = 0)
-            => PlayGunSound(type.GetFirearmType(), volume, audioClipId);
-
-        /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, FirearmType, int, Vector3, MixerChannel, float?, float?)"/>
-        [Obsolete("Use Player::PlayGunSound(FirearmType, int, Vector3, MixerChannel, float?, float?) instead of this.")]
-        public void PlayGunSound(FirearmType itemType, float pitch = 1, int clipIndex = 0)
-            => this.PlayGunSound(itemType, clipIndex, Position, pitch: pitch);
 
         /// <inheritdoc cref="Map.PlaceBlood(Vector3, Vector3)"/>
         public void PlaceBlood(Vector3 direction) => Map.PlaceBlood(Position, direction);

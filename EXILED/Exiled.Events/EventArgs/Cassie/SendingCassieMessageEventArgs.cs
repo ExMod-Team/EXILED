@@ -124,12 +124,6 @@ namespace Exiled.Events.EventArgs.Cassie
         public bool IsAllowed { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the event can be executed.
-        /// </summary>
-        [Obsolete("Useless and will be removed in Exiled 10.")]
-        public bool IsCustomAnnouncement { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating where the subtitles for this message came from.
         /// </summary>
         public CassieTtsPayload.SubtitleMode SubtitleSource { get; set; }

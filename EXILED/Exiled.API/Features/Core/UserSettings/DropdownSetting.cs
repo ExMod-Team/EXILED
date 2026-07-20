@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="DropdownSetting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -20,32 +20,6 @@ namespace Exiled.API.Features.Core.UserSettings
     /// </summary>
     public class DropdownSetting : SettingBase, IWrapper<SSDropdownSetting>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DropdownSetting"/> class.
-        /// </summary>
-        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
-        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
-        /// <param name="options"><inheritdoc cref="Options"/></param>
-        /// <param name="defaultOptionIndex"><inheritdoc cref="DefaultOptionIndex"/></param>
-        /// <param name="dropdownEntryType"><inheritdoc cref="DropdownType"/></param>
-        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
-        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params")]
-        public DropdownSetting(
-            int id,
-            string label,
-            IEnumerable<string> options,
-            int defaultOptionIndex,
-            SSDropdownSetting.DropdownEntryType dropdownEntryType,
-            string hintDescription,
-            HeaderSetting header,
-            Action<Player, SettingBase> onChanged)
-            : base(new SSDropdownSetting(id, label, options.ToArray(), defaultOptionIndex, dropdownEntryType, hintDescription), header, onChanged)
-        {
-            Base = (SSDropdownSetting)base.Base;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DropdownSetting"/> class.
         /// </summary>

@@ -31,12 +31,6 @@ namespace Exiled.API.Features
     public static class Respawn
     {
         /// <summary>
-        /// Gets the <see cref="List{T}"/> of paused <see cref="SpawnableWaveBase"/>'s.
-        /// </summary>
-        [Obsolete("This is now unused.", true)]
-        public static List<SpawnableWaveBase> PausedWaves { get; } = new();
-
-        /// <summary>
         /// Gets the <see cref="Dictionary{TKey,TValue}"/> containing faction influence.
         /// </summary>
         public static Dictionary<Faction, float> FactionInfluence => FactionInfluenceManager.Influence;

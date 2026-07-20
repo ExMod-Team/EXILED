@@ -186,14 +186,6 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets the <see cref="ShootingTargetToy"/> belonging to the <see cref="ShootingTarget"/>.
-        /// </summary>
-        /// <param name="shootingTarget">The <see cref="ShootingTarget"/> instance.</param>
-        /// <returns>The corresponding <see cref="ShootingTargetToy"/> instance.</returns>
-        [Obsolete("This method is deprecated, please use the generic Get<T> method instead.")]
-        public static ShootingTargetToy Get(ShootingTarget shootingTarget) => Get<ShootingTargetToy>(shootingTarget);
-
-        /// <summary>
         /// Clears the target and resets its health.
         /// </summary>
         public void Clear() => Base.ClearTarget();

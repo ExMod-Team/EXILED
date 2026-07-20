@@ -51,9 +51,6 @@ namespace Exiled.Events.Patches.Events.Scp173
                     new(OpCodes.Call, PropertyGetter(typeof(StandardSubroutine<Scp173Role>), nameof(StandardSubroutine<Scp173Role>.Owner))),
                     new(OpCodes.Call, Method(typeof(API.Features.Player), nameof(API.Features.Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // tantrumEnvironmentalHazard
-                    new(OpCodes.Ldloc_1),
-
                     // this.Cooldown
                     new(OpCodes.Ldarg_0),
                     new(OpCodes.Ldfld, Field(typeof(Scp173TantrumAbility), nameof(Scp173TantrumAbility.Cooldown))),
@@ -61,7 +58,7 @@ namespace Exiled.Events.Patches.Events.Scp173
                     // true
                     new(OpCodes.Ldc_I4_1),
 
-                    // PlacingTantrumEventArgs ev = new(Player, TantrumEnvironmentalHazard, AbilityCooldown, bool)
+                    // PlacingTantrumEventArgs ev = new(Player, AbilityCooldown, bool)
                     new(OpCodes.Newobj, GetDeclaredConstructors(typeof(PlacingTantrumEventArgs))[0]),
                     new(OpCodes.Dup),
                     new(OpCodes.Dup),
