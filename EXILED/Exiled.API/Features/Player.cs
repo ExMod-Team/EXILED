@@ -556,9 +556,9 @@ namespace Exiled.API.Features
             set
             {
                 Vector2 rotation = value.eulerAngles;
-                rotation.x = Mathf.Repeat(rotation.x + 180f, 360f) - 180f; // X Rotation is limited to [-88, 88] degrees, and just clamps values like 400 even though they are in range
+                rotation.x = Mathf.Repeat(rotation.x + 180f, FpcMouseLook.FullAngle) - 180f; // X Rotation is limited to [-88, 88] degrees, and just clamps values like 400 even though they are in range
                 rotation.x *= -1; // X Rotation is inverted in class FpcMouseLook
-                rotation.y = Mathf.Repeat(rotation.y, 360f); // This is necessary because rotation is clamped in FpcMouseLook
+                rotation.y = Mathf.Repeat(rotation.y, FpcMouseLook.FullAngle); // This is necessary because rotation is clamped in FpcMouseLook
                 ReferenceHub.TryOverrideRotation(rotation);
             }
         }

@@ -273,7 +273,7 @@ namespace Exiled.Events.Handlers.Internal
                     WaypointBase.GetRelativeRotation(target.Position, Quaternion.Euler(Vector3.up * target.Rotation.eulerAngles.y), out _, out Quaternion relativeRotation);
 
                     writer.WriteRelativePosition(new RelativePosition(target.Position));
-                    writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0F, 360F, relativeRotation.eulerAngles.y) * ushort.MaxValue));
+                    writer.WriteUShort((ushort)Mathf.RoundToInt(Mathf.InverseLerp(0F, FpcMouseLook.FullAngle, relativeRotation.eulerAngles.y) * ushort.MaxValue));
                 }
             }
 
