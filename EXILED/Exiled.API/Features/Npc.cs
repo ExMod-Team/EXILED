@@ -532,7 +532,7 @@ namespace Exiled.API.Features
         /// <param name="hold">Specifies if the shooting is to be held.</param>
         /// <returns>True if successful.</returns>
         public bool TryShoot(bool hold) =>
-            RunItemAction(CurrentItem, ActionName.Shoot, hold);
+            TryRunItemAction(CurrentItem, ActionName.Shoot, hold);
 
         /// <summary>
         /// Forces the Npc to reload.
@@ -540,7 +540,7 @@ namespace Exiled.API.Features
         /// <param name="hold">Specifies if the reloading is to be held.</param>
         /// <returns>True if successful.</returns>
         public bool TryReload(bool hold) =>
-            RunItemAction(CurrentItem, ActionName.Reload, hold);
+            TryRunItemAction(CurrentItem, ActionName.Reload, hold);
 
         /// <summary>
         /// Forces the Npc to zoom.
@@ -548,7 +548,7 @@ namespace Exiled.API.Features
         /// <param name="hold">Specifies if the zooming is to be held.</param>
         /// <returns>True if successful.</returns>
         public bool TryZoom(bool hold) =>
-            RunItemAction(CurrentItem, ActionName.Zoom, hold);
+            TryRunItemAction(CurrentItem, ActionName.Zoom, hold);
 
         /// <summary>
         /// Forces the Npc to run generic action with item.
@@ -558,7 +558,7 @@ namespace Exiled.API.Features
         /// <param name="hold">Specifies if the action is to be held.</param>
         /// <returns>True if successful.</returns>
         public bool TryRunItemAction(Item item, ActionName name, bool hold = true) =>
-            RunAction(item?.DummyEmulator, name, hold);
+            TryRunAction(item?.DummyEmulator, name, hold);
 
         /// <summary>
         /// Forces the Npc to stop generic action with item.
@@ -567,7 +567,7 @@ namespace Exiled.API.Features
         /// <param name="name">The name of action to stop.</param>
         /// <returns>True if successful.</returns>
         public bool TryStopItemAction(Item item, ActionName name) =>
-            StopAction(item?.DummyEmulator, name);
+            TryStopAction(item?.DummyEmulator, name);
 
         /// <summary>
         /// Checks if certain action is currently active.
@@ -588,7 +588,7 @@ namespace Exiled.API.Features
         /// <returns>True if successful.</returns>
         public bool TryRunSubroutineAction<T>(T subroutine, ActionName name, bool hold = true)
             where T : SubroutineBase =>
-            RunAction(subroutine?.DummyEmulator, name, hold);
+            TryRunAction(subroutine?.DummyEmulator, name, hold);
 
         /// <summary>
         /// Forces the Npc to stop generic action with subroutine.
@@ -599,7 +599,7 @@ namespace Exiled.API.Features
         /// <returns>True if successful.</returns>
         public bool TryStopSubroutineAction<T>(T subroutine, ActionName name)
             where T : SubroutineBase =>
-            StopAction(subroutine?.DummyEmulator, name);
+            TryStopAction(subroutine?.DummyEmulator, name);
 
         /// <summary>
         /// Checks if certain action is currently active.
