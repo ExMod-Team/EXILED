@@ -442,12 +442,10 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="jumpStrength">The strength used to jump. Null will choose the default one.</param>
         /// <returns>True if successful.</returns>
-        public bool Jump(float? jumpStrength = null)
+        public bool TryJump(float? jumpStrength = null)
         {
             if (Role is not FpcRole fpcRole)
-            {
                 return false;
-            }
 
             fpcRole.Jump(jumpStrength);
             return true;
@@ -458,16 +456,14 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="candyKind">The kind of candy to eat.</param>
         /// <returns>True if successful.</returns>
-        public bool EatCandy(CandyKindID candyKind)
+        public bool TryEatCandy(CandyKindID candyKind)
         {
             foreach(Item? item in Items)
             {
                 if (item is not Scp330 scp330)
-                {
                     continue;
-                }
 
-                return EatCandy(scp330, candyKind);
+                return TryEatCandy(scp330, candyKind);
             }
 
             return false;
@@ -479,7 +475,7 @@ namespace Exiled.API.Features
         /// <param name="from">The <see cref="Scp330"/> bag.</param>
         /// <param name="candyKind">The kind of candy to eat.</param>
         /// <returns>True if successful.</returns>
-        public bool EatCandy(Scp330 from, CandyKindID candyKind)
+        public bool TryEatCandy(Scp330 from, CandyKindID candyKind)
         {
             for (int i = 0; i < from.Candies.Count; i++)
             {
@@ -535,24 +531,24 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="hold">Specifies if the shooting is to be held.</param>
         /// <returns>True if successful.</returns>
-        public bool Shoot(bool hold) =>
-            RunItemAction(CurrentItem, ActionName.Shoot, hold);
+        public bool TryShoot(bool hold) =>
+            TryRunItemAction(CurrentItem, ActionName.Shoot, hold);
 
         /// <summary>
         /// Forces the Npc to reload.
         /// </summary>
         /// <param name="hold">Specifies if the reloading is to be held.</param>
         /// <returns>True if successful.</returns>
-        public bool Reload(bool hold) =>
-            RunItemAction(CurrentItem, ActionName.Reload, hold);
+        public bool TryReload(bool hold) =>
+            TryRunItemAction(CurrentItem, ActionName.Reload, hold);
 
         /// <summary>
         /// Forces the Npc to zoom.
         /// </summary>
         /// <param name="hold">Specifies if the zooming is to be held.</param>
         /// <returns>True if successful.</returns>
-        public bool Zoom(bool hold) =>
-            RunItemAction(CurrentItem, ActionName.Zoom, hold);
+        public bool TryZoom(bool hold) =>
+            TryRunItemAction(CurrentItem, ActionName.Zoom, hold);
 
         /// <summary>
         /// Forces the Npc to run generic action with item.
@@ -561,8 +557,8 @@ namespace Exiled.API.Features
         /// <param name="name">The name of action to force.</param>
         /// <param name="hold">Specifies if the action is to be held.</param>
         /// <returns>True if successful.</returns>
-        public bool RunItemAction(Item item, ActionName name, bool hold = true) =>
-            RunAction(item?.DummyEmulator, name, hold);
+        public bool TryRunItemAction(Item item, ActionName name, bool hold = true) =>
+            TryRunAction(item?.DummyEmulator, name, hold);
 
         /// <summary>
         /// Forces the Npc to stop generic action with item.
@@ -570,8 +566,8 @@ namespace Exiled.API.Features
         /// <param name="item">The <see cref="Item"/> to stop action for.</param>
         /// <param name="name">The name of action to stop.</param>
         /// <returns>True if successful.</returns>
-        public bool StopItemAction(Item item, ActionName name) =>
-            StopAction(item?.DummyEmulator, name);
+        public bool TryStopItemAction(Item item, ActionName name) =>
+            TryStopAction(item?.DummyEmulator, name);
 
         /// <summary>
         /// Checks if certain action is currently active.
@@ -590,9 +586,9 @@ namespace Exiled.API.Features
         /// <param name="hold">Specifies if the action is to be held.</param>
         /// <typeparam name="T"><see cref="SubroutineBase"/>.</typeparam>
         /// <returns>True if successful.</returns>
-        public bool RunSubroutineAction<T>(T subroutine, ActionName name, bool hold = true)
+        public bool TryRunSubroutineAction<T>(T subroutine, ActionName name, bool hold = true)
             where T : SubroutineBase =>
-            RunAction(subroutine?.DummyEmulator, name, hold);
+            TryRunAction(subroutine?.DummyEmulator, name, hold);
 
         /// <summary>
         /// Forces the Npc to stop generic action with subroutine.
@@ -601,9 +597,9 @@ namespace Exiled.API.Features
         /// <param name="name">The name of action to stop.</param>
         /// <typeparam name="T"><see cref="SubroutineBase"/>.</typeparam>
         /// <returns>True if successful.</returns>
-        public bool StopSubroutineAction<T>(T subroutine, ActionName name)
+        public bool TryStopSubroutineAction<T>(T subroutine, ActionName name)
             where T : SubroutineBase =>
-            StopAction(subroutine?.DummyEmulator, name);
+            TryStopAction(subroutine?.DummyEmulator, name);
 
         /// <summary>
         /// Checks if certain action is currently active.
@@ -623,7 +619,7 @@ namespace Exiled.API.Features
         /// <param name="name">The name of action to force.</param>
         /// <param name="hold">Specifies if the action is to be held.</param>
         /// <returns>True if successful.</returns>
-        public bool RunAction(DummyKeyEmulator? emulator, ActionName name, bool hold)
+        public bool TryRunAction(DummyKeyEmulator? emulator, ActionName name, bool hold)
         {
             if (emulator == null)
                 return false;
@@ -638,7 +634,7 @@ namespace Exiled.API.Features
         /// <param name="emulator">The <see cref="DummyKeyEmulator"/> to stop action for.</param>
         /// <param name="name">The name of action to stop.</param>
         /// <returns>True if successful.</returns>
-        public bool StopAction(DummyKeyEmulator? emulator, ActionName name)
+        public bool TryStopAction(DummyKeyEmulator? emulator, ActionName name)
         {
             if (emulator == null)
                 return false;
