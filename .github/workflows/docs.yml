@@ -32,10 +32,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@main
 
     - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@main
       with:
         dotnet-version: '6.0.x'
 
@@ -45,7 +45,7 @@ jobs:
         dotnet tool update -g docfx || dotnet tool install -g docfx
 
     - name: Setup Nuget
-      uses: nuget/setup-nuget@v2
+      uses: nuget/setup-nuget@main
 
     - name: Get references
       shell: pwsh
@@ -61,11 +61,11 @@ jobs:
         EXILED_REFERENCES: ${{ env.EXILED_REFERENCES_PATH }}
 
     - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@main
       with:
         # Upload entire repository
         path: 'EXILED/docs/_site'
 
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@main

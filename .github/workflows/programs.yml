@@ -25,9 +25,9 @@ jobs:
     timeout-minutes: 30
 
     steps:
-    - uses: actions/setup-dotnet@v4.0.1
+    - uses: actions/setup-dotnet@main
 
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@main
 
     - name: Install dependencies for ${{ matrix.proj_name }}@${{ matrix.target }}
       run: dotnet restore ${{ matrix.proj_name }} -r ${{ matrix.target }}

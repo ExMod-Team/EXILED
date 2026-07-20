@@ -31,12 +31,12 @@ jobs:
     steps:
 
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v4.0.1
+      uses: actions/setup-dotnet@main
 
     - name: Setup Nuget
-      uses: nuget/setup-nuget@v2
+      uses: nuget/setup-nuget@main
 
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@main
 
     - name: Get references
       shell: pwsh
@@ -54,7 +54,7 @@ jobs:
         Out-File -FilePath ${{ github.env }} -InputObject "PackageFile=$File" -Encoding utf-8 -Append
 
     - name: Upload nuget package
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@main
       with:
         name: ${{ env.PackageFile }}
         path: EXILED/${{ env.PackageFile }}
@@ -69,7 +69,7 @@ jobs:
       run: ./packaging.ps1
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@main
       with:
         name: Build Result
         path: EXILED/bin/Release/Exiled.tar.gz

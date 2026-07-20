@@ -22,12 +22,12 @@ jobs:
     steps:
 
     - name: Setup .NET Core SDK
-      uses: actions/setup-dotnet@v4.0.1
+      uses: actions/setup-dotnet@main
 
     - name: Setup Nuget
-      uses: NuGet/setup-nuget@v2
+      uses: NuGet/setup-nuget@main
 
-    - uses: actions/checkout@v4.1.7
+    - uses: actions/checkout@main
 
     - name: Get references
       shell: pwsh

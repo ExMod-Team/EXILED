@@ -22,12 +22,12 @@ jobs:
     
     steps:
       - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4.0.1
+        uses: actions/setup-dotnet@main
   
       - name: Setup Nuget
-        uses: nuget/setup-nuget@v2
+        uses: nuget/setup-nuget@main
   
-      - uses: actions/checkout@v4.1.7
+      - uses: actions/checkout@main
   
       - name: Get references
         shell: pwsh
@@ -63,7 +63,7 @@ jobs:
         run: dotnet publish Exiled.Installer -r win-x64 -c release -o builds/win-x64 --self-contained true
         
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@main
         with:
           files: |
             EXILED/bin/Release/Exiled.tar.gz
