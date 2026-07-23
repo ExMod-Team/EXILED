@@ -30,15 +30,12 @@ namespace Exiled.Events.Commands
         /// <inheritdoc />
         public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            double diff = Server.SmoothTps / Server.MaxTps;
-            string color = diff switch
+            foreach (string data in ServerStatic.PermissionsHandler._config.GetStringList("AdditionalGroups"))
             {
-                > 0.9 => "green",
-                > 0.5 => "yellow",
-                _ => "red"
-            };
+                Log.Info(data);
+            }
 
-            response = $"<color={color}>{Server.SmoothTps}/{Server.MaxTps}</color>";
+            response = "uwu";
             return true;
         }
     }
