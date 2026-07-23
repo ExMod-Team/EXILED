@@ -44,6 +44,12 @@ namespace Exiled.Permissions
         [Description("The permissions full path")]
         public string FullPath { get; private set; }
 
+        /// <summary>
+        /// Gets a value indicating whether multi-group system should be used.
+        /// </summary>
+        [Description("Whether MultiGroup system should be used")]
+        public bool UseMultiGroup { get; private set; } = false;
+
         /// <inheritdoc/>
         public bool IsEnabled { get; set; } = true;
 
