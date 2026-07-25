@@ -38,7 +38,8 @@ namespace Exiled.Events.Patches.Events.Player
             if (!Player.UnverifiedPlayers.TryGetValue(hub.gameObject, out Player player))
                 Joined.CallEvent(hub, out player);
 
-            Player.Dictionary.Add(hub.gameObject, player);
+            if (!Player.Dictionary.TryAdd(hub.gameObject, player))
+                Player.Dictionary[hub.gameObject] = player;
 
             player.IsVerified = true;
             player.RawUserId = player.UserId.GetRawUserId();
