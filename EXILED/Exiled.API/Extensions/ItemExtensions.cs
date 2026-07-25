@@ -32,7 +32,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="item">The item to be checked.</param>
         /// <returns>Returns whether the <see cref="ItemType"/> is an ammo.</returns>
-        public static bool IsAmmo(this ItemType item) => item.GetAmmoType() is not (AmmoType.None or AmmoType.Custom);
+        public static bool IsAmmo(this ItemType item) => item.GetAmmoType() is not(AmmoType.None or AmmoType.Custom);
 
         /// <summary>
         /// Check if an <see cref="ItemType">item</see> is a weapon.
