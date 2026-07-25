@@ -318,14 +318,15 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="cameraId">The camera id to be searched for.</param>
         /// <returns>The <see cref="Camera"/> with the given id or <see langword="null"/> if not found.</returns>
-        public static Camera Get(uint cameraId) => Get((ushort)cameraId); // TODO: Removed this method and only keep UShort
+        public static Camera Get(ushort cameraId) => Scp079InteractableBase.TryGetInteractable(cameraId, out Scp079InteractableBase scp079) ? Get(scp079.gameObject) : null;
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
         /// </summary>
         /// <param name="cameraId">The camera id to be searched for.</param>
         /// <returns>The <see cref="Camera"/> with the given id or <see langword="null"/> if not found.</returns>
-        public static Camera Get(ushort cameraId) => Scp079InteractableBase.TryGetInteractable(cameraId, out Scp079InteractableBase scp079) ? Get(scp079.gameObject) : null;
+        [Obsolete("use Ushort instead of Uint", true)]
+        public static Camera Get(uint cameraId) => Get((ushort)cameraId);
 
         /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraName"/>.
@@ -365,11 +366,28 @@ namespace Exiled.API.Features
         public static bool TryGet(Scp079Camera camera, out Camera result) => (result = Get(camera)) != null;
 
         /// <summary>
+        /// Gets the <see cref="Camera"/> belonging to the <see cref="Scp079Camera"/>, if any.
+        /// </summary>
+        /// <param name="gameObject">The <see cref="GameObject"/> of the camera.</param>
+        /// <param name="result">The instance of <see cref="Camera"/> which <see cref="Scp079Camera"/> base.</param>
+        /// <returns><see langword="true"/> if <see cref="Camera"/> is not <see langword="null"/>, or <see langword="false"/> if <see cref="Camera"/> is <see langword="null"/>.</returns>
+        public static bool TryGet(GameObject gameObject, out Camera result) => (result = Get(gameObject)) != null;
+
+        /// <summary>
         /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
         /// </summary>
         /// <param name="cameraId">The id camera to be shearch.</param>
         /// <param name="result">the result of <see cref="Camera"/>, if <paramref name="cameraId"/> is valid.</param>
         /// <returns><see langword="true"/> if <see cref="Camera"/> is not <see langword="null"/>, or <see langword="false"/> if <see cref="Camera"/> is <see langword="null"/>.</returns>
+        public static bool TryGet(ushort cameraId, out Camera result) => (result = Get(cameraId)) != null;
+
+        /// <summary>
+        /// Gets a <see cref="Camera"/> given the specified <paramref name="cameraId"/>.
+        /// </summary>
+        /// <param name="cameraId">The id camera to be shearch.</param>
+        /// <param name="result">the result of <see cref="Camera"/>, if <paramref name="cameraId"/> is valid.</param>
+        /// <returns><see langword="true"/> if <see cref="Camera"/> is not <see langword="null"/>, or <see langword="false"/> if <see cref="Camera"/> is <see langword="null"/>.</returns>
+        [Obsolete("use Ushort instead of Uint", true)]
         public static bool TryGet(uint cameraId, out Camera result) => (result = Get(cameraId)) != null;
 
         /// <summary>
