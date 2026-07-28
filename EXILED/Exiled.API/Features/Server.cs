@@ -185,19 +185,6 @@ namespace Exiled.API.Features
         public static float LateJoinTime => ConfigFile.ServerConfig.GetFloat(RoleAssigner.LateJoinKey, 0f);
 
         /// <summary>
-        /// Gets or sets a value indicating whether the server is marked as Heavily Modded.
-        /// <remarks>
-        /// Read the VSR for more info about its usage.
-        /// </remarks>
-        /// </summary>
-        [Obsolete("This field has been deleted because it used the wrong field (TransparentlyModded)")]
-        public static bool IsHeavilyModded
-        {
-            get => false;
-            set => _ = value;
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the server is marked as Transparently Modded.
         /// <remarks>
         /// It is not used now, wait for a new VSR update.

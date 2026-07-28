@@ -6,8 +6,6 @@
 // -----------------------------------------------------------------------
 namespace Exiled.API.Enums
 {
-    using System;
-
     /// <summary>
     /// All of the valid spawn location types.
     /// </summary>
@@ -79,15 +77,9 @@ namespace Exiled.API.Enums
         InsideLczCafe,
 
         /// <summary>
-        /// Inside the Nuke armory.
-        /// </summary>
-        [Obsolete("This Location has been removed from the game.")]
-        InsideNukeArmory,
-
-        /// <summary>
         /// Inside the surface nuke room.
         /// </summary>
-        InsideSurfaceNuke,
+        InsideSurfaceNuke = 15,
 
         /// <summary>
         /// Inside the first SCP-079 gate.
@@ -130,21 +122,9 @@ namespace Exiled.API.Enums
         InsideHidChamber,
 
         /// <summary>
-        /// Inside the lower door that leads to the stairs in Micro-HID room.
-        /// </summary>
-        [Obsolete("This location has been removed from the game.")]
-        InsideHidLower,
-
-        /// <summary>
-        /// Inside the upper door that leads into the Micro-HID room just after the stairs.
-        /// </summary>
-        [Obsolete("This location has been removed from the game. Use InsideHidLab instead.")]
-        InsideHidUpper,
-
-        /// <summary>
         /// Just inside the LCZ WC door.
         /// </summary>
-        InsideLczWc,
+        InsideLczWc = 26,
 
         /// <summary>
         /// Inside the Glass Box in GR-18.

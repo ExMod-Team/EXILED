@@ -102,12 +102,8 @@ namespace Exiled.API.Enums
         [Prefab(1925130715, "FirearmPickup")]
         FirearmPickup,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(1925130715, "Com15Pickup")]
-        Com15Pickup,
-
         [Prefab(2808038258, "MedkitPickup")]
-        MedkitPickup,
+        MedkitPickup = 28,
 
         [Prefab(2606539874, "FlashlightPickup")]
         FlashlightPickup,
@@ -124,27 +120,11 @@ namespace Exiled.API.Enums
         [Prefab(4056235189, "Ammo12gaPickup")]
         Ammo12gaPickup,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(212068596, "E11SRPickup")]
-        E11SRPickup,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(1982658896, "CrossvecPickup")]
-        CrossvecPickup,
-
         [Prefab(2474630775, "Ammo556mmPickup")]
-        Ammo556mmPickup,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(3462306180, "Fsp9Pickup")]
-        Fsp9Pickup,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(2405374689, "LogicerPickup")]
-        LogicerPickup,
+        Ammo556mmPickup = 36,
 
         [Prefab(1273232029, "HegPickup")]
-        HegPickup,
+        HegPickup = 39,
 
         [Prefab(3871663704, "FlashbangPickup")]
         FlashbangPickup,
@@ -158,12 +138,8 @@ namespace Exiled.API.Enums
         [Prefab(2344368365, "Ammo9mmPickup")]
         Ammo9mmPickup,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(1749039070, "Com18Pickup")]
-        Com18Pickup,
-
         [Prefab(3525743409, "Scp018Projectile")]
-        Scp018Projectile,
+        Scp018Projectile = 45,
 
         [Prefab(3711531185, "SCP268Pickup")]
         SCP268Pickup,
@@ -186,20 +162,8 @@ namespace Exiled.API.Enums
         [Prefab(3164421243, "Heavy Armor Pickup")]
         HeavyArmorPickup,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(1861159387, "RevolverPickup")]
-        RevolverPickup,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(3814984482, "AkPickup")]
-        AkPickup,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(3180035653, "ShotgunPickup")]
-        ShotgunPickup,
-
         [Prefab(464602874, "Scp330Pickup")]
-        Scp330Pickup,
+        Scp330Pickup = 56,
 
         [Prefab(1983050408, "Scp2176Projectile")]
         Scp2176Projectile,
@@ -213,16 +177,8 @@ namespace Exiled.API.Enums
         [Prefab(2702950243, "SCP1853Pickup")]
         SCP1853Pickup,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(3881162440, "DisruptorPickup")]
-        DisruptorPickup,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(504857316, "Com45Pickup")]
-        Com45Pickup,
-
         [Prefab(303271247, "SCP1576Pickup")]
-        SCP1576Pickup,
+        SCP1576Pickup = 63,
 
         [Prefab(2915316078, "JailbirdPickup")]
         JailbirdPickup,
@@ -230,16 +186,8 @@ namespace Exiled.API.Enums
         [Prefab(1209253563, "AntiSCP207Pickup")]
         AntiSCP207Pickup,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(2216560136, "FRMG0Pickup")]
-        FRMG0Pickup,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(74988289, "A7Pickup")]
-        A7Pickup,
-
         [Prefab(3532394942, "LanternPickup")]
-        LanternPickup,
+        LanternPickup = 68,
 
         [Prefab(4143962266, "SCP1344Pickup")]
         Scp1344Pickup,
@@ -310,44 +258,20 @@ namespace Exiled.API.Enums
         [Prefab(1062458989, "SCP-173 Ragdoll")]
         Scp173Ragdoll,
 
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(1951328980, "Ragdoll_1")]
-        Ragdoll1,
-
         [Prefab(992490681, "SCP-106 Ragdoll")]
-        Scp106Ragdoll,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(3219675689, "Ragdoll_4")]
-        Ragdoll4,
+        Scp106Ragdoll = 93,
 
         [Prefab(417388851, "SCP-049 Ragdoll")]
-        Ragdoll7,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(3185790062, "Ragdoll_6")]
-        Ragdoll6,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(2567420661, "Ragdoll_8")]
-        Ragdoll8,
+        Scp049Ragdoll = 95,
 
         [Prefab(149379640, "SCP-096 Ragdoll")]
-        Scp096Ragdoll,
+        Scp096Ragdoll = 98,
 
         [Prefab(1862774274, "Zombie Ragdoll")]
-        Ragdoll10,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(2710373253, "Ragdoll_Tut")]
-        RagdollTutorial,
-
-        [Obsolete("This prefab no longer exists")]
-        [Prefab(1389252654, "Ragdoll_12")]
-        Ragdoll12,
+        Scp0492Ragdoll,
 
         [Prefab(3175759689, "SCP-939 Ragdoll")]
-        Scp939Ragdoll,
+        Scp939Ragdoll = 102,
 
         [Prefab(3721192489, "SCP-3114 Ragdoll")]
         Scp3114Ragdoll,

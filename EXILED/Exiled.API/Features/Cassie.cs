@@ -101,16 +101,6 @@ namespace Exiled.API.Features
         /// Calculates the duration of a C.A.S.S.I.E message.
         /// </summary>
         /// <param name="message">The message, which duration will be calculated.</param>
-        /// <param name="obsolete1">An obsolete parameter.</param>
-        /// <param name="obsolete2">Another obsolete parameter.</param>
-        /// <returns>Duration (in seconds) of specified message.</returns>
-        [Obsolete("Please use CalculateDuration(string)", true)]
-        public static float CalculateDuration(string message, bool obsolete1, float obsolete2) => CalculateDuration(message);
-
-        /// <summary>
-        /// Calculates the duration of a C.A.S.S.I.E message.
-        /// </summary>
-        /// <param name="message">The message, which duration will be calculated.</param>
         /// <returns>Duration (in seconds) of specified message.</returns>
         public static float CalculateDuration(string message)
         {
@@ -191,21 +181,6 @@ namespace Exiled.API.Features
         /// <param name="info">HitInformation.</param>
         public static void ScpTermination(Player scp, DamageHandlerBase info)
             => CassieScpTerminationAnnouncement.AnnounceScpTermination(scp.ReferenceHub, info);
-
-        /// <summary>
-        /// Announces the termination of a custom SCP Number.
-        /// </summary>
-        /// <param name="scpNumber">SCP Number. Note that for larger numbers, C.A.S.S.I.E will pronounce the place (eg. "457" -> "four hundred fifty seven"). Spaces can be used to prevent this behavior.</param>
-        /// <param name="info">Hit Information.</param>
-        [Obsolete("Use this instead CustomScpTermination(string, CustomHandler)")]
-        public static void CustomScpTermination(string scpNumber, DamageHandlers.DamageHandlerBase info)
-        {
-            if (scpNumber.StartsWith("SCP", StringComparison.InvariantCultureIgnoreCase))
-                scpNumber = scpNumber.Remove(0, 3);
-
-            if (info is CustomHandler customHandler)
-                CustomScpTermination(scpNumber, customHandler);
-        }
 
         /// <summary>
         /// Announces the termination of a custom SCP Number.

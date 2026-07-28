@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System;
-
     using AdminToys;
 
     using Enums;
@@ -99,16 +97,6 @@ namespace Exiled.API.Features.Toys
         }
 
         /// <summary>
-        /// Gets or sets the shape that the Light emits.
-        /// </summary>
-        [Obsolete("This property has been deprecated. Use LightType.Spot, LightType.Pyramid, or LightType.Box instead.")]
-        public LightShape LightShape
-        {
-            get => Base.NetworkLightShape;
-            set => Base.NetworkLightShape = value;
-        }
-
-        /// <summary>
         /// Gets or sets the type of light the Light emits.
         /// </summary>
         public LightType LightType
@@ -187,13 +175,5 @@ namespace Exiled.API.Features.Toys
 
             return toy;
         }
-
-        /// <summary>
-        /// Gets the <see cref="Light"/> belonging to the <see cref="LightSourceToy"/>.
-        /// </summary>
-        /// <param name="lightSourceToy">The <see cref="LightSourceToy"/> instance.</param>
-        /// <returns>The corresponding <see cref="LightSourceToy"/> instance.</returns>
-        [Obsolete("This method is deprecated, please use the generic Get<T> method instead.")]
-        public static Light Get(LightSourceToy lightSourceToy) => Get<Light>(lightSourceToy);
     }
 }

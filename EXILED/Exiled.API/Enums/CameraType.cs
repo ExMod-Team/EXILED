@@ -58,11 +58,7 @@ namespace Exiled.API.Enums
         Hcz106Recontainment,
         HczChkptEz,
         HczChkptHcz,
-        [System.Obsolete("This Camera no longer exist.")]
-        HczHIDChamber,
-        [System.Obsolete("This Camera no longer exist.")]
-        HczHIDHallway,
-        Hcz939,
+        Hcz939 = 33,
         HczArmory,
         HczArmoryInterior,
         HczCrossing,
@@ -77,11 +73,9 @@ namespace Exiled.API.Enums
         HczWarheadArmory,
         HczWarheadControl,
         HczWarheadHallway,
-        [System.Obsolete("This Camera no longer exist.")]
-        HczWarheadTop,
         #endregion
         #region Lcz
-        Lcz173Bottom,
+        Lcz173Bottom = 49,
         Lcz173ContChamber,
         Lcz173Hall,
         Lcz173Stairs,
@@ -122,9 +116,7 @@ namespace Exiled.API.Enums
         Hcz173Outside,
         Hcz173Stairs,
         Hcz173ContChamber,
-        [System.Obsolete("This Camera no longer exist.")]
-        Hcz173Hallway,
-        HczCurve,
+        HczCurve = 87,
         HczJunkMain,
         HczJunkHallway,
         HczCornerDeep,

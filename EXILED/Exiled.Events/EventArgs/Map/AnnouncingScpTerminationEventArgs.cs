@@ -7,10 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using System;
-
     using Exiled.API.Features;
-    using Exiled.API.Features.DamageHandlers;
     using Exiled.API.Features.Roles;
 
     using Interfaces;
@@ -18,7 +15,7 @@ namespace Exiled.Events.EventArgs.Map
     /// <summary>
     /// Contains all information before C.A.S.S.I.E announces an SCP termination.
     /// </summary>
-    public class AnnouncingScpTerminationEventArgs : IAttackerEvent, IDeniableEvent
+    public class AnnouncingScpTerminationEventArgs : IDeniableEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="AnnouncingScpTerminationEventArgs" /> class.
@@ -51,18 +48,6 @@ namespace Exiled.Events.EventArgs.Map
         /// Gets the player the announcement is being played for.
         /// </summary>
         public Player Player { get; }
-
-        /// <summary>
-        /// Gets the player who killed the SCP.
-        /// </summary>
-        [Obsolete("Attacker can no longer be acquired for this event. This will be readded in a different event.")]
-        public Player Attacker { get; }
-
-        /// <summary>
-        /// Gets or sets the <see cref="CustomDamageHandler" />.
-        /// </summary>
-        [Obsolete("DamageHandler can no longer be acquired for this event. This will be readded in a different event.")]
-        public CustomDamageHandler DamageHandler { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether the SCP termination will be announced by C.A.S.S.I.E.

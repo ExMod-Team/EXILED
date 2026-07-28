@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="TwoButtonsSetting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -18,24 +18,6 @@ namespace Exiled.API.Features.Core.UserSettings
     /// </summary>
     public class TwoButtonsSetting : SettingBase, IWrapper<SSTwoButtonsSetting>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TwoButtonsSetting"/> class.
-        /// </summary>
-        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
-        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
-        /// <param name="firstOption"><inheritdoc cref="FirstOption"/></param>
-        /// <param name="secondOption"><inheritdoc cref="SecondOption"/></param>
-        /// <param name="defaultIsSecond"><inheritdoc cref="IsSecondDefault"/></param>
-        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
-        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
-        public TwoButtonsSetting(int id, string label, string firstOption, string secondOption, bool defaultIsSecond, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
-            : base(new SSTwoButtonsSetting(id, label, firstOption, secondOption, defaultIsSecond, hintDescription), header, onChanged)
-        {
-            Base = (SSTwoButtonsSetting)base.Base;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TwoButtonsSetting"/> class.
         /// </summary>

@@ -553,18 +553,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Plays a gun sound at the specified position.
-        /// </summary>
-        /// <param name="position">Position to play the sound at.</param>
-        /// <param name="firearmType">The type of firearm to play the sound of.</param>
-        /// <param name="maxDistance">The maximum distance the sound can be heard from.</param>
-        /// <param name="audioClipId">The audio clip ID to play.</param>
-        [Obsolete("This method is not working. Use PlayGunSound(Player, Vector3, FirearmType, float, int, bool) overload instead.")]
-        public static void PlayGunSound(Vector3 position, ItemType firearmType, byte maxDistance = 45, byte audioClipId = 0)
-        {
-        }
-
-        /// <summary>
         /// Spawns mice inside the <see cref="RoomType.EzShelter"/>.
         /// </summary>
         /// <param name="mice">The type of mice you want to spawn..</param>

@@ -59,16 +59,5 @@ namespace Exiled.API.Extensions
 
             return (T)Enum.ToObject(typeof(T), currentValue);
         }
-
-        /// <summary>
-        /// Checks if flag has specified value.
-        /// </summary>
-        /// <param name="flag">Flag to check.</param>
-        /// <param name="value">Value to check in flag.</param>
-        /// <typeparam name="T">The type of the enum.</typeparam>
-        /// <returns><see langword="true"/> if value is presented in flag. Otherwise, <see langword="false"/>.</returns>
-        [Obsolete("Use Enum::HasFlag instead.")]
-        public static bool HasFlagFast<T>(this T flag, T value)
-            where T : Enum => flag.HasFlag(value);
     }
 }

@@ -7,8 +7,6 @@
 
 namespace Exiled.Events.EventArgs.Scp1344
 {
-    using System;
-
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
 
@@ -18,7 +16,7 @@ namespace Exiled.Events.EventArgs.Scp1344
     /// <summary>
     /// Contains all information after SCP-1344 status changing.
     /// </summary>
-    public class ChangedStatusEventArgs : IScp1344Event, IPlayerEvent, IDeniableEvent
+    public class ChangedStatusEventArgs : IScp1344Event, IPlayerEvent
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangedStatusEventArgs" /> class.
@@ -51,9 +49,5 @@ namespace Exiled.Events.EventArgs.Scp1344
         /// Gets Scp1344 item.
         /// </summary>
         public Scp1344 Scp1344 { get; }
-
-        /// <inheritdoc/>
-        [Obsolete("Please use ChangingStatusEventArgs::IsAllowed instead of this", true)]
-        public bool IsAllowed { get; set; }
     }
 }

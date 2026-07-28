@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="KeybindSetting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -20,41 +20,6 @@ namespace Exiled.API.Features.Core.UserSettings
     /// </summary>
     public class KeybindSetting : SettingBase, IWrapper<SSKeybindSetting>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KeybindSetting"/> class.
-        /// </summary>
-        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
-        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
-        /// <param name="suggested"><inheritdoc cref="KeyCode"/></param>
-        /// <param name="preventInteractionOnGUI"><inheritdoc cref="PreventInteractionOnGUI"/></param>
-        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
-        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        [Obsolete("This method will be removed next major version because of a new feature. Use the constructor with \"CollectionId\" instead.")]
-        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
-            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, false, hintDescription), header, onChanged)
-        {
-            Base = (SSKeybindSetting)base.Base;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KeybindSetting"/> class.
-        /// </summary>
-        /// <param name="id"><inheritdoc cref="SettingBase.Id"/></param>
-        /// <param name="label"><inheritdoc cref="SettingBase.Label"/></param>
-        /// <param name="suggested"><inheritdoc cref="KeyCode"/></param>
-        /// <param name="preventInteractionOnGUI"><inheritdoc cref="PreventInteractionOnGUI"/></param>
-        /// <param name="allowSpectatorTrigger"><inheritdoc cref="AllowSpectatorTrigger"/></param>
-        /// <param name="hintDescription"><inheritdoc cref="SettingBase.HintDescription"/></param>
-        /// <param name="header"><inheritdoc cref="SettingBase.Header"/></param>
-        /// <param name="onChanged"><inheritdoc cref="SettingBase.OnChanged"/></param>
-        [Obsolete("Will be removed in Exiled 10 in favour of ctor with more params.")]
-        public KeybindSetting(int id, string label, KeyCode suggested, bool preventInteractionOnGUI, bool allowSpectatorTrigger, string hintDescription, HeaderSetting header, Action<Player, SettingBase> onChanged)
-            : base(new SSKeybindSetting(id, label, suggested, preventInteractionOnGUI, allowSpectatorTrigger, hintDescription), header, onChanged)
-        {
-            Base = (SSKeybindSetting)base.Base;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="KeybindSetting"/> class.
         /// </summary>

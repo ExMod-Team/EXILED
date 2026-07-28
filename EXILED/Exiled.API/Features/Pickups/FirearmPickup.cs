@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Pickups
 {
-    using System;
-
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
@@ -50,12 +48,6 @@ namespace Exiled.API.Features.Pickups
         /// Gets the <see cref="BaseFirearm"/> that this class is encapsulating.
         /// </summary>
         public new BaseFirearm Base { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the pickup is already distributed.
-        /// </summary>
-        [Obsolete("Feature deprecated")]
-        public bool IsDistributed { get; }
 
         /// <summary>
         /// Gets or sets the <see cref="Enums.AmmoType"/>.

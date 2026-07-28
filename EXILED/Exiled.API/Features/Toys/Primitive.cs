@@ -7,8 +7,6 @@
 
 namespace Exiled.API.Features.Toys
 {
-    using System;
-
     using AdminToys;
 
     using Enums;
@@ -148,13 +146,5 @@ namespace Exiled.API.Features.Toys
 
             return toy;
         }
-
-        /// <summary>
-        /// Gets the <see cref="Primitive"/> belonging to the <see cref="PrimitiveObjectToy"/>.
-        /// </summary>
-        /// <param name="primitiveObjectToy">The <see cref="PrimitiveObjectToy"/> instance.</param>
-        /// <returns>The corresponding <see cref="Primitive"/> instance.</returns>
-        [Obsolete("This method is deprecated, please use the generic Get<T> method instead.")]
-        public static Primitive Get(PrimitiveObjectToy primitiveObjectToy) => Get<Primitive>(primitiveObjectToy);
     }
 }
