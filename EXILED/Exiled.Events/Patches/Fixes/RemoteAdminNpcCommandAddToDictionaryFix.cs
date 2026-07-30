@@ -12,11 +12,14 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using CommandSystem.Commands.RemoteAdmin.Dummies;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
-    using GameCore;
+
     using HarmonyLib;
+
     using NetworkManagerUtils.Dummies;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

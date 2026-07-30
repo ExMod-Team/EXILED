@@ -10,20 +10,24 @@ namespace Exiled.Events
     using System;
     using System.Diagnostics;
 
-    using API.Enums;
-    using API.Features;
     using CentralAuth;
+
+    using Exiled.API.Enums;
+    using Exiled.API.Features;
     using Exiled.API.Features.Core.UserSettings;
     using Exiled.Events.Features;
-    using HarmonyLib;
+
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables;
+
     using PlayerRoles.FirstPersonControl.NetworkMessages;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.RoleAssign;
 
     using Respawning;
+
     using UnityEngine.SceneManagement;
+
     using UserSettings.ServerSpecific;
 
     /// <summary>
@@ -31,12 +35,10 @@ namespace Exiled.Events
     /// </summary>
     public sealed class Events : Plugin<Config>
     {
-        private static Events instance;
-
         /// <summary>
         /// Gets the plugin instance.
         /// </summary>
-        public static Events Instance => instance;
+        public static Events Instance { get; private set; }
 
         /// <inheritdoc/>
         public override PluginPriority Priority { get; } = PluginPriority.First;
@@ -49,7 +51,7 @@ namespace Exiled.Events
         /// <inheritdoc/>
         public override void OnEnabled()
         {
-            instance = this;
+            Instance = this;
             base.OnEnabled();
 
             Stopwatch watch = Stopwatch.StartNew();
@@ -166,8 +168,8 @@ namespace Exiled.Events
             {
                 Patcher = new Patcher();
 #if DEBUG
-                bool lastDebugStatus = Harmony.DEBUG;
-                Harmony.DEBUG = true;
+                bool lastDebugStatus = HarmonyLib.Harmony.DEBUG;
+                HarmonyLib.Harmony.DEBUG = true;
 #endif
                 Patcher.PatchAll(!Config.UseDynamicPatching, out int failedPatch);
 
@@ -176,7 +178,7 @@ namespace Exiled.Events
                 else
                     Log.Error($"Patching failed! There are {failedPatch} broken patches.");
 #if DEBUG
-                Harmony.DEBUG = lastDebugStatus;
+                HarmonyLib.Harmony.DEBUG = lastDebugStatus;
 #endif
             }
             catch (Exception exception)

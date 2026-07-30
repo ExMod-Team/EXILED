@@ -10,13 +10,12 @@ namespace Exiled.Events.Patches.Events.Scp0492
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
-
-    using Exiled.API.Extensions;
-    using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp0492;
+
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.Subroutines;
@@ -31,7 +30,7 @@ namespace Exiled.Events.Patches.Events.Scp0492
     [HarmonyPatch(typeof(ZombieConsumeAbility), nameof(ZombieConsumeAbility.ServerValidateBegin))]
     public class Consuming
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

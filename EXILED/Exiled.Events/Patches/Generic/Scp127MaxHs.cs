@@ -8,7 +8,9 @@
 namespace Exiled.Events.Patches.Generic
 {
     using Exiled.API.Features.Items;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Firearms.Modules.Scp127;
 
 #pragma warning disable SA1313

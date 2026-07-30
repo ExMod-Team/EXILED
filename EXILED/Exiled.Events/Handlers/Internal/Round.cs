@@ -12,10 +12,12 @@ namespace Exiled.Events.Handlers.Internal
     using System.Linq;
 
     using CentralAuth;
+
     using Exiled.API.Enums;
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Core.UserSettings;
+    using Exiled.API.Features.Doors;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
     using Exiled.API.Features.Roles;
@@ -25,24 +27,30 @@ namespace Exiled.Events.Handlers.Internal
     using Exiled.Events.Patches.Generic;
     using Exiled.Loader;
     using Exiled.Loader.Features;
+
     using global::Scp914.Processors;
+
     using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Usables;
-    using InventorySystem.Items.Usables.Scp244.Hypothermia;
     using InventorySystem.Items.Usables.Scp330;
+
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.SpawnData;
+
     using RelativePositioning;
+
     using Respawning.NamingRules;
+
     using UnityEngine;
-    using Utils.Networking;
+
     using Utils.NonAllocLINQ;
 
     /// <summary>
@@ -57,7 +65,7 @@ namespace Exiled.Events.Handlers.Internal
         internal static bool SendingNewRoleInfo { get; set; }
 
         /// <inheritdoc cref="Handlers.Player.OnUsedItem" />
-        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new (hub, usable, false));
+        public static void OnServerOnUsingCompleted(ReferenceHub hub, UsableItem usable) => Handlers.Player.OnUsedItem(new(hub, usable, false));
 
         /// <inheritdoc cref="Handlers.Server.OnWaitingForPlayers" />
         public static void OnWaitingForPlayers()
@@ -76,6 +84,10 @@ namespace Exiled.Events.Handlers.Internal
 
             if (Events.Instance.Config.Debug)
                 Patches.Events.Map.Generating.Benchmark();
+
+            // TODO: Remove when this has been fixed https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/1560
+            Door door = Door.Get(DoorType.Scp079Armory);
+            door.AllowsScp106 = false;
         }
 
         /// <inheritdoc cref="Handlers.Server.OnRestartingRound" />
@@ -241,17 +253,14 @@ namespace Exiled.Events.Handlers.Internal
                         writer.WriteByte(data.UnitId);
                         break;
 
-                    // W stylecop :heart:
-#pragma warning disable SA1013
                     case PlayerRoles.HumanRole { UsesUnitNames: true }:
-#pragma warning restore SA1013
-                    {
-                        if (!NamingRulesManager.GeneratedNames.TryGetValue(Team.FoundationForces, out List<string> list))
-                            return actualRole;
+                        {
+                            if (!NamingRulesManager.GeneratedNames.TryGetValue(Team.FoundationForces, out List<string> list))
+                                return actualRole;
 
-                        writer.WriteByte((byte)list.Count);
-                        break;
-                    }
+                            writer.WriteByte((byte)list.Count);
+                            break;
+                        }
 
                     case PlayerRoles.PlayableScps.Scp1507.Scp1507Role flamingo:
                         writer.WriteByte((byte)flamingo.ServerSpawnReason);

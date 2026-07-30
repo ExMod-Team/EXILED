@@ -8,11 +8,11 @@
 namespace Exiled.Events.EventArgs.Player
 {
     using CommandSystem;
+
     using Exiled.API.Features;
-    using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Interfaces;
+
     using LabApi.Features.Enums;
-    using RemoteAdmin;
 
     /// <summary>
     /// Contains all information after a player sends the command.

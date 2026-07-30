@@ -12,7 +12,9 @@ namespace Exiled.Events.EventArgs.Server
     using System.Text;
 
     using Exiled.API.Features.Pools;
+
     using Interfaces;
+
     using PlayerRoles;
 
     /// <summary>

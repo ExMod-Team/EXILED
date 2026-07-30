@@ -10,6 +10,7 @@ namespace Exiled.Example.Commands
     using System;
 
     using CommandSystem;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Pickups;
 

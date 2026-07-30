@@ -8,15 +8,15 @@
 namespace Exiled.Events.Patches.Events.Player
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection.Emit;
 
-    using API.Features.Items;
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
+
     using InventorySystem.Items.MicroHID;
     using InventorySystem.Items.MicroHID.Modules;
 

@@ -7,9 +7,8 @@
 
 namespace Exiled.Events.EventArgs.Scp939
 {
-    using API.Features;
-
     using Exiled.API.Enums;
+    using Exiled.API.Features;
     using Exiled.API.Features.Roles;
 
     using Interfaces;
@@ -43,7 +42,7 @@ namespace Exiled.Events.EventArgs.Scp939
                 Scp939VisibilityState.SeenByDetonation when !Warhead.IsDetonated && LastHumanTracker.IsLastTarget(target) => Scp939VisibilityState.SeenByLastHuman,
                 _ => state,
             };
-            IsAllowed = TargetVisibilityState is not(Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
+            IsAllowed = TargetVisibilityState is not (Scp939VisibilityState.NotSeen or Scp939VisibilityState.None);
             IsLateSeen = TargetVisibilityState is Scp939VisibilityState.SeenByRange;
         }
 

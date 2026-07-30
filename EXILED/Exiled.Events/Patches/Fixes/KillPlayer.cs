@@ -7,9 +7,7 @@
 
 namespace Exiled.Events.Patches.Fixes
 {
-#pragma warning disable SA1313 // Parameter names should begin with lower-case letter
-
-    using API.Features.DamageHandlers;
+    using Exiled.API.Features.DamageHandlers;
 
     using HarmonyLib;
 
@@ -25,7 +23,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.KillPlayer))]
     internal class KillPlayer
     {
-        private static void Prefix(PlayerStats __instance, ref DamageHandlerBase handler)
+        private static void Prefix(ref DamageHandlerBase handler)
         {
             if (!DamageHandlers.IdsByTypeHash.ContainsKey(handler.GetType().FullName.GetStableHashCode()) && handler is GenericDamageHandler exiledHandler)
                 handler = exiledHandler.Base;

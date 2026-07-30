@@ -11,6 +11,7 @@ namespace Exiled.Events.Patches.Generic
 #pragma warning disable SA1402
 
     using HarmonyLib;
+
     using Interactables.Interobjects;
 
     /// <summary>
@@ -21,7 +22,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(AirlockController __instance)
         {
-            _ = new API.Features.Doors.AirlockController(__instance);
+            new API.Features.Doors.AirlockController(__instance);
         }
     }
 

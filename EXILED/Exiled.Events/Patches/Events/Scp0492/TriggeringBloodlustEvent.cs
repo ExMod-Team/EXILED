@@ -28,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Scp0492
     [HarmonyPatch(typeof(ZombieBloodlustAbility), nameof(ZombieBloodlustAbility.AnyTargets))]
     internal static class TriggeringBloodlustEvent
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
             Label continueLabel = newInstructions[newInstructions.FindIndex(i => i.opcode == OpCodes.Leave_S) + 1].labels[0];

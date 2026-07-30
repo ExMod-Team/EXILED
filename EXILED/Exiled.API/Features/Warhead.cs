@@ -7,10 +7,13 @@
 
 namespace Exiled.API.Features
 {
+    using System;
     using System.Collections.Generic;
 
     using Enums;
+
     using Interactables.Interobjects.DoorUtils;
+
     using Mirror;
 
     using UnityEngine;
@@ -20,8 +23,6 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Warhead
     {
-        private static AlphaWarheadOutsitePanel alphaWarheadOutsitePanel;
-
         /// <summary>
         /// Gets the cached <see cref="AlphaWarheadController"/> component.
         /// </summary>
@@ -35,7 +36,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the cached <see cref="AlphaWarheadOutsitePanel"/> component.
         /// </summary>
-        public static AlphaWarheadOutsitePanel OutsitePanel => alphaWarheadOutsitePanel != null ? alphaWarheadOutsitePanel : (alphaWarheadOutsitePanel = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>());
+        public static AlphaWarheadOutsitePanel OutsitePanel => field?.gameObject != null ? field : (field = UnityEngine.Object.FindFirstObjectByType<AlphaWarheadOutsitePanel>());
 
         /// <summary>
         /// Gets the <see cref="GameObject"/> of the warhead lever.
@@ -70,6 +71,15 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the remaining cooldown before the nuke can be triggered again.
+        /// </summary>
+        public static double RemainingCooldown
+        {
+            get => Math.Max(0, Controller.NetworkCooldownEndTime - NetworkTime.time);
+            set => Controller.NetworkCooldownEndTime = NetworkTime.time + Math.Max(0, value);
+        }
+
+        /// <summary>
         /// Gets all of the warhead blast doors.
         /// </summary>
         public static IReadOnlyCollection<BlastDoor> BlastDoors => BlastDoor.Instances;
@@ -97,25 +107,42 @@ namespace Exiled.API.Features
         /// </summary>
         public static WarheadStatus Status
         {
-            get => IsInProgress ? IsDetonated ? WarheadStatus.Detonated : WarheadStatus.InProgress : LeverStatus ? WarheadStatus.Armed : WarheadStatus.NotArmed;
+            get
+            {
+                WarheadStatus status = WarheadStatus.NotArmed;
+
+                if (IsDetonated)
+                    status |= WarheadStatus.Detonated;
+
+                if (IsInProgress)
+                    status |= WarheadStatus.InProgress;
+
+                if (IsOnCooldown)
+                    status |= WarheadStatus.OnCooldown;
+
+                if (LeverStatus)
+                    status |= WarheadStatus.Armed;
+
+                return status;
+            }
+
             set
             {
-                switch (value)
-                {
-                    case WarheadStatus.NotArmed:
-                    case WarheadStatus.Armed:
-                        Stop();
-                        LeverStatus = value is WarheadStatus.Armed;
-                        break;
+                if (IsDetonated)
+                    return;
 
-                    case WarheadStatus.InProgress:
-                        Start();
-                        break;
+                LeverStatus = value.HasFlag(WarheadStatus.Armed);
 
-                    case WarheadStatus.Detonated:
-                        Detonate();
-                        break;
-                }
+                if (!IsInProgress && value.HasFlag(WarheadStatus.InProgress))
+                    Start();
+                else if (!value.HasFlag(WarheadStatus.InProgress))
+                    Stop();
+
+                if (value.HasFlag(WarheadStatus.Detonated))
+                    Detonate();
+
+                if (!IsOnCooldown && value.HasFlag(WarheadStatus.OnCooldown))
+                    RemainingCooldown = Controller._cooldown;
             }
         }
 
@@ -132,7 +159,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets a value indicating whether the warhead detonation is on cooldown.
         /// </summary>
-        public static bool IsOnCooldown => Controller.CooldownEndTime > NetworkTime.time;
+        public static bool IsOnCooldown => RemainingCooldown > 0;
 
         /// <summary>
         /// Gets or sets the warhead detonation timer.
@@ -213,7 +240,7 @@ namespace Exiled.API.Features
         public static void Start(bool isAutomatic, bool suppressSubtitles = false, Player trigger = null)
         {
             Controller.InstantPrepare();
-            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger == null ? null : trigger.ReferenceHub);
+            Controller.StartDetonation(isAutomatic, suppressSubtitles, trigger?.ReferenceHub);
         }
 
         /// <summary>

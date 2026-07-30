@@ -7,16 +7,17 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
-    using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pools;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Firearms.Modules.Misc;
 
     using static HarmonyLib.AccessTools;
@@ -100,9 +101,9 @@ namespace Exiled.Events.Patches.Events.Player
                 new CodeInstruction(OpCodes.Nop).WithLabels(continueLabel2),
             };
 
-            newInstructions.InsertRange( // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up
-                noTargetIndex,
-                noTargetInstructions);
+            // noTargetIndex goes first because it's higher then hasTargetIndex so it won't mess it up
+            newInstructions.InsertRange(noTargetIndex, noTargetInstructions);
+
             newInstructions[noTargetIndex].WithLabels(noTargetLabels);
 
             newInstructions.InsertRange(

@@ -11,13 +11,16 @@ namespace Exiled.Events.Patches.Events.Cassie
     using System.Linq;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Cassie;
+
     using global::Cassie;
+
     using Handlers;
+
     using HarmonyLib;
-    using Respawning;
 
     using static HarmonyLib.AccessTools;
 

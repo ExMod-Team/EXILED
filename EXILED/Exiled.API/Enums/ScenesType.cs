@@ -19,7 +19,7 @@ namespace Exiled.API.Enums
 
         /// <summary>
         /// The current main menu.
-        /// ! Will cause crash when trying joining servers !
+        /// ! Will cause crash when trying joining servers !.
         /// </summary>
         NewMainMenu,
 
@@ -35,7 +35,7 @@ namespace Exiled.API.Enums
 
         /// <summary>
         /// The loading Screen.
-        /// ! Will cause crash when trying joining servers !
+        /// ! Will cause crash when trying joining servers !.
         /// </summary>
         PreLoader,
 

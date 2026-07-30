@@ -13,7 +13,7 @@ namespace Exiled.CustomRoles.API.Features.Enums
     public enum CheckType
     {
         /// <summary>
-        /// Check if the ability is available to the player. (DOES NOT CHECK COOLDOWNS)
+        /// Check if the ability is available to the player. (DOES NOT CHECK COOLDOWNS).
         /// </summary>
         Available,
 

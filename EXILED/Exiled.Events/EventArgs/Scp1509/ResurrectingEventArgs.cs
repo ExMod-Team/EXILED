@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ResurrectingEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -10,7 +10,9 @@ namespace Exiled.Events.EventArgs.Scp1509
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+
     using InventorySystem.Items.Scp1509;
+
     using PlayerRoles;
 
     /// <summary>

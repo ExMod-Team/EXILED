@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Resurrecting.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -14,7 +14,9 @@ namespace Exiled.Events.Patches.Events.Scp1509
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1509;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Scp1509;
 
     using static HarmonyLib.AccessTools;

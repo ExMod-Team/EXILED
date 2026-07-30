@@ -48,7 +48,7 @@ namespace Exiled.API.Enums
         Swing,
 
         /// <summary>
-        /// Dance1
+        /// None.
         /// </summary>
         None = byte.MaxValue,
     }

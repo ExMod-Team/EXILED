@@ -10,17 +10,18 @@ namespace Exiled.Events.Patches.Events.Item
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.API.Features;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
+
     using Footprinting;
+
     using HarmonyLib;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Extensions;
-    using InventorySystem.Items.Firearms.Modules;
 
     using static HarmonyLib.AccessTools;
 

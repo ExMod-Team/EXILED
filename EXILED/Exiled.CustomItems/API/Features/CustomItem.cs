@@ -26,18 +26,21 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp914;
     using Exiled.Loader;
+
     using InventorySystem.Items.Pickups;
+
     using MEC;
+
     using PlayerRoles;
+
     using UnityEngine;
+
     using YamlDotNet.Serialization;
 
     using static CustomItems;
 
-    using BaseFirearmPickup = InventorySystem.Items.Firearms.FirearmPickup;
     using Firearm = Exiled.API.Features.Items.Firearm;
     using Item = Exiled.API.Features.Items.Item;
-    using Map = Exiled.API.Features.Map;
     using Player = Exiled.API.Features.Player;
     using UpgradingPickupEventArgs = Exiled.Events.EventArgs.Scp914.UpgradingPickupEventArgs;
 
@@ -540,7 +543,7 @@ namespace Exiled.CustomItems.API.Features
 
             Pickup? pickup = Spawn(position, item, previousOwner);
 
-            UnityEngine.Object.Destroy(item.Base);
+            item.Destroy();
             return pickup;
         }
 
@@ -554,6 +557,7 @@ namespace Exiled.CustomItems.API.Features
         public virtual Pickup? Spawn(Vector3 position, Item item, Player? previousOwner = null)
         {
             Pickup? pickup = item.CreatePickup(position);
+
             pickup.Scale = Scale;
             pickup.Weight = Weight;
 

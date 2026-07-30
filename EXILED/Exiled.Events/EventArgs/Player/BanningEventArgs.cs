@@ -9,16 +9,15 @@ namespace Exiled.Events.EventArgs.Player
 {
     using System.Reflection;
 
-    using API.Features;
     using CommandSystem;
+
+    using Exiled.API.Features;
 
     /// <summary>
     /// Contains all information before banning a player from the server.
     /// </summary>
     public class BanningEventArgs : KickingEventArgs
     {
-        private long duration;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BanningEventArgs" /> class.
         /// </summary>
@@ -40,16 +39,16 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public long Duration
         {
-            get => duration;
+            get;
             set
             {
-                if (duration == value)
+                if (field == value)
                     return;
 
                 if (Events.Instance.Config.ShouldLogBans)
-                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed Ban duration: {duration} to {value} for ID: {Target.UserId}");
+                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed Ban duration: {field} to {value} for ID: {Target.UserId}");
 
-                duration = value;
+                field = value;
             }
         }
     }

@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Doors
     using System.Linq;
 
     using Exiled.API.Interfaces;
+
     using Interactables.Interobjects;
 
     /// <summary>

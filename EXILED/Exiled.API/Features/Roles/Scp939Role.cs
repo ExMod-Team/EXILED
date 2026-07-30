@@ -10,7 +10,6 @@ namespace Exiled.API.Features.Roles
     using System.Collections.Generic;
 
     using Exiled.API.Enums;
-    using Exiled.API.Features.Pools;
 
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
@@ -84,11 +83,6 @@ namespace Exiled.API.Features.Roles
 
             MimicPointController = EnvironmentalMimicry._mimicPoint;
         }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="Scp939Role"/> class.
-        /// </summary>
-        ~Scp939Role() => ListPool<Player>.Pool.Return(VisiblePlayers);
 
         /// <inheritdoc/>
         public override RoleTypeId Type { get; } = RoleTypeId.Scp939;
@@ -235,11 +229,6 @@ namespace Exiled.API.Features.Roles
         /// Gets a value indicating the position of SCP-939's mimic point. May be <see langword="null"/> if <see cref="MimicryPointActive"/> is <see langword="false"/>.
         /// </summary>
         public Vector3? MimicryPointPosition => MimicPointController.Active ? MimicPointController.MimicPointTransform.position : null;
-
-        /// <summary>
-        /// Gets a list of players this SCP-939 instance can see regardless of their movement.
-        /// </summary>
-        public List<Player> VisiblePlayers { get; } = ListPool<Player>.Pool.Get();
 
         /// <summary>
         /// Gets the <see cref="Scp939GameRole"/> instance.

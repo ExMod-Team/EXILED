@@ -7,8 +7,9 @@
 
 namespace Exiled.Events.EventArgs.Map
 {
-    using API.Features;
+    using Exiled.API.Features;
     using Exiled.API.Features.Items;
+
     using Interfaces;
 
     using UnityEngine;

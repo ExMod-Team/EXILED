@@ -12,6 +12,7 @@ namespace Exiled.Events.EventArgs.Player
     using Exiled.Events.EventArgs.Interfaces;
 
     using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items.MicroHID;
 
     /// <summary>

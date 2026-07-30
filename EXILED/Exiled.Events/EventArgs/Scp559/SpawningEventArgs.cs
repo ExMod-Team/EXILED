@@ -11,6 +11,7 @@ namespace Exiled.Events.EventArgs.Scp559
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
+
     using UnityEngine;
 
     /// <summary>

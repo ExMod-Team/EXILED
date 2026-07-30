@@ -67,10 +67,10 @@ namespace Exiled.API.Features.Core.Generic
                     .GetFields(BindingFlags.Static | BindingFlags.GetField | BindingFlags.Public)
                     .Where(t => t.FieldType == typeof(TObject));
 
-                foreach (FieldInfo field in fields)
+                foreach (FieldInfo @field in fields)
                 {
-                    TObject instance = (TObject)field.GetValue(null);
-                    instance.name = field.Name;
+                    TObject instance = (TObject)@field.GetValue(null);
+                    instance.name = @field.Name;
                 }
 
                 isDefined = true;

@@ -56,7 +56,7 @@ namespace Exiled.Events.Patches.Events.Player
             yield return new(OpCodes.Brfalse_S, ret);
         }
 
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 
@@ -123,7 +123,7 @@ namespace Exiled.Events.Patches.Events.Player
             // firstly, set `flag` to a false, and then if `IsAllowed == false` we could return without problems
             newInstructions.InsertRange(index, new CodeInstruction[]
                 {
-                    new CodeInstruction(OpCodes.Ldc_I4_0),
+                    new(OpCodes.Ldc_I4_0),
                     new(OpCodes.Stloc_1),
                 }.Concat(DryFireAutomatic.GetInstructions(newInstructions[0], ret)));
 

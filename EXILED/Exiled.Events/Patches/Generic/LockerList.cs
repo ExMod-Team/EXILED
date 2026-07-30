@@ -10,9 +10,8 @@ namespace Exiled.Events.Patches.Generic
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pools;
-    using Exiled.API.Features.Lockers;
+    using Exiled.API.Features.Pools;
+
     using HarmonyLib;
 
     using MapGeneration.Distributors;
@@ -40,7 +39,7 @@ namespace Exiled.Events.Patches.Generic
                     new(OpCodes.Isinst, typeof(MapGeneration.Distributors.Locker)),
                     new(OpCodes.Dup),
                     new(OpCodes.Brfalse_S, jump),
-                    new(OpCodes.Newobj, GetDeclaredConstructors(typeof(API.Features.Lockers.Locker))[0]),
+                    new(OpCodes.Call, Method(typeof(API.Features.Lockers.Locker), nameof(API.Features.Lockers.Locker.Get), new[] { typeof(MapGeneration.Distributors.Locker) })),
                     new CodeInstruction(OpCodes.Pop).WithLabels(jump),
                 });
 

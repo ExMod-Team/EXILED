@@ -12,7 +12,9 @@ namespace Exiled.Events.Patches.Events.Item
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Item;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Radio;
 
     using static HarmonyLib.AccessTools;

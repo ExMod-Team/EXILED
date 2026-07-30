@@ -12,11 +12,10 @@ namespace Exiled.Events.Commands.PluginManager
     using System.Linq;
     using System.Text;
 
-    using API.Features.Pools;
-    using API.Interfaces;
-
     using CommandSystem;
 
+    using Exiled.API.Features.Pools;
+    using Exiled.API.Interfaces;
     using Exiled.Permissions.Extensions;
 
     using RemoteAdmin;
