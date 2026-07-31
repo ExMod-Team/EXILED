@@ -298,6 +298,9 @@ namespace Exiled.API.Extensions
                         return DamageType.Unknown;
                     }
 
+                case null:
+                    return DamageType.Unknown;
+
                 default:
                     {
                         if (damageHandlerBase.GetType().Assembly.FullName.StartsWith("Assembly-CSharp"))
