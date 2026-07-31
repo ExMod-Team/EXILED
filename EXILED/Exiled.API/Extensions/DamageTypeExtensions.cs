@@ -14,6 +14,9 @@ namespace Exiled.API.Extensions
 
     using Features;
 
+    using InventorySystem.Items.Firearms;
+    using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.MicroHID.Modules;
     using InventorySystem.Items.Scp1509;
 
@@ -222,8 +225,20 @@ namespace Exiled.API.Extensions
                         MicroHidFiringMode.BrokenFire => DamageType.MicroHidBrokenFire,
                         _ => DamageType.Unknown,
                     };
-                case DisruptorDamageHandler:
-                    return DamageType.ParticleDisruptor;
+                case JailbirdDamageHandler jailbirdDamageHandler:
+                    if (jailbirdDamageHandler.Attacker.Hub?.inventory.CurInstance is not JailbirdItem jailbirdItem)
+                        return DamageType.JailbirdOther;
+
+                    return jailbirdItem._charging ? DamageType.JailbirdCharged : DamageType.JailbirdSwing;
+
+                case DisruptorDamageHandler disruptorDamageHandler:
+                    return disruptorDamageHandler.FiringState switch
+                    {
+                        DisruptorActionModule.FiringState.FiringRapid => DamageType.ParticleDisruptorRapidShot,
+                        DisruptorActionModule.FiringState.FiringSingle => DamageType.ParticleDisruptorSingleShot,
+                        DisruptorActionModule.FiringState.None => DamageType.ParticleDisruptorNone,
+                        _ => DamageType.ParticleDisruptorNone,
+                    };
                 case Scp1507DamageHandler:
                     return DamageType.Scp1507;
                 case Scp956DamageHandler:
