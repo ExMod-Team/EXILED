@@ -183,14 +183,14 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.Scp127:
                     GenericFirearm(damage, ItemType.GunSCP127);
                     break;
-                case DamageType.ParticleDisruptorNone:
+                case DamageType.ParticleDisruptorOther:
                 case DamageType.ParticleDisruptorRapidShot:
                 case DamageType.ParticleDisruptorSingleShot:
                     FiringState state = damageType switch
                     {
                         DamageType.ParticleDisruptorRapidShot => FiringState.FiringRapid,
                         DamageType.ParticleDisruptorSingleShot => FiringState.FiringSingle,
-                        DamageType.ParticleDisruptorNone => FiringState.None,
+                        DamageType.ParticleDisruptorOther => FiringState.None,
                         _ => FiringState.None,
                     };
                     Base = new DisruptorDamageHandler(new DisruptorShotEvent(default, Attacker, state), Vector3.up, damage);
@@ -202,7 +202,7 @@ namespace Exiled.API.Features.DamageHandlers
 
                     Base = new Scp096DamageHandler(curr096, damage, Scp096DamageHandler.AttackType.SlapRight);
                     break;
-                case DamageType.Scp939None:
+                case DamageType.Scp939Other:
                     Scp939Role curr939 = attacker.ReferenceHub.roleManager.CurrentRole as Scp939Role ?? new Scp939Role();
 
                     curr939?._lastOwner = attacker.ReferenceHub;

@@ -148,9 +148,9 @@ namespace Exiled.API.Enums
         Scp173,
 
         /// <summary>
-        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.None"/>.
+        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.None"/> or Unknown.
         /// </summary>
-        Scp939None,
+        Scp939Other,
 
         /// <summary>
         /// Damage caused by <see cref="RoleTypeId.Scp0492"/>.
@@ -215,7 +215,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Damage caused by <see cref="ItemType.ParticleDisruptor"/> when <see cref="DisruptorActionModule.FiringState.None"/> or Unknown.
         /// </summary>
-        ParticleDisruptorNone,
+        ParticleDisruptorOther,
 
         /// <summary>
         /// Damage caused by <see cref="EffectType.CardiacArrest"/>.
