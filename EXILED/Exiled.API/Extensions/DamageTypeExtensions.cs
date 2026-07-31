@@ -14,7 +14,6 @@ namespace Exiled.API.Extensions
 
     using Features;
 
-    using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.MicroHID.Modules;
@@ -83,8 +82,8 @@ namespace Exiled.API.Extensions
             { ItemType.GunFSP9, DamageType.Fsp9 },
             { ItemType.GunE11SR, DamageType.E11Sr },
             { ItemType.MicroHID, DamageType.MicroHidPrimaryFire },
-            { ItemType.ParticleDisruptor, DamageType.ParticleDisruptor },
-            { ItemType.Jailbird, DamageType.Jailbird },
+            { ItemType.ParticleDisruptor, DamageType.ParticleDisruptorNone },
+            { ItemType.Jailbird, DamageType.JailbirdOther },
             { ItemType.GunFRMG0, DamageType.Frmg0 },
             { ItemType.GunA7, DamageType.A7 },
             { ItemType.GunSCP127, DamageType.Scp127 },
@@ -114,8 +113,8 @@ namespace Exiled.API.Extensions
         public static bool IsWeapon(this DamageType type, bool checkNonFirearm = true) => type switch
         {
 
-            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 or DamageType.Scp127 => true,
-            DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire or DamageType.Jailbird when checkNonFirearm => true,
+            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptorNone or DamageType.ParticleDisruptorRapidShot or DamageType.ParticleDisruptorSingleShot or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 or DamageType.Scp127 => true,
+            DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire or DamageType.JailbirdOther or DamageType.JailbirdCharged or DamageType.JailbirdSwing when checkNonFirearm => true,
             _ => false,
         };
 

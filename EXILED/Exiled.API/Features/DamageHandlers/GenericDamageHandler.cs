@@ -29,6 +29,8 @@ namespace Exiled.API.Features.DamageHandlers
 
     using UnityEngine;
 
+    using static InventorySystem.Items.Firearms.Modules.DisruptorActionModule;
+
     /// <summary>
     /// Allows generic damage to a player.
     /// </summary>
@@ -118,7 +120,9 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.Recontainment:
                     Base = new RecontainmentDamageHandler(Attacker);
                     break;
-                case DamageType.Jailbird:
+                case DamageType.JailbirdOther:
+                case DamageType.JailbirdCharged:
+                case DamageType.JailbirdSwing:
                     Base = new JailbirdDamageHandler(Attacker.Hub, damage, Vector3.zero);
                     break;
                 case DamageType.Scp1509:
@@ -179,8 +183,17 @@ namespace Exiled.API.Features.DamageHandlers
                 case DamageType.Scp127:
                     GenericFirearm(damage, ItemType.GunSCP127);
                     break;
-                case DamageType.ParticleDisruptor:
-                    Base = new DisruptorDamageHandler(new DisruptorShotEvent(default, Attacker, InventorySystem.Items.Firearms.Modules.DisruptorActionModule.FiringState.FiringSingle), Vector3.up, damage);
+                case DamageType.ParticleDisruptorNone:
+                case DamageType.ParticleDisruptorRapidShot:
+                case DamageType.ParticleDisruptorSingleShot:
+                    FiringState state = damageType switch
+                    {
+                        DamageType.ParticleDisruptorRapidShot => FiringState.FiringRapid,
+                        DamageType.ParticleDisruptorSingleShot => FiringState.FiringSingle,
+                        DamageType.ParticleDisruptorNone => FiringState.None,
+                        _ => FiringState.None,
+                    };
+                    Base = new DisruptorDamageHandler(new DisruptorShotEvent(default, Attacker, state), Vector3.up, damage);
                     break;
                 case DamageType.Scp096Other:
                     Scp096Role curr096 = attacker.ReferenceHub.roleManager.CurrentRole as Scp096Role ?? new Scp096Role();
