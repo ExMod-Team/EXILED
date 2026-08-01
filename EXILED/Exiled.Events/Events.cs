@@ -20,6 +20,7 @@ namespace Exiled.Events
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables;
 
+    using PlayerRoles.FirstPersonControl.NetworkMessages;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.RoleAssign;
 
@@ -70,6 +71,8 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound += Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted += Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole += Handlers.Internal.Round.OnChangingRole;
+            Handlers.Player.Spawned += Handlers.Internal.Round.OnSpawned;
+            Handlers.Player.Died += Handlers.Internal.Round.OnDied;
             Handlers.Player.SpawningRagdoll += Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense += Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified += Handlers.Internal.Round.OnVerified;
@@ -94,6 +97,9 @@ namespace Exiled.Events
 
             LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon += Handlers.Player.OnReloadingWeapon;
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon += Handlers.Player.OnUnloadingWeapon;
+            LabApi.Events.Handlers.PlayerEvents.SendingHitmarker += Handlers.Player.OnShowingHitMarker;
+
+            FpcServerPositionDistributor.RoleSyncEvent += Handlers.Internal.Round.OnRoleSyncEvent;
 
             LabApi.Events.Handlers.Scp127Events.Talking += Handlers.Scp127.OnTalking;
             LabApi.Events.Handlers.Scp127Events.Talked += Handlers.Scp127.OnTalked;
@@ -120,6 +126,8 @@ namespace Exiled.Events
             Handlers.Server.RestartingRound -= Handlers.Internal.Round.OnRestartingRound;
             Handlers.Server.RoundStarted -= Handlers.Internal.Round.OnRoundStarted;
             Handlers.Player.ChangingRole -= Handlers.Internal.Round.OnChangingRole;
+            Handlers.Player.Spawned -= Handlers.Internal.Round.OnSpawned;
+            Handlers.Player.Died -= Handlers.Internal.Round.OnDied;
             Handlers.Player.SpawningRagdoll -= Handlers.Internal.Round.OnSpawningRagdoll;
             Handlers.Scp049.ActivatingSense -= Handlers.Internal.Round.OnActivatingSense;
             Handlers.Player.Verified -= Handlers.Internal.Round.OnVerified;
@@ -139,6 +147,9 @@ namespace Exiled.Events
 
             LabApi.Events.Handlers.PlayerEvents.ReloadingWeapon -= Handlers.Player.OnReloadingWeapon;
             LabApi.Events.Handlers.PlayerEvents.UnloadingWeapon -= Handlers.Player.OnUnloadingWeapon;
+            LabApi.Events.Handlers.PlayerEvents.SendingHitmarker -= Handlers.Player.OnShowingHitMarker;
+
+            FpcServerPositionDistributor.RoleSyncEvent -= Handlers.Internal.Round.OnRoleSyncEvent;
 
             LabApi.Events.Handlers.Scp127Events.Talking -= Handlers.Scp127.OnTalking;
             LabApi.Events.Handlers.Scp127Events.Talked -= Handlers.Scp127.OnTalked;
