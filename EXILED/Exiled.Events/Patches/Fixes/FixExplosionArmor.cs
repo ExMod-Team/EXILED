@@ -65,6 +65,9 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Callvirt, Method(typeof(ConditionalWeakTable<ExplosionDamageHandler, StrongBox<int>>), nameof(ConditionalWeakTable<ExplosionDamageHandler, StrongBox<int>>.Add))),
             });
 
+            for (int z = 0; z < newInstructions.Count; z++)
+                yield return newInstructions[z];
+
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
