@@ -47,8 +47,8 @@ namespace Exiled.Events.Patches.Fixes
             // remove the "if (armorPenetration == 0) return;"
             newInstructions.RemoveRange(0, 5);
 
-            int offset = 0;
-            int index = newInstructions.FindLastIndex(x => x.LoadsField(Field(typeof(ExplosionDamageHandler), nameof(ExplosionDamageHandler._serverLogsText)))) + offset;
+            int offset = 1;
+            int index = newInstructions.FindLastIndex(x => x.StoresField(Field(typeof(ExplosionDamageHandler), nameof(ExplosionDamageHandler._serverLogsText)))) + offset;
 
             newInstructions.InsertRange(index, new List<CodeInstruction>()
             {
@@ -58,14 +58,12 @@ namespace Exiled.Events.Patches.Fixes
                 new(OpCodes.Callvirt, PropertySetter(typeof(StandardDamageHandler), nameof(StandardDamageHandler.Damage))),
 
                 // FixExplosionArmor.Memory.Add(this, new StrongBox(value))
-                new(OpCodes.Ldfld, Field(typeof(FixExplosionArmor), nameof(FixExplosionArmor.Memory))),
+                new(OpCodes.Ldsfld, Field(typeof(FixExplosionArmor), nameof(FixExplosionArmor.Memory))),
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Ldarga_S, 4),
-                new(OpCodes.Call, DeclaredConstructor(typeof(StrongBox<int>), new Type[] { typeof(int).MakeGenericType(), }, false)),
+                new(OpCodes.Ldarg_S, 4),
+                new(OpCodes.Newobj, DeclaredConstructor(typeof(StrongBox<int>), new Type[] { typeof(int), }, false)),
                 new(OpCodes.Callvirt, Method(typeof(ConditionalWeakTable<ExplosionDamageHandler, StrongBox<int>>), nameof(ConditionalWeakTable<ExplosionDamageHandler, StrongBox<int>>.Add))),
             });
-            for (int z = 0; z < newInstructions.Count; z++)
-                yield return newInstructions[z];
 
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
