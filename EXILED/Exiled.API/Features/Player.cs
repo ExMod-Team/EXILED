@@ -2275,17 +2275,23 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="item">The specified <see cref="ItemType"/> to be removed.</param>
         /// <param name="destroy">Whether to destroy the item.</param>
+        /// <param name="amount">The number of matching items to remove.</param>
         /// <returns>A value indicating whether the <see cref="Item"/> was removed.</returns>
-        public bool RemoveItem(ItemType item, bool destroy = true)
+        public bool RemoveItem(ItemType item, bool destroy = true, int amount = 1)
         {
-            Item itemtoremove = Items.FirstOrDefault(tempItem => tempItem.Type == item);
-            if (itemtoremove == null)
+            if (amount <= 0)
                 return false;
 
-            RemoveItem(itemtoremove, destroy);
+            List<Item> itemsToRemove = Items.Where(i => i?.Type == item).Take(amount).ToList();
+
+            if (itemsToRemove.Count == 0)
+                return false;
+
+            foreach (Item i in itemsToRemove)
+                RemoveItem(i, destroy);
+
             return true;
         }
-
         /// <summary>
         /// Removes an <see cref="Item"/> from the player's inventory.
         /// </summary>
