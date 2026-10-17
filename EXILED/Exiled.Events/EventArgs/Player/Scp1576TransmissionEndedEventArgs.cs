@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Scp1576TransmissionEndedEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,9 +7,11 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using API.Features;
-    using API.Features.Items;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Items;
+
     using Interfaces;
+
     using InventorySystem.Items.Usables.Scp1576;
 
     /// <summary>

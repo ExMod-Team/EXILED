@@ -10,7 +10,7 @@ namespace Exiled.Events.Patches.Fixes
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
 
     using HarmonyLib;
 
@@ -24,7 +24,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(VoiceChatMutes), nameof(VoiceChatMutes.LoadMutes))]
     internal static class VoiceChatMutesClear
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

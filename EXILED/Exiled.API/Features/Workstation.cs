@@ -14,9 +14,11 @@ namespace Exiled.API.Features
 
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items.Firearms.Attachments;
+
     using MapGeneration.Distributors;
-    using Mirror;
+
     using UnityEngine;
 
     /// <summary>

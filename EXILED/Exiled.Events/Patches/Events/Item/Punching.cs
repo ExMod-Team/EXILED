@@ -10,11 +10,12 @@ namespace Exiled.Events.Patches.Events.Item
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
+
     using HarmonyLib;
+
     using InventorySystem.Items.MarshmallowMan;
 
     using static HarmonyLib.AccessTools;

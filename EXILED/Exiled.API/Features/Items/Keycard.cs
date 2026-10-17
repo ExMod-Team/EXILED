@@ -9,7 +9,9 @@ namespace Exiled.API.Features.Items
 {
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
+
     using Interactables.Interobjects.DoorUtils;
+
     using InventorySystem.Items.Keycards;
 
     /// <summary>

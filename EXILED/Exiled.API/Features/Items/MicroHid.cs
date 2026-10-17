@@ -7,14 +7,9 @@
 
 namespace Exiled.API.Features.Items
 {
-    using System;
-    using System.Reflection;
-
-    using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items.Autosync;
-    using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.MicroHID;
     using InventorySystem.Items.MicroHID.Modules;
 

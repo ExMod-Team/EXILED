@@ -18,6 +18,7 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.Events.EventArgs.Player;
 
     using InventorySystem.Items.Armor;
+
     using MEC;
 
     /// <summary>
@@ -82,7 +83,7 @@ namespace Exiled.CustomItems.API.Features
             if (AmmoLimits.Count != 0)
                 armor.AmmoLimits = AmmoLimits;
 
-            if (AmmoLimits.Count != 0)
+            if (CategoryLimits.Count != 0)
                 armor.CategoryLimits = CategoryLimits;
 
             player.AddItem(armor);

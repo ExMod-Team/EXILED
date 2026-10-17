@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="HitEventArgs.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -10,8 +10,10 @@ namespace Exiled.Events.EventArgs.Player
     using System.Collections.Generic;
     using System.Linq;
 
-    using API.Features;
+    using Exiled.API.Features;
+
     using Interfaces;
+
     using PlayerRoles.PlayableScps.Subroutines;
 
     /// <summary>

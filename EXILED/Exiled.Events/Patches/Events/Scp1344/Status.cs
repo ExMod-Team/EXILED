@@ -7,7 +7,6 @@
 
 namespace Exiled.Events.Patches.Events.Scp1344
 {
-    using System;
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -15,6 +14,7 @@ namespace Exiled.Events.Patches.Events.Scp1344
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp1344;
+
     using HarmonyLib;
 
     using InventorySystem.Items.Usables.Scp1344;

@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Scp914
 {
-    using API.Features;
+    using Exiled.API.Features;
 
     using global::Scp914;
 

@@ -13,8 +13,6 @@ namespace Exiled.Events.Patches.Generic
     using System.Linq;
     using System.Reflection.Emit;
 
-    using Exiled.API.Extensions;
-    using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pools;
 
@@ -24,8 +22,6 @@ namespace Exiled.Events.Patches.Generic
     using InventorySystem.Items;
     using InventorySystem.Items.Firearms;
     using InventorySystem.Items.Firearms.Modules;
-
-    using MapGeneration;
 
     using static HarmonyLib.AccessTools;
 

@@ -7,10 +7,11 @@
 
 namespace Exiled.Events.EventArgs.Scp096
 {
-    using API.Features;
-    using API.Features.Doors;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Doors;
 
     using Interactables.Interobjects;
+
     using Interfaces;
 
     using Scp096Role = API.Features.Roles.Scp096Role;

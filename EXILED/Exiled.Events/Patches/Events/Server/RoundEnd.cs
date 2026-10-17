@@ -18,6 +18,7 @@ namespace Exiled.Events.Patches.Events.Server
     using Exiled.Events.EventArgs.Server;
 
     using HarmonyLib;
+
     using PlayerRoles;
 
     using static HarmonyLib.AccessTools;
@@ -59,7 +60,7 @@ namespace Exiled.Events.Patches.Events.Server
 
             Label jmp = generator.DefineLabel();
 
-            // if (Round.IgnoredPlayers.Contains(referencehub)
+            // if (Round.IgnoredPlayers.Contains(player)
             //  goto jmp;
             newInstructions.InsertRange(
                 index,
@@ -67,7 +68,8 @@ namespace Exiled.Events.Patches.Events.Server
                 {
                     new(OpCodes.Call, PropertyGetter(typeof(Round), nameof(Round.IgnoredPlayers))),
                     new(OpCodes.Ldloc_S, 20),
-                    new(OpCodes.Callvirt, Method(typeof(HashSet<ReferenceHub>), nameof(HashSet<ReferenceHub>.Contains))),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    new(OpCodes.Callvirt, Method(typeof(HashSet<Player>), nameof(HashSet<Player>.Contains))),
                     new(OpCodes.Brtrue_S, jmp),
                 });
 

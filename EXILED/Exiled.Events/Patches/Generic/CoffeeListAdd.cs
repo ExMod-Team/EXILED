@@ -8,6 +8,7 @@
 namespace Exiled.Events.Patches.Generic
 {
     using Exiled.API.Features;
+
     using HarmonyLib;
 #pragma warning disable SA1313
 #pragma warning disable CS0618
@@ -19,7 +20,7 @@ namespace Exiled.Events.Patches.Generic
     {
         private static void Postfix(global::Coffee __instance)
         {
-            _ = new Coffee(__instance);
+            new Coffee(__instance);
         }
     }
 }

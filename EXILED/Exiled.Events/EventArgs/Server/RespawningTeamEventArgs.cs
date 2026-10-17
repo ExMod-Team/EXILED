@@ -7,15 +7,15 @@
 
 namespace Exiled.Events.EventArgs.Server
 {
-    using System;
     using System.Collections.Generic;
 
     using Exiled.API.Features;
     using Exiled.API.Features.Waves;
     using Exiled.Events.EventArgs.Interfaces;
+
     using PlayerRoles;
     using PlayerRoles.Spectating;
-    using Respawning;
+
     using Respawning.Objectives;
     using Respawning.Waves;
 
@@ -24,8 +24,6 @@ namespace Exiled.Events.EventArgs.Server
     /// </summary>
     public class RespawningTeamEventArgs : IDeniableEvent
     {
-        private int maximumRespawnAmount;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RespawningTeamEventArgs" /> class.
         /// </summary>
@@ -69,16 +67,16 @@ namespace Exiled.Events.EventArgs.Server
         /// </summary>
         public int MaximumRespawnAmount
         {
-            get => maximumRespawnAmount;
+            get;
             set
             {
-                if (value < maximumRespawnAmount)
+                if (value < field)
                 {
                     if (Players.Count > value)
                         Players.RemoveRange(value, Players.Count - value);
                 }
 
-                maximumRespawnAmount = value;
+                field = value;
             }
         }
 

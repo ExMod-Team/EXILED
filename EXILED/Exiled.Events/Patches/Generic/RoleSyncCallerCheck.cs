@@ -7,15 +7,11 @@
 
 namespace Exiled.Events.Patches.Generic
 {
-    using System.Collections.Generic;
-    using System.Reflection.Emit;
-
-    using Exiled.API.Features.Pools;
     using Exiled.Events.Handlers.Internal;
-    using HarmonyLib;
-    using PlayerRoles;
 
-    using static HarmonyLib.AccessTools;
+    using HarmonyLib;
+
+    using PlayerRoles;
 
     /// <summary>
     /// Patches <see cref="PlayerRoleManager.SendNewRoleInfo"/> to check if we can skip writing all the data for a fake role inside <see cref="Round.SendingNewRoleInfo"/> without looking inside the stack trace.

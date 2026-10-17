@@ -10,16 +10,16 @@ namespace Exiled.Events.Patches.Events.Player
 #pragma warning disable SA1402
 #pragma warning disable SA1649
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.Modules.Misc;
-    using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 

@@ -10,14 +10,18 @@ namespace Exiled.Events.EventArgs.Player
     using System.Collections.Generic;
     using System.Linq;
 
-    using API.Enums;
-    using API.Features;
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
+
     using Interfaces;
+
     using InventorySystem;
+
     using LabApi.Events.Arguments.PlayerEvents;
     using LabApi.Events.Handlers;
+
     using PlayerRoles;
 
     /// <summary>
@@ -25,8 +29,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class ChangingRoleEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private RoleTypeId newRole;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ChangingRoleEventArgs" /> class.
         /// </summary>
@@ -69,7 +71,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public RoleTypeId NewRole
         {
-            get => newRole;
+            get;
             set
             {
                 InventoryRoleInfo inventory = value.GetInventory();
@@ -90,7 +92,7 @@ namespace Exiled.Events.EventArgs.Player
                 foreach (KeyValuePair<ItemType, ushort> ammoPair in playerReceivingLoadoutEventArgs.Ammo)
                     Ammo.Add(ammoPair.Key, ammoPair.Value);
 
-                newRole = value;
+                field = value;
             }
         }
 

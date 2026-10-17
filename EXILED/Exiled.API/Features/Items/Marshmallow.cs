@@ -8,10 +8,14 @@
 namespace Exiled.API.Features.Items
 {
     using CustomPlayerEffects;
+
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items.MarshmallowMan;
     using InventorySystem.Items.Usables;
+
     using PlayerStatsSystem;
+
     using UnityEngine;
 
     /// <summary>

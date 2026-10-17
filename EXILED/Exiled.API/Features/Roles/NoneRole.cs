@@ -30,6 +30,6 @@ namespace Exiled.API.Features.Roles
         public override RoleTypeId Type { get; } = RoleTypeId.None;
 
         /// <inheritdoc/>
-        public VoiceModuleBase VoiceModule => (Base as NoneGameRole) !.VoiceModule;
+        public VoiceModuleBase VoiceModule => (Base as NoneGameRole).VoiceModule;
     }
 }
