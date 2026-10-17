@@ -14,7 +14,9 @@ env:
   EXILED_REFERENCES_PATH: ${{ github.workspace }}/EXILED/References
 
 jobs:
-
+  build-and-publish:
+    permissions:
+      id-token: write  # enable GitHub OIDC token issuance for this job
   push:
 
     runs-on: windows-latest
@@ -44,9 +46,26 @@ jobs:
         $File = (Get-ChildItem -Path . -Include 'ExMod.Exiled.*.nupkg' -Recurse).Name
         Out-File -FilePath ${{ github.env }} -InputObject "PackageFile=$File" -Encoding utf-8 -Append
 
-    - name: Push NuGet
-      shell: pwsh
-      run: nuget push ${{ env.PackageFile }} -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
+#    - name: Push NuGet
+#      shell: pwsh
+#      run: nuget push ${{ env.PackageFile }} -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
 
+
+
+    # Build your artifacts/my-sdk.nupkg package here
+    
+    # Get a short-lived NuGet API key
+    - name: NuGet login (OIDC → temp API key)
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: ${{ secrets.NUGET_USER }}
+    
+    # Push the package
+    - name: NuGet push
+      run: dotnet nuget push ${{ env.PackageFile }} --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json -SkipDuplicate
+        
+        
+        
     - name: Push generated package to GitHub registry
       run: dotnet nuget push ${{ env.PackageFile }} -k ${{ secrets.GITHUB_TOKEN }} -s https://nuget.pkg.github.com/ExMod-Team/index.json --skip-duplicate
