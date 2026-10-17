@@ -17,8 +17,7 @@ jobs:
   build-and-publish:
     permissions:
       id-token: write  # enable GitHub OIDC token issuance for this job
-  push:
-
+      
     runs-on: windows-latest
 
     steps:
