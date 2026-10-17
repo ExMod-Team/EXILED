@@ -17,14 +17,10 @@ namespace Exiled.API.Features
     using AudioPooling;
 
     using Core;
-
     using CustomPlayerEffects;
     using CustomPlayerEffects.Danger;
-
     using DamageHandlers;
-
     using Enums;
-
     using Exiled.API.Features.Core.Interfaces;
     using Exiled.API.Features.CustomStats;
     using Exiled.API.Features.Doors;
@@ -35,17 +31,11 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Roles;
     using Exiled.API.Interfaces;
     using Exiled.API.Structs;
-
     using Extensions;
-
     using Footprinting;
-
     using global::Scp914;
-
     using Hints;
-
     using Interactables.Interobjects;
-
     using InventorySystem;
     using InventorySystem.Disarming;
     using InventorySystem.Items;
@@ -56,38 +46,29 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
-
     using MapGeneration.Distributors;
     using MapGeneration.Rooms;
-
     using MEC;
-
     using Mirror;
     using Mirror.LiteNetLib4Mirror;
-
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
+    using PlayerRoles.FirstPersonControl.Thirdperson;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
     using PlayerRoles.RoleAssign;
     using PlayerRoles.Spectating;
     using PlayerRoles.Voice;
-
     using PlayerStatsSystem;
-
     using RelativePositioning;
-
     using RemoteAdmin;
-
     using RoundRestarting;
 
     using Unity.Collections.LowLevel.Unsafe;
 
     using UnityEngine;
-
     using Utils;
     using Utils.Networking;
-
     using VoiceChat;
     using VoiceChat.Playbacks;
 
@@ -122,6 +103,10 @@ namespace Exiled.API.Features
 #pragma warning restore SA1401
 
         private readonly HashSet<EActor> componentsInChildren = new();
+
+        private ReferenceHub referenceHub;
+
+        private Role role;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Player"/> class.
@@ -217,10 +202,10 @@ namespace Exiled.API.Features
         /// </summary>
         public ReferenceHub ReferenceHub
         {
-            get;
+            get => referenceHub;
             private set
             {
-                field = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");
+                referenceHub = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null!");
                 GameObject = value.gameObject;
                 HintDisplay = value.hints;
                 Inventory = value.inventory;
@@ -303,7 +288,7 @@ namespace Exiled.API.Features
         /// <summary>
         /// Gets the player's user id.
         /// </summary>
-        public string UserId => ReferenceHub.authManager.UserId;
+        public string UserId => referenceHub.authManager.UserId;
 
         /// <summary>
         /// Gets the player's user id without the authentication.
@@ -629,11 +614,11 @@ namespace Exiled.API.Features
         /// <seealso cref="Role.Set(RoleTypeId, SpawnReason, RoleSpawnFlags)"/>
         public Role Role
         {
-            get => field ??= Role.Create(RoleManager.CurrentRole);
+            get => role ??= Role.Create(RoleManager.CurrentRole);
             internal set
             {
-                PreviousRole = field?.Type ?? RoleTypeId.None;
-                field = value;
+                PreviousRole = role?.Type ?? RoleTypeId.None;
+                role = value;
             }
         }
 
@@ -690,7 +675,7 @@ namespace Exiled.API.Features
         public bool IsJumping
         {
             get => Role is FpcRole fpc && fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping;
-            set => (Role as FpcRole)?.FirstPersonController.FpcModule.Motor.JumpController.IsJumping = value;
+            set => _ = Role is FpcRole fpc ? fpc.FirstPersonController.FpcModule.Motor.JumpController.IsJumping = value : _ = value;
         }
 
         /// <summary>
@@ -902,8 +887,6 @@ namespace Exiled.API.Features
             {
                 if (value is WearableElementType.None)
                 {
-                    Log.Info("None");
-
                     WearableSyncMessage wearableSyncMessage = new(ReferenceHub);
                     WearableSync.UpdateDatabaseEntry(wearableSyncMessage);
                     NetworkServer.SendToAll(wearableSyncMessage, 0, false);
@@ -911,7 +894,6 @@ namespace Exiled.API.Features
                 }
 
                 WearableSync.PayloadWriter.Reset();
-                Log.Info("newWearables" + value);
 
                 if (value.HasFlag(WearableElementType.ArmorDefault))
                 {
@@ -926,7 +908,6 @@ namespace Exiled.API.Features
                         value &= ~WearableElementType.ArmorDefault;
 
                     value &= ~WearableElementType.ArmorLight | WearableElementType.ArmorCombat | WearableElementType.ArmorHeavy;
-                    Log.Info("DiplayedArmor" + displayedArmor);
                 }
 
                 WearableSyncMessage wearableSyncMessage2 = new(ReferenceHub, (WearableElements)value, WearableSync.PayloadWriter);
@@ -960,7 +941,7 @@ namespace Exiled.API.Features
         public byte UnitId
         {
             get => Role.Base is PlayerRoles.HumanRole humanRole ? humanRole.UnitNameId : byte.MinValue;
-            set => (Role.Base as PlayerRoles.HumanRole)?.UnitNameId = value;
+            set => _ = Role.Base is PlayerRoles.HumanRole humanRole ? humanRole.UnitNameId = value : _ = value;
         }
 
         /// <summary>
@@ -1019,7 +1000,10 @@ namespace Exiled.API.Features
                 if (value > MaxArtificialHealth)
                     MaxArtificialHealth = value;
 
-                ActiveArtificialHealthProcesses.FirstOrDefault()?.CurrentAmount = value;
+                AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
+
+                if (ahp is not null)
+                    ahp.CurrentAmount = value;
             }
         }
 
@@ -1036,7 +1020,8 @@ namespace Exiled.API.Features
 
                 AhpProcess ahp = ActiveArtificialHealthProcesses.FirstOrDefault();
 
-                ahp?.Limit = value;
+                if (ahp is not null)
+                    ahp.Limit = value;
             }
         }
 
@@ -1167,7 +1152,7 @@ namespace Exiled.API.Features
         /// <seealso cref="EnableEffect(string, float, bool)"/>
         /// <seealso cref="EnableEffect{T}(float, bool)"/>
         /// <seealso cref="EnableEffects(IEnumerable{EffectType}, float, bool)"/>
-        public IEnumerable<StatusEffectBase> ActiveEffects => ReferenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
+        public IEnumerable<StatusEffectBase> ActiveEffects => referenceHub.playerEffectsController.AllEffects.Where(effect => effect.Intensity > 0);
 
         /// <summary>
         /// Gets or sets the player's group.
@@ -1642,7 +1627,7 @@ namespace Exiled.API.Features
         /// <param name="newargs">Contains the updated arguments after processing.</param>
         /// <param name="keepEmptyEntries">Determines whether empty entries should be kept in the result.</param>
         /// <returns>An <see cref="IEnumerable{Player}"/> representing the processed players.</returns>
-        public static IEnumerable<Player> GetProcessedData(ArraySegment<string> args, int startIndex, out string[] newargs, bool keepEmptyEntries = false) => RAUtils.ProcessPlayerIdOrNamesList(args, startIndex, out newargs, keepEmptyEntries).Select(Get);
+        public static IEnumerable<Player> GetProcessedData(ArraySegment<string> args, int startIndex, out string[] newargs, bool keepEmptyEntries = false) => RAUtils.ProcessPlayerIdOrNamesList(args, startIndex, out newargs, keepEmptyEntries).Select(hub => Get(hub));
 
         /// <summary>
         /// Gets an <see cref="IEnumerable{Player}"/> containing all players processed based on the arguments specified.
@@ -1952,7 +1937,21 @@ namespace Exiled.API.Features
         /// This method can be further optimized by only using static RoleData instances in your Funcs.
         /// </para>
         /// </remarks>
-        public void SetAppearance(Func<Player, RoleData> generator) => FakeRoleGenerator.Add(generator);
+        public void SetAppearance(Func<Player, RoleData> generator)
+        {
+            FakeRoleGenerator.Add(generator);
+
+            foreach (Player viewer in Enumerable)
+            {
+                RoleData data = generator(viewer);
+
+                if (data.Role == RoleTypeId.None)
+                    continue;
+
+                if (viewer != this || data.DataAuthority.HasFlag(RoleData.Authority.AffectSelf))
+                    FakeRoles[viewer] = data;
+            }
+        }
 
         /// <summary>
         /// Fakes this players role to other viewers.
@@ -1961,7 +1960,7 @@ namespace Exiled.API.Features
         /// <param name="fakeRole">The fake role.</param>
         /// <param name="authority">How to handle edge cases.</param>
         /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
-        public void SetAppearance(IEnumerable<Player> viewers, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte unitId = 0)
+        public void SetAppearance(IEnumerable<Player> viewers, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte? unitId = null)
         {
             foreach (Player player in viewers)
             {
@@ -1976,7 +1975,7 @@ namespace Exiled.API.Features
         /// <param name="fakeRole">The fake role.</param>
         /// <param name="authority">How to handle edge cases.</param>
         /// <param name="unitId">The Unit ID of the player, if <paramref name="fakeRole"/> is an NTF role.</param>
-        public void SetAppearance(Player player, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte unitId = 0)
+        public void SetAppearance(Player player, RoleTypeId fakeRole, RoleData.Authority authority = RoleData.Authority.None, byte? unitId = null)
             => FakeRoles[player] = new RoleData(fakeRole, authority, unitId);
 
         /// <summary>
@@ -2102,7 +2101,7 @@ namespace Exiled.API.Features
         {
             ReferenceHub.inventory.SetDisarmedStatus(null);
 
-            DisarmedPlayers.Entries.Add(new DisarmedPlayers.DisarmedEntry(ReferenceHub.networkIdentity.netId, 0U));
+            DisarmedPlayers.Entries.Add(new DisarmedPlayers.DisarmedEntry(referenceHub.networkIdentity.netId, 0U));
             new DisarmedPlayersListMessage(DisarmedPlayers.Entries).SendToAuthenticated(0);
         }
 
@@ -2343,6 +2342,7 @@ namespace Exiled.API.Features
 
             return true;
         }
+
         /// <summary>
         /// Removes an <see cref="Item"/> from the player's inventory.
         /// </summary>
@@ -2389,7 +2389,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="message">The message to be sent.</param>
         /// <param name="color">The message color.</param>
-        public void SendConsoleMessage(string message, string color) => ReferenceHub.gameConsoleTransmission.SendToClient(message, color);
+        public void SendConsoleMessage(string message, string color) => referenceHub.gameConsoleTransmission.SendToClient(message, color);
 
         /// <summary>
         /// Disconnects the player.
@@ -2534,17 +2534,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="usableItem">The ItemType to be used.</param>
         /// <returns><see langword="true"/> if item was used successfully. Otherwise, <see langword="false"/>.</returns>
-        public bool UseItem(ItemType usableItem)
-        {
-            if (usableItem.GetTemplate() is not UsableItem)
-                return false;
-
-            Item usable = Item.Create<Usable>(usableItem);
-
-            UseItem(usable);
-            usable.Destroy();
-            return true;
-        }
+        public bool UseItem(ItemType usableItem) => UseItem(Item.Create(usableItem));
 
         /// <summary>
         /// Forces the player to use an item.
@@ -2608,8 +2598,7 @@ namespace Exiled.API.Features
             if ((Role.Side != Side.Scp) && !string.IsNullOrEmpty(cassieAnnouncement))
                 Cassie.Message(cassieAnnouncement);
 
-            Footprint footprint = attacker != null ? attacker.Footprint : Server.Host.Footprint;
-            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(default, footprint, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
+            Kill(new DisruptorDamageHandler(new DisruptorShotEvent(Item.Create(ItemType.ParticleDisruptor, attacker).Base as InventorySystem.Items.Firearms.Firearm, DisruptorActionModule.FiringState.FiringSingle), Vector3.up, -1));
         }
 
         /// <summary>
@@ -2821,7 +2810,7 @@ namespace Exiled.API.Features
                 return ServerConfigSynchronizer.Singleton.AmmoLimitsSync.FirstOrDefault(x => x.AmmoType == itemType).Limit;
             }
 
-            return InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), ReferenceHub);
+            return InventorySystem.Configs.InventoryLimits.GetAmmoLimit(type.GetItemType(), referenceHub);
         }
 
         /// <summary>
@@ -2897,7 +2886,7 @@ namespace Exiled.API.Features
                 return ServerConfigSynchronizer.Singleton.CategoryLimits[index];
             }
 
-            sbyte limit = InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, ReferenceHub);
+            sbyte limit = InventorySystem.Configs.InventoryLimits.GetCategoryLimit(category, referenceHub);
 
             return limit == -1 ? (sbyte)1 : limit;
         }
@@ -3934,10 +3923,9 @@ namespace Exiled.API.Features
         /// <param name="efficacy">Percent of incoming damage absorbed by this stat.</param>
         /// <param name="sustain">The number of seconds to delay the start of the decay.</param>
         /// <param name="persistant">Whether the process is removed when the value hits 0.</param>
-        /// <returns>The <see cref="AhpProcess"/> instance..</returns>
-        public AhpProcess AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
+        public void AddAhp(float amount, float limit = 75f, float decay = 1.2f, float efficacy = 0.7f, float sustain = 0f, bool persistant = false)
         {
-            return ReferenceHub.playerStats.GetModule<AhpStat>()
+            ReferenceHub.playerStats.GetModule<AhpStat>()
                 .ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
         }
 
@@ -4322,7 +4310,8 @@ namespace Exiled.API.Features
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            return obj is Player player && ReferenceHub == player.ReferenceHub;
+            Player player = obj as Player;
+            return (object)player != null && ReferenceHub == player.ReferenceHub;
         }
 
         /// <inheritdoc />
@@ -4338,7 +4327,7 @@ namespace Exiled.API.Features
         /// <param name="player2">The second player instance.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
 #pragma warning disable SA1201
-        public static bool operator ==(Player player1, Player player2) => player1?.Equals(player2) ?? (player2 is null);
+        public static bool operator ==(Player player1, Player player2) => player1?.Equals(player2) ?? player2 is null;
 
         /// <summary>
         /// Returns whether the two players are different.

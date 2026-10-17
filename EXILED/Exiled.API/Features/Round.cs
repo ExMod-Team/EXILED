@@ -194,6 +194,11 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets get the initial lobby Waiting Time.
+        /// </summary>
+        public static short InitialLobbyWaitingTime { get; } = ConfigFile.ServerConfig.GetShort("lobby_waiting_time", 20);
+
+        /// <summary>
         /// Restarts the round with custom settings.
         /// </summary>
         /// <param name="fastRestart">
@@ -258,5 +263,10 @@ namespace Exiled.API.Features
         /// Start the round.
         /// </summary>
         public static void Start() => CharacterClassManager.ForceRoundStart();
+
+        /// <summary>
+        /// Reset the CountDown from Config Value.
+        /// </summary>
+        public static void ResetCountDown() => LobbyWaitingTime = InitialLobbyWaitingTime;
     }
 }

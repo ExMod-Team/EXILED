@@ -24,10 +24,9 @@ namespace Exiled.Events.EventArgs.Server
         public RoundStartingEventArgs(short timeLeft, short originalTimeLeft, int topPlayer, int playerCount)
         {
             TimeLeft = timeLeft;
-            OriginalTimeLeft = originalTimeLeft;
+            OriginalTimeLeft = originalTimeLeft == -1 ? 1 : originalTimeLeft;
             TopPlayer = topPlayer;
             PlayerCount = playerCount;
-            IsAllowed = TimeLeft == -1;
         }
 
         /// <summary>
@@ -51,6 +50,6 @@ namespace Exiled.Events.EventArgs.Server
         public int PlayerCount { get; }
 
         /// <inheritdoc/>
-        public bool IsAllowed { get; set; }
+        public bool IsAllowed { get; set; } = true;
     }
 }

@@ -245,7 +245,7 @@ namespace Exiled.CustomItems.API.Features
         /// <returns>True if the pickup is a custom item.</returns>
         public static bool TryGet(Pickup pickup, out CustomItem? customItem)
         {
-            customItem = Registered?.FirstOrDefault(tempCustomItem => tempCustomItem.TrackedSerials.Contains(pickup.Serial));
+            customItem = pickup == null ? null : Registered?.FirstOrDefault(tempCustomItem => tempCustomItem.TrackedSerials.Contains(pickup.Serial));
 
             return customItem is not null;
         }

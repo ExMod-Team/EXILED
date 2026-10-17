@@ -15,7 +15,6 @@ namespace Exiled.Events.Patches.Events.Server
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Server;
-
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
@@ -23,11 +22,12 @@ namespace Exiled.Events.Patches.Events.Server
     /// <summary>
     /// Patches <see cref="CharacterClassManager.Init()" />.
     /// Adds the <see cref="Handlers.Server.RoundStarting" /> event.
+    /// Fixes the event for LabAPI too.
     /// </summary>
     [HarmonyPatch]
     internal class RoundStarting
     {
-#pragma warning disable SA1600 // Elements should be documented
+        #pragma warning disable SA1600 // Elements should be documented
         public static Type PrivateType { get; internal set; }
 
         private static MethodInfo TargetMethod()
@@ -52,17 +52,20 @@ namespace Exiled.Events.Patches.Events.Server
             const string TopPlayer = "<topPlayers>5__4";
 
             LocalBuilder ev = generator.DeclareLocal(typeof(RoundStartingEventArgs));
-            int offset = -4;
-            int index = newInstructions.FindLastIndex(x => x.Calls(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.ForceRoundStart)))) + offset;
+            Label continueLabel = generator.DefineLabel();
+            Label checkSkip = generator.DefineLabel();
 
-            List<Label> labels = newInstructions[index].ExtractLabels();
-            Label skip = (Label)newInstructions[index + 3].operand;
-            newInstructions.RemoveRange(index, 4);
+            int index = newInstructions.FindLastIndex(x => x.Calls(Method(typeof(CharacterClassManager), nameof(CharacterClassManager.ForceRoundStart))));
+
+            // we will call ForceRoundStart ourselves to check its result
+            newInstructions.RemoveRange(index, 2);
+
+            newInstructions[index].labels.Add(continueLabel);
 
             newInstructions.InsertRange(index, new[]
             {
                 // this.TimeLeft
-                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(labels),
+                new CodeInstruction(OpCodes.Ldarg_0),
                 new(OpCodes.Ldfld, Field(PrivateType, TimeLeft)),
 
                 // this.OriginalTimeLeft
@@ -103,10 +106,29 @@ namespace Exiled.Events.Patches.Events.Server
                 new(OpCodes.Stfld, Field(PrivateType, TopPlayer)),
 
                 // if (!ev.IsAllowed)
-                //   skip;
+                //    goto checkSkip; (checkSkip is where we see if we need to change timeLeft so the round doesn't start from stupid NW stuff)
                 new(OpCodes.Ldloc_S, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(RoundStartingEventArgs), nameof(RoundStartingEventArgs.IsAllowed))),
-                new(OpCodes.Brfalse_S, skip),
+                new(OpCodes.Brfalse_S, checkSkip),
+
+                // try start the round because it was allowed.
+                new(OpCodes.Call, Method(typeof(CharacterClassManager), nameof(CharacterClassManager.ForceRoundStart))),
+
+                // round has started, we don't care about timeLeft because of the Timer check later in the method.
+                new(OpCodes.Brtrue_S, continueLabel),
+
+                // if (timeLeft != -1)
+                //     goto continueLabel; (timeLeft isn't -1, so we can just let the method execute)
+                new CodeInstruction(OpCodes.Ldarg_0).WithLabels(checkSkip),
+                new(OpCodes.Ldfld, Field(PrivateType, TimeLeft)),
+
+                new(OpCodes.Ldc_I4_M1),
+                new(OpCodes.Bne_Un_S, continueLabel),
+
+                // timeLeft = 0; (so we delay round start 1s)
+                new(OpCodes.Ldarg_0),
+                new(OpCodes.Ldc_I4_0),
+                new(OpCodes.Stfld, Field(PrivateType, TimeLeft)),
             });
 
             for (int z = 0; z < newInstructions.Count; z++)
@@ -115,4 +137,4 @@ namespace Exiled.Events.Patches.Events.Server
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
-}
+    }

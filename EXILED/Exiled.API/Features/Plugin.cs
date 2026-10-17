@@ -153,7 +153,7 @@ namespace Exiled.API.Features
                         {
                             if (e.Message.StartsWith("An"))
                             {
-                                Log.Error($"Command with same name has already registered! Command: {command.Command}");
+                                Log.Error($"Command with same name has already registered! Command: {command.Command}. Type: {command.GetType().FullName}");
                             }
                             else
                             {

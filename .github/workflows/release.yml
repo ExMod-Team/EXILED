@@ -63,7 +63,7 @@ jobs:
         run: dotnet publish Exiled.Installer -r win-x64 -c release -o builds/win-x64 --self-contained true
         
       - name: Create release
-        uses: softprops/action-gh-release@main
+        uses: softprops/action-gh-release@v3
         with:
           files: |
             EXILED/bin/Release/Exiled.tar.gz

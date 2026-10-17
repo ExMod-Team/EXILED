@@ -175,6 +175,15 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Gets or sets the number of reserved slots.
+        /// </summary>
+        public static int ReservedSlots
+        {
+            get => CustomNetworkManager.reservedSlots;
+            set => CustomNetworkManager.reservedSlots = value;
+        }
+
+        /// <summary>
         /// Gets a value indicating whether late join is enabled.
         /// </summary>
         public static bool LateJoinEnabled => LateJoinTime > 0;
