@@ -236,6 +236,7 @@ namespace Exiled.Events.Patches.Events.Scp049
 
                 // this.Cooldown.Trigger(ev.cooldown.time)
                 new CodeInstruction(OpCodes.Ldarg_0).WithLabels(allowed),
+                new(OpCodes.Ldfld, Field(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Cooldown))),
                 new(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
                 new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),
