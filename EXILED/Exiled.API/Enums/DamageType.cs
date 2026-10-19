@@ -9,6 +9,9 @@ namespace Exiled.API.Enums
 {
     using Features;
 
+    using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Jailbird;
+
     using PlayerRoles;
 
     /// <summary>
@@ -145,9 +148,9 @@ namespace Exiled.API.Enums
         Scp173,
 
         /// <summary>
-        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.None"/>.
+        /// Damage caused by <see cref="RoleTypeId.Scp939"/> with <see cref="PlayerRoles.PlayableScps.Scp939.Scp939DamageType.None"/> or Unknown.
         /// </summary>
-        Scp939None,
+        Scp939Other,
 
         /// <summary>
         /// Damage caused by <see cref="RoleTypeId.Scp0492"/>.
@@ -210,9 +213,9 @@ namespace Exiled.API.Enums
         Hypothermia,
 
         /// <summary>
-        /// Damage caused by <see cref="ItemType.ParticleDisruptor"/>.
+        /// Damage caused by <see cref="ItemType.ParticleDisruptor"/> when <see cref="DisruptorActionModule.FiringState.None"/> or Unknown.
         /// </summary>
-        ParticleDisruptor,
+        ParticleDisruptorOther,
 
         /// <summary>
         /// Damage caused by <see cref="EffectType.CardiacArrest"/>.
@@ -227,7 +230,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// Damage caused by <see cref="ItemType.Jailbird"/>.
         /// </summary>
-        Jailbird,
+        JailbirdOther,
 
         /// <summary>
         /// Damage caused by <see cref="ItemType.GunFRMG0"/>.
@@ -368,5 +371,25 @@ namespace Exiled.API.Enums
         /// Damage dealt by a <see cref="Features.Items.MicroHid"/> when <see cref="InventorySystem.Items.MicroHID.Modules.MicroHidFiringMode.BrokenFire"/>.
         /// </summary>
         MicroHidBrokenFire,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.Jailbird"/> when <see cref="JailbirdItem._charging"/>.
+        /// </summary>
+        JailbirdCharged,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.Jailbird"/> when swinging.
+        /// </summary>
+        JailbirdSwing,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.ParticleDisruptor"/> when <see cref="DisruptorActionModule.FiringState.FiringRapid"/>.
+        /// </summary>
+        ParticleDisruptorRapidShot,
+
+        /// <summary>
+        /// Damage caused by <see cref="ItemType.ParticleDisruptor"/> when <see cref="DisruptorActionModule.FiringState.FiringSingle"/>.
+        /// </summary>
+        ParticleDisruptorSingleShot,
     }
 }
