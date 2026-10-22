@@ -526,7 +526,7 @@ namespace Exiled.API.Features
                 ExplodeEffect(position, projectileType);
 
             timedGrenadePickup.Position = position;
-            timedGrenadePickup.PreviousOwner = (attacker ?? Server.Host).Footprint;
+            timedGrenadePickup.PreviousOwner = attacker.Footprint;
             timedGrenadePickup.ServerFuseEnd();
         }
 
