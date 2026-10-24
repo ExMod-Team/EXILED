@@ -109,6 +109,9 @@ namespace Exiled.API.Features.Pickups
 
             if (item is Jailbird jailBirditem)
             {
+                // TODO: Remove if this is fixed https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/2816
+                jailBirditem.Base._deterioration.RecheckUsage();
+
                 MeleeDamage = jailBirditem.MeleeDamage;
                 ChargeDamage = jailBirditem.ChargeDamage;
                 FlashDuration = jailBirditem.FlashDuration;

@@ -7,10 +7,10 @@
 
 namespace Exiled.Events.EventArgs.Scp939
 {
-    using API.Features;
+    using Exiled.API.Features;
 
     using Exiled.API.Features.Hazards;
-    using Exiled.API.Features.Roles;
+
     using Interfaces;
 
     using PlayerRoles.PlayableScps.Scp939;
@@ -38,6 +38,7 @@ namespace Exiled.Events.EventArgs.Scp939
         {
             Player = Player.Get(hub);
             AmnesticCloud = Hazard.Get<AmnesticCloudHazard>(cloud);
+            NewState = cloudState;
             Scp939 = Player.Role.As<Scp939Role>();
         }
 

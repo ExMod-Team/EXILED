@@ -10,22 +10,18 @@ namespace Exiled.Events.Patches.Events.Scp330
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp330;
 
     using Handlers;
 
     using HarmonyLib;
+
     using InventorySystem.Items;
-    using InventorySystem.Items.Pickups;
     using InventorySystem.Items.Usables.Scp330;
 
-    using Mirror;
-
     using static HarmonyLib.AccessTools;
-
-    using Player = API.Features.Player;
 
     /// <summary>
     /// Patches the <see cref="Scp330NetworkHandler.ServerDropCandy" /> method to add the

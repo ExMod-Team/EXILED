@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Server
     using Exiled.API.Enums;
     using Exiled.API.Features.Waves;
     using Exiled.Events.EventArgs.Interfaces;
+
     using Respawning.Waves;
 
     /// <summary>

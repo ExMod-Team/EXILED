@@ -11,9 +11,10 @@ namespace Exiled.Loader
     using System.ComponentModel;
     using System.IO;
 
-    using API.Enums;
-    using API.Interfaces;
+    using Exiled.API.Enums;
     using Exiled.API.Features;
+    using Exiled.API.Interfaces;
+
     using YamlDotNet.Core;
 
     /// <summary>

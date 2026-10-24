@@ -141,7 +141,7 @@ namespace Exiled.CustomRoles.API.Features
                 CheckType.Active => ActivePlayers.Contains(player),
                 CheckType.Selected => SelectedPlayers.Contains(player),
                 CheckType.Available => Players.Contains(player),
-                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
             };
 
             return result;

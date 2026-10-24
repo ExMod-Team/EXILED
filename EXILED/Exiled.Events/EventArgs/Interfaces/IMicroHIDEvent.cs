@@ -7,7 +7,7 @@
 
 namespace Exiled.Events.EventArgs.Interfaces
 {
-    using API.Features.Items;
+    using Exiled.API.Features.Items;
 
     /// <summary>
     /// Event args used for all <see cref="API.Features.Items.MicroHid" /> related events.

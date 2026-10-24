@@ -8,7 +8,6 @@
 namespace Exiled.Events.Patches.Events.Scp3114
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection.Emit;
 
     using Exiled.API.Features.Pools;
@@ -17,6 +16,7 @@ namespace Exiled.Events.Patches.Events.Scp3114
     using Exiled.Events.Handlers;
 
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp3114;
     using PlayerRoles.PlayableScps.Subroutines;
 

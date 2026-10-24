@@ -10,7 +10,7 @@ namespace Exiled.Events.Patches.Events.Map
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Map;
 
@@ -30,7 +30,7 @@ namespace Exiled.Events.Patches.Events.Map
     [HarmonyPatch(typeof(DecontaminationController), nameof(DecontaminationController.FinishDecontamination))]
     internal static class Decontaminating
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

@@ -10,12 +10,16 @@ namespace Exiled.API.Features.Roles
     using System;
 
     using Enums;
+
     using Exiled.API.Features.Core;
     using Exiled.API.Features.Spawn;
     using Exiled.API.Interfaces;
+
     using Extensions;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
+
     using UnityEngine;
 
     using DestroyedGameRole = PlayerRoles.DestroyedRole;
@@ -138,7 +142,7 @@ namespace Exiled.API.Features.Roles
         /// <param name="left">The role.</param>
         /// <param name="right">The other role.</param>
         /// <returns><see langword="true"/> if the values are equal.</returns>
-        public static bool operator ==(Role left, Role right) => left?.Equals(right) ?? right is null;
+        public static bool operator ==(Role left, Role right) => left?.Equals(right) ?? (right is null);
 
         /// <summary>
         /// Returns whether the two roles are different.

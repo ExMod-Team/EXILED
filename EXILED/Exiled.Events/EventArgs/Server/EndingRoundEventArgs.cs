@@ -9,7 +9,8 @@ namespace Exiled.Events.EventArgs.Server
 {
     using System;
 
-    using API.Enums;
+    using Exiled.API.Enums;
+
     using Interfaces;
 
     /// <summary>

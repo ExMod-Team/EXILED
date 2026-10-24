@@ -12,10 +12,15 @@ namespace Exiled.Events.Patches.Events.Item
 
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Item;
+
     using Handlers;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Jailbird;
+
     using Mirror;
+
     using NorthwoodLib.Pools;
 
     using static HarmonyLib.AccessTools;
@@ -76,39 +81,39 @@ namespace Exiled.Events.Patches.Events.Item
             switch (messageType)
             {
                 case JailbirdMessageType.AttackTriggered:
-                {
-                    SwingingEventArgs ev = new(instance.Owner, instance);
+                    {
+                        SwingingEventArgs ev = new(instance.Owner, instance);
 
-                    Item.OnSwinging(ev);
+                        Item.OnSwinging(ev);
 
-                    return ev.IsAllowed;
-                }
+                        return ev.IsAllowed;
+                    }
 
                 case JailbirdMessageType.ChargeLoadTriggered:
-                {
-                    ChargingJailbirdEventArgs ev = new(instance.Owner, instance);
+                    {
+                        ChargingJailbirdEventArgs ev = new(instance.Owner, instance);
 
-                    Item.OnChargingJailbird(ev);
-                    if (ev.IsAllowed)
-                        return true;
+                        Item.OnChargingJailbird(ev);
+                        if (ev.IsAllowed)
+                            return true;
 
-                    ev.Player.RemoveHeldItem(destroy: false);
-                    ev.Player.CurrentItem = ev.Item;
-                    return false;
-                }
+                        ev.Player.RemoveHeldItem(destroy: false);
+                        ev.Player.CurrentItem = ev.Item;
+                        return false;
+                    }
 
                 case JailbirdMessageType.ChargeStarted:
-                {
-                    JailbirdChargeCompleteEventArgs ev = new(instance.Owner, instance);
+                    {
+                        JailbirdChargeCompleteEventArgs ev = new(instance.Owner, instance);
 
-                    Item.OnJailbirdChargeComplete(ev);
-                    if (ev.IsAllowed)
-                        return true;
+                        Item.OnJailbirdChargeComplete(ev);
+                        if (ev.IsAllowed)
+                            return true;
 
-                    ev.Player.RemoveHeldItem(destroy: false);
-                    ev.Player.AddItem(ev.Item);
-                    return false;
-                }
+                        ev.Player.RemoveHeldItem(destroy: false);
+                        ev.Player.AddItem(ev.Item);
+                        return false;
+                    }
 
                 default:
                     return true;

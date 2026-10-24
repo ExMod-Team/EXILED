@@ -15,10 +15,10 @@ namespace Exiled.API.Features.Items
     using Exiled.API.Interfaces;
 
     using InventorySystem.Items.Armor;
+
     using PlayerRoles;
 
     using Structs;
-    using UnityEngine;
 
     /// <summary>
     /// A wrapper class for <see cref="BodyArmor"/>.

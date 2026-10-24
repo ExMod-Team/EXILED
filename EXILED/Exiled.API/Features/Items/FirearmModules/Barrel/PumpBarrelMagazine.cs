@@ -7,12 +7,6 @@
 
 namespace Exiled.API.Features.Items.FirearmModules.Barrel
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using InventorySystem.Items.Firearms.Modules;
 
     using UnityEngine;
