@@ -22,6 +22,9 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class InteractingShootingTargetEventArgs : IPlayerEvent, IDeniableEvent
     {
+        private int newMaxHp;
+        private int newAutoResetTime;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InteractingShootingTargetEventArgs" /> class.
         /// </summary>
@@ -49,8 +52,8 @@ namespace Exiled.Events.EventArgs.Player
             ShootingTarget = AdminToy.Get<ShootingTargetToy>(shootingTarget);
             TargetButton = targetButton;
             IsAllowed = isAllowed;
-            NewMaxHp = maxHp;
-            NewAutoResetTime = autoResetTime;
+            newMaxHp = Mathf.Clamp(maxHp, 1, 256);
+            newAutoResetTime = Mathf.Clamp(autoResetTime, 0, 10);
         }
 
         /// <summary>
@@ -68,7 +71,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public int NewMaxHp
         {
-            get;
+            get => newMaxHp;
             set
             {
                 if (!ShootingTarget.IsSynced)
@@ -77,7 +80,7 @@ namespace Exiled.Events.EventArgs.Player
                     return;
                 }
 
-                field = Mathf.Clamp(value, 1, 256);
+                newMaxHp = Mathf.Clamp(value, 1, 256);
             }
         }
 
@@ -86,7 +89,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public int NewAutoResetTime
         {
-            get;
+            get => newAutoResetTime;
             set
             {
                 if (!ShootingTarget.IsSynced)
@@ -95,7 +98,7 @@ namespace Exiled.Events.EventArgs.Player
                     return;
                 }
 
-                field = Mathf.Clamp(value, 0, 10);
+                newAutoResetTime = Mathf.Clamp(value, 0, 10);
             }
         }
 
