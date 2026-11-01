@@ -4,6 +4,11 @@ on:
   push:
     tags:
       - "v*.*.*"
+  workflow_dispatch: 
+    inputs: 
+      tag:
+        description: "The tag of the latest release. (e.g. 'v9.15.3')")
+        required: true
 
 
 defaults:
@@ -65,6 +70,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v3
         with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
           files: |
             EXILED/bin/Release/Exiled.tar.gz
             EXILED/builds/win-x64/Exiled.Installer-Win.exe
