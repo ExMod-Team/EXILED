@@ -7,7 +7,7 @@ on:
   workflow_dispatch: 
     inputs: 
       tag:
-        description: "The tag of the latest release. (e.g. 'v9.15.3')")
+        description: "The tag of the latest release. (e.g. 'v9.15.3')"
         required: true
 
 
