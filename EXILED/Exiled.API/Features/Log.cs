@@ -73,7 +73,7 @@ namespace Exiled.API.Features
         /// Server must have exiled_debug config enabled.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
-        public static void Debug(string message)
+        public static void Debug(string message = "")
         {
             Assembly callingAssembly = Assembly.GetCallingAssembly();
 #if DEBUG
@@ -98,7 +98,7 @@ namespace Exiled.API.Features
         /// Sends a <see cref="Discord.LogLevel.Warn"/> level messages to the game console.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
-        public static void Warn(string message) => Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {message}", Discord.LogLevel.Warn, ConsoleColor.Magenta);
+        public static void Warn(string message = "") => Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {message}", Discord.LogLevel.Warn, ConsoleColor.Magenta);
 
         /// <summary>
         /// Sends a <see cref="Discord.LogLevel.Error"/> level messages to the game console.
@@ -114,7 +114,7 @@ namespace Exiled.API.Features
         /// It's recommended to send any messages in the catch block of a try/catch as errors with the exception string.
         /// </summary>
         /// <param name="message">The message to be sent.</param>
-        public static void Error(string message) => Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {message}", Discord.LogLevel.Error, ConsoleColor.DarkRed);
+        public static void Error(string message = "") => Send($"[{Assembly.GetCallingAssembly().GetName().Name}] {message}", Discord.LogLevel.Error, ConsoleColor.DarkRed);
 
         /// <summary>
         /// Sends a log message to the game console.

@@ -338,6 +338,28 @@ namespace Exiled.API.Features.Doors
             where T : Door => Get(doorVariant) as T;
 
         /// <summary>
+        /// Gets the door object associated with a specific <see cref="ButtonVariant"/>.
+        /// </summary>
+        /// <param name="buttonVariant">The base-game <see cref="ButtonVariant"/>.</param>
+        /// <returns>A <see cref="Door"/> wrapper object.</returns>
+        public static Door Get(ButtonVariant buttonVariant)
+        {
+            if (buttonVariant == null || buttonVariant.ParentDoor == null)
+                return null;
+
+            return Get(buttonVariant.ParentDoor);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="Door"/> by <see cref="ButtonVariant"/>.
+        /// </summary>
+        /// <param name="buttonVariant">The <see cref="ButtonVariant"/> to convert into an door.</param>
+        /// <typeparam name="T">The specified <see cref="Door"/> type.</typeparam>
+        /// <returns>The door wrapper for the given <see cref="ButtonVariant"/>.</returns>
+        public static T Get<T>(ButtonVariant buttonVariant)
+            where T : Door => Get(buttonVariant) as T;
+
+        /// <summary>
         /// Gets a <see cref="Door"/> given the specified <see cref="DoorType"/>.
         /// </summary>
         /// <param name="doorType">The <see cref="DoorType"/> to search for.</param>
@@ -378,7 +400,21 @@ namespace Exiled.API.Features.Doors
         /// </summary>
         /// <param name="gameObject">The base-game <see cref="UnityEngine.GameObject"/>.</param>
         /// <returns>The <see cref="Door"/> with the given name or <see langword="null"/> if not found.</returns>
-        public static Door Get(GameObject gameObject) => gameObject is null ? null : Get(gameObject.GetComponentInParent<DoorVariant>());
+        public static Door Get(GameObject gameObject)
+        {
+            if (gameObject == null)
+                return null;
+
+            DoorVariant doorVariant = gameObject.GetComponentInParent<DoorVariant>();
+            if (doorVariant != null)
+                return Get(doorVariant);
+
+            ButtonVariant buttonVariant = gameObject.GetComponent<ButtonVariant>();
+            if (buttonVariant != null && buttonVariant.ParentDoor != null)
+                return Get(gameObject.GetComponent<ButtonVariant>().ParentDoor);
+
+            return null;
+        }
 
         /// <summary>
         /// Returns the closest <see cref="Door"/> to the given <paramref name="position"/>.
