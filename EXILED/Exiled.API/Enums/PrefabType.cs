@@ -422,30 +422,38 @@ namespace Exiled.API.Enums
         [Prefab(1145481038, "Scp1509Pickup")]
         Scp1509Pickup,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(1359696107, "Hubert Moon")]
         HubertMoon,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(4075838184, "Scp018Projectile Halloween")]
         Scp018ProjectileHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(3262457219, "JailbirdPickup Halloween")]
         JailbirdPickupHalloween,
 
         [Prefab(1712001893, "Scp1509PedestalStructure Variant")]
         Scp1509PedestalStructureVariant,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(517392265, "SCP-173 Ragdoll - MrNutty Sombrero Variant")]
         Scp173RagdollMrNuttySombreroVariant,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(2174094462, "SCP-049 Ragdoll Halloween")]
         Scp049RagdollHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(4255002108, "SCP-096 Ragdoll Halloween")]
         Scp096RagdollHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(2556293836, "Zombie Ragdoll Halloween")]
         ZombieRagdollHalloween,
 
+        [Obsolete("Only available for Halloween and AprilFools.")]
         [Prefab(213466224, "SCP-939 Ragdoll Halloween")]
         Scp939RagdollHalloween,
 
