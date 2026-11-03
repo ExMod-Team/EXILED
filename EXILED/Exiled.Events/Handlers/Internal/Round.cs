@@ -122,28 +122,19 @@ namespace Exiled.Events.Handlers.Internal
         {
             foreach (Player viewer in Player.Enumerable.Where(p => !p.IsNPC && !p.IsHost))
             {
-                foreach (Func<Player, RoleData> generator in ev.Player.FakeRoleGenerator)
+                if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData existing) && !existing.DataAuthority.HasFlag(RoleData.Authority.Persist))
+                    viewer.FakeRoles.Remove(ev.Player);
+
+                foreach (Func<Player, RoleData> generator in viewer.FakeRoleGenerator)
                 {
-                    RoleData data = generator(viewer);
+                    RoleData data = generator(ev.Player);
 
                     if (data.Role == RoleTypeId.None)
                         continue;
 
-                    if (viewer != ev.Player)
-                    {
+                    if (viewer != ev.Player || data.DataAuthority.HasFlag(RoleData.Authority.AffectSelf))
                         viewer.FakeRoles[ev.Player] = data;
-                    }
                 }
-            }
-        }
-
-        /// <inheritdoc cref="Handlers.Player.OnDied(DiedEventArgs)" />
-        public static void OnDied(DiedEventArgs ev)
-        {
-            foreach (Player viewer in Player.Enumerable.Where(p => !p.IsNPC && !p.IsHost))
-            {
-                if (viewer.FakeRoles.TryGetValue(ev.Player, out RoleData data) && !data.DataAuthority.HasFlag(RoleData.Authority.Persist))
-                    viewer.FakeRoles.Remove(ev.Player);
             }
         }
 
@@ -191,10 +182,8 @@ namespace Exiled.Events.Handlers.Internal
                     if (data.Role == RoleTypeId.None)
                         continue;
 
-                    if (player != ev.Player)
-                    {
+                    if (player != ev.Player || data.DataAuthority.HasFlag(RoleData.Authority.AffectSelf))
                         ev.Player.FakeRoles[player] = data;
-                    }
                 }
             }
         }
@@ -249,8 +238,8 @@ namespace Exiled.Events.Handlers.Internal
 
                 switch (roleBase)
                 {
-                    case PlayerRoles.HumanRole { UsesUnitNames: true } when data.UnitId != 0:
-                        writer.WriteByte(data.UnitId);
+                    case PlayerRoles.HumanRole { UsesUnitNames: true } when data.UnitId.HasValue:
+                        writer.WriteByte(data.UnitId.Value);
                         break;
 
                     case PlayerRoles.HumanRole { UsesUnitNames: true }:

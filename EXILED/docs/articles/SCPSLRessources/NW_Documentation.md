@@ -19,7 +19,7 @@
 title: NW Documentation
 ---
 
-Last Update (14.2.0.6)
+Last Update (14.2.0.8)
 
 ### Index
 
@@ -5866,7 +5866,7 @@ Last Update (14.2.0.6)
 
 <details><summary> <b>Damage Handlers</b></summary>
 
-```md title="Latest Updated: 14.2.0.6"
+```md title="Latest Updated: 14.2.0.8"
 All available DamageHandlers
 
 + Symbol ':' literally means "inherits from"

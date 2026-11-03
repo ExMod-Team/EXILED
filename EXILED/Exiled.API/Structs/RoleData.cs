@@ -25,7 +25,7 @@ namespace Exiled.API.Structs
         /// <param name="authority">The authority of the role data.</param>
         /// <param name="unitId">The fake UnitID, if <paramref name="role"/> is an NTF role.</param>
         /// <param name="customData">An action used to write custom data if this role data is used to send a fake role. For 99% of uses, just leave this as null.</param>
-        public RoleData(RoleTypeId role = RoleTypeId.None, Authority authority = Authority.None, byte unitId = 0, Action<NetworkWriter> customData = null)
+        public RoleData(RoleTypeId role = RoleTypeId.None, Authority authority = Authority.None, byte? unitId = null, Action<NetworkWriter> customData = null)
         {
             Role = role;
             DataAuthority = authority;
@@ -38,7 +38,7 @@ namespace Exiled.API.Structs
         /// </summary>
         /// <remarks>Simply having an authority does not make a direct impact. This enum largely exists to constrict possibly
         /// unwanted behavior, so make sure your RoleData actually does what behavior you want.
-        /// (I. E. <see cref="Authority.AffectSelf"/> will not make a RoleData affect the viewer UNLESS they are the target).</remarks>
+        /// (I. E. <see cref="Authority.AffectSelf"/> will not make a RoleData affect the viewer UNLESS they are the target of an existing RoleData).</remarks>
         [Flags]
         public enum Authority
         {
@@ -87,7 +87,7 @@ namespace Exiled.API.Structs
         /// <summary>
         /// Gets or sets the UnitID of the fake role, if <see cref="Role"/> is an NTF role.
         /// </summary>
-        public byte UnitId { get; set; }
+        public byte? UnitId { get; set; }
 
         /// <summary>
         /// Gets or sets the authority of this <see cref="RoleData"/> instance. see <see cref="Authority"/> for details.
