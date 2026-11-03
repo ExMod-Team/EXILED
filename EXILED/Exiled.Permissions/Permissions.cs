@@ -8,6 +8,7 @@
 namespace Exiled.Permissions
 {
     using Exiled.API.Features;
+    using Features.MultipleGroups;
 
     using MEC;
 
@@ -36,12 +37,16 @@ namespace Exiled.Permissions
                 {
                     Extensions.Permissions.Create();
                     Extensions.Permissions.Reload();
+
+                    MultiGroup.Init();
                 });
         }
 
         /// <inheritdoc/>
         public override void OnDisabled()
         {
+            MultiGroup.Disable();
+
             base.OnDisabled();
 
             Extensions.Permissions.Groups.Clear();
