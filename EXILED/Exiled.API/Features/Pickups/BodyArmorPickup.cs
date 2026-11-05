@@ -18,8 +18,6 @@ namespace Exiled.API.Features.Pickups
     using InventorySystem.Items;
     using InventorySystem.Items.Armor;
 
-    using UnityEngine;
-
     using BaseBodyArmor = InventorySystem.Items.Armor.BodyArmorPickup;
 
     /// <summary>
@@ -27,9 +25,6 @@ namespace Exiled.API.Features.Pickups
     /// </summary>
     public class BodyArmorPickup : Pickup, IWrapper<BaseBodyArmor>
     {
-        private int helmetEfficacy;
-        private int vestEfficacy;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BodyArmorPickup"/> class.
         /// </summary>
@@ -79,20 +74,12 @@ namespace Exiled.API.Features.Pickups
         /// <summary>
         /// Gets or sets how strong the helmet on the armor is.
         /// </summary>
-        public int HelmetEfficacy
-        {
-            get => helmetEfficacy;
-            set => helmetEfficacy = value;
-        }
+        public int HelmetEfficacy { get; set; }
 
         /// <summary>
         /// Gets or sets how strong the vest on the armor is.
         /// </summary>
-        public int VestEfficacy
-        {
-            get => vestEfficacy;
-            set => vestEfficacy = value;
-        }
+        public int VestEfficacy { get; set; }
 
         /// <summary>
         /// Gets or sets how much faster stamina will drain when wearing this armor.
@@ -131,8 +118,8 @@ namespace Exiled.API.Features.Pickups
             base.ReadItemInfo(item);
             if (item is Armor armoritem)
             {
-                helmetEfficacy = armoritem.HelmetEfficacy;
-                vestEfficacy = armoritem.VestEfficacy;
+                HelmetEfficacy = armoritem.HelmetEfficacy;
+                VestEfficacy = armoritem.VestEfficacy;
                 StaminaUseMultiplier = armoritem.StaminaUseMultiplier;
                 StaminaRegenMultiplier = armoritem.StaminaRegenMultiplier;
                 AmmoLimits = armoritem.AmmoLimits;
@@ -146,8 +133,8 @@ namespace Exiled.API.Features.Pickups
             base.InitializeProperties(itemBase);
             if (itemBase is BodyArmor armoritem)
             {
-                helmetEfficacy = armoritem.HelmetEfficacy;
-                vestEfficacy = armoritem.VestEfficacy;
+                HelmetEfficacy = armoritem.HelmetEfficacy;
+                VestEfficacy = armoritem.VestEfficacy;
                 StaminaUseMultiplier = armoritem._staminaUseMultiplier;
                 StaminaRegenMultiplier = armoritem.StaminaRegenMultiplier;
                 AmmoLimits = armoritem.AmmoLimits.Select(limit => (ArmorAmmoLimit)limit);

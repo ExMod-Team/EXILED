@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="UsedItemByHolstering.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,12 +11,15 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Reflection.Emit;
 
     using CustomPlayerEffects;
-    using Exiled.API.Features;
+
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Usables;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

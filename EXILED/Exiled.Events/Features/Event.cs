@@ -10,7 +10,6 @@ namespace Exiled.Events.Features
     using System;
     using System.Buffers;
     using System.Collections.Generic;
-    using System.Linq;
 
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
@@ -33,15 +32,11 @@ namespace Exiled.Events.Features
     /// </summary>
     public class Event : IExiledEvent
     {
-        private record Registration(CustomEventHandler handler, int priority);
-
-        private record AsyncRegistration(CustomAsyncEventHandler handler, int priority);
-
         private static readonly List<Event> EventsValue = new();
 
-        private static readonly IComparer<Registration> RegisterComparable = Comparer<Registration>.Create((x, y) => y.priority - x.priority);
+        private static readonly IComparer<Registration> RegisterComparable = Comparer<Registration>.Create((x, y) => y.Priority - x.Priority);
 
-        private static readonly IComparer<AsyncRegistration> AsyncRegisterComparable = Comparer<AsyncRegistration>.Create((x, y) => y.priority - x.priority);
+        private static readonly IComparer<AsyncRegistration> AsyncRegisterComparable = Comparer<AsyncRegistration>.Create((x, y) => y.Priority - x.Priority);
 
         private readonly List<Registration> innerEvent = new();
 
@@ -138,7 +133,7 @@ namespace Exiled.Events.Features
             if (handler == null)
                 return;
 
-            Registration registration = new Registration(handler, priority);
+            Registration registration = new(handler, priority);
             int index = innerEvent.BinarySearch(registration, RegisterComparable);
             if (index < 0)
             {
@@ -146,7 +141,7 @@ namespace Exiled.Events.Features
             }
             else
             {
-                while (index < innerEvent.Count && innerEvent[index].priority == priority)
+                while (index < innerEvent.Count && innerEvent[index].Priority == priority)
                     index++;
                 innerEvent.Insert(index, registration);
             }
@@ -177,7 +172,7 @@ namespace Exiled.Events.Features
             if (handler == null)
                 return;
 
-            AsyncRegistration registration = new AsyncRegistration(handler, 0);
+            AsyncRegistration registration = new(handler, 0);
             int index = innerAsyncEvent.BinarySearch(registration, AsyncRegisterComparable);
             if (index < 0)
             {
@@ -185,7 +180,7 @@ namespace Exiled.Events.Features
             }
             else
             {
-                while (index < innerAsyncEvent.Count && innerAsyncEvent[index].priority == priority)
+                while (index < innerAsyncEvent.Count && innerAsyncEvent[index].Priority == priority)
                     index++;
                 innerAsyncEvent.Insert(index, registration);
             }
@@ -197,7 +192,7 @@ namespace Exiled.Events.Features
         /// <param name="handler">The handler to add.</param>
         public void Unsubscribe(CustomEventHandler handler)
         {
-            int index = innerEvent.FindIndex(p => p.handler == handler);
+            int index = innerEvent.FindIndex(p => p.Handler == handler);
             if (index != -1)
                 innerEvent.RemoveAt(index);
         }
@@ -208,7 +203,7 @@ namespace Exiled.Events.Features
         /// <param name="handler">The handler to add.</param>
         public void Unsubscribe(CustomAsyncEventHandler handler)
         {
-            int index = innerAsyncEvent.FindIndex(p => p.handler == handler);
+            int index = innerAsyncEvent.FindIndex(p => p.Handler == handler);
             if (index != -1)
                 innerAsyncEvent.RemoveAt(index);
         }
@@ -241,15 +236,15 @@ namespace Exiled.Events.Features
 
                 for (int i = 0; i < count; i++)
                 {
-                    if (eventIndex < syncCount && (asyncEventIndex >= asyncCount || localInnerEvent[eventIndex].priority >= localInnerAsyncEvent[asyncEventIndex].priority))
+                    if (eventIndex < syncCount && (asyncEventIndex >= asyncCount || localInnerEvent[eventIndex].Priority >= localInnerAsyncEvent[asyncEventIndex].Priority))
                     {
                         try
                         {
-                            localInnerEvent[eventIndex].handler();
+                            localInnerEvent[eventIndex].Handler();
                         }
                         catch (Exception ex)
                         {
-                            Log.Error($"Method \"{localInnerEvent[eventIndex].handler.Method.Name}\" of the class \"{localInnerEvent[eventIndex].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                            Log.Error($"Method \"{localInnerEvent[eventIndex].Handler.Method.Name}\" of the class \"{localInnerEvent[eventIndex].Handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
                         }
 
                         eventIndex++;
@@ -258,11 +253,11 @@ namespace Exiled.Events.Features
                     {
                         try
                         {
-                            Timing.RunCoroutine(localInnerAsyncEvent[asyncEventIndex].handler());
+                            Timing.RunCoroutine(localInnerAsyncEvent[asyncEventIndex].Handler());
                         }
                         catch (Exception ex)
                         {
-                            Log.Error($"Method \"{localInnerAsyncEvent[asyncEventIndex].handler.Method.Name}\" of the class \"{localInnerAsyncEvent[asyncEventIndex].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                            Log.Error($"Method \"{localInnerAsyncEvent[asyncEventIndex].Handler.Method.Name}\" of the class \"{localInnerAsyncEvent[asyncEventIndex].Handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
                         }
 
                         asyncEventIndex++;
@@ -290,11 +285,11 @@ namespace Exiled.Events.Features
                 {
                     try
                     {
-                        localInnerEvent[i].handler();
+                        localInnerEvent[i].Handler();
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"Method \"{localInnerEvent[i].handler.Method.Name}\" of the class \"{localInnerEvent[i].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                        Log.Error($"Method \"{localInnerEvent[i].Handler.Method.Name}\" of the class \"{localInnerEvent[i].Handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
                     }
                 }
             }
@@ -318,11 +313,11 @@ namespace Exiled.Events.Features
                 {
                     try
                     {
-                        Timing.RunCoroutine(localInnerAsyncEvent[i].handler());
+                        Timing.RunCoroutine(localInnerAsyncEvent[i].Handler());
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"Method \"{localInnerAsyncEvent[i].handler.Method.Name}\" of the class \"{localInnerAsyncEvent[i].handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
+                        Log.Error($"Method \"{localInnerAsyncEvent[i].Handler.Method.Name}\" of the class \"{localInnerAsyncEvent[i].Handler.Method.ReflectedType.FullName}\" caused an exception when handling the event \"{GetType().FullName}\"\n{ex}");
                     }
                 }
             }
@@ -331,5 +326,9 @@ namespace Exiled.Events.Features
                 ArrayPool<AsyncRegistration>.Shared.Return(localInnerAsyncEvent, true);
             }
         }
+
+        private record Registration(CustomEventHandler Handler, int Priority);
+
+        private record AsyncRegistration(CustomAsyncEventHandler Handler, int Priority);
     }
 }

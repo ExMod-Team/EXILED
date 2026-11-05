@@ -152,27 +152,27 @@ namespace Exiled.API.Enums
         InsideGr18Glass,
 
         /// <summary>
-        /// Inside 106's Primary Door
+        /// Inside 106's Primary Door.
         /// </summary>
         Inside106Primary,
 
         /// <summary>
-        /// Inside 106's Secondary Door
+        /// Inside 106's Secondary Door.
         /// </summary>
         Inside106Secondary,
 
         /// <summary>
-        /// Inside 939 Cryo Chamber
+        /// Inside 939 Cryo Chamber.
         /// </summary>
         Inside939Cryo,
 
         /// <summary>
-        /// Inside SCP-079's Armory
+        /// Inside SCP-079's Armory.
         /// </summary>
         Inside079Armory,
 
         /// <summary>
-        /// Inside SCP-127's Lab
+        /// Inside SCP-127's Lab.
         /// </summary>
         Inside127Lab,
 

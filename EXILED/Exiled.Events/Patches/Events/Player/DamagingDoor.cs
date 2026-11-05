@@ -10,16 +10,14 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
-
-    using Exiled.Events.Attributes;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Player;
 
     using Handlers;
 
     using HarmonyLib;
+
     using Interactables.Interobjects;
-    using Interactables.Interobjects.DoorUtils;
 
     using static HarmonyLib.AccessTools;
 

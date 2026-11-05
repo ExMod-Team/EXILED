@@ -14,9 +14,13 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.Handlers;
+
     using HarmonyLib;
+
     using MapGeneration;
+
     using PlayerRoles;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

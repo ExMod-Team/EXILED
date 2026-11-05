@@ -13,6 +13,7 @@ namespace Exiled.API.Features
 
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
+
     using UnityEngine;
 
     using BaseCoffee = global::Coffee;

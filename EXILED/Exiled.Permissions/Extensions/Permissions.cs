@@ -18,10 +18,13 @@ namespace Exiled.Permissions.Extensions
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
+
     using Features;
 
     using Properties;
+
     using Query;
+
     using RemoteAdmin;
 
     using YamlDotNet.Core;

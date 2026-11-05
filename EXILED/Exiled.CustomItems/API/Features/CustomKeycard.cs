@@ -21,7 +21,9 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Interfaces.Keycards;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Player;
+
     using InventorySystem.Items.Keycards;
+
     using UnityEngine;
 
     /// <summary>

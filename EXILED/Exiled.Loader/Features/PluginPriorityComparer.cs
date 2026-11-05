@@ -9,7 +9,7 @@ namespace Exiled.Loader.Features
 {
     using System.Collections.Generic;
 
-    using API.Interfaces;
+    using Exiled.API.Interfaces;
 
     /// <summary>
     /// Comparator implementation according to plugin priorities.

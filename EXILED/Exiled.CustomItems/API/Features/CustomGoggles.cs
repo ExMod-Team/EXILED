@@ -187,7 +187,7 @@ namespace Exiled.CustomItems.API.Features
                 if (!Remove1344Effect)
                     player.DisableEffect(EffectType.Scp1344);
 
-                player.DisableEffect(EffectType.Blinded);
+                player.DisableEffect(EffectType.Blindness);
                 player.ReferenceHub?.DisableWearables(WearableElements.Scp1344Goggles);
             }
 

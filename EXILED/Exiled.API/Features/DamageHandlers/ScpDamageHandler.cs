@@ -7,14 +7,7 @@
 
 namespace Exiled.API.Features.DamageHandlers
 {
-    using Enums;
-
-    using Extensions;
-
-    using PlayerStatsSystem;
-
     using BaseHandler = PlayerStatsSystem.DamageHandlerBase;
-    using BaseScpHandler = PlayerStatsSystem.ScpDamageHandler;
 
     /// <summary>
     /// A wrapper to easily manipulate the behavior of <see cref="BaseHandler"/>.
@@ -29,35 +22,6 @@ namespace Exiled.API.Features.DamageHandlers
         public ScpDamageHandler(Player target, BaseHandler baseHandler)
             : base(target, baseHandler)
         {
-        }
-
-        /// <inheritdoc/>
-        public override DamageType Type
-        {
-            get
-            {
-                switch (Base)
-                {
-                    case Scp096DamageHandler:
-                        return DamageType.Scp096;
-                    case Scp049DamageHandler scp049DamageHandler:
-                        return scp049DamageHandler.DamageSubType switch
-                        {
-                            Scp049DamageHandler.AttackType.Scp0492 => DamageType.Scp0492,
-                            _ => DamageType.Scp049,
-                        };
-                    case BaseScpHandler scp:
-                        {
-                            DeathTranslation translation = DeathTranslations.TranslationsById[scp._translationId];
-                            if (translation.Id == DeathTranslations.PocketDecay.Id)
-                                return DamageType.Scp106;
-                            return DamageTypeExtensions.TranslationIdConversion.ContainsKey(translation.Id) ? DamageTypeExtensions.TranslationIdConversion[translation.Id] : DamageType.Scp;
-                        }
-
-                    default:
-                        return base.Type;
-                }
-            }
         }
     }
 }

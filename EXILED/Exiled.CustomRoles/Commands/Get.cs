@@ -14,13 +14,13 @@ namespace Exiled.CustomRoles.Commands
     using System.Text;
 
     using CommandSystem;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.CustomRoles.API;
     using Exiled.CustomRoles.API.Features;
     using Exiled.Permissions.Extensions;
-    using HarmonyLib;
 
     /// <summary>
     /// The command to get specified player(s) current custom roles.

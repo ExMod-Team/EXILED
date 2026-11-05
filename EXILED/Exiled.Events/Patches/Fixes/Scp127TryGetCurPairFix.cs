@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Scp127TryGetCurPairFix.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,8 +11,11 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using Exiled.API.Features.Pools;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Firearms.Modules.Scp127;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

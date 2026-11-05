@@ -12,7 +12,7 @@ namespace Exiled.Events.Patches.Events.Player
 
     using System;
 
-    using API.Features;
+    using Exiled.API.Features;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Loader.Features;
 

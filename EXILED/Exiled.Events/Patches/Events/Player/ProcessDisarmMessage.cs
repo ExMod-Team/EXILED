@@ -7,13 +7,13 @@
 
 namespace Exiled.Events.Patches.Events.Player
 {
-    #pragma warning disable SA1402 // File may only contain a single type
+#pragma warning disable SA1402 // File may only contain a single type
     using System.Collections.Generic;
     using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pools;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 

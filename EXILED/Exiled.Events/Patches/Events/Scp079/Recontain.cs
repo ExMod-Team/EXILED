@@ -10,13 +10,15 @@ namespace Exiled.Events.Patches.Events.Scp079
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp079;
     using Exiled.Events.Handlers;
 
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp079;
+
     using PlayerStatsSystem;
 
     using static HarmonyLib.AccessTools;
@@ -31,7 +33,7 @@ namespace Exiled.Events.Patches.Events.Scp079
     [HarmonyPatch(typeof(Scp079Recontainer), nameof(Scp079Recontainer.TryKill079))]
     internal static class Recontain
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

@@ -10,11 +10,14 @@ namespace Exiled.Events.Patches.Events.Scp173
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features;
     using Attributes;
+
+    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Scp173;
+
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp173;
     using PlayerRoles.Subroutines;
 
@@ -64,8 +67,7 @@ namespace Exiled.Events.Patches.Events.Scp173
 
                 // if (!ev.IsAllowed)
                 new(OpCodes.Ldloc, ev),
-                new(OpCodes.Callvirt,
-                    PropertyGetter(typeof(AddingObserverEventArgs), nameof(AddingObserverEventArgs.IsAllowed))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(AddingObserverEventArgs), nameof(AddingObserverEventArgs.IsAllowed))),
                 new(OpCodes.Brtrue_S, returnLabel),
 
                 // Observers.Remove(ply);
@@ -89,8 +91,7 @@ namespace Exiled.Events.Patches.Events.Scp173
             {
                 // Player.Get(Owner);
                 new(OpCodes.Ldarg_0),
-                new(OpCodes.Callvirt,
-                    PropertyGetter(typeof(StandardSubroutine<Scp173Role>), nameof(StandardSubroutine<Scp173Role>.Owner))),
+                new(OpCodes.Callvirt, PropertyGetter(typeof(StandardSubroutine<Scp173Role>), nameof(StandardSubroutine<Scp173Role>.Owner))),
                 new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
                 // Player.Get(ply);

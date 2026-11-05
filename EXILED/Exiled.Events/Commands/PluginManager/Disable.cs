@@ -9,9 +9,11 @@ namespace Exiled.Events.Commands.PluginManager
 {
     using System;
 
-    using API.Interfaces;
     using CommandSystem;
+
+    using Exiled.API.Interfaces;
     using Exiled.Permissions.Extensions;
+
     using RemoteAdmin;
 
     /// <summary>

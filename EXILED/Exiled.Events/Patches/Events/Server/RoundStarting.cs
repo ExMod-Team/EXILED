@@ -15,6 +15,7 @@ namespace Exiled.Events.Patches.Events.Server
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.EventArgs.Server;
+
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
@@ -27,7 +28,7 @@ namespace Exiled.Events.Patches.Events.Server
     [HarmonyPatch]
     internal class RoundStarting
     {
-        #pragma warning disable SA1600 // Elements should be documented
+#pragma warning disable SA1600 // Elements should be documented
         public static Type PrivateType { get; internal set; }
 
         private static MethodInfo TargetMethod()
@@ -137,4 +138,4 @@ namespace Exiled.Events.Patches.Events.Server
             ListPool<CodeInstruction>.Pool.Return(newInstructions);
         }
     }
-    }
+}

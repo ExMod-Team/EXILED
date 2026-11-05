@@ -18,9 +18,11 @@ namespace Exiled.CustomItems.API.Features
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Item;
     using Exiled.Events.EventArgs.Player;
+
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;
     using InventorySystem.Items.Firearms.Modules;
+
     using UnityEngine;
 
     using Firearm = Exiled.API.Features.Items.Firearm;
@@ -71,7 +73,7 @@ namespace Exiled.CustomItems.API.Features
         {
             if (!Type.IsWeapon(false))
             {
-                Log.Debug($"{nameof(Spawn)}: Item is not Firearm.");
+                Log.Warn($"{nameof(Spawn)}: Item is not Firearm.");
                 return null;
             }
 
@@ -83,7 +85,11 @@ namespace Exiled.CustomItems.API.Features
             if (!Attachments.IsEmpty())
                 firearm.AddAttachment(Attachments);
 
-            Pickup? pickup = firearm.CreatePickup(position);
+            if (ClipSize > 0)
+                firearm.MagazineAmmo = ClipSize;
+
+            FirearmPickup? pickup = (FirearmPickup?)firearm.CreatePickup(position, spawn: false);
+            firearm.Destroy();
 
             if (pickup is null)
             {
@@ -91,15 +97,16 @@ namespace Exiled.CustomItems.API.Features
                 return null;
             }
 
-            if (ClipSize > 0)
-                firearm.MagazineAmmo = ClipSize;
-
             pickup.Weight = Weight;
             pickup.Scale = Scale;
+
             if (previousOwner is not null)
                 pickup.PreviousOwner = previousOwner;
 
+            pickup.Spawn();
+
             TrackedSerials.Add(pickup.Serial);
+
             return pickup;
         }
 
@@ -120,6 +127,7 @@ namespace Exiled.CustomItems.API.Features
                 int ammo = firearm.MagazineAmmo;
                 Log.Debug($"{nameof(Name)}.{nameof(Spawn)}: Spawning weapon with {ammo} ammo.");
                 Pickup? pickup = firearm.CreatePickup(position);
+
                 pickup.Scale = Scale;
 
                 if (previousOwner is not null)

@@ -67,7 +67,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="commandLine">The <see cref="string"/> to extract from.</param>
         /// <returns>Returns a <see cref="ValueTuple"/> containing the exctracted command name and arguments.</returns>
-        public static (string commandName, string[] arguments) ExtractCommand(this string commandLine)
+        public static (string CommandName, string[] Arguments) ExtractCommand(this string commandLine)
         {
             string[] extractedArguments = commandLine.Split(' ');
 

@@ -7,23 +7,11 @@
 
 namespace Exiled.Events.Patches.Events.Server
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection.Emit;
-
-    using API.Features.Pools;
-    using CustomPlayerEffects.Danger;
-    using Exiled.API.Enums;
     using Exiled.Events.Attributes;
-    using Exiled.Events.EventArgs.Player;
-    using GameCore;
 
     using HarmonyLib;
 
     using RoundRestarting;
-
-    using static HarmonyLib.AccessTools;
-    using static PlayerList;
 
     /// <summary>
     /// Patches <see cref="RoundRestart.InitiateRoundRestart"/>.

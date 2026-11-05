@@ -20,7 +20,7 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked before a player triggers the bloodlust effect for 049-2.
         /// </summary>
-        public static Event<TriggeringBloodlustEventArgs> TriggeringBloodlust { get; set; } = new ();
+        public static Event<TriggeringBloodlustEventArgs> TriggeringBloodlust { get; set; } = new();
 
         /// <summary>
         /// Called after 049-2 gets his benefits from consumed ability.

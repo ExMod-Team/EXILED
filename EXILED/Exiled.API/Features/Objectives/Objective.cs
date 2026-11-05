@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="Objective.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,14 +7,15 @@
 
 namespace Exiled.API.Features.Objectives
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
 
     using Exiled.API.Enums;
     using Exiled.API.Features.Core;
     using Exiled.API.Interfaces;
+
     using PlayerRoles;
+
     using Respawning;
     using Respawning.Objectives;
 
@@ -69,7 +70,7 @@ namespace Exiled.API.Features.Objectives
             ObjectiveType.HumanDamage => FactionInfluenceManager.Objectives.OfType<BaseHumanDamageObjective>().First(),
             ObjectiveType.HumanKill => FactionInfluenceManager.Objectives.OfType<BaseHumanKillObjective>().First(),
             ObjectiveType.Escape => FactionInfluenceManager.Objectives.OfType<BaseEscapeObjective>().First(),
-            _ => null
+            _ => null,
         });
 
         /// <summary>
@@ -89,7 +90,7 @@ namespace Exiled.API.Features.Objectives
                 BaseHumanDamageObjective humanDamageObjective => new HumanDamageObjective(humanDamageObjective),
                 BaseHumanKillObjective humanKillObjective => new HumanKillObjective(humanKillObjective),
                 BaseEscapeObjective escapeObjective => new EscapeObjective(escapeObjective),
-                _ => new Objective(factionObjectiveBase)
+                _ => new Objective(factionObjectiveBase),
             };
         }
 

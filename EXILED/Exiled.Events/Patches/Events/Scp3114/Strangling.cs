@@ -14,12 +14,12 @@ namespace Exiled.Events.Patches.Events.Scp3114
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp3114;
     using Exiled.Events.Handlers;
+
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp3114;
 
     using static HarmonyLib.AccessTools;
-
-    using Player = API.Features.Player;
 
     /// <summary>
     /// Patches <see cref="Scp3114Strangle.ProcessAttackRequest"/> to add the <see cref="Scp3114.Strangling"/> event.

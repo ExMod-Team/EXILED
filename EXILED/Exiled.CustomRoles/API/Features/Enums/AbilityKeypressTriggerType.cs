@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------
-// <copyright file="KeypressActivationType.cs" company="ExMod Team">
+// <copyright file="AbilityKeypressTriggerType.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>

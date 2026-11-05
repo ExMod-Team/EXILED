@@ -9,10 +9,11 @@ namespace Exiled.Events.EventArgs.Player
 {
     using System.Collections.Generic;
 
-    using API.Enums;
-    using API.Features;
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features;
     using Exiled.API.Features.Pickups;
+
     using Interfaces;
 
     using AmmoPickup = API.Features.Pickups.AmmoPickup;

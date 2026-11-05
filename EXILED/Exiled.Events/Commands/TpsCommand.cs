@@ -10,6 +10,7 @@ namespace Exiled.Events.Commands
     using System;
 
     using CommandSystem;
+
     using Exiled.API.Features;
 
     /// <summary>
@@ -35,7 +36,7 @@ namespace Exiled.Events.Commands
             {
                 > 0.9 => "green",
                 > 0.5 => "yellow",
-                _ => "red"
+                _ => "red",
             };
 
             response = $"<color={color}>{Server.SmoothTps}/{Server.MaxTps}</color>";

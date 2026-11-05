@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="FoundPosition.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,10 +11,12 @@ namespace Exiled.Events.Patches.Events.Scp2536
     using System.Reflection.Emit;
 
     using Christmas.Scp2536;
+
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp2536;
+
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;

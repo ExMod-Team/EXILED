@@ -8,11 +8,13 @@
 namespace Exiled.Events.Patches.Fixes
 {
     using CustomPlayerEffects;
+
     using Exiled.API.Enums;
     using Exiled.API.Features;
+
     using HarmonyLib;
+
     using RelativePositioning;
-    using UnityEngine;
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
     /// <summary>
     /// Patches <see cref="PocketCorroding.CapturePosition" />'s setter.
