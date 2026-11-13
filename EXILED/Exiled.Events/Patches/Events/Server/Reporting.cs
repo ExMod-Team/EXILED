@@ -52,9 +52,9 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldfld, Field(typeof(CheaterReport), nameof(CheaterReport._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // Player.Get(referenceHub)
-                    new(OpCodes.Ldloc_2),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    // Player.Get(playerNetId)
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(uint) })),
 
                     // reason
                     new(OpCodes.Ldarg_2),
@@ -95,9 +95,9 @@ namespace Exiled.Events.Patches.Events.Server
                     new(OpCodes.Ldfld, Field(typeof(CheaterReport), nameof(CheaterReport._hub))),
                     new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
 
-                    // Player.Get(referenceHub)
-                    new(OpCodes.Ldloc_2),
-                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
+                    // Player.Get(playerNetId)
+                    new(OpCodes.Ldarg_1),
+                    new(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(uint) })),
 
                     // ServerConsole.PortToReport
                     new(OpCodes.Call, PropertyGetter(typeof(ServerConsole), nameof(ServerConsole.PortToReport))),
