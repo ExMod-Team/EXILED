@@ -78,6 +78,7 @@ namespace Exiled.API.Features
             ["HCZ CROSSING"] = CameraType.HczCrossing,
             ["HCZ ELEV SYS A"] = CameraType.HczElevSysA,
             ["HCZ ELEV SYS B"] = CameraType.HczElevSysB,
+            ["HCZ ELEV SYS C"] = CameraType.HczElevSysC,
             ["HCZ HALLWAY"] = CameraType.HczHallway,
             ["HCZ THREE-WAY"] = CameraType.HczThreeWay,
             ["TESLA GATE"] = CameraType.HczTeslaGate,
@@ -92,6 +93,10 @@ namespace Exiled.API.Features
             ["173 BOTTOM"] = CameraType.Lcz173Bottom,
             ["173 HALL"] = CameraType.Lcz173Hall,
             ["914 AIRLOCK"] = CameraType.Lcz914Airlock,
+            ["914 ELEVATOR LOWER"] = CameraType.Lcz914ElevatorLower,
+            ["914 ELEVATOR UPPER"] = CameraType.Lcz914ElevatorUpper,
+            ["914 STAIRWELL"] = CameraType.Lcz914Stairwell,
+            ["914 HALLWAY"] = CameraType.Lcz914Hallway,
             ["914 CONT CHAMBER"] = CameraType.Lcz914ContChamber,
             ["AIRLOCK"] = CameraType.LczAirlock,
             ["ARMORY"] = CameraType.LczArmory,
@@ -101,6 +106,8 @@ namespace Exiled.API.Features
             ["CHKPT A INNER"] = CameraType.LczChkptAInner,
             ["CHKPT B ENTRY"] = CameraType.LczChkptBEntry,
             ["CHKPT B INNER"] = CameraType.LczChkptBInner,
+            ["CHKPT C ENTRY"] = CameraType.LczChkptCEntry,
+            ["CHKPT C INNER"] = CameraType.LczChkptCInner,
             ["GLASSROOM"] = CameraType.LczGlassroom,
             ["GLASSROOM ENTRY"] = CameraType.LczGlassroomEntry,
             ["GREENHOUSE"] = CameraType.LczGreenhouse,
@@ -151,9 +158,48 @@ namespace Exiled.API.Features
             ["GATE B SIDE"] = CameraType.EzGateBSide,
             ["GATE A STAIRWELL"] = CameraType.EzGateAStairwell,
             ["GATE A UPPER"] = CameraType.EzGateAUpper,
+
             ["LOADING BAY"] = CameraType.HczLoadingBay,
             ["HCZ LOADING RAMP"] = CameraType.HczLoadingBayRamp,
             ["STAIRWELL"] = CameraType.HczLoadingBayStairwell,
+
+            // New SurfaceZone
+
+            // Cassie Surface Room
+            ["CASSIE MAIN LOBBY"] = CameraType.CassieMainLobby,
+            ["CASSIE AUX BRIDGE"] = CameraType.CassieAuxBridge,
+            ["CASSIE OBSERVATION ROOM"] = CameraType.CassieObservationRoom,
+            ["CASSIE UTILITY ROOM"] = CameraType.CassieUtilityRoom,
+            ["CASSIE UNDERPASS"] = CameraType.CassieUnderPass,
+            ["CASSIE CHAMBER"] = CameraType.CassieChamber,
+            ["CASSIE LOAD DOCK"] = CameraType.CassieLoadDock,
+
+            // GateA Surface
+            ["GATE A LOCKER ROOM"] = CameraType.GateALockerRoom,
+            ["GATE A ENTRANCE"] = CameraType.GateAEntrance,
+            ["GATE A JANITOR ROOM"] = CameraType.GateAJanitorRoom,
+            ["GATE A STAIRCASE"] = CameraType.GateAStaircase,
+            ["GATE A CHECKPOINT"] = CameraType.GateACheckpoint,
+            ["GATE A ELEVATORS"] = CameraType.GateAElevators,
+            ["GATE A LOCKER EVAC"] = CameraType.GateALockerEvac,
+            ["GATE A FIRE EXIT"] = CameraType.GateAFireExit,
+            ["GATE A ROAD"] = CameraType.GateARoad,
+
+            // GateB Surface
+            ["GATE B CARGO DOCK"] = CameraType.GateBCargoDock,
+            ["GATE B 1-B"] = CameraType.GateB1_B,
+            ["GATE B UNLOAD AREA"] = CameraType.GateBUnloadArea,
+            ["GATE B CONNECTOR"] = CameraType.GateBConnector,
+            ["GATE B ELEVATOR"] = CameraType.GateBElevator,
+            ["GATE B TUNNEL"] = CameraType.GateBTunnel,
+            ["GATE B SANITATION"] = CameraType.GateBSanitation,
+            ["SITE-02 ENTRANCE"] = CameraType.Site02Entrance,
+
+            // Garage
+            ["GARAGE INTERIOR"] = CameraType.GarageInterior,
+            ["GARAGE UNDERPASS"] = CameraType.GarageUnderpass,
+            ["GARAGE BACKDOOR"] = CameraType.GarageBackDoor,
+            ["GARAGE ENTRANCE"] = CameraType.GarageEntrance,
 
             // CustomCamera
             ["EZ ARM CAMERA TOY"] = CameraType.EzArmCameraToy,

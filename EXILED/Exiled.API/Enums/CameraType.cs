@@ -85,7 +85,6 @@ namespace Exiled.API.Enums
         Lcz173ContChamber,
         Lcz173Hall,
         Lcz173Stairs,
-        Lcz914Airlock,
         Lcz914ContChamber,
         LczAirlock,
         LczArmory,

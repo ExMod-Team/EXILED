@@ -661,6 +661,7 @@ namespace Exiled.API.Features.Doors
                 // Doors contains the DoorNameTagExtension component
                 "CHECKPOINT_LCZ_A" => DoorType.CheckpointLczA,
                 "CHECKPOINT_LCZ_B" => DoorType.CheckpointLczB,
+                "CHECKPOINT_LCZ_C" => DoorType.CheckpointLczC,
 
                 // TODO: Remove when it's fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/782
                 "CHECKPOINT_EZ_HCZ_A" => Room?.Type switch
@@ -699,15 +700,16 @@ namespace Exiled.API.Features.Doors
                 "GR18_INNER" => DoorType.GR18Inner,
                 "939_CRYO" => DoorType.Scp939Cryo,
                 "ESCAPE_FINAL" => DoorType.EscapeFinal,
-
-                // Doors spawned by the DoorSpawnPoint component
                 "LCZ_CAFE" => DoorType.LczCafe,
                 "173_BOTTOM" => DoorType.Scp173Bottom,
-
-                // Doors contains the Door component,
-                // also gameobject names
-                "LightContainmentDoor" => DoorType.LightContainmentDoor,
-                "EntrDoor" => DoorType.EntranceDoor,
+                "SZ_CASSIE_EXT" => DoorType.SurfaceCassieExterior,
+                "SZ_CASSIE_ROLLER" => DoorType.SurfaceCassieExterior,
+                "SZ_CASSIE_CHAMBER" => DoorType.SurfaceCassieExterior,
+                "SZ_GATE_A" => DoorType.SurfaceCassieExterior,
+                "SZ_GATE_B" => DoorType.SurfaceCassieExterior,
+                "SZ_GARAGE" => DoorType.SurfaceCassieExterior,
+                "SZ_GATE_B" => DoorType.SurfaceCassieExterior,
+                "SZ_GATE_B" => DoorType.SurfaceCassieExterior,
 
                 _ => DoorType.UnknownDoor,
             };
