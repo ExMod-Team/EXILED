@@ -609,6 +609,11 @@ namespace Exiled.API.Features.Doors
 
                 return doorName switch
                 {
+                    "SZ Exterior Single door Variant" => DoorType.SurfaceExteriorSingleDoor,
+                    "SZ Exterior Single door" => DoorType.SurfaceExteriorSingleDoor,
+                    "SZ Exterior Double Door" => DoorType.SurfaceExteriorDoubleDoor,
+                    "SZ Interior Single door" => DoorType.SurfaceInteriorSingleDoor,
+                    "GarageDoor_White Variant" => DoorType.GarageDoorWhite,
                     "LCZ PortallessBreakableDoor" => Room?.Type switch
                     {
                         RoomType.Hcz106 => DoorType.Scp106Checkpoint,
@@ -644,11 +649,13 @@ namespace Exiled.API.Features.Doors
                     "Nuke Elevator Door" => DoorType.ElevatorNuke,
                     not null when Base is Interactables.Interobjects.ElevatorDoor elevatorGroup => elevatorGroup?.Group switch
                     {
+                        ElevatorGroup.Scp173 => DoorType.ElevatorScp173,
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
                         ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => DoorType.ElevatorGateA,
                         ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => DoorType.ElevatorLczA,
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
+                        ElevatorGroup.LczC01 or ElevatorGroup.LczC02 => DoorType.ElevatorLczC,
                         _ => DoorType.UnknownElevator,
                     },
                     "Spawnable Unsecured Pryable GateDoor" => DoorType.SpawnableUnsecuredGate,
