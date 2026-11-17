@@ -669,7 +669,11 @@ namespace Exiled.API.Features.Doors
                     RoomType.HczEzCheckpointA => DoorType.CheckpointEzHczA,
                     _ => DoorType.CheckpointEzHczB,
                 },
-                "CHECKPOINT_EZ_HCZ_B" => DoorType.CheckpointEzHczB,
+                "CHECKPOINT_EZ_HCZ_B" => Room?.Type switch
+                {
+                    RoomType.HczEzCheckpointA => DoorType.CheckpointEzHczA,
+                    _ => DoorType.CheckpointEzHczB,
+                },
                 "106_PRIMARY" => DoorType.Scp106Primary,
                 "106_SECONDARY" => DoorType.Scp106Secondary,
                 "ESCAPE_PRIMARY" => DoorType.EscapePrimary,
@@ -703,14 +707,12 @@ namespace Exiled.API.Features.Doors
                 "LCZ_CAFE" => DoorType.LczCafe,
                 "173_BOTTOM" => DoorType.Scp173Bottom,
                 "SZ_CASSIE_EXT" => DoorType.SurfaceCassieExterior,
-                "SZ_CASSIE_ROLLER" => DoorType.SurfaceCassieExterior,
-                "SZ_CASSIE_CHAMBER" => DoorType.SurfaceCassieExterior,
-                "SZ_GATE_A" => DoorType.SurfaceCassieExterior,
-                "SZ_GATE_B" => DoorType.SurfaceCassieExterior,
-                "SZ_GARAGE" => DoorType.SurfaceCassieExterior,
-                "SZ_GATE_B" => DoorType.SurfaceCassieExterior,
-                "SZ_GATE_B" => DoorType.SurfaceCassieExterior,
-
+                "SZ_CASSIE_ROLLER" => DoorType.SurfaceCassieRoller,
+                "SZ_CASSIE_CHAMBER" => DoorType.SurfaceCassieChamber,
+                "SZ_GATE_A" => DoorType.SurfaceGateA,
+                "SZ_GATE_B" => DoorType.SurfaceGateB,
+                "SZ_GARAGE" => DoorType.SurfaceGarage,
+                "EZ_GATE_B_CHECKPOINT" => DoorType.EzGateBCheckpoint,
                 _ => DoorType.UnknownDoor,
             };
         }
