@@ -227,6 +227,7 @@ namespace Exiled.API.Features
                     '1' => GlassType.SurfaceCassieUpperHall,
                     '2' or '3' => GlassType.SurfaceCassieLowerHall,
                     '4' or '5' or '6' => GlassType.SurfaceCassieChamber,
+                    _ = GlassType.Unknown,
                 },
                 RoomType.SurfaceGateA => Base.name[17] switch
                 {
