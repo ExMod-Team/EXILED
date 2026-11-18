@@ -218,8 +218,29 @@ namespace Exiled.API.Features
         /// <returns>A string containing Window-related data.</returns>
         public override string ToString() => $"{Type} ({Health}) [{IsBroken}] *{DisableScpDamage}*";
 
-        private GlassType GetGlassType() => Base.name.RemoveBracketsOnEndOfName() switch
+        private GlassType GetGlassType() => Base.name.GetBefore('_').RemoveBracketsOnEndOfName() switch
         {
+            "BreakableGlass" => Room?.Type switch
+            {
+                RoomType.SurfaceCassie => Base.name[16] switch
+                {
+                    '1' => GlassType.SurfaceCassieUpperHall,
+                    '2' or '3' => GlassType.SurfaceCassieLowerHall,
+                    '4' or '5' or '6' => GlassType.SurfaceCassieChamber,
+                },
+                RoomType.SurfaceGateA => Base.name[17] switch
+                {
+                    '1' => GlassType.SurfaceStairGateA,
+                    '2' or '3' => GlassType.SurfaceBigWindowGateA,
+                    '4' => GlassType.SurfaceStairGateA,
+                    '5' or '6' => GlassType.SurfaceSmallWindowGateA,
+                    '7' => GlassType.SurfaceRoofGateA,
+                    '8' => GlassType.SurfaceStairGateA,
+                    '9' or '0' => GlassType.SurfaceAdminOfficeGateA,
+                    _ => GlassType.Unknown,
+                },
+                _ => GlassType.Unknown,
+            },
             "B272sa" => Room?.Type switch
             {
                 RoomType.LczGlassBox => GlassType.GR18,

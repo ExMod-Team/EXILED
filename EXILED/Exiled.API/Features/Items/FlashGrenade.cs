@@ -68,7 +68,7 @@ namespace Exiled.API.Features.Items
         }
 
         /// <summary>
-        /// Gets or sets the how mush the flash grenade going to be intensified when explode at <see cref="RoomType.Surface"/>.
+        /// Gets or sets the how mush the flash grenade going to be intensified when explode at <see cref="RoomType.SurfaceExterior"/>.
         /// </summary>
         public float SurfaceDistanceIntensifier
         {

@@ -247,7 +247,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The Surface.
         /// </summary>
-        Surface,
+        SurfaceExterior,
 
         /// <summary>
         /// Heavy Containment Zone's straight hall with ceiling fan.

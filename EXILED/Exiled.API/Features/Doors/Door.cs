@@ -614,6 +614,7 @@ namespace Exiled.API.Features.Doors
                     "SZ Exterior Double Door" => DoorType.SurfaceExteriorDoubleDoor,
                     "SZ Interior Single door" => DoorType.SurfaceInteriorSingleDoor,
                     "GarageDoor_White Variant" => DoorType.GarageDoorWhite,
+                    "GarageDoor_White_Tall" => DoorType.GarageDoorWhiteTall,
                     "LCZ PortallessBreakableDoor" => Room?.Type switch
                     {
                         RoomType.Hcz106 => DoorType.Scp106Checkpoint,
