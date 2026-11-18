@@ -47,7 +47,7 @@ namespace Exiled.API.Features.Pickups
         public float AdditionalBlurredEffect { get; set; }
 
         /// <summary>
-        /// Gets or sets the how mush the flash grenade going to be intensified when explode at <see cref="RoomType.SurfaceExterior"/>.
+        /// Gets or sets the how mush the flash grenade going to be intensified when explode at <see cref="ZoneType.Surface"/>.
         /// </summary>
         public float SurfaceDistanceIntensifier { get; set; }
 

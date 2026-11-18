@@ -60,7 +60,7 @@ namespace Exiled.API.Features.Pickups.Projectiles
         }
 
         /// <summary>
-        /// Gets or sets the how much the flashbang going to be intensified when exploding on <see cref="RoomType.SurfaceExterior"/>.
+        /// Gets or sets the how much the flashbang going to be intensified when exploding on <see cref="ZoneType.Surface"/>.
         /// </summary>
         public float SurfaceDistanceIntensifier
         {
