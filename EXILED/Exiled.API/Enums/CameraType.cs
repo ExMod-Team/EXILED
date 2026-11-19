@@ -68,6 +68,7 @@ namespace Exiled.API.Enums
         HczCrossing,
         HczElevSysA,
         HczElevSysB,
+        HczElevSysC,
         HczHallway,
         HczThreeWay,
         HczTeslaGate,
@@ -85,6 +86,11 @@ namespace Exiled.API.Enums
         Lcz173ContChamber,
         Lcz173Hall,
         Lcz173Stairs,
+        Lcz914Airlock,
+        Lcz914ElevatorLower,
+        Lcz914ElevatorUpper,
+        Lcz914Stairwell,
+        Lcz914Hallway,
         Lcz914ContChamber,
         LczAirlock,
         LczArmory,
@@ -94,6 +100,8 @@ namespace Exiled.API.Enums
         LczChkptAInner,
         LczChkptBEntry,
         LczChkptBInner,
+        LczChkptCEntry,
+        LczChkptCInner,
         LczGlassroom,
         LczGlassroomEntry,
         LczGreenhouse,
@@ -164,5 +172,41 @@ namespace Exiled.API.Enums
         HczLoadingBayRamp,
         HczLoadingBayStairwell,
         #endregion
+
+        // Cassie Surface Room
+        CassieMainLobby,
+        CassieAuxBridge,
+        CassieObservationRoom,
+        CassieUtilityRoom,
+        CassieUnderPass,
+        CassieChamber,
+        CassieLoadDock,
+
+        // GateA Surface
+        GateALockerRoom,
+        GateAEntrance,
+        GateAJanitorRoom,
+        GateAStaircase,
+        GateACheckpoint,
+        GateAElevators,
+        GateALockerEvac,
+        GateAFireExit,
+        GateARoad,
+
+        // GateB Surface
+        GateBCargoDock,
+        GateB1_B,
+        GateBUnloadArea,
+        GateBConnector,
+        GateBElevator,
+        GateBTunnel,
+        GateBSanitation,
+        Site02Entrance,
+
+        // Garage
+        GarageInterior,
+        GarageUnderpass,
+        GarageBackDoor,
+        GarageEntrance,
     }
 }

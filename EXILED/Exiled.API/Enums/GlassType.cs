@@ -89,5 +89,55 @@ namespace Exiled.API.Enums
         /// Represents the window in <see cref="RoomType.HczLoadingBay"/>.
         /// </summary>
         HczLoadingBay,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceCassie"/> next to the Hallway.
+        /// </summary>
+        SurfaceCassieUpperHall,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceCassie"/> on lower part at Door Section.
+        /// </summary>
+        SurfaceCassieLowerHall,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceCassie"/> inside Cassie Chamber.
+        /// </summary>
+        SurfaceCassieChamber,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceGateA"/> on lower part of the Stair.
+        /// </summary>
+        SurfaceStairLowerGateA,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceGateA"/> next to the Security Check.
+        /// </summary>
+        SurfaceBigWindowGateA,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceGateA"/> on the upper part of the Stair.
+        /// </summary>
+        SurfaceStairUpperGateA,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceGateA"/> on the .
+        /// </summary>
+        SurfaceSmallWindowGateA,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceGateA"/> that on the Roof part.
+        /// </summary>
+        SurfaceRoofGateA,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceGateA"/> that in the Upstair Corner on Road side.
+        /// </summary>
+        SurfaceUpstairCornerRoadGateA,
+
+        /// <summary>
+        /// Represents the window in <see cref="RoomType.SurfaceGateA"/> that inside the AdminOffice.
+        /// </summary>
+        SurfaceAdminOfficeGateA,
     }
 }
