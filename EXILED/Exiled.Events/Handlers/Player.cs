@@ -29,46 +29,55 @@ namespace Exiled.Events.Handlers
         /// <summary>
         /// Invoked after a player triggers the attack as an SCP.
         /// </summary>
+        /// Porting Notes: LabAPI has no equivalent.
         public static Event<HitEventArgs> Hit { get; set; } = new();
 
         /// <summary>
         /// Invoked before a player is shown a hitmarker.
         /// </summary>
+        /// Porting Notes: Already LabAPI based.
         public static Event<ShowingHitMarkerEventArgs> ShowingHitMarker { get; set; } = new();
 
         /// <summary>
         /// Invoked before authenticating a <see cref="API.Features.Player"/>.
         /// </summary>
+        /// Porting Notes: Too complex to infer final behavior after porting.
         public static Event<PreAuthenticatingEventArgs> PreAuthenticating { get; set; } = new();
 
         /// <summary>
         /// Invoked before reserved slot is finalized for a <see cref="API.Features.Player"/>.
         /// </summary>
+        /// Porting Notes: LabAPI has no equivalent.
         public static Event<ReservedSlotsCheckEventArgs> ReservedSlot { get; set; } = new();
 
         /// <summary>
         /// Invoked before kicking a <see cref="API.Features.Player"/> from the server.
         /// </summary>
+        /// Porting Notes: Missing features in LabAPI equivalent (Target/Issuer setter).
         public static Event<KickingEventArgs> Kicking { get; set; } = new();
 
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> has been kicked from the server.
         /// </summary>
+        /// Porting Notes: Invoked from more locations than LabAPI's equivalent.
         public static Event<KickedEventArgs> Kicked { get; set; } = new();
 
         /// <summary>
         /// Invoked before banning a <see cref="API.Features.Player"/> from the server.
         /// </summary>
+        /// Porting Notes: Missing features in LabAPI equivalent (PlayerEvents.Banning) (Target/Issuer setter).
         public static Event<BanningEventArgs> Banning { get; set; } = new();
 
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> has been banned from the server.
         /// </summary>
+        /// Porting Notes: Missing features in LabAPI equivalent (ServerEvents.BanIssued) (IsForced, Target/Issuer setter).
         public static Event<BannedEventArgs> Banned { get; set; } = new();
 
         /// <summary>
         /// Invoked after a <see cref="API.Features.Player"/> is changing danger state.
         /// </summary>
+        /// Porting Notes: LabAPI has no equivalent.
         public static Event<ChangingDangerStateEventArgs> ChangingDangerState { get; set; } = new();
 
         /// <summary>
@@ -77,6 +86,7 @@ namespace Exiled.Events.Handlers
         /// <remarks>
         /// Will not fire for certain client-side achievements.
         /// </remarks>
+        /// Porting Notes: LabAPI's equivalent (PlayerEvents.ReceivedAchievement) cannot be denied.
         public static Event<EarningAchievementEventArgs> EarningAchievement { get; set; } = new();
 
         /// <summary>
@@ -86,11 +96,13 @@ namespace Exiled.Events.Handlers
         /// Will be invoked even if the <see cref="API.Features.Items.Usable"/> is on cooldown.
         /// Candies are the only <see cref="API.Features.Items.Usable"/> that do not invoke this event.
         /// </remarks>
+        /// Porting Notes: TODO: Cooldown is useless?
         public static Event<UsingItemEventArgs> UsingItem { get; set; } = new();
 
         /// <summary>
         /// Invoked before a <see cref="API.Features.Player"/> finishes using a <see cref="API.Features.Items.Usable"/>. In other words, it is invoked after the animation finishes but before the <see cref="API.Features.Items.Usable"/> is actually used.
         /// </summary>
+        /// Porting Notes: LabAPI's equivalent (PlayerUsedItem) cannot be denied.
         public static Event<UsingItemCompletedEventArgs> UsingItemCompleted { get; set; } = new();
 
         /// <summary>
