@@ -62,7 +62,7 @@ jobs:
     # Push the package
     - name: NuGet push
       shell: pwsh
-      run: dotnet nuget push ${{ env.PackageFile }} --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json -SkipDuplicate
+      run: dotnet nuget push ${{ env.PackageFile }} --api-key ${{steps.login.outputs.NUGET_API_KEY}} --source https://api.nuget.org/v3/index.json --skip-duplicate
         
         
         

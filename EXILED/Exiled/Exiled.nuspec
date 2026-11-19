@@ -6,12 +6,12 @@
     <title>ExMod-Team</title>
     <version>$version$</version>
     <authors>ExMod-Team</authors>
-    <owners>ExMod-Team</owners>
     <copyright>Copyright © ExMod Team 2024 - $year$</copyright>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <repository type="Git" url="https://github.com/Exmod-Team/EXILED" />
-    <licenseUrl>https://github.com/Exmod-Team/EXILED/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/Exmod-Team/EXILED</projectUrl>
+    <license type="file">LICENSE.txt</license>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/ExMod-Team/EXILED</projectUrl>
     <icon>images\Exiled_Icon.png</icon>
     <description>Plugin framework for SCP: Secret Laboratory.</description>
 
@@ -22,6 +22,9 @@
   </metadata>
 
   <files>
+    <file src="..\..\LICENSE" target="LICENSE.txt" />
+    <file src="..\..\.github\README.md" target="\" />
+
     <!-- Project files -->
     <file src="..\References\Assembly-CSharp-Publicized.dll" target="lib\net48" />
     <file src="..\References\CommandSystem.Core.dll" target="lib\net48" />
