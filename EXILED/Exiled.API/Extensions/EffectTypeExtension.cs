@@ -109,6 +109,7 @@ namespace Exiled.API.Extensions
             { EffectType.FocusedVision, typeof(FocusedVision) },
             { EffectType.AnomalousRegeneration, typeof(AnomalousRegeneration) },
             { EffectType.AnomalousTarget, typeof(AnomalousTarget) },
+            { EffectType.BarbedWire, typeof(BarbedWire) },
             #pragma warning restore CS0618
         });
 

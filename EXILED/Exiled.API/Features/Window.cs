@@ -274,7 +274,7 @@ namespace Exiled.API.Features
                 _ => GlassType.Unknown,
             },
             "glass" => GlassType.Scp079,
-            "VTGLASS" => GlassType.Plants,
+            "LCZ Breakable Glass" => GlassType.Plants,
             _ => GlassType.Unknown,
         };
     }

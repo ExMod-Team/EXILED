@@ -392,5 +392,10 @@ namespace Exiled.API.Enums
         /// Allows SCPs to see the affected player from a certain distance. Works on SCPs.
         /// </summary>
         AnomalousTarget,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.BarbedWire"/>.
+        /// </summary>
+        BarbedWire,
     }
 }

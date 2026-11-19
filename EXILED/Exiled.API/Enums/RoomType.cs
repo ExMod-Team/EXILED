@@ -60,6 +60,11 @@ namespace Exiled.API.Enums
         LczPlants,
 
         /// <summary>
+        /// Light Containment Zone's VT-00's room.
+        /// </summary>
+        LczPlants2,
+
+        /// <summary>
         /// Light Containment Zone's Water Closet.
         /// </summary>
         LczToilets,
@@ -83,6 +88,11 @@ namespace Exiled.API.Enums
         /// Light Containment Zone's Checkpoint B room.
         /// </summary>
         LczCheckpointB,
+
+        /// <summary>
+        /// Light Containment Zone's Checkpoint C room.
+        /// </summary>
+        LczCheckpointC,
 
         /// <summary>
         /// Light Containment Zone's GR-18's room.
@@ -288,6 +298,11 @@ namespace Exiled.API.Enums
         /// Heavy Containment Elevator Zone's System B room.
         /// </summary>
         HczElevatorB,
+
+        /// <summary>
+        /// Heavy Containment Elevator Zone's System C room.
+        /// </summary>
+        HczElevatorC,
 
         /// <summary>
         /// Heavy Containment Zone's cross room with waterfall.
