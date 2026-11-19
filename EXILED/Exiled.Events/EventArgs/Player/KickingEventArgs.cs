@@ -20,41 +20,39 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class KickingEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private readonly string startkickmessage;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="KickingEventArgs" /> class.
         /// </summary>
         /// <param name="target">
-        /// <inheritdoc cref="Target" />
+        /// The target of the kick.
         /// </param>
         /// <param name="issuer">
-        /// <inheritdoc cref="Player" />
+        /// The issuer of the kick.
         /// </param>
         /// <param name="commandSender">
-        /// <inheritdoc cref="ICommandSender" />
+        /// The <see cref="ICommandSender"/> of the Issuer.
         /// </param>
         /// <param name="reason">
-        /// <inheritdoc cref="Reason" />
+        /// The reason for the kick.
         /// </param>
-        /// <param name="fullMessage">
-        /// <inheritdoc cref="FullMessage" />
+        /// <param name="prefix">
+        /// The text prefixed in every kick message.
         /// </param>
         /// <param name="isAllowed">
-        /// <inheritdoc cref="IsAllowed" />
+        /// Whether the kick is allowed.
         /// </param>
-        public KickingEventArgs(Player target, Player issuer, ICommandSender commandSender, string reason, string fullMessage, bool isAllowed = true)
+        public KickingEventArgs(Player target, Player issuer, ICommandSender commandSender, string reason, string prefix, bool isAllowed = true)
         {
             Target = target;
             Player = issuer ?? Server.Host;
             CommandSender = commandSender;
             Reason = reason;
-            startkickmessage = fullMessage;
+            FullMessage = prefix;
             IsAllowed = isAllowed;
         }
 
         /// <summary>
-        /// Gets or sets the ban target.
+        /// Gets or sets the kick target.
         /// </summary>
         public Player Target
         {
@@ -65,7 +63,7 @@ namespace Exiled.Events.EventArgs.Player
                     return;
 
                 if (Events.Instance.Config.ShouldLogBans && field is not null)
-                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the banned player from user {field.Nickname} ({field.UserId}) to {value.Nickname} ({value.UserId})");
+                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the kicked player from user {field.Nickname} ({field.UserId}) to {value.Nickname} ({value.UserId})");
 
                 field = value;
             }
@@ -79,7 +77,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <summary>
         /// Gets the full kick message.
         /// </summary>
-        public string FullMessage => startkickmessage + Reason;
+        public string FullMessage => field + Reason;
 
         /// <summary>
         /// Gets or sets a value indicating whether action is taken against the target.
@@ -93,14 +91,14 @@ namespace Exiled.Events.EventArgs.Player
                     return;
 
                 if (Events.Instance.Config.ShouldLogBans)
-                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" {(value ? "allowed" : "denied")} banning user with ID: {Target.UserId}");
+                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" {(value ? "allowed" : "denied")} kicking user with ID: {Target.UserId}");
 
                 field = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets the ban issuer.
+        /// Gets or sets the kick issuer.
         /// </summary>
         public Player Player
         {
@@ -111,7 +109,7 @@ namespace Exiled.Events.EventArgs.Player
                     return;
 
                 if (Events.Instance.Config.ShouldLogBans && field is not null)
-                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the ban issuer from user {field.Nickname} ({field.UserId}) to {value.Nickname} ({value.UserId})");
+                    LogBanChange(Assembly.GetCallingAssembly().GetName().Name, $" changed the kick issuer from user {field.Nickname} ({field.UserId}) to {value.Nickname} ({value.UserId})");
 
                 field = value;
             }
@@ -127,7 +125,7 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         /// <param name="assemblyName">The name of the calling assembly.</param>
         /// <param name="message">The message to be logged.</param>
-        protected void LogBanChange(string assemblyName, string message)
+        private static void LogBanChange(string assemblyName, string message)
         {
             if (assemblyName != "Exiled.Events")
             {
