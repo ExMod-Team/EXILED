@@ -110,6 +110,7 @@ namespace Exiled.API.Extensions
             { EffectType.AnomalousRegeneration, typeof(AnomalousRegeneration) },
             { EffectType.AnomalousTarget, typeof(AnomalousTarget) },
             { EffectType.BarbedWire, typeof(BarbedWire) },
+            { EffectType.Hexed, typeof(Hexed) },
             #pragma warning restore CS0618
         });
 

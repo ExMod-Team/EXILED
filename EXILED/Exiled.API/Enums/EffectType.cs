@@ -397,5 +397,10 @@ namespace Exiled.API.Enums
         /// <see cref="CustomPlayerEffects.BarbedWire"/>.
         /// </summary>
         BarbedWire,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Hexed"/>.
+        /// </summary>
+        Hexed,
     }
 }
