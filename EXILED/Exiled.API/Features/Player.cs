@@ -1949,7 +1949,7 @@ namespace Exiled.API.Features
                     continue;
 
                 if (viewer != this || data.DataAuthority.HasFlag(RoleData.Authority.AffectSelf))
-                    FakeRoles[viewer] = data;
+                    viewer.FakeRoles[this] = data;
             }
         }
 
