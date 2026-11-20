@@ -262,7 +262,8 @@ namespace Exiled.API.Features
             "Window" => Room?.Type switch
             {
                 RoomType.Hcz049 => GlassType.Scp049,
-                RoomType.Hcz127 => GlassType.Scp127,
+                RoomType.Hcz127 when Base.name[8] == '3' => GlassType.Scp127Large,
+                RoomType.Hcz127 => GlassType.Scp127Small,
                 RoomType.HczHid => GlassType.MicroHid,
                 RoomType.HczTestRoom => GlassType.TestRoom,
                 _ => GlassType.Unknown,

@@ -693,7 +693,6 @@ namespace Exiled.API.Features.Doors
                 "096" => DoorType.Scp096,
                 "049_ARMORY" => DoorType.Scp049Armory,
                 "079_ARMORY" => DoorType.Scp079Armory,
-                "914" => DoorType.Scp914Gate,
                 "GATE_A" => DoorType.GateA,
                 "079_FIRST" => DoorType.Scp079First,
                 "GATE_B" => DoorType.GateB,

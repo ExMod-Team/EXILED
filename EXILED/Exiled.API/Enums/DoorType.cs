@@ -101,11 +101,6 @@ namespace Exiled.API.Enums
         GR18Gate,
 
         /// <summary>
-        /// Represents the 914 gate.
-        /// </summary>
-        Scp914Gate,
-
-        /// <summary>
         /// Represents the 939_CRYO door.
         /// </summary>
         Scp939Cryo,

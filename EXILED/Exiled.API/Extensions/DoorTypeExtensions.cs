@@ -19,7 +19,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="door">The door to be checked.</param>
         /// <returns>Returns whether the <see cref="DoorType"/> is a gate.</returns>
-        public static bool IsGate(this DoorType door) => door is DoorType.GateA or DoorType.GateB or DoorType.Scp914Gate or
+        public static bool IsGate(this DoorType door) => door is DoorType.GateA or DoorType.GateB or
             DoorType.Scp049Gate or DoorType.GR18Gate or DoorType.SurfaceGate or DoorType.Scp173Gate or DoorType.Scp173NewGate or DoorType.CheckpointGateA or DoorType.CheckpointGateB or DoorType.SpawnableUnsecuredGate or DoorType.UnknownGate;
 
         /// <summary>
