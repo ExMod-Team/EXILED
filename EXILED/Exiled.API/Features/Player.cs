@@ -53,7 +53,6 @@ namespace Exiled.API.Features
     using Mirror.LiteNetLib4Mirror;
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
-    using PlayerRoles.FirstPersonControl.Thirdperson;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers.Wearables;
     using PlayerRoles.RoleAssign;
@@ -4086,6 +4085,39 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
+        /// Teleports the player to the specified world position on the next frame. This method is useful when you need to delay the teleport until the next update cycle, for example, after modifying the player's state or to avoid conflicts with other operations.
+        /// </summary>
+        /// <param name="position">The world position to teleport the player to.</param>
+        public void TeleportNextFrame(Vector3 position)
+        {
+            Timing.CallDelayed(Timing.WaitForOneFrame, () =>
+            {
+                if (!IsConnected)
+                    return;
+
+                Position = position;
+            });
+        }
+
+        /// <summary>
+        /// Teleports the player to a position obtained from a delegate on the next frame. The delegate is invoked on the next frame, allowing you to compute the position dynamically based on the current game state.
+        /// </summary>
+        /// <param name="getPosition">A function that returns the world position to teleport to. If this delegate is <see langword="null"/>, the method does nothing.</param>
+        public void TeleportNextFrame(Func<Vector3> getPosition)
+        {
+            if (getPosition is null)
+                return;
+
+            Timing.CallDelayed(Timing.WaitForOneFrame, () =>
+            {
+                if (!IsConnected)
+                    return;
+
+                Position = getPosition.Invoke();
+            });
+        }
+
+        /// <summary>
         /// Teleports player to a random object of a specific type.
         /// </summary>
         /// <param name="type">Object for teleport.</param>
@@ -4310,8 +4342,7 @@ namespace Exiled.API.Features
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            Player player = obj as Player;
-            return (object)player != null && ReferenceHub == player.ReferenceHub;
+            return obj is Player player && ReferenceHub == player.ReferenceHub;
         }
 
         /// <inheritdoc />

@@ -11,8 +11,6 @@ namespace Exiled.API.Features
     using System.Collections.Generic;
     using System.Reflection;
 
-    using Exiled.API.Enums;
-
     using GameCore;
 
     using Interfaces;
