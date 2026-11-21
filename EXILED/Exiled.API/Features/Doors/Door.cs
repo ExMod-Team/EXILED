@@ -609,6 +609,11 @@ namespace Exiled.API.Features.Doors
 
                 return doorName switch
                 {
+                    "SZ Exterior Single door" => DoorType.SurfaceExteriorSingleDoor,
+                    "SZ Exterior Double Door" => DoorType.SurfaceExteriorDoubleDoor,
+                    "SZ Interior Single door" => DoorType.SurfaceInteriorSingleDoor,
+                    "GarageDoor_White Variant" => DoorType.GarageDoorWhite,
+                    "GarageDoor_White_Tall" => DoorType.GarageDoorWhiteTall,
                     "LCZ PortallessBreakableDoor" => Room?.Type switch
                     {
                         RoomType.Hcz106 => DoorType.Scp106Checkpoint,
@@ -644,11 +649,13 @@ namespace Exiled.API.Features.Doors
                     "Nuke Elevator Door" => DoorType.ElevatorNuke,
                     not null when Base is Interactables.Interobjects.ElevatorDoor elevatorGroup => elevatorGroup?.Group switch
                     {
+                        ElevatorGroup.Scp173 => DoorType.ElevatorScp173,
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
                         ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => DoorType.ElevatorGateA,
                         ElevatorGroup.LczA01 or ElevatorGroup.LczA02 => DoorType.ElevatorLczA,
                         ElevatorGroup.LczB01 or ElevatorGroup.LczB02 => DoorType.ElevatorLczB,
+                        ElevatorGroup.LczC01 or ElevatorGroup.LczC02 => DoorType.ElevatorLczC,
                         _ => DoorType.UnknownElevator,
                     },
                     "Spawnable Unsecured Pryable GateDoor" => DoorType.SpawnableUnsecuredGate,
@@ -661,6 +668,7 @@ namespace Exiled.API.Features.Doors
                 // Doors contains the DoorNameTagExtension component
                 "CHECKPOINT_LCZ_A" => DoorType.CheckpointLczA,
                 "CHECKPOINT_LCZ_B" => DoorType.CheckpointLczB,
+                "CHECKPOINT_LCZ_C" => DoorType.CheckpointLczC,
 
                 // TODO: Remove when it's fix https://git.scpslgame.com/northwood-qa/scpsl-bug-reporting/-/issues/782
                 "CHECKPOINT_EZ_HCZ_A" => Room?.Type switch
@@ -668,7 +676,11 @@ namespace Exiled.API.Features.Doors
                     RoomType.HczEzCheckpointA => DoorType.CheckpointEzHczA,
                     _ => DoorType.CheckpointEzHczB,
                 },
-                "CHECKPOINT_EZ_HCZ_B" => DoorType.CheckpointEzHczB,
+                "CHECKPOINT_EZ_HCZ_B" => Room?.Type switch
+                {
+                    RoomType.HczEzCheckpointA => DoorType.CheckpointEzHczA,
+                    _ => DoorType.CheckpointEzHczB,
+                },
                 "106_PRIMARY" => DoorType.Scp106Primary,
                 "106_SECONDARY" => DoorType.Scp106Secondary,
                 "ESCAPE_PRIMARY" => DoorType.EscapePrimary,
@@ -680,7 +692,6 @@ namespace Exiled.API.Features.Doors
                 "096" => DoorType.Scp096,
                 "049_ARMORY" => DoorType.Scp049Armory,
                 "079_ARMORY" => DoorType.Scp079Armory,
-                "914" => DoorType.Scp914Gate,
                 "GATE_A" => DoorType.GateA,
                 "079_FIRST" => DoorType.Scp079First,
                 "GATE_B" => DoorType.GateB,
@@ -699,16 +710,15 @@ namespace Exiled.API.Features.Doors
                 "GR18_INNER" => DoorType.GR18Inner,
                 "939_CRYO" => DoorType.Scp939Cryo,
                 "ESCAPE_FINAL" => DoorType.EscapeFinal,
-
-                // Doors spawned by the DoorSpawnPoint component
                 "LCZ_CAFE" => DoorType.LczCafe,
                 "173_BOTTOM" => DoorType.Scp173Bottom,
-
-                // Doors contains the Door component,
-                // also gameobject names
-                "LightContainmentDoor" => DoorType.LightContainmentDoor,
-                "EntrDoor" => DoorType.EntranceDoor,
-
+                "SZ_CASSIE_EXT" => DoorType.SurfaceCassieExterior,
+                "SZ_CASSIE_ROLLER" => DoorType.SurfaceCassieRoller,
+                "SZ_CASSIE_CHAMBER" => DoorType.SurfaceCassieChamber,
+                "SZ_GATE_A" => DoorType.SurfaceGateA,
+                "SZ_GATE_B" => DoorType.SurfaceGateB,
+                "SZ_GARAGE" => DoorType.SurfaceGarage,
+                "EZ_GATE_B_CHECKPOINT" => DoorType.EzGateBCheckpoint,
                 _ => DoorType.UnknownDoor,
             };
         }

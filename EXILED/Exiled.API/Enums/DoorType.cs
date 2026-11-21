@@ -101,11 +101,6 @@ namespace Exiled.API.Enums
         GR18Gate,
 
         /// <summary>
-        /// Represents the 914 gate.
-        /// </summary>
-        Scp914Gate,
-
-        /// <summary>
         /// Represents the 939_CRYO door.
         /// </summary>
         Scp939Cryo,
@@ -119,6 +114,11 @@ namespace Exiled.API.Enums
         /// Represents the CHECKPOINT_LCZ_B door.
         /// </summary>
         CheckpointLczB,
+
+        /// <summary>
+        /// Represents the CHECKPOINT_LCZ_C door.
+        /// </summary>
+        CheckpointLczC,
 
         /// <summary>
         /// Represents any entrance zone styled door.
@@ -297,6 +297,11 @@ namespace Exiled.API.Enums
         ElevatorScp049,
 
         /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.Scp173"/>.
+        /// </summary>
+        ElevatorScp173,
+
+        /// <summary>
         /// Represents the Elevator door for <see cref="ElevatorGroup.LczA01"/> and <see cref="ElevatorGroup.LczA02"/>.
         /// </summary>
         ElevatorLczA,
@@ -305,6 +310,11 @@ namespace Exiled.API.Enums
         /// Represents the Elevator door for <see cref="ElevatorGroup.LczB01"/> and <see cref="ElevatorGroup.LczB02"/>.
         /// </summary>
         ElevatorLczB,
+
+        /// <summary>
+        /// Represents the Elevator door for <see cref="ElevatorGroup.LczC01"/> and <see cref="ElevatorGroup.LczC02"/>.
+        /// </summary>
+        ElevatorLczC,
 
         /// <summary>
         /// Represents the Armory door in <see cref="RoomType.HczEzCheckpointA"/>.
@@ -380,5 +390,65 @@ namespace Exiled.API.Enums
         /// Represents a spawnable unsecured gate.
         /// </summary>
         SpawnableUnsecuredGate,
+
+        /// <summary>
+        /// Represents the SZ_CASSIE_EXT door.
+        /// </summary>
+        SurfaceCassieExterior,
+
+        /// <summary>
+        /// Represents the SZ_CASSIE_ROLLER door.
+        /// </summary>
+        SurfaceCassieRoller,
+
+        /// <summary>
+        /// Represents the SZ_CASSIE_CHAMBER door.
+        /// </summary>
+        SurfaceCassieChamber,
+
+        /// <summary>
+        /// Represents the SZ_GATE_A door.
+        /// </summary>
+        SurfaceGateA,
+
+        /// <summary>
+        /// Represents the SZ_GATE_B door.
+        /// </summary>
+        SurfaceGateB,
+
+        /// <summary>
+        /// Represents the SZ_GARAGE door.
+        /// </summary>
+        SurfaceGarage,
+
+        /// <summary>
+        /// Represents the EZ_GATE_B_CHECKPOINT door.
+        /// </summary>
+        EzGateBCheckpoint,
+
+        /// <summary>
+        /// Represents any surface zone Exterior Single styled door.
+        /// </summary>
+        SurfaceExteriorSingleDoor,
+
+        /// <summary>
+        /// Represents any surface zone Exterior Double styled door.
+        /// </summary>
+        SurfaceExteriorDoubleDoor,
+
+        /// <summary>
+        /// Represents any surface zone Interior Single styled door.
+        /// </summary>
+        SurfaceInteriorSingleDoor,
+
+        /// <summary>
+        /// Represents any GarageDoor that is angle at 90°.
+        /// </summary>
+        GarageDoorWhite,
+
+        /// <summary>
+        /// Represents any GarageDoor that is not angle.
+        /// </summary>
+        GarageDoorWhiteTall,
     }
 }

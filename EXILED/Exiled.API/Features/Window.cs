@@ -218,8 +218,30 @@ namespace Exiled.API.Features
         /// <returns>A string containing Window-related data.</returns>
         public override string ToString() => $"{Type} ({Health}) [{IsBroken}] *{DisableScpDamage}*";
 
-        private GlassType GetGlassType() => Base.name.RemoveBracketsOnEndOfName() switch
+        private GlassType GetGlassType() => Base.name.GetBefore('_').RemoveBracketsOnEndOfName() switch
         {
+            "BreakableGlass" => Room?.Type switch
+            {
+                RoomType.SurfaceCassie => Base.name[16] switch
+                {
+                    '1' => GlassType.SurfaceCassieUpperHall,
+                    '2' or '3' => GlassType.SurfaceCassieLowerHall,
+                    '4' or '5' or '6' => GlassType.SurfaceCassieChamber,
+                    _ => GlassType.Unknown,
+                },
+                RoomType.SurfaceGateA => Base.name[17] switch
+                {
+                    '1' => GlassType.SurfaceUpstairCornerRoadGateA,
+                    '2' or '3' => GlassType.SurfaceBigWindowGateA,
+                    '4' => GlassType.SurfaceStairUpperGateA,
+                    '5' or '6' => GlassType.SurfaceSmallWindowGateA,
+                    '7' => GlassType.SurfaceRoofGateA,
+                    '8' => GlassType.SurfaceStairLowerGateA,
+                    '9' or '0' => GlassType.SurfaceAdminOfficeGateA,
+                    _ => GlassType.Unknown,
+                },
+                _ => GlassType.Unknown,
+            },
             "B272sa" => Room?.Type switch
             {
                 RoomType.LczGlassBox => GlassType.GR18,
@@ -240,7 +262,8 @@ namespace Exiled.API.Features
             "Window" => Room?.Type switch
             {
                 RoomType.Hcz049 => GlassType.Scp049,
-                RoomType.Hcz127 => GlassType.Scp127,
+                RoomType.Hcz127 when Base.name[8] == '3' => GlassType.Scp127Large,
+                RoomType.Hcz127 => GlassType.Scp127Small,
                 RoomType.HczHid => GlassType.MicroHid,
                 RoomType.HczTestRoom => GlassType.TestRoom,
                 _ => GlassType.Unknown,
@@ -252,7 +275,7 @@ namespace Exiled.API.Features
                 _ => GlassType.Unknown,
             },
             "glass" => GlassType.Scp079,
-            "VTGLASS" => GlassType.Plants,
+            "LCZ Breakable Glass" => GlassType.Plants,
             _ => GlassType.Unknown,
         };
     }

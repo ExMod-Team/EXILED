@@ -60,6 +60,11 @@ namespace Exiled.API.Enums
         LczPlants,
 
         /// <summary>
+        /// Light Containment Zone's VT-00's room.
+        /// </summary>
+        LczPlants2,
+
+        /// <summary>
         /// Light Containment Zone's Water Closet.
         /// </summary>
         LczToilets,
@@ -83,6 +88,11 @@ namespace Exiled.API.Enums
         /// Light Containment Zone's Checkpoint B room.
         /// </summary>
         LczCheckpointB,
+
+        /// <summary>
+        /// Light Containment Zone's Checkpoint C room.
+        /// </summary>
+        LczCheckpointC,
 
         /// <summary>
         /// Light Containment Zone's GR-18's room.
@@ -247,7 +257,7 @@ namespace Exiled.API.Enums
         /// <summary>
         /// The Surface.
         /// </summary>
-        Surface,
+        SurfaceExterior,
 
         /// <summary>
         /// Heavy Containment Zone's straight hall with ceiling fan.
@@ -288,6 +298,11 @@ namespace Exiled.API.Enums
         /// Heavy Containment Elevator Zone's System B room.
         /// </summary>
         HczElevatorB,
+
+        /// <summary>
+        /// Heavy Containment Elevator Zone's System C room.
+        /// </summary>
+        HczElevatorC,
 
         /// <summary>
         /// Heavy Containment Zone's cross room with waterfall.
@@ -358,5 +373,25 @@ namespace Exiled.API.Enums
         /// Heavy Containment Zone's T-intersection with a ramp in it.
         /// </summary>
         HczLoadingBay,
+
+        /// <summary>
+        /// Surface Zone's Cassie room.
+        /// </summary>
+        SurfaceCassie,
+
+        /// <summary>
+        /// Surface Zone's Gate A room.
+        /// </summary>
+        SurfaceGateA,
+
+        /// <summary>
+        /// Surface Zone's Gate B room.
+        /// </summary>
+        SurfaceGateB,
+
+        /// <summary>
+        /// Surface Zone's Garage room.
+        /// </summary>
+        SurfaceGarage,
     }
 }
