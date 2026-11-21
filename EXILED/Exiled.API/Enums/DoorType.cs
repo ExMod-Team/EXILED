@@ -427,11 +427,6 @@ namespace Exiled.API.Enums
         EzGateBCheckpoint,
 
         /// <summary>
-        /// Represents any surface zone Exterior 'variant' Single styled door.
-        /// </summary>
-        SurfaceExteriorSingleVariantDoor,
-
-        /// <summary>
         /// Represents any surface zone Exterior Single styled door.
         /// </summary>
         SurfaceExteriorSingleDoor,

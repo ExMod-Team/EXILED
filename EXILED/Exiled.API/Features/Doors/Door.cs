@@ -609,7 +609,6 @@ namespace Exiled.API.Features.Doors
 
                 return doorName switch
                 {
-                    "SZ Exterior Single door Variant" => DoorType.SurfaceExteriorSingleVariantDoor,
                     "SZ Exterior Single door" => DoorType.SurfaceExteriorSingleDoor,
                     "SZ Exterior Double Door" => DoorType.SurfaceExteriorDoubleDoor,
                     "SZ Interior Single door" => DoorType.SurfaceInteriorSingleDoor,
