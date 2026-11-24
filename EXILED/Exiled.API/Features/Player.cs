@@ -3567,7 +3567,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <remarks>This will only function if the player's <see cref="FpcRole.IsHumeShieldedRole"/> is <see langword="true"/>.</remarks>
         public void PlayShieldBreakSound()
-        => new PlayerRoles.PlayableScps.HumeShield.DynamicHumeShieldController.ShieldBreakMessage() { Target = ReferenceHub }.SendToAuthenticated();
+        => new PlayerRoles.PlayableScps.HumeShield.DynamicHumeShieldController.ShieldBreakMessage() { TargetNetId = ReferenceHub.netId }.SendToAuthenticated();
 
         /// <summary>
         /// Gets a <see cref="StatBase"/> module from the player's <see cref="PlayerStats"/> component.
