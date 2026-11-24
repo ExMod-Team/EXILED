@@ -3486,7 +3486,7 @@ namespace Exiled.API.Features
             if (!AlphaWarheadController.SingletonSet)
                 return false;
 
-            MirrorExtensions.SendFakeTargetRpc(this, AlphaWarheadController.Singleton.netIdentity, typeof(AlphaWarheadController), nameof(AlphaWarheadController.RpcShake), achieve);
+            MirrorExtensions.SendFakeTargetRpc(this, AlphaWarheadController.Singleton.netIdentity, typeof(AlphaWarheadController), nameof(AlphaWarheadController.RpcDetonate), achieve);
             return true;
         }
 
