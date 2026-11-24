@@ -3973,14 +3973,19 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="newPort">New port.</param>
         /// <param name="delay">Player reconnection delay.</param>
-        /// <param name="reconnect">Whether player should be reconnected.</param>
         /// <param name="roundRestartType">Type of round restart.</param>
-        public void Reconnect(ushort newPort = 0, float delay = 5, bool reconnect = true, RoundRestartType roundRestartType = RoundRestartType.FullRestart)
+        public void Reconnect(ushort newPort = 0, float delay = 5, RoundRestartType roundRestartType = RoundRestartType.RegularRestart)
         {
             if (newPort != 0)
-                roundRestartType = newPort == Server.Port && roundRestartType is RoundRestartType.RedirectRestart ? RoundRestartType.FullRestart : RoundRestartType.RedirectRestart;
+                roundRestartType = newPort == Server.Port && roundRestartType is RoundRestartType.RedirectRestart ? RoundRestartType.RegularRestart : RoundRestartType.RedirectRestart;
+            RoundRestartMessage roundRestartMessage = roundRestartType switch
+            {
+                RoundRestartType.ServerRebootRestart => new RoundRestartMessage(delay),
+                RoundRestartType.RedirectRestart => new RoundRestartMessage(newPort, delay),
+                _ => new(),
+            };
 
-            Connection.Send(new RoundRestartMessage(roundRestartType, delay, newPort, reconnect, false));
+            Connection.Send(roundRestartMessage);
         }
 
         /// <inheritdoc cref="MirrorExtensions.PlayGunSound(Player, Vector3, ItemType, byte, byte)"/>
