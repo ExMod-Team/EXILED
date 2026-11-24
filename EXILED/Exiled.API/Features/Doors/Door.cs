@@ -649,7 +649,7 @@ namespace Exiled.API.Features.Doors
                     "Nuke Elevator Door" => DoorType.ElevatorNuke,
                     not null when Base is Interactables.Interobjects.ElevatorDoor elevatorGroup => elevatorGroup?.Group switch
                     {
-                        ElevatorGroup.Scp173 => DoorType.ElevatorScp173,
+                        ElevatorGroup.Scp914 => DoorType.ElevatorScp914,
                         ElevatorGroup.Scp049 => DoorType.ElevatorScp049,
                         ElevatorGroup.GateB => DoorType.ElevatorGateB,
                         ElevatorGroup.GateA01 or ElevatorGroup.GateA02 => DoorType.ElevatorGateA,
