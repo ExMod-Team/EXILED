@@ -18,8 +18,8 @@ namespace Exiled.Events.EventArgs.Scp079
         /// <summary>
         /// Initializes a new instance of the <see cref="RecontainingEventArgs" /> class.
         /// </summary>
-        /// <param name="recontainer">The <see cref="BreakableWindow"/> instance.</param>
-        public RecontainingEventArgs(BreakableWindow recontainer)
+        /// <param name="recontainer">The <see cref="BreakableGlass"/> instance.</param>
+        public RecontainingEventArgs(BreakableGlass recontainer)
         {
             Player = Player.Get(recontainer.LastAttacker.Hub);
             IsAutomatic = recontainer.LastAttacker.IsSet;

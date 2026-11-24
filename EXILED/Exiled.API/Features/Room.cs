@@ -449,7 +449,7 @@ namespace Exiled.API.Features
 
             RoomLightControllers = RoomLightControllersValue.AsReadOnly();
 
-            GetComponentsInChildren<BreakableWindow>().ForEach(component =>
+            GetComponentsInChildren<BreakableGlass>().ForEach(component =>
             {
                 Window window = new(component, this);
                 window.Room.WindowsValue.Add(window);

@@ -19,24 +19,26 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Doors;
     using Exiled.API.Interfaces;
 
+    using MapGeneration.Spawnables;
+
     using UnityEngine;
 
     /// <summary>
-    /// A wrapper class for <see cref="BreakableWindow"/>.
+    /// A wrapper class for <see cref="BreakableGlass"/>.
     /// </summary>
-    public class Window : IWrapper<BreakableWindow>, IWorldSpace
+    public class Window : IWrapper<BreakableGlass>, IWorldSpace
     {
         /// <summary>
-        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BreakableWindow"/>s and their corresponding <see cref="Window"/>.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BreakableGlass"/>s and their corresponding <see cref="Window"/>.
         /// </summary>
-        internal static readonly Dictionary<BreakableWindow, Window> BreakableWindowToWindow = new(new ComponentsEqualityComparer());
+        internal static readonly Dictionary<BreakableGlass, Window> BreakableWindowToWindow = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Window"/> class.
         /// </summary>
-        /// <param name="window">The base <see cref="BreakableWindow"/> for this door.</param>
+        /// <param name="window">The base <see cref="BreakableGlass"/> for this door.</param>
         /// <param name="room">The <see cref="Room"/> for this window.</param>
-        internal Window(BreakableWindow window, Room room)
+        internal Window(BreakableGlass window, Room room)
         {
             BreakableWindowToWindow.Add(window, this);
             Base = window;
@@ -53,9 +55,9 @@ namespace Exiled.API.Features
         public static IReadOnlyCollection<Window> List => BreakableWindowToWindow.Values;
 
         /// <summary>
-        /// Gets the base-game <see cref="BreakableWindow"/> for this window.
+        /// Gets the base-game <see cref="BreakableGlass"/> for this window.
         /// </summary>
-        public BreakableWindow Base { get; }
+        public BreakableGlass Base { get; }
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the window.
@@ -133,16 +135,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this window is broken.
-        /// </summary>
-        [Obsolete("You should use IsBroken Propperty now", true)]
-        public bool SyncStatus
-        {
-            get => Base._prevStatus;
-            set => Base._prevStatus = value;
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating who is the LastAttacker.
         /// </summary>
         public Player LastAttacker
@@ -156,7 +148,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="breakableWindow">The base-game <see cref="Window"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
+        public static Window Get(BreakableGlass breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
             ? window
             : new(breakableWindow, breakableWindow.GetComponentInParent<Room>());
 
@@ -168,12 +160,12 @@ namespace Exiled.API.Features
         public static IEnumerable<Window> Get(Func<Window, bool> predicate) => List.Where(predicate);
 
         /// <summary>
-        /// Try-get a <see cref="Window"/> belonging to the <see cref="BreakableWindow"/>, if any.
+        /// Try-get a <see cref="Window"/> belonging to the <see cref="BreakableGlass"/>, if any.
         /// </summary>
-        /// <param name="breakableWindow">The <see cref="BreakableWindow"/> instance.</param>
+        /// <param name="breakableWindow">The <see cref="BreakableGlass"/> instance.</param>
         /// <param name="window">A <see cref="Window"/> or <see langword="null"/> if not found.</param>
         /// <returns>Whether a window was found.</returns>
-        public static bool TryGet(BreakableWindow breakableWindow, out Window window)
+        public static bool TryGet(BreakableGlass breakableWindow, out Window window)
         {
             window = Get(breakableWindow);
             return window is not null;
