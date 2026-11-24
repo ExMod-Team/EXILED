@@ -2513,7 +2513,7 @@ namespace Exiled.API.Features
         /// <param name="force">The throw force.</param>
         /// <param name="armorPenetration">The armor penetration amount.</param>
         public void Hurt(Player attacker, float damage, Vector3 force = default, int armorPenetration = 0) =>
-            Hurt(new ExplosionDamageHandler(attacker.Footprint, force, damage, armorPenetration, ExplosionType.Grenade));
+            Hurt(new ExplosionDamageHandler(attacker.Footprint, Footprint, force, damage, armorPenetration, ExplosionType.Grenade));
 
         /// <summary>
         /// Hurts the player.
