@@ -16,6 +16,7 @@ namespace Exiled.API.Features.DamageHandlers
     using Footprinting;
 
     using InventorySystem;
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms.ShotEvents;
     using InventorySystem.Items.Scp1509;
 
@@ -137,7 +138,7 @@ namespace Exiled.API.Features.DamageHandlers
                     Base = new MicroHidDamageHandler(damage, microHidOwner);
                     break;
                 case DamageType.ExplosionGrenade:
-                    Base = new ExplosionDamageHandler(attacker.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);
+                    Base = new ExplosionDamageHandler(attacker.Footprint, player.Footprint, UnityEngine.Vector3.zero, damage, 0, ExplosionType.Grenade);
                     break;
                 case DamageType.Firearm:
                 case DamageType.AK:
