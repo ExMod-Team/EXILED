@@ -18,7 +18,7 @@ namespace Exiled.Events.Patches.Generic
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;
-
+    /*
     /// <summary>
     ///     Patches <see cref="PlayerAuthenticationManager.Start"/> to add an @offline suffix to UserIds in Offline Mode.
     /// </summary>
@@ -46,7 +46,7 @@ namespace Exiled.Events.Patches.Generic
         }
 
         private static string BuildUserId(string userId) => $"{userId}@offline";
-    }
+    }*/
 
     /* // TODO: Fix for labAPI online mode disabled
     /// <summary>
