@@ -145,6 +145,13 @@ namespace Exiled.API.Extensions
         public static bool IsScp939(this DamageType type) => type is DamageType.Scp939None or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary;
 
         /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp939"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsScp953(this DamageType type) => type is DamageType.Scp953None or DamageType.Scp953Slash or DamageType.Scp953Pounce or DamageType.Scp953Grappled;
+
+        /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp049"/>>.
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
