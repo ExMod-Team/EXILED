@@ -39,7 +39,7 @@ namespace Exiled.API.Features
         {
             WorkstationControllerToWorkstation.Add(workstationController, this);
             Base = workstationController;
-            PositionSync = workstationController.GetComponent<StructurePositionSync>();
+            PositionSync = workstationController.GetComponent<SpawnableStructure>();
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace Exiled.API.Features
         }
 
         /// <inheritdoc cref="IStructureSync.PositionSync"/>
-        public StructurePositionSync PositionSync { get; }
+        public SpawnableStructure PositionSync { get; }
 
         /// <summary>
         /// Gets or sets the status of the workstation.

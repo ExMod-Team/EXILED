@@ -38,7 +38,7 @@ namespace Exiled.API.Features
         internal Generator(Scp079Generator scp079Generator)
         {
             Base = scp079Generator;
-            PositionSync = scp079Generator.GetComponent<StructurePositionSync>();
+            PositionSync = scp079Generator.GetComponent<SpawnableStructure>();
             Scp079GeneratorToGenerator.Add(scp079Generator, this);
         }
 
@@ -199,8 +199,8 @@ namespace Exiled.API.Features
         /// </summary>
         public Player LastActivator
         {
-            get => Player.Get(Base._lastActivator.Hub);
-            set => Base._lastActivator = value.Footprint;
+            get => Player.Get(Base.LastActivator.Hub);
+            set => Base.LastActivator = value.Footprint;
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Exiled.API.Features
         }
 
         /// <inheritdoc cref="IStructureSync.PositionSync"/>
-        public StructurePositionSync PositionSync { get; }
+        public SpawnableStructure PositionSync { get; }
 
         /// <summary>
         /// Gets or sets the required permissions to interact with the generator.

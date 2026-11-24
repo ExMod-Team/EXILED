@@ -39,7 +39,7 @@ namespace Exiled.API.Features.Lockers
         public Locker(BaseLocker locker)
         {
             Base = locker;
-            PositionSync = locker.GetComponent<StructurePositionSync>();
+            PositionSync = locker.GetComponent<SpawnableStructure>();
             BaseToExiledLockers.Add(locker, this);
 
             Chambers = locker.Chambers.Select(x => new Chamber(x, this)).ToList();
@@ -101,7 +101,7 @@ namespace Exiled.API.Features.Lockers
         }
 
         /// <inheritdoc cref="IStructureSync.PositionSync"/>
-        public StructurePositionSync PositionSync { get; }
+        public SpawnableStructure PositionSync { get; }
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> in which the <see cref="Locker"/> is located.

@@ -123,10 +123,10 @@ namespace Exiled.API.Features
 
             GameObject newGameObject = UnityEngine.Object.Instantiate(gameObject, position, rotation.Value);
 
-            if (newGameObject.TryGetComponent(out StructurePositionSync positionSync))
+            if (newGameObject.TryGetComponent(out SpawnableStructure positionSync))
             {
                 positionSync.Network_position = position;
-                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / StructurePositionSync.ConversionRate);
+                positionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(rotation.Value.eulerAngles.y / SpawnableStructure.ConversionRate);
             }
 
 #pragma warning disable CS0618 // Type or member is obsolete
