@@ -22,6 +22,7 @@ namespace Exiled.API.Extensions
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
     using PlayerRoles.PlayableScps.Scp939;
+    using PlayerRoles.PlayableScps.Scp953;
 
     using PlayerStatsSystem;
 
@@ -259,6 +260,14 @@ namespace Exiled.API.Extensions
                         Scp939DamageType.LungeTarget => DamageType.Scp939LungeTarget,
                         Scp939DamageType.LungeSecondary => DamageType.Scp939LungeSecondary,
                         _ => DamageType.Scp939None,
+                    };
+                case Scp953DamageHandler scp953DamageHandler:
+                    return scp953DamageHandler.DamageType switch
+                    {
+                        Scp953DamageType.Slash => DamageType.Scp953Slash,
+                        Scp953DamageType.Pounce => DamageType.Scp953Pounce,
+                        Scp953DamageType.Grappled => DamageType.Scp953Grappled,
+                        _ => DamageType.Scp953None,
                     };
                 case Scp3114DamageHandler scp3114DamageHandler:
                     return scp3114DamageHandler.Subtype switch
