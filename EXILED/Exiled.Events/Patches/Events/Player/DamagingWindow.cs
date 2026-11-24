@@ -19,6 +19,8 @@ namespace Exiled.Events.Patches.Events.Player
 
     using HarmonyLib;
 
+    using MapGeneration.Spawnables;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;

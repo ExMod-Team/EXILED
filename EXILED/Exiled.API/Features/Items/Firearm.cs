@@ -25,6 +25,7 @@ namespace Exiled.API.Features.Items
 
     using Extensions;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Attachments;
     using InventorySystem.Items.Firearms.Attachments.Components;

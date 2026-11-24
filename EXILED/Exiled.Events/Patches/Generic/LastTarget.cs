@@ -16,7 +16,7 @@ namespace Exiled.Events.Patches.Generic
 
     using HarmonyLib;
 
-    using PlayerRoles.PlayableScps.HumanTracker;
+    using PlayerRoles.PlayableScps.Trackers;
 
     using static HarmonyLib.AccessTools;
 

@@ -14,6 +14,7 @@ namespace Exiled.API.Extensions
 
     using Features;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.MicroHID.Modules;
     using InventorySystem.Items.Scp1509;
 

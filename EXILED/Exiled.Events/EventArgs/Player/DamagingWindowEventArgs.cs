@@ -12,6 +12,8 @@ namespace Exiled.Events.EventArgs.Player
 
     using Interfaces;
 
+    using MapGeneration.Spawnables;
+
     using AttackerDamageHandler = PlayerStatsSystem.AttackerDamageHandler;
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
 

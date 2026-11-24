@@ -12,6 +12,7 @@ namespace Exiled.Events.Patches.Generic.KeycardDetails
     using HarmonyLib;
 
     using InventorySystem.Items;
+    using InventorySystem.Items.Identifiers;
     using InventorySystem.Items.Keycards;
 
     /// <summary>
