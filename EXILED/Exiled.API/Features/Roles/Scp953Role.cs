@@ -9,17 +9,11 @@ namespace Exiled.API.Features.Roles
 {
     using System.Collections.Generic;
 
-    using Exiled.API.Enums;
-
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp953;
     using PlayerRoles.Subroutines;
-
-    using RelativePositioning;
-
-    using UnityEngine;
 
     using Scp953GameRole = PlayerRoles.PlayableScps.Scp953.Scp953Role;
 

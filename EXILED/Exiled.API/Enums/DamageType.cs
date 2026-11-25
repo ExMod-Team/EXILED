@@ -9,7 +9,10 @@ namespace Exiled.API.Enums
 {
     using Features;
 
+    using InventorySystem.Items;
+
     using PlayerRoles;
+    using PlayerRoles.PlayableScps.Scp953;
 
     /// <summary>
     /// Identifiers for types of damage.
@@ -368,5 +371,25 @@ namespace Exiled.API.Enums
         /// Damage dealt by a <see cref="Features.Items.MicroHid"/> when <see cref="InventorySystem.Items.MicroHID.Modules.MicroHidFiringMode.BrokenFire"/>.
         /// </summary>
         MicroHidBrokenFire,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp953"/> with <see cref="Scp953DamageType.Slash"/>.
+        /// </summary>
+        Scp953Slash,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp953"/> with <see cref="Scp953DamageType.Pounce"/>.
+        /// </summary>
+        Scp953Pounce,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp953"/> with <see cref="Scp953DamageType.Grappled"/>.
+        /// </summary>
+        Scp953Grappled,
+
+        /// <summary>
+        /// Damage caused by <see cref="RoleTypeId.Scp953"/> with <see cref="Scp953DamageType.None"/> or Unknown.
+        /// </summary>
+        Scp953None,
     }
 }
