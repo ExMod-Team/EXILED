@@ -14,16 +14,14 @@ namespace Exiled.Permissions.Extensions
     using System.Text;
 
     using CommandSystem;
-
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Pools;
     using Features;
-
+    using Features.MultipleGroups;
     using Properties;
     using Query;
     using RemoteAdmin;
-
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
     using YamlDotNet.Serialization.NamingConventions;
@@ -207,14 +205,47 @@ namespace Exiled.Permissions.Extensions
             Log.Debug($"UserID: {player.UserId} | PlayerId: {player.Id}");
             Log.Debug($"Permission string: {permission}");
 
-            string plyGroupKey = player.Group is not null ? ServerStatic.PermissionsHandler.Groups.FirstOrDefault(g => g.Value.EqualsTo(player.Group)).Key : null;
-            Log.Debug($"GroupKey: {plyGroupKey ?? "(null)"}");
-
-            if (plyGroupKey is null || !Groups.TryGetValue(plyGroupKey, out Group group))
+            if (!MultiGroup.IsActive)
             {
-                Log.Debug("The source group is null, the default group is used");
-                group = DefaultGroup;
+                string plyGroupKey = player.Group is not null ? ServerStatic.PermissionsHandler.Groups.FirstOrDefault(g => g.Value.EqualsTo(player.Group)).Key : null;
+                Log.Debug($"GroupKey: {plyGroupKey ?? "(null)"}");
+
+                if (plyGroupKey is null || !Groups.TryGetValue(plyGroupKey, out Group group))
+                {
+                    Log.Debug("The source group is null, the default group is used");
+                    group = DefaultGroup;
+                }
+
+                return group.CheckPermission(permission);
             }
+
+            if (!MultiGroup.Permissions.TryGetValue(player.UserId, out string[] data))
+                return false;
+
+            foreach (string group in data)
+            {
+                if (!Groups.TryGetValue(group, out Group value))
+                {
+                    Log.Error($"Invalid group name: {group}");
+                    continue;
+                }
+
+                if (value.CheckPermission(permission))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks a group's permission.
+        /// </summary>
+        /// <param name="group">The group to be checked.</param>
+        /// <param name="permission">The permission to be checked.</param>
+        /// <returns><see langword="true"/> if the player's current or native group has permissions; otherwise, <see langword="false"/>.</returns>
+        public static bool CheckPermission(this Group group, string permission)
+        {
+            group ??= DefaultGroup;
 
             if (group is null)
             {
