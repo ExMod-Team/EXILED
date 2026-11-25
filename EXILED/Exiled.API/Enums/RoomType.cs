@@ -320,6 +320,36 @@ namespace Exiled.API.Enums
         HczCornerDeep,
 
         /// <summary>
+        /// Heavy Containment Zone's corner but Variant.
+        /// </summary>
+        HczCornerDeepVariant,
+
+        /// <summary>
+        /// Heavy Containment Zone's corner but Variant1.
+        /// </summary>
+        HczCornerDeepVariant1,
+
+        /// <summary>
+        /// Heavy Containment Zone's corner but Variant2.
+        /// </summary>
+        HczCornerDeepVariant2,
+
+        /// <summary>
+        /// Heavy Containment Zone's corner but Variant3.
+        /// </summary>
+        HczCornerDeepVariant3,
+
+        /// <summary>
+        /// Heavy Containment Zone's corner but Variant4.
+        /// </summary>
+        HczCornerDeepVariant4,
+
+        /// <summary>
+        /// Heavy Containment Zone's corner but Variant5.
+        /// </summary>
+        HczCornerDeepVariant5,
+
+        /// <summary>
         /// Heavy Containment Zone's 3-way intersection with storage crates obstructing the passage.
         /// </summary>
         HczIntersectionJunk,
