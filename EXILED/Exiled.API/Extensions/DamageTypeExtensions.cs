@@ -14,6 +14,8 @@ namespace Exiled.API.Extensions
 
     using Features;
 
+    using InventorySystem.Items.Firearms.Modules;
+    using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.MicroHID.Modules;
     using InventorySystem.Items.Scp1509;
 
@@ -80,8 +82,8 @@ namespace Exiled.API.Extensions
             { ItemType.GunFSP9, DamageType.Fsp9 },
             { ItemType.GunE11SR, DamageType.E11Sr },
             { ItemType.MicroHID, DamageType.MicroHidPrimaryFire },
-            { ItemType.ParticleDisruptor, DamageType.ParticleDisruptor },
-            { ItemType.Jailbird, DamageType.Jailbird },
+            { ItemType.ParticleDisruptor, DamageType.ParticleDisruptorOther },
+            { ItemType.Jailbird, DamageType.JailbirdOther },
             { ItemType.GunFRMG0, DamageType.Frmg0 },
             { ItemType.GunA7, DamageType.A7 },
             { ItemType.GunSCP127, DamageType.Scp127 },
@@ -111,8 +113,8 @@ namespace Exiled.API.Extensions
         public static bool IsWeapon(this DamageType type, bool checkNonFirearm = true) => type switch
         {
 
-            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptor or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 or DamageType.Scp127 => true,
-            DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire or DamageType.Jailbird when checkNonFirearm => true,
+            DamageType.Crossvec or DamageType.Logicer or DamageType.Revolver or DamageType.Shotgun or DamageType.AK or DamageType.Com15 or DamageType.Com18 or DamageType.E11Sr or DamageType.Fsp9 or DamageType.ParticleDisruptorOther or DamageType.ParticleDisruptorRapidShot or DamageType.ParticleDisruptorSingleShot or DamageType.Com45 or DamageType.Frmg0 or DamageType.A7 or DamageType.Scp127 => true,
+            DamageType.MicroHidPrimaryFire or DamageType.MicroHidChargeFire or DamageType.MicroHidBrokenFire or DamageType.JailbirdOther or DamageType.JailbirdCharged or DamageType.JailbirdSwing when checkNonFirearm => true,
             _ => false,
         };
 
@@ -124,7 +126,7 @@ namespace Exiled.API.Extensions
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
         public static bool IsScp(this DamageType type, bool checkItems = true) => type switch
         {
-            DamageType.Scp or DamageType.Scp049 or DamageType.Scp096SlapLeft or DamageType.Scp096SlapRight or DamageType.Scp096Charge or DamageType.Scp096GateKill or DamageType.Scp096Other or DamageType.Scp106 or DamageType.Scp173 or DamageType.Scp939None or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary or DamageType.Scp0492 or DamageType.Scp3114 or DamageType.Scp3114SkinSteal => true,
+            DamageType.Scp or DamageType.Scp049 or DamageType.Scp096SlapLeft or DamageType.Scp096SlapRight or DamageType.Scp096Charge or DamageType.Scp096GateKill or DamageType.Scp096Other or DamageType.Scp106 or DamageType.Scp173 or DamageType.Scp939Other or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary or DamageType.Scp0492 or DamageType.Scp3114 or DamageType.Scp3114SkinSteal => true,
             DamageType.Scp018 or DamageType.Scp207 when checkItems => true,
             _ => false,
         };
@@ -141,7 +143,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
         /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
-        public static bool IsScp939(this DamageType type) => type is DamageType.Scp939None or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary;
+        public static bool IsScp939(this DamageType type) => type is DamageType.Scp939Other or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary;
 
         /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp049"/>>.
@@ -222,8 +224,20 @@ namespace Exiled.API.Extensions
                         MicroHidFiringMode.BrokenFire => DamageType.MicroHidBrokenFire,
                         _ => DamageType.Unknown,
                     };
-                case DisruptorDamageHandler:
-                    return DamageType.ParticleDisruptor;
+                case JailbirdDamageHandler jailbirdDamageHandler:
+                    if (jailbirdDamageHandler.Attacker.Hub?.inventory.CurInstance is not JailbirdItem jailbirdItem)
+                        return DamageType.JailbirdOther;
+
+                    return jailbirdItem._charging ? DamageType.JailbirdCharged : DamageType.JailbirdSwing;
+
+                case DisruptorDamageHandler disruptorDamageHandler:
+                    return disruptorDamageHandler.FiringState switch
+                    {
+                        DisruptorActionModule.FiringState.FiringRapid => DamageType.ParticleDisruptorRapidShot,
+                        DisruptorActionModule.FiringState.FiringSingle => DamageType.ParticleDisruptorSingleShot,
+                        DisruptorActionModule.FiringState.None => DamageType.ParticleDisruptorOther,
+                        _ => DamageType.ParticleDisruptorOther,
+                    };
                 case Scp1507DamageHandler:
                     return DamageType.Scp1507;
                 case Scp956DamageHandler:
@@ -250,7 +264,7 @@ namespace Exiled.API.Extensions
                         Scp939DamageType.Claw => DamageType.Scp939Claw,
                         Scp939DamageType.LungeTarget => DamageType.Scp939LungeTarget,
                         Scp939DamageType.LungeSecondary => DamageType.Scp939LungeSecondary,
-                        _ => DamageType.Scp939None,
+                        _ => DamageType.Scp939Other,
                     };
                 case Scp3114DamageHandler scp3114DamageHandler:
                     return scp3114DamageHandler.Subtype switch
@@ -297,6 +311,9 @@ namespace Exiled.API.Extensions
 
                         return DamageType.Unknown;
                     }
+
+                case null:
+                    return DamageType.Unknown;
 
                 default:
                     {
