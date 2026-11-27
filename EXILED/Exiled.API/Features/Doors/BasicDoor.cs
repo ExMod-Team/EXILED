@@ -10,7 +10,9 @@ namespace Exiled.API.Features.Doors
     using System.Collections.Generic;
 
     using Exiled.API.Enums;
+
     using PlayerRoles;
+
     using UnityEngine;
 
     using Basegame = Interactables.Interobjects.BasicDoor;

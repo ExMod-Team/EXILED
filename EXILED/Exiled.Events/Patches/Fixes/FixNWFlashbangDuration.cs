@@ -11,10 +11,8 @@ namespace Exiled.Events.Patches.Fixes
     using System.Reflection.Emit;
 
     using CustomPlayerEffects;
-    using Exiled.API.Features.Items;
-    using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
-    using InventorySystem;
 
     /// <summary>
     /// Patches <see cref="Flashed.IntensityChanged"/> to fix NW overwritting value multiple time.
@@ -24,6 +22,7 @@ namespace Exiled.Events.Patches.Fixes
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
+            _ = instructions;
             yield return new CodeInstruction(OpCodes.Ret);
         }
     }

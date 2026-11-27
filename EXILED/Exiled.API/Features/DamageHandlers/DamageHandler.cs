@@ -12,6 +12,7 @@ namespace Exiled.API.Features.DamageHandlers
     using Footprinting;
 
     using PlayerStatsSystem;
+
     using UnityEngine;
 
     using BaseHandler = PlayerStatsSystem.DamageHandlerBase;

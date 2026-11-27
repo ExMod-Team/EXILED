@@ -23,6 +23,7 @@ namespace Exiled.Loader
     using Exiled.Loader.GHApi.Models;
     using Exiled.Loader.GHApi.Settings;
     using Exiled.Loader.Models;
+
     using ServerOutput;
 
 #pragma warning disable SA1310 // Field names should not contain underscore

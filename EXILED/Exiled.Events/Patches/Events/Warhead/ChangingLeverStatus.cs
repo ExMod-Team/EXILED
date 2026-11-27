@@ -8,11 +8,11 @@
 namespace Exiled.Events.Patches.Events.Warhead
 {
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pools;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
+
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Warhead;
 

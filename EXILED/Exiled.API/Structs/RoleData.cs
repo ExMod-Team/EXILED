@@ -10,6 +10,7 @@ namespace Exiled.API.Structs
     using System;
 
     using Mirror;
+
     using PlayerRoles;
 
     /// <summary>

@@ -12,12 +12,17 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using CustomPlayerEffects;
+
     using Enums;
+
     using Extensions;
+
     using PlayerRoles;
+
     using Respawning;
     using Respawning.Waves;
     using Respawning.Waves.Generic;
+
     using UnityEngine;
 
     /// <summary>
@@ -25,9 +30,6 @@ namespace Exiled.API.Features
     /// </summary>
     public static class Respawn
     {
-        private static GameObject ntfHelicopterGameObject;
-        private static GameObject chaosCarGameObject;
-
         /// <summary>
         /// Gets the <see cref="List{T}"/> of paused <see cref="SpawnableWaveBase"/>'s.
         /// </summary>
@@ -46,10 +48,10 @@ namespace Exiled.API.Features
         {
             get
             {
-                if (ntfHelicopterGameObject == null)
-                    ntfHelicopterGameObject = GameObject.Find("Chopper");
+                if (field == null)
+                    field = GameObject.Find("Chopper");
 
-                return ntfHelicopterGameObject;
+                return field;
             }
         }
 
@@ -60,10 +62,10 @@ namespace Exiled.API.Features
         {
             get
             {
-                if (chaosCarGameObject == null)
-                    chaosCarGameObject = GameObject.Find("CIVanArrive");
+                if (field == null)
+                    field = GameObject.Find("CIVanArrive");
 
-                return chaosCarGameObject;
+                return field;
             }
         }
 

@@ -7,9 +7,10 @@
 
 namespace Exiled.Events.EventArgs.Player
 {
-    using API.Enums;
-    using API.Features;
+    using Exiled.API.Enums;
     using Exiled.API.Extensions;
+    using Exiled.API.Features;
+
     using Interfaces;
 
     using PlayerRoles;
@@ -19,8 +20,6 @@ namespace Exiled.Events.EventArgs.Player
     /// </summary>
     public class DroppingAmmoEventArgs : IPlayerEvent, IDeniableEvent
     {
-        private bool isAllowed = true;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="DroppingAmmoEventArgs" /> class.
         /// </summary>
@@ -66,18 +65,12 @@ namespace Exiled.Events.EventArgs.Player
         /// </summary>
         public bool IsAllowed
         {
-            get
-            {
-                if (Player.Role == RoleTypeId.Spectator)
-                    isAllowed = true;
-                return isAllowed;
-            }
-
+            get;
             set
             {
                 if (Player.Role == RoleTypeId.Spectator)
-                    value = true;
-                isAllowed = value;
+                    return;
+                field = value;
             }
         }
 

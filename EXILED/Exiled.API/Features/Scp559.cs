@@ -12,7 +12,9 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using Exiled.API.Interfaces;
+
     using MapGeneration;
+
     using UnityEngine;
 
     /// <summary>

@@ -10,7 +10,9 @@ namespace Exiled.CreditTags.Features
     using System.Collections.Generic;
 
     using Exiled.API.Features;
+
     using MEC;
+
     using UnityEngine.Networking;
 
     internal sealed class ThreadSafeRequest

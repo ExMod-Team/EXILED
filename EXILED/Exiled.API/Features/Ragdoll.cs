@@ -12,15 +12,22 @@ namespace Exiled.API.Features
     using System.Linq;
 
     using DeathAnimations;
+
     using Enums;
+
     using Exiled.API.Extensions;
     using Exiled.API.Interfaces;
+
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps.Scp049.Zombies;
     using PlayerRoles.Ragdolls;
+
     using PlayerStatsSystem;
+
     using RelativePositioning;
+
     using UnityEngine;
 
     using BaseScp3114Ragdoll = PlayerRoles.PlayableScps.Scp3114.Scp3114Ragdoll;

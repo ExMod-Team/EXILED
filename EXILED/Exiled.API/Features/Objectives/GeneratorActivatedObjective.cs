@@ -9,6 +9,7 @@ namespace Exiled.API.Features.Objectives
 {
     using Exiled.API.Enums;
     using Exiled.API.Interfaces;
+
     using Respawning.Objectives;
 
     using BaseObjective = Respawning.Objectives.GeneratorActivatedObjective;

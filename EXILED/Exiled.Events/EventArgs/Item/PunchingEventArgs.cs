@@ -10,6 +10,7 @@ namespace Exiled.Events.EventArgs.Item
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Interfaces;
+
     using InventorySystem.Items.MarshmallowMan;
 
     /// <summary>

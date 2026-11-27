@@ -7,25 +7,20 @@
 
 namespace Exiled.Events.Patches.Events.Scp330
 {
-    using InventorySystem.Items;
-
-#pragma warning disable SA1402
-#pragma warning disable SA1313
-
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp330;
+
     using HarmonyLib;
+
     using Interactables.Interobjects;
-    using InventorySystem;
+
     using InventorySystem.Items.Usables.Scp330;
 
     using static HarmonyLib.AccessTools;
-
-    using Player = API.Features.Player;
 
     /// <summary>
     /// Patches the <see cref="Scp330Interobject.ServerInteract(ReferenceHub, byte)" /> method to add the

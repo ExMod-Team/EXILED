@@ -12,14 +12,19 @@ namespace Exiled.API.Extensions
     using System.Linq;
 
     using Enums;
+
     using Features.Spawn;
+
     using Footprinting;
+
     using InventorySystem;
     using InventorySystem.Configs;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
-    using Respawning;
+
     using Respawning.Waves;
+
     using UnityEngine;
 
     using Team = PlayerRoles.Team;
@@ -84,7 +89,7 @@ namespace Exiled.API.Extensions
             RoleTypeId.ChaosConscript or RoleTypeId.ChaosMarauder or RoleTypeId.ChaosRepressor or RoleTypeId.ChaosRifleman or RoleTypeId.ChaosFlamingo => Team.ChaosInsurgency,
             RoleTypeId.Scientist => Team.Scientists,
             RoleTypeId.ClassD => Team.ClassD,
-            RoleTypeId.Scp049 or RoleTypeId.Scp939 or RoleTypeId.Scp0492 or RoleTypeId.Scp079 or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp3114 or RoleTypeId.ZombieFlamingo=> Team.SCPs,
+            RoleTypeId.Scp049 or RoleTypeId.Scp939 or RoleTypeId.Scp0492 or RoleTypeId.Scp079 or RoleTypeId.Scp096 or RoleTypeId.Scp106 or RoleTypeId.Scp173 or RoleTypeId.Scp3114 or RoleTypeId.ZombieFlamingo => Team.SCPs,
             RoleTypeId.FacilityGuard or RoleTypeId.NtfCaptain or RoleTypeId.NtfPrivate or RoleTypeId.NtfSergeant or RoleTypeId.NtfSpecialist or RoleTypeId.NtfFlamingo => Team.FoundationForces,
             RoleTypeId.Tutorial => Team.OtherAlive,
             RoleTypeId.Flamingo or RoleTypeId.AlphaFlamingo => Team.Flamingos,
@@ -243,7 +248,7 @@ namespace Exiled.API.Extensions
             NtfMiniWave => SpawnableFaction.NtfMiniWave,
             ChaosSpawnWave => SpawnableFaction.ChaosWave,
             ChaosMiniWave => SpawnableFaction.ChaosMiniWave,
-            _ => SpawnableFaction.None
+            _ => SpawnableFaction.None,
         };
 
         /// <summary>

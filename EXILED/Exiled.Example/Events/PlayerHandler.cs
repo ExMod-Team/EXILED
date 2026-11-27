@@ -7,18 +7,17 @@
 
 namespace Exiled.Example.Events
 {
-    using System;
-    using System.Collections.Generic;
-
     using CameraShaking;
 
     using CustomPlayerEffects;
+
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Items;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.EventArgs.Scp106;
     using Exiled.Events.EventArgs.Scp914;
+
     using LabApi.Events.Arguments.PlayerEvents;
 
     using MEC;

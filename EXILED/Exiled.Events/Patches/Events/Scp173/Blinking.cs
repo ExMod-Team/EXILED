@@ -11,8 +11,8 @@ namespace Exiled.Events.Patches.Events.Scp173
     using System.Linq;
     using System.Reflection.Emit;
 
-    using API.Features;
-    using API.Features.Pools;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp173;
 

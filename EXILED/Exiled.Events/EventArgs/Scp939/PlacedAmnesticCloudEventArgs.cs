@@ -7,9 +7,11 @@
 
 namespace Exiled.Events.EventArgs.Scp939
 {
-    using API.Features;
-    using API.Features.Hazards;
+    using Exiled.API.Features;
+    using Exiled.API.Features.Hazards;
+
     using Interfaces;
+
     using PlayerRoles.PlayableScps.Scp939;
 
     using Scp939Role = API.Features.Roles.Scp939Role;

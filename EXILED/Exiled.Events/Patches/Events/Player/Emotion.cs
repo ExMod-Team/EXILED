@@ -13,7 +13,9 @@ namespace Exiled.Events.Patches.Events.Player
     using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
+
     using HarmonyLib;
+
     using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 
     using static HarmonyLib.AccessTools;
@@ -67,7 +69,7 @@ namespace Exiled.Events.Patches.Events.Player
             newInstructions.InsertRange(newInstructions.Count - 1, new CodeInstruction[]
             {
                 // ChangedEmotionEventArgs ev = new(hub, EmotionSync.GetEmotionPreset(hub));
-                new CodeInstruction(OpCodes.Ldarg_0),
+                new(OpCodes.Ldarg_0),
                 new(OpCodes.Ldarg_0),
                 new(OpCodes.Call, Method(typeof(EmotionSync), nameof(EmotionSync.GetEmotionPreset))),
                 new(OpCodes.Newobj, GetDeclaredConstructors(typeof(ChangedEmotionEventArgs))[0]),

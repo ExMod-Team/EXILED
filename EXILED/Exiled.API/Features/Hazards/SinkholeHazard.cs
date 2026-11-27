@@ -8,6 +8,7 @@
 namespace Exiled.API.Features.Hazards
 {
     using Exiled.API.Enums;
+
     using global::Hazards;
 
     /// <summary>

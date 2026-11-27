@@ -11,8 +11,10 @@ namespace Exiled.Events.Patches.Generic
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
     using CentralAuth;
+
+    using Exiled.API.Features.Pools;
+
     using HarmonyLib;
 
     using static HarmonyLib.AccessTools;

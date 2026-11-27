@@ -11,13 +11,16 @@ namespace Exiled.API.Features.Roles
     using System.Linq;
 
     using CustomPlayerEffects;
+
     using PlayerRoles;
     using PlayerRoles.PlayableScps;
     using PlayerRoles.PlayableScps.HumeShield;
     using PlayerRoles.PlayableScps.Scp049;
     using PlayerRoles.Ragdolls;
     using PlayerRoles.Subroutines;
+
     using PlayerStatsSystem;
+
     using UnityEngine;
 
     using Scp049GameRole = PlayerRoles.PlayableScps.Scp049.Scp049Role;
@@ -116,7 +119,7 @@ namespace Exiled.API.Features.Roles
         /// <summary>
         /// Gets all the dead zombies.
         /// </summary>
-        public IEnumerable<Player> DeadZombies => Scp049ResurrectAbility.DeadZombies.Select(x => Player.Get(x));
+        public IEnumerable<Player> DeadZombies => Scp049ResurrectAbility.DeadZombies.Select(Player.Get);
 
         /// <summary>
         /// Gets all the resurrected players.

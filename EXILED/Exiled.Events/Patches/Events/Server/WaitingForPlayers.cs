@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="WaitingForPlayers.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -9,7 +9,7 @@ namespace Exiled.Events.Patches.Events.Server
 {
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
-    using API.Features;
+    using Exiled.API.Features;
 
     using HarmonyLib;
 

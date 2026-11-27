@@ -13,15 +13,15 @@ namespace Exiled.Loader
     using System.Linq;
     using System.Reflection;
 
-    using API.Enums;
-    using API.Extensions;
-    using API.Interfaces;
-
+    using Exiled.API.Enums;
+    using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.API.Features.Attributes;
     using Exiled.API.Features.Pools;
+    using Exiled.API.Interfaces;
 
     using LabApi.Loader.Features.Plugins.Configuration;
+
     using YamlDotNet.Core;
     using YamlDotNet.Serialization;
 
@@ -543,7 +543,7 @@ namespace Exiled.Loader
             {
                 Log.Warn($"LabAPI Plugin {plugin.Name} doesn't have default properties, generating...");
                 PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
-                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties));
                 return true;
             }
 
@@ -555,7 +555,7 @@ namespace Exiled.Loader
             {
                 Log.Error($"{plugin.Name} properties could not be loaded, default properties will be loaded instead!\n{yamlException}");
                 PropertiesSetter.Invoke(plugin, new object[] { Properties.CreateDefault() });
-                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties!));
+                File.WriteAllText(configPath, serializer.Serialize(plugin.Properties));
             }
 
             return true;

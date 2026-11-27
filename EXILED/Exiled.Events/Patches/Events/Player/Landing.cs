@@ -10,13 +10,14 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
     using Exiled.Events.Handlers;
+
     using HarmonyLib;
+
     using PlayerRoles.FirstPersonControl;
-    using PlayerRoles.FirstPersonControl.Thirdperson;
 
     using static HarmonyLib.AccessTools;
 

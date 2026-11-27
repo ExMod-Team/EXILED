@@ -11,9 +11,10 @@ namespace Exiled.Events.Patches.Events.Scp049
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp049;
+
     using HarmonyLib;
 
     using PlayerRoles.PlayableScps.Scp049;
@@ -233,8 +234,9 @@ namespace Exiled.Events.Patches.Events.Scp049
                 // return;
                 new(OpCodes.Ret),
 
-                // this.Cooldown.Trigger(ev.cooldown.time)
+                // this.Cooldown.Trigger(ev.CooldownTime)
                 new CodeInstruction(OpCodes.Ldarg_0).WithLabels(allowed),
+                new(OpCodes.Ldfld, Field(typeof(Scp049SenseAbility), nameof(Scp049SenseAbility.Cooldown))),
                 new(OpCodes.Ldloc, ev.LocalIndex),
                 new(OpCodes.Callvirt, PropertyGetter(typeof(FinishingSenseEventArgs), nameof(FinishingSenseEventArgs.CooldownTime))),
                 new(OpCodes.Callvirt, Method(typeof(AbilityCooldown), nameof(AbilityCooldown.Trigger), new[] { typeof(double) })),

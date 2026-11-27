@@ -11,10 +11,13 @@ namespace Exiled.API.Features.Items
 
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Jailbird;
+
     using Mirror;
+
     using UnityEngine;
 
     using JailbirdPickup = Pickups.JailbirdPickup;

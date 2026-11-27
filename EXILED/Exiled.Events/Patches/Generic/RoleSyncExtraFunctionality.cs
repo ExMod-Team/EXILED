@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="RoleSyncExtraFunctionality.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,8 +11,11 @@ namespace Exiled.Events.Patches.Generic
     using System.Reflection.Emit;
 
     using Exiled.API.Features.Pools;
+
     using HarmonyLib;
+
     using Mirror;
+
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;
     using PlayerRoles.FirstPersonControl.NetworkMessages;

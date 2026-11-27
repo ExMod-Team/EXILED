@@ -8,15 +8,12 @@
 namespace Exiled.Events.Patches.Fixes
 {
 #pragma warning disable SA1313
-    using API.Features.Items;
-    using Exiled.API.Features;
+    using Exiled.API.Features.Items;
 
     using HarmonyLib;
 
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.MicroHID.Modules;
-    using InventorySystem.Items.Pickups;
-    using InventorySystem.Items.Usables.Scp330;
 
     /// <summary>
     /// Patches <see cref="CycleSyncModule.Update()"/> to fix phantom <see cref="MicroHid"/> for <see cref="Item.Create(ItemType, API.Features.Player)"/>.

@@ -14,10 +14,13 @@ namespace Exiled.Installer
     using System.Linq;
     using System.Threading.Tasks;
 
+    /// <summary>
+    /// TODO: Add doc IDK NEED HELP FOR DOC.
+    /// </summary>
     internal sealed class CommandSettings
     {
         /// <summary>
-        /// The RootCommand to the Exiled Installer
+        /// The RootCommand to the Exiled Installer.
         /// </summary>
         public static readonly RootCommand RootCommand = new()
         {
@@ -67,7 +70,7 @@ namespace Exiled.Installer
                 "Forces the folder to be the AppData folder (useful for containers when pterodactyl runs as root)")
                 { IsRequired = true },
 
-             new Option<DirectoryInfo?>(
+            new Option<DirectoryInfo?>(
                 "--exiled",
                 (parsed) =>
                 {
@@ -144,7 +147,7 @@ namespace Exiled.Installer
         public DirectoryInfo Exiled { get; set; }
 #nullable restore
         /// <summary>
-        /// Gets or sets if it is a prerelease.
+        /// Gets or sets a value indicating whether if it is a prerelease.
         /// </summary>
         public bool PreReleases { get; set; }
 
@@ -164,20 +167,25 @@ namespace Exiled.Installer
         public string? GitHubToken { get; set; }
 
         /// <summary>
-        /// Gets or sets the version of Exiled available.
+        /// Gets or sets a value indicating whether the version of Exiled available.
         /// </summary>
         public bool GetVersions { get; set; }
 
         /// <summary>
-        /// Gets or sets the boolean for exiting.
+        /// Gets or sets a value indicating whether the boolean for exiting.
         /// </summary>
         public bool Exit { get; set; }
 
         /// <summary>
-        /// Gets or sets the value indicating whether the version select should be skipped.
+        /// Gets or sets a value indicating whether the value indicating whether the version select should be skipped.
         /// </summary>
         public bool SkipVersionSelect { get; set; }
 
+        /// <summary>
+        /// TODO: Add doc IDK NEED HELP FOR DOC.
+        /// </summary>
+        /// <param name="args">Todo doc.</param>
+        /// <returns>todo fuck doc.</returns>
         public static async Task Parse(string[] args)
         {
             RootCommand.Handler = CommandHandler.Create<CommandSettings>(async args => await Program.MainSafe(args).ConfigureAwait(false));

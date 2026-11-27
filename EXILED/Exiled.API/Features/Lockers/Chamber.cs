@@ -16,8 +16,11 @@ namespace Exiled.API.Features.Lockers
     using Exiled.API.Extensions;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
     using InventorySystem.Items.Pickups;
+
     using MapGeneration.Distributors;
+
     using UnityEngine;
 
     /// <summary>

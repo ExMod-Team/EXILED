@@ -26,7 +26,7 @@ namespace Exiled.Events.Patches.Fixes
     [HarmonyPatch(typeof(LockerChamber), nameof(LockerChamber.OnFirstTimeOpen))]
     internal class LockerFixes
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

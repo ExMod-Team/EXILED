@@ -14,7 +14,9 @@ namespace Exiled.Events.Patches.Events.Scp939
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp939;
     using Exiled.Events.Handlers;
+
     using HarmonyLib;
+
     using PlayerRoles.PlayableScps.Scp939;
 
     using static HarmonyLib.AccessTools;

@@ -11,10 +11,10 @@ namespace Exiled.Events.EventArgs.Scp079
     using Exiled.API.Extensions;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
-    using MapGeneration;
-    using PlayerRoles.PlayableScps.Scp079;
 
-    using Scp079Role = API.Features.Roles.Scp079Role;
+    using MapGeneration;
+
+    using PlayerRoles.PlayableScps.Scp079;
 
     /// <summary>
     /// Contains all information before SCP-079 lockdowns a room.

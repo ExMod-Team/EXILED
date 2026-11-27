@@ -86,7 +86,7 @@ namespace Exiled.API.Enums
         GateAArmory,
 
         /// <summary>
-        /// Represents the window in <see cref="RoomType.HczLoadingBay"/>
+        /// Represents the window in <see cref="RoomType.HczLoadingBay"/>.
         /// </summary>
         HczLoadingBay,
     }

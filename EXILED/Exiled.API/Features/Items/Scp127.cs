@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Items
 
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.Modules.Scp127;
+
     using UnityEngine;
 
     /// <summary>
@@ -19,12 +20,12 @@ namespace Exiled.API.Features.Items
     /// </summary>
     public class Scp127 : Firearm
     {
-        #pragma warning disable SA1401
+#pragma warning disable SA1401
         /// <summary>
         /// Custom amount of max HS.
         /// </summary>
         internal float? CustomHsMax;
-        #pragma warning restore SA1401
+#pragma warning restore SA1401
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Scp127"/> class.

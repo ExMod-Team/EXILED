@@ -7,14 +7,7 @@
 
 namespace Exiled.API.Features.Roles
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using PlayerRoles;
-    using PlayerRoles.Voice;
 
     /// <summary>
     /// Defines a role that represents players with destroyed role.

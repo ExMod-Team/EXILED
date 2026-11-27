@@ -11,15 +11,17 @@ namespace Exiled.Events.Patches.Fixes
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
-
-    using Exiled.API.Features;
+    using Exiled.API.Features.Pools;
 
     using Footprinting;
+
     using HarmonyLib;
+
     using InventorySystem.Items.Pickups;
     using InventorySystem.Items.ThrowableProjectiles;
+
     using PlayerRoles;
+
     using PlayerStatsSystem;
 
     using static HarmonyLib.AccessTools;
@@ -99,7 +101,7 @@ namespace Exiled.Events.Patches.Fixes
         public override string ServerLogsText { get; }
 #pragma warning restore SA1600 // Elements should be documented
 
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Pool.Get(instructions);
 

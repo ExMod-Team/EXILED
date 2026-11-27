@@ -166,8 +166,7 @@ namespace Exiled.CustomRoles.API.Features
                     }
                 }
 
-                if (customAbility is null)
-                    customAbility = (CustomAbility)Activator.CreateInstance(type);
+                customAbility ??= (CustomAbility)Activator.CreateInstance(type);
 
                 if (customAbility.TryRegister())
                     abilities.Add(customAbility);
@@ -209,8 +208,7 @@ namespace Exiled.CustomRoles.API.Features
                     }
                 }
 
-                if (customAbility is null)
-                    customAbility = (CustomAbility)Activator.CreateInstance(type);
+                customAbility ??= (CustomAbility)Activator.CreateInstance(type);
 
                 if (customAbility.TryRegister())
                     abilities.Add(customAbility);
@@ -311,7 +309,7 @@ namespace Exiled.CustomRoles.API.Features
         /// <returns>True if the ability registered properly.</returns>
         internal bool TryRegister()
         {
-            if (!CustomRoles.Instance!.Config.IsEnabled)
+            if (!CustomRoles.Instance.Config.IsEnabled)
                 return false;
 
             if (!Registered.Contains(this))

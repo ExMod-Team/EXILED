@@ -10,7 +10,7 @@ namespace Exiled.Events.Patches.Events.Player
     using System.Collections.Generic;
     using System.Reflection.Emit;
 
-    using API.Features.Pools;
+    using Exiled.API.Features.Pools;
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Player;
 
@@ -19,8 +19,6 @@ namespace Exiled.Events.Patches.Events.Player
     using InventorySystem.Items.Usables.Scp330;
 
     using static HarmonyLib.AccessTools;
-
-    using Player = API.Features.Player;
 
     /// <summary>
     /// Patches the <see cref="Scp330Bag.ServerProcessPickup" /> method to add the

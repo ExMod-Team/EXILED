@@ -4,7 +4,6 @@
 // Licensed under the CC BY-SA 3.0 license.
 // </copyright>
 // -----------------------------------------------------------------------
-
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter
 
 namespace Exiled.Events.Patches.Events.Scp1344
@@ -16,11 +15,8 @@ namespace Exiled.Events.Patches.Events.Scp1344
     using HarmonyLib;
 
     using InventorySystem.Items.Usables.Scp1344;
-    using InventorySystem.Items.Usables.Scp244;
 
     using UnityEngine;
-
-    using static PlayerList;
 
     /// <summary>
     /// Patches <see cref="Scp1344Item.ServerUpdateDeactivating"/>.

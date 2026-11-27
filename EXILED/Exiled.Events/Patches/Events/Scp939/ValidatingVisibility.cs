@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ValidatingVisibility.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -7,20 +7,18 @@
 
 namespace Exiled.Events.Patches.Events.Scp939
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection.Emit;
 
     using Exiled.API.Enums;
-    using Exiled.API.Extensions;
-    using Exiled.API.Features;
     using Exiled.API.Features.Pools;
 
     using Exiled.Events.Attributes;
     using Exiled.Events.EventArgs.Scp939;
+
     using HarmonyLib;
-    using InventorySystem.Items;
+
     using Mirror;
 
     using PlayerRoles.PlayableScps.Scp939;
@@ -87,7 +85,7 @@ namespace Exiled.Events.Patches.Events.Scp939
         // helper method for injecting instructions
         private static IEnumerable<CodeInstruction> StaticCallEvent(ILGenerator generator, LocalBuilder ev, Label ret, CodeInstruction insertInstuction, Scp939VisibilityState state, bool setLabel = true)
         {
-            CodeInstruction first = new CodeInstruction(OpCodes.Ldc_I4, (int)state);
+            CodeInstruction first = new(OpCodes.Ldc_I4, (int)state);
 
             if (setLabel)
             {
