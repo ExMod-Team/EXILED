@@ -18,6 +18,7 @@ namespace Exiled.Events.EventArgs.Player
     using Interfaces;
 
     using InventorySystem;
+    using InventorySystem.Items;
 
     using LabApi.Events.Arguments.PlayerEvents;
     using LabApi.Events.Handlers;

@@ -16,6 +16,8 @@ namespace Exiled.Events.EventArgs.Player
 
     using Interfaces;
 
+    using InventorySystem.Items;
+
     using AmmoPickup = API.Features.Pickups.AmmoPickup;
 
     /// <summary>

@@ -10,6 +10,8 @@ namespace Exiled.Events.EventArgs.Scp079
     using Exiled.API.Features;
     using Exiled.Events.EventArgs.Interfaces;
 
+    using MapGeneration.Spawnables;
+
     /// <summary>
     /// Contains information before SCP-079 gets recontained.
     /// </summary>

@@ -118,8 +118,8 @@ namespace Exiled.API.Features
         /// </summary>
         public bool IsOpen
         {
-            get => Base.HasFlag(Base.Network_flags, Scp079Generator.GeneratorFlags.Open);
-            set => Base.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, value);
+            get => Base.HasFlag(Base.Network_flags, GeneratorBase.GeneratorFlags.Open);
+            set => Base.ServerSetFlag(GeneratorBase.GeneratorFlags.Open, value);
         }
 
         /// <summary>
@@ -127,8 +127,8 @@ namespace Exiled.API.Features
         /// </summary>
         public bool IsUnlocked
         {
-            get => Base.HasFlag(Base.Network_flags, Scp079Generator.GeneratorFlags.Unlocked);
-            set => Base.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, value);
+            get => Base.HasFlag(Base.Network_flags, GeneratorBase.GeneratorFlags.Unlocked);
+            set => Base.ServerSetFlag(GeneratorBase.GeneratorFlags.Unlocked, value);
         }
 
         /// <summary>
@@ -212,7 +212,6 @@ namespace Exiled.API.Features
             set
             {
                 Base.transform.position = value;
-                PositionSync.Network_position = value;
                 ((IStructureSync)this).Respawn();
             }
         }
@@ -227,7 +226,6 @@ namespace Exiled.API.Features
             set
             {
                 Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
-                PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
                 ((IStructureSync)this).Respawn();
             }
         }

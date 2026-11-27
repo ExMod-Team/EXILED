@@ -54,6 +54,7 @@ namespace Exiled.API.Features
     using InventorySystem.Items.Firearms.BasicMessages;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Firearms.ShotEvents;
+    using InventorySystem.Items.Identifiers;
     using InventorySystem.Items.Usables;
     using InventorySystem.Items.Usables.Scp330;
 

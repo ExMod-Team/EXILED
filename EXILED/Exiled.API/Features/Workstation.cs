@@ -96,7 +96,6 @@ namespace Exiled.API.Features
             set
             {
                 Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
-                PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
                 ((IStructureSync)this).Respawn();
             }
         }

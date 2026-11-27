@@ -15,6 +15,7 @@ namespace Exiled.Events.Patches.Generic
     using HarmonyLib;
 
     using InventorySystem.Configs;
+    using InventorySystem.Items;
 
     using UnityEngine;
 

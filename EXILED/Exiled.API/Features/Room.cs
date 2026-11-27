@@ -21,6 +21,7 @@ namespace Exiled.API.Features
     using MapGeneration;
     using MapGeneration.Holidays;
     using MapGeneration.Rooms;
+    using MapGeneration.Spawnables;
 
     using MEC;
 

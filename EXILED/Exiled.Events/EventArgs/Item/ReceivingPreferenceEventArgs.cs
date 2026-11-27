@@ -17,6 +17,8 @@ namespace Exiled.Events.EventArgs.Item
 
     using Interfaces;
 
+    using InventorySystem.Items;
+
     /// <summary>
     /// Contains all information before receiving a preference.
     /// </summary>

@@ -27,6 +27,7 @@ namespace Exiled.CustomRoles.API.Features
     using Exiled.Loader;
 
     using InventorySystem.Configs;
+    using InventorySystem.Items;
 
     using MEC;
 

@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="ScpItemPickupObjective.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -11,6 +11,8 @@ namespace Exiled.API.Features.Objectives
     using Exiled.API.Features.Items;
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
+
+    using InventorySystem.Items;
 
     using Respawning.Objectives;
 
