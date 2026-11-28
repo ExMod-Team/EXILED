@@ -180,7 +180,7 @@ namespace Exiled.API.Features
         /// <seealso cref="List"/>
         /// <seealso cref="Enumerable"/>
         /// <seealso cref="ConnectedCount"/>
-        public static int Count => Dictionary.Values.Count;
+        public static int Count => Dictionary.Count;
 
         /// <summary>
         /// Gets the number of connected players currently on the server.
