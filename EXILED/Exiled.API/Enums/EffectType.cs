@@ -399,6 +399,16 @@ namespace Exiled.API.Enums
         BarbedWire,
 
         /// <summary>
+        /// <see cref="CustomPlayerEffects.MouseLock"/>.
+        /// </summary>
+        MouseLock,
+
+        /// <summary>
+        /// <see cref="CustomPlayerEffects.Grappled"/>.
+        /// </summary>
+        Grappled,
+
+        /// <summary>
         /// <see cref="CustomPlayerEffects.Hexed"/>.
         /// </summary>
         Hexed,

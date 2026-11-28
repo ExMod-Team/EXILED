@@ -87,6 +87,10 @@ namespace Exiled.API.Extensions
             { EffectType.HeavyFooted, typeof(HeavyFooted) },
             { EffectType.Fade, typeof(Fade) },
             { EffectType.NightVision, typeof(NightVision) },
+            { EffectType.BarbedWire, typeof(BarbedWire) },
+            { EffectType.MouseLock, typeof(MouseLock) },
+            { EffectType.Grappled, typeof(Grappled) },
+            { EffectType.Hexed, typeof(Hexed) },
             #pragma warning disable CS0618
             { EffectType.Marshmallow, typeof(MarshmallowEffect) },
             { EffectType.BecomingFlamingo, typeof(BecomingFlamingo) },
@@ -109,8 +113,6 @@ namespace Exiled.API.Extensions
             { EffectType.FocusedVision, typeof(FocusedVision) },
             { EffectType.AnomalousRegeneration, typeof(AnomalousRegeneration) },
             { EffectType.AnomalousTarget, typeof(AnomalousTarget) },
-            { EffectType.BarbedWire, typeof(BarbedWire) },
-            { EffectType.Hexed, typeof(Hexed) },
             #pragma warning restore CS0618
         });
 
