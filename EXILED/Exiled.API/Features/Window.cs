@@ -242,32 +242,45 @@ namespace Exiled.API.Features
             },
             "GLASS" => Room?.Type switch
             {
-                RoomType.Hcz079 => GlassType.Scp079,
-                RoomType.HczHid => GlassType.MicroHid,
                 RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
                 RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
                 RoomType.EzGateA when Base.name[7] == '5' => GlassType.GateAArmory,
                 RoomType.EzGateA => GlassType.GateAPit,
-                RoomType.HczLoadingBay => GlassType.HczLoadingBay,
                 _ => GlassType.Unknown,
             },
             "Window" => Room?.Type switch
             {
-                RoomType.Hcz049 => GlassType.Scp049,
                 RoomType.Hcz127 when Base.name[8] == '3' => GlassType.Scp127Large,
                 RoomType.Hcz127 => GlassType.Scp127Small,
-                RoomType.HczHid => GlassType.MicroHid,
                 RoomType.HczTestRoom => GlassType.TestRoom,
                 _ => GlassType.Unknown,
             },
+            "HCZ 127 Breakable Glass" => GlassType.HczLoadingBay,
+            "HCZ Recontainment Button Breakable Glass" => GlassType.Scp079Trigger,
             "Glass" => Room?.Type switch
             {
-                RoomType.Hcz079 => GlassType.Scp079Trigger,
                 RoomType.HczHid => GlassType.MicroHid,
                 _ => GlassType.Unknown,
             },
             "glass" => GlassType.Scp079,
-            "LCZ Breakable Glass" => GlassType.Plants,
+            "HCZ Breakable Glass" => Room?.Type switch
+            {
+                RoomType.HczHid => GlassType.MicroHid,
+                RoomType.Hcz049 => GlassType.Scp049,
+                _ => GlassType.Unknown,
+            },
+            "Checkpoint Breakable Glass" => Room?.Type switch
+            {
+                RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
+                RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
+                _ => GlassType.Unknown,
+            },
+            "LCZ Breakable Glass" => Room?.Type switch
+            {
+                RoomType.LczPlants or RoomType.LczPlants2 => GlassType.Plants,
+                RoomType.Lcz330 => GlassType.Scp330,
+                _ => GlassType.Unknown,
+            },
             _ => GlassType.Unknown,
         };
     }
