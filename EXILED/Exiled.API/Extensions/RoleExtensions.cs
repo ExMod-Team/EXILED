@@ -19,6 +19,7 @@ namespace Exiled.API.Extensions
 
     using InventorySystem;
     using InventorySystem.Configs;
+    using InventorySystem.Items;
 
     using PlayerRoles;
     using PlayerRoles.FirstPersonControl;

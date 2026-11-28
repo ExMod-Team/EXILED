@@ -19,7 +19,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="door">The door to be checked.</param>
         /// <returns>Returns whether the <see cref="DoorType"/> is a gate.</returns>
-        public static bool IsGate(this DoorType door) => door is DoorType.GateA or DoorType.GateB or DoorType.Scp914Gate or
+        public static bool IsGate(this DoorType door) => door is DoorType.GateA or DoorType.GateB or
             DoorType.Scp049Gate or DoorType.GR18Gate or DoorType.SurfaceGate or DoorType.Scp173Gate or DoorType.Scp173NewGate or DoorType.CheckpointGateA or DoorType.CheckpointGateB or DoorType.SpawnableUnsecuredGate or DoorType.UnknownGate;
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Exiled.API.Extensions
         /// </summary>
         /// <param name="door">The door to be checked.</param>
         /// <returns>Returns whether the <see cref="DoorType"/> is a checkpoint.</returns>
-        public static bool IsCheckpoint(this DoorType door) => door is DoorType.CheckpointLczA or DoorType.CheckpointLczB or DoorType.CheckpointEzHczA or DoorType.CheckpointEzHczB;
+        public static bool IsCheckpoint(this DoorType door) => door is DoorType.CheckpointLczA or DoorType.CheckpointLczB or DoorType.CheckpointLczC or DoorType.CheckpointEzHczA or DoorType.CheckpointEzHczB;
 
         /// <summary>
         /// Checks if a <see cref="DoorType">door type</see> is an elevator.
@@ -35,6 +35,6 @@ namespace Exiled.API.Extensions
         /// <param name="door">The door to be checked.</param>
         /// <returns>Returns whether the <see cref="DoorType"/> is an elevator.</returns>
         public static bool IsElevator(this DoorType door) => door is DoorType.ElevatorGateA or DoorType.ElevatorGateB
-            or DoorType.ElevatorLczA or DoorType.ElevatorLczB or DoorType.ElevatorNuke or DoorType.ElevatorScp049 or DoorType.ElevatorServerRoom;
+            or DoorType.ElevatorLczA or DoorType.ElevatorLczB or DoorType.ElevatorNuke or DoorType.ElevatorScp049 or DoorType.ElevatorServerRoom or DoorType.ElevatorScp914;
     }
 }

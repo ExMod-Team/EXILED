@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Attributes
 {
     using System;
 
+    using InventorySystem.Items;
+
     /// <summary>
     /// An attribute to easily manage CustomItem initialization.
     /// </summary>
@@ -18,14 +20,14 @@ namespace Exiled.API.Features.Attributes
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomItemAttribute"/> class.
         /// </summary>
-        /// <param name="type">The <see cref="global::ItemType"/> to serialize.</param>
+        /// <param name="type">The <see cref="InventorySystem.Items.ItemType"/> to serialize.</param>
         public CustomItemAttribute(ItemType type)
         {
             ItemType = type;
         }
 
         /// <summary>
-        /// Gets the attribute's <see cref="global::ItemType"/>.
+        /// Gets the attribute's <see cref="InventorySystem.Items.ItemType"/>.
         /// </summary>
         public ItemType ItemType { get; }
     }

@@ -14,6 +14,7 @@ namespace Exiled.API.Extensions
 
     using Features;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Modules;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.MicroHID.Modules;
@@ -23,6 +24,7 @@ namespace Exiled.API.Extensions
     using PlayerRoles.PlayableScps.Scp1507;
     using PlayerRoles.PlayableScps.Scp3114;
     using PlayerRoles.PlayableScps.Scp939;
+    using PlayerRoles.PlayableScps.Scp953;
 
     using PlayerStatsSystem;
 
@@ -146,6 +148,13 @@ namespace Exiled.API.Extensions
         public static bool IsScp939(this DamageType type) => type is DamageType.Scp939Other or DamageType.Scp939Claw or DamageType.Scp939LungeTarget or DamageType.Scp939LungeSecondary;
 
         /// <summary>
+        /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp939"/>>.
+        /// </summary>
+        /// <param name="type">The damage type to be checked.</param>
+        /// <returns>Returns whether the <see cref="DamageType"/> is caused by SCP.</returns>
+        public static bool IsScp953(this DamageType type) => type is DamageType.Scp953None or DamageType.Scp953Slash or DamageType.Scp953Pounce or DamageType.Scp953Grappled;
+
+        /// <summary>
         /// Check if a <see cref="DamageType">damage type</see> is caused by <see cref="RoleTypeId.Scp049"/>>.
         /// </summary>
         /// <param name="type">The damage type to be checked.</param>
@@ -265,6 +274,14 @@ namespace Exiled.API.Extensions
                         Scp939DamageType.LungeTarget => DamageType.Scp939LungeTarget,
                         Scp939DamageType.LungeSecondary => DamageType.Scp939LungeSecondary,
                         _ => DamageType.Scp939Other,
+                    };
+                case Scp953DamageHandler scp953DamageHandler:
+                    return scp953DamageHandler.DamageType switch
+                    {
+                        Scp953DamageType.Slash => DamageType.Scp953Slash,
+                        Scp953DamageType.Pounce => DamageType.Scp953Pounce,
+                        Scp953DamageType.Grappled => DamageType.Scp953Grappled,
+                        _ => DamageType.Scp953None,
                     };
                 case Scp3114DamageHandler scp3114DamageHandler:
                     return scp3114DamageHandler.Subtype switch

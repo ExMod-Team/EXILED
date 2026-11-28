@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Items
 
     using Exiled.API.Interfaces;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.MarshmallowMan;
     using InventorySystem.Items.Usables;
 

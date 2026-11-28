@@ -87,6 +87,10 @@ namespace Exiled.API.Extensions
             { EffectType.HeavyFooted, typeof(HeavyFooted) },
             { EffectType.Fade, typeof(Fade) },
             { EffectType.NightVision, typeof(NightVision) },
+            { EffectType.BarbedWire, typeof(BarbedWire) },
+            { EffectType.MouseLock, typeof(MouseLock) },
+            { EffectType.Grappled, typeof(Grappled) },
+            { EffectType.Hexed, typeof(Hexed) },
             #pragma warning disable CS0618
             { EffectType.Marshmallow, typeof(MarshmallowEffect) },
             { EffectType.BecomingFlamingo, typeof(BecomingFlamingo) },

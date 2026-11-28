@@ -19,16 +19,18 @@ namespace Exiled.Events.Patches.Events.Player
 
     using HarmonyLib;
 
+    using MapGeneration.Spawnables;
+
     using UnityEngine;
 
     using static HarmonyLib.AccessTools;
 
     /// <summary>
-    /// Patch the <see cref="BreakableWindow.Damage(float, PlayerStatsSystem.DamageHandlerBase, Vector3)" />.
+    /// Patch the <see cref="BreakableGlass.Damage(float, PlayerStatsSystem.DamageHandlerBase, Vector3)" />.
     /// Adds the <see cref="Player.DamagingWindow" /> event.
     /// </summary>
     [EventPatch(typeof(Player), nameof(Player.DamagingWindow))]
-    [HarmonyPatch(typeof(BreakableWindow), nameof(BreakableWindow.Damage))]
+    [HarmonyPatch(typeof(BreakableGlass), nameof(BreakableGlass.Damage))]
     internal static class DamagingWindow
     {
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)

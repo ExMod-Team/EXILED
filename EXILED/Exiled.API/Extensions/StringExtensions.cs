@@ -143,6 +143,21 @@ namespace Exiled.API.Extensions
         }
 
         /// <summary>
+        /// Retrieves a string after a symbol from an input.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="symbol">The symbol.</param>
+        /// <returns>Substring after the symbol.</returns>
+        public static string GetAfter(this string input, char symbol)
+        {
+            int start = input.IndexOf(symbol);
+            if (start > 0)
+                input = input.Substring(start);
+
+            return input;
+        }
+
+        /// <summary>
         /// Splits camel case string to space-separated words. Ex: SomeCamelCase -> Some Camel Case.
         /// </summary>
         /// <param name="input">Camel case string.</param>

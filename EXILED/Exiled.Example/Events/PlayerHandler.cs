@@ -18,6 +18,8 @@ namespace Exiled.Example.Events
     using Exiled.Events.EventArgs.Scp106;
     using Exiled.Events.EventArgs.Scp914;
 
+    using InventorySystem.Items;
+
     using LabApi.Events.Arguments.PlayerEvents;
 
     using MEC;

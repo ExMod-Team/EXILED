@@ -11,6 +11,7 @@ namespace Exiled.API.Features.Items.FirearmModules.Primary
 
     using Exiled.API.Enums;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.Firearms.Modules;
 
     /// <summary>

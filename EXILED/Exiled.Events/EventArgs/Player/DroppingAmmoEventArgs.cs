@@ -13,6 +13,8 @@ namespace Exiled.Events.EventArgs.Player
 
     using Interfaces;
 
+    using InventorySystem.Items;
+
     using PlayerRoles;
 
     /// <summary>

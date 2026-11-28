@@ -12,11 +12,13 @@ namespace Exiled.Events.EventArgs.Player
 
     using Interfaces;
 
+    using MapGeneration.Spawnables;
+
     using AttackerDamageHandler = PlayerStatsSystem.AttackerDamageHandler;
     using DamageHandlerBase = PlayerStatsSystem.DamageHandlerBase;
 
     /// <summary>
-    /// Contains all information before damage is dealt to a <see cref="BreakableWindow" />.
+    /// Contains all information before damage is dealt to a <see cref="BreakableGlass" />.
     /// </summary>
     public class DamagingWindowEventArgs : IPlayerEvent, IDeniableEvent
     {
@@ -30,7 +32,7 @@ namespace Exiled.Events.EventArgs.Player
         /// <param name="handler">
         /// <inheritdoc cref="Handler" />
         /// </param>
-        public DamagingWindowEventArgs(BreakableWindow window, float damage, DamageHandlerBase handler)
+        public DamagingWindowEventArgs(BreakableGlass window, float damage, DamageHandlerBase handler)
         {
             Window = Window.Get(window);
             Handler = new DamageHandler(handler is AttackerDamageHandler attackerDamageHandler ? Player.Get(attackerDamageHandler.Attacker.Hub) : null, handler)

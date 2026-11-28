@@ -11,6 +11,7 @@ namespace Exiled.Events.EventArgs.Map
     using Exiled.API.Features.Pickups;
     using Exiled.Events.EventArgs.Interfaces;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.ThrowableProjectiles;
 
     /// <summary>

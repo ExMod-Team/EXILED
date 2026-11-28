@@ -13,7 +13,7 @@ namespace Exiled.Events.EventArgs.Scp939
 
     using Interfaces;
 
-    using PlayerRoles.PlayableScps.HumanTracker;
+    using PlayerRoles.PlayableScps.Trackers;
 
     /// <summary>
     /// Contains all information before SCP-939 sees the player.

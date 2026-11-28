@@ -12,6 +12,7 @@ namespace Exiled.API.Features.Items
 
     using Interactables.Interobjects.DoorUtils;
 
+    using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
 
     /// <summary>

@@ -15,6 +15,7 @@ namespace Exiled.Events.Patches.Fixes
     using HarmonyLib;
 
     using InventorySystem.Configs;
+    using InventorySystem.Items;
 
     /// <summary>
     /// Patches the <see cref="InventoryLimits.GetAmmoLimit(InventorySystem.Items.Armor.BodyArmor, ItemType)"/> delegate.

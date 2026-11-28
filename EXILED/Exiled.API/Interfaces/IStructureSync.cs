@@ -1,4 +1,4 @@
-﻿// -----------------------------------------------------------------------
+// -----------------------------------------------------------------------
 // <copyright file="IStructureSync.cs" company="ExMod Team">
 // Copyright (c) ExMod Team. All rights reserved.
 // Licensed under the CC BY-SA 3.0 license.
@@ -14,14 +14,14 @@ namespace Exiled.API.Interfaces
     using Mirror;
 
     /// <summary>
-    /// Represents an object with a <see cref="StructurePositionSync"/>.
+    /// Represents an object with a <see cref="SpawnableStructure"/>.
     /// </summary>
     public interface IStructureSync
     {
         /// <summary>
-        /// Gets the <see cref="StructurePositionSync"/> of this structure.
+        /// Gets the <see cref="SpawnableStructure"/> of this structure.
         /// </summary>
-        public StructurePositionSync PositionSync { get; }
+        public SpawnableStructure PositionSync { get; }
 
         /// <summary>
         /// Respawns the structure.

@@ -9,6 +9,8 @@ namespace Exiled.API.Features.Items
 {
     using Exiled.API.Interfaces;
 
+    using InventorySystem.Items;
+
     using BaseConsumable = InventorySystem.Items.Usables.Consumable;
 
     /// <summary>

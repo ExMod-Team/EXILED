@@ -16,6 +16,8 @@ namespace Exiled.API.Features.Lockers
     using Exiled.API.Features.Pickups;
     using Exiled.API.Interfaces;
 
+    using InventorySystem.Items;
+
     using MapGeneration.Distributors;
 
     using UnityEngine;
@@ -39,7 +41,7 @@ namespace Exiled.API.Features.Lockers
         public Locker(BaseLocker locker)
         {
             Base = locker;
-            PositionSync = locker.GetComponent<StructurePositionSync>();
+            PositionSync = locker.GetComponent<SpawnableStructure>();
             BaseToExiledLockers.Add(locker, this);
 
             Chambers = locker.Chambers.Select(x => new Chamber(x, this)).ToList();
@@ -80,7 +82,6 @@ namespace Exiled.API.Features.Lockers
             set
             {
                 Base.transform.position = value;
-                PositionSync.Network_position = value;
                 ((IStructureSync)this).Respawn();
             }
         }
@@ -95,13 +96,12 @@ namespace Exiled.API.Features.Lockers
             set
             {
                 Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
-                PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
                 ((IStructureSync)this).Respawn();
             }
         }
 
         /// <inheritdoc cref="IStructureSync.PositionSync"/>
-        public StructurePositionSync PositionSync { get; }
+        public SpawnableStructure PositionSync { get; }
 
         /// <summary>
         /// Gets the <see cref="Features.Room"/> in which the <see cref="Locker"/> is located.

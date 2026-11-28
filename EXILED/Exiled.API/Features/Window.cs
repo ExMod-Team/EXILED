@@ -19,24 +19,26 @@ namespace Exiled.API.Features
     using Exiled.API.Features.Doors;
     using Exiled.API.Interfaces;
 
+    using MapGeneration.Spawnables;
+
     using UnityEngine;
 
     /// <summary>
-    /// A wrapper class for <see cref="BreakableWindow"/>.
+    /// A wrapper class for <see cref="BreakableGlass"/>.
     /// </summary>
-    public class Window : IWrapper<BreakableWindow>, IWorldSpace
+    public class Window : IWrapper<BreakableGlass>, IWorldSpace
     {
         /// <summary>
-        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BreakableWindow"/>s and their corresponding <see cref="Window"/>.
+        /// A <see cref="Dictionary{TKey,TValue}"/> containing all known <see cref="BreakableGlass"/>s and their corresponding <see cref="Window"/>.
         /// </summary>
-        internal static readonly Dictionary<BreakableWindow, Window> BreakableWindowToWindow = new(new ComponentsEqualityComparer());
+        internal static readonly Dictionary<BreakableGlass, Window> BreakableWindowToWindow = new(new ComponentsEqualityComparer());
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Window"/> class.
         /// </summary>
-        /// <param name="window">The base <see cref="BreakableWindow"/> for this door.</param>
+        /// <param name="window">The base <see cref="BreakableGlass"/> for this door.</param>
         /// <param name="room">The <see cref="Room"/> for this window.</param>
-        internal Window(BreakableWindow window, Room room)
+        internal Window(BreakableGlass window, Room room)
         {
             BreakableWindowToWindow.Add(window, this);
             Base = window;
@@ -53,9 +55,9 @@ namespace Exiled.API.Features
         public static IReadOnlyCollection<Window> List => BreakableWindowToWindow.Values;
 
         /// <summary>
-        /// Gets the base-game <see cref="BreakableWindow"/> for this window.
+        /// Gets the base-game <see cref="BreakableGlass"/> for this window.
         /// </summary>
-        public BreakableWindow Base { get; }
+        public BreakableGlass Base { get; }
 
         /// <summary>
         /// Gets the <see cref="UnityEngine.GameObject"/> of the window.
@@ -133,16 +135,6 @@ namespace Exiled.API.Features
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this window is broken.
-        /// </summary>
-        [Obsolete("You should use IsBroken Propperty now", true)]
-        public bool SyncStatus
-        {
-            get => Base._prevStatus;
-            set => Base._prevStatus = value;
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating who is the LastAttacker.
         /// </summary>
         public Player LastAttacker
@@ -156,7 +148,7 @@ namespace Exiled.API.Features
         /// </summary>
         /// <param name="breakableWindow">The base-game <see cref="Window"/>.</param>
         /// <returns>A <see cref="Door"/> wrapper object.</returns>
-        public static Window Get(BreakableWindow breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
+        public static Window Get(BreakableGlass breakableWindow) => BreakableWindowToWindow.TryGetValue(breakableWindow, out Window window)
             ? window
             : new(breakableWindow, breakableWindow.GetComponentInParent<Room>());
 
@@ -168,12 +160,12 @@ namespace Exiled.API.Features
         public static IEnumerable<Window> Get(Func<Window, bool> predicate) => List.Where(predicate);
 
         /// <summary>
-        /// Try-get a <see cref="Window"/> belonging to the <see cref="BreakableWindow"/>, if any.
+        /// Try-get a <see cref="Window"/> belonging to the <see cref="BreakableGlass"/>, if any.
         /// </summary>
-        /// <param name="breakableWindow">The <see cref="BreakableWindow"/> instance.</param>
+        /// <param name="breakableWindow">The <see cref="BreakableGlass"/> instance.</param>
         /// <param name="window">A <see cref="Window"/> or <see langword="null"/> if not found.</param>
         /// <returns>Whether a window was found.</returns>
-        public static bool TryGet(BreakableWindow breakableWindow, out Window window)
+        public static bool TryGet(BreakableGlass breakableWindow, out Window window)
         {
             window = Get(breakableWindow);
             return window is not null;
@@ -218,8 +210,30 @@ namespace Exiled.API.Features
         /// <returns>A string containing Window-related data.</returns>
         public override string ToString() => $"{Type} ({Health}) [{IsBroken}] *{DisableScpDamage}*";
 
-        private GlassType GetGlassType() => Base.name.RemoveBracketsOnEndOfName() switch
+        private GlassType GetGlassType() => Base.name.GetBefore('_').RemoveBracketsOnEndOfName() switch
         {
+            "BreakableGlass" => Room?.Type switch
+            {
+                RoomType.SurfaceCassie => Base.name[16] switch
+                {
+                    '1' => GlassType.SurfaceCassieUpperHall,
+                    '2' or '3' => GlassType.SurfaceCassieLowerHall,
+                    '4' or '5' or '6' => GlassType.SurfaceCassieChamber,
+                    _ => GlassType.Unknown,
+                },
+                RoomType.SurfaceGateA => Base.name[17] switch
+                {
+                    '1' => GlassType.SurfaceUpstairCornerRoadGateA,
+                    '2' or '3' => GlassType.SurfaceBigWindowGateA,
+                    '4' => GlassType.SurfaceStairUpperGateA,
+                    '5' or '6' => GlassType.SurfaceSmallWindowGateA,
+                    '7' => GlassType.SurfaceRoofGateA,
+                    '8' => GlassType.SurfaceStairLowerGateA,
+                    '9' or '0' => GlassType.SurfaceAdminOfficeGateA,
+                    _ => GlassType.Unknown,
+                },
+                _ => GlassType.Unknown,
+            },
             "B272sa" => Room?.Type switch
             {
                 RoomType.LczGlassBox => GlassType.GR18,
@@ -228,31 +242,45 @@ namespace Exiled.API.Features
             },
             "GLASS" => Room?.Type switch
             {
-                RoomType.Hcz079 => GlassType.Scp079,
-                RoomType.HczHid => GlassType.MicroHid,
                 RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
                 RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
                 RoomType.EzGateA when Base.name[7] == '5' => GlassType.GateAArmory,
                 RoomType.EzGateA => GlassType.GateAPit,
-                RoomType.HczLoadingBay => GlassType.HczLoadingBay,
                 _ => GlassType.Unknown,
             },
             "Window" => Room?.Type switch
             {
-                RoomType.Hcz049 => GlassType.Scp049,
-                RoomType.Hcz127 => GlassType.Scp127,
-                RoomType.HczHid => GlassType.MicroHid,
+                RoomType.Hcz127 when Base.name[8] == '3' => GlassType.Scp127Large,
+                RoomType.Hcz127 => GlassType.Scp127Small,
                 RoomType.HczTestRoom => GlassType.TestRoom,
                 _ => GlassType.Unknown,
             },
+            "HCZ 127 Breakable Glass" => GlassType.HczLoadingBay,
+            "HCZ Recontainment Button Breakable Glass" => GlassType.Scp079Trigger,
             "Glass" => Room?.Type switch
             {
-                RoomType.Hcz079 => GlassType.Scp079Trigger,
                 RoomType.HczHid => GlassType.MicroHid,
                 _ => GlassType.Unknown,
             },
             "glass" => GlassType.Scp079,
-            "VTGLASS" => GlassType.Plants,
+            "HCZ Breakable Glass" => Room?.Type switch
+            {
+                RoomType.HczHid => GlassType.MicroHid,
+                RoomType.Hcz049 => GlassType.Scp049,
+                _ => GlassType.Unknown,
+            },
+            "Checkpoint Breakable Glass" => Room?.Type switch
+            {
+                RoomType.HczEzCheckpointA => GlassType.HczEzCheckpointA,
+                RoomType.HczEzCheckpointB => GlassType.HczEzCheckpointB,
+                _ => GlassType.Unknown,
+            },
+            "LCZ Breakable Glass" => Room?.Type switch
+            {
+                RoomType.LczPlants or RoomType.LczPlants2 => GlassType.Plants,
+                RoomType.Lcz330 => GlassType.Scp330,
+                _ => GlassType.Unknown,
+            },
             _ => GlassType.Unknown,
         };
     }

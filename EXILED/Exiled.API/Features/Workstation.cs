@@ -39,7 +39,7 @@ namespace Exiled.API.Features
         {
             WorkstationControllerToWorkstation.Add(workstationController, this);
             Base = workstationController;
-            PositionSync = workstationController.GetComponent<StructurePositionSync>();
+            PositionSync = workstationController.GetComponent<SpawnableStructure>();
         }
 
         /// <summary>
@@ -96,13 +96,12 @@ namespace Exiled.API.Features
             set
             {
                 Base.transform.rotation = Quaternion.Euler(0, value.eulerAngles.y, 0);
-                PositionSync.Network_rotationY = (sbyte)Mathf.RoundToInt(value.eulerAngles.y / 5.625F);
                 ((IStructureSync)this).Respawn();
             }
         }
 
         /// <inheritdoc cref="IStructureSync.PositionSync"/>
-        public StructurePositionSync PositionSync { get; }
+        public SpawnableStructure PositionSync { get; }
 
         /// <summary>
         /// Gets or sets the status of the workstation.

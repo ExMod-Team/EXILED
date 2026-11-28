@@ -21,6 +21,7 @@ namespace Exiled.API.Features.Items
     using InventorySystem.Items.Armor;
     using InventorySystem.Items.Autosync;
     using InventorySystem.Items.Firearms.Ammo;
+    using InventorySystem.Items.Identifiers;
     using InventorySystem.Items.Jailbird;
     using InventorySystem.Items.Keycards;
     using InventorySystem.Items.MarshmallowMan;
@@ -130,9 +131,9 @@ namespace Exiled.API.Features.Items
         public ItemCategory Category => Base.Category;
 
         /// <summary>
-        /// Gets the <see cref="ItemTierFlags"/> of the item.
+        /// Gets the <see cref="InventorySystem.Items.ItemRarity"/> of the item.
         /// </summary>
-        public ItemTierFlags TierFlags => Base.TierFlags;
+        public ItemRarity ItemRarity => Base.Rarity;
 
         /// <summary>
         /// Gets the Weight of the item.

@@ -7,6 +7,7 @@
 
 namespace Exiled.API.Features.Pickups.Keycards
 {
+    using InventorySystem.Items;
     using InventorySystem.Items.Keycards;
     using InventorySystem.Items.Keycards.Snake;
     using InventorySystem.Items.Pickups;

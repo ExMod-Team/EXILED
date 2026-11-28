@@ -29,14 +29,14 @@ namespace Exiled.API.Extensions
         /// <param name="room">The room to be checked.</param>
         /// <returns>Returns whether the <see cref="RoomType"/> is a checkpoint.</returns>
         public static bool IsCheckpoint(this RoomType room) => room is RoomType.LczCheckpointA
-            or RoomType.LczCheckpointB or RoomType.HczEzCheckpointA or RoomType.HczEzCheckpointB;
+            or RoomType.LczCheckpointB or RoomType.LczCheckpointC or RoomType.HczEzCheckpointA or RoomType.HczEzCheckpointB;
 
         /// <summary>
         /// Checks if a <see cref="RoomType">room type</see> is a Lcz checkpoint.
         /// </summary>
         /// <param name="room">The room to be checked.</param>
         /// <returns>Returns whether the <see cref="RoomType"/> is a Lcz checkpoint.</returns>
-        public static bool IsLczCheckpoint(this RoomType room) => room is RoomType.LczCheckpointA or RoomType.LczCheckpointB;
+        public static bool IsLczCheckpoint(this RoomType room) => room is RoomType.LczCheckpointA or RoomType.LczCheckpointB or RoomType.LczCheckpointC;
 
         /// <summary>
         /// Checks if a <see cref="RoomType">room type</see> is a Hcz checkpoint.
